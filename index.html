@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!--
+	bootstrap:demo使用样式文件，可不引用
+    font-awesome:demo使用小图标样式文件，可不引用。但在排序中的小图标样式需要重新定义
+-->
+<link rel="stylesheet" type="text/css" href="../../css/base.css">
+<link rel="stylesheet" type="text/css" href="../../css/module.css"/>
+<link rel="stylesheet" type="text/css" href="../../lib/smartadmin/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/listManager.css"/>
+<title>listManager:列表页管理插件</title>
+</head>
+
+<body>
+<div class="module" id="realize-function">
+	<hr/>
+	<h2>实现功能</h2>
+	<p>listManager.js实现以下功能，且调用方便快捷。但需注意的是该插件是基于table进行开的</p>
+    <ul class="type-decimal">
+    </ul>
+</div>
+<div class="module" id="ui-show">	
+	<hr/>
+	<h2>效果展示</h2>
+	<hr/>
+    <div id="html-source">
+        <h3>demo-one</h3>
+        <table width="100%" class="table nowrap-ellipsis" border="1" cellspacing="0" cellpadding="0" list-manager="demoOne" >
+            <thead>
+                <tr>
+                    <th th-name="th-one" remind="这里是第一列">第一列</th>
+                    <th th-name="th-two" remind="这里是第二列">第二列</th>
+                    <th th-name="th-three" remind="这里是第三列" sorting>第三列</th>
+                    <th th-name="th-four" remind="这里是第四列">第四列</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td>言毕，眼闭</td>
+                  <td>遥想星空满目</td>
+                  <td>日升，起身</td>
+                  <td>淡看今日如故</td>
+                </tr>
+                <tr>
+                  <td>心欲近、心愈远</td>
+                  <td>近于咫尺犹如远在天边</td>
+                  <td>心欲静、心愈乱</td>
+                  <td>静如止水却似心乱如麻</td>
+                </tr>
+                <tr>
+                  <td>不思量、不自量</td>
+                  <td>寸尺量水水自流</td>
+                  <td>不思愁、不自愁</td>
+                  <td>握拳拟心心自愁</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>demo-two</h3>
+        <table width="100%" class="table nowrap-ellipsis" border="1" cellspacing="0" cellpadding="0" list-manager="demoTwo" >
+            <thead>
+                <tr>
+                    <th th-name="th-one" remind="这里是第一列">第一列</th>
+                    <th th-name="th-two" remind="这里是第二列" sorting>第二列</th>
+                    <th th-name="th-three" remind="这里是第三列" sorting>第三列</th>
+                    <th th-name="th-four" remind="这里是第四列" sorting>第四列</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td>依偎侧转含羞目</td>
+                  <td>冷言冷语冷嘲讽</td>
+                  <td>此彼相隔转身间</td>
+                  <td>夏日阴睛未及此</td>
+                </tr>
+                <tr>
+                  <td>木已成舟缘何生叶</td>
+                  <td>我若无意</td>
+                  <td>你亦无意</td>
+                  <td>心灰意冷何萌绿荫</td>
+                </tr>
+                <tr>
+                  <td>了去时光默如东逝水</td>
+                  <td>透望窗外风与叶相随</td>
+                  <td>帘起帘落昨夜露已逝</td>
+                  <td>阳光刺过时光不复返</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="module" id="create-example">	
+	<hr/>
+	<h2>生成示例</h2>
+	<hr/>
+    <div id="html-show">
+    </div>
+    <div id="script-show">
+    </div>
+</div>
+<div class="module" id="parameter-info">	
+	<hr/>
+	<h2>参数说明</h2>
+	<hr/>    
+    <table width="100%" class="table nowrap-ellipsis" border="1" cellspacing="0" cellpadding="0" list-manager="parameterInfo" >
+        <thead>
+            <tr>
+                <th width="150" th-name="th-one" remind="属性名称">名称</th>
+                <th width="150" th-name="th-two" remind="类型">类型</th>
+                <th width="150" th-name="th-three" remind="默认值">默认值</th>
+                <th th-name="th-four" remind="使用说明">使用说明</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table> 
+</div>
+
+<div class="module" id="function-info">	
+	<hr/>
+	<h2>方法说明</h2>
+	<hr/>
+    <table width="100%" class="table nowrap-ellipsis" border="1" cellspacing="0" cellpadding="0" list-manager="functionInfo">
+        <thead>
+            <tr>
+                <th width="150" th-name="th-one" remind="属性名称">名称</th>
+                <th width="400" th-name="th-two" remind="类型">使用说明</th>
+                <th th-name="th-three" remind="示例">示例</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table> 
+</div>
+
+
+<div class="module" id="version-info">	
+	<hr/>
+	<h2>版本信息</h2>
+	<hr/>
+    <table width="100%" class="table nowrap-ellipsis" border="1" cellspacing="0" cellpadding="0" list-manager="versionInfo">
+        <thead>
+            <tr>
+                <th width="150"></th>
+                <th width="100">日期</th>
+                <th>更新功能</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table> 
+</div>
+
+<div class="module" id="remind-list">	
+	<hr/>
+    <h2>注意事项</h2>
+	<hr/>
+   	<label>HTML:</label> 
+    <ul class="type-decimal" id="remind-html">
+    </ul>
+   	<label>JS:</label> 
+    <ul class="type-decimal" id="remind-js">
+    </ul>
+    <label>Other:</label>
+    <ul class="type-decimal" id="remind-other">    
+    </ul>
+</div>
+
+<div class="module" id="thank-list">
+	<hr/>
+	<h2>鸣谢</h2>
+	<hr/>
+    <label>感谢各位在插件开发中给予的反馈与建议:</label>
+    <ul class="inline-list">
+    </ul>
+</div>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="js/listManager.js"></script>
+<script type="text/javascript" src="../../js/module.js"></script>
+<script type="text/javascript" id="script-source">
+$(function(){
+	var lm = new listManager({		
+		element : '.nowrap-ellipsis'//DOM标识[在无冲突时，不暂议修改]
+		,animateTime	:300		//动画效果延时
+		,minNum:40					//宽度所允许的最小值
+		,supportSorting	: true		//是否支持排序
+		,disableCache	: false		//是否禁用本地缓存
+		,supportRemind	: true		//是否支持提示信息
+		,supportAdjust	: true		//是否支持宽度调整
+		,supportDrag	: true 		//是否支持拖拽换位 
+		,supportConfig	: true 		//是否支持配置列表功能[操作列是否可见]
+		,supportSetTop	: true		//是否支持表头置顶
+		,isRealTime		: true		//列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
+		,sortingCallback:{			//排序触发后的回调函数集合，该函数一般需指向搜索事件
+			demoOne: function(){
+				var tableWarp = $('table[list-manager="demoOne"]').parents('.table-warp').eq(0);
+				tableWarp.append('<div class="loading">请配置排序后的回调函数:sortingCallback</div>');
+				window.setTimeout(function(){
+					$('.loading', tableWarp).remove();
+				}, 1000);
+			}
+			,demoTwo: function(){
+				var tableWarp = $('table[list-manager="demoTwo"]').parents('.table-warp').eq(0);
+				tableWarp.append('<div class="loading">请配置排序后的回调函数:sortingCallback</div>');
+				window.setTimeout(function(){
+					$('.loading', tableWarp).remove();
+				}, 1000);	
+			}
+		}
+		,supportAjaxPage: true		//是否支持配置列表ajxa分页[多列表两种状态都有时，统一配置为true,禁用的列表pageJson参数为空即可]	
+		,isDevelopMode:true			//是否为开发模式，为true时将打印事件日志
+		,pageJson: {				//分页数据
+			demoOne:{
+				tPage: 10,				//总页数
+				cPage: 1,				//当前页	
+				pSize: 10,				//每页显示条数
+				tSize: 100				//总条数
+			},
+			demoTwo:{
+				tPage: 4,				//总页数
+				cPage: 1,				//当前页	
+				pSize: 20,				//每页显示条数
+				tSize: 80				//总条数
+			}
+		}
+		,pageCallback:{				//分页触发后的回调函数集合，该函数一般需指向搜索事件
+			demoOne: function(query){
+				var tableWarp = $('table[list-manager="demoOne"]').parents('.table-warp').eq(0);
+				tableWarp.append('<div class="loading">请配置分页后的回调函数:pageCallback</div>');
+				window.setTimeout(function(){
+					$('.loading', tableWarp).remove();
+				}, 1000);
+			}
+			,demoTwo: function(query){
+				var tableWarp = $('table[list-manager="demoTwo"]').parents('.table-warp').eq(0);
+				tableWarp.append('<div class="loading">请配置分页后的回调函数:pageCallback</div>');
+				window.setTimeout(function(){
+					$('.loading', tableWarp).remove();
+				}, 1000);
+			}
+		}
+	});
+	lm.init();
+})
+</script>
+
+<script type="text/javascript">
+	module.init('listManager');
+</script>
+</body>
+</html>
