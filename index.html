@@ -10,10 +10,16 @@
 <link rel="stylesheet" type="text/css" href="../../css/module.css"/>
 <link rel="stylesheet" type="text/css" href="../../lib/smartadmin/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/listManager.css"/>
-<title>listManager:列表页管理插件</title>
+<title>listManager-列表页管理插件</title>
 </head>
 
 <body>
+<div class="module" id="ui-show">
+	<hr/>
+	<h2>效果展示</h2>
+    <div class="gif-show">
+    </div>
+</div>
 <div class="module" id="realize-function">
 	<hr/>
 	<h2>实现功能</h2>
@@ -21,13 +27,13 @@
     <ul class="type-decimal">
     </ul>
 </div>
-<div class="module" id="ui-show">	
+<div class="module" id="demo-show">	
 	<hr/>
-	<h2>效果展示</h2>
+	<h2>demo演示</h2>
 	<hr/>
     <div id="html-source">
         <h3>demo-one</h3>
-        <table width="100%" class="table nowrap-ellipsis" border="1" cellspacing="0" cellpadding="0" list-manager="demoOne" >
+        <table width="100%" cellspacing="1" cellpadding="0" list-manager="demoOne" >
             <thead>
                 <tr>
                     <th th-name="th-one" remind="这里是第一列">第一列</th>
@@ -58,7 +64,7 @@
             </tbody>
         </table>
         <h3>demo-two</h3>
-        <table width="100%" class="table nowrap-ellipsis" border="1" cellspacing="0" cellpadding="0" list-manager="demoTwo" >
+        <table width="100%" cellspacing="1" cellpadding="0" list-manager="demoTwo" >
             <thead>
                 <tr>
                     <th th-name="th-one" remind="这里是第一列">第一列</th>
@@ -104,7 +110,7 @@
 	<hr/>
 	<h2>参数说明</h2>
 	<hr/>    
-    <table width="100%" class="table nowrap-ellipsis" border="1" cellspacing="0" cellpadding="0" list-manager="parameterInfo" >
+    <table width="100%" cellspacing="0" cellpadding="0" list-manager="parameterInfo" >
         <thead>
             <tr>
                 <th width="150" th-name="th-one" remind="属性名称">名称</th>
@@ -122,7 +128,7 @@
 	<hr/>
 	<h2>方法说明</h2>
 	<hr/>
-    <table width="100%" class="table nowrap-ellipsis" border="1" cellspacing="0" cellpadding="0" list-manager="functionInfo">
+    <table width="100%" cellspacing="0" cellpadding="0" list-manager="functionInfo">
         <thead>
             <tr>
                 <th width="150" th-name="th-one" remind="属性名称">名称</th>
@@ -140,10 +146,10 @@
 	<hr/>
 	<h2>版本信息</h2>
 	<hr/>
-    <table width="100%" class="table nowrap-ellipsis" border="1" cellspacing="0" cellpadding="0" list-manager="versionInfo">
+    <table width="100%" cellspacing="0" cellpadding="0" list-manager="versionInfo">
         <thead>
             <tr>
-                <th width="150"></th>
+                <th width="150">版本号</th>
                 <th width="100">日期</th>
                 <th>更新功能</th>
             </tr>
@@ -176,13 +182,26 @@
     <ul class="inline-list">
     </ul>
 </div>
+
+<div class="module" id="comments-area">
+	<hr/>
+	<h2>评论</h2>
+	<hr/>
+    <label>说点什么吧:</label>
+</div>
+
+
+
 <script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="listManagerConfig.js"></script>
 <script type="text/javascript" src="js/listManager.js"></script>
 <script type="text/javascript" src="../../js/module.js"></script>
 <script type="text/javascript" id="script-source">
-$(function(){
+
+module.init('listManager', function(){   //这行是模板管理文件，不用引用
 	var lm = new listManager({		
-		element : '.nowrap-ellipsis'//DOM标识[在无冲突时，不暂议修改]
+		isDevelopMode   : true		//是否为开发模式，为true时将打印事件日志
+		,basePath		: ''		//当前基本路径[用于加载资源文件]
 		,animateTime	:300		//动画效果延时
 		,minNum:40					//宽度所允许的最小值
 		,supportSorting	: true		//是否支持排序
@@ -210,7 +229,6 @@ $(function(){
 			}
 		}
 		,supportAjaxPage: true		//是否支持配置列表ajxa分页[多列表两种状态都有时，统一配置为true,禁用的列表pageJson参数为空即可]	
-		,isDevelopMode:true			//是否为开发模式，为true时将打印事件日志
 		,pageJson: {				//分页数据
 			demoOne:{
 				tPage: 10,				//总页数
@@ -246,8 +264,5 @@ $(function(){
 })
 </script>
 
-<script type="text/javascript">
-	module.init('listManager');
-</script>
 </body>
 </html>
