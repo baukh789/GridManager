@@ -1,8 +1,5 @@
 /* 列表页管理 */
 /*禁用文字选中*/
-body{
-	background:#fff;
-}
 .no-select-text{
 	user-select:none;
 	-moz-user-select:none;
@@ -15,32 +12,58 @@ body{
 .table-div{
 	position:relative;
 	overflow-x: auto;
-	padding-top:10px;
+	overflow-y: hidden;
 }
 /*table*/
 .table-warp table[list-manager]{
 	table-layout:fixed;
 	word-wrap:break-word;
 	text-align: center;
-	margin:0px;
+	margin:0px !important;
 }
 .table-warp table[list-manager] tr td{
 	white-space:nowrap;
 	overflow:hidden;
 	text-overflow:ellipsis;
-	}
+}
 .table-warp table[list-manager] th{
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	user-select: none;
 	cursor:default;
 }
+/* 提供的默认table样式 */
+table.list-manager-default{ 
+	background-color: #dad9c7;
+    font-size: 12px;
+    width: 100%;
+	border-collapse:separate;
+	border-spacing:1px;
+    font-size: 12px !important;
+    font-family: arial !important;
+}
+table.list-manager-default thead tr th{ 
+ 	background-color: #e6eeee;
+    border: 1px solid #fff;
+    font-size: 8pt;
+	text-align: center;
+}
+table.list-manager-default thead tr th:hover{
+ 	background-color: #8dbdd8;
+}
+table.list-manager-default tbody tr td{    
+	background-color: #fff;
+    color: #3d3d3d;
+    padding: 4px;
+    vertical-align: top;
+    text-align: left;
+}
 /*列表设置显示隐藏*/
 .table-warp .config-area{
 	display:block;
 	width:18px;
 	position:absolute;
-	top:0px;
+	top:-10px;
 	right:-8px;
 	margin-left:-18px;
 	padding-top:3px;
@@ -55,9 +78,11 @@ body{
 }
 .table-warp .config-area .config-action{
 	display:block;
-	width:16px;
-	height:16px;
-	background:url(../images/config.png) no-repeat;
+	width:17px;
+	height:17px;
+	overflow:hidden;
+	vertical-align:middle;
+	line-height:17px;
 }
 .table-warp .config-area:hover .config-action{
     -webkit-animation: rotationMedia 1s ease-in-out infinite;
@@ -135,10 +160,10 @@ body{
 	background:#09f;
 }
 /*表头提醒*/
-.table-warp table[list-manager] th .remind-action{	
+.table-warp table[list-manager] th .remind-action{
 	width:14px;
 	position:relative;
-	float:right;
+	float:left;
 	margin-right:6px;
 	cursor:help;
 	visibility:hidden;
@@ -150,8 +175,8 @@ body{
 	min-width:150px;
 	max-width:300px;
 	position:absolute;
-	top:0px;
-	right:100%;
+	top:80%;
+	left:80%;
 	border:1px solid #2b669a;
 	z-index:9;
 }
@@ -159,11 +184,11 @@ body{
 	display:block;
 	width:16px;
 	height:16px;
-	background:url(../images/help.png) no-repeat;
-	opacity:0.7;
+	font-size:16px;
+	color:#666;
 }
 .table-warp table[list-manager] th .remind-action:hover .ra-help{
-	opacity:1;
+	color:#2b669a;
 }
 .table-warp table[list-manager] th .remind-action .ra-area .ra-title{
 	display:block;
@@ -191,8 +216,9 @@ body{
 .table-warp .set-top{
 	display:none;
 	position:absolute;
-	left:0px;
+	left:1px;
 	top:0px;
+	z-index:99;
 }
 .table-warp .set-top .adjust-action{
 	display:none !important;
@@ -209,13 +235,33 @@ body{
 .table-warp table[list-manager] thead.scrolling{
 	visibility:hidden;
 }
+.table-warp .scroll-area{
+	position:absolute;
+	left:0px;
+	width:100%;
+	z-index:9;
+	overflow-x:auto;
+	overflow-y:hidden;
+}
+.table-warp .scroll-area .sa-inner{
+	height:20px;
+}
+/*th内的上级DIV*/
+.table-warp table[list-manager] th .th-warp{
+	width:100%;
+	height:100%;
+	position:relative;
+	padding:4px;
+}
 /*宽度调整*/
 .table-warp table[list-manager] th .adjust-action{
 	display:block;
 	width:4px;
-	height:auto;
+	height:100%;
+	position:absolute;
+	top:0px;
+	right:-2px;
 	cursor:col-resize;
-	float:right;
 	z-index:2;
 }
 .table-warp table[list-manager] .adjust-selected{
@@ -228,6 +274,7 @@ body{
 	display:block;
 	position:relative;
 	width:20px;
+	height:18px;
 	float:right;
 	cursor:default;
 	z-index:2;
@@ -238,29 +285,30 @@ body{
 .table-warp table[list-manager] .sorting-action.sortion-down{
 	content:"\f103";	
 }
-.table-warp table[list-manager] .sorting-action .sa-action{
+.table-warp table[list-manager] .sorting-action .sa-icon{
 	display:block;
-	width:16px;
 	height:10px;
+	font-size:18px;
+	line-height:10px;
 	position:absolute;
-	background:url(../images/sorting.png) no-repeat;
-	opacity:0.6;
+	color:#000;
 }
 .table-warp table[list-manager] .sorting-action .sa-up{
 	top:0px;
 	right:0px;
-	background-position:0px 0px;
 }
 .table-warp table[list-manager] .sorting-action .sa-down{
 	bottom:0px;
 	right:0px;
-	background-position:0px -16px;
-}
-.table-warp table[list-manager] .sorting-action .sa-action:hover{
-	opacity:1;
 }
 .table-warp table[list-manager] .sorting-action.sorting-up .sa-up{
 	opacity:1;
+}
+.table-warp table[list-manager] .sorting-action.sorting-up .sa-down{
+	opacity:0.1;
+}
+.table-warp table[list-manager] .sorting-action.sorting-down .sa-up{
+	opacity:0.1;
 }
 .table-warp table[list-manager] .sorting-action.sorting-down .sa-down{
 	opacity:1;
@@ -294,8 +342,8 @@ body{
 .table-warp .dreamland-div .dreamland-table{
 	table-layout:fixed;
 	width:100%;
-	margin:0px;
-	padding:0px;
+	margin:0px !important;
+	padding:0px !important;
 }
 .table-warp .dreamland-div .dreamland-table td{
 	white-space:nowrap;

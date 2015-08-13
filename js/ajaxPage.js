@@ -1,10 +1,8 @@
 /*
 	@@baukh20140813:分页功能开发
 */
-function ajaxPage(settings){
-	$.extend(this,settings)
-}
-ajaxPage.prototype = {	
+
+var ajaxPage = {	
 	/*
 		@初始化方法
 	*/
@@ -190,6 +188,23 @@ ajaxPage.prototype = {
 		//修改单页条数文字信息
 		pSizeInfo.html(tmpHtml);	
 		pSizeArea.show();
+	}
+	/*
+		@重置分页数据
+		$.pageJsonObj:分页数据格式:{list-manager:json}
+	*/
+	,resetPageJson: function(pageJsonObj){
+		var _this = this;
+		
+		var pageToolbar = $('.page-toolbar', this.tableWarp),	//分页工具条
+			pagination	= $('.pagination', pageToolbar);		//分页区域	
+		$.extend(_this.pageJson, pageJsonObj);
+		
+		//生成分页DOM节点
+		this.createPageDOM();
+		
+		//重置当前页显示条数
+		this.resetPSize(pageToolbar);
 	}
 	/*
 		@输出日志
