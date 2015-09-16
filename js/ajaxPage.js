@@ -1,55 +1,59 @@
 /*
-	@@baukh20140813:分页功能开发
+	author:baukh
+	@ajaxPage: listManager.js的附带分页功能
 */
-
-var ajaxPage = {	
+var ajaxPage = {
+	isDevelopMode : undefined
 	/*
 		@初始化方法
 	*/
-	init: function(settings){
-		this.pageJson 		= {}; 		//分页所需JSON数据
-		this.query 			= {}; 		//其它需要带入的参数，该参数会在分页触发后返回至searchAction方法
-		this.tableWarp 		= {}; 		//分页所在的列表容器
-		this.pageCallback	= {}; 		//分页触发后的回调函数，该函数一般需指向搜索事件
-		this.isDevelopMode 	= false; 	//是否为开发模式，为true时将打印事件日志
-		this.disableCache	= false;	//就否禁用缓存每页展示条数
-		$.extend(this, settings);
-		var pageToolbar = $('.page-toolbar', this.tableWarp),	//分页工具条
-			pagination	= $('.pagination', pageToolbar);		//分页区域	
-		if(pageToolbar.length == 0 || !this.pageJson || this.pageJson.length == 0){
-			this.outLog('分页初始化缺失必要参数，初始化失败');
-			pagination.html('');
-			return false;
-		}
-		if(this.pageJson.tSize == 0){
-			this.outLog('当前数据为空，停止初始化');
+	,initAjaxPage: function(arg){
+//		this.pageData 		= {}; 		//分页所需JSON数据
+//		this.query 			= {}; 		//其它需要带入的参数，该参数会在分页触发后返回至searchAction方法
+//		this.tableWarp 		= []; 		//分页所在的列表容器
+//		this.pageCallback	= {}; 		//分页触发后的回调函数，该函数一般需指向搜索事件
+//		this.isDevelopMode 	= false; 	//是否为开发模式，为true时将打印事件日志
+//		this.disableCache	= false;	//就否禁用缓存每页展示条数
+		
+//		$.extend(this, settings);
+		var _this = this;
+		_this.isDevelopMode = arg.isDevelopMode;
+		if(arg.pageData.tSize == 0){
+			_this.outLog('当前数据为空，停止初始化');
 			pageToolbar.hide();
 			return false;
 		}	
 		//生成分页DOM节点
-		this.createPageDOM();
-			
+		_this.createPageDOM( arg.tableDOM, arg.pageData );
+		//生成每页显示条数选择框
+		_this.createPageSizeDOM( arg.tableDOM, arg.sizeData );	
 		//绑定点击事件
-		this.bindClickEvent();	
+		_this.bindClickEvent( arg.tableDOM, arg.pageData );	
 		
 		//绑定设置显示条数切换事件
-		this.bindSetPageSizeEvent(pageToolbar);
+		_this.bindSetPageSizeEvent( arg.tableDOM, arg.pageData );
 		
 		//重置当前页显示条数
-		this.resetPSize(pageToolbar);
+		_this.resetPSize(arg.tableDOM, arg.pageData);
 		
+		var table 		= $(arg.tableDOM);
+			tableWarp 	= table.parents('table-warp').eq(0),
+			pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
 		pageToolbar.show();
 	}
 	/*
-		@生成分页DOM节点
+		@生成分页DOM节点据
+		$._tableDOM_: table的juqery实例化对象
+		$._pageData_:分页数据格式
 	*/
-	,createPageDOM:function(){
+	,createPageDOM:function( _tableDOM_, _pageData_){
 		var _this = this;
-		var pageToolbar = $('.page-toolbar', _this.tableWarp),	//分页工具条
-			pagination	= $('.pagination', pageToolbar),		//分页区域	
-			tName 		= $('table', _this.tableWarp).attr('list-manager'); //当前与分页同容器下的列表名称
-		var cPage = Number(_this.pageJson[tName].cPage),		//当前页
-			tPage = Number(_this.pageJson[tName].tPage),		//总页数
+		var table 		= $(_tableDOM_);
+			tableWarp 	= table.parents('.table-warp').eq(0),
+			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
+			pagination	= $('.pagination', pageToolbar);		//分页区域	
+		var cPage = Number(_pageData_.cPage),		//当前页
+			tPage = Number(_pageData_.tPage),		//总页数
 			tHtml = '',					//临时存储分页HTML片段
 			lHtml = '';					//临时存储末尾页码THML片段
 		//配置首页
@@ -122,89 +126,155 @@ var ajaxPage = {
 		pagination.html(tHtml);
 	}
 	/*
-		@绑定分页点击事件
+		@生成每页显示条数选择框据
+		$._tableDOM_: table的juqery实例化对象
+		$._sizeData_: 选择框自定义条数
 	*/
-	,bindClickEvent:function(pagination){
+	,createPageSizeDOM: function( _tableDOM_, _sizeData_){
+		var _this = this;
+		var table		= $(_tableDOM_),
+			tableWarp	= table.parents('.table-warp').eq(0),
+			pageToolbar = $('.page-toolbar', tableWarp),				//分页工具条
+			pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);	//分页区域	
+		//error
+		if( !_sizeData_ || !$.isArray(_sizeData_) ){
+			$.error('参数:[sizeData]配置错误');
+		}
+		
+		var _ajaxPageHtml = '';
+		$.each( _sizeData_, function( i, v ){				
+			_ajaxPageHtml += '<option value="'+ v +'">' + v + '</option>';
+		});
+		pSizeArea.html(_ajaxPageHtml);
+	}
+	/*
+		@绑定分页点击事件据
+		$._tableDOM_: table的juqery实例化对象
+		$._pageData_:分页数据格式
+	*/
+	,bindClickEvent:function( _tableDOM_, _pageData_){
 		var _this = this;		
-		var pageToolbar = $('.page-toolbar', _this.tableWarp),	//分页工具条
-			pagination	= $('.pagination', pageToolbar),		//分页区域	
-			tName 		= $('table', _this.tableWarp).attr('list-manager'); //当前与分页同容器下的列表名称
+		var table		= $(_tableDOM_),
+			tableWarp	= table.parents('.table-warp').eq(0),
+			pageToolbar = $('.page-toolbar', tableWarp),		//分页工具条
+			pagination	= $('.pagination', pageToolbar);		//分页区域	
+		
 		pageToolbar.off('click', 'li');
 		pageToolbar.on('click', 'li', function(){
-			var _page = $(this);
+			var _page 		= $(this),
+				_tableWarp 	= _page.parents('.table-warp').eq(0),
+				_table		= $('table[list-manager]', _tableWarp),
+				_listManager= _table.data( 'listManager' ),
+				_size 		= $('select[name="pSizeArea"]', _tableWarp);
+			
 			var cPage = _page.attr('cPage');	//分页页码
 			if(!cPage || !Number(cPage) || _page.hasClass('disabled')){
 				_this.outLog('指向页无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在');
 				return false;
 			}			
 			//替换被更改的值
-			_this.query.cPage = cPage;
-			_this.pageJson[tName].cPage = cPage;
-			_this.createPageDOM();
+			_listManager.pageData.cPage = cPage;
+			_this.createPageDOM(_table, _listManager.pageData);
+			_table.data( 'listManager' , _listManager );
+			var _pageQuery = {
+				cPage : cPage,
+				pSize : _size.val()
+			};
 			//调用回调函数
-			_this.pageCallback[tName](_this.query);
+			_listManager.pageCallback( _pageQuery ,_listManager.pageQuery );
 		});
 	}
 	/*
-		@绑定设置单页显示数切换事件
+		@绑定设置当前页显示数事件
+		$._tableDOM_: table的juqery实例化对象
+		$._pageData_:分页数据格式
 	*/
-	,bindSetPageSizeEvent:function(toolBar){
+	,bindSetPageSizeEvent:function( _tableDOM_, _pageData_){
 		var _this = this;
-		var pageToolbar = $('.page-toolbar', _this.tableWarp),	//分页工具条
-			sizeArea	= $('select[name=pSizeArea]', pageToolbar),	//切换条数区域	
-			tName 		= $('table', _this.tableWarp).attr('list-manager'); //当前与分页同容器下的列表名称
+		var table 		=  $(_tableDOM_),
+			tableWarp 	= table.parents('.table-warp').eq(0),
+			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
+			sizeArea	= $('select[name=pSizeArea]', pageToolbar);	//切换条数区域	
 		if(!sizeArea || sizeArea.length == 0){
 			_this.outLog('未找到单页显示数切换区域，停止该事件绑定');
 			return false;
 		}
 		sizeArea.unbind('change');
 		sizeArea.change(function(){
-			var _psa = $(this);
-			_this.query.pSize = _psa.val();
-			window.localStorage.setItem('pSize_'+ tName, _this.query.pSize);				
-			_this.query.cPage = 1;
-			_this.pageCallback[tName](_this.query);
+			var _size = $(this);
+			var _tableWarp  = _size.parents('.table-warp').eq(0),
+				_table		= $('table[list-manager]', _tableWarp),
+				_listManager= _table.data( 'listManager' ),
+				_tName 		= $('table', _tableWarp).attr('list-manager'); //当前与分页同容器下的列表名称
+			
+			_listManager.pageData.cPage = 1;
+			_listManager.pageData.pSize = _size.val();
+		//	_this.createPageDOM(_table, _listManager.pageData);
+			_table.data( 'listManager', _listManager);
+			
+			window.localStorage.setItem('pSize_'+ _tName, _listManager.pageData.pSize);
+			if(!_listManager.pageCallback || typeof(_listManager.pageCallback) != 'function'){
+				_this.outLog('参数pageCallback配置错误');
+				return;
+			}
+			var _pageQuery = {
+				pSize : _size.val(),
+				cPage : 1,
+			};
+			//重置当前页显示条数
+			_this.resetPSize( _table, _listManager.pageData );
+			_listManager.pageCallback( _pageQuery, _listManager.pageQuery );
+			
 		});
 	}
-	//重置当前页显示条数
-	,resetPSize: function(toolBar){
+	/*
+		@重置当前页显示条数据
+		$._tableDOM_: table的juqery实例化对象
+		$._pageData_:分页数据格式
+	*/
+	,resetPSize: function( _tableDOM_, _pageData_ ){
 		var _this = this;
-		var pSizeArea = $('select[name="pSizeArea"]', toolBar),
-			pSizeInfo = $('.dataTables_info', toolBar),
-			tName 	  = $('table', _this.tableWarp).attr('list-manager'); //当前与分页同容器下的列表名称
+		
+		var table 		=  $(_tableDOM_),
+			tableWarp 	= table.parents('.table-warp').eq(0),
+			toolBar   = $('.page-toolbar', tableWarp),
+			pSizeArea = $('select[name="pSizeArea"]', toolBar),
+			pSizeInfo = $('.dataTables_info', toolBar);
 		if(!pSizeArea || pSizeArea.length == 0){
 			_this.outLog('未找到条数切换区域，停止该事件绑定');
 			return false;
 		}
 		var tmpHtml = '此页显示 '
-					+ (_this.pageJson[tName].cPage == 1 ? 1 : (_this.pageJson[tName].cPage-1) * _this.pageJson[tName].pSize + 1)
+					+ (_pageData_.cPage == 1 ? 1 : (_pageData_.cPage-1) * _pageData_.pSize + 1)
 					+ '-'
-					+ _this.pageJson[tName].cPage * _this.pageJson[tName].pSize
+					+ _pageData_.cPage * _pageData_.pSize
 					+ ' 共'
-					+ _this.pageJson[tName].tSize
+					+ _pageData_.tSize
 					+ '条';
 		//根据返回值修正单页条数显示值		
-		pSizeArea.val(_this.pageJson[tName].pSize || 10); 
+		pSizeArea.val(_pageData_.pSize || 10); 
 		//修改单页条数文字信息
 		pSizeInfo.html(tmpHtml);	
 		pSizeArea.show();
 	}
 	/*
+		[对外公开方法]	
 		@重置分页数据
-		$.pageJsonObj:分页数据格式:{list-manager:json}
+		$._tableDOM_: table的juqery实例化对象
+		$._pageData_:分页数据格式
+		_pageData_ = {
+			tPage: 10,				//总页数
+			cPage: 1,				//当前页	
+			pSize: 20,				//每页显示条数
+			tSize: 100				//总条数
+		}
 	*/
-	,resetPageJson: function(pageJsonObj){
+	,resetPageJson: function( _tableDOM_, _pageData_ ){
 		var _this = this;
-		
-		var pageToolbar = $('.page-toolbar', this.tableWarp),	//分页工具条
-			pagination	= $('.pagination', pageToolbar);		//分页区域	
-		$.extend(_this.pageJson, pageJsonObj);
-		
 		//生成分页DOM节点
-		this.createPageDOM();
-		
+		_this.createPageDOM( _tableDOM_, _pageData_ );
 		//重置当前页显示条数
-		this.resetPSize(pageToolbar);
+		_this.resetPSize( _tableDOM_, _pageData_);
 	}
 	/*
 		@输出日志
