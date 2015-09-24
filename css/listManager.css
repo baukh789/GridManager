@@ -228,7 +228,7 @@ table.list-manager-default tbody tr:hover td{
 .table-warp .set-top{
 	display:none;
 	position:absolute;
-	left:1px;
+	left:0px;
 	top:0px;
 	z-index:99;
 }

@@ -8,14 +8,6 @@ var ajaxPage = {
 		@初始化方法
 	*/
 	,initAjaxPage: function(arg){
-//		this.pageData 		= {}; 		//分页所需JSON数据
-//		this.query 			= {}; 		//其它需要带入的参数，该参数会在分页触发后返回至searchAction方法
-//		this.tableWarp 		= []; 		//分页所在的列表容器
-//		this.pageCallback	= {}; 		//分页触发后的回调函数，该函数一般需指向搜索事件
-//		this.isDevelopMode 	= false; 	//是否为开发模式，为true时将打印事件日志
-//		this.disableCache	= false;	//就否禁用缓存每页展示条数
-		
-//		$.extend(this, settings);
 		var _this = this;
 		_this.isDevelopMode = arg.isDevelopMode;
 		if(arg.pageData.tSize == 0){
@@ -51,7 +43,7 @@ var ajaxPage = {
 		var table 		= $(_tableDOM_);
 			tableWarp 	= table.parents('.table-warp').eq(0),
 			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
-			pagination	= $('.pagination', pageToolbar);		//分页区域	
+			pagination	= $('.pagination', pageToolbar);		//分页区域
 		var cPage = Number(_pageData_.cPage),		//当前页
 			tPage = Number(_pageData_.tPage),		//总页数
 			tHtml = '',					//临时存储分页HTML片段
@@ -174,7 +166,7 @@ var ajaxPage = {
 			}			
 			//替换被更改的值
 			_listManager.pageData.cPage = cPage;
-			_this.createPageDOM(_table, _listManager.pageData);
+//			_this.createPageDOM(_table, _listManager.pageData);
 			_table.data( 'listManager' , _listManager );
 			var _pageQuery = {
 				cPage : cPage,
@@ -222,7 +214,7 @@ var ajaxPage = {
 				cPage : 1,
 			};
 			//重置当前页显示条数
-			_this.resetPSize( _table, _listManager.pageData );
+		//	_this.resetPSize( _table, _listManager.pageData );
 			_listManager.pageCallback( _pageQuery, _listManager.pageQuery );
 			
 		});
@@ -269,7 +261,7 @@ var ajaxPage = {
 			tSize: 100				//总条数
 		}
 	*/
-	,resetPageJson: function( _tableDOM_, _pageData_ ){
+	,resetPageData: function( _tableDOM_, _pageData_ ){
 		var _this = this;
 		//生成分页DOM节点
 		_this.createPageDOM( _tableDOM_, _pageData_ );
