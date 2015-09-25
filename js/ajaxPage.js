@@ -156,7 +156,7 @@ var ajaxPage = {
 			var _page 		= $(this),
 				_tableWarp 	= _page.parents('.table-warp').eq(0),
 				_table		= $('table[list-manager]', _tableWarp),
-				_listManager= _table.data( 'listManager' ),
+				_listManager= _table.listManager('getListManager'),
 				_size 		= $('select[name="pSizeArea"]', _tableWarp);
 			
 			var cPage = _page.attr('cPage');	//分页页码

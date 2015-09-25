@@ -269,11 +269,11 @@ table.list-manager-default tbody tr:hover td{
 /*宽度调整*/
 .table-warp table[list-manager] th .adjust-action{
 	display:block;
-	width:4px;
+	width:6px;
 	height:100%;
 	position:absolute;
 	top:0px;
-	right:-3px;
+	right:-4px;
 	cursor:col-resize;
 	z-index:2;
 }
@@ -304,6 +304,10 @@ table.list-manager-default tbody tr:hover td{
 	right:5px;
 	cursor:default;
 	z-index:2;
+	color:#444;
+}
+.table-warp table[list-manager] .sorting-action:hover{
+	color:#000;
 }
 .table-warp table[list-manager] .sorting-action.sortion-up{
 	content:"\f102";
@@ -317,7 +321,6 @@ table.list-manager-default tbody tr:hover td{
 	font-size:18px;
 	line-height:10px;
 	position:absolute;
-	color:#000;
 }
 .table-warp table[list-manager] .sorting-action .sa-up{
 	top:0px;
