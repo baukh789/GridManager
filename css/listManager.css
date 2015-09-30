@@ -8,6 +8,11 @@
 /*table配置中样式*/
 table[list-manager]{
 	visibility:hidden;
+	box-sizing:border-box !important;
+	border-collapse:separate !important;
+}
+table[list-manager] *{
+	box-sizing:border-box !important;
 }
 table[list-manager].listManager-ready{
 	visibility:visible;
@@ -21,6 +26,9 @@ table[list-manager].listManager-ready{
 	overflow-x: auto;
 	overflow-y: hidden;
 }
+.table-div.config-editing{  /*用于配置列表功能*/
+	overflow-x: hidden;
+}
 /*table*/
 .table-warp table[list-manager]{
 	table-layout:fixed;
@@ -33,11 +41,14 @@ table[list-manager].listManager-ready{
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
+.table-warp table[list-manager] th[th-visible="none"]{
+	display:none;
+}
+.table-warp table[list-manager] th[th-visible="visible"]{
+	display:table-cell;
+}
+
 .table-warp table[list-manager] th{
-	-moz-user-select: none;
-	-khtml-user-select: none;
-	user-select: none;
-	cursor:default;
 }
 /* 提供的默认table样式 */
 table.list-manager-default{ 
@@ -89,13 +100,17 @@ table.list-manager-default tbody tr:hover td{
 }
 .table-warp .config-area .config-action{
 	display:block;
-	width:17px;
-	height:17px;
+	width:18px;
+	height:18px;
 	overflow:hidden;
 	vertical-align:middle;
-	line-height:17px;
+	line-height:18px;
+	text-align:center;
 }
-.table-warp .config-area:hover .config-action{
+.table-warp .config-area .config-action i{
+	display:inline-block;
+}
+.table-warp .config-area:hover .config-action i{
     -webkit-animation: rotationMedia 1s ease-in-out infinite;
        -moz-animation: rotationMedia 1s ease-in-out infinite;
             animation: rotationMedia 1s ease-in-out infinite;
@@ -115,7 +130,7 @@ table.list-manager-default tbody tr:hover td{
 	border:1px solid #ddd;
 	border-radius:3px;
 }
-.table-warp .config-area .config-list li{
+.table-warp .config-area .config-list >li{
 	height:16px;
 	display:inline-block;
 	margin:0px 10px 0px 0px;
@@ -248,9 +263,10 @@ table.list-manager-default tbody tr:hover td{
 	visibility:hidden;
 }
 .table-warp .scroll-area{
+	width:100%;
+	height:18px;
 	position:absolute;
 	left:0px;
-	width:100%;
 	z-index:9;
 	overflow-x:auto;
 	overflow-y:hidden;

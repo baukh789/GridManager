@@ -1,6 +1,8 @@
 /*
 	author:baukh
 	@ajaxPage: listManager.js的附带分页功能
+	
+	//createPageDOM  resetPSize 存在加载时初始存在渲染两次问题
 */
 var ajaxPage = {
 	isDevelopMode : undefined
@@ -14,9 +16,9 @@ var ajaxPage = {
 			_this.outLog('当前数据为空，停止初始化');
 			pageToolbar.hide();
 			return false;
-		}	
+		}
 		//生成分页DOM节点
-		_this.createPageDOM( arg.tableDOM, arg.pageData );
+		_this.createPageDOM(arg.tableDOM , arg.pageData );
 		//生成每页显示条数选择框
 		_this.createPageSizeDOM( arg.tableDOM, arg.sizeData );	
 		//绑定点击事件
@@ -44,8 +46,8 @@ var ajaxPage = {
 			tableWarp 	= table.parents('.table-warp').eq(0),
 			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 			pagination	= $('.pagination', pageToolbar);		//分页区域
-		var cPage = Number(_pageData_.cPage),		//当前页
-			tPage = Number(_pageData_.tPage),		//总页数
+		var cPage = Number(_pageData_.cPage || 0),		//当前页
+			tPage = Number(_pageData_.tPage || 0),		//总页数
 			tHtml = '',					//临时存储分页HTML片段
 			lHtml = '';					//临时存储末尾页码THML片段
 		//配置首页
@@ -173,7 +175,7 @@ var ajaxPage = {
 				pSize : _size.val()
 			};
 			//调用回调函数
-			_listManager.pageCallback( _pageQuery ,_listManager.pageQuery );
+			_listManager.pageCallback( $.extend(_listManager.pageQuery, _pageQuery) );
 		});
 	}
 	/*
@@ -204,7 +206,8 @@ var ajaxPage = {
 		//	_this.createPageDOM(_table, _listManager.pageData);
 			_table.data( 'listManager', _listManager);
 			
-			window.localStorage.setItem('pSize_'+ _tName, _listManager.pageData.pSize);
+	//		window.localStorage.setItem('pSize_'+ _tName, _size.val());
+			_listManager.setToLocalStorage(_table);
 			if(!_listManager.pageCallback || typeof(_listManager.pageCallback) != 'function'){
 				_this.outLog('参数pageCallback配置错误');
 				return;
@@ -215,7 +218,7 @@ var ajaxPage = {
 			};
 			//重置当前页显示条数
 		//	_this.resetPSize( _table, _listManager.pageData );
-			_listManager.pageCallback( _pageQuery, _listManager.pageQuery );
+			_listManager.pageCallback($.extend(_listManager.pageQuery, _pageQuery));
 			
 		});
 	}
@@ -226,7 +229,6 @@ var ajaxPage = {
 	*/
 	,resetPSize: function( _tableDOM_, _pageData_ ){
 		var _this = this;
-		
 		var table 		=  $(_tableDOM_),
 			tableWarp 	= table.parents('.table-warp').eq(0),
 			toolBar   = $('.page-toolbar', tableWarp),
@@ -252,9 +254,9 @@ var ajaxPage = {
 	/*
 		[对外公开方法]	
 		@重置分页数据
-		$._tableDOM_: table的juqery实例化对象
+		$._tableDOM_: table
 		$._pageData_:分页数据格式
-		_pageData_ = {
+		ex:_pageData_ = {
 			tPage: 10,				//总页数
 			cPage: 1,				//当前页	
 			pSize: 20,				//每页显示条数

@@ -4320,19 +4320,19 @@ $(function(){
 				console.log( query );		
 				var _demoTwo = $('[list-manager="demoTwo"] tbody'),
 					_firstChild = _demoTwo.find('tr:first-child');
-					_demoOne.append(_firstChild);
+					_demoTwo.append(_firstChild);
 					_firstChild.fadeIn(500);
 			},demoThree: function(query){
 				console.log( query );		
 				var _demoThree = $('[list-manager="demoThree"] tbody'),
 					_firstChild = _demoThree.find('tr:first-child');
-					_demoOne.append(_firstChild);
+					_demoThree.append(_firstChild);
 					_firstChild.fadeIn(500);
 			},demoFour: function(query){
 				console.log( query );		
 				var _demoFour = $('[list-manager="demoFour"] tbody'),
 					_firstChild = _demoFour.find('tr:first-child');
-					_demoOne.append(_firstChild);
+					_demoFour.append(_firstChild);
 					_firstChild.fadeIn(500);
 			}
 		}
@@ -4367,24 +4367,48 @@ $(function(){
 					_firstChild = _demoOne.find('tr:first-child');
 					_demoOne.append(_firstChild);
 					_firstChild.fadeIn(500);
+				this.resetPageData(_demoOne, {
+					tPage: Math.ceil(100 / query.pSize),				//总页数
+					cPage: query.cPage,				//当前页	
+					pSize: query.pSize,				//每页显示条数
+					tSize: 100				//总条数
+				});
 			},demoTwo: function(query){
 				console.log( query );		
 				var _demoTwo = $('[list-manager="demoTwo"] tbody'),
 					_firstChild = _demoTwo.find('tr:first-child');
-					_demoOne.append(_firstChild);
+					_demoTwo.append(_firstChild);
 					_firstChild.fadeIn(500);
+				this.resetPageData(_demoTwo, {
+					tPage: Math.ceil(100 / query.pSize),				//总页数
+					cPage: query.cPage,				//当前页	
+					pSize: query.pSize,				//每页显示条数
+					tSize: 100				//总条数
+				});
 			},demoThree: function(query){
 				console.log( query );		
 				var _demoThree = $('[list-manager="demoThree"] tbody'),
 					_firstChild = _demoThree.find('tr:first-child');
-					_demoOne.append(_firstChild);
+					_demoThree.append(_firstChild);
 					_firstChild.fadeIn(500);
+				this.resetPageData(_demoThree, {
+					tPage: Math.ceil(100 / query.pSize),				//总页数
+					cPage: query.cPage,				//当前页	
+					pSize: query.pSize,				//每页显示条数
+					tSize: 100				//总条数
+				});
 			},demoFour: function(query){
 				console.log( query );		
 				var _demoFour = $('[list-manager="demoFour"] tbody'),
 					_firstChild = _demoFour.find('tr:first-child');
-					_demoOne.append(_firstChild);
+					_demoFour.append(_firstChild);
 					_firstChild.fadeIn(500);
+				this.resetPageData(_demoFour, {
+					tPage: Math.ceil(100 / query.pSize),				//总页数
+					cPage: query.cPage,				//当前页	
+					pSize: query.pSize,				//每页显示条数
+					tSize: 100				//总条数
+				});
 			}
 		}
 	});

@@ -164,7 +164,7 @@ $(function(){
 					_firstChild.fadeIn(500);
 				
 				//3、分页数据重新渲染				
-				this.resetPageJson(_demoOne, {
+				this.resetPageData(_demoOne, {
 					tPage: Math.ceil(100 / query.pSize),				//总页数
 					cPage: query.cPage,				//当前页	
 					pSize: query.pSize,				//每页显示条数
@@ -181,6 +181,10 @@ $(function(){
 				return query;
 			}
 		}
+	},function(query){
+		//模拟搜索数据返回操作
+		//query ex1: {pSize:20, cPage: ...};  ex2: {demoOne:{pSize:...},demoTwo:{pSize:...}}
+		$('[list-manager]').listManager('resetPageData', query);
 	});
 });
 //设置3秒更新一次列表数据，模拟动态刷新
