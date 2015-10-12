@@ -62,7 +62,7 @@ function listManager( settings ){
 	$.extend( this,settings );
 }
 listManager.prototype = {
-	version: '1.7.7'
+	version: '1.7.8'
 	/*
 		@当前浏览器是否为谷歌[内部参数]
 	*/
@@ -103,6 +103,7 @@ listManager.prototype = {
 			typeof( callback ) == 'function' ? callback() :'';
 		}
 		_this.loadIconfont();
+		_this.loadListManagerCss();
 	}
 	/*
 		@存储对外实例至JQuery
@@ -213,6 +214,27 @@ listManager.prototype = {
 		} );
 	}
 	/*
+		@加载所需CSS文件
+	*/
+	,loadListManagerCss: function(){
+		var _this = this;
+		if( $( 'link#listManager-css' ).length > 0 ){
+			return false;
+		}
+		var listManagerCss  = document.createElement( 'link' );
+		listManagerCss.id   = 'listManager-css';
+		listManagerCss.rel  = 'stylesheet';
+		listManagerCss.type = 'text/css';
+		listManagerCss.href = _this.basePath + 'css/listManager.css';
+		document.head.appendChild( listManagerCss );
+		listManagerCss.addEventListener( 'load', function( event ) {
+			_this.outLog( 'listManager-css load OK' );
+		} );
+		listManagerCss.addEventListener( 'error', function(){
+			_this.outLog( 'listManager-css load error' );
+		} );
+	}
+	/*
 		@加载AJAX分页
 	*/
 	,loadAjaxPage: function( cb ){
@@ -246,8 +268,8 @@ listManager.prototype = {
 		}
 		
 		//加载分页脚本
-		if( $( 'script#ajaxPage-js' ).length == 0 ){
-			$.getScript( _this.basePath + 'js/ajaxPage.js', function(){
+		if( $( 'script#ajaxPage-js' ).length == 0 ){			
+			$.getScript( _this.basePath + 'js/ajaxPage.js', function(ajaxPage){
 				this.id =  'ajaxPage-js';
 				if( loadCssOk ){
 					typeof( cb ) == 'function' ? cb() : '';
@@ -1529,7 +1551,7 @@ $.fn.listManager = function( _name_, _settings_, _callback_){
 		callback = arguments[2];
 	}
 	else{
-		$.error('listManager:参数异常');
+		console.log('listManager:参数异常');
 	}
 	
 	var lmObj;
@@ -1540,7 +1562,7 @@ $.fn.listManager = function( _name_, _settings_, _callback_){
 			lmObj.init( _this, callback );
 			lmObj.jQueryObj = _this;
 		}catch(e){
-			$.error('参数[init]异常:'+ e );
+			console.log('参数[init]异常:'+ e );
 		}
 		return;
 	}
@@ -1570,7 +1592,7 @@ $.fn.listManager = function( _name_, _settings_, _callback_){
 				//ex: $(table).listManager('getListManager')
 				//ex: $(tableList).listManager('resetPageData', {'demoOne':{pSize:1,...},'demoTwo':{pSize:1,...}})
 				}else{
-					results = lmObj[name]( v, settings[v.getAttribute('list-manager')] || settings);
+					results = lmObj[name]( v, settings ? settings[v.getAttribute('list-manager')] || settings || undefined : undefined);
 					results ? resultsList.push( results ) : '';		
 				}		
 			});
@@ -1580,7 +1602,7 @@ $.fn.listManager = function( _name_, _settings_, _callback_){
 				return results;
 			}
 		}catch(e){
-			$.error( '参数['+ name + ']异常:'+ e );
+			console.log( '参数['+ name + ']异常:'+ e );
 		}
 	}
 	

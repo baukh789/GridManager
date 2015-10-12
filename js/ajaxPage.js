@@ -165,7 +165,11 @@ var ajaxPage = {
 			if(!cPage || !Number(cPage) || _page.hasClass('disabled')){
 				_this.outLog('指向页无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在');
 				return false;
-			}			
+			}		
+			if(!_listManager.pageCallback || typeof(_listManager.pageCallback) != 'function'){
+				_this.outLog('参数pageCallback配置错误');
+				return false;
+			}	
 			//替换被更改的值
 			_listManager.pageData.cPage = cPage;
 //			_this.createPageDOM(_table, _listManager.pageData);
@@ -200,7 +204,6 @@ var ajaxPage = {
 				_table		= $('table[list-manager]', _tableWarp),
 				_listManager= _table.data( 'listManager' ),
 				_tName 		= $('table', _tableWarp).attr('list-manager'); //当前与分页同容器下的列表名称
-			
 			_listManager.pageData.cPage = 1;
 			_listManager.pageData.pSize = _size.val();
 		//	_this.createPageDOM(_table, _listManager.pageData);
@@ -210,7 +213,7 @@ var ajaxPage = {
 			_listManager.setToLocalStorage(_table);
 			if(!_listManager.pageCallback || typeof(_listManager.pageCallback) != 'function'){
 				_this.outLog('参数pageCallback配置错误');
-				return;
+				return false;
 			}
 			var _pageQuery = {
 				pSize : _size.val(),
