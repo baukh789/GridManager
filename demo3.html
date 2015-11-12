@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="css/base.css">
+<title>listManager:在特定容器中使用的吸顶效果 [如dialog]</title>
+<style>
+html, body{
+	overflow-x:hidden;
+}
+h2{
+	font-size:22px;
+	padding:10px 30px;
+	color:#333;
+}
+p{
+	font-size:14px;
+	padding:10px 30px;
+	color:#333;
+	text-indent:2em;
+}
+hr{    
+	margin-top: 18px;
+    margin-bottom: 18px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+.dialog-demo{
+	width:70%;
+	height:300px;
+	overflow-x:hidden;
+	overflow-y:auto;
+	margin:20px auto;
+	padding:20px;
+}
+</style>
+</head>
+
+<body>
+<h2>listManager:在特定容器中使用的吸顶效果 [如dialog]</h2>
+<p>存在.json文件，谷歌需要放到环境中效果才能展现</p>
+<hr/>
+	<div class="dialog-demo">
+    <table width="100%" cellspacing="1" cellpadding="0" list-manager="demoOne">
+        <thead>
+            <tr>
+                <th th-name="th-one" remind="这里是第一列" sorting="up">第一列我就是第一列，就这么长，任性</th>
+                <th th-name="th-two" remind="这里是第二列" sorting="down">第二列</th>
+                <th th-name="th-three" remind="这里是第三列" sorting>第三列</th>
+                <th th-name="th-four" remind="这里是第四列">第四列</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+            <tr>
+              <td>1言毕，眼闭</td>
+              <td>遥想星空满目</td>
+              <td>日升，起身</td>
+              <td>淡看今日如故</td>
+            </tr>
+            <tr>
+              <td>心欲近、心愈远</td>
+              <td>近于咫尺犹如远在天边</td>
+              <td>心欲静、心愈乱</td>
+              <td>静如止水却似心乱如麻</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="listManagerConfig.js"></script>
+<script type="text/javascript" src="js/listManager.js"></script>
+<script type="text/javascript" >
+$(function(){
+	var table = $('[list-manager]');
+	table.listManager({
+		autoLoadCss:true,
+		scrollDOM: '.dialog-demo',
+		supportSetTop: true,
+		supportRemind: true,
+		sortingCallback:function( query ){		
+			console.log( query );		
+			var _demoOne = $('[list-manager="demoOne"] tbody'),
+				_firstChild = _demoOne.find('tr:first-child');
+				_demoOne.append(_firstChild);
+				_firstChild.fadeIn(500);
+			
+		}
+		,supportAjaxPage: true		//是否支持配置列表ajxa分页[多列表两种状态都有时，统一配置为true,禁用的列表pageJson参数为空即可]
+		,sizeData : [10,20,30,40,50,60]	
+		,pageData: {				//分页数据
+			cPage: 3,				//当前页	
+			pSize: 10				//每页显示条数[可用来配置每页显示数]
+		}
+		,pageQuery:{
+			pageList : [1,2,3,4,5,6]
+		}
+		,pageCallback:function(query){
+			console.log(query);
+			//在该callback中 对列表数进行重新请求 并对列表及分页进行数据重填
+			
+			//1、请求后端数据
+			// $.ajax() ....
+							
+			//2、列表数据重填
+			var _tbody = $('tbody', table),
+				_firstChild = _tbody.find('tr:first-child');
+			_tbody.append(_firstChild);
+			_firstChild.fadeIn(500);
+			
+			//3、分页数据重新渲染				
+			this.resetPageData(table, {
+				tPage: Math.ceil(100 / query.pSize),				//总页数
+				cPage: query.cPage,				//当前页	
+				pSize: query.pSize,				//每页显示条数
+				tSize: 100				//总条数
+			});
+			return query;
+		}
+	},function(query){
+		var pageData = {
+			//总页数
+			tPage: Math.ceil(100 / query.pSize),	
+			//当前页				
+			cPage: query.cPage,
+			//每页显示条数			
+			pSize: query.pSize,
+			tSize: 100				//总条数
+		}
+		//模拟搜索数据返回操作
+		//query ex1: {pSize:20, cPage: ...};  ex2: {demoOne:{pSize:...},demoTwo:{pSize:...}}
+		table.listManager('resetPageData', pageData);
+	});
+	//模拟增加查询条件
+	setTimeout(function(){
+		table.listManager('setQuery',{'userName':'baukh','sex':'男'})
+	},1000)
+});
+</script>
+</body>
+</html>

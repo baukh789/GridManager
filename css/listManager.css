@@ -1,4 +1,5 @@
 /* 列表页管理 */
+@import url(../iconfont/iconfont.css);
 /*禁用文字选中*/
 .no-select-text{
 	user-select:none;
@@ -193,25 +194,32 @@ table.list-manager-default tbody tr:hover td{
 	top:4px;
 	left:4px;
 	cursor:help;
-	visibility:hidden;
-}
-.table-warp table[list-manager] th:hover .remind-action{
-	visibility:visible;
 }
 .table-warp table[list-manager] th .remind-action .ra-area{
+	display:none;
+	visibility:hidden;
 	min-width:150px;
 	max-width:300px;
 	position:absolute;
 	top:80%;
 	left:80%;
 	border:1px solid #2b669a;
-	z-index:9;
+	z-index:9999;
 }
+.table-warp table[list-manager] th:hover .remind-action .ra-area{
+	visibility:visible;
+}
+/*
+.table-warp table[list-manager] th .remind-action:hover .ra-area{
+	display:block;
+}
+*/
 .table-warp table[list-manager] th .remind-action .ra-help{
 	display:block;
 	width:16px;
 	height:16px;
 	font-size:16px;
+	line-height: 18px;
 	color:#666;
 }
 .table-warp table[list-manager] th .remind-action:hover .ra-help{
@@ -235,7 +243,7 @@ table.list-manager-default tbody tr:hover td{
 	background:#fff;
 	font-size:12px;
 	font-weight:500;
-	text-indent:2em;
+/*	text-indent:2em;*/
 	text-align:left;
 	color:#666;
 }
@@ -250,9 +258,11 @@ table.list-manager-default tbody tr:hover td{
 .table-warp .set-top .adjust-action{
 	display:none !important;
 }
+/**
 .table-warp .set-top .remind-action{
-	display:none !important;
+	display:none;
 }
+**/
 .table-warp .set-top .sorting-action{
 	display:none !important;
 }
@@ -451,4 +461,75 @@ table.list-manager-default tbody tr:hover td{
 }
 .hidden{
 	display:none;
+}
+
+
+/* 
+	@baukh20150504:分页默认样式
+*/
+
+.table-warp .page-toolbar{
+	width:100%;
+	padding-top:10px;
+}
+.table-warp .page-toolbar .change-size{
+	display:inline-block;
+	width:40%;
+	vertical-align:middle;
+}
+.table-warp .page-toolbar .ajax-page{
+	display:inline-block;
+	width:60%;
+	text-align:right;
+	vertical-align:middle;
+}
+.table-warp .page-toolbar .ajax-page .pagination{
+	display: inline-block;
+	margin:0px; 
+}
+.table-warp .page-toolbar .ajax-page .pagination li{
+	display:inline;
+}
+.pagination > li:first-child > a, .pagination > li:first-child > span {
+    border-bottom-left-radius: 2px;
+    border-top-left-radius: 2px;
+    margin-left: 0;
+}
+.pagination li.disabled > a, .pagination li.disabled > a:focus, 
+.pagination li.disabled > a:hover, .pagination li.disabled > span, 
+.pagination li.disabled > span:focus, .pagination li.disabled > span:hover {
+    background-color: #fff;
+    border-color: #ddd;
+    color: #999;
+    cursor: not-allowed;
+}
+.pagination li.active > a, .pagination li.active > a:focus, 
+.pagination li.active > a:hover, .pagination li.active > span, 
+.pagination li.active > span:focus, .pagination li.active > span:hover {
+    background-color: #3276b1;
+    border-color: #3276b1;
+    color: #fff;
+    cursor: default;
+    z-index: 2;
+}
+.pagination li > a:hover, .pagination li > span, 
+.pagination li > span:focus, .pagination li > span:hover {
+    background-color: #eee;
+    border-color: #ddd;
+    color: #214e75;
+}
+.pagination > li > a, .pagination > li > span {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    color: #3276b1;
+    float: left;
+    line-height: 1.42857;
+    margin-left: -1px;
+    padding: 6px 12px;
+    position: relative;
+    text-decoration: none;
+}
+.table-warp .page-toolbar select[name="pSizeArea"]{
+	padding:7px;
+	margin-left:10px;
 }

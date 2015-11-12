@@ -15,8 +15,7 @@ var listManagerConfig = {
 	,scrollDOM		: window				//表头置顶所对应的容器[jquery选择器或jquery对象]	
 	,animateTime    : 300					//动画效果时长
 	,disableCache	: false					//是否禁用本地缓存	
-	,dataName 		: 'listManager'			//使用jquery.data方法时的key值,如有冲突可进行调整
-	
+	,autoLoadCss	: true					//是否自动加载CSS文件
 	//排序 sort 
 	,supportSorting	: false 				//排序：是否支持排序功能
 	,isCombSorting	: false					//是否为组合排序[只有在支持排序的情况下生效
@@ -33,8 +32,6 @@ var listManagerConfig = {
 	//分页 ajaxPag
 	,supportAjaxPage: false					//是否支持配置列表ajxa分页	
 	,sizeData 		: [10,20,30,50,100]		//用于配置列表每页展示条数选择框
-	,pageData 		: {						//分页数据
-	}
 	,pageQuery 		: {						//其它需要带入的参数，该参数会在分页触发后返回至pageCallback方法
 	}
 	,pageCallback 	: {						//分页触发后的回调函数集合，该函数一般需指向搜索事件
