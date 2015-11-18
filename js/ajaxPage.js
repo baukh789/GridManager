@@ -4,8 +4,13 @@
 	
 	//createPageDOM  resetPSize 存在加载时初始存在渲染两次问题
 */
+<<<<<<< HEAD
 var ajaxPage = {
 	isDevelopMode : undefined
+=======
+
+var ajaxPage = {	
+>>>>>>> c7210c2a1de97314f9d9c4644cc8c33ac5d8408d
 	/*
 		@初始化方法
 	*/
@@ -255,6 +260,7 @@ var ajaxPage = {
 		pSizeArea.show();
 	}
 	/*
+<<<<<<< HEAD
 		[对外公开方法]	
 		@重置分页数据
 		$._tableDOM_: table
@@ -272,6 +278,23 @@ var ajaxPage = {
 		_this.createPageDOM( _tableDOM_, _pageData_ );
 		//重置当前页显示条数
 		_this.resetPSize( _tableDOM_, _pageData_);
+=======
+		@重置分页数据
+		$.pageJsonObj:分页数据格式:{list-manager:json}
+	*/
+	,resetPageJson: function(pageJsonObj){
+		var _this = this;
+		
+		var pageToolbar = $('.page-toolbar', this.tableWarp),	//分页工具条
+			pagination	= $('.pagination', pageToolbar);		//分页区域	
+		$.extend(_this.pageJson, pageJsonObj);
+		
+		//生成分页DOM节点
+		this.createPageDOM();
+		
+		//重置当前页显示条数
+		this.resetPSize(pageToolbar);
+>>>>>>> c7210c2a1de97314f9d9c4644cc8c33ac5d8408d
 	}
 	/*
 		@输出日志
