@@ -203,8 +203,15 @@ table.list-manager-default tbody tr:hover td{
 	position:absolute;
 	top:80%;
 	left:80%;
-	border:1px solid #2b669a;
+	padding:12px;
+	border:3px solid #000;
 	z-index:9999;
+	border-radius:5px;
+	box-shadow: 3px 3px 10px 0px #222;
+	background-color:#000;
+	opacity:0.8;
+	line-height: 14px;
+	color:#fff;
 }
 .table-warp table[list-manager] th:hover .remind-action .ra-area{
 	visibility:visible;
@@ -227,25 +234,21 @@ table.list-manager-default tbody tr:hover td{
 }
 .table-warp table[list-manager] th .remind-action .ra-area .ra-title{
 	display:block;
-	border-bottom:1px solid #2b669a;
-	background:#428bca;
-	text-align:center;
-	padding:3px 10px;
-	font-size:12px;
+	text-align:left;
 	white-space:nowrap;
 	overflow:hidden;
 	text-overflow:ellipsis;
-	color:#fff;
+	margin-bottom:4px;
+	font-weight:600;
+	font-size: 1.1em;
+	color:#FF6;
 }
 .table-warp table[list-manager] th .remind-action .ra-area .ra-con{
 	display:block;
-	padding:5px 10px;
-	background:#fff;
-	font-size:12px;
 	font-weight:500;
 /*	text-indent:2em;*/
 	text-align:left;
-	color:#666;
+	font-size: 0.9em;
 }
 /*表头置顶*/
 .table-warp .set-top{
@@ -277,7 +280,7 @@ table.list-manager-default tbody tr:hover td{
 	height:18px;
 	position:absolute;
 	left:0px;
-	z-index:9;
+	z-index:9999;
 	overflow-x:auto;
 	overflow-y:hidden;
 }

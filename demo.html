@@ -36,61 +36,13 @@ hr{
     <table width="100%" cellspacing="1" cellpadding="0" list-manager="demoOne">
         <thead>
             <tr>
-                <th th-name="th-one" remind="这里是第一列" sorting="up">第一列我就是第一列，就这么长，任性</th>
-                <th th-name="th-two" remind="这里是第二列" sorting="down">第二列</th>
-                <th th-name="th-three" remind="这里是第三列" sorting>第三列</th>
-                <th th-name="th-four" remind="这里是第四列">第四列</th>
+                <th th-name="th-one" remind="the one" sorting="up">One</th>
+                <th th-name="th-two" remind="the tow" sorting>Tow</th>
+                <th th-name="th-three" remind="the three" sorting>Three</th>
+                <th th-name="th-four" remind="the four">Four</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-            <tr>
-              <td>心欲近、心愈远</td>
-              <td>近于咫尺犹如远在天边</td>
-              <td>心欲静、心愈乱</td>
-              <td>静如止水却似心乱如麻</td>
-            </tr>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-            <tr>
-              <td>心欲近、心愈远</td>
-              <td>近于咫尺犹如远在天边</td>
-              <td>心欲静、心愈乱</td>
-              <td>静如止水却似心乱如麻</td>
-            </tr>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-            <tr>
-              <td>心欲近、心愈远</td>
-              <td>近于咫尺犹如远在天边</td>
-              <td>心欲静、心愈乱</td>
-              <td>静如止水却似心乱如麻</td>
-            </tr>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-            <tr>
-              <td>心欲近、心愈远</td>
-              <td>近于咫尺犹如远在天边</td>
-              <td>心欲静、心愈乱</td>
-              <td>静如止水却似心乱如麻</td>
-            </tr>
             <tr>
               <td>1言毕，眼闭</td>
               <td>遥想星空满目</td>
@@ -181,9 +133,12 @@ $(function(){
 		,supportSorting: true
 		,supportDrag:true
 		,supportAjaxPage:true
+		,isCombSorting: false
 		,pageSize:30
+		,query: {ex: '用户自定义的查询参数需要是key:value格式'}
 		,pageCallback:function(query){
 			//在该callback中 对列表数进行重新请求 并对列表及分页进行数据重填
+            console.log('------------分页回调参数------------')
             console.log(query)
             //1、请求后端数据
             // $.ajax() ....
@@ -199,12 +154,14 @@ $(function(){
             return query;
 		}
 		,sortingCallback: function(query){
+			console.log('------------排序回调参数------------')
 			console.log(query)
 		}
 	},function(query){
-		console.log(query['demoOne'])
+        console.log('------------init方法回调query参数------------')
+		console.log(query)
 		//ajax get page data		
-		table.listManager('resetPageData', getPageData(query['demoOne'].pSize, 1000, 1));
+		table.listManager('resetPageData', getPageData(query.pSize, 1000, 1));
 	});
 	
 	//计算分页数据

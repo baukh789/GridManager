@@ -184,6 +184,7 @@ $(function(){
 		isDevelopMode:true,
 		disableCache:false,
 		supportSorting: true,
+		isCombSorting: true,
 		sortingCallback:{
 			demoOne: function( query ){
 				console.log( query );		
@@ -219,6 +220,17 @@ $(function(){
 		,pageQuery:{
 			pageList : [1,2,3,4,5,6]
 		}
+		,query: {
+			demoOne: {
+				ex: '列表一的用户自定义查询参数'
+			},
+			demoTwo: {
+				ex: '列表二的用户自定义查询参数'
+			},
+			demoThree:{
+				ex: '列表三的用户自定义查询参数'
+			}
+		}
 		,pageCallback:{
 			demoOne: function( query ){
 				console.log( query );
@@ -236,6 +248,7 @@ $(function(){
 		}
 	},function(query){
 		console.log(query)
+		//模拟查询返回的分页数据
 		var pageData = {
 			demoOne		: getPageData(query['demoOne'].pSize, 100, 1),
 			demoTwo		: getPageData(query['demoTwo'].pSize, 1000, 3),

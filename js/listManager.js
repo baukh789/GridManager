@@ -1,27 +1,16 @@
 /*	
 	@baukh:listManager 列表管理插件	
 	当前版本：v1.8
-	
-	调整宽度与吸顶需要优化：在吸顶触发时，宽度会存在小数点位数不等的情况[完成]
-	解决多个单页使用到相同list-manager[完成]	
-	分页数据在跳转页面时会被记录[完成]
-	pageCallback参数无法配置[完成](增加query参数)
-	pageQuery更改为query[完成]
-	自动添加th-name[完成]
-	初始进入或显示隐藏列操作时 由th过宽引发的th换行及相互遮盖BUG[完成]
-	拖拽超出表格区域功能优化[完成]
-	scrollDOM参数 在dialog表头吸顶优化[完成]
-	吸顶后开放表头提醒功能[完成]
-	basePath重要度弱化 当autoLoadCss为false时，可以不再对basePath进行配置[完成]
-	修复在禁用拖拽换位功能情况下，宽度调整无法获取准确宽度BUG[完成]
-	增加$.fn.listManager.defaults 定义全局参数[完成]
-	pageData参数不再做为配置项对外提供[完成]
-	新增参数pageSize：配置当前页显示条数, 如果disableCache=false且缓存中存在pageSize数据,那么该参数将会失效[完成]
-	优化分页
-	下个版本计划：	
+		
+	开发计划：	
 	增加全选、反选功能
 	增加删除列功能 提供删除操作回调函数
 	增加自动增加序号功能
+	增加字段可编辑功能
+	表头支持多语言
+	支持快捷键 选择列
+	当前页的搜索 匹配高亮
+	表头题醒样式优化
 */ 
 'use strict';	
 function listManager( settings ){
@@ -103,8 +92,7 @@ listManager.prototype = {
 		if( _this.supportAjaxPage){
 			_this.configPageForCache(listDOM);
 		}
-		var query = $.extend({}, _this.pageData);	
-		
+		var query = $.extend(true, {}, _this.query, _this.pageData);
 		//增加渲染中标注
 		listDOM.addClass('listManager-loading');
 		//加载所需资源
@@ -750,10 +738,10 @@ listManager.prototype = {
 		//绑定排序事件
 		$( '.sorting-action', _thList ).unbind( 'mouseup' );
 		$( '.sorting-action', _thList ).bind( 'mouseup', function(){
-			var _sortQuery = [];	//排序数据存储器
+			var _sortQuery = {};	//排序数据存储器
 			_action 		= $( this );
-			_th 	= _action.parents( 'th' ).eq( 0 );
-			_table 	= _th.parents( 'table' ).eq( 0 );
+			_th 	= _action.closest('th');
+			_table 	= _th.closest( 'table' );
 			_tName  = _table.attr( 'list-manager' );
 			_thName = _th.attr( 'th-name' );
 			var	_listManager = _table.listManager('getListManager');
@@ -761,43 +749,33 @@ listManager.prototype = {
 				_this.outLog( '排序必要的参数丢失' );
 				return false;
 			}
-			//根据组合排序配置项判定：是否清除原排序样式			
+			//根据组合排序配置项判定：是否清除原排序及排序样式			
 			if( !_this.isCombSorting ){
 				$.each( $( '.sorting-action', _table ), function( i, v ){
 					if( v != _action.get(0) ){   //_action.get(0) 当前事件源的DOM
-						$( v ).removeClass( 'sorting-up sorting-down' );
+						$(v).removeClass( 'sorting-up sorting-down' );
+						$(v).closest('th').attr('sorting', '');
 					}
 				} );
-			}else{	
-				$.each( $( 'th[th-name][sorting]', _table ), function( i, v ){
-					if( v != _action.get(0) ){   //_action.get(0) 当前事件源的DOM
-					_sortQuery.push({
-						type	:  v.getAttribute('sorting'),
-						name	: _thName
-					});
-					}
-				} );			
-			}			
+			}
 			//排序操作：升序
 			if( _action.hasClass( 'sorting-down' ) ){
 				_action.addClass( 'sorting-up' );
 				_action.removeClass( 'sorting-down' );
 				_th.attr('sorting', _this.sortUpText);
-				_sortQuery.push({
-					type	:  _this.sortUpText,
-					name	: _thName
-				});
 			}
 			//排序操作：降序
 			else {
 				_action.addClass( 'sorting-down' );
 				_action.removeClass( 'sorting-up' );
 				_th.attr('sorting', _this.sortDownText);
-				_sortQuery.push({					
-					type	:  _this.sortDownText,
-					name	: _thName
-				});
 			}
+			//生成排序数据
+			$.each( $( 'th[th-name][sorting]', _table ), function( i, v ){
+				if( v != _action.get(0) ){   //_action.get(0) 当前事件源的DOM
+					_sortQuery[v.getAttribute('th-name')] = v.getAttribute('sorting');
+				}
+			});	
 			_listManager.sortingCallback( _sortQuery );
 		} );
 		
@@ -1436,7 +1414,8 @@ listManager.prototype = {
 			_cache,		//缓存对应
 			_table,		//单一的table
 			_tName,		//list-manager
-			_pageCache; //分页相关缓存
+			_pageCache, //分页相关缓存
+			_query;		//init 后的callback中的query参数
 		$.each( element, function( i, v ){
 			_data = _this.getLocalStorage( v );
 			_tName = v.getAttribute('list-manager');
@@ -1444,31 +1423,32 @@ listManager.prototype = {
 				return;
 			}
 			_cache = _data.cache;
-			_this.pageData[_tName] = {};
+			//验证是否存在每页显示条数缓存数据
 			if(!_cache || !_cache.page){
-				_this.pageData[_tName].pSize = _this.pageSize[_tName] ? _this.pageSize[_tName] : _this.pageSize;
-				return;
+				_pageCache =  {
+					pSize: _this.pageSize[_tName] ? _this.pageSize[_tName] : _this.pageSize
+				};
 			}
 			else{
 				_pageCache = _cache.page;
-				_this.pageData[_tName].pSize = _pageCache.pSize;
 			}
-			/*
-			if( _this.pageSize[_tName] ){
-				_this.pageSize[_tName] = _pageCache.pSize;
-			}else{
-				_this.pageSize = _pageCache.pSize;
+			//验证当前分页采用的是简易模式还是标准模式
+			//验证条件为是否存在与当前对应的pageCallback函数
+			//if 标准模式
+			if(typeof(_this.pageCallback[_tName]) == 'function'){ 
+				_this.pageData[_tName] = {
+					pSize : _pageCache.pSize,
+					cPage : 1
+				};
+			//	_this.pageData[_tName].pSize = _pageCache.pSize;
+				
+			//else 简易模式
+			}else{  
+				_this.pageData = {
+					pSize : _pageCache.pSize,
+					cPage : 1
+				};		
 			}
-			*/
-			//存储分页数据至 实例对象
-			/*
-			if( _this.pageData[_tName] ){
-				_this.pageData[_tName].pSize =  _pageCache.pSize;
-			}else{
-				*/
-				
-				
-			//}
 		});
 	}
 	/*
@@ -1906,6 +1886,7 @@ listManager.prototype = {
 		var table 		= $(element),
 			tableWarp 	= table.parents('.table-warp').eq(0),
 			pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
+		$.extend(_this.pageData, _pageData_); //存储pageData信息
 		pageToolbar.show();
 	}
 	/*
