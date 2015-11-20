@@ -1,7 +1,10 @@
 /*	
-	@baukh:listManager 列表管理插件	
-	当前版本：v1.8
-		
+	列表管理插件
+	@baukh:listManager 
+	E-mail:lovejavascript@vip.qq.com
+	交流群： 452781895
+	当前版本：v1.9
+	
 	开发计划：	
 	增加全选、反选功能
 	增加删除列功能 提供删除操作回调函数
@@ -54,7 +57,7 @@ function listManager( settings ){
 	$.extend( this, settings );
 }
 listManager.prototype = {
-	version: '1.8'
+	version: '1.9'
 	/*
 		@当前浏览器是否为谷歌[内部参数]
 	*/
