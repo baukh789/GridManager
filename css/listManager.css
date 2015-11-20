@@ -1,5 +1,29 @@
 /* 列表页管理 */
-@import url(../iconfont/iconfont.css);
+
+/*引入所需font-icon*/
+@font-face {font-family: "iconfont";
+	src: url('../fonts/iconfont.eot'); /* IE9*/
+	src: url('../fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+	url('../fonts/iconfont.woff') format('woff'), /* chrome、firefox */
+	url('../fonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+	url('../fonts/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+.iconfont {
+	font-family:"iconfont" !important;
+	font-size:16px;
+	font-style:normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-font-smoothing: grayscale;
+	font-smoothing: grayscale;
+	-webkit-text-stroke-width: 0.2px;
+	-moz-text-stroke-width: 0.2px;
+	text-stroke-width: 0.2px;
+}
+.icon-set:before { content: "\e633"; }
+.icon-help:before { content: "\e6db"; }
+.icon-up:before { content: "\e7d3"; }
+.icon-down:before { content: "\e63a"; }
+
 /*禁用文字选中*/
 .no-select-text{
 	user-select:none;
