@@ -1,10 +1,7 @@
 /*	
-	列表管理插件
-	@baukh:listManager 
-	E-mail:lovejavascript@vip.qq.com
-	交流群： 452781895
-	当前版本：v1.9
-	
+	@baukh:listManager 列表管理插件	
+	当前版本：v1.8
+		
 	开发计划：	
 	增加全选、反选功能
 	增加删除列功能 提供删除操作回调函数
@@ -57,7 +54,7 @@ function listManager( settings ){
 	$.extend( this, settings );
 }
 listManager.prototype = {
-	version: '1.9'
+	version: '1.8'
 	/*
 		@当前浏览器是否为谷歌[内部参数]
 	*/
@@ -2012,7 +2009,7 @@ $.fn.listManager = function( _name_, _settings_, _callback_){
 //		try{
 			$.each(_this, function( i, v ){ 
 				//parents('table')  用于  resetTd  单行tr进行操作时
-				lmObj = $(v).data('listManager') || $(v).parents('table').data('listManager');
+				lmObj = $(v).data('listManager') || $(v).closest('table').data('listManager');
 				//name type = array
 				if( $.isArray(name) ){
 					$.each(name, function( i2, v2 ){						

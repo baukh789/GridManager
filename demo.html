@@ -36,9 +36,9 @@ hr{
     <table width="100%" cellspacing="1" cellpadding="0" list-manager="demoOne">
         <thead>
             <tr>
-                <th th-name="th-one" remind="the one" sorting="up">One</th>
-                <th th-name="th-two" remind="the tow" sorting>Tow</th>
-                <th th-name="th-three" remind="the three" sorting>Three</th>
+                <th th-name="th-one" remind="the one" sorting="up" width="200px">One</th>
+                <th th-name="th-two" remind="the tow" sorting  width="200px">Tow</th>
+                <th th-name="th-three" remind="the three" sorting width="300px">Three</th>
                 <th th-name="th-four" remind="the four">Four</th>
             </tr>
         </thead>
@@ -130,6 +130,7 @@ $(function(){
 	}
 	table.listManager({
 		supportRemind: true
+		,disableCache:true
 		,supportSorting: true
 		,supportDrag:true
 		,supportAjaxPage:true
@@ -142,7 +143,6 @@ $(function(){
             console.log(query)
             //1、请求后端数据
             // $.ajax() ....
-                   
             //2、列表数据重填
             var _demoFive = $('[list-manager="demoFive"] tbody'),
             _firstChild = _demoFive.find('tr:first-child');
