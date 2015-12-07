@@ -128,7 +128,7 @@ listManager.prototype = {
 				//列表存储数据
 				sizeData		:  $.isArray(_this.sizeData) ? _this.sizeData : _this.sizeData[_tName],
 				pageData		: _this.pageData[_tName] ? _this.pageData[_tName] : _this.pageData,
-				query		: _this.query[_tName] ? _this.query[_tName] : _this.query,
+				query			: _this.query[_tName] ? _this.query[_tName] : _this.query,
 				sortingCallback	: typeof(_this.sortingCallback) == 'function' ? _this.sortingCallback : _this.sortingCallback[_tName],
 				pageCallback	: typeof(_this.pageCallback) == 'function' ? _this.pageCallback : _this.pageCallback[_tName]					
 			}
@@ -639,9 +639,12 @@ listManager.prototype = {
 			//当前th文本所占宽度大于设置的宽度 
 			//需要在上一个each执行完后才可以获取到准确的值
 			$.each(_visibleTh, function(i, v){
-				var _realWidthForThText = _this.getTextWidth(v);
-				if($(v).width() < _realWidthForThText){
+				var _realWidthForThText = _this.getTextWidth(v),
+					_thWidth = $(v).width();
+				if(_thWidth < _realWidthForThText){
 					$(v).width(_realWidthForThText);
+				}else{
+					$(v).width(_thWidth);
 				}
 			});
 			_this.setToLocalStorage( _table );	//缓存信息
@@ -968,7 +971,8 @@ listManager.prototype = {
 				_thWarp			= $( '.th-warp', _th ),						//th下所有内容的外围容器
 				_dragAction		= $('.drag-action', _thWarp),				//th文本在渲染后所在的容器
 		//		_textDreamland	= $('.text-dreamland', _tableWarp),			//文本镜象 用于处理实时获取文本长度	
-				_allTh 			= _tr.find( 'th' ), 						//事件源同层级下的所有th
+				_allTh 			= _tr.find( 'th[th-visible!=none]' ),		//事件源同层级下的所有th
+				_nextTh			= _allTh.eq( _th.index() + 1 ),				//事件源下一个可视th
 				_last 			= _allTh.eq( _allTh.length - 1 ), 			//事件源同层级倒数第一个th
 				_lastButOne 	= _allTh.eq( _allTh.length - 2 ), 			//事件源同层级倒数第二个th
 				_td 			= _table.find( 'tbody' )
@@ -994,8 +998,7 @@ listManager.prototype = {
 			//绑定鼠标拖动事件
 			var _X = event.clientX, //记录鼠标落下的横向坐标
 				_w,
-				_w2,
-				_nextTh;
+				_w2;
 			/*
 			var _thPaddingLeft = _thWarp.css('padding-left').split('px')[0],
 				_thPaddingRight = _thWarp.css('padding-right').split('px')[0],
@@ -1007,7 +1010,8 @@ listManager.prototype = {
 									+ (_remindAction.length == 1 ? _remindAction.width() : 20 )
 									+ (_sortingAction.length == 1 ? _sortingAction.width() : 20);
 			*/
-			var _realWidthForThText = _this.getTextWidth( _th.index() == _lastButOne.index() ? _last : _th);
+			//baukh20151203:_th.index() == _lastButOne.index() ? _last : _th  修正为 _th
+			var _realWidthForThText = _this.getTextWidth(_th);
 			_table.unbind( 'mousemove' );
 			_table.bind( 'mousemove',function( e ){			
 				_w = e.clientX - 
@@ -1025,7 +1029,6 @@ listManager.prototype = {
 				}
 				//列表总宽度小于或等于容器宽度，且当前列宽度大于将要更改的宽度
 				if( _table.get( 0 ).offsetWidth == _tableDiv.width() && _th.width() > _w ){
-					_nextTh = _table.find( 'th' ).eq( _th.index() + 1 );		
 					_nextTh.width(Math.ceil( _nextTh.width() + _th.width() - _w ))
 				}
 				_th.width(Math.ceil( _w ));
@@ -1115,6 +1118,7 @@ listManager.prototype = {
 		if(_this.scrollDOM != window){
 			$(_this.scrollDOM).css('padding','0px');
 		}
+
 		//绑定滚动条事件  
 		//$._isWindowResize_:是否为window.resize事件调用
 		$( _this.scrollDOM ).unbind( 'scroll' );
@@ -1221,17 +1225,17 @@ listManager.prototype = {
 				}			
 				//配置表头镜像
 				//当前表未插入吸顶区域 或 事件触发事件为window.resize
+				
+				//配置吸顶区的宽度
 				if( _setTopHead.length == 0 || _isWindowResize_){
 					_setTopHead.length == 0 ? _table.append( _thead.clone( false ).addClass( 'set-top' ) ) : '';
 					_setTopHead = $( '.set-top', _table );
-					_setTopHead.css( {						
+					_setTopHead.css({						
 						width : _thead.width() 
 							  + Number(_thead.css('border-left-width').split('px')[0] || 0)
 							  + Number(_thead.css('border-right-width').split('px')[0] || 0)
 						,left: _table.css('border-left-width')
-						
-						//width: _thead.get(0).offsetWidth
-					} );
+					});
 					//$( v ).width( _thList.get( i ).offsetWidth )  获取值只能精确到整数
 					//$( v ).width( _thList.eq( i ).width() ) 取不到宽
 					//调整吸顶表头下每一个th的宽度[存在性能问题，后期需优化]
@@ -1247,7 +1251,6 @@ listManager.prototype = {
 						$(v).css('width', _thList.get(i).offsetWidth);
 						*/
 					} );
-					
 				}
 				//当前吸引thead 没有背景时 添加默认背景
 				if( !_setTopHead.css( 'background' ) ||
