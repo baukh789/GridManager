@@ -1,7 +1,8 @@
 /* 列表页管理 */
 
 /*引入所需font-icon*/
-@font-face {font-family: "iconfont";
+@font-face {
+	font-family: "iconfont";
 	src: url('../fonts/iconfont.eot'); /* IE9*/
 	src: url('../fonts/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
 	url('../fonts/iconfont.woff') format('woff'), /* chrome、firefox */
@@ -116,7 +117,7 @@ table.list-manager-default tbody tr:hover td{
 	padding-top:3px;
 	cursor:pointer;
 	line-height:18px;
-	z-index:9;
+	z-index:9999;
 	text-align:center;
 	visibility:hidden;
 }
@@ -213,7 +214,7 @@ table.list-manager-default tbody tr:hover td{
 /*表头提醒*/
 .table-warp table[list-manager] th .remind-action{
 	width:16px;
-/*	height:100%;*/
+	height:16px;
 	position:absolute;
 	top:4px;
 	left:4px;
@@ -221,7 +222,6 @@ table.list-manager-default tbody tr:hover td{
 }
 .table-warp table[list-manager] th .remind-action .ra-area{
 	display:none;
-	visibility:hidden;
 	min-width:150px;
 	max-width:300px;
 	position:absolute;
@@ -237,8 +237,13 @@ table.list-manager-default tbody tr:hover td{
 	line-height: 14px;
 	color:#fff;
 }
-.table-warp table[list-manager] th:hover .remind-action .ra-area{
+.table-warp table[list-manager] .set-top th .remind-action .ra-area{
+	visibility:hidden;
+	display:none;
+}
+.table-warp table[list-manager] .set-top th .remind-action:hover .ra-area{
 	visibility:visible;
+	display:block !important;
 }
 /*
 .table-warp table[list-manager] th .remind-action:hover .ra-area{
@@ -300,10 +305,8 @@ table.list-manager-default tbody tr:hover td{
 	visibility:hidden;
 }
 .table-warp .scroll-area{
-	width:100%;
 	height:18px;
-	position:absolute;
-	left:0px;
+	margin-top: -18px;
 	z-index:9999;
 	overflow-x:auto;
 	overflow-y:hidden;

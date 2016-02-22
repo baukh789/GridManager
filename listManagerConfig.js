@@ -36,5 +36,6 @@ var listManagerConfig = {
 	}
 	,pageCallback 	: {						//分页触发后的回调函数集合，该函数一般需指向搜索事件
 	}
-	,pageCssFile 	: ''						//分页样式文件路径[用户自定义分页样式]
+	,pageCssFile 	: ''						//分页样式文件路径[用户自定义分页样式]	
+	,i18n:'zh-cn'					//使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
 }

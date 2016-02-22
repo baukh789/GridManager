@@ -130,13 +130,13 @@ $(function(){
 	}
 	table.listManager({
 		supportRemind: true
-		,disableCache:true
+		,disableCache:false
 		,supportSorting: true
 		,supportDrag:true
 		,supportAjaxPage:true
 		,isCombSorting: false
 		,pageSize:30
-		,query: {ex: '用户自定义的查询参数需要是key:value格式'}
+		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
 		,pageCallback:function(query){
 			//在该callback中 对列表数进行重新请求 并对列表及分页进行数据重填
             console.log('------------分页回调参数------------')
@@ -160,7 +160,10 @@ $(function(){
 	},function(query){
         console.log('------------init方法回调query参数------------')
 		console.log(query)
-		//ajax get page data		
+		//ajax get page data
+		console.log('========================================================================')	
+		table.listManager('resetTd',false)	
+		console.log('========================================================================')	
 		table.listManager('resetPageData', getPageData(query.pSize, 1000, 1));
 	});
 	
