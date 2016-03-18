@@ -1,13 +1,24 @@
 /*	
+	http://www.lovejavascript.com/#!plugIn/listManager/index.html
 	@baukh:listManager 列表管理插件	
-	当前版本：v1.8.2
-		
+	当前版本：v1.8.3
+	目标：稳定当前即有功能，推出可适应大多数环境的版本
+	1、验证、优化已有功能；
+	2、进行集成测试
+	3、修复已知BUG
+	4、新增参数：textConfig【向网站内增加参数时，应该把所有的可配置项进行说明】
+	5、优化了拖拽时，如td存在高度导致的拖拽镜像高度不匹配问题
+	6、新增参数topValue
+	7、增加本地缓存key的复杂度，防止同域不同界面下存在相同list-manager且列数相等的情况出现
+	bindClickEvent 需要替换为 bindPageJumpEvent 分页跳转方法
+
+	本地存储机制存在BUG！！
+
 	开发计划：	
 	增加全选、反选功能
 	增加删除列功能 提供删除操作回调函数
 	增加自动增加序号功能
 	增加字段可编辑功能
-	表头支持国际化  [对分页、配置中心实施了国际化，表头文本建意用户自主进行国际化]
 	支持快捷键 选择列
 	当前页的搜索 匹配高亮
 	弹出框状态下的吸顶，需要将分页信息一直展现
@@ -29,13 +40,14 @@ function listManager( settings ){
 	this.supportConfig		= true;						//是否支持配置列表功能[操作列是否可见]
 	this.supportSetTop  	= true;						//是否支持表头置顶
 	this.scrollDOM			= window;					//表头置顶所对应的容器[jquery选择器或jquery对象]
+	this.topValue		  	= 0;						//特殊情况下才进行设置，在有悬浮物遮挡住表头置顶区域时进行使用，配置值为遮挡的高度
 	this.animateTime    	= 300;						//动画效果时长
 	this.disableCache		= false;					//是否禁用本地缓存
 	this.autoLoadCss		= false;					//是否自动加载CSS文件
 	//排序 sort 
 	this.supportSorting		= false; 					//排序：是否支持排序功能
 	this.isCombSorting		= false;					//是否为组合排序[只有在支持排序的情况下生效
-	this.sortData 			= {};						//存储排序数据
+	this.sortData 			= {};						//存储排序数据[不对外公开参数]
 	this.sortUpText			= 'up';						//排序：升序标识[该标识将会传至数据接口]
 	this.sortDownText		= 'down';					//排序：降序标识[该标识将会传至数据接口]
 	this.sortingCallback	= {};						//排序触发后的回调函数集合，该函数一般需指向搜索事件
@@ -44,14 +56,13 @@ function listManager( settings ){
 	this.supportAjaxPage	= false;					//是否支持配置列表ajxa分页
 	this.sizeData 			= [10,20,30,50,100]; 		//用于配置列表每页展示条数选择框
 	this.pageSize			= 20;						//每页显示条数，如果使用缓存且存在缓存数据，那么该值将失效
-	this.pageData 			= {};						//存储分页数据
+	this.pageData 			= {};						//存储分页数据[不对外公开参数]
 	this.query 				= {};						//其它需要带入的参数，该参数会在分页触发后返回至pageCallback方法
 	this.pageCallback 		= {};						//分页触发后的回调函数集合，该函数一般需指向搜索事件
 	this.pageCssFile 		= '';						//分页样式文件路径[用户自定义分页样式]
 
 	//国际化
 	this.i18n	 			= 'zh-cn';					//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
-
 	//用于支持全局属性配置  于v1.8 中将listManagerConfig弱化且不再建议使用。
 	if( typeof( listManagerConfig ) == 'object' ){
 		$.extend( this,listManagerConfig );
@@ -59,7 +70,7 @@ function listManager( settings ){
 	$.extend( this, settings );
 }
 listManager.prototype = {
-	version: '1.8.2'
+	version: '1.8.3'
 	/*
 		@当前浏览器是否为谷歌[内部参数]
 	*/
@@ -106,7 +117,17 @@ listManager.prototype = {
 		listDOM.addClass('listManager-loading');
 		//加载所需资源
 		_this.loadListManagerFile(function(){
-			_this.initTable( listDOM );
+			_this.initTable( listDOM );			
+			window.setTimeout(function(){
+				//如果初始获取缓存失败，则在mousedown时，首先存储一次数据
+				var cacheErrorTable = $('[list-manager-cache]');
+				if(cacheErrorTable && cacheErrorTable.length > 0 ){
+					$.each(cacheErrorTable, function(i, v){
+						_this.setToLocalStorage( v, true );
+						$(v).removeAttr( 'list-manager-cache' );
+					});
+				}
+			},1000);
 			typeof( callback ) == 'function' ? callback(query) :'';	
 		});
 		return _this.getListManager(jQueryObj);
@@ -369,8 +390,11 @@ listManager.prototype = {
 		//AJAX分页HTML
 		if( _this.supportAjaxPage ){
 			var	_ajaxPageHtml= '<div class="page-toolbar">'
-						 	 + '<div class="change-size"><span class="dataTables_info"></span><select name="pSizeArea">'		
-						 	 + '</select></div>'
+							 + '<div class="dataTables_info"></div>'
+						 	 + '<div class="change-size"><select name="pSizeArea"></select></div>'
+							 + '<div class="goto-page">'+ _this.i18nText("goto-first-text") 
+							 + '<input type="text" class="gp-input"/>'+ _this.i18nText("goto-last-text") 
+							 + '<span class="gp-action">确定</span></div>'
 						  	 + '<div class="ajax-page"><ul class="pagination"></ul></div>'
 						  	 + '</div>';	
 		}	
@@ -587,10 +611,10 @@ listManager.prototype = {
 		$( '.config-list li', tableWarp ).unbind( 'click' );
 		$( '.config-list li', tableWarp ).bind( 'click', function(){
 			var _only = $( this ),		//单个的设置项
-				_configArea 	= _only.parents( '.config-area' ).eq( 0 ),			//事件源所在的区域
+				_configArea 	= _only.closest( '.config-area' ),					//事件源所在的区域
 				_thName 		= _only.attr( 'th-name' ),							//单个设置项的thName
 				_checkbox 		= _only.find( 'input[type="checkbox"]' ),			//事件下的checkbox
-				_tableWarp  	= _only.parents( '.table-warp' ).eq( 0 ), 			//所在的大容器
+				_tableWarp  	= _only.closest( '.table-warp' ), 					//所在的大容器
 				_tableDiv	  	= $('.table-div', _tableWarp), 						//所在的table-div
 				_table	 		= $( '[list-manager]', _tableWarp ),				//所对应的table					
 				_th				= $( 'thead th[th-name="'+_thName +'"]', _table ), 	//所对应的th
@@ -598,9 +622,8 @@ listManager.prototype = {
 			if( _only.hasClass( 'no-click' ) ){
 				return false;
 			}
-			_only.parents( '.config-list' ).eq( 0 ).find( '.no-click' ).removeClass( 'no-click' );
+			_only.closest( '.config-list' ).find( '.no-click' ).removeClass( 'no-click' );
 			var isVisible = !_checkbox.get( 0 ).checked;
-			
 			//设置与当前td同列的td是否可见
 			_tableDiv.addClass('config-editing')
 			_this.setAreVisible( _th, isVisible, false, function(){	
@@ -693,8 +716,8 @@ listManager.prototype = {
 		var fadeTime = _isInit_ ? 0 : _this.animateTime;
 		$.each( _thList_, function( i, v ){
 			_th = $( v );
-			_table = _th.parents( 'table' ).eq( 0 );
-			_tableWarp = _table.parents( '.table-warp' ).eq( 0 );
+			_table = _th.closest( 'table' );
+			_tableWarp = _table.closest( '.table-warp' );
 			_trList = $( 'tbody tr', _table );
 			_checkLi = $( '.config-area li[th-name="'+ _th.attr( 'th-name' ) +'"]', _tableWarp );
 			_checkbox = _checkLi.find( 'input[type="checkbox"]' );
@@ -845,7 +868,7 @@ listManager.prototype = {
 		var SIV_td;			//用于处理时实刷新造成的列表错乱
 		dragAction.unbind( 'mousedown' );	
 		dragAction.bind( 'mousedown',function(){
-			_th 			= $( this ).parents( 'th' ).eq( 0 ),		//事件源所在的th
+			_th 			= $( this ).closest( 'th' ),				//事件源所在的th
 			_prevTh			= undefined,								//事件源的上一个th
 			_nextTh			= undefined,								//事件源的下一个th
 			_prevTd			= undefined,								//事件源对应的上一组td
@@ -887,15 +910,20 @@ listManager.prototype = {
 			var tmpHtml = '<table class="dreamland-table '+ _table.attr( 'class' ) +'">'				
 						+ '<thead>'
 						+ '<tr>'
-						+ '<th style="height:'+_th.height()+'px">'
+					//	+ '<th style="height:'+_th.height()+'px">'
+						+ '<th style="height:'+_th.get(0).offsetHeight+'px">'
 						+ _th.find( '.drag-action' ).get( 0 ).outerHTML
 						+ '</th>'
 						+ '</tr>'
 						+ '</thead>'
 						+ '<tbody>';
-			//tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题			
-			$.each( _td, function( i,v ){
-				tmpHtml += $( v ).parents( 'tr' ).clone().html( v.outerHTML ).get( 0 ).outerHTML;
+			//tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
+			var _cloneTr,_cloneTd;
+			$.each( _td, function( i, v){
+				_cloneTd = v.cloneNode(true);
+				_cloneTd.style.height = v.offsetHeight + 'px';
+				_cloneTr = $( v ).closest( 'tr' ).clone();
+				tmpHtml += _cloneTr.html( _cloneTd.outerHTML ).get( 0 ).outerHTML;
 			} );
 			tmpHtml += '</tbody>'
 					+ '</table>';
@@ -1036,11 +1064,6 @@ listManager.prototype = {
 			//增加宽度调整中样式
 			_th.addClass( 'adjust-selected' );
 			_td.addClass( 'adjust-selected' );
-			//如果初始获取缓存失败，则在mousedown时，首先存储一次数据
-			if( _table.attr( 'cacheInitError' ) ){
-				_this.setToLocalStorage( _table, true );
-				_table.removeAttr( 'cacheInitError' );
-			}
 			//绑定鼠标拖动事件
 			var _X = event.clientX, //记录鼠标落下的横向坐标
 				_w,
@@ -1316,7 +1339,7 @@ listManager.prototype = {
 						_thead.addClass( 'scrolling' );
 					}
 					_setTopHead.css( {
-						top		: _scrollDOMTop  - _tDIVTop,
+						top		: _scrollDOMTop  - _tDIVTop + _this.topValue,
 						bottom	: 'auto'
 					} );
 					_setTopHead.show();
@@ -1372,24 +1395,23 @@ listManager.prototype = {
 			_this.outLog( 'setToLocalStorage:无效的list-manager' );
 			return false;
 		}
-		var _cache = new Object(),
-			_cacheString = '',
-			_pageCache = new Object(),
+		var _cache 		= {},
+			_cacheString= '',
+			_pageCache 	= {},
 			_thCache	= new Array(),
-			_thData = new Object();
+			_thData 	= {};
 		var thList = $( 'thead[class!="set-top"] th', _table );
 		if( !thList || thList.length == 0 ){
 			_this.outLog( 'setToLocalStorage:无效的thList,请检查是否正确配置table,thead,th' );
 			return false;
 		}
-		
-		//key 由唯一标识list-manager + 表列数 [用于规避同页面下存在list-manager相同的表格]
-		var _key = _tableListManager + '-' + thList.length;
-		
+				
+		//key 由pathcname + hash + 唯一标识list-manager + 表列数 [用于规避同页面下存在list-manager相同的表格]
+		var _key = window.location.pathname +  window.location.hash + '-' +  _tableListManager + '-' + thList.length;
 		var $v;
 		$.each( thList, function( i, v ){
 			$v = $( v );
-			_thData = new Object();
+			_thData = {};
 			_thData.th_name = v.getAttribute( 'th-name' );
 			if( _this.supportDrag ){
 				_thData.th_index = $v.index();
@@ -1445,14 +1467,14 @@ listManager.prototype = {
 			return false;
 		}
 		var thList = $( 'thead[class!="set-top"] th', _table );
-		var _key = _tableListManager + '-' + thList.length;
+		var _key = window.location.pathname +  window.location.hash + '-'+ _tableListManager + '-' + thList.length;
 		
-		var _data = new Object(),
+		var _data = {},
 			_array = new Array(),
 			_localStorage = window.localStorage.getItem( _key );
-		 //如无数据，增加属性标识：cacheInitError
+		//如无数据，增加属性标识：list-manager-cache
 		if( !_localStorage ){
-			_table.attr( 'cacheInitError','error' );
+			_table.attr( 'list-manager-cache','error' );
 			return false;
 		}
 	//	_array = _localStorage.split( '__' );
@@ -1543,9 +1565,8 @@ listManager.prototype = {
 			_cache = _data.cache;
 			_thCache=_cache.th;
 			//验证：缓存数据与当前列表是否匹配
-			if(!_thCache || _thCache.length != _table.find( 'thead th' ).length ){
-				_this.outLog( 'configTheadForCache:缓存数据与当前列表不匹配，停止使用该缓存' );
-				_this.cleanTableCache(_table);
+			if(!_thCache || _thCache.length != $( 'thead th', _table ).length ){
+				_this.cleanTableCache(_table, '缓存数据与当前列表不匹配');
 				return;
 			}
 			//验证：缓存数据与当前列表项是否匹配
@@ -1555,7 +1576,7 @@ listManager.prototype = {
 				_thJson = v2;
 				_th = $( 'th[th-name='+ _thJson.th_name +']', _table );
 				if(_th.length == 0 || _thNameTmpList.indexOf(_thJson.th_name) != -1){
-					_this.cleanTableCache(_table);
+					_this.cleanTableCache(_table, '缓存数据与当前列表不匹配');
 					_dataAvailable = false;
 					return false;
 				}
@@ -1687,18 +1708,19 @@ listManager.prototype = {
 		if(locationVersion && locationVersion == _this.version){
 			return;
 		}
-		_this.cleanTableCache( element );
+		_this.cleanTableCache( element, '插件版本已更新' );
 	}
 	/*
 		@清除列表缓存
 		$.element: table[jquery对象]
+		$.cleanText: 清除缓存的原因
 	*/
-	,cleanTableCache: function( element ){
+	,cleanTableCache: function( element, cleanText ){
 		var _this = this;
 		$.each(element, function(i, v){
 			window.localStorage.removeItem( v.getAttribute('list-manager') );
 			window.localStorage.removeItem( v.getAttribute('list-manager') + '-' + $('th', v).length);
-			console.log('%c'+v.getAttribute('list-manager') + '清除缓存成功', 'color:red;');
+			console.log('%c'+v.getAttribute('list-manager') + '清除缓存成功,原因：'+ cleanText, 'color:red;');
 		});
 		window.localStorage.setItem('listManagerVersion', _this.version );
 	}
@@ -1717,9 +1739,10 @@ listManager.prototype = {
 		//生成分页DOM节点
 	//	_this.createPageDOM(element, pageData);
 		//生成每页显示条数选择框
-		_this.createPageSizeDOM(element, sizeData);	
-		//绑定点击事件
-		_this.bindClickEvent(element);	
+		_this.createPageSizeDOM(element, sizeData);
+		
+		//绑定页面跳转事件
+		_this.bindPageJumpEvent(element);	
 		
 		//绑定设置显示条数切换事件
 		_this.bindSetPageSizeEvent(element);
@@ -1745,21 +1768,18 @@ listManager.prototype = {
 			tHtml = '',					//临时存储分页HTML片段
 			lHtml = '';					//临时存储末尾页码THML片段
 		//配置首页
-		if(cPage > 1 && tPage > 1){
-			tHtml += '<li cPage="1">'
-				  +  '<a href="javascript:void(0);">'+ _this.i18nText("first-page") +'</a>'
-				  +  '</li>'
-				  +  '<li cPage="'+(cPage-1)+'">'
-				  +  '<a href="javascript:void(0);">'+ _this.i18nText("previous-page") +'</a>'
-				  +  '</li>';
-		}else{
-			tHtml += '<li cPage="1" class="disabled">'
-				  +  '<a href="javascript:void(0);">'+ _this.i18nText("first-page") +'</a>'
-				  +  '</li>'
-				  +  '<li cPage="'+(cPage-1)+'" class="disabled">'
-				  +  '<a href="javascript:void(0);">'+ _this.i18nText("previous-page") +'</a>'
-				  +  '</li>';				
+		var firstClassName = 'first-page',
+			previousClassName = 'previous-page';
+		if(cPage == 1){
+			firstClassName += ' disabled';
+			previousClassName += ' disabled';
 		}
+		tHtml += '<li cPage="1" class="'+ firstClassName +'">'
+			+  '<a href="javascript:void(0);">'+ _this.i18nText("first-page") +'</a>'
+			+  '</li>'
+			+  '<li cPage="'+(cPage-1)+'" class="'+ previousClassName +'">'
+			+  '<a href="javascript:void(0);">'+ _this.i18nText("previous-page") +'</a>'
+			+  '</li>';
 		var i 	 = 1,		//循环开始数
 			maxI = tPage;	//循环结束数
 		//配置first端省略符
@@ -1796,21 +1816,18 @@ listManager.prototype = {
 		}			
 		tHtml += lHtml;
 		//配置下一页与尾页
-		if(cPage < tPage){
-			tHtml += '<li cPage="'+(cPage+1)+'">'
-				  +  '<a href="javascript:void(0);">'+ _this.i18nText("next-page") +'</a>'
-				  +  '</li>'
-				  +  '<li cPage="'+tPage+'">'
-				  +  '<a href="javascript:void(0);">'+ _this.i18nText("last-page") +'</a>'
-				  +  '</li>';
-		}else{
-			tHtml += '<li cPage="'+(cPage+1)+'" class="disabled">'
-				  +  '<a href="javascript:void(0);">'+ _this.i18nText("next-page") +'</a>'
-				  +  '</li>'
-				  +  '<li cPage="'+tPage+'" class="disabled">'
-				  +  '<a href="javascript:void(0);">'+ _this.i18nText("last-page") +'</a>'
-				  +  '</li>';
+		var nextClassName = 'next-page',
+			lastClassName = 'last-page';
+		if(cPage >= tPage){
+			nextClassName += ' disabled';
+			lastClassName += ' disabled';
 		}
+		tHtml += '<li cPage="'+(cPage+1)+'" class="'+ nextClassName +'">'
+			+  '<a href="javascript:void(0);">'+ _this.i18nText("next-page") +'</a>'
+			+  '</li>'
+			+  '<li cPage="'+tPage+'" class="'+ lastClassName +'">'
+			+  '<a href="javascript:void(0);">'+ _this.i18nText("last-page") +'</a>'
+			+  '</li>';
 		pagination.html(tHtml);
 	}
 	/*
@@ -1821,7 +1838,7 @@ listManager.prototype = {
 	,createPageSizeDOM: function( _tableDOM_, _sizeData_){
 		var _this = this;
 		var table		= $(_tableDOM_),
-			tableWarp	= table.parents('.table-warp').eq(0),
+			tableWarp	= table.closest('.table-warp'),
 			pageToolbar = $('.page-toolbar', tableWarp),				//分页工具条
 			pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);	//分页区域	
 		//error
@@ -1840,16 +1857,18 @@ listManager.prototype = {
 		$._tableDOM_: table的juqery实例化对象
 	*/
 	,bindClickEvent:function( _tableDOM_){
+		alert('更换为bindPageJumpEvent');
+		return false;
 		var _this = this;		
 		var table		= $(_tableDOM_),
-			tableWarp	= table.parents('.table-warp').eq(0),
+			tableWarp	= table.closest('.table-warp'),
 			pageToolbar = $('.page-toolbar', tableWarp),		//分页工具条
 			pagination	= $('.pagination', pageToolbar);		//分页区域	
 		
 		pageToolbar.off('click', 'li');
 		pageToolbar.on('click', 'li', function(){
 			var _page 		= $(this),
-				_tableWarp 	= _page.parents('.table-warp').eq(0),
+				_tableWarp 	= _page.closest('.table-warp'),
 				_table		= $('table[list-manager]', _tableWarp),
 				_listManager= _table.listManager('getListManager'),
 				_size 		= $('select[name="pSizeArea"]', _tableWarp);
@@ -1877,6 +1896,64 @@ listManager.prototype = {
 			//调用回调函数
 			_listManager.pageCallback($.extend(true, {}, _listManager.query, _listManager.sortData, _listManager.pageData));
 		});
+	}
+	/*
+		@绑定页面跳转事件
+		$._tableDOM_: table的juqery实例化对象
+	*/
+	,bindPageJumpEvent:function( _tableDOM_){
+		var _this = this;		
+		var table		= $(_tableDOM_),
+			tableWarp	= table.closest('.table-warp'),
+			pageToolbar = $('.page-toolbar', tableWarp),		//分页工具条
+			pagination	= $('.pagination', pageToolbar),		//分页区域
+			gp_action	= $('.gp-action', pageToolbar);			//快捷跳转提交事件源
+		//绑定分页点击事件
+		pageToolbar.off('click', 'li');
+		pageToolbar.on('click', 'li', function(){
+			var _page 		= $(this),
+				_tableWarp 	= _page.closest('.table-warp');
+			var cPage = _page.attr('cPage');	//分页页码
+			if(!cPage || !Number(cPage) || _page.hasClass('disabled')){
+				_this.outLog('指向页无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在');
+				return false;
+			}
+			gotoPage(_tableWarp, cPage);
+		});
+		//绑定快捷跳转事件
+		gp_action.unbind('click');
+		gp_action.bind('click', function(){
+			var _tableWarp = $(this).closest('.table-warp'),
+				_pageToolbar = $('.page-toolbar', _tableWarp),
+				_input	= $('.gp-input', _pageToolbar),
+				_inputValue = _input.val().trim();
+			if(_inputValue == '' || /\D+/.test(_inputValue) || _inputValue < 1){
+				_input.focus();
+				return;
+			}
+			gotoPage(_tableWarp, _inputValue);
+			_input.val('');
+		});
+		//跳转至指定页
+		function gotoPage(_tableWarp, _cPage){
+			var _table		= $('table[list-manager]', _tableWarp),
+				_size 		= $('select[name="pSizeArea"]', _tableWarp);
+			var _listManager= _table.listManager('getListManager');
+			if(!_listManager.pageCallback || typeof(_listManager.pageCallback) != 'function'){
+				_this.outLog('参数pageCallback配置错误');
+				return false;
+			}
+			//跳转的指定页大于总页数
+			if(_cPage > _listManager.pageData.tPage){
+				_cPage = _listManager.pageData.tPage;
+			}
+			//替换被更改的值
+			_listManager.pageData.cPage = _cPage;
+			_listManager.pageData.pSize = _size.val() || 10;
+			_table.data( 'listManager' , _listManager );
+			//调用回调函数
+			_listManager.pageCallback($.extend(true, {}, _listManager.query, _listManager.sortData, _listManager.pageData));
+		}
 	}
 	/*
 		@绑定设置当前页显示数事件
@@ -1908,12 +1985,14 @@ listManager.prototype = {
 				_this.outLog('参数pageCallback配置错误');
 				return false;
 			}
+			/*
 			var _pageQuery = {
 				cPage : 1,
 				pSize : _size.val() || 10
 			};
+			*/
 			//重置当前页显示条数
-			_listManager.pageCallback($.extend(_listManager.query, _pageQuery));
+			_listManager.pageCallback($.extend(_listManager.query, _listManager.pageData));
 			
 		});
 	}
@@ -1987,7 +2066,7 @@ listManager.prototype = {
 		}
 		var _lg = '';
 		try{
-			_lg = _this.I18NDATA[key][_this.i18n] || '';
+			_lg = _this.textConfig[key][_this.i18n] || '';
 			if(!intrusion || intrusion.length == 0){
 				return _lg;
 			}
@@ -2001,9 +2080,9 @@ listManager.prototype = {
 		}
 	}
 	/*
-	* 	@国际化数据
+	* 	@插件存在文本配置
 	* */
-	,I18NDATA: {
+	,textConfig: {
 		'config-action': {
 			'zh-cn':'配置表格',
 			'en-us':'The configuration form'
@@ -2027,6 +2106,14 @@ listManager.prototype = {
 		,'dataTablesInfo':{
 			'zh-cn':'此页显示 {0}-{1} 共{2}条',
 			'en-us':'this page show {0}-{1} count {2}'
+		}
+		,'goto-first-text':{
+			'zh-cn':'跳转至',
+			'en-us':'goto '
+		}
+		,'goto-last-text':{
+			'zh-cn':'页',
+			'en-us':'page '
 		}
 	}
 	/*

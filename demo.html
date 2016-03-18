@@ -123,7 +123,7 @@ hr{
 <script type="text/javascript" >
 $(function(){
 	//单列表简易渲染
-	var table = $('[list-manager]');
+	var table = $('table[list-manager]');
 	$.fn.listManager.defaults = {
 		isDevelopMode: true, 
 		autoLoadCss:true  //自动加载CSS文件，无需在页面中引用
@@ -135,6 +135,8 @@ $(function(){
 		,supportDrag:true
 		,supportAjaxPage:true
 		,isCombSorting: false
+		
+
 		,pageSize:30
 		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
 		,pageCallback:function(query){
@@ -144,9 +146,9 @@ $(function(){
             //1、请求后端数据
             // $.ajax() ....
             //2、列表数据重填
-            var _demoFive = $('[list-manager="demoFive"] tbody'),
-            _firstChild = _demoFive.find('tr:first-child');
-            _demoFive.append(_firstChild);
+            var _demoOne = $('[list-manager="demoOne"] tbody'),
+            _firstChild = _demoOne.find('tr:first-child');
+            _demoOne.append(_firstChild);
             _firstChild.fadeIn(500);
                         
             //3、分页数据重新渲染				

@@ -1,5 +1,4 @@
 /* 列表页管理 */
-
 /*引入所需font-icon*/
 @font-face {
 	font-family: "iconfont";
@@ -501,17 +500,42 @@ table.list-manager-default tbody tr:hover td{
 .table-warp .page-toolbar{
 	width:100%;
 	padding-top:10px;
+	clear:both;
+}
+.table-warp .page-toolbar .dataTables_info{
+	display:inline-block;
 }
 .table-warp .page-toolbar .change-size{
 	display:inline-block;
-	width:40%;
-	vertical-align:middle;
+}
+.table-warp .page-toolbar .goto-page{
+	display:inline-block;
+	padding:0px 10px;
+}
+.table-warp .page-toolbar .goto-page .gp-input{
+	width:30px;
+	height:30px;
+	border:1px solid #ccc;
+	margin:0px 5px;
+}
+.table-warp .page-toolbar .goto-page .gp-action{
+	display:inline-block;
+	width:60px;
+	height:30px;
+	border:1px solid #ccc;
+	line-height:28px;
+	text-align:center;
+	cursor:pointer;
+	margin-left:10px;
+}
+.table-warp .page-toolbar .goto-page .gp-action:hover{
+	background:#e8e8e8;
 }
 .table-warp .page-toolbar .ajax-page{
-	display:inline-block;
-	width:60%;
+	display:inline-block;	
 	text-align:right;
 	vertical-align:middle;
+	float:right;
 }
 .table-warp .page-toolbar .ajax-page .pagination{
 	display: inline-block;
