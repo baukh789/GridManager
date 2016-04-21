@@ -1,18 +1,10 @@
 /*	
 	http://www.lovejavascript.com/#!plugIn/listManager/index.html
 	@baukh:listManager 列表管理插件	
-	当前版本：v1.8.3
-	目标：稳定当前即有功能，推出可适应大多数环境的版本
-	1、验证、优化已有功能；
-	2、进行集成测试
-	3、修复已知BUG
-	4、新增参数：textConfig【向网站内增加参数时，应该把所有的可配置项进行说明】
-	5、优化了拖拽时，如td存在高度导致的拖拽镜像高度不匹配问题
-	6、新增参数topValue
-	7、增加本地缓存key的复杂度，防止同域不同界面下存在相同list-manager且列数相等的情况出现
-	bindClickEvent 需要替换为 bindPageJumpEvent 分页跳转方法
-
-	本地存储机制存在BUG！！
+	当前版本：v1.8.4
+	1、增加序号功能，并新增参数	supportAutoOrder、orderThName
+	2、textConfig增加新项order-text
+	3、textConfig增加新项page-go
 
 	开发计划：	
 	增加全选、反选功能
@@ -26,6 +18,17 @@
 	所有html中的标识均可通过js进行配置
 	提供现有功能的事件函数 如 宽度被调整后的事件
 	文档增加常见问题及解决方案
+	
+	存在问题：
+	resetTd在dome.html中会调与回调中的调用重复
+	
+	@baukh20160414:分页数据问题
+		resetPageData合并分页数据存在问题
+		demo2.html中批量设置分页数据存在问题
+		需要明天进行修复，并处理批量设置分页问题
+		在大回调中 是否需要继续提供批量设置分页？？需要考虑
+		序号列用特殊色调进行处理
+	
 */ 
 'use strict';	
 function listManager( settings ){
@@ -61,6 +64,9 @@ function listManager( settings ){
 	this.pageCallback 		= {};						//分页触发后的回调函数集合，该函数一般需指向搜索事件
 	this.pageCssFile 		= '';						//分页样式文件路径[用户自定义分页样式]
 
+    //序号
+	this.supportAutoOrder	= true;					//是否支持自动序号
+	this.orderThName		= 'order';					//序号列所使用的th-name
 	//国际化
 	this.i18n	 			= 'zh-cn';					//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
 	//用于支持全局属性配置  于v1.8 中将listManagerConfig弱化且不再建议使用。
@@ -70,7 +76,7 @@ function listManager( settings ){
 	$.extend( this, settings );
 }
 listManager.prototype = {
-	version: '1.8.3'
+	version: '1.8.4'
 	/*
 		@当前浏览器是否为谷歌[内部参数]
 	*/
@@ -107,7 +113,6 @@ listManager.prototype = {
 			return false;
 		}
 		listDOM = $(listDOM);
-		
 		//根据本地缓存配置每页显示条数
 		if( _this.supportAjaxPage){
 			_this.configPageForCache(listDOM);
@@ -117,7 +122,7 @@ listManager.prototype = {
 		listDOM.addClass('listManager-loading');
 		//加载所需资源
 		_this.loadListManagerFile(function(){
-			_this.initTable( listDOM );			
+			_this.initTable( listDOM );
 			window.setTimeout(function(){
 				//如果初始获取缓存失败，则在mousedown时，首先存储一次数据
 				var cacheErrorTable = $('[list-manager-cache]');
@@ -128,6 +133,13 @@ listManager.prototype = {
 					});
 				}
 			},1000);
+			
+			//重置tbody存在数据的列表
+			$.each(listDOM, function(i, v){
+			//	alert(v.getAttribute('list-manager')+'=='+$('tbody tr', v).length);
+				$('tbody tr', v).length > 0 ? _this.resetTd( v, false ) : '';
+			});
+			//启用回调
 			typeof( callback ) == 'function' ? callback(query) :'';	
 		});
 		return _this.getListManager(jQueryObj);
@@ -168,8 +180,7 @@ listManager.prototype = {
 		@手动设置排序 
 		$.element: table  [单个table或jquery实例]
 		$._sortJson_: 需要排序的json串 
-		$.callback:回调函数
-		
+		$.callback:回调函数		
 		ex: _sortJson_
 		_sortJson_ = {
 			th-name:up/down 	//其中up/down 需要与参数 sortUpText、sortDownText值相同
@@ -324,7 +335,14 @@ listManager.prototype = {
 	*/
 	,initTable: function( listDOM ){
 		var _this = this;
-		//渲染HTML，嵌入所需的事件源
+		//嵌入序号DOM
+		if(_this.supportAutoOrder){
+			_this.initOrderDOM( listDOM );
+		}
+		//存储原始th DOM
+		_this.setOriginalThDOM(listDOM);
+		
+		//渲染HTML，嵌入所需的事件源DOM
 		_this.embeddedDom( listDOM );
 		
 		//绑定监听DOM节点变化事件[保留方法，暂时不使用]
@@ -361,6 +379,17 @@ listManager.prototype = {
 		
 		//将listManager实例化对象存放于jquery data
 		_this.setListManagerToJQuery( listDOM );
+		
+	}
+	/*
+		@生成序号DOM
+		$.element: table数组[jquery对象]
+	*/
+	,initOrderDOM: function( element ){
+		var _this = this;
+		
+		var orderHtml = '<th th-name="'+ _this.orderThName +'" lm-order="true" width="50px">'+ _this.i18nText('order-text') +'</th>';		
+		$('thead tr', element).prepend(orderHtml);		
 	}
 	/*
 		@渲染HTML，根据配置嵌入所需的事件源DOM
@@ -394,10 +423,10 @@ listManager.prototype = {
 						 	 + '<div class="change-size"><select name="pSizeArea"></select></div>'
 							 + '<div class="goto-page">'+ _this.i18nText("goto-first-text") 
 							 + '<input type="text" class="gp-input"/>'+ _this.i18nText("goto-last-text") 
-							 + '<span class="gp-action">确定</span></div>'
+							 + '<span class="gp-action">'+ _this.i18nText('page-go') +'</span></div>'
 						  	 + '<div class="ajax-page"><ul class="pagination"></ul></div>'
 						  	 + '</div>';	
-		}	
+		}
 		var	tableWarp,						//单个table所在的DIV容器
 			tName,							//table的listManager属性值
 			tableDiv,						//单个table所在的父级DIV
@@ -411,9 +440,10 @@ listManager.prototype = {
 			remindDOM,						//表头提醒DOM
 			adjustDOM,						//调整宽度DOM
 			sortingDom,						//排序DOM
-			sortType;						//排序类形	
+			sortType,						//排序类形	
+			unLmOrder;						//是否为插件自动生成的序号列
 		$.each( element,function( i1, v1 ){
-			v1 = $( v1 );				
+			v1 = $( v1 );
 			//校验table的必要参数
 			_this.checkTable( v1 );
 			
@@ -422,9 +452,7 @@ listManager.prototype = {
 				v1.addClass( 'list-manager-default' );
 			}
 			onlyThead = $('thead', v1);
-						
 			onlyThList = onlyThead.find( 'th' );
-			
 			v1.wrap( '<div class="table-warp"><div class="table-div"></div><span class="text-dreamland"></span></div>' );
 			tableWarp = v1.parents( '.table-warp' ).eq( 0 );
 			tableDiv = $( '.table-div', tableWarp );
@@ -438,7 +466,7 @@ listManager.prototype = {
 				tableWarp.append( _ajaxPageHtml );
 				_this.initAjaxPage(v1);
 			}
-			//
+			//表头置顶
 			if( _this.supportSetTop ){
 				//<thead class="set-top"></thead>表头镜像[.set-top] 在滚动时实时增删
 				tableDiv.after( '<div class="scroll-area"><div class="sa-inner"></div></div>' );
@@ -447,6 +475,14 @@ listManager.prototype = {
 			$.each( onlyThList, function( i2,v2 ){
 				onlyTH = $( v2 );
 				onlyTH.attr( 'th-visible','visible' );
+				
+				//当前非序号列
+				if(_this.supportAutoOrder && onlyTH.attr('lm-order') == 'true'){				
+					unLmOrder = false;
+				}else{			
+					unLmOrder = true;		
+				}
+				
 				//嵌入th下外层div
 				onlyThWarp = $( '<div class="th-warp"></div>' );
 				//th存在padding时 转移至th-warp
@@ -454,9 +490,9 @@ listManager.prototype = {
 					thPadding = onlyTH.css('padding');  //firefox 不兼容
 				}else{
 					thPadding = onlyTH.css('padding-top') + ' '
-					          + onlyTH.css('padding-right') + ' '
-					          + onlyTH.css('padding-bottom') + ' '
-					          + onlyTH.css('padding-left');	
+							  + onlyTH.css('padding-right') + ' '
+							  + onlyTH.css('padding-bottom') + ' '
+							  + onlyTH.css('padding-left');	
 				}
 				thPadding = $.trim(thPadding);
 				if(thPadding != '' && thPadding != '0px' && thPadding != '0px 0px 0px 0px'){
@@ -475,14 +511,14 @@ listManager.prototype = {
 							+ '</li>' );
 				}
 				//嵌入拖拽事件源
-				if( _this.supportDrag ){
+				if( _this.supportDrag && unLmOrder){
 					onlyThWarp.html( '<span class="th-text drag-action">'+onlyTH.html()+'</span>' );
 				}else{
 					onlyThWarp.html('<span class="th-text">'+ onlyTH.html() +'</span>');
 				}
 				var onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
 				//嵌入表头提醒事件源
-				if( _this.supportRemind && onlyTH.attr( 'remind' ) != undefined ){						
+				if( _this.supportRemind && onlyTH.attr( 'remind' ) != undefined && unLmOrder){						
 					remindDOM = $( _remindHtml );
 					remindDOM.find( '.ra-title' ).text( onlyTH.text() );
 					remindDOM.find( '.ra-con' ).text( onlyTH.attr( 'remind' ) || onlyTH.text() );
@@ -493,7 +529,7 @@ listManager.prototype = {
 				}		
 				//嵌入排序事件源
 				sortType = onlyTH.attr( 'sorting' );
-				if( _this.supportSorting &&  sortType!= undefined ){
+				if( _this.supportSorting &&  sortType!= undefined && unLmOrder){
 					sortingDom = $( _sortingHtml );
 					//依据 sortType 进行初始显示
 					switch( sortType ){
@@ -517,6 +553,7 @@ listManager.prototype = {
 					onlyThWarp.append( adjustDOM );
 				}
 				onlyTH.html( onlyThWarp );
+					
 				//当前th文本所占宽度大于设置的宽度
 				var _realWidthForThText = _this.getTextWidth(onlyTH);
 				if(onlyTH.width() < _realWidthForThText){
@@ -549,7 +586,7 @@ listManager.prototype = {
 		$.each(thList, function(i, v){
 			if( !v.getAttribute('th-name') ){
 				noCache ? '' : noCache = true;
-				v.setAttribute('list-manager', 'auto-th-' + _this.getRandom());
+				v.setAttribute('th-name', 'auto-th-' + _this.getRandom());
 			}
 		});
 		//判断是否禁用缓存
@@ -1157,8 +1194,8 @@ listManager.prototype = {
 		var thWidth = textDreamland.width() 
 					+ (Number(thPaddingLeft) ? Number(thPaddingLeft) : 0) 
 					+ (Number(thPaddingRight) ? Number(thPaddingRight) : 0)
-					+ (remindAction.length == 1 ? remindAction.width() : 20 )
-					+ (sortingAction.length == 1 ? sortingAction.width() : 20);
+					+ (remindAction.length == 1 ? /*remindAction.width()*/ 20 : 5)
+					+ (sortingAction.length == 1 ? /*sortingAction.width()*/ 20 : 5);
 		return thWidth;
 	}
 	/*
@@ -1531,6 +1568,22 @@ listManager.prototype = {
 		});
 	}
 	/*
+		@存储原Th DOM至table data
+		$.element: table数组[jquery对象]
+	*/
+	,setOriginalThDOM: function( element ){
+		$.each( element, function( i, v ){
+			$(v).data('originalThDOM', $('thead th', v));
+		});
+	}
+	/*
+		@获取原Th DOM至table data
+		$.element: table数组[jquery对象]
+	*/
+	,getOriginalThDOM: function( element ){
+		return $(element).data('originalThDOM');
+	}
+	/*
 		@根据本地缓存配置列表[thead]
 		$.element: table数组[jquery对象]
 		获取本地缓存
@@ -1543,7 +1596,6 @@ listManager.prototype = {
 			_table,		//单一的table
 			_th,		//单一的th
 			_td,		//单列的td，与_th对应
-			_thList,	//同table下的所有th
 			_cache,		//列表的缓存数据			
 			_thCache,	//th相关 缓存
 			_thJson,	//th的缓存json
@@ -1554,9 +1606,6 @@ listManager.prototype = {
 			_domArray = [];
 			_table = $( v );
 			_data = _this.getLocalStorage( _table );
-			_thList = _table.find( 'thead' ).find( 'th' );
-			//存储原HTML排序
-			_table.data( 'original', _thList );	
 			//验证：当前table 没有缓存数据
 			if( !_data || $.isEmptyObject( _data ) ){
 				_this.outLog( 'configTheadForCache:当前table没有缓存数据' );
@@ -1592,18 +1641,21 @@ listManager.prototype = {
 						_th.css( 'width',_thJson.th_width );
 					}
 					//配置列排序数据
-					if( _this.supportDrag ){
-						_domArray[_thJson.th_index]	 = _th;
+					if( _this.supportDrag && typeof(_thJson.th_index) !== 'undefined'){
+						_domArray[_thJson.th_index] = _th;
+					}else{
+						_domArray[i2] = _th;
 					}
 					//配置列的可见
 					if( _this.supportConfig ){
 						_this.setAreVisible( _th, typeof( _thJson.isShow ) == 'undefined' ? true : _thJson.isShow, true );
 					}
 				} );
-				//配置列的排序
+			//	console.log(_table.attr('list-manager'),_domArray)
+				//配置列的顺序
 				if( _this.supportDrag ){
 					_table.find( 'thead tr' ).html( _domArray );
-					_this.resetTd( _table, false );
+				//	_this.resetTd( _table, false );
 				}
 				//重置调整宽度事件源
 				if( _this.supportAdjust ){
@@ -1643,7 +1695,7 @@ listManager.prototype = {
 	}
 	/*
 		[对外公开方法]	
-		@根据本地缓存重置列表[tbody]
+		@重置列表[tbody]
 		这个方法对外可以直接调用
 		作用：处理局部刷新、分页事件之后的tb排序
 		$.dom: table数组[jquery对象]
@@ -1658,27 +1710,46 @@ listManager.prototype = {
 			var _table = $( dom ),
 				_tr	= _table.find( 'tbody tr' );
 		}
-		var _thList = _table.data( 'original' ),
-			_td,
-			_tmpHtml = [],
-			_tdArray = [];
-		if( !_thList || _thList.length == 0  ){
-			_this.outLog( 'resetTdForCache:td排序所必须的原序列数据获取失败' );
-			return false;
-		}
 		if( !_tr || _tr.length == 0 ){
 			return false;
 		}
+		//重置表格序号
+		if(_this.supportAutoOrder){
+			var _pageData = _this.pageData;
+			var _orderBaseNumber = 1,
+				_orderText;
+			//验证是否存在分页数据
+			if(_pageData && _pageData['pSize'] && _pageData['cPage']){
+				_orderBaseNumber = _pageData.pSize * (_pageData.cPage - 1) + 1;
+			}
+			$.each( _tr, function( i, v ){
+				_orderText = _orderBaseNumber + i;
+				if($('td[lm-order="true"]', v).length == 0){
+					$(v).prepend('<td lm-order="true">'+ _orderText +'</td>');
+				}else{
+					$('td[lm-order="true"]', v).text(_orderText);
+				}
+			});
+		}
 		//依据存储顺序重置td顺序
-		if( _this.supportAdjust ){
+		if( _this.supportAdjust){			
+			var _thList = _this.getOriginalThDOM(_table),
+				_td;
+			if( !_thList || _thList.length == 0  ){
+				_this.outLog( 'resetTdForCache:td顺序重置所必须的原TH DOM获取失败' );
+				return false;
+			}
+			var _tmpHtml = [],
+				_tdArray = [];
+				
 			$.each( _tr, function( i, v ){
 				_tmpHtml[i] = $( v );
 				_td = $( v ).find( 'td' );
-				$.each( _td, function( i2, v2 ){				
-					_tdArray[_thList.eq( $( v2 ).index() ).index()] = v2;
+				$.each( _td, function( i2, v2 ){
+					_tdArray[_thList.index(_thList.eq( $( v2 ).index() ))] = v2;	
 				} );
 				_tmpHtml[i].html( _tdArray );
-			} );
+			});
 		}
 		//依据配置对列表进行隐藏、显示
 		if( _this.supportConfig ){
@@ -2087,6 +2158,10 @@ listManager.prototype = {
 			'zh-cn':'配置表格',
 			'en-us':'The configuration form'
 		}
+		,'order-text': {
+			'zh-cn':'序号',
+			'en-us':'order'
+		}
 		,'first-page': {
 			'zh-cn':'首页',
 			'en-us':'first'
@@ -2114,6 +2189,10 @@ listManager.prototype = {
 		,'goto-last-text':{
 			'zh-cn':'页',
 			'en-us':'page '
+		}
+		,'page-go':{
+			'zh-cn':'确定',
+			'en-us':'Go '
 		}
 	}
 	/*

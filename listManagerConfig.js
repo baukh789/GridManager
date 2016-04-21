@@ -3,7 +3,7 @@
 	使用者可依据配置规则对全局的列表插件进行通用配置
 */ 
 var listManagerConfig = {	
-	isDevelopMode  	: false					//是否为开发模式，为true时将打印事件日志
+	isDevelopMode  	: true					//是否为开发模式，为true时将打印事件日志
 	,basePath		: ''					//当前基本路径[用于加载分页所需文件]
 	,useDefaultStyle: true					//是否使用默认的table样式
 	,supportDrag 	: true 					//是否支持拖拽功能
@@ -14,7 +14,7 @@ var listManagerConfig = {
 	,supportSetTop  : true					//是否支持表头置顶
 	,scrollDOM		: window				//表头置顶所对应的容器[jquery选择器或jquery对象]	
 	,animateTime    : 300					//动画效果时长
-	,disableCache	: true					//是否禁用本地缓存	
+	,disableCache	: false					//是否禁用本地缓存	
 	,autoLoadCss	: true					//是否自动加载CSS文件
 	//排序 sort 
 	,supportSorting	: false 				//排序：是否支持排序功能
@@ -49,6 +49,10 @@ var listManagerConfig = {
 			'zh-cn':'配置表格',
 			'en-us':'The configuration form'
 		}
+		,'order-text': {
+			'zh-cn':'序号',
+			'en-us':'order'
+		}
 		,'first-page': {
 			'zh-cn':'首页',
 			'en-us':'first'
@@ -68,6 +72,10 @@ var listManagerConfig = {
 		,'dataTablesInfo':{
 			'zh-cn':'此页显示 {0}-{1} 共{2}条',
 			'en-us':'this page show {0}-{1} count {2}'
+		}
+		,'page-go':{
+			'zh-cn':'确定',
+			'en-us':'Go '
 		}
 	}
 }

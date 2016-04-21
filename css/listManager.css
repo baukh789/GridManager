@@ -438,6 +438,17 @@ table.list-manager-default tbody tr:hover td{
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
+/*序号样式*/
+.table-warp table[list-manager] th[lm-order="true"],
+.table-warp table[list-manager] td[lm-order="true"]{
+	text-align:center;
+	cursor:default;
+	background-color:#e8e8e8;
+}
+.table-warp table[list-manager] th[lm-order="true"]:hover,
+.table-warp table[list-manager] td[lm-order="true"]:hover{
+	background-color:#e8e8e8;
+}
 /*闪烁动画特效*/
 @-webkit-keyframes opacityChange{
     0%{

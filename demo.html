@@ -37,7 +37,7 @@ hr{
         <thead>
             <tr>
                 <th th-name="th-one" remind="the one" sorting="up" width="200px">One</th>
-                <th th-name="th-two" remind="the tow" sorting  width="200px">Tow</th>
+                <th th-name="th-two" remind="the two" sorting  width="200px">two</th>
                 <th th-name="th-three" remind="the three" sorting width="300px">Three</th>
                 <th th-name="th-four" remind="the four">Four</th>
             </tr>
@@ -131,6 +131,7 @@ $(function(){
 	table.listManager({
 		supportRemind: true
 		,disableCache:false
+		,disableOrder:false
 		,supportSorting: true
 		,supportDrag:true
 		,supportAjaxPage:true
@@ -146,14 +147,17 @@ $(function(){
             //1、请求后端数据
             // $.ajax() ....
             //2、列表数据重填
+			/*
             var _demoOne = $('[list-manager="demoOne"] tbody'),
             _firstChild = _demoOne.find('tr:first-child');
             _demoOne.append(_firstChild);
             _firstChild.fadeIn(500);
-                        
-            //3、分页数据重新渲染				
-            this.resetPageData(table, getPageData(query.pSize, 1000, query.cPage));
-            return query;
+                  
+			*/
+			table.listManager('resetTd',false);
+            //3、分页数据重新渲染
+			table.listManager('resetPageData', getPageData(query.pSize, 1000, query.cPage));
+           // return query;
 		}
 		,sortingCallback: function(query){
 			console.log('------------排序回调参数------------')
@@ -164,7 +168,7 @@ $(function(){
 		console.log(query)
 		//ajax get page data
 		console.log('========================================================================')	
-		table.listManager('resetTd',false)	
+		//table.listManager('resetTd',false)	
 		console.log('========================================================================')	
 		table.listManager('resetPageData', getPageData(query.pSize, 1000, 1));
 	});

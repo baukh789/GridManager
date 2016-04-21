@@ -235,15 +235,18 @@ $(function(){
 			demoOne: function( query ){
 				console.log( query );
 				//ajax get page data...
-	            this.resetPageData($('[list-manager="demoOne"]'), getPageData(query.pSize, 100, query.cPage));
+				$('[list-manager="demoOne"]').listManager('resetTd');
+				$('[list-manager="demoOne"]').listManager('resetPageData', getPageData(query.pSize, 100, query.cPage));
 			},demoTwo: function( query ){
 				console.log( query );
 				//ajax get page data...
-	            this.resetPageData($('[list-manager="demoTwo"]'), getPageData(query.pSize, 1000, query.cPage));
+				$('[list-manager="demoTwo"]').listManager('resetTd');
+				$('[list-manager="demoTwo"]').listManager('resetPageData',getPageData(query.pSize, 1000, query.cPage));
 			},demoThree: function( query ){
 				console.log( query );
 				//ajax get page data...
-	            this.resetPageData($('[list-manager="demoThree"]'), getPageData(query.pSize, 325, query.cPage));
+				$('[list-manager="demoThree"]').listManager('resetTd');
+				$('[list-manager="demoThree"]').listManager('resetPageData', getPageData(query.pSize, 325, query.cPage));
 			}
 		}
 	},function(query){
@@ -254,6 +257,7 @@ $(function(){
 			demoTwo		: getPageData(query['demoTwo'].pSize, 1000, 3),
 			demoThree	: getPageData(query['demoThree'].pSize, 325, 6)
 		}
+	//	table.listManager('resetTd');
 		//模拟搜索数据返回操作
 		table.listManager('resetPageData', pageData);
 	});
