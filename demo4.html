@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="css/base.css">
+<title>listManager:单列表简易渲染</title>
+<style>
+html, body{
+	overflow-x:hidden;
+}
+h2{
+	font-size:22px;
+	padding:10px 30px;
+	color:#333;
+}
+p{
+	font-size:14px;
+	padding:10px 30px;
+	color:#333;
+	text-indent:2em;
+}
+hr{    
+	margin-top: 18px;
+    margin-bottom: 18px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+</style>
+</head>
+
+<body>
+<h2>listManager:单列表简易渲染</h2>
+<p>存在.json文件，谷歌需要放到环境中效果才能展现</p>
+<hr/>
+<div style="width:95%;margin:0px auto;">
+    <table width="100%" cellspacing="1" cellpadding="0" list-manager="demoOne">
+        <thead>
+            <tr>
+                <th th-name="th-one" remind="the one" sorting="up" width="200px">One</th>
+                <th th-name="th-two" remind="the two" sorting  width="200px">two</th>
+                <th th-name="th-three" remind="the three" sorting width="300px">Three</th>
+                <th th-name="th-four" remind="the four">Four</th>
+            </tr>
+        </thead>
+        <tbody>
+           
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/listManager.js"></script>
+<script type="text/javascript" >
+$(function(){
+	//单列表简易渲染
+	var table = $('table[list-manager]');
+	$.fn.listManager.defaults = {
+		isDevelopMode: true, 
+		autoLoadCss:true  //自动加载CSS文件，无需在页面中引用
+	}
+	table.listManager({
+		supportRemind: true
+		,disableCache:false
+		,disableOrder:false
+		,supportSorting: true
+		,supportDrag:true
+		,supportAjaxPage:true
+		,isCombSorting: false
+    ,ajaxUrl: 'demo4.json'		
+
+		,pageSize:30
+		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
+		,pagingBefore:function(){
+      console.log('分页事件前');
+		}
+    ,pagingAfter: function(query){
+      console.log('分页事件后');
+
+    }
+		,sortingCallback: function(query){
+			console.log('------------排序回调参数------------')
+			console.log(query)
+		}
+	},function(query){
+        console.log('------------init方法回调query参数------------')
+		console.log(query)
+		//ajax get page data
+		console.log('========================================================================')	
+		//table.listManager('resetTd',false)	
+		console.log('========================================================================')	
+		table.listManager('resetPageData', getPageData(query.pSize, 1000, 1));
+	});
+	
+	//计算分页数据
+	function getPageData(pSize, tSize, cPage){
+		return {
+			 tPage: Math.ceil(tSize / pSize),				//总页数
+	         cPage: cPage,				//当前页	
+	         pSize: pSize,				//每页显示条数
+	         tSize: tSize		
+		}
+	}
+});
+</script>
+</body>
+</html>
