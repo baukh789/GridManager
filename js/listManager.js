@@ -5,6 +5,13 @@
 	1、可通过配置参进行表格渲染，无需在HTML中存在DOM节点
 	2、序列宽度优化
 	3、不再支持多表同时渲染
+	4、移除icon-fong
+	5、增加鼠标右键功能菜单(行与列同时高亮)[1、删除本行；2、隐藏本列；3、下一页；4、上一页；5、配置列；6、表数据另存为]
+	6、移除Log方法，改用原始的console.log();
+	7、移除分页，排序的_listManager变量
+	
+	
+	
 	开发计划：
 	增加全选、反选功能
 	增加删除列功能 提供删除操作回调函数
@@ -65,7 +72,7 @@
 		this.i18n	 			= 'zh-cn';					//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
 
 		//用于支持通过数据渲染DOM
-		this.listManagerName   		= '';					//表格list-manager所对应的值
+		this.listManagerName   	= '';						//表格list-manager所对应的值
 //		this.thList    			= {};						//表格通过数据渲染所需数据
 		this.ajaxUrl			= '';						//获取表格数据地址，配置该参数后，将会动态获取数据
 		//用于支持全局属性配置  于v1.8 中将listManagerConfig弱化且不再建议使用。
@@ -821,6 +828,8 @@
 				_table,			//事件源所在的table
 				_tName,			//table list-manager
 				_thName;		//th对应的名称
+			//生成排序数据存储器		
+			_this.query.sortData = {};				
 			//绑定排序事件
 			$( '.sorting-action', _thList ).unbind( 'mouseup' );
 			$( '.sorting-action', _thList ).bind( 'mouseup', function(){
@@ -829,7 +838,7 @@
 				_table 	= _th.closest( 'table' );
 				_tName  = _table.attr( 'list-manager' );
 				_thName = _th.attr( 'th-name' );
-				var	_listManager = _table.listManager('getListManager');
+		//		var	_listManager = _table.listManager('getListManager');
 				if( !_thName || $.trim( _thName ) == '' ){
 					_this.outLog( '排序必要的参数丢失' );
 					return false;
@@ -856,22 +865,22 @@
 					_th.attr('sorting', _this.sortDownText);
 				}
 				//生成排序数据
-				_listManager.sortData = {};	//排序数据存储器
 				if( !_this.isCombSorting ){
-					_listManager.sortData[_th.attr('th-name')] = _th.attr('sorting');
+					_this.query.sortData[_th.attr('th-name')] = _th.attr('sorting');
 				}else{
 					$.each( $( 'th[th-name][sorting]', _table ), function( i, v ){
 						if(v.getAttribute('sorting') != ''){ 
-							_listManager.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
+							_this.query.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
 						}
 					});	
 				}
-				_table.data( 'listManager' , _listManager );
+//				_table.data( 'listManager' , _listManager );
 				//调用事件、渲染tbody
-				_listManager.sortBefore();
+		//		$.extend(_this.query, _listManager.query, _listManager.pageData, _listManager.sortData);
+				_this.sortingBefore(_this.query);
 				_this.renderTbody(function(){
-					_listManager.sortAfter($.extend(true, {}, _listManager.query, _listManager.pageData, _listManager.sortData),  _th);
-					_listManager.sortingCallback($.extend(true, {}, _listManager.query, _listManager.pageData, _listManager.sortData),  _th);  //#建议更换为sortAfter
+					_this.sortingAfter(_this.query,  _th);
+				//	_this.sortCallback(_this.query,  _th);  //#建议更换为sortAfter
 				});
 				
 			} );
@@ -1801,6 +1810,13 @@
 				tName		= table.attr('list-manager'),
 				tableWarp 	= table.closest('.table-warp'),
 				pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
+			//生成分页存储器
+			_this.query.pageData = {
+				tPage: undefined,		//总页数
+				cPage: undefined,		//当前页	
+				pSize: undefined,		//每页显示条数
+				tSize: undefined		//总条数
+			};
 			var	sizeData = $.isArray(_this.sizeData) ? _this.sizeData : _this.sizeData[tName];
 			pageToolbar.hide();
 			//生成分页DOM节点
@@ -1960,7 +1976,7 @@
 			function gotoPage(_tableWarp, _cPage){
 				var _table		= $('table[list-manager]', _tableWarp),
 					_size 		= $('select[name="pSizeArea"]', _tableWarp);
-				var _listManager= _table.listManager('getListManager');
+			//	var _listManager= _table.listManager('getListManager');
 				/*
 				if(!_listManager.pageCallback || typeof(_listManager.pageCallback) != 'function'){
 					_this.outLog('参数pageCallback配置错误');
@@ -1968,18 +1984,18 @@
 				}
 				*/
 				//跳转的指定页大于总页数
-				if(_cPage > _listManager.pageData.tPage){
-					_cPage = _listManager.pageData.tPage;
+				if(_cPage > _this.query.pageData.tPage){
+					_cPage = _this.query.pageData.tPage;
 				}
 				//替换被更改的值
-				_listManager.pageData.cPage = _cPage;
-				_listManager.pageData.pSize = _size.val() || 10;
-				_table.data( 'listManager' , _listManager );
+				_this.query.pageData.cPage = _cPage;
+				_this.query.pageData.pSize = _this.query.pageData.pSize || 10;
+			//	_table.data( 'listManager' , _listManager );
 
 				//调用事件、渲染DOM
-				_listManager.pagingBefore();
+				_this.pagingBefore(_this.query);
 				_this.renderTbody(function(){
-					_listManager.pagingAfter($.extend(true, {}, _listManager.query, _listManager.sortData, _listManager.pageData));
+					_this.pagingAfter(_this.query);
 				//	_listManager.pageCallback($.extend(true, {}, _listManager.query, _listManager.sortData, _listManager.pageData)); //#需移除，用pagingAfter替代
 				});
 			}
@@ -2003,13 +2019,17 @@
 				var _size = $(this);
 				var _tableWarp  = _size.parents('.table-warp').eq(0),
 					_table		= $('table[list-manager]', _tableWarp),
-					_listManager= _table.data( 'listManager' ),
+			//		_listManager= _table.data( 'listManager' ),
 					_tName 		= $('table', _tableWarp).attr('list-manager'); //当前与分页同容器下的列表名称
-				_listManager.pageData.cPage = 1;
-				_listManager.pageData.pSize = _size.val();
-				_table.data( 'listManager', _listManager);
+				_this.query.pageData = {
+					cPage : 1,
+					pSize : _size.val()
+				}
+			//	_this.query.pageData.cPage = 1;
+			//	_this.query.pageData.pSize = _size.val();
+			//	_table.data( 'listManager', _listManager);
 				
-				_listManager.setToLocalStorage(_table);
+				_this.setToLocalStorage(_table);
 				/*
 				if(!_listManager.pageCallback || typeof(_listManager.pageCallback) != 'function'){
 					_this.outLog('参数pageCallback配置错误');
@@ -2017,9 +2037,9 @@
 				}
 				*/
 				//调用事件、渲染tbody
-				_listManager.pagingBefore();
+				_this.pagingBefore(_this.query);
 				_this.renderTbody(function(){
-					_listManager.pagingAfter($.extend(_listManager.query, _listManager.pageData));
+					_this.pagingAfter(_this.query);
 				//	_listManager.pageCallback($.extend(_listManager.query, _listManager.pageData)); //#需移除，用pagingAfter替代
 				});
 				

@@ -65,23 +65,25 @@ $(function(){
 		,supportDrag:true
 		,supportAjaxPage:true
 		,isCombSorting: false
-    ,ajaxUrl: 'demo4.json'		
-
+    	,ajaxUrl: 'demo4.json'
 		,pageSize:30
 		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
-		,pagingBefore:function(){
-      console.log('分页事件前');
+		,pagingBefore:function(query){
+      		console.log('分页事件前');
 		}
-    ,pagingAfter: function(query){
-      console.log('分页事件后');
-
-    }
-		,sortingCallback: function(query){
-			console.log('------------排序回调参数------------')
-			console.log(query)
+		,pagingAfter: function(query){
+		  	console.log('分页事件后');	
+		}
+		,sortingBefore:function(query){
+      		console.log('排序事件前');
+			console.log(query);
+		}
+		,sortingAfter: function(query){
+		  	console.log('排序事件后');
+			console.log(query);	
 		}
 	},function(query){
-        console.log('------------init方法回调query参数------------')
+		console.log('------------init方法回调query参数------------')
 		console.log(query)
 		//ajax get page data
 		console.log('========================================================================')	
