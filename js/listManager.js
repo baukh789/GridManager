@@ -2,17 +2,17 @@
 	http://www.lovejavascript.com/#!plugIn/listManager/index.html
 	@baukh:listManager 列表管理插件	
 	当前版本：v1.8.5
-	1、可通过配置参进行表格渲染，无需在HTML中存在DOM节点
-	2、序列宽度优化
-	3、不再支持多表同时渲染
-	4、移除icon-fong
-	5、增加鼠标右键功能菜单(行与列同时高亮)[1、删除本行；2、隐藏本列；3、下一页；4、上一页；5、配置列；6、表数据另存为]
-	6、移除Log方法，改用原始的console.log();
-	7、移除分页，排序的_listManager变量
+	
+	开发完成的任务：
+	移除分页，排序的_listManager变量
+	处理文本配置无法单个配置的BUG【已修复】
+	resetPageData不再对外公开
+	移除方法:pageCallback，使用事件pagingBefore与pagingAfter替代
+	移除方法:sortingCallback，使用事件sortingBefore与sortingAfter替代
+	增加ajaxUrl参数，用于自动获取数据，无需再在分页及排序时手动处理
 	
 	
-	
-	开发计划：
+	开发中的任务：
 	增加全选、反选功能
 	增加删除列功能 提供删除操作回调函数
 	增加字段可编辑功能
@@ -22,8 +22,13 @@
 	排序增加前端当前页排序方式,增加配置当前页排序还是总数据排序标识
 	所有html中的标识均可通过js进行配置
 	提供现有功能的事件函数 如 宽度被调整后的事件
-	文档增加常见问题及解决方案
-	
+	文档增加常见问题及解决方案	
+	可通过配置参进行表格渲染，无需在HTML中存在DOM节点
+	序列宽度优化
+	不再支持多表同时渲染
+	移除icon-fong
+	增加鼠标右键功能菜单(行与列同时高亮)[1、删除本行；2、隐藏本列；3、下一页；4、上一页；5、配置列；6、表数据另存为]
+	移除Log方法，改用原始的console.log();
 */
 ;(function(){
 	'use strict';	
@@ -50,7 +55,7 @@
 		this.sortData 			= {};						//存储排序数据[不对外公开参数]
 		this.sortUpText			= 'up';						//排序：升序标识[该标识将会传至数据接口]
 		this.sortDownText		= 'down';					//排序：降序标识[该标识将会传至数据接口]
-		this.sortingCallback	= {};						//排序触发后的回调函数集合，该函数一般需指向搜索事件[不建议使用，用sortingAfter替代]
+	//	this.sortingCallback	= {};						//排序触发后的回调函数集合，该函数一般需指向搜索事件[不建议使用，用sortingAfter替代]
 		this.sortingBefore		= $.noop;					//排序事件发生前
 		this.sortingAfter		= $.noop;					//排序事件发生后
 		
@@ -59,8 +64,8 @@
 		this.sizeData 			= [10,20,30,50,100]; 		//用于配置列表每页展示条数选择框
 		this.pageSize			= 20;						//每页显示条数，如果使用缓存且存在缓存数据，那么该值将失效
 		this.pageData 			= {};						//存储分页数据[不对外公开参数]
-		this.query 				= {};						//其它需要带入的参数，该参数会在分页触发后返回至pageCallback方法
-		this.pageCallback 		= {};						//分页触发后的回调函数集合，该函数一般需指向搜索事件[不建议使用，用pagingAfter替代]
+		this.query 				= {};						//其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
+	//	this.pageCallback 		= {};						//分页触发后的回调函数集合，该函数一般需指向搜索事件[不建议使用，用pagingAfter替代]
 		this.pagingBefore		= $.noop;					//分页事件发生前
 		this.pagingAfter		= $.noop;					//分页事件发生后
 		this.pageCssFile 		= '';						//分页样式文件路径[用户自定义分页样式]
@@ -76,10 +81,14 @@
 //		this.thList    			= {};						//表格通过数据渲染所需数据
 		this.ajaxUrl			= '';						//获取表格数据地址，配置该参数后，将会动态获取数据
 		//用于支持全局属性配置  于v1.8 中将listManagerConfig弱化且不再建议使用。
+		
+		var textConfig = {};
 		if( typeof( listManagerConfig ) == 'object' ){
+			$.extend(textConfig, this.textConfig, listManagerConfig.textConfig)
 			$.extend( this,listManagerConfig );
 		}
-		$.extend( this, settings );
+		$.extend(textConfig, this.textConfig, settings.textConfig)
+		$.extend( this, settings, {textConfig: textConfig});
 	}
 	listManager.prototype = {
 		/*
@@ -174,9 +183,11 @@
 					//列表存储数据
 					sizeData		:  $.isArray(_this.sizeData) ? _this.sizeData : _this.sizeData[_tName],
 					pageData		: _this.pageData[_tName] ? _this.pageData[_tName] : _this.pageData,
-					query			: _this.query[_tName] ? _this.query[_tName] : _this.query,
+					query			: _this.query[_tName] ? _this.query[_tName] : _this.query
+					/*,
 					sortingCallback	: typeof(_this.sortingCallback) == 'function' ? _this.sortingCallback : _this.sortingCallback[_tName],
 					pageCallback	: typeof(_this.pageCallback) == 'function' ? _this.pageCallback : _this.pageCallback[_tName]					
+					*/
 
 				}
 				$.extend( true, _data, _resetData );
@@ -363,10 +374,24 @@
 			if(!tbodyDOM || tbodyDOM.length === 0){
 				tableDOM.append('<tbody></tbody>');
 				tbodyDOM = $('tbody', tableDOM);
+			}			
+			var parme = $.extend({}, _this.query);
+			//合并分页信息至请求参
+			if(_this.supportAjaxPage){
+				$.extend(parme, _this.pageData);
 			}
+			//合并排序信息至请求参
+			if(_this.supportSorting){
+				$.extend(parme, _this.sortData);
+			}
+			
 			var tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
-			$.get(_this.ajaxUrl, _this.query, function(data){
-				$.each(data, function(i, v){
+			$.get(_this.ajaxUrl, parme, function(data){
+				if( !data || !Array.isArray(data.list)){
+					console.error('ListManager Error: 请查看配置参数[ajaxUrl]是否配置正确，并查看通过该地址返回的数据格式是否正确。');
+					return;
+				}
+				$.each(data.list, function(i, v){
 					tbodyTmpHTML += '<tr>';
 					$.each(v, function(i2, v2){
 						tbodyTmpHTML += '<td>'+ v2 +'</td>';
@@ -374,7 +399,12 @@
 					tbodyTmpHTML += '</tr>';
 				});
 				tbodyDOM.html(tbodyTmpHTML);
+				//重置表格结构
 				_this.resetTd(tableDOM, false);
+				//渲染分页
+				if( _this.supportAjaxPage ){
+					_this.resetPageData(tableDOM, data.totals);
+				}
 				typeof callback === 'function' ? callback() : '';
 			});
 		}
@@ -828,8 +858,7 @@
 				_table,			//事件源所在的table
 				_tName,			//table list-manager
 				_thName;		//th对应的名称
-			//生成排序数据存储器		
-			_this.query.sortData = {};				
+				
 			//绑定排序事件
 			$( '.sorting-action', _thList ).unbind( 'mouseup' );
 			$( '.sorting-action', _thList ).bind( 'mouseup', function(){
@@ -866,20 +895,22 @@
 				}
 				//生成排序数据
 				if( !_this.isCombSorting ){
-					_this.query.sortData[_th.attr('th-name')] = _th.attr('sorting');
+					_this.sortData = {};
+					_this.sortData[_th.attr('th-name')] = _th.attr('sorting');
 				}else{
 					$.each( $( 'th[th-name][sorting]', _table ), function( i, v ){
 						if(v.getAttribute('sorting') != ''){ 
-							_this.query.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
+							_this.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
 						}
 					});	
 				}
 //				_table.data( 'listManager' , _listManager );
 				//调用事件、渲染tbody
 		//		$.extend(_this.query, _listManager.query, _listManager.pageData, _listManager.sortData);
-				_this.sortingBefore(_this.query);
+				var query = $.extend({}, _this.query, _this.sortData, _this.pageData);
+				_this.sortingBefore(query);
 				_this.renderTbody(function(){
-					_this.sortingAfter(_this.query,  _th);
+					_this.sortingAfter(query,  _th);
 				//	_this.sortCallback(_this.query,  _th);  //#建议更换为sortAfter
 				});
 				
@@ -1556,20 +1587,20 @@
 				//验证当前分页采用的是简易模式还是标准模式
 				//验证条件为是否存在与当前对应的pageCallback函数
 				//if 标准模式
-				if(typeof(_this.pageCallback[_tName]) == 'function'){ 
-					_this.pageData[_tName] = {
-						pSize : _pageCache.pSize,
+		//		if(typeof(_this.pageCallback[_tName]) == 'function'){ 
+			//		_this.pageData[_tName] = {
+				//		pSize : _pageCache.pSize,
 						cPage : 1
-					};
+			//		};
 				//	_this.pageData[_tName].pSize = _pageCache.pSize;
 					
 				//else 简易模式
-				}else{  
+		//		}else{  
 					_this.pageData = {
 						pSize : _pageCache.pSize,
 						cPage : 1
 					};		
-				}
+		//		}
 			});
 		}
 		/*
@@ -1984,18 +2015,19 @@
 				}
 				*/
 				//跳转的指定页大于总页数
-				if(_cPage > _this.query.pageData.tPage){
-					_cPage = _this.query.pageData.tPage;
+				if(_cPage > _this.pageData.tPage){
+					_cPage = _this.pageData.tPage;
 				}
 				//替换被更改的值
-				_this.query.pageData.cPage = _cPage;
-				_this.query.pageData.pSize = _this.query.pageData.pSize || 10;
+				_this.pageData.cPage = _cPage;
+				_this.pageData.pSize = _this.pageData.pSize || _this.pageSize;
 			//	_table.data( 'listManager' , _listManager );
 
 				//调用事件、渲染DOM
-				_this.pagingBefore(_this.query);
-				_this.renderTbody(function(){
-					_this.pagingAfter(_this.query);
+				var query = $.extend( {}, _this.query, _this.sortData, _this.pageData );
+				_this.pagingBefore( query );
+				_this.renderTbody( function() {
+					_this.pagingAfter( query );
 				//	_listManager.pageCallback($.extend(true, {}, _listManager.query, _listManager.sortData, _listManager.pageData)); //#需移除，用pagingAfter替代
 				});
 			}
@@ -2021,7 +2053,7 @@
 					_table		= $('table[list-manager]', _tableWarp),
 			//		_listManager= _table.data( 'listManager' ),
 					_tName 		= $('table', _tableWarp).attr('list-manager'); //当前与分页同容器下的列表名称
-				_this.query.pageData = {
+				_this.pageData = {
 					cPage : 1,
 					pSize : _size.val()
 				}
@@ -2037,9 +2069,10 @@
 				}
 				*/
 				//调用事件、渲染tbody
-				_this.pagingBefore(_this.query);
-				_this.renderTbody(function(){
-					_this.pagingAfter(_this.query);
+				var query = $.extend( {}, _this.query, _this.sortData, _this.pageData );
+				_this.pagingBefore( query );
+				_this.renderTbody( function(){
+					_this.pagingAfter( query );
 				//	_listManager.pageCallback($.extend(_listManager.query, _listManager.pageData)); //#需移除，用pagingAfter替代
 				});
 				
@@ -2072,30 +2105,41 @@
 			pSizeArea.show();
 		}
 		/*
-			[对外公开方法]	
+			[对外公开方法] @baukh20160629:不再对外公开，传参格式也变化
 			@重置分页数据
 			$.element: table
-			$._pageData_:分页数据格式
-			ex:_pageData_ = {
-				tPage: 10,				//总页数
-				cPage: 1,				//当前页	
-				pSize: 20,				//每页显示条数
-				tSize: 100				//总条数
-			}
+			$.totals: 总条数
 		*/
-		,resetPageData: function( element, _pageData_ ){
+		,resetPageData: function( element, totals ){
 			var _this = this;
-			//生成分页DOM节点
-			_this.createPageDOM( element, _pageData_ );
-			//重置当前页显示条数
-			_this.resetPSize( element, _pageData_);	
 			
-			var table 		= $(element),
-				tableWarp 	= table.parents('.table-warp').eq(0),
-				pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
-			$.extend(_this.pageData, _pageData_); //存储pageData信息
-			pageToolbar.show();
+			var _pageData = getPageData( totals );
+			//生成分页DOM节点
+			_this.createPageDOM( element, _pageData );
+			//重置当前页显示条数
+			_this.resetPSize( element, _pageData);	
+			
+			var table 		= $( element ),
+				tableWarp 	= table.parents( '.table-warp' ).eq(0),
+				pageToolbar = $( '.page-toolbar', tableWarp );	//分页工具条
+			$.extend( _this.pageData, _pageData ); //存储pageData信息
+			pageToolbar.show();		
+			
+			
+			//计算分页数据
+			function getPageData(tSize){
+				var _pSize = _this.pageData.pSize || _this.pageSize,
+					_tSize = tSize,
+					_cPage = _this.pageData.cPage;
+				return {
+					 tPage: Math.ceil(_tSize / _pSize),		//总页数
+					 cPage: _cPage,							//当前页	
+					 pSize: _pSize,							//每页显示条数
+					 tSize: _tSize							//总条路
+				}
+			}
 		}
+		
 		/*
 		* @获取与当前配置国际化匹配的文本
 		*  $.key: 指向的文本索引
