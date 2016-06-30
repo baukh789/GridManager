@@ -6,7 +6,7 @@
 	开发完成的任务：
 	移除分页，排序的_listManager变量
 	处理文本配置无法单个配置的BUG【已修复】
-	resetPageData不再对外公开
+	方法：resetPageData不再对外公开，由插件自动完成方法内的功能。
 	移除方法:pageCallback，使用事件pagingBefore与pagingAfter替代
 	移除方法:sortingCallback，使用事件sortingBefore与sortingAfter替代
 	增加ajaxUrl参数，用于自动获取数据，无需再在分页及排序时手动处理
