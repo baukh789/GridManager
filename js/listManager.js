@@ -126,7 +126,7 @@
 				$v.hasClass('listManager-ready') || $v.hasClass('listManager-loading')? '' : listDOM.push(v);
 			});
 			if( !listDOM || listDOM.length == 0 ){
-				_this.outLog( '获取初始化列表失败,可能原因:1、标识错误;2、该表格已经渲染' );
+				_this.outLog( '获取初始化列表失败,可能原因:1、标识错误;2、该表格已经渲染' , 'error');
 				return false;
 			}
 			listDOM = $(listDOM);
@@ -267,12 +267,12 @@
 				listManagerCss.href = _this.basePath + 'css/listManager.css';
 				document.head.appendChild( listManagerCss );
 				listManagerCss.addEventListener( 'load', function( event ) {
-					_this.outLog( 'listManager-css load OK' );
+					_this.outLog( 'listManager-css load OK' , 'info' );
 					loadListCss = true;
 					gotoCallback();
 				});
 				listManagerCss.addEventListener( 'error', function(){
-					_this.outLog( 'listManager-css load error' );
+					_this.outLog( 'listManager-css load error' , 'error');
 					loadListCss = false;
 				});	
 			}else{
@@ -289,12 +289,12 @@
 				ajaxPageCss.href = _this.pageCssFile;
 				document.head.appendChild( ajaxPageCss );
 				ajaxPageCss.addEventListener( 'load', function( event ) {
-					_this.outLog( 'listManager-ajaxPage-css load OK' );
+					_this.outLog( 'listManager-ajaxPage-css load OK', 'info' );
 					loadPageCss = true;
 					gotoCallback();
 				});
 				ajaxPageCss.addEventListener( 'error', function(){
-					_this.outLog( 'listManager-ajaxPage-css load error' );
+					_this.outLog( 'listManager-ajaxPage-css load error', 'error' );
 					loadPageCss = false;
 				});
 			}else{
@@ -869,7 +869,7 @@
 				_thName = _th.attr( 'th-name' );
 		//		var	_listManager = _table.listManager('getListManager');
 				if( !_thName || $.trim( _thName ) == '' ){
-					_this.outLog( '排序必要的参数丢失' );
+					_this.outLog( '排序必要的参数丢失', 'error' );
 					return false;
 				}
 				//根据组合排序配置项判定：是否清除原排序及排序样式			
@@ -1251,7 +1251,7 @@
 			*/
 			//绑定窗口变化事件
 			$( window ).resize( function() {
-				_this.outLog( 'winodw resize event' );
+				_this.outLog( 'winodw resize event', 'info' );
 				$( _this.scrollDOM ).trigger( 'scroll', [true]);
 			} );
 			//绑定模拟X轴滚动条
@@ -1451,21 +1451,21 @@
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 			var noCache = _table.attr('no-cache');
 			if( noCache && noCache== 'true' ){
-				_this.outLog( '缓存已被禁用：当前表缺失必要html标签属性[list-manager或th-name]' );
+				_this.outLog( '缓存已被禁用：当前表缺失必要html标签属性[list-manager或th-name]', 'info' );
 				return false;
 			}
 			if( !window.localStorage ){
-				_this.outLog( '当前浏览器不支持：localStorage' );
+				_this.outLog( '当前浏览器不支持：localStorage，缓存功能失效。', 'error');
 				return false;
 			}
 			if( !_table || _table.length == 0 ){
-				_this.outLog( 'setToLocalStorage:无效的table' );
+				_this.outLog( 'setToLocalStorage:无效的table', 'error');
 				return false;
 			}
 			var _tableListManager = _table.attr( 'list-manager' );
 			//验证当前表是否为listManager
 			if( !_tableListManager || $.trim( _tableListManager ) == '' ){
-				_this.outLog( 'setToLocalStorage:无效的list-manager' );
+				_this.outLog( 'setToLocalStorage:无效的list-manager', 'error' );
 				return false;
 			}
 			var _cache 		= {},
@@ -1475,7 +1475,7 @@
 				_thData 	= {};
 			var thList = $( 'thead[class!="set-top"] th', _table );
 			if( !thList || thList.length == 0 ){
-				_this.outLog( 'setToLocalStorage:无效的thList,请检查是否正确配置table,thead,th' );
+				_this.outLog( 'setToLocalStorage:无效的thList,请检查是否正确配置table,thead,th', 'error');
 				return false;
 			}
 					
@@ -1522,21 +1522,21 @@
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 			var noCache = _table.attr('no-cache');
 			if( noCache && noCache== 'true' ){
-				_this.outLog( '缓存已被禁用：当前表缺失必要html标签属性[list-manager或th-name]' );
+				_this.outLog( '缓存已被禁用：当前表缺失必要html标签属性[list-manager或th-name]', 'info');
 				return false;
 			}
 			if( !window.localStorage ){
-				_this.outLog( '当前浏览器不支持：localStorage' );
+				_this.outLog( '当前浏览器不支持：localStorage，缓存功能失效', 'info' );
 				return false;
 			}
 			if( !_table || _table.length == 0 ){
-				_this.outLog( 'getLocalStorage:无效的table' );
+				_this.outLog( 'getLocalStorage:无效的table', 'error' );
 				return false;
 			}
 			var _tableListManager = _table.attr( 'list-manager' );	
 			//验证当前表是否为listManager
 			if( !_tableListManager || $.trim( _tableListManager ) == '' ){
-				_this.outLog( 'getLocalStorage:无效的list-manager' );
+				_this.outLog( 'getLocalStorage:无效的list-manager', 'error' );
 				return false;
 			}
 			var thList = $( 'thead[class!="set-top"] th', _table );
@@ -1644,7 +1644,7 @@
 				_data = _this.getLocalStorage( _table );
 				//验证：当前table 没有缓存数据
 				if( !_data || $.isEmptyObject( _data ) ){
-					_this.outLog( 'configTheadForCache:当前table没有缓存数据' );
+					_this.outLog( 'configTheadForCache:当前table没有缓存数据', 'info');
 					return;
 				}
 				_cache = _data.cache;
@@ -1772,7 +1772,7 @@
 				var _thList = _this.getOriginalThDOM(_table),
 					_td;
 				if( !_thList || _thList.length == 0  ){
-					_this.outLog( 'resetTdForCache:td顺序重置所必须的原TH DOM获取失败' );
+					_this.outLog( 'resetTdForCache:td顺序重置所必须的原TH DOM获取失败', 'error');
 					return false;
 				}
 				var _tmpHtml = [],
@@ -1984,7 +1984,7 @@
 					_tableWarp 	= _page.closest('.table-warp');
 				var cPage = _page.attr('cPage');	//分页页码
 				if(!cPage || !Number(cPage) || _page.hasClass('disabled')){
-					_this.outLog('指向页无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在');
+					_this.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'error');
 					return false;
 				}
 				gotoPage(_tableWarp, cPage);
@@ -2043,7 +2043,7 @@
 				pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 				sizeArea	= $('select[name=pSizeArea]', pageToolbar);	//切换条数区域	
 			if(!sizeArea || sizeArea.length == 0){
-				_this.outLog('未找到单页显示数切换区域，停止该事件绑定');
+				_this.outLog( '未找到单页显示数切换区域，停止该事件绑定', 'info' );
 				return false;
 			}
 			sizeArea.unbind('change');
@@ -2091,7 +2091,7 @@
 				pSizeArea = $('select[name="pSizeArea"]', toolBar),
 				pSizeInfo = $('.dataTables_info', toolBar);
 			if(!pSizeArea || pSizeArea.length == 0){
-				_this.outLog('未找到条数切换区域，停止该事件绑定');
+				_this.outLog( '未找到条数切换区域，停止该事件绑定', 'info' );
 				return false;
 			}
 			var fromNum = _pageData_.cPage == 1 ? 1 : (_pageData_.cPage-1) * _pageData_.pSize + 1,	//从多少开始
@@ -2231,10 +2231,23 @@
 		}
 		/*
 			@输出日志
+			$.type: 输出分类[info,warn,error]
 		*/
-		,outLog: function( msg ){
-			if( this.isDevelopMode ){
-				console.log( msg );
+		,outLog: function( msg, type ){
+			if( !this.isDevelopMode ){
+				return;
+			}
+			if( !type ){
+				return console.log('ListManager:', msg );
+			}
+			else if( type === 'info' ){
+				return console.info('ListManager Info: ', msg );
+			}
+			else if( type === 'warn' ){
+				return console.warn('ListManager Warn: ', msg );
+			}
+			else if( type === 'error' ){
+				return console.error('ListManager Error: ', msg );
 			}
 		}
 	}
