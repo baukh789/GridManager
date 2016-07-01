@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <script type="text/javascript" language="javascript">
         var idTmr;
 		function  getExplorer() {
@@ -25,28 +27,28 @@
 				return 'Safari';
 			}
 		}
-        function method1(tableid) {//Õû¸ö±í¸ñ¿½±´µ½EXCELÖÐ
+        function method1(tableid) {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñ¿½±ï¿½ï¿½ï¿½EXCELï¿½ï¿½
 			if(getExplorer()=='ie')
 			{
 				var curTbl = document.getElementById(tableid);
 				var oXL = new ActiveXObject("Excel.Application");
 				
-				//´´½¨AX¶ÔÏóexcel 
+				//ï¿½ï¿½ï¿½ï¿½AXï¿½ï¿½ï¿½ï¿½excel 
 				var oWB = oXL.Workbooks.Add();
-				//»ñÈ¡workbook¶ÔÏó 
+				//ï¿½ï¿½È¡workbookï¿½ï¿½ï¿½ï¿½ 
 				var xlsheet = oWB.Worksheets(1);
-				//¼¤»îµ±Ç°sheet 
+				//ï¿½ï¿½ï¿½îµ±Ç°sheet 
 				var sel = document.body.createTextRange();
 				sel.moveToElementText(curTbl);
-				//°Ñ±í¸ñÖÐµÄÄÚÈÝÒÆµ½TextRangeÖÐ 
+				//ï¿½Ñ±ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½TextRangeï¿½ï¿½ 
 				sel.select();
-				//È«Ñ¡TextRangeÖÐÄÚÈÝ 
+				//È«Ñ¡TextRangeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 				sel.execCommand("Copy");
-				//¸´ÖÆTextRangeÖÐÄÚÈÝ  
+				//ï¿½ï¿½ï¿½ï¿½TextRangeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 				xlsheet.Paste();
-				//Õ³Ìùµ½»î¶¯µÄEXCELÖÐ       
+				//Õ³ï¿½ï¿½ï¿½ï¿½ï¿½î¶¯ï¿½ï¿½EXCELï¿½ï¿½       
 				oXL.Visible = true;
-				//ÉèÖÃexcel¿É¼ûÊôÐÔ
+				//ï¿½ï¿½ï¿½ï¿½excelï¿½É¼ï¿½ï¿½ï¿½ï¿½ï¿½
 
 				try {
 					var fname = oXL.Application.GetSaveAsFilename("Excel.xls", "Excel Spreadsheets (*.xls), *.xls");
@@ -59,7 +61,7 @@
 					//xls.visible = false;
 					oXL.Quit();
 					oXL = null;
-					//½áÊøexcel½ø³Ì£¬ÍË³öÍê³É
+					//ï¿½ï¿½ï¿½ï¿½excelï¿½ï¿½ï¿½Ì£ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½
 					//window.setInterval("Cleanup();",1);
 					idTmr = window.setInterval("Cleanup();", 1);
 
@@ -102,39 +104,39 @@
 <table id="targetTable">
 	<thead>
 	  <tr align="center">
-		<th>±êÊ¶</th>
-		<th>ÄÚÈÝ</th>
-		<th>´´½¨Ê±¼ä</th>
-		<th>×îºóÐÞ¸ÄÊ±¼ä</th>
-		<th>×î´ò¿ª´òÊ±¼ä</th>
-		<th>ÓÃ»§Ãû</th>
-		<th>ÃÜÂë</th>
+		<th>å¤§æŸ³å¡”é¡¶æ›¿ä¸ƒ</th>
+		<th>å¤§æŸ³å¡”é¡¶æ›¿ä¸ƒ</th>
+		<th>å¤§æŸ³å¡”é¡¶æ›¿ä¸ƒ</th>
+		<th>å¤§æŸ³å¡”é¡¶æ›¿ä¸ƒ</th>
+		<th>å¤§æŸ³å¡”é¡¶æ›¿ä¸ƒ</th>
+		<th>å¤§æŸ³å¡”é¡¶æ›¿ä¸ƒ</th>
+		<th>å¤§æŸ³å¡”é¡¶æ›¿ä¸ƒ</th>
 	  </tr>
 	</thead>
 	<tbody>
   <tr align="center">
 	<td>1</td>
-	<td>excelµ¼³ö01</td>
+	<td>å¤§æŸ³å¡”é¡¶æ›¿ä¸ƒ</td>
 	<td>2015-07-22</td>
+	<td>2015adsf@#%#%&#%*GBDADFA^WRTUGFDFG$%^&(^&%*)(%&(,-07-22</td>
 	<td>2015-07-22</td>
-	<td>2015-07-22</td>
-	<td>baukh</td>
-	<td>1</td>
+	<td>ba,,ukh</td>
+	<td>1,</td>
   </tr>
   <tr align="center">
 	<td>2</td>
-	<td>excelµ¼³ö01</td>
+	<td>å¤§æŸ³å¡”é¡¶æ›¿ä¸ƒ</td>
 	<td>2015-07-22</td>
+	<td>201,,5-07-22</td>
 	<td>2015-07-22</td>
-	<td>2015-07-22</td>
-	<td>baukh</td>
+	<td>b,...ukh</td>
 	<td>1</td>
   </tr>
   </tbody>
 </table>
 </br>
-<input id="Button1" type="button" value="µ¼³öEXCEL" 
+<input id="Button1" type="button" value="ä¸‹è½½Excel" 
         onclick="javascript:method1('targetTable')" />
-		<a href="" download="abc.xls" id="test2">ÊÔÒ»ÏÂ</a>
+		<a href="" download="abc.xls" id="test2"></a>
 </body>
 </html>
