@@ -73,6 +73,10 @@
 	    //序号
 		this.supportAutoOrder	= true;						//是否支持自动序号
 		this.orderThName		= 'order';					//序号列所使用的th-name
+		
+		//选择、反选
+		this.supportCheckbox	= true;						//是否支持选择与反选
+		this.checkboxThName		= 'lm-checkbox';			//选择与反选列所使用的th-name
 		//国际化
 		this.i18n	 			= 'zh-cn';					//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
 
@@ -308,6 +312,10 @@
 			if(_this.supportAutoOrder){
 				_this.initOrderDOM( listDOM );
 			}
+			//嵌入选择返选DOM
+			if(_this.supportCheckbox){
+				_this.initCheckboxDOM( listDOM );
+			}
 			//存储原始th DOM
 			_this.setOriginalThDOM(listDOM);
 			
@@ -401,12 +409,29 @@
 			@生成序号DOM
 			$.element: table数组[jquery对象]
 		*/
-		,initOrderDOM: function( element ){
-			var _this = this;
-			
+		,initOrderDOM: function( element ) {
+			var _this = this;			
 			var orderHtml = '<th th-name="'+ _this.orderThName +'" lm-order="true" width="50px">'+ _this.i18nText('order-text') +'</th>';		
 			$('thead tr', element).prepend(orderHtml);		
 		}
+		/*
+			@初始化选择与反选DOM
+		*/
+		,initCheckboxDOM: function( element ) {
+			var _this = this;			
+			var checkboxHtml = '<th th-name="'+ _this.checkboxThName +'" lm-checkbox="true" width="50px"><input type="checkbox"/></th>';		
+			$('thead tr', element).prepend(checkboxHtml);
+			//绑定全选事件
+			element.off('click','input[type="checkbox"]');
+			element.on('click','input[type="checkbox"]', function(){
+				var _checkAction = $(this),	//全选键事件源
+					_checkStatus = false,	//当前全选键所处的状态
+					_allCheckbox = $('tbody td[lm-checkbox] input[type="checkbox"]', element);	//td中的选择框		
+				$.each(_allCheckbox, function(i, v){
+					v.checked = _checkAction.prop('checked');
+				});
+			});
+		}		
 		/*
 			@渲染HTML，根据配置嵌入所需的事件源DOM
 			$.element: table数组[jquery对象]
@@ -457,7 +482,8 @@
 				adjustDOM,						//调整宽度DOM
 				sortingDom,						//排序DOM
 				sortType,						//排序类形	
-				unLmOrder;						//是否为插件自动生成的序号列
+				isLmOrder,						//是否为插件自动生成的序号列
+				isLmCheckbox;					//是否为插件自动生成的选择列
 			$.each( element,function( i1, v1 ){
 				v1 = $( v1 );
 				//校验table的必要参数
@@ -491,11 +517,18 @@
 					onlyTH = $( v2 );
 					onlyTH.attr( 'th-visible','visible' );
 					
-					//当前非序号列
+					//是否为自动生成的序号列
 					if(_this.supportAutoOrder && onlyTH.attr('lm-order') == 'true'){				
-						unLmOrder = false;
+						isLmOrder = true;
 					}else{			
-						unLmOrder = true;		
+						isLmOrder = false;		
+					}					
+					
+					//是否为自动生成的选择列
+					if(_this.supportCheckbox && onlyTH.attr('lm-checkbox') == 'true'){				
+						isLmCheckbox = true;
+					}else{			
+						isLmCheckbox = false;		
 					}
 					
 					//嵌入th下外层div
@@ -526,14 +559,16 @@
 								+ '</li>' );
 					}
 					//嵌入拖拽事件源
-					if( _this.supportDrag && unLmOrder){
+					//插件自动生成的排序与选择列不做事件绑定
+					if( _this.supportDrag && !isLmOrder && !isLmCheckbox){
 						onlyThWarp.html( '<span class="th-text drag-action">'+onlyTH.html()+'</span>' );
 					}else{
 						onlyThWarp.html('<span class="th-text">'+ onlyTH.html() +'</span>');
 					}
-					var onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
+					var onlyThWarpPaddingTop = onlyThWarp.css( 'padding-top' );
 					//嵌入表头提醒事件源
-					if( _this.supportRemind && onlyTH.attr( 'remind' ) != undefined && unLmOrder){						
+					//插件自动生成的排序与选择列不做事件绑定
+					if( _this.supportRemind && onlyTH.attr( 'remind' ) != undefined && !isLmOrder && !isLmCheckbox){						
 						remindDOM = $( _remindHtml );
 						remindDOM.find( '.ra-title' ).text( onlyTH.text() );
 						remindDOM.find( '.ra-con' ).text( onlyTH.attr( 'remind' ) || onlyTH.text() );
@@ -543,23 +578,25 @@
 						onlyThWarp.append( remindDOM );
 					}		
 					//嵌入排序事件源
+					//插件自动生成的排序与选择列不做事件绑定
 					sortType = onlyTH.attr( 'sorting' );
-					if( _this.supportSorting &&  sortType!= undefined && unLmOrder){
+					if( _this.supportSorting &&  sortType!= undefined && !isLmOrder && !isLmCheckbox ){
 						sortingDom = $( _sortingHtml );
 						//依据 sortType 进行初始显示
 						switch( sortType ){
-							case _this.sortUpText : sortingDom.addClass('sorting-up');
+							case _this.sortUpText : sortingDom.addClass( 'sorting-up' );
 							break;						
-							case _this.sortDownText : sortingDom.addClass('sorting-down');
+							case _this.sortDownText : sortingDom.addClass( 'sorting-down' );
 							break;
 						}
-						if( onlyThWarpPaddingTop != ''  && onlyThWarpPaddingTop != '0px'){
+						if( onlyThWarpPaddingTop != ''  && onlyThWarpPaddingTop != '0px' ){
 							sortingDom.css('top', onlyThWarpPaddingTop);
 						}
 						onlyThWarp.append( sortingDom );
 					}
 					//嵌入宽度调整事件源
-					if( _this.supportAdjust ){								
+					//插件自动生成的选择列不做事件绑定
+					if( _this.supportAdjust && !isLmCheckbox ){								
 						adjustDOM = $( _adjustHtml );
 						//最后一列不支持调整宽度
 						if( i2 == onlyThList.length - 1 ){
@@ -922,8 +959,7 @@
 					_td.addClass( 'drag-ongoing' );
 					window.clearInterval( SIV_td );
 					SIV_td = window.setInterval( function(){
-						_td = _table.find( 'tbody tr' )
-							.find( 'td:eq( '+_th.index()+' )' ); 	//与事件源同列的所有td						
+						_td = _table.find( 'tbody tr' ).find( 'td:eq( '+_th.index()+' )' ); 	//与事件源同列的所有td						
 						_td.addClass( 'drag-ongoing' );
 					},100 );
 				}else{
@@ -1598,7 +1634,8 @@
 			//重置表格序号
 			if(_this.supportAutoOrder){
 				var _pageData = _this.pageData;
-				var _orderBaseNumber = 1,
+				var onlyOrderTd = undefined,
+					_orderBaseNumber = 1,
 					_orderText;
 				//验证是否存在分页数据
 				if(_pageData && _pageData['pSize'] && _pageData['cPage']){
@@ -1606,10 +1643,23 @@
 				}
 				$.each( _tr, function( i, v ){
 					_orderText = _orderBaseNumber + i;
-					if($('td[lm-order="true"]', v).length == 0){
+					onlyOrderTd = $('td[lm-order="true"]', v)
+					if(onlyOrderTd.length == 0){
 						$(v).prepend('<td lm-order="true">'+ _orderText +'</td>');
 					}else{
-						$('td[lm-order="true"]', v).text(_orderText);
+						onlyOrderTd.text(_orderText);
+					}
+				});
+			}
+			//重置表格选择 checkbox
+			if(_this.supportCheckbox){
+				var onlyCheckTd = undefined;
+				$.each( _tr, function( i, v ){
+					onlyCheckTd = $('td[lm-checkbox="true"]', v);
+					if( onlyCheckTd.length == 0 ){
+						$(v).prepend('<td lm-checkbox="true"><input type="checkbox"/></td>');
+					}else{
+						$('[type="checkbox"]', onlyCheckTd).prop('checked', false);
 					}
 				});
 			}

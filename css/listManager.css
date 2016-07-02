@@ -449,6 +449,12 @@ table.list-manager-default tbody tr:hover td{
 .table-warp table[list-manager] td[lm-order="true"]:hover{
 	background-color:#e8e8e8;
 }
+/*选择全选样式*/
+.table-warp table[list-manager] th[lm-checkbox="true"],
+.table-warp table[list-manager] td[lm-checkbox="true"]{
+	text-align:center;
+	cursor:default;
+}
 /*闪烁动画特效*/
 @-webkit-keyframes opacityChange{
     0%{
