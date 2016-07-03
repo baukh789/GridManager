@@ -11,6 +11,7 @@
 	移除方法:sortingCallback，使用事件sortingBefore与sortingAfter替代
 	增加ajaxUrl参数，用于自动获取数据，无需再在分页及排序时手动处理
 	优化console.outLog()方法
+	增加getCheckedTr方法，用于获取当前选中的tr
 	清理无用代码
 	
 	开发中的任务：
@@ -350,6 +351,8 @@
 			if( _this.supportSetTop ){
 				_this.bindSetTopFunction( listDOM );
 			}
+			//绑定右键菜单事件
+			_this.bindRightMenuEvent( listDOM );
 			//渲梁tbodyDOM
 			_this.renderTbody();
 			//将listManager实例化对象存放于jquery data
@@ -411,27 +414,50 @@
 		*/
 		,initOrderDOM: function( element ) {
 			var _this = this;			
-			var orderHtml = '<th th-name="'+ _this.orderThName +'" lm-order="true" width="50px">'+ _this.i18nText('order-text') +'</th>';		
+			var orderHtml = '<th th-name="'+ _this.orderThName +'" lm-order="true" lm-create="true" width="50px">'+ _this.i18nText('order-text') +'</th>';		
 			$('thead tr', element).prepend(orderHtml);		
 		}
 		/*
 			@初始化选择与反选DOM
+			$.element: table DOM
 		*/
 		,initCheckboxDOM: function( element ) {
 			var _this = this;			
-			var checkboxHtml = '<th th-name="'+ _this.checkboxThName +'" lm-checkbox="true" width="50px"><input type="checkbox"/></th>';		
+			var checkboxHtml = '<th th-name="'+ _this.checkboxThName +'" lm-checkbox="true" lm-create="true" width="50px"><input type="checkbox"/></th>';		
 			$('thead tr', element).prepend(checkboxHtml);
-			//绑定全选事件
+			//绑定选择事件
 			element.off('click','input[type="checkbox"]');
 			element.on('click','input[type="checkbox"]', function(){
 				var _checkAction = $(this),	//全选键事件源
-					_checkStatus = false,	//当前全选键所处的状态
-					_allCheckbox = $('tbody td[lm-checkbox] input[type="checkbox"]', element);	//td中的选择框		
-				$.each(_allCheckbox, function(i, v){
-					v.checked = _checkAction.prop('checked');
-				});
+					_thChecked	= true,		//存储th中的checkbox的选中状态
+					_thCheckbox = $('thead th[lm-checkbox] input[type="checkbox"]', element),	//th中的选择框
+					_tdCheckbox = $('tbody td[lm-checkbox] input[type="checkbox"]', element);	//td中的选择框
+				//当前为全选事件源
+				if(_checkAction.closest('th[th-name="'+ _this.checkboxThName +'"]').length === 1){
+					$.each(_tdCheckbox, function(i, v){
+						v.checked = _checkAction.prop('checked');
+					});
+				//当前为单个选择			
+				}else{
+					$.each(_tdCheckbox, function(i, v){
+						if(v.checked === false) {
+							_thChecked = false;
+							return false;
+						}
+					});
+					_thCheckbox.prop('checked', _thChecked);
+				}
 			});
-		}		
+		}
+		/*
+			[对外公开方法]
+			@获取当前选中的列
+			$.element: table DOM
+		*/
+		,getCheckedTr: function( element ) {
+			console.log(1)
+			return $('tbody td[lm-checkbox] input[type="checkbox"]:checked', element).closest('tr');			
+		}
 		/*
 			@渲染HTML，根据配置嵌入所需的事件源DOM
 			$.element: table数组[jquery对象]
@@ -1195,7 +1221,6 @@
 			var _this = this;
 			//绑定窗口变化事件
 			$( window ).resize( function() {
-				_this.outLog( 'winodw resize event', 'info' );
 				$( _this.scrollDOM ).trigger( 'scroll', [true]);
 			} );
 			//绑定模拟X轴滚动条
@@ -1351,6 +1376,70 @@
 				return true;
 			} );
 			$( _this.scrollDOM ).trigger( 'scroll' );
+		}
+		/*
+			@绑定右键菜单事件
+			$.element:table
+		*/
+		,bindRightMenuEvent: function( element ){
+			var _this = this;
+			var tableWarp = $(element).closest('.table-warp');
+			var menuHTML = '<div class="lm-menu"><span class="downGrid">下载当前表</span></div>';
+			//绑定打开右键菜单栏
+			tableWarp.append(menuHTML);
+			tableWarp.unbind('contextmenu');
+			tableWarp.bind('contextmenu', function(e){
+				e.preventDefault();
+				e.stopPropagation();
+				
+			});
+			//绑定下载事件
+			$('.downGrid').unbind('click');
+			$('.downGrid').bind('click', function(){
+				_this.exportGridToXLS($(this).closest('.table-warp').find('table[list-manager]'));
+			});
+		}
+		/*
+			@导出表格 .xls
+			$.element:table
+		*/
+		,exportGridToXLS: function( element ){
+			var uri = 'data:application/vnd.ms-excel;base64,',
+				exportHTML = '',	//要导出html格式数据
+				theadHTML= '',	//存储导出的thead数据
+				tbodyHTML ='', //存储导出的tbody下的数据
+				tableDOM = $(element);	//当前要导出的table
+			var thDOM = $('thead[class!="set-top"] th[th-visible="visible"][lm-create!="true"]', tableDOM),
+				trDOM = $('tbody tr', tableDOM),
+				tdDOM;
+			$.each(thDOM, function(i, v){
+				theadHTML += '<th>'
+						  + v.getElementsByClassName('th-text')[0].textContent
+						  + '</th>';
+			});
+			$.each(trDOM, function(i, v){
+				tdDOM = $('td[lm-create!="true"]', v);
+				tbodyHTML += '<tr>';
+				$.each(tdDOM, function(i2, v2){
+					tbodyHTML += v2.outerHTML
+				});
+				tbodyHTML += '</tr>';
+			});
+			exportHTML = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
+			+ '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
+			+ '<body><table>'
+			+ '<thead>'
+			+ theadHTML
+			+ '</thead>'
+			+ '<tbody>'
+			+ tbodyHTML
+			+ '</tbody>'
+			+ '</table></body>'
+			+ '</html>';
+			window.open( uri + base64(exportHTML))
+			function base64(s) { 
+				return window.btoa(unescape(encodeURIComponent(s))) 
+			}
 		}
 		/*		
 			@重置宽度调整事件源DOM
@@ -1645,7 +1734,7 @@
 					_orderText = _orderBaseNumber + i;
 					onlyOrderTd = $('td[lm-order="true"]', v)
 					if(onlyOrderTd.length == 0){
-						$(v).prepend('<td lm-order="true">'+ _orderText +'</td>');
+						$(v).prepend('<td lm-order="true" lm-create="true">'+ _orderText +'</td>');
 					}else{
 						onlyOrderTd.text(_orderText);
 					}
@@ -1657,14 +1746,14 @@
 				$.each( _tr, function( i, v ){
 					onlyCheckTd = $('td[lm-checkbox="true"]', v);
 					if( onlyCheckTd.length == 0 ){
-						$(v).prepend('<td lm-checkbox="true"><input type="checkbox"/></td>');
+						$(v).prepend('<td lm-checkbox="true" lm-create="true"><input type="checkbox"/></td>');
 					}else{
 						$('[type="checkbox"]', onlyCheckTd).prop('checked', false);
 					}
 				});
 			}
-			//依据存储顺序重置td顺序
-			if( _this.supportAdjust){			
+			//依据顺序存储重置td顺序
+			if( _this.supportAdjust){
 				var _thList = _this.getOriginalThDOM(_table),
 					_td;
 				if( !_thList || _thList.length == 0  ){
@@ -1673,12 +1762,16 @@
 				}
 				var _tmpHtml = [],
 					_tdArray = [];
-					
+			//		console.log(_thList.eq(4).index())
 				$.each( _tr, function( i, v ){
 					_tmpHtml[i] = $( v );
 					_td = $( v ).find( 'td' );
 					$.each( _td, function( i2, v2 ){
-						_tdArray[_thList.index(_thList.eq( $( v2 ).index() ))] = v2;	
+				//	console.log(_thList.eq( $( v2 ).index()).index())
+			//		console.log(_thList.index(_thList.eq( $( v2 ).index())))
+			//		console.log('-------------------')
+						//baukh20160703:#注：这块被简化了，可能存在问题，需要验证 
+						_tdArray[_thList.eq( i2).index()] = v2;	
 					} );
 					_tmpHtml[i].html( _tdArray );
 				});
@@ -2203,7 +2296,7 @@
 			var results,
 			resultsList = [];
 			$.each(_this, function( i, v ){ 
-				//parents('table')  用于  resetTd  单行tr进行操作时
+				//closest('table')  用于  resetTd  单行tr进行操作时
 				lmObj = $(v).data('listManager') || $(v).closest('table').data('listManager');
 				//name type = array
 				if( $.isArray(name) ){
