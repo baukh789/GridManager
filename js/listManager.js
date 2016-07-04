@@ -13,6 +13,7 @@
 	优化console.outLog()方法
 	增加getCheckedTr方法，用于获取当前选中的tr
 	清理无用代码
+	提供能否出表格数据公开方法：exportGridToXls， 示例： $('table').listManager([{'exportGridToXls':'aaaaa'}])
 	
 	开发中的任务：
 	增加全选、反选功能
@@ -30,6 +31,7 @@
 	不再支持多表同时渲染
 	移除icon-fong
 	增加鼠标右键功能菜单(行与列同时高亮)[1、删除本行；2、隐藏本列；3、下一页；4、上一页；5、配置列；6、表数据另存为]
+	公开方法的调用需要优化，简易
 */
 ;(function(){
 	'use strict';	
@@ -84,6 +86,8 @@
 		//用于支持通过数据渲染DOM
 		this.listManagerName   	= '';						//表格list-manager所对应的值
 		this.ajaxUrl			= '';						//获取表格数据地址，配置该参数后，将会动态获取数据
+		//数据导出
+		this.supportExport		= true;						//支持导出表格数据
 		//用于支持全局属性配置  于v1.8 中将listManagerConfig弱化且不再建议使用。
 		
 		var textConfig = {};
@@ -483,6 +487,8 @@
 							 + '<i class="sa-icon sa-up iconfont icon-up"></i>'
 							 + '<i class="sa-icon sa-down iconfont icon-down"></i>'
 							 + '</div>';
+			//导出表格数据所需的事件源DOM
+			var exportActionHtml = '<a href="" download="" id="lm-export-action"></a>';
 			//AJAX分页HTML
 			if( _this.supportAjaxPage ){
 				var	_ajaxPageHtml= '<div class="page-toolbar">'
@@ -533,6 +539,10 @@
 				if( _this.supportAjaxPage){	
 					tableWarp.append( _ajaxPageHtml );
 					_this.initAjaxPage(v1);
+				}
+				//嵌入导出表格数据事件源
+				if( _this.supportExport ){
+					tableWarp.append( exportActionHtml );					
 				}
 				//表头置顶
 				if( _this.supportSetTop ){
@@ -1384,7 +1394,14 @@
 		,bindRightMenuEvent: function( element ){
 			var _this = this;
 			var tableWarp = $(element).closest('.table-warp');
-			var menuHTML = '<div class="lm-menu"><span class="downGrid">下载当前表</span></div>';
+			//支持导出表格数据
+			var exportHtml = '';
+			if(_this.supportExport){
+				exportHtml = '<span class="downGrid">下载当前表</span>';
+			}
+			var menuHTML = '<div class="lm-menu">'
+						 + exportHtml
+						 + '</div>';
 			//绑定打开右键菜单栏
 			tableWarp.append(menuHTML);
 			tableWarp.unbind('contextmenu');
@@ -1396,14 +1413,23 @@
 			//绑定下载事件
 			$('.downGrid').unbind('click');
 			$('.downGrid').bind('click', function(){
-				_this.exportGridToXLS($(this).closest('.table-warp').find('table[list-manager]'));
+				_this.exportGridToXls($(this).closest('.table-warp').find('table[list-manager]'));
 			});
 		}
 		/*
+			[对外公开方法]
 			@导出表格 .xls
 			$.element:table
+			$.fileName: 导出后的文件名
 		*/
-		,exportGridToXLS: function( element ){
+		,exportGridToXls: function( element, fileName ){
+			var _this = this;
+			var lmExportAction = $('#lm-export-action'); //embeddedDom内添加
+			if( !_this.supportExport || lmExportAction.length === 0 ){
+				_this.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
+				return;
+			}
+			
 			var uri = 'data:application/vnd.ms-excel;base64,',
 				exportHTML = '',	//要导出html格式数据
 				theadHTML= '',	//存储导出的thead数据
@@ -1425,18 +1451,21 @@
 				});
 				tbodyHTML += '</tr>';
 			});
-			exportHTML = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
-			+ '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
-			+ '<body><table>'
-			+ '<thead>'
-			+ theadHTML
-			+ '</thead>'
-			+ '<tbody>'
-			+ tbodyHTML
-			+ '</tbody>'
-			+ '</table></body>'
-			+ '</html>';
-			window.open( uri + base64(exportHTML))
+			exportHTML  = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
+						+ '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
+						+ '<body><table>'
+						+ '<thead>'
+						+ theadHTML
+						+ '</thead>'
+						+ '<tbody>'
+						+ tbodyHTML
+						+ '</tbody>'
+						+ '</table></body>'
+						+ '</html>';
+			lmExportAction.prop('href', uri + base64(exportHTML));
+			lmExportAction.prop('download', (fileName || tableDOM.attr('list-manager')) +'.xls');
+			lmExportAction.get(0).click();			
+			
 			function base64(s) { 
 				return window.btoa(unescape(encodeURIComponent(s))) 
 			}
