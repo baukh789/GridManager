@@ -69,18 +69,16 @@ $(function(){
 		,pageSize:30
 		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
 		,pagingBefore:function(query){
-      		console.log('分页事件前');
+      		console.log('event: 分页前', query);
 		}
 		,pagingAfter: function(query){
-		  	console.log('分页事件后');	
+		  	console.log('event: 分页后', query);	
 		}
 		,sortingBefore:function(query){
-      		console.log('排序事件前');
-			console.log(query);
+      		console.log('event: 排序前', query);
 		}
 		,sortingAfter: function(query){
-		  	console.log('排序事件后');
-			console.log(query);	
+		  	console.log('event: 排序后', query);
 		}
 		,textConfig:{
 			'page-go': {
@@ -89,13 +87,7 @@ $(function(){
 			}
 		}
 	},function(query){
-		console.log('------------init方法回调query参数------------')
-		console.log(query)
-		//ajax get page data
-		console.log('========================================================================')	
-		//table.listManager('resetTd',false)	
-		console.log('========================================================================')	
-		table.listManager('resetPageData', getPageData(query.pSize, 1000, 1));
+		console.log('init方法回调query参数', query);
 	});
 	
 	//计算分页数据

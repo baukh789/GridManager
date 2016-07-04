@@ -274,9 +274,12 @@ table.list-manager-default tbody tr:hover td{
 .table-warp table[list-manager] th .remind-action .ra-area .ra-con{
 	display:block;
 	font-weight:500;
-/*	text-indent:2em;*/
 	text-align:left;
 	font-size: 0.9em;
+}
+/*导出excel*/
+#lm-export-action{
+	display:none;
 }
 /*表头置顶*/
 .table-warp .set-top{
@@ -289,11 +292,6 @@ table.list-manager-default tbody tr:hover td{
 .table-warp .set-top .adjust-action{
 	display:none !important;
 }
-/**
-.table-warp .set-top .remind-action{
-	display:none;
-}
-**/
 .table-warp .set-top .sorting-action{
 	display:none !important;
 }
