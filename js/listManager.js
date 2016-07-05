@@ -18,6 +18,7 @@
 	取消多表同时渲染机制
 	增加对外公开方法验证，未经对外公开的方法将限制调用
 	增加全选、反选功能
+	增加配置项：columnData 通过配置的形式渲染table
 	
 	开发中的任务：
 	增加删除列功能 提供删除操作回调函数
@@ -31,14 +32,13 @@
 	文档增加常见问题及解决方案	
 	可通过配置参进行表格渲染，无需在HTML中存在DOM节点
 	序列宽度优化
-	不再支持多表同时渲染
 	移除icon-fong
 	增加鼠标右键功能菜单(行与列同时高亮)[1、删除本行；2、隐藏本列；3、下一页；4、上一页；5、配置列；6、表数据另存为]
 	公开方法的调用需要优化，简易
 */
 ;(function(){
 	'use strict';	
-	function listManager(settings){
+	function GridManager(settings){
 		typeof(settings) == 'undefined' ? settings = {} : '';		
 		this.version			= '1.8.5';					//版本号
 		this.isDevelopMode  	= false;					//是否为开发模式，为true时将打印事件日志
@@ -85,7 +85,8 @@
 		this.i18n	 			= 'zh-cn';					//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
 
 		//用于支持通过数据渲染DOM
-		this.listManagerName   	= '';						//表格list-manager所对应的值
+		this.columnData			= [];						//表格列数据配置项
+		this.gridManagerName   	= '';						//表格grid-manager所对应的值[可在html中配置]
 		this.ajaxUrl			= '';						//获取表格数据地址，配置该参数后，将会动态获取数据
 		//数据导出
 		this.supportExport		= true;						//支持导出表格数据
@@ -99,7 +100,7 @@
 		$.extend(textConfig, this.textConfig, settings.textConfig)
 		$.extend(this, settings, {textConfig: textConfig});
 	}
-	listManager.prototype = {
+	GridManager.prototype = {
 		/*
 			@当前浏览器是否为谷歌[内部参数]
 		*/
@@ -122,10 +123,16 @@
 			var _this = this;
 			//通过版本较验 清理缓存
 			_this.cleanTableCacheForVersion(jQueryObj);
-
-			_this.listManagerName = jQueryObj.attr('list-manager');	//存储listManagerName值	
 			
-			if(jQueryObj.hasClass('listManager-ready') || jQueryObj.hasClass('listManager-loading')){
+			if(typeof _this.gridManagerName !== 'string' || _this.gridManagerName.trim() === ''){
+				_this.gridManagerName = jQueryObj.attr('grid-manager');	//存储gridManagerName值	
+			}
+			if(_this.gridManagerName.trim() === ''){
+				_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+				return false;
+			}
+			
+			if(jQueryObj.hasClass('GridManager-ready') || jQueryObj.hasClass('GridManager-loading')){
 				_this.outLog('渲染失败：可能该表格已经渲染或正在渲染' , 'error');
 				return false;
 			}			
@@ -135,15 +142,15 @@
 			}
 			var query = $.extend({}, _this.query, _this.pageData);
 			//增加渲染中标注
-			jQueryObj.addClass('listManager-loading');
+			jQueryObj.addClass('GridManager-loading');
 			//加载所需资源
-			_this.loadListManagerFile(function(){
+			_this.loadListManagerFile(function(){  //baukh20160705:加载资源应该移除
 				_this.initTable(jQueryObj);
 				
 				//如果初始获取缓存失败，则在mousedown时，首先存储一次数据
 				if(typeof jQueryObj.attr('grid-manager-cache-error') !== 'undefined'){
 					window.setTimeout(function(){
-						_this.setToLocalStorage(jQueryObj, true);
+						_this.setToLocalStorage($('table[grid-manager="'+ _this.gridManagerName +'"]', jQueryObj), true);
 						jQueryObj.removeAttr('grid-manager-cache-error');
 					},1000);
 				}			
@@ -165,7 +172,7 @@
 		/*
 			[对外公开方法]
 			@通过JQuery实例获取listManager
-			$.element:当前将要获取数据的table[数组]
+			$.element:实例前的标签
 		*/
 		,getListManager: function(element){
 			return element.data('listManager');
@@ -265,57 +272,49 @@
 		}
 		/*
 			@初始化列表
+			$.gridElement: 渲染前的gridElement
 		*/
-		,initTable: function(listDOM){
+		,initTable: function(gridElement){
 			var _this = this;
-			//嵌入序号DOM
-			if(_this.supportAutoOrder){
-				_this.initOrderDOM(listDOM);
-			}
-			//嵌入选择返选DOM
-			if(_this.supportCheckbox){
-				_this.initCheckboxDOM(listDOM);
-			}
-			//存储原始th DOM
-			_this.setOriginalThDOM(listDOM);
 			
 			//渲染HTML，嵌入所需的事件源DOM
-			_this.embeddedDom(listDOM);
+			_this.embeddedDom(gridElement);
 			
+			var _table = $('table[grid-manager="'+ _this.gridManagerName +'"]', gridElement);
 			//获取本地缓存并对列表进行配置
 			if(!_this.disableCache){
-				_this.configTheadForCache(listDOM);
+				_this.configTheadForCache(_table);
 			}
 			//绑定宽度调整事件
 			if(_this.supportAdjust){
-				_this.bindAdjustEvent(listDOM);
+				_this.bindAdjustEvent(_table);
 			}
 			//绑定拖拽换位事件
 			if(_this.supportDrag){
-				_this.bindDragEvent(listDOM);
+				_this.bindDragEvent(_table);
 			}
 			//绑定排序事件
 			if(_this.supportSorting){
-				_this.bindSortingEvent(listDOM);
+				_this.bindSortingEvent(_table);
 			}
 			//绑定表头提示事件
 			if(_this.supportRemind){
-				_this.bindRemindEvent(listDOM);
+				_this.bindRemindEvent(_table);
 			}
 			//绑定配置列表事件
 			if(_this.supportConfig){
-				_this.bindConfigEvent(listDOM);
+				_this.bindConfigEvent(_table);
 			}
 			//绑定表头吸顶功能
 			if(_this.supportSetTop){
-				_this.bindSetTopFunction(listDOM);
+				_this.bindSetTopFunction(_table);
 			}
 			//绑定右键菜单事件
-			_this.bindRightMenuEvent(listDOM);
+			_this.bindRightMenuEvent(_table);
 			//渲梁tbodyDOM
 			_this.renderTbody();
 			//将listManager实例化对象存放于jquery data
-			_this.setListManagerToJQuery(listDOM);
+			_this.setListManagerToJQuery(_table);
 			
 		}
 		/*
@@ -328,7 +327,7 @@
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
-			var tableDOM = $('[list-manager="'+ _this.listManagerName +'"]'),		//table dom
+			var tableDOM = $('table[grid-manager="'+ _this.gridManagerName +'"]'),		//table dom
 				tbodyDOM = $('tbody', tableDOM);	//tbody dom
 			if(!tbodyDOM || tbodyDOM.length === 0){
 				tableDOM.append('<tbody></tbody>');
@@ -369,12 +368,12 @@
 		}
 		/*
 			@生成序号DOM
-			$.element: table数组[jquery对象]
+			$.table: [jquery对象]
 		*/
-		,initOrderDOM: function(element) {
+		,initOrderDOM: function(table) {
 			var _this = this;			
 			var orderHtml = '<th th-name="'+ _this.orderThName +'" lm-order="true" lm-create="true" width="50px">'+ _this.i18nText('order-text') +'</th>';		
-			$('thead tr', element).prepend(orderHtml);		
+			$('thead tr', table).prepend(orderHtml);		
 		}
 		/*
 			@初始化选择与反选DOM
@@ -418,11 +417,40 @@
 		}
 		/*
 			@渲染HTML，根据配置嵌入所需的事件源DOM
-			$.element: table数组[jquery对象]
+			$.element: 需要渲染的JQuery对象
 		*/
 		,embeddedDom: function(element){
 			var _this = this;
+			//baukh20160705:这里应该做一个判断，如果本身就是table，那么该直接使用table下的th项
+			var tableHtml 	= '<table width="100%" cellspacing="1" cellpadding="0" grid-manager="'
+							+ _this.gridManagerName+ '">'
+							+ '<thead>';
+			var remindHtml = '',
+				sortingHtml	= '';
+			//通过配置项[columnData]生成thead
+			$.each(_this.columnData, function(i, v){
+				if(_this.supportRemind){
+					remindHtml = 'remind' + v.remind;
+				}
+				if(_this.supportSorting){
+					sortingHtml = 'sorting' + v.sorting;
+				}
+				tableHtml  	+= '<th th-name="'+ v.name +'" '+remindHtml+' '+sortingHtml+'>'+ v.text +'</th>';
+			});
+			tableHtml += '</thead><tbody></tbody></table>';
+			element.html(tableHtml);
 			
+			var table = $('table[grid-manager="'+ _this.gridManagerName +'"]', element);			
+			//嵌入序号DOM
+			if(_this.supportAutoOrder){
+				_this.initOrderDOM(table);
+			}
+			//嵌入选择返选DOM
+			if(_this.supportCheckbox){
+				_this.initCheckboxDOM(table);
+			}
+			//存储原始th DOM
+			_this.setOriginalThDOM(table);
 			//表头提醒HTML
 			var _remindHtml  = '<div class="remind-action">'
 							 + '<i class="ra-help iconfont icon-help"></i>'
@@ -470,142 +498,139 @@
 				sortType,						//排序类形	
 				isLmOrder,						//是否为插件自动生成的序号列
 				isLmCheckbox;					//是否为插件自动生成的选择列
-			$.each(element,function(i1, v1){
-				v1 = $(v1);
-				//校验table的必要参数
-				_this.checkTable(v1);
+			//校验table的必要参数
+			_this.checkTable(table);   //@baukh20160705:这个后期可以移除了，2.0版本中将没有什么作用了
+			
+			//根据配置使用默认的表格样式
+			if(_this.useDefaultStyle){
+				table.addClass('grid-manager-default');
+			}
+			onlyThead = $('thead', table);
+			onlyThList = onlyThead.find('th');
+			table.wrap('<div class="table-warp"><div class="table-div"></div><span class="text-dreamland"></span></div>');
+			tableWarp = table.parents('.table-warp').eq(0);
+			tableDiv = $('.table-div', tableWarp);
+			//嵌入配置列表DOM
+			if(_this.supportConfig){
+				tableWarp.append(_configHtml);					
+			}
+			tName = table.attr('grid-manager');
+			//嵌入Ajax分页DOM
+			if(_this.supportAjaxPage){	
+				tableWarp.append(_ajaxPageHtml);
+				_this.initAjaxPage(table);
+			}
+			//嵌入导出表格数据事件源
+			if(_this.supportExport){
+				tableWarp.append(exportActionHtml);					
+			}
+			//表头置顶
+			if(_this.supportSetTop){
+				tableDiv.after('<div class="scroll-area"><div class="sa-inner"></div></div>');
+			}
+			
+			$.each(onlyThList, function(i2,v2){
+				onlyTH = $(v2);
+				onlyTH.attr('th-visible','visible');
 				
-				//根据配置使用默认的表格样式
-				if(_this.useDefaultStyle){
-					v1.addClass('list-manager-default');
+				//是否为自动生成的序号列
+				if(_this.supportAutoOrder && onlyTH.attr('lm-order') == 'true'){				
+					isLmOrder = true;
+				}else{			
+					isLmOrder = false;		
+				}					
+				
+				//是否为自动生成的选择列
+				if(_this.supportCheckbox && onlyTH.attr('lm-checkbox') == 'true'){				
+					isLmCheckbox = true;
+				}else{			
+					isLmCheckbox = false;		
 				}
-				onlyThead = $('thead', v1);
-				onlyThList = onlyThead.find('th');
-				v1.wrap('<div class="table-warp"><div class="table-div"></div><span class="text-dreamland"></span></div>');
-				tableWarp = v1.parents('.table-warp').eq(0);
-				tableDiv = $('.table-div', tableWarp);
-				//嵌入配置列表DOM
+				
+				//嵌入th下外层div
+				onlyThWarp = $('<div class="th-warp"></div>');
+				//th存在padding时 转移至th-warp
+				if(_this.isChrome()){
+					thPadding = onlyTH.css('padding');  //firefox 不兼容
+				}else{
+					thPadding = onlyTH.css('padding-top') + ' '
+							  + onlyTH.css('padding-right') + ' '
+							  + onlyTH.css('padding-bottom') + ' '
+							  + onlyTH.css('padding-left');	
+				}
+				thPadding = $.trim(thPadding);
+				if(thPadding != '' && thPadding != '0px' && thPadding != '0px 0px 0px 0px'){
+					onlyThWarp.css('padding', thPadding);
+					onlyTH.css('cssText','padding:0px!important');
+				}
+				//嵌入配置列表项
 				if(_this.supportConfig){
-					tableWarp.append(_configHtml);					
+					$('.config-list', tableWarp)
+					.append('<li th-name="'+ onlyTH.attr('th-name') +'" class="checked-li">'
+							+ '<input type="checkbox" checked="checked"/>'
+							+ '<label>'
+							+ '<span class="fake-checkbox"></span>'
+							+ onlyTH.text()
+							+ '</label>'
+							+ '</li>');
 				}
-				tName = v1.attr('list-manager');
-				//嵌入Ajax分页DOM
-				if(_this.supportAjaxPage){	
-					tableWarp.append(_ajaxPageHtml);
-					_this.initAjaxPage(v1);
+				//嵌入拖拽事件源
+				//插件自动生成的排序与选择列不做事件绑定
+				if(_this.supportDrag && !isLmOrder && !isLmCheckbox){
+					onlyThWarp.html('<span class="th-text drag-action">'+onlyTH.html()+'</span>');
+				}else{
+					onlyThWarp.html('<span class="th-text">'+ onlyTH.html() +'</span>');
 				}
-				//嵌入导出表格数据事件源
-				if(_this.supportExport){
-					tableWarp.append(exportActionHtml);					
+				var onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
+				//嵌入表头提醒事件源
+				//插件自动生成的排序与选择列不做事件绑定
+				if(_this.supportRemind && onlyTH.attr('remind') != undefined && !isLmOrder && !isLmCheckbox){						
+					remindDOM = $(_remindHtml);
+					remindDOM.find('.ra-title').text(onlyTH.text());
+					remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
+					if(onlyThWarpPaddingTop != '' && onlyThWarpPaddingTop != '0px'){
+						remindDOM.css('top', onlyThWarpPaddingTop);
+					}
+					onlyThWarp.append(remindDOM);
+				}		
+				//嵌入排序事件源
+				//插件自动生成的排序与选择列不做事件绑定
+				sortType = onlyTH.attr('sorting');
+				if(_this.supportSorting &&  sortType!= undefined && !isLmOrder && !isLmCheckbox){
+					sortingDom = $(_sortingHtml);
+					//依据 sortType 进行初始显示
+					switch(sortType){
+						case _this.sortUpText : sortingDom.addClass('sorting-up');
+						break;						
+						case _this.sortDownText : sortingDom.addClass('sorting-down');
+						break;
+					}
+					if(onlyThWarpPaddingTop != ''  && onlyThWarpPaddingTop != '0px'){
+						sortingDom.css('top', onlyThWarpPaddingTop);
+					}
+					onlyThWarp.append(sortingDom);
 				}
-				//表头置顶
-				if(_this.supportSetTop){
-					tableDiv.after('<div class="scroll-area"><div class="sa-inner"></div></div>');
+				//嵌入宽度调整事件源
+				//插件自动生成的选择列不做事件绑定
+				if(_this.supportAdjust && !isLmCheckbox){								
+					adjustDOM = $(_adjustHtml);
+					//最后一列不支持调整宽度
+					if(i2 == onlyThList.length - 1){
+						adjustDOM.hide();
+					}
+					onlyThWarp.append(adjustDOM);
 				}
-				
-				$.each(onlyThList, function(i2,v2){
-					onlyTH = $(v2);
-					onlyTH.attr('th-visible','visible');
+				onlyTH.html(onlyThWarp);
 					
-					//是否为自动生成的序号列
-					if(_this.supportAutoOrder && onlyTH.attr('lm-order') == 'true'){				
-						isLmOrder = true;
-					}else{			
-						isLmOrder = false;		
-					}					
-					
-					//是否为自动生成的选择列
-					if(_this.supportCheckbox && onlyTH.attr('lm-checkbox') == 'true'){				
-						isLmCheckbox = true;
-					}else{			
-						isLmCheckbox = false;		
-					}
-					
-					//嵌入th下外层div
-					onlyThWarp = $('<div class="th-warp"></div>');
-					//th存在padding时 转移至th-warp
-					if(_this.isChrome()){
-						thPadding = onlyTH.css('padding');  //firefox 不兼容
-					}else{
-						thPadding = onlyTH.css('padding-top') + ' '
-								  + onlyTH.css('padding-right') + ' '
-								  + onlyTH.css('padding-bottom') + ' '
-								  + onlyTH.css('padding-left');	
-					}
-					thPadding = $.trim(thPadding);
-					if(thPadding != '' && thPadding != '0px' && thPadding != '0px 0px 0px 0px'){
-						onlyThWarp.css('padding', thPadding);
-						onlyTH.css('cssText','padding:0px!important');
-					}
-					//嵌入配置列表项
-					if(_this.supportConfig){
-						$('.config-list', tableWarp)
-						.append('<li th-name="'+ onlyTH.attr('th-name') +'" class="checked-li">'
-								+ '<input type="checkbox" checked="checked"/>'
-								+ '<label>'
-								+ '<span class="fake-checkbox"></span>'
-								+ onlyTH.text()
-								+ '</label>'
-								+ '</li>');
-					}
-					//嵌入拖拽事件源
-					//插件自动生成的排序与选择列不做事件绑定
-					if(_this.supportDrag && !isLmOrder && !isLmCheckbox){
-						onlyThWarp.html('<span class="th-text drag-action">'+onlyTH.html()+'</span>');
-					}else{
-						onlyThWarp.html('<span class="th-text">'+ onlyTH.html() +'</span>');
-					}
-					var onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
-					//嵌入表头提醒事件源
-					//插件自动生成的排序与选择列不做事件绑定
-					if(_this.supportRemind && onlyTH.attr('remind') != undefined && !isLmOrder && !isLmCheckbox){						
-						remindDOM = $(_remindHtml);
-						remindDOM.find('.ra-title').text(onlyTH.text());
-						remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
-						if(onlyThWarpPaddingTop != '' && onlyThWarpPaddingTop != '0px'){
-							remindDOM.css('top', onlyThWarpPaddingTop);
-						}
-						onlyThWarp.append(remindDOM);
-					}		
-					//嵌入排序事件源
-					//插件自动生成的排序与选择列不做事件绑定
-					sortType = onlyTH.attr('sorting');
-					if(_this.supportSorting &&  sortType!= undefined && !isLmOrder && !isLmCheckbox){
-						sortingDom = $(_sortingHtml);
-						//依据 sortType 进行初始显示
-						switch(sortType){
-							case _this.sortUpText : sortingDom.addClass('sorting-up');
-							break;						
-							case _this.sortDownText : sortingDom.addClass('sorting-down');
-							break;
-						}
-						if(onlyThWarpPaddingTop != ''  && onlyThWarpPaddingTop != '0px'){
-							sortingDom.css('top', onlyThWarpPaddingTop);
-						}
-						onlyThWarp.append(sortingDom);
-					}
-					//嵌入宽度调整事件源
-					//插件自动生成的选择列不做事件绑定
-					if(_this.supportAdjust && !isLmCheckbox){								
-						adjustDOM = $(_adjustHtml);
-						//最后一列不支持调整宽度
-						if(i2 == onlyThList.length - 1){
-							adjustDOM.hide();
-						}
-						onlyThWarp.append(adjustDOM);
-					}
-					onlyTH.html(onlyThWarp);
-						
-					//当前th文本所占宽度大于设置的宽度
-					var _realWidthForThText = _this.getTextWidth(onlyTH);
-					if(onlyTH.width() < _realWidthForThText){
-						onlyTH.width(_realWidthForThText);
-					}
-				});		
-				//删除渲染中标识、增加渲染完成标识
-				v1.removeClass('listManager-loading');
-				v1.addClass('listManager-ready');	
-			});
+				//当前th文本所占宽度大于设置的宽度
+				var _realWidthForThText = _this.getTextWidth(onlyTH);
+				if(onlyTH.width() < _realWidthForThText){
+					onlyTH.width(_realWidthForThText);
+				}
+			});		
+			//删除渲染中标识、增加渲染完成标识
+			element.removeClass('GridManager-loading');
+			element.addClass('GridManager-ready');
 		}
 		/*
 			@校验table的必要参数[th-name]
@@ -624,19 +649,19 @@
 					v.setAttribute('th-name', 'auto-th-' + _this.getRandom());
 				}
 			});
-			//判断是否禁用缓存
+			//通过验证后确定是否禁用缓存
 			if(noCache){
 				table.attr('no-cache', 'true');
 			}
 		}
 		/*
 			@绑定配置列表事件[隐藏展示列]
-			$.element: table数组[jquery对象]		
+			$.table: [jquery对象]		
 		*/
-		,bindConfigEvent: function(element){
+		,bindConfigEvent: function(table){
 			var _this = this;
 			//打开/关闭设置区域
-			var tableWarp = $(element).parents('div.table-warp');
+			var tableWarp = $(table).parents('div.table-warp');
 			var configAction = $('.config-action', tableWarp);
 			configAction.unbind('click');
 			configAction.bind('click', function(){
@@ -654,7 +679,7 @@
 				}
 				//打开
 				var _tableWarp = _configAction.parents('.table-warp').eq(0),//当前事件源所在的div
-					_table	= $('[list-manager]', _tableWarp),				//对应的table
+					_table	= $('[grid-manager]', _tableWarp),				//对应的table
 					_thList = $('thead th', _table),							//所有的th
 					_trList = $('tbody tr', _table),							//tbody下的tr
 					_td;														//与单个th对应的td	
@@ -688,7 +713,7 @@
 					_checkbox 		= _only.find('input[type="checkbox"]'),			//事件下的checkbox
 					_tableWarp  	= _only.closest('.table-warp'), 					//所在的大容器
 					_tableDiv	  	= $('.table-div', _tableWarp), 						//所在的table-div
-					_table	 		= $('[list-manager]', _tableWarp),				//所对应的table					
+					_table	 		= $('[grid-manager]', _tableWarp),				//所对应的table					
 					_th				= $('thead th[th-name="'+_thName +'"]', _table), 	//所对应的th
 					_checkedList;		//当前处于选中状态的展示项
 				if(_only.hasClass('no-click')){
@@ -805,14 +830,14 @@
 		}
 		/*
 			@绑定表头提醒功能
-			$.dom: table数组[jquery对象]
+			$.table: [jquery对象]
 		*/
-		,bindRemindEvent: function(dom){
+		,bindRemindEvent: function(table){
 			var _this = this;
 			var raArea,
 				tableDiv,
 				theLeft;
-			var remindAction = $('.remind-action');
+			var remindAction = $('.remind-action', table);
 			remindAction.unbind('mouseenter');
 			remindAction.bind('mouseenter', function(){
 				raArea = $(this).find('.ra-area');
@@ -833,15 +858,15 @@
 		}
 		/*
 			@绑定排序事件
-			$.dom: table数组[jquery对象]
+			$.table: [jquery对象]
 		*/
-		,bindSortingEvent: function(dom){
+		,bindSortingEvent: function(table){
 			var _this = this;
-			var _thList = dom.find('th[sorting]'),	//所有包含排序的列
+			var _thList = $('th[sorting]', table),	//所有包含排序的列
 				_action,		//向上或向下事件源
 				_th,			//事件源所在的th
 				_table,			//事件源所在的table
-				_tName,			//table list-manager
+				_tName,			//table grid-manager
 				_thName;		//th对应的名称
 				
 			//绑定排序事件
@@ -850,7 +875,7 @@
 				_action = $(this);
 				_th 	= _action.closest('th');
 				_table 	= _th.closest('table');
-				_tName  = _table.attr('list-manager');
+				_tName  = _table.attr('grid-manager');
 				_thName = _th.attr('th-name');
 				if(!_thName || $.trim(_thName) == ''){
 					_this.outLog('排序必要的参数丢失', 'error');
@@ -900,11 +925,11 @@
 		}
 		/*
 			@绑定拖拽换位事件
-			$.dom: table数组[jquery对象]
+			$.table: [jquery对象]
 		*/
-		,bindDragEvent: function(dom){
+		,bindDragEvent: function(table){
 			var _this = this;
-			var thList = dom.find('th'),	//匹配页面下所有的TH
+			var thList = $('thead th', table),	//匹配页面下所有的TH
 				dragAction	= thList.find('.drag-action');
 			//指定拖拽换位事件源,配置拖拽样式		
 			var _th,			//事件源th
@@ -1058,11 +1083,11 @@
 		}
 		/*
 			@绑定宽度调整事件
-			$.dom: table数组[jquery对象]
+			$.table: [jquery对象]
 		*/
-		,bindAdjustEvent: function(dom){
+		,bindAdjustEvent: function(table){
 			var _this = this;
-			var thList 	= dom.find('th');	//页面下所有的TH
+			var thList 	= $('thead th', table);	//页面下所有的TH
 			//监听鼠标调整列宽度
 			thList.off('mousedown', '.adjust-action');
 			thList.on('mousedown', '.adjust-action', function(event){
@@ -1179,9 +1204,9 @@
 		}
 		/*
 			@绑定表头吸顶功能
-			$.dom: table数组[jquery对象]
+			$.table: [jquery对象]
 		*/
-		,bindSetTopFunction: function(dom){
+		,bindSetTopFunction: function(table){
 			var _this = this;
 			//绑定窗口变化事件
 			$(window).resize(function() {
@@ -1208,135 +1233,132 @@
 					_tableWarp,				//列表所在的外围容器
 					_setTopHead,			//吸顶元素
 					_tableOffsetTop,		//列表与_tableDIV之间的间隙，如marin-top,padding-top
-					_table,					//列表
+					_table,					//原生table
 					_thead,					//列表head
 					_thList,				//列表下的th
 					_tbody;					//列表body
-				var _listManagerName = '';	
+			//	var _listManagerName = '';	
 				var _scrollDOMTop = _scrollDOM.scrollTop(),
 					_tDIVTop = 0;
 				var _tWarpMB	= undefined; //吸顶触发后,table所在外围容器的margin-bottom值
 				
-				$.each(dom, function(i, v){
-					_table 			= $(v);
-					_tableDIV 		= _table.parents('.table-div').eq(0);
-					_tableWarp 		= _tableDIV.parents('.table-warp').eq(0);
-					_thead 			= $('> thead[class!="set-top"]', _table);
-					_tbody 			= $('tbody', _table);
-					_listManagerName= v.getAttribute('list-manager');
-					if(!_tableDIV || _tableDIV.length == 0){
-						return true;
-					}
-					_tDIVTop 		= _this.scrollDOM == window ? _tableDIV.offset().top : 0;
-					
-					_tableOffsetTop = v.offsetTop;
-					_setTopHead 	= $('.set-top', _table);
-					//当前列表数据为空
-					if($('tr', _tbody).length == 0){
-						return true;
-					}
-					//配置X轴滚动条
-					var scrollArea = $('.scroll-area', _tableWarp);
-					if(_tableDIV.width() < _table.width()){  //首先验证宽度是否超出了父级DIV
-						if(_this.scrollDOM == window){
-							_tWarpMB = Number(_tableDIV.height()) 
-									 + Number(_tableWarp.css('margin-bottom').split('px')[0])
-							//		 - Number(_tableWarp.css('padding-bottom').split('px')[0])
-								//	 - window.scrollY   
-								//	 #151010 该属性不是通用属性 虽然在高版本的火狐或谷歌中可以实现，考虑后还是使用scrollTop
-								//   IE 支持  document.documentElement.scrollTop
-								//   firebox 支持 document.documentElement.scrollTop  window.scrollY
-								//	 Chrome 支持 document.body.scrollTop window.scrollY
-									 - (document.body.scrollTop || document.documentElement.scrollTop || window.scrollY)
-									 - (window.innerHeight - _tableDIV.offset().top);
-						}else{
-							_tWarpMB = Number(_tableDIV.height()) 
-									 + Number(_tableWarp.css('margin-bottom').split('px')[0])
-									 - _scrollDOM.scrollTop()
-									 - _scrollDOM.height();
-						}			
-						
-						if(_tWarpMB < 0){
-							_tWarpMB = 0;
-						}
-						$('.sa-inner', scrollArea).css({
-							width : _table.width()
-						});
-						scrollArea.css({
-							bottom	: _tWarpMB - 18,
-							left	: _tableDIV.scrollLeft()
-						});
-						scrollArea.scrollLeft(_tableDIV.scrollLeft());
-						scrollArea.show();
+				_tableDIV 		= table.parents('.table-div').eq(0);
+				_tableWarp 		= _tableDIV.parents('.table-warp').eq(0);
+				_table			= table.get(0);
+				_thead 			= $('> thead[class!="set-top"]', table);
+				_tbody 			= $('tbody', table);
+				
+				if(!_tableDIV || _tableDIV.length == 0){
+					return true;
+				}
+				_tDIVTop 		= _this.scrollDOM == window ? _tableDIV.offset().top : 0;
+				
+				_tableOffsetTop = _table.offsetTop;
+				_setTopHead 	= $('.set-top', table);
+				//当前列表数据为空
+				if($('tr', _tbody).length == 0){
+					return true;
+				}
+				//配置X轴滚动条
+				var scrollArea = $('.scroll-area', _tableWarp);
+				if(_tableDIV.width() < table.width()){  //首先验证宽度是否超出了父级DIV
+					if(_this.scrollDOM == window){
+						_tWarpMB = Number(_tableDIV.height()) 
+								 + Number(_tableWarp.css('margin-bottom').split('px')[0])
+						//		 - Number(_tableWarp.css('padding-bottom').split('px')[0])
+							//	 - window.scrollY   
+							//	 #151010 该属性不是通用属性 虽然在高版本的火狐或谷歌中可以实现，考虑后还是使用scrollTop
+							//   IE 支持  document.documentElement.scrollTop
+							//   firebox 支持 document.documentElement.scrollTop  window.scrollY
+							//	 Chrome 支持 document.body.scrollTop window.scrollY
+								 - (document.body.scrollTop || document.documentElement.scrollTop || window.scrollY)
+								 - (window.innerHeight - _tableDIV.offset().top);
 					}else{
-						scrollArea.hide();
-					}
-					
-					//表头完全可见 分两种情况 scrollDOM 为 window 或自定义容器
-					if(_this.scrollDOM == window ? (_tDIVTop - _scrollDOMTop >= -_tableOffsetTop) : (_scrollDOMTop == 0)){
-						if(_thead.hasClass('scrolling')){
-							_thead.removeClass('scrolling');
-						}
-						_setTopHead.remove();
-						return true;
-					}	
-					//表完全不可见
-					if(_this.scrollDOM == window ? (_tDIVTop - _scrollDOMTop < 0 &&
-						Math.abs(_tDIVTop - _scrollDOMTop) + _thead.height() - _tableOffsetTop > _tableDIV.height()) : false){
-						_setTopHead.show();					
-						_setTopHead.css({
-							top		: 'auto',
-							bottom	: '0px'
-						});
-						return true;
+						_tWarpMB = Number(_tableDIV.height()) 
+								 + Number(_tableWarp.css('margin-bottom').split('px')[0])
+								 - _scrollDOM.scrollTop()
+								 - _scrollDOM.height();
 					}			
-					//配置表头镜像
-					//当前表未插入吸顶区域 或 事件触发事件为window.resize
 					
-					//配置吸顶区的宽度
-					if(_setTopHead.length == 0 || _isWindowResize_){
-						_setTopHead.length == 0 ? _table.append(_thead.clone(false).addClass('set-top')) : '';
-						_setTopHead = $('.set-top', _table);
-						_setTopHead.css({						
-							width : _thead.width() 
-								  + Number(_thead.css('border-left-width').split('px')[0] || 0)
-								  + Number(_thead.css('border-right-width').split('px')[0] || 0)
-							,left: _table.css('border-left-width')
-						});
-						//$(v).width(_thList.get(i).offsetWidth)  获取值只能精确到整数
-						//$(v).width(_thList.eq(i).width()) 取不到宽
-						//调整吸顶表头下每一个th的宽度[存在性能问题，后期需优化]
-						
-						_thList = $('th', _thead);
-						$.each($('th', _setTopHead), function(i, v){
-							$(v).css({
-								width : _thList.eq(i).width()
-									  + Number(_thList.eq(i).css('border-left-width').split('px')[0] || 0)
-									  + Number(_thList.eq(i).css('border-right-width').split('px')[0] || 0)
-							});
-						});
+					if(_tWarpMB < 0){
+						_tWarpMB = 0;
 					}
-					//当前吸引thead 没有背景时 添加默认背景
-					if(!_setTopHead.css('background') ||
-						_setTopHead.css('background') == '' ||
-						_setTopHead.css('background') == 'none'){
-						_setTopHead.css('background', '#f5f5f5');
+					$('.sa-inner', scrollArea).css({
+						width : table.width()
+					});
+					scrollArea.css({
+						bottom	: _tWarpMB - 18,
+						left	: _tableDIV.scrollLeft()
+					});
+					scrollArea.scrollLeft(_tableDIV.scrollLeft());
+					scrollArea.show();
+				}else{
+					scrollArea.hide();
+				}
+				
+				//表头完全可见 分两种情况 scrollDOM 为 window 或自定义容器
+				if(_this.scrollDOM == window ? (_tDIVTop - _scrollDOMTop >= -_tableOffsetTop) : (_scrollDOMTop == 0)){
+					if(_thead.hasClass('scrolling')){
+						_thead.removeClass('scrolling');
 					}
-					
-					//表部分可见
-					if( _this.scrollDOM == window ? (_tDIVTop - _scrollDOMTop < 0 &&
-						Math.abs(_tDIVTop - _scrollDOMTop) <= _tableDIV.height() +_tableOffsetTop) : true){
-						if(!_thead.hasClass('scrolling')){
-							_thead.addClass('scrolling');
-						}
-						_setTopHead.css({
-							top		: _scrollDOMTop  - _tDIVTop + _this.topValue,
-							bottom	: 'auto'
+					_setTopHead.remove();
+					return true;
+				}	
+				//表完全不可见
+				if(_this.scrollDOM == window ? (_tDIVTop - _scrollDOMTop < 0 &&
+					Math.abs(_tDIVTop - _scrollDOMTop) + _thead.height() - _tableOffsetTop > _tableDIV.height()) : false){
+					_setTopHead.show();					
+					_setTopHead.css({
+						top		: 'auto',
+						bottom	: '0px'
+					});
+					return true;
+				}			
+				//配置表头镜像
+				//当前表未插入吸顶区域 或 事件触发事件为window.resize
+				
+				//配置吸顶区的宽度
+				if(_setTopHead.length == 0 || _isWindowResize_){
+					_setTopHead.length == 0 ? table.append(_thead.clone(false).addClass('set-top')) : '';
+					_setTopHead = $('.set-top', table);
+					_setTopHead.css({						
+						width : _thead.width() 
+							  + Number(_thead.css('border-left-width').split('px')[0] || 0)
+							  + Number(_thead.css('border-right-width').split('px')[0] || 0)
+						,left: table.css('border-left-width')
+					});
+					//$(v).width(_thList.get(i).offsetWidth)  获取值只能精确到整数
+					//$(v).width(_thList.eq(i).width()) 取不到宽
+					//调整吸顶表头下每一个th的宽度[存在性能问题，后期需优化]
+					_thList = $('th', _thead);
+					$.each($('th', _setTopHead), function(i, v){
+						$(v).css({
+							width : _thList.eq(i).width()
+								  + Number(_thList.eq(i).css('border-left-width').split('px')[0] || 0)
+								  + Number(_thList.eq(i).css('border-right-width').split('px')[0] || 0)
 						});
-						_setTopHead.show();
-						return true;
+					});
+				}
+				//当前吸引thead 没有背景时 添加默认背景
+				if(!_setTopHead.css('background') ||
+					_setTopHead.css('background') == '' ||
+					_setTopHead.css('background') == 'none'){
+					_setTopHead.css('background', '#f5f5f5');
+				}
+				
+				//表部分可见
+				if( _this.scrollDOM == window ? (_tDIVTop - _scrollDOMTop < 0 &&
+					Math.abs(_tDIVTop - _scrollDOMTop) <= _tableDIV.height() +_tableOffsetTop) : true){
+					if(!_thead.hasClass('scrolling')){
+						_thead.addClass('scrolling');
 					}
-				});	
+					_setTopHead.css({
+						top		: _scrollDOMTop  - _tDIVTop + _this.topValue,
+						bottom	: 'auto'
+					});
+					_setTopHead.show();
+					return true;
+				}
 				return true;
 			});
 			$(_this.scrollDOM).trigger('scroll');
@@ -1367,7 +1389,7 @@
 			//绑定下载事件
 			$('.downGrid').unbind('click');
 			$('.downGrid').bind('click', function(){
-				_this.exportGridToXls($(this).closest('.table-warp').find('table[list-manager]'));
+				_this.exportGridToXls($(this).closest('.table-warp').find('table[grid-manager]'));
 			});
 		}
 		/*
@@ -1417,7 +1439,7 @@
 						+ '</table></body>'
 						+ '</html>';
 			lmExportAction.prop('href', uri + base64(exportHTML));
-			lmExportAction.prop('download', (fileName || tableDOM.attr('list-manager')) +'.xls');
+			lmExportAction.prop('download', (fileName || tableDOM.attr('grid-manager')) +'.xls');
 			lmExportAction.get(0).click();			
 			
 			function base64(s) { 
@@ -1451,7 +1473,7 @@
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 			var noCache = _table.attr('no-cache');
 			if(noCache && noCache== 'true'){
-				_this.outLog('缓存已被禁用：当前表缺失必要html标签属性[list-manager或th-name]', 'info');
+				_this.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
 				return false;
 			}
 			if(!window.localStorage){
@@ -1462,10 +1484,10 @@
 				_this.outLog('setToLocalStorage:无效的table', 'error');
 				return false;
 			}
-			var _tableListManager = _table.attr('list-manager');
+			var _tableListManager = _table.attr('grid-manager');
 			//验证当前表是否为listManager
 			if(!_tableListManager || $.trim(_tableListManager) == ''){
-				_this.outLog('setToLocalStorage:无效的list-manager', 'error');
+				_this.outLog('setToLocalStorage:无效的grid-manager', 'error');
 				return false;
 			}
 			var _cache 		= {},
@@ -1479,7 +1501,7 @@
 				return false;
 			}
 					
-			//key 由pathcname + hash + 唯一标识list-manager + 表列数 [用于规避同页面下存在list-manager相同的表格]
+			//key 由pathcname + hash + 唯一标识grid-manager + 表列数 [用于规避同页面下存在grid-manager相同的表格]
 			var _key = window.location.pathname +  window.location.hash + '-' +  _tableListManager + '-' + thList.length;
 			var $v;
 			$.each(thList, function(i, v){
@@ -1521,7 +1543,7 @@
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 			var noCache = _table.attr('no-cache');
 			if(noCache && noCache== 'true'){
-				_this.outLog('缓存已被禁用：当前表缺失必要html标签属性[list-manager或th-name]', 'info');
+				_this.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
 				return false;
 			}
 			if(!window.localStorage){
@@ -1532,10 +1554,10 @@
 				_this.outLog('getLocalStorage:无效的table', 'error');
 				return false;
 			}
-			var _tableListManager = _table.attr('list-manager');	
+			var _tableListManager = _table.attr('grid-manager');	
 			//验证当前表是否为listManager
 			if(!_tableListManager || $.trim(_tableListManager) == ''){
-				_this.outLog('getLocalStorage:无效的list-manager', 'error');
+				_this.outLog('getLocalStorage:无效的grid-manager', 'error');
 				return false;
 			}
 			var thList = $('thead[class!="set-top"] th', _table);
@@ -1555,140 +1577,122 @@
 		}
 		/*
 			@根据本地缓存配置分页
-			$.element: table数组[jquery对象]
+			$.gridElement: 渲染前的gridElement
 			配置当前页显示数
 		*/
-		,configPageForCache: function(element){
+		,configPageForCache: function(gridElement){
 			var _this = this;
-			var _data,		//本地缓存的数据
-				_cache,		//缓存对应
-				_table,		//单一的table
-				_tName,		//list-manager
+			var _data = _this.getLocalStorage(gridElement),		//本地缓存的数据
+				_cache = _data.cache,		//缓存对应
 				_pageCache, //分页相关缓存
 				_query;		//init 后的callback中的query参数
-			$.each(element, function(i, v){
-				_data = _this.getLocalStorage(v);
-				_tName = v.getAttribute('list-manager');
-				if(!_tName){
-					return;
-				}
-				_cache = _data.cache;
-				//验证是否存在每页显示条数缓存数据
-				if(!_cache || !_cache.page){
-					_pageCache =  {
-						pSize: _this.pageSize[_tName] ? _this.pageSize[_tName] : _this.pageSize
-					};
-				}
-				else{
-					_pageCache = _cache.page;
-				}				
-				_this.pageData = {
-					pSize : _pageCache.pSize,
-					cPage : 1
+			//验证是否存在每页显示条数缓存数据
+			if(!_cache || !_cache.page){
+				_pageCache =  {
+					pSize: _this.pageSize[_this.gridManagerName] ? _this.pageSize[_this.gridManagerName] : _this.pageSize
 				};
-			});
+			}
+			else{
+				_pageCache = _cache.page;
+			}				
+			_this.pageData = {
+				pSize : _pageCache.pSize,
+				cPage : 1
+			};
 		}
 		/*
 			@存储原Th DOM至table data
-			$.element: table数组[jquery对象]
+			$.table: table[jquery对象]
 		*/
-		,setOriginalThDOM: function(element){
-			$.each(element, function(i, v){
-				$(v).data('originalThDOM', $('thead th', v));
-			});
+		,setOriginalThDOM: function(table){
+			table.data('originalThDOM', $('thead th', table));
 		}
 		/*
 			@获取原Th DOM至table data
-			$.element: table数组[jquery对象]
+			$.table: table[jquery对象]
 		*/
-		,getOriginalThDOM: function(element){
-			return $(element).data('originalThDOM');
+		,getOriginalThDOM: function(table){
+			return $(table).data('originalThDOM');
 		}
 		/*
 			@根据本地缓存配置列表[thead]
-			$.element: table数组[jquery对象]
+			$.table: table[jquery对象]
 			获取本地缓存
 			存储原位置顺序
 			根据本地缓存进行配置
 		*/
-		,configTheadForCache: function(element){
+		,configTheadForCache: function(table){
 			var _this = this;
-			var _data,		//本地缓存的数据
-				_table,		//单一的table
-				_th,		//单一的th
+			var _data = _this.getLocalStorage(table),		//本地缓存的数据			
+				_domArray = [];
+			var	_th,		//单一的th
 				_td,		//单列的td，与_th对应
 				_cache,		//列表的缓存数据			
 				_thCache,	//th相关 缓存
 				_thJson,	//th的缓存json
 				_thArray,
-				_tbodyArray,
-				_domArray;
-			$.each(element, function(i, v){
-				_domArray = [];
-				_table = $(v);
-				_data = _this.getLocalStorage(_table);
-				//验证：当前table 没有缓存数据
-				if(!_data || $.isEmptyObject(_data)){
-					_this.outLog('configTheadForCache:当前table没有缓存数据', 'info');
-					return;
+				_tbodyArray;
+			//验证：当前table 没有缓存数据
+			if(!_data || $.isEmptyObject(_data)){
+				_this.outLog('configTheadForCache:当前table没有缓存数据', 'info');
+				return;
+			}
+			_cache = _data.cache;
+			_thCache=_cache.th;
+			//验证：缓存数据与当前列表是否匹配
+			if(!_thCache || _thCache.length != $('thead th', table).length){
+				_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
+				return;
+			}
+			//验证：缓存数据与当前列表项是否匹配
+			var _thNameTmpList = [],
+				_dataAvailable = true;
+			$.each(_thCache, function(i2, v2){
+				_thJson = v2;
+				_th = $('th[th-name='+ _thJson.th_name +']', table);
+				if(_th.length == 0 || _thNameTmpList.indexOf(_thJson.th_name) != -1){
+					_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
+					_dataAvailable = false;
+					return false;
 				}
-				_cache = _data.cache;
-				_thCache=_cache.th;
-				//验证：缓存数据与当前列表是否匹配
-				if(!_thCache || _thCache.length != $('thead th', _table).length){
-					_this.cleanTableCache(_table, '缓存数据与当前列表不匹配');
-					return;
-				}
-				//验证：缓存数据与当前列表项是否匹配
-				var _thNameTmpList = [],
-					_dataAvailable = true;
+				_thNameTmpList.push(_thJson.th_name);
+			});
+			//数据可用，进行列的配置
+			if(_dataAvailable){
 				$.each(_thCache, function(i2, v2){
 					_thJson = v2;
-					_th = $('th[th-name='+ _thJson.th_name +']', _table);
-					if(_th.length == 0 || _thNameTmpList.indexOf(_thJson.th_name) != -1){
-						_this.cleanTableCache(_table, '缓存数据与当前列表不匹配');
-						_dataAvailable = false;
-						return false;
-					}
-					_thNameTmpList.push(_thJson.th_name);
-				});
-				//数据可用，进行列的配置
-				if(_dataAvailable){
-					$.each(_thCache, function(i2, v2){
-						_thJson = v2;
-						_th = $('th[th-name='+ _thJson.th_name +']', _table);
-						//配置列的宽度
-						if(_this.supportAdjust){
-							_th.css('width',_thJson.th_width);
-						}
-						//配置列排序数据
-						if(_this.supportDrag && typeof(_thJson.th_index) !== 'undefined'){
-							_domArray[_thJson.th_index] = _th;
-						}else{
-							_domArray[i2] = _th;
-						}
-						//配置列的可见
-						if(_this.supportConfig){
-							_this.setAreVisible(_th, typeof(_thJson.isShow) == 'undefined' ? true : _thJson.isShow, true);
-						}
-					});
-					//配置列的顺序
-					if(_this.supportDrag){
-						_table.find('thead tr').html(_domArray);
-					}
-					//重置调整宽度事件源
+					_th = $('th[th-name='+ _thJson.th_name +']', table);
+					//配置列的宽度
 					if(_this.supportAdjust){
-						_this.resetAdjust(_table);	
-					}	
-				}					
-			});
+						_th.css('width',_thJson.th_width);
+					}
+					//配置列排序数据
+					if(_this.supportDrag && typeof(_thJson.th_index) !== 'undefined'){
+						_domArray[_thJson.th_index] = _th;
+					}else{
+						_domArray[i2] = _th;
+					}
+					//配置列的可见
+					if(_this.supportConfig){
+						_this.setAreVisible(_th, typeof(_thJson.isShow) == 'undefined' ? true : _thJson.isShow, true);
+					}
+				});
+				//配置列的顺序
+				if(_this.supportDrag){
+					table.find('thead tr').html(_domArray);
+				}
+				//重置调整宽度事件源
+				if(_this.supportAdjust){
+					_this.resetAdjust(table);	
+				}	
+			}
 		}
 		/*
 			[对外公开方法]	
 			@重置列表[tbody]
 			这个方法对外可以直接调用
 			作用：处理局部刷新、分页事件之后的tb排序
-			$.dom: table数组[jquery对象]
+			$.table: table[jquery对象]
 			$.isSingleRow: 指定DOM节点是否为tr[布尔值]
 		*/
 		,resetTd: function(dom, isSingleRow){
@@ -1740,7 +1744,7 @@
 				var _thList = _this.getOriginalThDOM(_table),
 					_td;
 				if(!_thList || _thList.length == 0 ){
-					_this.outLog('resetTdForCache:td顺序重置所必须的原TH DOM获取失败', 'error');
+					_this.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
 					return false;
 				}
 				var _tmpHtml = [],
@@ -1797,9 +1801,9 @@
 		,cleanTableCache: function(element, cleanText){
 			var _this = this;
 			$.each(element, function(i, v){
-				window.localStorage.removeItem(v.getAttribute('list-manager'));
-				window.localStorage.removeItem(v.getAttribute('list-manager') + '-' + $('th', v).length);
-				_this.outLog(v.getAttribute('list-manager') + '清除缓存成功,原因：'+ cleanText, 'info');
+				window.localStorage.removeItem(v.getAttribute('grid-manager'));
+				window.localStorage.removeItem(v.getAttribute('grid-manager') + '-' + $('th', v).length);
+				_this.outLog(v.getAttribute('grid-manager') + '清除缓存成功,原因：'+ cleanText, 'info');
 			});
 			window.localStorage.setItem('listManagerVersion', _this.version);
 		}
@@ -1810,7 +1814,7 @@
 		,initAjaxPage: function(element){
 			var _this = this;		
 			var table 		= $(element),
-				tName		= table.attr('list-manager'),
+				tName		= table.attr('grid-manager'),
 				tableWarp 	= table.closest('.table-warp'),
 				pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
 			//生成分页存储器
@@ -1970,7 +1974,7 @@
 			});
 			//跳转至指定页
 			function gotoPage(_tableWarp, _cPage){
-				var _table		= $('table[list-manager]', _tableWarp),
+				var _table		= $('table[grid-manager]', _tableWarp),
 					_size 		= $('select[name="pSizeArea"]', _tableWarp);
 				//跳转的指定页大于总页数
 				if(_cPage > _this.pageData.tPage){
@@ -2006,8 +2010,8 @@
 			sizeArea.change(function(){
 				var _size = $(this);
 				var _tableWarp  = _size.parents('.table-warp').eq(0),
-					_table		= $('table[list-manager]', _tableWarp),
-					_tName 		= $('table', _tableWarp).attr('list-manager'); //当前与分页同容器下的列表名称
+					_table		= $('table[grid-manager]', _tableWarp),
+					_tName 		= $('table', _tableWarp).attr('grid-manager'); //当前与分页同容器下的列表名称
 				_this.pageData = {
 					cPage : 1,
 					pSize : _size.val()
@@ -2182,16 +2186,16 @@
 				return;
 			}
 			if(!type){
-				return console.log('ListManager:', msg);
+				return console.log('GridManager:', msg);
 			}
 			else if(type === 'info'){
-				return console.info('ListManager Info: ', msg);
+				return console.info('GridManager Info: ', msg);
 			}
 			else if(type === 'warn'){
-				return console.warn('ListManager Warn: ', msg);
+				return console.warn('GridManager Warn: ', msg);
 			}
 			else if(type === 'error'){
-				return console.error('ListManager Error: ', msg);
+				return console.error('GridManager Error: ', msg);
 			}
 		}
 	}
@@ -2201,11 +2205,11 @@
 		$._settings_: 方法所对应的参数，可为空
 		$._callback_: 方法所对应的回调,可为空
 	*/
-	$.fn.listManager = function(_name_, _settings_, _callback_){
+	$.fn.GM = $.fn.GridManager = function(_name_, _settings_, _callback_){
 		var _jqTable = this.eq(0);
 		// 特殊情况处理：单组tr进行操作，如resetTd()方法 
 		if(_jqTable.get(0).nodeName === 'TR'){
-			_jqTable = _jqTable.closest('table[list-manager]');
+			_jqTable = _jqTable.closest('table[grid-manager]');
 		}
 		var name,
 			settings,
@@ -2283,8 +2287,8 @@
 		var lmObj;
 		//当前为初始化方法
 		if(name == 'init') {		
-			var options = $.extend({}, $.fn.listManager.defaults, settings);
-			lmObj = new listManager(options);
+			var options = $.extend({}, $.fn.GridManager.defaults, settings);
+			lmObj = new GridManager(options);
 			return 	lmObj.init(_jqTable, callback);
 		}
 		//当前为其它方法

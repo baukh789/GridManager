@@ -33,32 +33,21 @@ hr{
 <p>存在.json文件，谷歌需要放到环境中效果才能展现</p>
 <hr/>
 <div style="width:95%;margin:0px auto;">
-    <table width="100%" cellspacing="1" cellpadding="0" list-manager="demoOne">
-        <thead>
-            <tr>
-                <th th-name="th-one" remind="the one" sorting="up" width="200px">One</th>
-                <th th-name="th-two" remind="the two" sorting  width="200px">two</th>
-                <th th-name="th-three" remind="the three" sorting width="300px">Three</th>
-                <th th-name="th-four" remind="the four">Four</th>
-            </tr>
-        </thead>
-        <tbody>
-           
-        </tbody>
-    </table>
+    <div grid-manager="cccc"></div>
 </div>
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/listManager.js"></script>
 <script type="text/javascript" >
 $(function(){
 	//单列表简易渲染
-	var table = $('table[list-manager]');
-	$.fn.listManager.defaults = {
+	var table = $('[grid-manager]');
+	$.fn.GM.defaults = {
 		isDevelopMode: true, 
 		autoLoadCss:true  //自动加载CSS文件，无需在页面中引用
 	}
-	table.listManager({
+	table.GM({
 		supportRemind: true
+		,gridManagerName:'aaa'
 		,disableCache:false
 		,disableOrder:false
 		,supportSorting: true
@@ -68,6 +57,43 @@ $(function(){
     	,ajaxUrl: 'demo4.json'
 		,pageSize:30
 		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
+		,columnData: [{
+				name: 'th-name',
+				remind: 'the username',
+				sorting: 'up',
+				width: '200px',
+				text: 'username',
+				template: ''
+			},{
+				name: 'th-age',
+				remind: 'the age',
+				sorting: '',
+				width: '200px',
+				text: 'age',
+				template: ''
+			},{
+				name: 'th-createDate',
+				remind: 'the createDate',
+				sorting: 'down',
+				width: '200px',
+				text: 'createDate',
+				template: ''
+			},{
+				name: 'th-info',
+				remind: 'the info',
+				sorting: '',
+				width: '200px',
+				text: 'info',
+				template: ''
+			},{
+				name: 'th-operation',
+				remind: 'the operation',
+				sorting: '',
+				width: '200px',
+				text: 'operation',
+				template: ''
+			}
+		]
 		,pagingBefore:function(query){
       		console.log('event: 分页前', query);
 		}
@@ -89,18 +115,6 @@ $(function(){
 	},function(query){
 		console.log('init方法回调query参数', query);
 	});
-	
-	//计算分页数据
-	function getPageData(pSize, tSize, cPage){
-		return {
-			 tPage: Math.ceil(tSize / pSize),				//总页数
-	         cPage: cPage,				//当前页	
-	         pSize: pSize,				//每页显示条数
-	         tSize: tSize		
-		}
-	}
-	
-
 });
 </script>
 

@@ -31,15 +31,15 @@
 	-webkit-user-select:none;
 }
 /*table配置中样式*/
-table[list-manager]{
+table[grid-manager]{
 	visibility:hidden;
 	box-sizing:border-box !important;
 	border-collapse:separate !important;
 }
-table[list-manager] *{
+table[grid-manager] *{
 	box-sizing:border-box !important;
 }
-table[list-manager].listManager-ready{
+.GridManager-ready table[grid-manager]{
 	visibility:visible;
 }
 /*table所在的DIV*/
@@ -55,28 +55,28 @@ table[list-manager].listManager-ready{
 	overflow-x: hidden;
 }
 /*table*/
-.table-warp table[list-manager]{
+.table-warp table[grid-manager]{
 	table-layout:fixed;
 	word-wrap:break-word;
 	text-align: center;
 	margin:0px !important;
 }
-.table-warp table[list-manager] tr td{
+.table-warp table[grid-manager] tr td{
 	white-space:nowrap;
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
-.table-warp table[list-manager] th[th-visible="none"]{
+.table-warp table[grid-manager] th[th-visible="none"]{
 	display:none;
 }
-.table-warp table[list-manager] th[th-visible="visible"]{
+.table-warp table[grid-manager] th[th-visible="visible"]{
 	display:table-cell;
 }
 
-.table-warp table[list-manager] th{
+.table-warp table[grid-manager] th{
 }
 /* 提供的默认table样式 */
-table.list-manager-default{ 
+table.grid-manager-default{ 
 	background-color: #dad9c7;
     font-size: 12px;
     width: 100%;
@@ -85,23 +85,23 @@ table.list-manager-default{
     font-size: 12px !important;
     font-family: arial !important;
 }
-table.list-manager-default thead tr th{ 
+table.grid-manager-default thead tr th{ 
  	background-color: #e6eeee;
     border: 1px solid #fff;
     font-size: 8pt;
 	text-align: center;
 }
-table.list-manager-default thead tr th:hover{
+table.grid-manager-default thead tr th:hover{
  	background-color: #8dbdd8;
 }
-table.list-manager-default tbody tr td{    
+table.grid-manager-default tbody tr td{    
 	background-color: #fff;
     color: #3d3d3d;
     padding: 4px;
     vertical-align: top;
     text-align: left;
 }
-table.list-manager-default tbody tr:hover td{ 
+table.grid-manager-default tbody tr:hover td{ 
 	background-color: #e8e8e8;
 	color:#000;  
 }
@@ -211,7 +211,7 @@ table.list-manager-default tbody tr:hover td{
 	background:#09f;
 }
 /*表头提醒*/
-.table-warp table[list-manager] th .remind-action{
+.table-warp table[grid-manager] th .remind-action{
 	width:16px;
 	height:16px;
 	position:absolute;
@@ -219,7 +219,7 @@ table.list-manager-default tbody tr:hover td{
 	left:4px;
 	cursor:help;
 }
-.table-warp table[list-manager] th .remind-action .ra-area{
+.table-warp table[grid-manager] th .remind-action .ra-area{
 	display:none;
 	min-width:150px;
 	max-width:300px;
@@ -236,20 +236,20 @@ table.list-manager-default tbody tr:hover td{
 	line-height: 14px;
 	color:#fff;
 }
-.table-warp table[list-manager] .set-top th .remind-action .ra-area{
+.table-warp table[grid-manager] .set-top th .remind-action .ra-area{
 	visibility:hidden;
 	display:none;
 }
-.table-warp table[list-manager] .set-top th .remind-action:hover .ra-area{
+.table-warp table[grid-manager] .set-top th .remind-action:hover .ra-area{
 	visibility:visible;
 	display:block !important;
 }
 /*
-.table-warp table[list-manager] th .remind-action:hover .ra-area{
+.table-warp table[grid-manager] th .remind-action:hover .ra-area{
 	display:block;
 }
 */
-.table-warp table[list-manager] th .remind-action .ra-help{
+.table-warp table[grid-manager] th .remind-action .ra-help{
 	display:block;
 	width:16px;
 	height:16px;
@@ -257,10 +257,10 @@ table.list-manager-default tbody tr:hover td{
 	line-height: 18px;
 	color:#666;
 }
-.table-warp table[list-manager] th .remind-action:hover .ra-help{
+.table-warp table[grid-manager] th .remind-action:hover .ra-help{
 	color:#2b669a;
 }
-.table-warp table[list-manager] th .remind-action .ra-area .ra-title{
+.table-warp table[grid-manager] th .remind-action .ra-area .ra-title{
 	display:block;
 	text-align:left;
 	white-space:nowrap;
@@ -271,7 +271,7 @@ table.list-manager-default tbody tr:hover td{
 	font-size: 1.1em;
 	color:#FF6;
 }
-.table-warp table[list-manager] th .remind-action .ra-area .ra-con{
+.table-warp table[grid-manager] th .remind-action .ra-area .ra-con{
 	display:block;
 	font-weight:500;
 	text-align:left;
@@ -298,7 +298,7 @@ table.list-manager-default tbody tr:hover td{
 .table-warp .set-top .drag-action{
 	cursor:default !important;
 }
-.table-warp table[list-manager] thead.scrolling{
+.table-warp table[grid-manager] thead.scrolling{
 	visibility:hidden;
 }
 .table-warp .scroll-area{
@@ -312,7 +312,7 @@ table.list-manager-default tbody tr:hover td{
 	height:20px;
 }
 /*th内的上级DIV*/
-.table-warp table[list-manager] th .th-warp{
+.table-warp table[grid-manager] th .th-warp{
 	width:100%;
 	height:100%;
 	position:relative;
@@ -320,7 +320,7 @@ table.list-manager-default tbody tr:hover td{
 	text-align:center;
 }
 /*宽度调整*/
-.table-warp table[list-manager] th .adjust-action{
+.table-warp table[grid-manager] th .adjust-action{
 	display:block;
 	width:6px;
 	height:100%;
@@ -330,12 +330,12 @@ table.list-manager-default tbody tr:hover td{
 	cursor:col-resize;
 	z-index:2;
 }
-.table-warp table[list-manager] .adjust-selected{
+.table-warp table[grid-manager] .adjust-selected{
 	border-right-width: 2px;
 	border-right-style: dashed;
 	border-right-color: #ccc;
 }
-.table-warp table[list-manager] .adjust-selected .drag-action{
+.table-warp table[grid-manager] .adjust-selected .drag-action{
 	cursor:col-resize;
 }
 /*文本镜像：用于实时获取th的文本宽度*/
@@ -348,7 +348,7 @@ table.list-manager-default tbody tr:hover td{
 	z-index:-1;
 }
 /*排序*/
-.table-warp table[list-manager] .sorting-action{
+.table-warp table[grid-manager] .sorting-action{
 	display:block;
 	width:20px;
 	height:18px;
@@ -359,58 +359,58 @@ table.list-manager-default tbody tr:hover td{
 	z-index:2;
 	color:#444;
 }
-.table-warp table[list-manager] .sorting-action:hover{
+.table-warp table[grid-manager] .sorting-action:hover{
 	color:#000;
 }
-.table-warp table[list-manager] .sorting-action.sortion-up{
+.table-warp table[grid-manager] .sorting-action.sortion-up{
 	content:"\f102";
 }
-.table-warp table[list-manager] .sorting-action.sortion-down{
+.table-warp table[grid-manager] .sorting-action.sortion-down{
 	content:"\f103";	
 }
-.table-warp table[list-manager] .sorting-action .sa-icon{
+.table-warp table[grid-manager] .sorting-action .sa-icon{
 	display:block;
 	height:10px;
 	font-size:18px;
 	line-height:10px;
 	position:absolute;
 }
-.table-warp table[list-manager] .sorting-action .sa-up{
+.table-warp table[grid-manager] .sorting-action .sa-up{
 	top:0px;
 	right:0px;
 }
-.table-warp table[list-manager] .sorting-action .sa-down{
+.table-warp table[grid-manager] .sorting-action .sa-down{
 	bottom:0px;
 	right:0px;
 }
-.table-warp table[list-manager] .sorting-action.sorting-up .sa-up{
+.table-warp table[grid-manager] .sorting-action.sorting-up .sa-up{
 	opacity:1;
 }
-.table-warp table[list-manager] .sorting-action.sorting-up .sa-down{
+.table-warp table[grid-manager] .sorting-action.sorting-up .sa-down{
 	opacity:0.1;
 }
-.table-warp table[list-manager] .sorting-action.sorting-down .sa-up{
+.table-warp table[grid-manager] .sorting-action.sorting-down .sa-up{
 	opacity:0.1;
 }
-.table-warp table[list-manager] .sorting-action.sorting-down .sa-down{
+.table-warp table[grid-manager] .sorting-action.sorting-down .sa-down{
 	opacity:1;
 }
 /*拖拽换位*/
-.table-warp table[list-manager] th .drag-action{
+.table-warp table[grid-manager] th .drag-action{
 	display:block;
 	width:100%;
 	height:100%;
 /*	padding:0px 20px;*/
 	cursor:all-scroll;
 }	
-.table-warp table[list-manager] .drag-ongoing{
+.table-warp table[grid-manager] .drag-ongoing{
 	cursor:all-scroll;
 	background:#000 !important;
 	border-color:#ccc !important;
 	color:#fff !important;
 	opacity:0.5;
 }
-.table-warp table[list-manager] .drag-ongoing.opacityChange{
+.table-warp table[grid-manager] .drag-ongoing.opacityChange{
 	opacity:1;
     -webkit-animation: opacityChange 1s ease-in-out infinite;
        -moz-animation: opacityChange 1s ease-in-out infinite;
@@ -437,20 +437,20 @@ table.list-manager-default tbody tr:hover td{
 	text-overflow:ellipsis;
 }
 /*序号样式*/
-.table-warp table[list-manager] [lm-order="true"]{
+.table-warp table[grid-manager] [lm-order="true"]{
 	text-align:center;
 	cursor:default;
 	background-color:#e8e8e8;
 }
-.table-warp table[list-manager] [lm-order="true"]:hover{
+.table-warp table[grid-manager] [lm-order="true"]:hover{
 	background-color:#e8e8e8;
 }
 /*选择全选样式*/
-.table-warp table[list-manager] [lm-checkbox="true"]{
+.table-warp table[grid-manager] [lm-checkbox="true"]{
 	text-align:center;
 	cursor:default;
 }
-.table-warp table[list-manager] [lm-checkbox="true"] input[type=checkbox]{
+.table-warp table[grid-manager] [lm-checkbox="true"] input[type=checkbox]{
 	vertical-align:middle;
 }
 /*闪烁动画特效*/
