@@ -1,7 +1,7 @@
 /*	
 	http://www.lovejavascript.com/#!plugIn/listManager/index.html
-	@baukh:listManager 列表管理插件	
-	当前版本：v1.8.5
+	@baukh:GridManager 表格管理插件	
+	当前版本：v2.0
 	
 	开发完成的任务：
 	移除分页，排序的_listManager变量
@@ -18,7 +18,7 @@
 	取消多表同时渲染机制
 	增加对外公开方法验证，未经对外公开的方法将限制调用
 	增加全选、反选功能
-	增加配置项：columnData 通过配置的形式渲染table
+	增加配置项：columnData 通过配置的形式渲染table; 下属配置项template typeof == function时，会传入当前key所对应的数据与整行数据做为参数
 	
 	开发中的任务：
 	增加删除列功能 提供删除操作回调函数
@@ -349,10 +349,21 @@
 					_this.outLog('请求表格数据失败！请查看配置参数[ajaxUrl]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
 					return;
 				}
+				//数据为空时
+				if(data.list.length === 0 || data.totals === 0){
+					console.log('数据为空');
+					return;
+				}
+				var key,	//数据索引
+					template,//数据模板
+					templateHTML;//数据模板导出的html
 				$.each(data.list, function(i, v){
 					tbodyTmpHTML += '<tr>';
-					$.each(v, function(i2, v2){
-						tbodyTmpHTML += '<td>'+ v2 +'</td>';
+					$.each(_this.columnData, function(i2, v2){
+						key = v2.key;
+						template = v2.template;
+						templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];						
+						tbodyTmpHTML += '<td>'+ templateHTML +'</td>';
 					});
 					tbodyTmpHTML += '</tr>';
 				});
@@ -372,7 +383,7 @@
 		*/
 		,initOrderDOM: function(table) {
 			var _this = this;			
-			var orderHtml = '<th th-name="'+ _this.orderThName +'" lm-order="true" lm-create="true" width="50px">'+ _this.i18nText('order-text') +'</th>';		
+			var orderHtml = '<th th-name="'+ _this.orderThName +'" lm-order="true" lm-create="true">'+ _this.i18nText('order-text') +'</th>';		
 			$('thead tr', table).prepend(orderHtml);		
 		}
 		/*
@@ -381,7 +392,7 @@
 		*/
 		,initCheckboxDOM: function(element) {
 			var _this = this;			
-			var checkboxHtml = '<th th-name="'+ _this.checkboxThName +'" lm-checkbox="true" lm-create="true" width="50px"><input type="checkbox"/></th>';		
+			var checkboxHtml = '<th th-name="'+ _this.checkboxThName +'" lm-checkbox="true" lm-create="true"><input type="checkbox"/></th>';		
 			$('thead tr', element).prepend(checkboxHtml);
 			//绑定选择事件
 			element.off('click','input[type="checkbox"]');
@@ -435,7 +446,7 @@
 				if(_this.supportSorting){
 					sortingHtml = 'sorting' + v.sorting;
 				}
-				tableHtml  	+= '<th th-name="'+ v.name +'" '+remindHtml+' '+sortingHtml+'>'+ v.text +'</th>';
+				tableHtml  	+= '<th th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+'>'+ v.text +'</th>';
 			});
 			tableHtml += '</thead><tbody></tbody></table>';
 			element.html(tableHtml);

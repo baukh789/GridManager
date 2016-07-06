@@ -58,40 +58,42 @@ $(function(){
 		,pageSize:30
 		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
 		,columnData: [{
-				name: 'th-name',
+				key: 'name',
 				remind: 'the username',
 				sorting: 'up',
 				width: '200px',
 				text: 'username',
 				template: ''
 			},{
-				name: 'th-age',
+				key: 'age',
 				remind: 'the age',
 				sorting: '',
 				width: '200px',
 				text: 'age',
 				template: ''
 			},{
-				name: 'th-createDate',
+				key: 'createDate',
 				remind: 'the createDate',
 				sorting: 'down',
 				width: '200px',
 				text: 'createDate',
 				template: ''
 			},{
-				name: 'th-info',
+				key: 'info',
 				remind: 'the info',
 				sorting: '',
 				width: '200px',
 				text: 'info',
 				template: ''
 			},{
-				name: 'th-operation',
+				key: 'operation',
 				remind: 'the operation',
 				sorting: '',
 				width: '200px',
 				text: 'operation',
-				template: ''
+				template: function(operation, rowObject){  //operation:当前key所对应的单条数据；rowObject：单个一行完整数据
+					return '<a href=javascript:alert("这是一个按纽");>'+operation+'</a>';
+				}
 			}
 		]
 		,pagingBefore:function(query){

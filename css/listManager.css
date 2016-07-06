@@ -436,13 +436,14 @@ table.grid-manager-default tbody tr:hover td{
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
-/*序号样式*/
-.table-warp table[grid-manager] [lm-order="true"]{
+/*由插件生成的序号、全选样式*/
+.table-warp table[grid-manager] [lm-create="true"]{
+	width:50px !important;
 	text-align:center;
 	cursor:default;
 	background-color:#e8e8e8;
 }
-.table-warp table[grid-manager] [lm-order="true"]:hover{
+.table-warp table[grid-manager] [lm-create="true"]:hover{
 	background-color:#e8e8e8;
 }
 /*选择全选样式*/
