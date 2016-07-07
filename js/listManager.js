@@ -1,10 +1,9 @@
 /*	
-	http://www.lovejavascript.com/#!plugIn/listManager/index.html
+	http://www.lovejavascript.com/#!plugIn/GridManager/index.html
 	@baukh:GridManager 表格管理插件	
 	当前版本：v2.0
 	
 	开发完成的任务：
-	移除分页，排序的_listManager变量
 	处理文本配置无法单个配置的BUG【已修复】
 	方法：resetPageData不再对外公开，由插件自动完成方法内的功能。
 	移除方法:pageCallback，使用事件pagingBefore与pagingAfter替代
@@ -13,8 +12,8 @@
 	优化console.outLog()方法
 	增加getCheckedTr方法，用于获取当前选中的tr
 	清理无用代码
-	提供能否出表格数据公开方法：exportGridToXls， 示例： $('table').listManager([{'exportGridToXls':'aaaaa'}])
-	取消$(table).listManager(['reset','getListManager'])格式的调用方法
+	提供能否出表格数据公开方法：exportGridToXls， 示例： $('table').GridManager([{'exportGridToXls':'aaaaa'}])
+	取消$(table).GridManager(['reset','getGridManager'])格式的调用方法
 	取消多表同时渲染机制
 	增加对外公开方法验证，未经对外公开的方法将限制调用
 	增加全选、反选功能
@@ -90,12 +89,12 @@
 		this.ajaxUrl			= '';						//获取表格数据地址，配置该参数后，将会动态获取数据
 		//数据导出
 		this.supportExport		= true;						//支持导出表格数据
-		//用于支持全局属性配置  于v1.8 中将listManagerConfig弱化且不再建议使用。
+		//用于支持全局属性配置  于v1.8 中将GridManagerConfig弱化且不再建议使用。
 		
 		var textConfig = {};
-		if(typeof(listManagerConfig) == 'object'){
-			$.extend(textConfig, this.textConfig, listManagerConfig.textConfig)
-			$.extend(this,listManagerConfig);
+		if(typeof(gridManagerConfig) == 'object'){
+			$.extend(textConfig, this.textConfig, gridManagerConfig.textConfig)
+			$.extend(this,gridManagerConfig);
 		}
 		$.extend(textConfig, this.textConfig, settings.textConfig)
 		$.extend(this, settings, {textConfig: textConfig});
@@ -144,7 +143,7 @@
 			//增加渲染中标注
 			jQueryObj.addClass('GridManager-loading');
 			//加载所需资源
-			_this.loadListManagerFile(function(){  //baukh20160705:加载资源应该移除
+			_this.loadGridManagerFile(function(){  //baukh20160705:加载资源应该移除
 				_this.initTable(jQueryObj);
 				
 				//如果初始获取缓存失败，则在mousedown时，首先存储一次数据
@@ -160,22 +159,22 @@
 				//启用回调
 				typeof(callback) == 'function' ? callback(query) :'';	
 			});
-			return _this.getListManager(jQueryObj);
+			return _this.getGridManager(jQueryObj);
 		}
 		/*
 			@存储对外实例至JQuery
 			$.element:当前被实例化的table
 		*/
-		,setListManagerToJQuery: function(element){
-			element.data('listManager', this);
+		,setGridManagerToJQuery: function(element){
+			element.data('gridManager', this);
 		}
 		/*
 			[对外公开方法]
-			@通过JQuery实例获取listManager
+			@通过JQuery实例获取gridManager
 			$.element:实例前的标签
 		*/
-		,getListManager: function(element){
-			return element.data('listManager');
+		,getGridManager: function(element){
+			return element.data('gridManager');
 		}
 		/*
 			[对外公开方法]
@@ -189,26 +188,26 @@
 			}
 		*/
 		,setSort: function(element, _sortJson_, callback){
+			var _this = this;
 			if(element.length == 0 || !_sortJson_ || $.isEmptyObject(_sortJson_)){
 				return false;
 			}
 			var _th,
 				_sortAction,
 				_sortType;
-			var listManager = element.getListManager(element);
 			for(var s in _sortJson_){
 				_th = $('[th-name="'+ s +'"]', table);
 				_sortType = _sortJson_[s];
 				_sortAction = $('.sorting-action', _th);
-				if(_sortType == listManager.sortUpText){
-					_th.attr('sorting', listManager.sortUpText);			
-					_sortAction.removeClass('sorting-' + listManager.sortDownText);	
-					_sortAction.addClass('sorting-' + listManager.sortUpText);	
+				if(_sortType == _this.sortUpText){
+					_th.attr('sorting', _this.sortUpText);			
+					_sortAction.removeClass('sorting-' + _this.sortDownText);	
+					_sortAction.addClass('sorting-' + _this.sortUpText);	
 				}
-				else if(_sortType == listManager.sortDownText){
-					_th.attr('sorting', listManager.sortDownText);
-					_sortAction.removeClass('sorting-' + listManager.sortUpText);	
-					_sortAction.addClass('sorting-' + listManager.sortDownText);			
+				else if(_sortType == _this.sortDownText){
+					_th.attr('sorting', _this.sortDownText);
+					_sortAction.removeClass('sorting-' + _this.sortUpText);	
+					_sortAction.addClass('sorting-' + _this.sortDownText);			
 				}
 			}
 			typeof(callback) == 'function' ? callback() : '';
@@ -216,7 +215,7 @@
 		/*
 			@加载所需文件
 		*/
-		,loadListManagerFile: function(callback){
+		,loadGridManagerFile: function(callback){
 			var _this = this;
 			var loadIConfont = false,
 				loadListCss  = false,
@@ -314,7 +313,7 @@
 			//渲梁tbodyDOM
 			_this.renderTbody();
 			//将listManager实例化对象存放于jquery data
-			_this.setListManagerToJQuery(_table);
+			_this.setGridManagerToJQuery(_table);
 			
 		}
 		/*
@@ -1248,7 +1247,6 @@
 					_thead,					//列表head
 					_thList,				//列表下的th
 					_tbody;					//列表body
-			//	var _listManagerName = '';	
 				var _scrollDOMTop = _scrollDOM.scrollTop(),
 					_tDIVTop = 0;
 				var _tWarpMB	= undefined; //吸顶触发后,table所在外围容器的margin-bottom值
@@ -2185,7 +2183,7 @@
 		,setQuery: function(element, _pageQuery_){
 			var _this = this;
 			var table = $(element),
-				listManager = table.listManager('getListManager');	
+				listManager = table.listManager('getGridManager');	
 			listManager['query'] = 	_pageQuery_;
 		}
 		/*
@@ -2238,7 +2236,7 @@
 			settings = {};
 			callback = undefined;
 		}
-		//ex: $(table).listManager('getListManager')
+		//ex: $(table).listManager('getGridManager')
 		else if(arguments.length === 1 && typeof(arguments[0]) === 'string' && typeof(arguments[0]) !== 'init'){
 			name	 = arguments[0];
 			settings = undefined;
@@ -2290,7 +2288,7 @@
 		}
 		
 		//验证当前调用的方法是否为对外公开方法
-		var exposedMethodList = ['init', 'setSort', 'getListManager', 'getCheckedTr', 'showTh', 'hideTh', 'exportGridToXls', 'getLocalStorage', 'resetTd', 'setQuery'];
+		var exposedMethodList = ['init', 'setSort', 'getGridManager', 'getCheckedTr', 'showTh', 'hideTh', 'exportGridToXls', 'getLocalStorage', 'resetTd', 'setQuery'];
 		if(exposedMethodList.indexOf(name) === -1){
 			throw new Error('listManager Error:方法调用错误，请确定方法名['+ name +']是否正确');
 			return false;
@@ -2300,12 +2298,14 @@
 		if(name == 'init') {		
 			var options = $.extend({}, $.fn.GridManager.defaults, settings);
 			lmObj = new GridManager(options);
-			return 	lmObj.init(_jqTable, callback);
+			lmObj.init(_jqTable, callback);
+			return _jqTable;
 		}
 		//当前为其它方法
 		else if(name != 'init'){
-			lmObj = _jqTable.data('listManager');
-			return lmObj[name](_jqTable, settings);
+			lmObj = _jqTable.data('gridManager');
+			lmObj[name](_jqTable, settings);
+			return _jqTable;
 		}		
 	}
 })();
