@@ -454,6 +454,17 @@ table.grid-manager-default tbody tr:hover td{
 .table-warp table[grid-manager] [lm-checkbox="true"] input[type=checkbox]{
 	vertical-align:middle;
 }
+/*遮罩*/
+.table-warp .mask-element{
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0px;
+	left:0px;
+	background:#000;
+	opacity:0.6;
+	z-index:9;
+}
 /*闪烁动画特效*/
 @-webkit-keyframes opacityChange{
     0%{

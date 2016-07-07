@@ -12,12 +12,13 @@
 	优化console.outLog()方法
 	增加getCheckedTr方法，用于获取当前选中的tr
 	清理无用代码
-	提供能否出表格数据公开方法：exportGridToXls， 示例： $('table').GridManager([{'exportGridToXls':'aaaaa'}])
+	提供能否出表格数据公开方法：exportGridToXls， 示例： $('table').GridManager('exportGridToXls':'aaaaa')
 	取消$(table).GridManager(['reset','getGridManager'])格式的调用方法
 	取消多表同时渲染机制
 	增加对外公开方法验证，未经对外公开的方法将限制调用
 	增加全选、反选功能
 	增加配置项：columnData 通过配置的形式渲染table; 下属配置项template typeof == function时，会传入当前key所对应的数据与整行数据做为参数
+	提供刷新表格数据的对外公开方:refreshGrid，示例： $('table').GridManager('refreshGrid':callback)
 	
 	开发中的任务：
 	增加删除列功能 提供删除操作回调函数
@@ -311,23 +312,33 @@
 			//绑定右键菜单事件
 			_this.bindRightMenuEvent(_table);
 			//渲梁tbodyDOM
-			_this.renderTbody();
+			_this.__refreshGrid();
 			//将listManager实例化对象存放于jquery data
 			_this.setGridManagerToJQuery(_table);
 			
 		}
 		/*
-			@渲梁tbodyDOM
+			[对外公开方法]
+			@刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 			$.callback: 回调函数
 		*/
-		,renderTbody: function(callback){
+		,refreshGrid: function(element, callback){
+			var _this = this;
+			_this.__refreshGrid(callback);
+		}
+		/*
+			@刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
+			$.callback: 回调函数
+		*/
+		,__refreshGrid: function(callback){
 			var _this = this;
 			if(typeof(_this.ajaxUrl) != 'string' || _this.ajaxUrl === ''){
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
 			var tableDOM = $('table[grid-manager="'+ _this.gridManagerName +'"]'),		//table dom
-				tbodyDOM = $('tbody', tableDOM);	//tbody dom
+				tbodyDOM = $('tbody', tableDOM),	//tbody dom
+				tWarp	= tableDOM.closest('div.table-warp'); //table-warp dom
 			if(!tbodyDOM || tbodyDOM.length === 0){
 				tableDOM.append('<tbody></tbody>');
 				tbodyDOM = $('tbody', tableDOM);
@@ -374,6 +385,8 @@
 					_this.resetPageData(tableDOM, data.totals);
 				}
 				typeof callback === 'function' ? callback() : '';
+				window.setTimeout(function(){
+				},1000)
 			});
 		}
 		/*
@@ -926,7 +939,7 @@
 				//调用事件、渲染tbody
 				var query = $.extend({}, _this.query, _this.sortData, _this.pageData);
 				_this.sortingBefore(query);
-				_this.renderTbody(function(){
+				_this.__refreshGrid(function(){
 					_this.sortingAfter(query,  _th);
 				});
 				
@@ -1382,8 +1395,10 @@
 			//支持导出表格数据
 			var exportHtml = '';
 			if(_this.supportExport){
-				exportHtml = '<span class="downGrid">下载当前表</span>';
+				exportHtml = '<span grid-action="download">下载当前表</span>';
 			}
+			//刷新当前表格
+			exportHtml += '<span grid-action="refresh">刷新</span>';
 			var menuHTML = '<div class="lm-menu">'
 						 + exportHtml
 						 + '</div>';
@@ -1396,9 +1411,13 @@
 				
 			});
 			//绑定下载事件
-			$('.downGrid').unbind('click');
-			$('.downGrid').bind('click', function(){
+			$('[grid-action="download"]').unbind('click');
+			$('[grid-action="download"]').bind('click', function(){
 				_this.exportGridToXls($(this).closest('.table-warp').find('table[grid-manager]'));
+			});
+			$('[grid-action="refresh"]').unbind('click');
+			$('[grid-action="refresh"]').bind('click', function(){
+				_this.__refreshGrid();
 			});
 		}
 		/*
@@ -1996,7 +2015,7 @@
 				//调用事件、渲染DOM
 				var query = $.extend({}, _this.query, _this.sortData, _this.pageData);
 				_this.pagingBefore(query);
-				_this.renderTbody(function() {
+				_this.__refreshGrid(function() {
 					_this.pagingAfter(query);
 				});
 			}
@@ -2030,7 +2049,7 @@
 				//调用事件、渲染tbody
 				var query = $.extend({}, _this.query, _this.sortData, _this.pageData);
 				_this.pagingBefore(query);
-				_this.renderTbody(function(){
+				_this.__refreshGrid(function(){
 					_this.pagingAfter(query);
 				});
 				
@@ -2257,8 +2276,8 @@
 		//ex: $(table).listManager('init', callback)
 		else if(arguments.length === 2 && typeof(arguments[0]) === 'string' && typeof(arguments[1]) === 'function'){
 			name	 = arguments[0];
-			settings = {};
-			callback = arguments[1];
+			settings = arguments[1];
+			callback = undefined;
 		}
 		//ex: $(table).listManager('init', {settings})
 		//ex: $(table).listManager('resetTd', false)
@@ -2288,7 +2307,7 @@
 		}
 		
 		//验证当前调用的方法是否为对外公开方法
-		var exposedMethodList = ['init', 'setSort', 'getGridManager', 'getCheckedTr', 'showTh', 'hideTh', 'exportGridToXls', 'getLocalStorage', 'resetTd', 'setQuery'];
+		var exposedMethodList = ['init', 'setSort', 'getGridManager', 'getCheckedTr', 'showTh', 'hideTh', 'exportGridToXls', 'getLocalStorage', 'resetTd', 'setQuery', 'refreshGrid'];
 		if(exposedMethodList.indexOf(name) === -1){
 			throw new Error('listManager Error:方法调用错误，请确定方法名['+ name +']是否正确');
 			return false;
