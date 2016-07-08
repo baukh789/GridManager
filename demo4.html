@@ -33,14 +33,14 @@ hr{
 <p>存在.json文件，谷歌需要放到环境中效果才能展现</p>
 <hr/>
 <div style="width:95%;margin:0px auto;">
-    <div grid-manager="cccc"></div>
+    <table grid-manager="cccc"></table>
 </div>
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/listManager.js"></script>
 <script type="text/javascript" >
 $(function(){
 	//单列表简易渲染
-	var table = $('[grid-manager]');
+	var table = $('table[grid-manager]');
 	$.fn.GM.defaults = {
 		isDevelopMode: true, 
 		autoLoadCss:true  //自动加载CSS文件，无需在页面中引用
@@ -97,16 +97,22 @@ $(function(){
 			}
 		]
 		,pagingBefore:function(query){
-      		console.log('event: 分页前', query);
+      		console.log('Event: 分页前', query);
 		}
 		,pagingAfter: function(query){
-		  	console.log('event: 分页后', query);	
+		  	console.log('Event: 分页后', query);	
 		}
 		,sortingBefore:function(query){
-      		console.log('event: 排序前', query);
+      		console.log('Event: 排序前', query);
 		}
 		,sortingAfter: function(query){
-		  	console.log('event: 排序后', query);
+		  	console.log('Event: 排序后', query);
+		}
+		,ajaxBefore: function(query){
+		  	console.log('Event: ajax请求前', query);
+		}
+		,ajaxAfter: function(data){
+		  	console.log('Event: ajax请求后', data);
 		}
 		,textConfig:{
 			'page-go': {

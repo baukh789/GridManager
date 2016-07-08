@@ -39,7 +39,7 @@ table[grid-manager]{
 table[grid-manager] *{
 	box-sizing:border-box !important;
 }
-.GridManager-ready table[grid-manager]{
+table[grid-manager].GridManager-ready{
 	visibility:visible;
 }
 /*table所在的DIV*/

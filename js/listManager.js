@@ -19,6 +19,7 @@
 	增加全选、反选功能
 	增加配置项：columnData 通过配置的形式渲染table; 下属配置项template typeof == function时，会传入当前key所对应的数据与整行数据做为参数
 	提供刷新表格数据的对外公开方:refreshGrid，示例： $('table').GridManager('refreshGrid':callback)
+	方法[getGridManager]简化为[get]
 	
 	开发中的任务：
 	增加删除列功能 提供删除操作回调函数
@@ -88,6 +89,8 @@
 		this.columnData			= [];						//表格列数据配置项
 		this.gridManagerName   	= '';						//表格grid-manager所对应的值[可在html中配置]
 		this.ajaxUrl			= '';						//获取表格数据地址，配置该参数后，将会动态获取数据
+		this.ajaxBefore			= $.noop();					//ajax请求之前,返回请求前的使用的参数
+		this.ajaxAfter			= $.noop();					//ajax请求之后，返回请求后获取的数据
 		//数据导出
 		this.supportExport		= true;						//支持导出表格数据
 		//用于支持全局属性配置  于v1.8 中将GridManagerConfig弱化且不再建议使用。
@@ -108,7 +111,7 @@
 			return navigator.userAgent.indexOf('Chrome') == -1 ? false : true;
 		}
 		/*
-			@配置随机参数
+			@获取随机参数
 		*/
 		,getRandom: function(){
 			return this.version + Math.random();
@@ -117,7 +120,7 @@
 			[对外公开方法]	
 			@初始化方法
 			$.callback:回调
-			$.jQueryObj: jquery选择器对象[内部参数]
+			$.jQueryObj: table [jquery object]
 		*/
 		,init: function(jQueryObj, callback){
 			var _this = this;
@@ -150,7 +153,7 @@
 				//如果初始获取缓存失败，则在mousedown时，首先存储一次数据
 				if(typeof jQueryObj.attr('grid-manager-cache-error') !== 'undefined'){
 					window.setTimeout(function(){
-						_this.setToLocalStorage($('table[grid-manager="'+ _this.gridManagerName +'"]', jQueryObj), true);
+						_this.setToLocalStorage(jQueryObj, true);
 						jQueryObj.removeAttr('grid-manager-cache-error');
 					},1000);
 				}			
@@ -164,23 +167,30 @@
 		}
 		/*
 			@存储对外实例至JQuery
-			$.element:当前被实例化的table
+			$.table:当前被实例化的table
 		*/
-		,setGridManagerToJQuery: function(element){
-			element.data('gridManager', this);
+		,setGridManagerToJQuery: function(table){
+			table.data('gridManager', this);
 		}
 		/*
 			[对外公开方法]
 			@通过JQuery实例获取gridManager
-			$.element:实例前的标签
+			$.table:table [jquery object]
 		*/
-		,getGridManager: function(element){
-			return element.data('gridManager');
+		,get: function(table){
+			return this.getGridManager(table);
+		}
+		/*
+			@通过JQuery实例获取gridManager
+			$.table:table [jquery object]
+		*/
+		,getGridManager: function(table){
+			return table.data('gridManager');
 		}
 		/*
 			[对外公开方法]
 			@手动设置排序 
-			$.element: table  [单个table或jquery实例]
+			$.element: table [jquery object]
 			$._sortJson_: 需要排序的json串 
 			$.callback:回调函数		
 			ex: _sortJson_
@@ -272,49 +282,48 @@
 		}
 		/*
 			@初始化列表
-			$.gridElement: 渲染前的gridElement
+			$.table: table[jquery object]
 		*/
-		,initTable: function(gridElement){
+		,initTable: function(table){
 			var _this = this;
 			
 			//渲染HTML，嵌入所需的事件源DOM
-			_this.embeddedDom(gridElement);
+			_this.createDom(table);
 			
-			var _table = $('table[grid-manager="'+ _this.gridManagerName +'"]', gridElement);
 			//获取本地缓存并对列表进行配置
 			if(!_this.disableCache){
-				_this.configTheadForCache(_table);
+				_this.configTheadForCache(table);
 			}
 			//绑定宽度调整事件
 			if(_this.supportAdjust){
-				_this.bindAdjustEvent(_table);
+				_this.bindAdjustEvent(table);
 			}
 			//绑定拖拽换位事件
 			if(_this.supportDrag){
-				_this.bindDragEvent(_table);
+				_this.bindDragEvent(table);
 			}
 			//绑定排序事件
 			if(_this.supportSorting){
-				_this.bindSortingEvent(_table);
+				_this.bindSortingEvent(table);
 			}
 			//绑定表头提示事件
 			if(_this.supportRemind){
-				_this.bindRemindEvent(_table);
+				_this.bindRemindEvent(table);
 			}
 			//绑定配置列表事件
 			if(_this.supportConfig){
-				_this.bindConfigEvent(_table);
+				_this.bindConfigEvent(table);
 			}
 			//绑定表头吸顶功能
 			if(_this.supportSetTop){
-				_this.bindSetTopFunction(_table);
+				_this.bindSetTopFunction(table);
 			}
 			//绑定右键菜单事件
-			_this.bindRightMenuEvent(_table);
+			_this.bindRightMenuEvent(table);
 			//渲梁tbodyDOM
 			_this.__refreshGrid();
-			//将listManager实例化对象存放于jquery data
-			_this.setGridManagerToJQuery(_table);
+			//将GridManager实例化对象存放于jquery data
+			_this.setGridManagerToJQuery(table);
 			
 		}
 		/*
@@ -332,7 +341,8 @@
 		*/
 		,__refreshGrid: function(callback){
 			var _this = this;
-			if(typeof(_this.ajaxUrl) != 'string' || _this.ajaxUrl === ''){
+			if(typeof(_this.ajaxUrl) != 'string' || _this.ajaxUrl === ''){	
+				_this.outLog('请求表格数据失败！参数[ajaxUrl]配制错误', 'error');
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
@@ -352,11 +362,13 @@
 			if(_this.supportSorting){
 				$.extend(parme, _this.sortData);
 			}
-			
+			//执行ajax前事件	
+			_this.ajaxBefore(parme);	
 			var tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
 			$.get(_this.ajaxUrl, parme, function(data){
 				if(!data || !Array.isArray(data.list)){
 					_this.outLog('请求表格数据失败！请查看配置参数[ajaxUrl]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
+						
 					return;
 				}
 				//数据为空时
@@ -384,14 +396,14 @@
 				if(_this.supportAjaxPage){
 					_this.resetPageData(tableDOM, data.totals);
 				}
-				typeof callback === 'function' ? callback() : '';
-				window.setTimeout(function(){
-				},1000)
+				typeof callback === 'function' ? callback() : '';					
+				//执行ajax后事件	
+				_this.ajaxAfter(data);	
 			});
 		}
 		/*
 			@生成序号DOM
-			$.table: [jquery对象]
+			$.table: table [jquery object]
 		*/
 		,initOrderDOM: function(table) {
 			var _this = this;			
@@ -440,15 +452,14 @@
 		}
 		/*
 			@渲染HTML，根据配置嵌入所需的事件源DOM
-			$.element: 需要渲染的JQuery对象
+			$.table: table[JQuery对象]
 		*/
-		,embeddedDom: function(element){
+		,createDom: function(table){
 			var _this = this;
-			//baukh20160705:这里应该做一个判断，如果本身就是table，那么该直接使用table下的th项
-			var tableHtml 	= '<table width="100%" cellspacing="1" cellpadding="0" grid-manager="'
-							+ _this.gridManagerName+ '">'
-							+ '<thead>';
-			var remindHtml = '',
+			table.attr({width: '100%', cellspacing: 1, cellpadding:0, 'grid-manager': _this.gridManagerName});
+			var theadHtml = '<thead>',
+				tbodyHtml = '<tbody></tbody>',
+				remindHtml = '',
 				sortingHtml	= '';
 			//通过配置项[columnData]生成thead
 			$.each(_this.columnData, function(i, v){
@@ -458,12 +469,11 @@
 				if(_this.supportSorting){
 					sortingHtml = 'sorting' + v.sorting;
 				}
-				tableHtml  	+= '<th th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+'>'+ v.text +'</th>';
+				theadHtml  	+= '<th th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+'>'+ v.text +'</th>';
 			});
-			tableHtml += '</thead><tbody></tbody></table>';
-			element.html(tableHtml);
-			
-			var table = $('table[grid-manager="'+ _this.gridManagerName +'"]', element);			
+			theadHtml += '</thead>';
+			table.html(theadHtml + tbodyHtml);
+								
 			//嵌入序号DOM
 			if(_this.supportAutoOrder){
 				_this.initOrderDOM(table);
@@ -506,7 +516,7 @@
 							  	 + '</div>';	
 			}
 			var	tableWarp,						//单个table所在的DIV容器
-				tName,							//table的listManager属性值
+				tName,							//table的GridManager属性值
 				tableDiv,						//单个table所在的父级DIV
 				onlyThead,						//单个table下的thead
 				onlyThList,						//单个table下的TH
@@ -652,8 +662,8 @@
 				}
 			});		
 			//删除渲染中标识、增加渲染完成标识
-			element.removeClass('GridManager-loading');
-			element.addClass('GridManager-ready');
+			table.removeClass('GridManager-loading');
+			table.addClass('GridManager-ready');
 		}
 		/*
 			@校验table的必要参数[th-name]
@@ -679,7 +689,7 @@
 		}
 		/*
 			@绑定配置列表事件[隐藏展示列]
-			$.table: [jquery对象]		
+			$.table: table [jquery object]		
 		*/
 		,bindConfigEvent: function(table){
 			var _this = this;
@@ -803,7 +813,7 @@
 		}
 		/*
 			@设置列是否可见
-			$._thList_	： 即将配置的列所对应的th[jquery对像，可以是多个]
+			$._thList_	： 即将配置的列所对应的th[jquery object，可以是多个]
 			$._visible_	: 是否可见[Boolean]
 			$._isInit_	: 是否初始加载[通过缓存进行的初始修改]
 			$.cb		: 回调函数
@@ -853,7 +863,7 @@
 		}
 		/*
 			@绑定表头提醒功能
-			$.table: [jquery对象]
+			$.table: table [jquery object]
 		*/
 		,bindRemindEvent: function(table){
 			var _this = this;
@@ -881,7 +891,7 @@
 		}
 		/*
 			@绑定排序事件
-			$.table: [jquery对象]
+			$.table: table [jquery object]
 		*/
 		,bindSortingEvent: function(table){
 			var _this = this;
@@ -948,7 +958,7 @@
 		}
 		/*
 			@绑定拖拽换位事件
-			$.table: [jquery对象]
+			$.table: table [jquery object]
 		*/
 		,bindDragEvent: function(table){
 			var _this = this;
@@ -1106,7 +1116,7 @@
 		}
 		/*
 			@绑定宽度调整事件
-			$.table: [jquery对象]
+			$.table: table [jquery object]
 		*/
 		,bindAdjustEvent: function(table){
 			var _this = this;
@@ -1202,7 +1212,7 @@
 		,getTextWidth: function(element){
 			var _this = this;
 			var th 				= $(element),   				//th
-				thWarp 			= $('.th-warp', th),  			//th下的listManager包裹容器
+				thWarp 			= $('.th-warp', th),  			//th下的GridManager包裹容器
 				thText	 		= $('.th-text', th),			//文本所在容器
 				remindAction	= $('.remind-action', thWarp),	//提醒所在容器
 				sortingAction	= $('.sorting-action', thWarp);	//排序所在容器
@@ -1227,7 +1237,7 @@
 		}
 		/*
 			@绑定表头吸顶功能
-			$.table: [jquery对象]
+			$.table: table [jquery object]
 		*/
 		,bindSetTopFunction: function(table){
 			var _this = this;
@@ -1428,7 +1438,7 @@
 		*/
 		,exportGridToXls: function(element, fileName){
 			var _this = this;
-			var lmExportAction = $('#lm-export-action'); //embeddedDom内添加
+			var lmExportAction = $('#lm-export-action'); //createDom内添加
 			if(!_this.supportExport || lmExportAction.length === 0){
 				_this.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
 				return;
@@ -1492,7 +1502,7 @@
 		}
 		/*
 			@保存至本地缓存
-			$.element:table对象[jquery对象]
+			$.element:table [jquery object]
 			$.isInit: 是否为初始存储缓存[用于处理宽度在特定情况下发生异常]
 		*/
 		,setToLocalStorage: function(element, isInit){
@@ -1513,7 +1523,7 @@
 				return false;
 			}
 			var _tableListManager = _table.attr('grid-manager');
-			//验证当前表是否为listManager
+			//验证当前表是否为GridManager
 			if(!_tableListManager || $.trim(_tableListManager) == ''){
 				_this.outLog('setToLocalStorage:无效的grid-manager', 'error');
 				return false;
@@ -1583,7 +1593,7 @@
 				return false;
 			}
 			var _tableListManager = _table.attr('grid-manager');	
-			//验证当前表是否为listManager
+			//验证当前表是否为GridManager
 			if(!_tableListManager || $.trim(_tableListManager) == ''){
 				_this.outLog('getLocalStorage:无效的grid-manager', 'error');
 				return false;
@@ -1605,12 +1615,12 @@
 		}
 		/*
 			@根据本地缓存配置分页
-			$.gridElement: 渲染前的gridElement
+			$.table: table[jquery object]
 			配置当前页显示数
 		*/
-		,configPageForCache: function(gridElement){
+		,configPageForCache: function(table){
 			var _this = this;
-			var _data = _this.getLocalStorage(gridElement),		//本地缓存的数据
+			var _data = _this.getLocalStorage(table),		//本地缓存的数据
 				_cache = _data.cache,		//缓存对应
 				_pageCache, //分页相关缓存
 				_query;		//init 后的callback中的query参数
@@ -1630,21 +1640,21 @@
 		}
 		/*
 			@存储原Th DOM至table data
-			$.table: table[jquery对象]
+			$.table: table [jquery object]
 		*/
 		,setOriginalThDOM: function(table){
 			table.data('originalThDOM', $('thead th', table));
 		}
 		/*
 			@获取原Th DOM至table data
-			$.table: table[jquery对象]
+			$.table: table [jquery object]
 		*/
 		,getOriginalThDOM: function(table){
 			return $(table).data('originalThDOM');
 		}
 		/*
-			@根据本地缓存配置列表[thead]
-			$.table: table[jquery对象]
+			@根据本地缓存thead配置列表
+			$.table: table [jquery object]
 			获取本地缓存
 			存储原位置顺序
 			根据本地缓存进行配置
@@ -1720,7 +1730,7 @@
 			@重置列表[tbody]
 			这个方法对外可以直接调用
 			作用：处理局部刷新、分页事件之后的tb排序
-			$.table: table[jquery对象]
+			$.table: table [jquery object]
 			$.isSingleRow: 指定DOM节点是否为tr[布尔值]
 		*/
 		,resetTd: function(dom, isSingleRow){
@@ -1809,12 +1819,12 @@
 		}
 		/*
 			@依据版本清除列表缓存
-			$.element: table[jquery对象]
+			$.element: table [jquery object]
 			依据版本号判断 如果版本不符 则对缓存进行清理
 		*/
 		,cleanTableCacheForVersion: function(element){
 			var _this = this;
-			var locationVersion = window.localStorage.getItem('listManagerVersion');
+			var locationVersion = window.localStorage.getItem('GridManagerVersion');
 			//版本相符 直接跳出
 			if(locationVersion && locationVersion == _this.version){
 				return;
@@ -1823,7 +1833,7 @@
 		}
 		/*
 			@清除列表缓存
-			$.element: table[jquery对象]
+			$.element: table [jquery object]
 			$.cleanText: 清除缓存的原因
 		*/
 		,cleanTableCache: function(element, cleanText){
@@ -1833,7 +1843,7 @@
 				window.localStorage.removeItem(v.getAttribute('grid-manager') + '-' + $('th', v).length);
 				_this.outLog(v.getAttribute('grid-manager') + '清除缓存成功,原因：'+ cleanText, 'info');
 			});
-			window.localStorage.setItem('listManagerVersion', _this.version);
+			window.localStorage.setItem('GridManagerVersion', _this.version);
 		}
 		/*
 			@初始化分页
@@ -2196,14 +2206,12 @@
 		/*
 			[对外公开方法]
 			@配置query 该参数会在分页触发后返回至pagingAfter(query)方法
-			$.element: table
+			$.table: table [jquery object]
 			$._pageQuery_:配置的数据
 		*/
-		,setQuery: function(element, _pageQuery_){
+		,setQuery: function(table, _pageQuery_){
 			var _this = this;
-			var table = $(element),
-				listManager = table.listManager('getGridManager');	
-			listManager['query'] = 	_pageQuery_;
+			table.GridManager('get')['query'] = 	_pageQuery_;
 		}
 		/*
 			@输出日志
@@ -2229,7 +2237,7 @@
 	}
 	/*
 		@提供多态化调用方式
-		$._name_: listManager下的方法名
+		$._name_: GridManager下的方法名
 		$._settings_: 方法所对应的参数，可为空
 		$._callback_: 方法所对应的回调,可为空
 	*/
@@ -2243,63 +2251,63 @@
 			settings,
 			callback;
 		//处理参数	
-		//ex: $(table).listManager()
+		//ex: $(table).GridManager()
 		if(arguments.length === 0){
 			name	 = 'init';
 			settings = {};
 			callback = undefined;
 		}
-		//ex: $(table).listManager('init')
+		//ex: $(table).GridManager('init')
 		else if(arguments.length === 1 && typeof(arguments[0]) === 'string' && typeof(arguments[0]) === 'init'){
 			name	 = arguments[0];
 			settings = {};
 			callback = undefined;
 		}
-		//ex: $(table).listManager('getGridManager')
+		//ex: $(table).GridManager('getGridManager')
 		else if(arguments.length === 1 && typeof(arguments[0]) === 'string' && typeof(arguments[0]) !== 'init'){
 			name	 = arguments[0];
 			settings = undefined;
 			callback = undefined;
 		}
-		//ex: $(table).listManager({settings})
+		//ex: $(table).GridManager({settings})
 		else if(arguments.length === 1 && $.isPlainObject(arguments[0])){
 			name	 = 'init';
 			settings = arguments[0];
 			callback = undefined;
 		}
-		//ex: $(table).listManager(callback)
+		//ex: $(table).GridManager(callback)
 		else if(arguments.length === 1 && typeof(arguments[0]) === 'function'){
 			name	 = 'init';
 			settings = undefined;
 			callback = arguments[0];
 		}
-		//ex: $(table).listManager('init', callback)
+		//ex: $(table).GridManager('init', callback)
 		else if(arguments.length === 2 && typeof(arguments[0]) === 'string' && typeof(arguments[1]) === 'function'){
 			name	 = arguments[0];
 			settings = arguments[1];
 			callback = undefined;
 		}
-		//ex: $(table).listManager('init', {settings})
-		//ex: $(table).listManager('resetTd', false)
-		//ex: $(table).listManager('exportGridToXls', 'fileName')
+		//ex: $(table).GridManager('init', {settings})
+		//ex: $(table).GridManager('resetTd', false)
+		//ex: $(table).GridManager('exportGridToXls', 'fileName')
 		else if(arguments.length === 2 && typeof(arguments[0]) === 'string' && typeof(arguments[1]) !== 'function'){
 			name	 = arguments[0];
 			settings = arguments[1];
 			callback = undefined;
 		}
-		//ex: $(table).listManager({settings}, callback)
+		//ex: $(table).GridManager({settings}, callback)
 		else if(arguments.length === 2 && $.isPlainObject(arguments[0]) && typeof(arguments[1]) === 'function'){
 			name	 = 'init';
 			settings = arguments[0];
 			callback = arguments[1];
 		}
-		//ex: $(table).listManager('resetTd', false)
+		//ex: $(table).GridManager('resetTd', false)
 		else if(arguments.length === 2 && typeof(arguments[0]) === 'string' && typeof(arguments[1]) === 'boolean'){
 			name	 = arguments[0];
 			settings = arguments[1];
 			callback = undefined;
 		}
-		//ex: $(table).listManager('init', {settings}, callback)
+		//ex: $(table).GridManager('init', {settings}, callback)
 		else if(arguments.length === 3){
 			name	 = arguments[0];
 			settings = arguments[1];
@@ -2307,9 +2315,9 @@
 		}
 		
 		//验证当前调用的方法是否为对外公开方法
-		var exposedMethodList = ['init', 'setSort', 'getGridManager', 'getCheckedTr', 'showTh', 'hideTh', 'exportGridToXls', 'getLocalStorage', 'resetTd', 'setQuery', 'refreshGrid'];
+		var exposedMethodList = ['init', 'setSort', 'get', 'getCheckedTr', 'showTh', 'hideTh', 'exportGridToXls', 'getLocalStorage', 'resetTd', 'setQuery', 'refreshGrid'];
 		if(exposedMethodList.indexOf(name) === -1){
-			throw new Error('listManager Error:方法调用错误，请确定方法名['+ name +']是否正确');
+			throw new Error('GridManager Error:方法调用错误，请确定方法名['+ name +']是否正确');
 			return false;
 		}
 		var lmObj;
@@ -2323,8 +2331,9 @@
 		//当前为其它方法
 		else if(name != 'init'){
 			lmObj = _jqTable.data('gridManager');
-			lmObj[name](_jqTable, settings);
-			return _jqTable;
+			var gmData = lmObj[name](_jqTable, settings);
+			//如果方法存在返回值则返回，如果没有返回jquery object用于链式操作
+			return typeof(gmData) === 'undefined' ? _jqTable : gmData;
 		}		
 	}
 })();
