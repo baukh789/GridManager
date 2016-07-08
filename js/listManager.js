@@ -12,7 +12,7 @@
 	优化console.outLog()方法
 	增加getCheckedTr方法，用于获取当前选中的tr
 	清理无用代码
-	提供能否出表格数据公开方法：exportGridToXls， 示例： $('table').GridManager('exportGridToXls':'aaaaa')
+	提供能否出表格数据公开方法：exportGridToXls， 示例： $('table').GridManager('exportGridToXls', fileName, onlyChecked)
 	取消$(table).GridManager(['reset','getGridManager'])格式的调用方法
 	取消多表同时渲染机制
 	增加对外公开方法验证，未经对外公开的方法将限制调用
@@ -429,14 +429,15 @@
 				if(_checkAction.closest('th[th-name="'+ _this.checkboxThName +'"]').length === 1){
 					$.each(_tdCheckbox, function(i, v){
 						v.checked = _checkAction.prop('checked');
+						$(v).closest('tr').attr('checked', v.checked);
 					});
 				//当前为单个选择			
 				}else{
 					$.each(_tdCheckbox, function(i, v){
 						if(v.checked === false) {
 							_thChecked = false;
-							return false;
 						}
+						$(v).closest('tr').attr('checked', v.checked);
 					});
 					_thCheckbox.prop('checked', _thChecked);
 				}
@@ -1405,7 +1406,8 @@
 			//支持导出表格数据
 			var exportHtml = '';
 			if(_this.supportExport){
-				exportHtml = '<span grid-action="download">下载当前表</span>';
+				exportHtml += '<span grid-action="download-all">下载完整表格</span>';
+				exportHtml += '<span grid-action="download-selected">下载选中表格</span>';
 			}
 			//刷新当前表格
 			exportHtml += '<span grid-action="refresh">刷新</span>';
@@ -1420,10 +1422,17 @@
 				e.stopPropagation();
 				
 			});
-			//绑定下载事件
-			$('[grid-action="download"]').unbind('click');
-			$('[grid-action="download"]').bind('click', function(){
-				_this.exportGridToXls($(this).closest('.table-warp').find('table[grid-manager]'));
+			//绑定下载完整表格事件
+			$('[grid-action="download-all"]').unbind('click');
+			$('[grid-action="download-all"]').bind('click', function(){
+				var _table = $(this).closest('.table-warp').find('table[grid-manager]');
+				_this.exportGridToXls(_table, false);
+			});
+			//绑定下载已选中表格事件
+			$('[grid-action="download-selected"]').unbind('click');
+			$('[grid-action="download-selected"]').bind('click', function(){
+				var _table = $(this).closest('.table-warp').find('table[grid-manager]');
+				_this.exportGridToXls(_table, undefined, true);
 			});
 			$('[grid-action="refresh"]').unbind('click');
 			$('[grid-action="refresh"]').bind('click', function(){
@@ -1435,8 +1444,10 @@
 			@导出表格 .xls
 			$.element:table
 			$.fileName: 导出后的文件名
+			$.onlyChecked: 是否只导出已选中的表格
 		*/
-		,exportGridToXls: function(element, fileName){
+		,exportGridToXls: function(element, fileName, onlyChecked){
+			console.log(arguments)
 			var _this = this;
 			var lmExportAction = $('#lm-export-action'); //createDom内添加
 			if(!_this.supportExport || lmExportAction.length === 0){
@@ -1450,8 +1461,14 @@
 				tbodyHTML ='', //存储导出的tbody下的数据
 				tableDOM = $(element);	//当前要导出的table
 			var thDOM = $('thead[class!="set-top"] th[th-visible="visible"][lm-create!="true"]', tableDOM),
-				trDOM = $('tbody tr', tableDOM),
+				trDOM,
 				tdDOM;
+			//验证：是否只导出已选中的表格
+			if(_this.supportCheckbox && onlyChecked){
+				trDOM = $('tbody tr[checked="checked"]', tableDOM);
+			}else{
+				trDOM = $('tbody tr', tableDOM);
+			}
 			$.each(thDOM, function(i, v){
 				theadHTML += '<th>'
 						  + v.getElementsByClassName('th-text')[0].textContent
@@ -2331,7 +2348,7 @@
 		//当前为其它方法
 		else if(name != 'init'){
 			lmObj = _jqTable.data('gridManager');
-			var gmData = lmObj[name](_jqTable, settings);
+			var gmData = lmObj[name](_jqTable, settings, callback);
 			//如果方法存在返回值则返回，如果没有返回jquery object用于链式操作
 			return typeof(gmData) === 'undefined' ? _jqTable : gmData;
 		}		
