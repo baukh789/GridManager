@@ -368,7 +368,6 @@
 			$.get(_this.ajaxUrl, parme, function(data){
 				if(!data || !Array.isArray(data.list)){
 					_this.outLog('请求表格数据失败！请查看配置参数[ajaxUrl]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
-						
 					return;
 				}
 				//数据为空时
@@ -395,11 +394,36 @@
 				//渲染分页
 				if(_this.supportAjaxPage){
 					_this.resetPageData(tableDOM, data.totals);
+					_this.checkMenuPageAction();
 				}
 				typeof callback === 'function' ? callback() : '';					
 				//执行ajax后事件	
 				_this.ajaxAfter(data);	
 			});
+		}
+		/*
+			@验证菜单区域，按当前页码禁用分页操作
+		*/
+		,checkMenuPageAction: function(){
+			var _this = this;
+			//右键菜单区上下页限制
+			var gridMenu = $('.grid-menu[grid-master="'+ _this.gridManagerName +'"]');
+			if(!gridMenu || gridMenu.length === 0){
+				return;
+			}
+			var previousPage = $('[refresh-type="previous"]', gridMenu),
+				nextPage = $('[refresh-type="next"]', gridMenu);
+			if(_this.pageData.cPage === 1){
+				previousPage.addClass('disabled');
+			}else{
+				previousPage.removeClass('disabled');
+			}
+			console.log(_this.pageData)
+			if(_this.pageData.cPage === _this.pageData.tPage){
+				nextPage.addClass('disabled');
+			}else{
+				nextPage.removeClass('disabled');
+			}
 		}
 		/*
 			@生成序号DOM
@@ -708,10 +732,12 @@
 						width: '0px'
 					}, _this.animateTime, function(){
 						_configList.hide();
+						configAction.hide();
 					});
 					return false;
 				}
 				//打开
+				configAction.show();
 				var _tableWarp = _configAction.parents('.table-warp').eq(0),//当前事件源所在的div
 					_table	= $('[grid-manager]', _tableWarp),				//对应的table
 					_thList = $('thead th', _table),							//所有的th
@@ -731,15 +757,6 @@
 				_configList.css('width','auto');
 				_configList.fadeIn(_this.animateTime);
 			});
-			//鼠标离开列表区域事件
-			/*
-			tableWarp.unbind('mouseleave');
-			tableWarp.bind('mouseleave', function(){
-				var _configList = $('.config-list', this);//设置列表
-				_configList.width(0)
-				_configList.hide();
-			});
-			*/
 			//设置事件
 			$('.config-list li', tableWarp).unbind('click');
 			$('.config-list li', tableWarp).bind('click', function(){
@@ -1408,14 +1425,14 @@
 				tbody = $('tbody', tableWarp);
 			//刷新当前表格
 			var menuHTML = '<div class="grid-menu" grid-master="'+ _this.gridManagerName +'">'
-						 + '<span grid-action="refresh">上一页</span>'
-						 + '<span grid-action="refresh">下一页</span>'
-						 + '<span grid-action="refresh">重新加载</span>'
+						 + '<span grid-action="refresh-page" refresh-type="previous">上一页</span>'
+						 + '<span grid-action="refresh-page" refresh-type="next">下一页</span>'
+						 + '<span grid-action="refresh-page" refresh-type="refresh">重新加载</span>'
 						 + '<span class="grid-line"></span>'
-						 + '<span grid-action="download-all">另存为Excel</span>'
-						 + '<span grid-action="download-selected">已选中表格另存为Excel</span>'
+						 + '<span grid-action="export-excel" only-checked="false">另存为Excel</span>'
+						 + '<span grid-action="export-excel" only-checked="true">已选中表格另存为Excel</span>'
 						 + '<span class="grid-line"></span>'
-						 + '<span grid-action="download-selected">配置表</span>'
+						 + '<span grid-action="setting-grid">配置表</span>'
 						 + '</div>';
 			var _body = $('body');
 			_body.append(menuHTML);
@@ -1440,28 +1457,66 @@
 					'left': left
 				});
 				menuDOM.show();
-				_body.off('mousedown.gridMenu');
-				_body.on('mousedown.gridMenu', function(){
+				_body.off('mouseup.gridMenu');
+				_body.on('mouseup.gridMenu', function(){
 					_body.off('mousedown.gridMenu');
 					menuDOM.hide();
 				});
 			});
 			
-			//绑定下载完整表格事件
-			$('[grid-action="download-all"]').unbind('click');
-			$('[grid-action="download-all"]').bind('click', function(){
-				var _table = $(this).closest('.table-warp').find('table[grid-manager]');
-				_this.exportGridToXls(_table, false);
+			//绑定事件：上一页、下一页、重新加载
+			var refreshPage = $('[grid-action="refresh-page"]');
+			refreshPage.unbind('click');
+			refreshPage.bind('click', function(){
+				var refreshType = this.getAttribute('refresh-type');
+				//上一页
+				if(refreshType === 'previous' && _this.pageData.cPage > 1){
+					_this.pageData.cPage = _this.pageData.cPage - 1;
+				}
+				//下一页
+				else if(refreshType === 'next' && _this.pageData.cPage < _this.pageData.tPage){
+					_this.pageData.cPage = _this.pageData.cPage + 1;
+				}
+				//重新加载
+				else if(refreshType === 'refresh'){
+				}
+				var query = $.extend({}, _this.query, _this.sortData, _this.pageData);
+				_this.pagingBefore(query);
+				_this.__refreshGrid(function() {
+					_this.pagingAfter(query);
+				});
+				_body.off('mousedown.gridMenu');
+				menuDOM.hide();
 			});
-			//绑定下载已选中表格事件
-			$('[grid-action="download-selected"]').unbind('click');
-			$('[grid-action="download-selected"]').bind('click', function(){
-				var _table = $(this).closest('.table-warp').find('table[grid-manager]');
-				_this.exportGridToXls(_table, undefined, true);
+			//绑定事件：另存为EXCEL、已选中表格另存为Excel
+			var exportExcel = $('[grid-action="export-excel"]');
+			exportExcel.unbind('click');
+			exportExcel.bind('click', function(){
+				var _table = $('table[grid-manager="'+ _this.gridManagerName +'"]');
+				var onlyChecked = false;
+				if(this.getAttribute('only-checked') === 'true'){
+					onlyChecked = true;
+				}
+				_this.exportGridToXls(_table, undefined, onlyChecked);
+				_body.off('mousedown.gridMenu');
+				menuDOM.hide();
 			});
-			$('[grid-action="refresh"]').unbind('click');
-			$('[grid-action="refresh"]').bind('click', function(){
-				_this.__refreshGrid();
+			//绑定事件：已选中表格另存为Excel
+			var settingGrid = $('[grid-action="setting-grid"]');
+			settingGrid.unbind('click');
+			settingGrid.bind('click', function(){
+				_body.off('mousedown.gridMenu');
+				menuDOM.hide();
+			});
+			//绑定事件：配置表
+			var settingGrid = $('[grid-action="setting-grid"]');
+			settingGrid.unbind('click');
+			settingGrid.bind('click', function(){
+				var configArea = $('.config-area', $('table[grid-manager="'+ _this.gridManagerName +'"]').closest('.table-warp'));
+				configArea.show();
+				$('.config-action', configArea).trigger('click');
+				_body.off('mousedown.gridMenu');
+				menuDOM.hide();
 			});
 		}
 		/*
@@ -1472,7 +1527,6 @@
 			$.onlyChecked: 是否只导出已选中的表格
 		*/
 		,exportGridToXls: function(element, fileName, onlyChecked){
-			console.log(arguments)
 			var _this = this;
 			var lmExportAction = $('#lm-export-action'); //createDom内添加
 			if(!_this.supportExport || lmExportAction.length === 0){
@@ -2036,6 +2090,7 @@
 					_this.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
 					return false;
 				}
+				cPage = parseInt(cPage);
 				gotoPage(_tableWarp, cPage);
 			});
 			//绑定快捷跳转事件

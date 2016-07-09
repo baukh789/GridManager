@@ -107,7 +107,7 @@ table.grid-manager-default tbody tr:hover td{
 }
 /*列表设置显示隐藏*/
 .table-warp .config-area{
-	display:block;
+	display:none;
 	width:18px;
 	position:absolute;
 	top:-10px;
@@ -137,6 +137,7 @@ table.grid-manager-default tbody tr:hover td{
             animation: rotationMedia 1s ease-in-out infinite;
 }
 .table-warp .config-area .config-list{
+	display:none;
 	position:absolute;
 	top:0px;
 	right:20px;
@@ -632,6 +633,10 @@ table.grid-manager-default tbody tr:hover td{
 .grid-menu[grid-master] [grid-action]:hover{
 	background-color:#3276b1;
 	color:#fff;
+}
+.grid-menu[grid-master] [grid-action].disabled{
+	color:#ccc;
+	background-color:#fff;
 }
 .grid-menu[grid-master] .grid-line{
 	display:block;
