@@ -102,8 +102,8 @@ table.grid-manager-default tbody tr td{
     text-align: left;
 }
 table.grid-manager-default tbody tr:hover td{ 
-	background-color: #e8e8e8;
-	color:#000;  
+	background-color: #e6eeee;
+	color:#000;
 }
 /*列表设置显示隐藏*/
 .table-warp .config-area{
@@ -441,15 +441,15 @@ table.grid-manager-default tbody tr:hover td{
 	width:50px !important;
 	text-align:center;
 	cursor:default;
-	background-color:#e8e8e8;
 }
-.table-warp table[grid-manager] [lm-create="true"]:hover{
-	background-color:#e8e8e8;
+.table-warp table[grid-manager] th[lm-create="true"]{
+	background-color:#dad9c7;
+	opacity:0.9;
 }
-/*选择全选样式*/
-.table-warp table[grid-manager] [lm-checkbox="true"]{
-	text-align:center;
-	cursor:default;
+.table-warp table[grid-manager] td[lm-create="true"]{
+}
+.table-warp table[grid-manager] tr:hover td[lm-create="true"]{
+	background-color:#e6eeee;
 }
 .table-warp table[grid-manager] [lm-checkbox="true"] input[type=checkbox]{
 	vertical-align:middle;
@@ -543,6 +543,7 @@ table.grid-manager-default tbody tr:hover td{
 	width:30px;
 	height:30px;
 	border:1px solid #ccc;
+	padding:0px 5px;
 	margin:0px 5px;
 }
 .table-warp .page-toolbar .goto-page .gp-action{
@@ -569,6 +570,7 @@ table.grid-manager-default tbody tr:hover td{
 	margin:0px; 
 }
 .table-warp .page-toolbar .ajax-page .pagination li{
+	height:30px;
 	display:inline;
 }
 .pagination > li:first-child > a, .pagination > li:first-child > span {
@@ -593,24 +595,49 @@ table.grid-manager-default tbody tr:hover td{
     cursor: default;
     z-index: 2;
 }
-.pagination li > a:hover, .pagination li > span, 
-.pagination li > span:focus, .pagination li > span:hover {
-    background-color: #eee;
-    border-color: #ddd;
-    color: #214e75;
-}
 .pagination > li > a, .pagination > li > span {
+	height:30px;
+    padding: 5px 10px;
     background-color: #fff;
     border: 1px solid #ddd;
     color: #3276b1;
     float: left;
     line-height: 1.42857;
     margin-left: -1px;
-    padding: 6px 12px;
     position: relative;
     text-decoration: none;
 }
+.pagination li > a:hover, .pagination li > span, 
+.pagination li > span:focus, .pagination li > span:hover {
+    background-color: #eee;
+    border-color: #ddd;
+    color: #214e75;
+}
 .table-warp .page-toolbar select[name="pSizeArea"]{
-	padding:7px;
+	height:30px;
+	padding:5px;
 	margin-left:10px;
+}
+/*右键菜单*/
+.table-warp .grid-menu{
+	width: 200px;
+	max-height: 200px;
+	border:1px solid #ccc;
+	padding:5px 0px;
+}
+.table-warp .grid-menu [grid-action]{
+	display:block;
+	padding:5px 20px;
+	cursor:default;
+}
+.table-warp .grid-menu [grid-action]:hover{
+	background-color:#3276b1;
+	color:#fff;
+}
+.table-warp .grid-menu .grid-line{
+	display:block;
+	height:3px;
+	background-color:#e8e8e8;
+	border-top:1px solid #f8f8f8;
+	border-bottom:1px solid #f8f8f8;
 }

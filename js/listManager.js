@@ -1403,16 +1403,16 @@
 		,bindRightMenuEvent: function(element){
 			var _this = this;
 			var tableWarp = $(element).closest('.table-warp');
-			//支持导出表格数据
-			var exportHtml = '';
-			if(_this.supportExport){
-				exportHtml += '<span grid-action="download-all">下载完整表格</span>';
-				exportHtml += '<span grid-action="download-selected">下载选中表格</span>';
-			}
 			//刷新当前表格
-			exportHtml += '<span grid-action="refresh">刷新</span>';
-			var menuHTML = '<div class="lm-menu">'
-						 + exportHtml
+			var menuHTML = '<div class="grid-menu">'
+						 + '<span grid-action="refresh">上一页</span>'
+						 + '<span grid-action="refresh">下一页</span>'
+						 + '<span grid-action="refresh">重新加载</span>'
+						 + '<span class="grid-line"></span>'
+						 + '<span grid-action="download-all">另存为Excel</span>'
+						 + '<span grid-action="download-selected">已选中表格另存为Excel</span>'
+						 + '<span class="grid-line"></span>'
+						 + '<span grid-action="download-selected">配置表</span>'
 						 + '</div>';
 			//绑定打开右键菜单栏
 			tableWarp.append(menuHTML);
