@@ -1452,6 +1452,13 @@
 				if(e.target.nodeName !== 'TBODY' && $(e.target).closest('tbody').length === 0){
 					return;
 				}
+				//验证：当前是否存在已选中的项
+				var exportExcelOfChecked = $('[grid-action="export-excel"][only-checked="true"]');
+				if($('tbody tr[checked="checked"]', 'table[grid-manager="'+ _this.gridManagerName +'"]').length === 0){
+					exportExcelOfChecked.addClass('disabled');
+				}else{
+					exportExcelOfChecked.removeClass('disabled');
+				}
 				var menuWidth = menuDOM.width(),
 					menuHeight = menuDOM.height(),
 					offsetHeight = document.documentElement.offsetHeight,
@@ -1464,7 +1471,11 @@
 				});
 				menuDOM.show();
 				_body.off('mouseup.gridMenu');
-				_body.on('mouseup.gridMenu', function(){
+				_body.on('mouseup.gridMenu', function(e){
+					var eventSource = $(e.target);
+					if(eventSource.hasClass('.grid-menu') || eventSource.closest('.grid-menu').length === 1){
+						return;
+					}
 					_body.off('mousedown.gridMenu');
 					menuDOM.hide();
 				});
@@ -1473,7 +1484,10 @@
 			//绑定事件：上一页、下一页、重新加载
 			var refreshPage = $('[grid-action="refresh-page"]');
 			refreshPage.unbind('click');
-			refreshPage.bind('click', function(){
+			refreshPage.bind('click', function(e){
+				if(isDisabled(this, e)){
+					return false;
+				}
 				var refreshType = this.getAttribute('refresh-type');
 				//上一页
 				if(refreshType === 'previous' && _this.pageData.cPage > 1){
@@ -1497,7 +1511,10 @@
 			//绑定事件：另存为EXCEL、已选中表格另存为Excel
 			var exportExcel = $('[grid-action="export-excel"]');
 			exportExcel.unbind('click');
-			exportExcel.bind('click', function(){
+			exportExcel.bind('click', function(e){
+				if(isDisabled(this, e)){
+					return false;
+				}
 				var _table = $('table[grid-manager="'+ _this.gridManagerName +'"]');
 				var onlyChecked = false;
 				if(this.getAttribute('only-checked') === 'true'){
@@ -1507,23 +1524,29 @@
 				_body.off('mousedown.gridMenu');
 				menuDOM.hide();
 			});
-			//绑定事件：已选中表格另存为Excel
-			var settingGrid = $('[grid-action="setting-grid"]');
-			settingGrid.unbind('click');
-			settingGrid.bind('click', function(){
-				_body.off('mousedown.gridMenu');
-				menuDOM.hide();
-			});
 			//绑定事件：配置表
 			var settingGrid = $('[grid-action="setting-grid"]');
 			settingGrid.unbind('click');
-			settingGrid.bind('click', function(){
+			settingGrid.bind('click', function(e){
+				if(isDisabled(this, e)){
+					return false;
+				}
 				var configArea = $('.config-area', $('table[grid-manager="'+ _this.gridManagerName +'"]').closest('.table-warp'));
 				configArea.show();
 				$('.config-action', configArea).trigger('click');
 				_body.off('mousedown.gridMenu');
 				menuDOM.hide();
 			});
+			//验证当前是否禁用
+			function isDisabled(dom, events){
+				if($(dom).hasClass('disabled')){
+					events.stopPropagation();
+					events.preventDefault();
+					return true;
+				}else{
+					return false;
+				}
+			}
 		}
 		/*
 			[对外公开方法]
