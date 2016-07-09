@@ -732,12 +732,14 @@
 				_configList.fadeIn(_this.animateTime);
 			});
 			//鼠标离开列表区域事件
+			/*
 			tableWarp.unbind('mouseleave');
 			tableWarp.bind('mouseleave', function(){
 				var _configList = $('.config-list', this);//设置列表
 				_configList.width(0)
 				_configList.hide();
 			});
+			*/
 			//设置事件
 			$('.config-list li', tableWarp).unbind('click');
 			$('.config-list li', tableWarp).bind('click', function(){
@@ -1402,9 +1404,10 @@
 		*/
 		,bindRightMenuEvent: function(element){
 			var _this = this;
-			var tableWarp = $(element).closest('.table-warp');
+			var tableWarp = $(element).closest('.table-warp'),
+				tbody = $('tbody', tableWarp);
 			//刷新当前表格
-			var menuHTML = '<div class="grid-menu">'
+			var menuHTML = '<div class="grid-menu" grid-master="'+ _this.gridManagerName +'">'
 						 + '<span grid-action="refresh">上一页</span>'
 						 + '<span grid-action="refresh">下一页</span>'
 						 + '<span grid-action="refresh">重新加载</span>'
@@ -1414,14 +1417,36 @@
 						 + '<span class="grid-line"></span>'
 						 + '<span grid-action="download-selected">配置表</span>'
 						 + '</div>';
+			var _body = $('body');
+			_body.append(menuHTML);
 			//绑定打开右键菜单栏
-			tableWarp.append(menuHTML);
+			var menuDOM = $('.grid-menu[grid-master="'+ _this.gridManagerName +'"]');
 			tableWarp.unbind('contextmenu');
 			tableWarp.bind('contextmenu', function(e){
 				e.preventDefault();
 				e.stopPropagation();
-				
+				//验证：如果不是tbdoy或者是tbody的子元素，直接跳出
+				if(e.target.nodeName !== 'TBODY' && $(e.target).closest('tbody').length === 0){
+					return;
+				}
+				var menuWidth = menuDOM.width(),
+					menuHeight = menuDOM.height(),
+					offsetHeight = document.documentElement.offsetHeight,
+					offsetWidth = document.documentElement.offsetWidth;
+				var top = offsetHeight < e.clientY + menuHeight ? e.clientY - menuHeight : e.clientY;
+				var left = offsetWidth < e.clientX + menuWidth ? e.clientX - menuWidth : e.clientX;
+				menuDOM.css({
+					'top': top,
+					'left': left
+				});
+				menuDOM.show();
+				_body.off('mousedown.gridMenu');
+				_body.on('mousedown.gridMenu', function(){
+					_body.off('mousedown.gridMenu');
+					menuDOM.hide();
+				});
 			});
+			
 			//绑定下载完整表格事件
 			$('[grid-action="download-all"]').unbind('click');
 			$('[grid-action="download-all"]').bind('click', function(){

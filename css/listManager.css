@@ -116,12 +116,8 @@ table.grid-manager-default tbody tr:hover td{
 	padding-top:3px;
 	cursor:pointer;
 	line-height:18px;
-	z-index:9999;
+	z-index:2;
 	text-align:center;
-	visibility:hidden;
-}
-.table-warp:hover .config-area{
-	visibility:visible;
 }
 .table-warp .config-area .config-action{
 	display:block;
@@ -141,7 +137,6 @@ table.grid-manager-default tbody tr:hover td{
             animation: rotationMedia 1s ease-in-out infinite;
 }
 .table-warp .config-area .config-list{
-	display:none;
 	position:absolute;
 	top:0px;
 	right:20px;
@@ -619,22 +614,26 @@ table.grid-manager-default tbody tr:hover td{
 	margin-left:10px;
 }
 /*右键菜单*/
-.table-warp .grid-menu{
+.grid-menu[grid-master]{
+	display:none;
 	width: 200px;
 	max-height: 200px;
+	position:absolute;
 	border:1px solid #ccc;
 	padding:5px 0px;
+	background-color:#fff;
+	z-index:3;
 }
-.table-warp .grid-menu [grid-action]{
+.grid-menu[grid-master] [grid-action]{
 	display:block;
 	padding:5px 20px;
 	cursor:default;
 }
-.table-warp .grid-menu [grid-action]:hover{
+.grid-menu[grid-master] [grid-action]:hover{
 	background-color:#3276b1;
 	color:#fff;
 }
-.table-warp .grid-menu .grid-line{
+.grid-menu[grid-master] .grid-line{
 	display:block;
 	height:3px;
 	background-color:#e8e8e8;
