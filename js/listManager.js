@@ -20,6 +20,7 @@
 	增加配置项：columnData 通过配置的形式渲染table; 下属配置项template typeof == function时，会传入当前key所对应的数据与整行数据做为参数
 	提供刷新表格数据的对外公开方:refreshGrid，示例： $('table').GridManager('refreshGrid':callback)
 	方法[getGridManager]简化为[get]
+	增加数据请求前事件[ajaxBefore]与请求后事件[ajaxAfter]，这两个事件紧靠ajax请求
 	
 	开发中的任务：
 	增加删除列功能 提供删除操作回调函数
@@ -365,7 +366,9 @@
 			//执行ajax前事件	
 			_this.ajaxBefore(parme);	
 			var tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
-			$.get(_this.ajaxUrl, parme, function(data){
+			$.get(_this.ajaxUrl, parme, function(data){			
+				//执行ajax后事件	
+				_this.ajaxAfter(data);
 				if(!data || !Array.isArray(data.list)){
 					_this.outLog('请求表格数据失败！请查看配置参数[ajaxUrl]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
 					return;
@@ -396,9 +399,7 @@
 					_this.resetPageData(tableDOM, data.totals);
 					_this.checkMenuPageAction();
 				}
-				typeof callback === 'function' ? callback() : '';					
-				//执行ajax后事件	
-				_this.ajaxAfter(data);	
+				typeof callback === 'function' ? callback() : '';		
 			});
 		}
 		/*
