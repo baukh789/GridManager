@@ -98,10 +98,10 @@
 		
 		var textConfig = {};
 		if(typeof(gridManagerConfig) == 'object'){
-			$.extend(textConfig, this.textConfig, gridManagerConfig.textConfig)
-			$.extend(this,gridManagerConfig);
+			$.extend(true, textConfig, this.textConfig, gridManagerConfig.textConfig)
+			$.extend(this, gridManagerConfig);
 		}
-		$.extend(textConfig, this.textConfig, settings.textConfig)
+		$.extend(true, textConfig, this.textConfig, settings.textConfig)
 		$.extend(this, settings, {textConfig: textConfig});
 	}
 	GridManager.prototype = {
@@ -1426,14 +1426,19 @@
 				tbody = $('tbody', tableWarp);
 			//刷新当前表格
 			var menuHTML = '<div class="grid-menu" grid-master="'+ _this.gridManagerName +'">'
-						 + '<span grid-action="refresh-page" refresh-type="previous">上一页</span>'
-						 + '<span grid-action="refresh-page" refresh-type="next">下一页</span>'
-						 + '<span grid-action="refresh-page" refresh-type="refresh">重新加载</span>'
+						 + '<span grid-action="refresh-page" refresh-type="previous">'
+						 + _this.i18nText("previous-page") +'</span>'
+						 + '<span grid-action="refresh-page" refresh-type="next">'
+						 + _this.i18nText("next-page") +'</span>'
+						 + '<span grid-action="refresh-page" refresh-type="refresh">'
+						 + _this.i18nText("refresh") +'</span>'
 						 + '<span class="grid-line"></span>'
-						 + '<span grid-action="export-excel" only-checked="false">另存为Excel</span>'
-						 + '<span grid-action="export-excel" only-checked="true">已选中表格另存为Excel</span>'
+						 + '<span grid-action="export-excel" only-checked="false">'
+						 + _this.i18nText("save-as-excel") +'</span>'
+						 + '<span grid-action="export-excel" only-checked="true">'
+						 + _this.i18nText("save-as-excel-for-checked") +'</span>'
 						 + '<span class="grid-line"></span>'
-						 + '<span grid-action="setting-grid">配置表</span>'
+						 + '<span grid-action="setting-grid">'+ _this.i18nText("setting-grid") +'</span>'
 						 + '</div>';
 			var _body = $('body');
 			_body.append(menuHTML);
@@ -2299,6 +2304,22 @@
 			,'page-go':{
 				'zh-cn':'确定',
 				'en-us':'Go '
+			}
+			,'refresh':{
+				'zh-cn':'重新加载',
+				'en-us':'Refresh '
+			}
+			,'save-as-excel':{
+				'zh-cn':'另存为Excel',
+				'en-us':'Save as Excel '
+			}
+			,'save-as-excel-for-checked':{
+				'zh-cn':'已选中项另存为Excel',
+				'en-us':'Save as Excel of Checked'
+			}
+			,'setting-grid':{
+				'zh-cn':'配置表',
+				'en-us':'Setting Grid'
 			}
 		}
 		/*

@@ -47,6 +47,13 @@ $(function(){
 	}
 	table.GM({
 		supportRemind: true
+		,i18n:'zh-cn'
+		,textConfig:{
+			'page-go': {
+				'zh-cn':'跳转',
+				'en-us':'Go '
+			}
+		}
 		,gridManagerName:'aaa'
 		,disableCache:false
 		,disableOrder:false
@@ -113,12 +120,6 @@ $(function(){
 		}
 		,ajaxAfter: function(data){
 		  	console.log('Event: ajax请求后', data);
-		}
-		,textConfig:{
-			'page-go': {
-				'zh-cn':'跳转',
-				'en-us':'Go '
-			}
 		}
 	},function(query){
 		console.log('init方法回调query参数', query);
