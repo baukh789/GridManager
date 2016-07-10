@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="css/base.css">
-<title>listManager:单列表简易渲染</title>
+<title>GridManager:单列表简易渲染</title>
 <style>
 html, body{
 	overflow-x:hidden;
@@ -29,14 +29,14 @@ hr{
 </head>
 
 <body>
-<h2>listManager:单列表简易渲染</h2>
+<h2>GridManager:单列表简易渲染</h2>
 <p>存在.json文件，谷歌需要放到环境中效果才能展现</p>
 <hr/>
 <div style="width:95%;margin:0px auto;">
     <table grid-manager="cccc"></table>
 </div>
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-<script type="text/javascript" src="js/listManager.js"></script>
+<script type="text/javascript" src="js/GridManager.js"></script>
 <script type="text/javascript" >
 $(function(){
 	//单列表简易渲染
@@ -62,6 +62,7 @@ $(function(){
 		,supportAjaxPage:true
 		,isCombSorting: false
     	,ajaxUrl: 'demo4.json'
+    	,ajaxType: 'POST'
 		,pageSize:30
 		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
 		,columnData: [{
@@ -115,11 +116,11 @@ $(function(){
 		,sortingAfter: function(query){
 		  	console.log('Event: 排序后', query);
 		}
-		,ajaxBefore: function(query){
-		  	console.log('Event: ajax请求前', query);
+		,ajax_beforeSend: function(query){
+		  	console.log('Event: ajax_beforeSend', query);
 		}
-		,ajaxAfter: function(data){
-		  	console.log('Event: ajax请求后', data);
+		,ajax_complete: function(data){
+		  	console.log('Event: ajax_complete', data);
 		}
 	},function(query){
 		console.log('init方法回调query参数', query);
