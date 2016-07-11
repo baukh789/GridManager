@@ -420,7 +420,7 @@
 				_this.resetTd(tableDOM, false);
 				//渲染分页
 				if(_this.supportAjaxPage){
-					_this.resetPageData(tableDOM, data.totals);
+					_this.resetPageData(tableDOM, response.totals);
 					_this.checkMenuPageAction();
 				}
 				typeof callback === 'function' ? callback() : '';		
