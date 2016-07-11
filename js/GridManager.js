@@ -8,7 +8,7 @@
 	方法：resetPageData不再对外公开，由插件自动完成方法内的功能。
 	移除方法:pageCallback，使用事件pagingBefore与pagingAfter替代
 	移除方法:sortingCallback，使用事件sortingBefore与sortingAfter替代
-	增加ajaxUrl参数，用于自动获取数据，无需再在分页及排序时手动处理
+	增加ajax_url参数，用于自动获取数据，无需再在分页及排序时手动处理
 	优化console.outLog()方法
 	增加getCheckedTr方法，用于获取当前选中的tr
 	清理无用代码
@@ -89,8 +89,8 @@
 		//用于支持通过数据渲染DOM
 		this.columnData			= [];						//表格列数据配置项
 		this.gridManagerName   	= '';						//表格grid-manager所对应的值[可在html中配置]
-		this.ajaxUrl			= '';						//获取表格数据地址，配置该参数后，将会动态获取数据
-		this.ajaxType			= 'GET';					//ajax请求类型['GET', 'POST']默认GET
+		this.ajax_url			= '';						//获取表格数据地址，配置该参数后，将会动态获取数据
+		this.ajax_type			= 'GET';					//ajax请求类型['GET', 'POST']默认GET
 		this.ajax_beforeSend	= $.noop;					//ajax请求之前,返回与jquery相同
 		this.ajax_success		= $.noop;					//ajax成功后,返回与jquery相同
 		this.ajax_complete		= $.noop;					//ajax完成后,返回与jquery相同
@@ -238,20 +238,20 @@
 				loadListCss  = false,
 				loadPageCss  = false;
 			//加载列表样式文件
-			if($('link#listManager-css').length == 0 && _this.autoLoadCss){
-				var listManagerCss  = document.createElement('link');
-				listManagerCss.id   = 'listManager-css';
-				listManagerCss.rel  = 'stylesheet';
-				listManagerCss.type = 'text/css';
-				listManagerCss.href = _this.basePath + 'css/listManager.css';
-				document.head.appendChild(listManagerCss);
-				listManagerCss.addEventListener('load', function(event) {
-					_this.outLog('listManager-css load OK' , 'info');
+			if($('link#GridManager-css').length == 0 && _this.autoLoadCss){
+				var GridManagerCss  = document.createElement('link');
+				GridManagerCss.id   = 'GridManager-css';
+				GridManagerCss.rel  = 'stylesheet';
+				GridManagerCss.type = 'text/css';
+				GridManagerCss.href = _this.basePath + 'css/GridManager.css';
+				document.head.appendChild(GridManagerCss);
+				GridManagerCss.addEventListener('load', function(event) {
+					_this.outLog('GridManager-css load OK' , 'info');
 					loadListCss = true;
 					gotoCallback();
 				});
-				listManagerCss.addEventListener('error', function(){
-					_this.outLog('listManager-css load error' , 'error');
+				GridManagerCss.addEventListener('error', function(){
+					_this.outLog('GridManager-css load error' , 'error');
 					loadListCss = false;
 				});	
 			}else{
@@ -259,21 +259,21 @@
 			}
 			//加载用户自定义分页样式文件
 			if(_this.supportAjaxPage &&
-				$('link#listManager-ajaxPage-css').length == 0 && 			
+				$('link#GridManager-ajaxPage-css').length == 0 && 			
 				_this.pageCssFile && _this.pageCssFile != ''){
 				var ajaxPageCss  = document.createElement('link');
-				ajaxPageCss.id   = 'listManager-ajaxPage-css';
+				ajaxPageCss.id   = 'GridManager-ajaxPage-css';
 				ajaxPageCss.rel  = 'stylesheet';
 				ajaxPageCss.type = 'text/css';
 				ajaxPageCss.href = _this.pageCssFile;
 				document.head.appendChild(ajaxPageCss);
 				ajaxPageCss.addEventListener('load', function(event) {
-					_this.outLog('listManager-ajaxPage-css load OK', 'info');
+					_this.outLog('GridManager-ajaxPage-css load OK', 'info');
 					loadPageCss = true;
 					gotoCallback();
 				});
 				ajaxPageCss.addEventListener('error', function(){
-					_this.outLog('listManager-ajaxPage-css load error', 'error');
+					_this.outLog('GridManager-ajaxPage-css load error', 'error');
 					loadPageCss = false;
 				});
 			}else{
@@ -346,8 +346,8 @@
 		*/
 		,__refreshGrid: function(callback){
 			var _this = this;
-			if(typeof(_this.ajaxUrl) != 'string' || _this.ajaxUrl === ''){	
-				_this.outLog('请求表格数据失败！参数[ajaxUrl]配制错误', 'error');
+			if(typeof(_this.ajax_url) != 'string' || _this.ajax_url === ''){	
+				_this.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
@@ -370,8 +370,8 @@
 			//执行ajax前事件	
 			var tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
 			$.ajax({
-				url: _this.ajaxUrl,
-				type: _this.ajaxType,
+				url: _this.ajax_url,
+				type: _this.ajax_type,
 				data: parme,
 				cache: true,
 				beforeSend: function(XMLHttpRequest){
@@ -391,7 +391,7 @@
 			//执行ajax成功后重新渲染DOM
 			function afterSuccessDrive(response) {
 				if(!response){
-					_this.outLog('请求数据失败！请查看配置参数[ajaxUrl]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
+					_this.outLog('请求数据失败！请查看配置参数[ajax_url]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
 					return;
 				}
 				
@@ -399,7 +399,7 @@
 				var _data = parseRes.data;
 				//数据为空时
 				if(!_data || _data.length === 0){
-					_this.outLog('['+ _this.ajaxUrl + ']数据为空');
+					_this.outLog('['+ _this.ajax_url + ']数据为空');
 					return;
 				}
 				var key,	//数据索引
@@ -2424,8 +2424,12 @@
 		$._callback_: 方法所对应的回调,可为空
 	*/
 	$.fn.GM = $.fn.GridManager = function(_name_, _settings_, _callback_){
-		var _jqTable = this.eq(0);
-		// 特殊情况处理：单组tr进行操作，如resetTd()方法 
+		if(this.length == 0){
+			throw new Error('GridManager Error:JQuery对象为空，请确定选择器匹配是否正确');
+			return false;
+		}
+		var _jqTable = this.eq(0);  //与jquery相同，配置时只配置第一个匹配的元素
+		// 特殊情况处理：单组tr进行操作，如resetTd()方法
 		if(_jqTable.get(0).nodeName === 'TR'){
 			_jqTable = _jqTable.closest('table[grid-manager]');
 		}
