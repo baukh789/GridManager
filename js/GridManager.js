@@ -294,7 +294,7 @@
 			var _this = this;
 			
 			//渲染HTML，嵌入所需的事件源DOM
-			_this.createDOM(table);
+			_this.createDom(table);
 			//获取本地缓存并对列表进行配置
 			if(!_this.disableCache){
 				_this.configTheadForCache(table);
@@ -420,7 +420,7 @@
 				_this.resetTd(tableDOM, false);
 				//渲染分页
 				if(_this.supportAjaxPage){
-					_this.resetPageData(tableDOM, response.totals);
+					_this.resetPageData(tableDOM, parseRes.totals);
 					_this.checkMenuPageAction();
 				}
 				typeof callback === 'function' ? callback() : '';		
@@ -503,7 +503,7 @@
 			@渲染HTML，根据配置嵌入所需的事件源DOM
 			$.table: table[JQuery对象]
 		*/
-		,createDOM: function(table){
+		,createDom: function(table){
 			var _this = this;
 			table.attr({width: '100%', cellspacing: 1, cellpadding:0, 'grid-manager': _this.gridManagerName});
 			var theadHtml = '<thead>',			
@@ -1462,7 +1462,7 @@
 						 + '<span grid-action="refresh-page" refresh-type="next">'
 						 + _this.i18nText("next-page") +'</span>';
 			}
-				menuHTML+= '<span grid-action="refresh-page" refresh-type="refresh">'
+						 + '<span grid-action="refresh-page" refresh-type="refresh">'
 						 + _this.i18nText("refresh") +'</span>'
 						 + '<span class="grid-line"></span>';
 			//导出类
@@ -1595,7 +1595,7 @@
 		*/
 		,exportGridToXls: function(element, fileName, onlyChecked){
 			var _this = this;
-			var lmExportAction = $('#lm-export-action'); //createDOM内添加
+			var lmExportAction = $('#lm-export-action'); //createDom内添加
 			if(!_this.supportExport || lmExportAction.length === 0){
 				_this.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
 				return;
