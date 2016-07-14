@@ -294,7 +294,7 @@
 			var _this = this;
 			
 			//渲染HTML，嵌入所需的事件源DOM
-			_this.createDom(table);
+			_this.createDOM(table);
 			//获取本地缓存并对列表进行配置
 			if(!_this.disableCache){
 				_this.configTheadForCache(table);
@@ -396,12 +396,12 @@
 				}
 				
 				var parseRes = typeof(response) === 'string' ? JSON.parse(response) : response;
-				var _data = parseRes.data;
 				//数据为空时
-				if(!_data || _data.length === 0){
-					_this.outLog('['+ _this.ajax_url + ']数据为空');
+				if(!parseRes.data){
+					_this.outLog('['+ _this.ajax_url + ']数据异常');
 					return;
 				}
+				var _data = parseRes.data;
 				var key,	//数据索引
 					template,//数据模板
 					templateHTML;//数据模板导出的html
@@ -411,7 +411,7 @@
 						key = v2.key;
 						template = v2.template;
 						templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];						
-						tbodyTmpHTML += '<td>'+ templateHTML +'</td>';
+						tbodyTmpHTML += '<td align="'+(v2.align || '')+'">'+ templateHTML +'</td>';
 					});
 					tbodyTmpHTML += '</tr>';
 				});
@@ -503,7 +503,7 @@
 			@渲染HTML，根据配置嵌入所需的事件源DOM
 			$.table: table[JQuery对象]
 		*/
-		,createDom: function(table){
+		,createDOM: function(table){
 			var _this = this;
 			table.attr({width: '100%', cellspacing: 1, cellpadding:0, 'grid-manager': _this.gridManagerName});
 			var theadHtml = '<thead>',			
@@ -522,7 +522,7 @@
 				if(v.width){
 					widthHtml = 'width="'+ v.width +'"';
 				}
-				theadHtml += '<th th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+' '+widthHtml+'>'+ v.text +'</th>';
+				theadHtml += '<th th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+' '+widthHtml+' align="'+(v.align || '')+'">'+ v.text +'</th>';
 			});
 			theadHtml += '</thead>';
 			table.html(theadHtml + tbodyHtml);
@@ -1462,7 +1462,7 @@
 						 + '<span grid-action="refresh-page" refresh-type="next">'
 						 + _this.i18nText("next-page") +'</span>';
 			}
-						 + '<span grid-action="refresh-page" refresh-type="refresh">'
+			menuHTML    += '<span grid-action="refresh-page" refresh-type="refresh">'
 						 + _this.i18nText("refresh") +'</span>'
 						 + '<span class="grid-line"></span>';
 			//导出类
@@ -1595,7 +1595,7 @@
 		*/
 		,exportGridToXls: function(element, fileName, onlyChecked){
 			var _this = this;
-			var lmExportAction = $('#lm-export-action'); //createDom内添加
+			var lmExportAction = $('#lm-export-action'); //createDOM内添加
 			if(!_this.supportExport || lmExportAction.length === 0){
 				_this.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
 				return;
