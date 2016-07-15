@@ -108,25 +108,23 @@ table.grid-manager-default tbody tr:hover td{
 /*列表设置显示隐藏*/
 .table-warp .config-area{
 	display:none;
-	width:18px;
 	position:absolute;
-	top:-10px;
-	right:-8px;
-	margin-left:-18px;
-	padding-top:3px;
+	top:0px;
+	right:0px;
 	cursor:pointer;
-	line-height:18px;
 	z-index:2;
-	text-align:center;
 }
 .table-warp .config-area .config-action{
 	display:block;
-	width:18px;
-	height:18px;
+	width:20px;
+	height:20px;
+	position:absolute;
+	right:5px;
+	top:6px;
 	overflow:hidden;
 	vertical-align:middle;
-	line-height:18px;
 	text-align:center;
+	z-index:2;
 }
 .table-warp .config-area .config-action i{
 	display:inline-block;
@@ -138,11 +136,7 @@ table.grid-manager-default tbody tr:hover td{
 }
 .table-warp .config-area .config-list{
 	display:none;
-	position:absolute;
-	top:0px;
-	right:20px;
-	margin:0px;
-	padding:2px;
+	padding:4px 40px 4px 0px;
 	list-style-type:none;
 	font-size:12px;
 	white-space:nowrap;
@@ -152,11 +146,11 @@ table.grid-manager-default tbody tr:hover td{
 	border-radius:3px;
 }
 .table-warp .config-area .config-list >li{
-	height:16px;
 	display:inline-block;
-	margin:0px 10px 0px 0px;
+	height:20px;
+	margin-right:10px;
 	padding:0px 10px;
-	line-height:16px;
+	line-height:20px;
 }
 .table-warp .config-area .config-list li.no-click{
 	cursor:not-allowed;

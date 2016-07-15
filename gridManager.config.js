@@ -25,7 +25,7 @@ var GridManagerConfig = {
 		//keyfunction(){
 		//},k2f2,
 		//...
-		//key需与talble上的list-manager相同
+		//key需与talble上的grid-manager相同
 		//function排序后的数据操作，建意直接调用搜索事件
 	}						
 	

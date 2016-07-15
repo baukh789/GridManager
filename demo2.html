@@ -3,9 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="css/base.css">
-<link rel="stylesheet" type="text/css" href="css/listManager.css">
-
-<title>listManager:多列表多态渲染</title>
+<title>listManager:在特定容器中使用的吸顶效果 [如dialog]</title>
 <style>
 html, body{
 	overflow-x:hidden;
@@ -27,259 +25,117 @@ hr{
     border: 0;
     border-top: 1px solid #eee;
 }
+.dialog-demo{
+	width:70%;
+	height:300px;
+	overflow-x:hidden;
+	overflow-y:auto;
+	margin:20px auto;
+	padding:20px;
+}
 </style>
 </head>
 
 <body>
-<h2>listManager:多列表多态渲染</h2>
+<h2>listManager:在特定容器中使用的吸顶效果 [如dialog]</h2>
 <p>存在.json文件，谷歌需要放到环境中效果才能展现</p>
 <hr/>
-<div style="width:95%;margin:0px auto;">
-	<h3>表格一:</h3>
-	<br />
-    <table width="100%" cellspacing="1" cellpadding="0" list-manager="demoOne">
-        <thead>
-            <tr>
-                <th th-name="th-one" remind="这里是第一列" sorting="up">第一列我就是第一列，就这么长，任性</th>
-                <th th-name="th-two" remind="这里是第二列" sorting="down">第二列</th>
-                <th th-name="th-three" remind="这里是第三列" sorting>第三列</th>
-                <th th-name="th-four" remind="这里是第四列">第四列</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-            <tr>
-              <td>心欲近、心愈远</td>
-              <td>近于咫尺犹如远在天边</td>
-              <td>心欲静、心愈乱</td>
-              <td>静如止水却似心乱如麻</td>
-            </tr>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-            <tr>
-              <td>心欲近、心愈远</td>
-              <td>近于咫尺犹如远在天边</td>
-              <td>心欲静、心愈乱</td>
-              <td>静如止水却似心乱如麻</td>
-            </tr>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<div style="width:95%;margin:0px auto;">
-	<h3>表格二:</h3>
-	<br />
-    <table width="100%" cellspacing="1" cellpadding="0" list-manager="demoTwo">
-        <thead>
-            <tr>
-                <th th-name="th-one" remind="这里是第一列" sorting="up">第一列我就是第一列，就这么长，任性</th>
-                <th th-name="th-two" remind="这里是第二列" sorting="down">第二列</th>
-                <th th-name="th-three" remind="这里是第三列" sorting>第三列</th>
-                <th th-name="th-four" remind="这里是第四列">第四列</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-            <tr>
-              <td>心欲近、心愈远</td>
-              <td>近于咫尺犹如远在天边</td>
-              <td>心欲静、心愈乱</td>
-              <td>静如止水却似心乱如麻</td>
-            </tr>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-            <tr>
-              <td>心欲近、心愈远</td>
-              <td>近于咫尺犹如远在天边</td>
-              <td>心欲静、心愈乱</td>
-              <td>静如止水却似心乱如麻</td>
-            </tr>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<div style="width:95%;margin:0px auto;">
-	<h3>表格三:</h3>
-	<br />
-    <table width="100%" cellspacing="1" cellpadding="0" list-manager="demoThree">
-        <thead>
-            <tr>
-                <th th-name="th-one" remind="这里是第一列" sorting="up">第一列我就是第一列，就这么长，任性</th>
-                <th th-name="th-two" remind="这里是第二列" sorting="down">第二列</th>
-                <th th-name="th-three" remind="这里是第三列" sorting>第三列</th>
-                <th th-name="th-four" remind="这里是第四列">第四列</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-            <tr>
-              <td>心欲近、心愈远</td>
-              <td>近于咫尺犹如远在天边</td>
-              <td>心欲静、心愈乱</td>
-              <td>静如止水却似心乱如麻</td>
-            </tr>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-            <tr>
-              <td>心欲近、心愈远</td>
-              <td>近于咫尺犹如远在天边</td>
-              <td>心欲静、心愈乱</td>
-              <td>静如止水却似心乱如麻</td>
-            </tr>
-            <tr>
-              <td>1言毕，眼闭</td>
-              <td>遥想星空满目</td>
-              <td>日升，起身</td>
-              <td>淡看今日如故</td>
-            </tr>
-        </tbody>
-    </table>
+	<div class="dialog-demo">
+    <table grid-manager="demoOne"></table>
 </div>
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-<script type="text/javascript" src="listManagerConfig.js"></script>
 <script type="text/javascript" src="js/GridManager.js"></script>
 <script type="text/javascript" >
 $(function(){
-	var table = $('[list-manager]');
-	table.listManager({
-		autoLoadCss:false,
-		isDevelopMode:true,
-		disableCache:false,
-		supportSorting: true,
-		isCombSorting: true,
-		sortingCallback:{
-			demoOne: function( query ){
-				console.log( query );		
-				var _demoOne = $('[list-manager="demoOne"] tbody'),
-					_firstChild = _demoOne.find('tr:first-child');
-					_demoOne.append(_firstChild);
-					_firstChild.fadeIn(500);
-			},demoTwo: function( query ){
-				console.log( query );		
-				var _demoTwo = $('[list-manager="demoTwo"] tbody'),
-					_firstChild = _demoTwo.find('tr:first-child');
-					_demoTwo.append(_firstChild);
-					_firstChild.fadeIn(500);
-			},demoThree: function( query ){
-				console.log( query );		
-				var _demoThree = $('[list-manager="demoThree"] tbody'),
-					_firstChild = _demoThree.find('tr:first-child');
-					_demoThree.append(_firstChild);
-					_firstChild.fadeIn(500);
+	//单列表简易渲染
+	var table = $('table[grid-manager]');
+	$.fn.GM.defaults = {
+		isDevelopMode: true, 
+		autoLoadCss:true  //自动加载CSS文件，无需在页面中引用
+	}
+	table.GM({
+		supportRemind: true
+		,scrollDOM: '.dialog-demo'
+		,supportSetTop: true
+		,supportRemind: true
+		,i18n:'zh-cn'
+		,textConfig:{
+			'page-go': {
+				'zh-cn':'跳转',
+				'en-us':'Go '
 			}
 		}
-		,supportAjaxPage: true		//是否支持配置列表ajxa分页[多列表两种状态都有时，统一配置为true,禁用的列表pageJson参数为空即可]
-		,sizeData : {
-			demoOne:[10,20,30],
-			demoTwo:[20,30,40],
-			demoThree:[30,40,50]
-		}
-		,pageSize:{
-			demoOne:10,
-			demoTwo:30,
-			demoThree:50
-		}
-		,pageQuery:{
-			pageList : [1,2,3,4,5,6]
-		}
-		,query: {
-			demoOne: {
-				ex: '列表一的用户自定义查询参数'
-			},
-			demoTwo: {
-				ex: '列表二的用户自定义查询参数'
-			},
-			demoThree:{
-				ex: '列表三的用户自定义查询参数'
+		,gridManagerName:'aaa'
+		,disableCache:false
+		,disableOrder:false
+		,supportSorting: true
+		,supportDrag:true
+		,supportAjaxPage:true
+		,isCombSorting: false
+    	,ajax_url: 'test.json'
+    	,ajax_type: 'POST'
+		,pageSize:30
+		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
+		,columnData: [{
+				key: 'name',
+				remind: 'the username',
+				sorting: 'up',
+				width: '200px',
+				text: 'username',
+				template: ''
+			},{
+				key: 'age',
+				remind: 'the age',
+				sorting: '',
+				width: '200px',
+				text: 'age',
+				template: ''
+			},{
+				key: 'createDate',
+				remind: 'the createDate',
+				sorting: 'down',
+				width: '200px',
+				text: 'createDate',
+				template: ''
+			},{
+				key: 'info',
+				remind: 'the info',
+				sorting: '',
+				width: '200px',
+				text: 'info',
+				template: ''
+			},{
+				key: 'operation',
+				remind: 'the operation',
+				sorting: '',
+				width: '200px',
+				text: 'operation',
+				template: function(operation, rowObject){  //operation:当前key所对应的单条数据；rowObject：单个一行完整数据
+					return '<a href=javascript:alert("这是一个按纽");>'+operation+'</a>';
+				}
 			}
+		]
+		,pagingBefore:function(query){
+      		console.log('Event: 分页前', query);
 		}
-		,pageCallback:{
-			demoOne: function( query ){
-				console.log( query );
-				//ajax get page data...
-				$('[list-manager="demoOne"]').listManager('resetTd');
-				$('[list-manager="demoOne"]').listManager('resetPageData', getPageData(query.pSize, 100, query.cPage));
-			},demoTwo: function( query ){
-				console.log( query );
-				//ajax get page data...
-				$('[list-manager="demoTwo"]').listManager('resetTd');
-				$('[list-manager="demoTwo"]').listManager('resetPageData',getPageData(query.pSize, 1000, query.cPage));
-			},demoThree: function( query ){
-				console.log( query );
-				//ajax get page data...
-				$('[list-manager="demoThree"]').listManager('resetTd');
-				$('[list-manager="demoThree"]').listManager('resetPageData', getPageData(query.pSize, 325, query.cPage));
-			}
+		,pagingAfter: function(query){
+		  	console.log('Event: 分页后', query);	
+		}
+		,sortingBefore:function(query){
+      		console.log('Event: 排序前', query);
+		}
+		,sortingAfter: function(query){
+		  	console.log('Event: 排序后', query);
+		}
+		,ajax_beforeSend: function(query){
+		  	console.log('Event: ajax_beforeSend', query);
+		}
+		,ajax_complete: function(data){
+		  	console.log('Event: ajax_complete', data);
 		}
 	},function(query){
-		console.log(query)
-		//模拟查询返回的分页数据
-		var pageData = {
-			demoOne		: getPageData(query['demoOne'].pSize, 100, 1),
-			demoTwo		: getPageData(query['demoTwo'].pSize, 1000, 3),
-			demoThree	: getPageData(query['demoThree'].pSize, 325, 6)
-		}
-	//	table.listManager('resetTd');
-		//模拟搜索数据返回操作
-		table.listManager('resetPageData', pageData);
+		console.log('init方法回调query参数', query);
 	});
-	//模拟增加查询条件
-	setTimeout(function(){
-		table.listManager('setQuery',{
-			demoOne: {'userName':'baukh','sex':'男'},
-			demoTwo: {'userName':'kouzi','sex':'女'},
-			demoThree: {'userName':'kb','sex':'男'}
-		})
-	},1000)
-	
-	
-	//计算分页数据
-	function getPageData(pSize, tSize, cPage){
-		return {
-			 tPage: Math.ceil(tSize / pSize),				//总页数
-	         cPage: cPage,				//当前页	
-	         pSize: pSize,				//每页显示条数
-	         tSize: tSize		
-		}
-	}
 });
 </script>
 </body>
