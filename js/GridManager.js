@@ -403,6 +403,7 @@
 				}
 				var _data = parseRes.data;
 				var key,	//数据索引
+					alignAttr, //文本对齐属性
 					template,//数据模板
 					templateHTML;//数据模板导出的html
 				$.each(_data, function(i, v){
@@ -410,8 +411,9 @@
 					$.each(_this.columnData, function(i2, v2){
 						key = v2.key;
 						template = v2.template;
-						templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];						
-						tbodyTmpHTML += '<td align="'+(v2.align || '')+'">'+ templateHTML +'</td>';
+						templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];		
+						alignAttr = v2.align ? 'align="'+v2.align+'"' : '';
+						tbodyTmpHTML += '<td '+ alignAttr +'>'+ templateHTML +'</td>';
 					});
 					tbodyTmpHTML += '</tr>';
 				});
@@ -508,6 +510,7 @@
 			table.attr({width: '100%', cellspacing: 1, cellpadding:0, 'grid-manager': _this.gridManagerName});
 			var theadHtml = '<thead>',			
 				tbodyHtml = '<tbody></tbody>',
+				alignAttr = '', 				//文本对齐属性
 				widthHtml = '',					//宽度对应的html片段
 				remindHtml = '',				//提醒对应的html片段
 				sortingHtml	= '';				//排序对应的html片段
@@ -522,7 +525,8 @@
 				if(v.width){
 					widthHtml = 'width="'+ v.width +'"';
 				}
-				theadHtml += '<th th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+' '+widthHtml+' align="'+(v.align || '')+'">'+ v.text +'</th>';
+				alignAttr = v.align ? 'align="'+v.align+'"' : '';
+				theadHtml += '<th th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+' '+widthHtml+' '+alignAttr+'>'+ v.text +'</th>';
 			});
 			theadHtml += '</thead>';
 			table.html(theadHtml + tbodyHtml);
@@ -752,20 +756,15 @@
 			configAction.unbind('click');
 			configAction.bind('click', function(){
 				var _configAction = $(this),		//展示事件源
-					_configArea = _configAction.parents('.config-area').eq(0),	//设置区域
+					_configArea = _configAction.closest('.config-area'),	//设置区域
 					_configList = $('.config-list',_configArea);//设置列表
 				//关闭
-				if(_configList.css('display') == 'block'){ 
-					_configList.animate({
-						width: '0px'
-					}, _this.animateTime, function(){
-						_configList.hide();
-						configAction.hide();
-					});
+				if(_configArea.css('display') == 'block'){
+					_configArea.hide();
 					return false;
 				}
 				//打开
-				configAction.show();
+				_configArea.show();
 				var _tableWarp = _configAction.parents('.table-warp').eq(0),//当前事件源所在的div
 					_table	= $('[grid-manager]', _tableWarp),				//对应的table
 					_thList = $('thead th', _table),							//所有的th
@@ -781,9 +780,6 @@
 				//验证当前是否只有一列处于显示状态 并根据结果进行设置是否可以取消显示
 				var checkedLi = $('.checked-li', _configArea);
 				checkedLi.length == 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
-				
-				_configList.css('width','auto');
-				_configList.fadeIn(_this.animateTime);
 			});
 			//设置事件
 			$('.config-list li', tableWarp).unbind('click');
@@ -1570,7 +1566,6 @@
 					return false;
 				}
 				var configArea = $('.config-area', $('table[grid-manager="'+ _this.gridManagerName +'"]').closest('.table-warp'));
-				configArea.show();
 				$('.config-action', configArea).trigger('click');
 				_body.off('mousedown.gridMenu');
 				menuDOM.hide();
@@ -1685,9 +1680,9 @@
 				_this.outLog('setToLocalStorage:无效的table', 'error');
 				return false;
 			}
-			var _tableListManager = _table.attr('grid-manager');
+			var _gridKey = _table.attr('grid-manager');
 			//验证当前表是否为GridManager
-			if(!_tableListManager || $.trim(_tableListManager) == ''){
+			if(!_gridKey || $.trim(_gridKey) == ''){
 				_this.outLog('setToLocalStorage:无效的grid-manager', 'error');
 				return false;
 			}
@@ -1703,7 +1698,7 @@
 			}
 					
 			//key 由pathcname + hash + 唯一标识grid-manager + 表列数 [用于规避同页面下存在grid-manager相同的表格]
-			var _key = window.location.pathname +  window.location.hash + '-' +  _tableListManager + '-' + thList.length;
+			var _key = window.location.pathname +  window.location.hash + '-' +  _gridKey;
 			var $v;
 			$.each(thList, function(i, v){
 				$v = $(v);
@@ -1755,14 +1750,14 @@
 				_this.outLog('getLocalStorage:无效的table', 'error');
 				return false;
 			}
-			var _tableListManager = _table.attr('grid-manager');	
+			var _gridKey = _table.attr('grid-manager');	
 			//验证当前表是否为GridManager
-			if(!_tableListManager || $.trim(_tableListManager) == ''){
+			if(!_gridKey || $.trim(_gridKey) == ''){
 				_this.outLog('getLocalStorage:无效的grid-manager', 'error');
 				return false;
 			}
 			var thList = $('thead[class!="set-top"] th', _table);
-			var _key = window.location.pathname +  window.location.hash + '-'+ _tableListManager + '-' + thList.length;
+			var _key = window.location.pathname +  window.location.hash + '-'+ _gridKey;
 			
 			var _data = {},
 				_array = new Array(),
@@ -1785,19 +1780,17 @@
 			var _this = this;
 			var _data = _this.getLocalStorage(table),		//本地缓存的数据
 				_cache = _data.cache,		//缓存对应
-				_pageCache, //分页相关缓存
-				_query;		//init 后的callback中的query参数
+				_pSize,			 //每页显示条数
+				_query;			 //init 后的callback中的query参数
 			//验证是否存在每页显示条数缓存数据
-			if(!_cache || !_cache.page){
-				_pageCache =  {
-					pSize: _this.pageSize[_this.gridManagerName] ? _this.pageSize[_this.gridManagerName] : _this.pageSize
-				};
+			if(!_cache || !_cache.page || !_cache.page.pSize){
+				_pSize = _this.pageSize || 10.
 			}
 			else{
-				_pageCache = _cache.page;
-			}				
+				_pSize = _cache.page.pSize;
+			}			
 			_this.pageData = {
-				pSize : _pageCache.pSize,
+				pSize : _pSize,
 				cPage : 1
 			};
 		}

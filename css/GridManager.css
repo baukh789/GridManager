@@ -108,6 +108,7 @@ table.grid-manager-default tbody tr:hover td{
 /*列表设置显示隐藏*/
 .table-warp .config-area{
 	display:none;
+	width:100%;
 	position:absolute;
 	top:0px;
 	right:0px;
@@ -135,22 +136,26 @@ table.grid-manager-default tbody tr:hover td{
             animation: rotationMedia 1s ease-in-out infinite;
 }
 .table-warp .config-area .config-list{
-	display:none;
-	padding:4px 40px 4px 0px;
+	display:block;
+	max-width:100%;
+	padding:2px 30px 0px 2px;
 	list-style-type:none;
 	font-size:12px;
-	white-space:nowrap;
-	overflow:hidden;
 	background:#f8f8f8;
 	border:1px solid #ddd;
 	border-radius:3px;
+	margin:0px;
 }
 .table-warp .config-area .config-list >li{
-	display:inline-block;
-	height:20px;
-	margin-right:10px;
-	padding:0px 10px;
+	display:inline-block;	
+	padding:4px 10px;
 	line-height:20px;
+	background-color:#e8e8e8;
+	margin-right:2px;
+	margin-bottom:2px;
+}
+.table-warp .config-area .config-list >li >label{
+	margin:0px;
 }
 .table-warp .config-area .config-list li.no-click{
 	cursor:not-allowed;
@@ -166,10 +171,10 @@ table.grid-manager-default tbody tr:hover td{
 	color:#666;
 	font-weight:500;
 }
-.table-warp .config-area .config-list li label:hover{
+.table-warp .config-area .config-list li:hover label{
 	color:#09f;
 }
-.table-warp .config-area .config-list li.no-click label:hover{
+.table-warp .config-area .config-list li.no-click:hover label{
 	color:#666;
 }
 .table-warp .config-area .config-list li .fake-checkbox{
