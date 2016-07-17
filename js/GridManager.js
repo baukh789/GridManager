@@ -164,8 +164,8 @@
 					},1000);
 				}			
 				
-				//重置tbody存在数据的列表
-				$('tbody tr', jQueryObj).length > 0 ? _this.resetTd(v, false) : '';
+				//重置tbody存在数据的列表 @20160717:的2.0版本中，重置已在其它位置执行，该处已无用
+				//$('tbody tr', jQueryObj).length > 0 ? _this.resetTd(v, false) : '';
 				//启用回调
 				typeof(callback) == 'function' ? callback(query) :'';	
 			});
@@ -346,18 +346,31 @@
 		*/
 		,__refreshGrid: function(callback){
 			var _this = this;
+			var tableDOM = $('table[grid-manager="'+ _this.gridManagerName +'"]'),		//table dom
+				tbodyDOM = $('tbody', tableDOM),	//tbody dom
+				tWarp	= tableDOM.closest('div.table-warp'); //table-warp dom
+			/*
+				使用配置数据
+				如果存在配置数据ajax_data,将不再通过ajax_rul进行数据请求
+				且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
+			*/
+			if(_this.ajax_data){
+				afterSuccessDrive(_this.ajax_data);
+				_this.ajax_success(_this.ajax_data);
+				return;
+			}
 			if(typeof(_this.ajax_url) != 'string' || _this.ajax_url === ''){	
 				_this.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
-			var tableDOM = $('table[grid-manager="'+ _this.gridManagerName +'"]'),		//table dom
-				tbodyDOM = $('tbody', tableDOM),	//tbody dom
-				tWarp	= tableDOM.closest('div.table-warp'); //table-warp dom
+			/*
+				@baukh20160717:2。0版本中该验证将无用
 			if(!tbodyDOM || tbodyDOM.length === 0){
 				tableDOM.append('<tbody></tbody>');
 				tbodyDOM = $('tbody', tableDOM);
-			}	
+			}
+			*/	
 			var parme = $.extend({}, _this.query);
 			//合并分页信息至请求参
 			if(_this.supportAjaxPage){
@@ -377,9 +390,9 @@
 				beforeSend: function(XMLHttpRequest){
 					_this.ajax_beforeSend(XMLHttpRequest);	
 				},
-				success: function(response, msg){
+				success: function(response){
 					afterSuccessDrive(response);
-					_this.ajax_success(response, msg);
+					_this.ajax_success(response);
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown){
 					_this.ajax_error(XMLHttpRequest, textStatus, errorThrown);
@@ -524,6 +537,8 @@
 				}
 				if(v.width){
 					widthHtml = 'width="'+ v.width +'"';
+				}else{
+					widthHtml = '';
 				}
 				alignAttr = v.align ? 'align="'+v.align+'"' : '';
 				theadHtml += '<th th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+' '+widthHtml+' '+alignAttr+'>'+ v.text +'</th>';
@@ -711,11 +726,16 @@
 					onlyThWarp.append(adjustDOM);
 				}
 				onlyTH.html(onlyThWarp);
-					
-				//当前th文本所占宽度大于设置的宽度
-				var _realWidthForThText = _this.getTextWidth(onlyTH);
-				if(onlyTH.width() < _realWidthForThText){
-					onlyTH.width(_realWidthForThText);
+				
+				//如果th上存在width属性，则表明配置项中存在该项配置；
+				//验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
+				var thWidthForConfig = onlyTH.prop('width');
+				if(thWidthForConfig && thWidthForConfig !== ''){
+					onlyTH.width(thWidthForConfig);
+					onlyTH.removeAttr('width');  //直接使用removeProp 无效
+				}else{
+					var _realWidthForThText = _this.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
+					onlyTH.css('min-width', _realWidthForThText);
 				}
 			});		
 			//删除渲染中标识、增加渲染完成标识
@@ -809,10 +829,8 @@
 					_checkedList.parent().addClass('no-click');
 				}
 				
-				//处理调整宽度方法中的事件
-				if(_this.supportAdjust){
-					_this.resetAdjust(_table);	
-				}
+				//重置调整宽度事件源
+				_this.resetAdjust(_table);	
 				
 				//重置镜像滚动条的宽度
 				if(_this.supportSetTop){
@@ -1144,14 +1162,10 @@
 						});					
 					}
 					//缓存列表位置信息
-					if(!_this.disableCache){
-						_this.setToLocalStorage(_table);
-					}				
+					_this.setToLocalStorage(_table);
 
 					//重置调整宽度事件源
-					if(_this.supportAdjust){
-						_this.resetAdjust(_table);	
-					}
+					_this.resetAdjust(_table);	
 					//开启文字选中效果
 					$('body').removeClass('no-select-text');
 					if(_this.isRealTime){
@@ -1184,8 +1198,8 @@
 					_lastButOne 	= _allTh.eq(_allTh.length - 2), 			//事件源同层级倒数第二个th
 					_td 			= _table.find('tbody')
 									  .find('tr')
-									  .find('td:eq('+_th.index()+')'), 		//与事件源同列的所在td
-					adjustActionToTr= $('.adjust-action',_tr);				//事件源所在的TR下的全部调整宽度节点
+									  .find('td:eq('+_th.index()+')'); 		//与事件源同列的所在td
+				//	adjustActionToTr= $('.adjust-action',_tr);				//事件源所在的TR下的全部调整宽度节点
 				//重置width 防止auto现象
 				$.each(_allTh, function(i, v){
 					if(v.style.width == 'auto' || v.style.width == ''){
@@ -1243,9 +1257,7 @@
 						$(_this.scrollDOM).trigger('scroll');
 					}
 					//缓存列表宽度信息
-					if(!_this.disableCache){
-						_this.setToLocalStorage(_table);
-					}
+					_this.setToLocalStorage(_table);
 				});
 				return false;
 			});
@@ -1649,6 +1661,10 @@
 		*/
 		,resetAdjust: function(element){
 			var _this = this;
+			//当前不支持宽度调整，直接跳出
+			if(!_this.supportAdjust){
+				return false;
+			}
 			var _table = $(element),
 				_thList = $('thead [th-visible="visible"]', _table),
 				_adjustAction = $('.adjust-action', _thList);
@@ -1663,8 +1679,12 @@
 			$.element:table [jquery object]
 			$.isInit: 是否为初始存储缓存[用于处理宽度在特定情况下发生异常]
 		*/
-		,setToLocalStorage: function(element, isInit){
+		,setToLocalStorage: function(element, isInit){	
 			var _this = this;
+			//当前为禁用缓存模式，直接跳出		
+			if(_this.disableCache){
+				return;
+			}
 			var _table = $(element);
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 			var noCache = _table.attr('no-cache');
@@ -1876,9 +1896,7 @@
 					table.find('thead tr').html(_domArray);
 				}
 				//重置调整宽度事件源
-				if(_this.supportAdjust){
-					_this.resetAdjust(table);	
-				}	
+				_this.resetAdjust(table);
 			}
 		}
 		/*

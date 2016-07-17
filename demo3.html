@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="css/base.css">
-<title>GridManager:单列表简易渲染</title>
+<title>listManager:在特定容器中使用的吸顶效果 [如dialog]</title>
 <style>
 html, body{
 	overflow-x:hidden;
@@ -25,15 +25,23 @@ hr{
     border: 0;
     border-top: 1px solid #eee;
 }
+.dialog-demo{
+	width:70%;
+	height:300px;
+	overflow-x:hidden;
+	overflow-y:auto;
+	margin:20px auto;
+	padding:20px;
+}
 </style>
 </head>
 
 <body>
-<h2>GridManager:单列表简易渲染</h2>
+<h2>listManager:在特定容器中使用的吸顶效果 [如dialog]</h2>
 <p>存在.json文件，谷歌需要放到环境中效果才能展现</p>
 <hr/>
-<div style="width:95%;margin:0px auto;">
-    <table grid-manager="cccc"></table>
+	<div class="dialog-demo">
+    <table grid-manager="demoOne"></table>
 </div>
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/GridManager.js"></script>
@@ -47,6 +55,9 @@ $(function(){
 	}
 	table.GM({
 		supportRemind: true
+		,scrollDOM: '.dialog-demo'
+		,supportSetTop: true
+		,supportRemind: true
 		,i18n:'zh-cn'
 		,textConfig:{
 			'page-go': {
@@ -127,6 +138,5 @@ $(function(){
 	});
 });
 </script>
-
 </body>
 </html>
