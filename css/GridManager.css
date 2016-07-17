@@ -108,7 +108,7 @@ table.grid-manager-default tbody tr:hover td{
 /*列表设置显示隐藏*/
 .table-warp .config-area{
 	display:none;
-	width:100%;
+	max-width:100%;
 	position:absolute;
 	top:0px;
 	right:0px;
@@ -137,7 +137,7 @@ table.grid-manager-default tbody tr:hover td{
 }
 .table-warp .config-area .config-list{
 	display:block;
-	max-width:100%;
+	width:100%;
 	padding:2px 30px 0px 2px;
 	list-style-type:none;
 	font-size:12px;
