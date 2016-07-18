@@ -11,7 +11,7 @@ http.createServer(function (req, res) {
     if (pathname.charAt(pathname.length-1)=="/"){
         pathname+="index.html";
     }
-    path.exists(pathname,function(exists){
+    fs.exists(pathname,function(exists){
         if(exists){
             switch(path.extname(pathname)){
                 case ".html":
