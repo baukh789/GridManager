@@ -1,0 +1,29 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+  <meta charset="utf-8">  
+  <title></title>  
+</head>  
+<body>  
+<input type="text" id="key">
+<input type="text" id="value">
+<button id="button">save</button>
+<iframe src="test2.html" width="100%" height="100%"></iframe>
+<script>  
+  var _key = document.getElementById('key'),
+      _value = document.getElementById('value'),
+      _button = document.getElementById('button');
+  _button.onclick = function(){
+      if(_key.value.trim() === '' || _value.value.trim() === ''){
+          alert('请输入key,value');
+          return;
+      }
+      localStorage.setItem(_key.value, _value.value);
+  };
+  // 当前页面绑定的storage事件 在当前页面变更localStorage,并不会触发storage事件
+  window.addEventListener("storage", function(e){
+    console.log('test1===', e);
+  });
+</script>
+</body>  
+</html>  

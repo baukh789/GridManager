@@ -3,28 +3,48 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
+    order = require("gulp-order"),
     del = require('del');
 //压缩css
 gulp.task('minifycss', function() {
-    return gulp.src('src/css/*.css')      //压缩的文件
-        .pipe(gulp.dest('dist/css'))   //输出文件夹
-        .pipe(uglify());   //执行压缩
+    return gulp.src('src/css/*.css')        //压缩的文件
+    .pipe(                                  //在压缩前设定排序
+        order([
+            '**/base.css',
+            '**/GridManager.css'
+        ])
+    )
+ //   .pipe(concat('GridManager.min.css'))    //合并所有css到GridManager.css
+    .pipe(minifycss())                      //执行压缩
+    .pipe(gulp.dest('dist/css'));           //输出文件夹
 });
-//压缩js
+//压缩GridManager.min.js
 gulp.task('minifyjs', function() {
-    console.log('minifyjs')
     return gulp.src('src/js/GridManager.js')
-     //   .pipe(concat('main.js'))    //合并所有js到main.js
-        .pipe(gulp.dest('dist/js'))    //输出main.js到文件夹
-        .pipe(rename({suffix: '.min'}))   //rename压缩后的文件名
+      //  .pipe(rename({suffix: '.min'}))   //rename压缩后的文件名
         .pipe(uglify())    //压缩
-        .pipe(gulp.dest('dist/js'));  //输出
+        .pipe(gulp.dest('dist/js'));  //输出GridManager.min.js
+});
+//copy jquery to dist js
+gulp.task('minifyjs', function() {
+    return gulp.src('src/js/jquery-2.1.4.min.js')
+        .pipe(gulp.dest('dist/js'));  //输出GridManager.min.js
+});
+//移动html文件
+gulp.task('movehtml', function () {
+    return gulp.src('src/*.html')
+        .pipe(gulp.dest('dist'))
+});
+//移动json文件
+gulp.task('movejson', function () {
+    return gulp.src('src/data/*.json')
+        .pipe(gulp.dest('dist/data'))
 });
 //执行压缩前，先删除文件夹里的内容
-gulp.task('clean', function(cb) {
-    del(['dist/css', 'dist/js'], cb);
-    gulp.start('minifycss', 'minifyjs');
+gulp.task('clean', function() {
+    del.sync(['dist/*']);
 });
 //默认命令，在cmd中输入gulp后，执行的就是这个命令
 gulp.task('default', ['clean'], function() {
+    gulp.start('minifycss', 'minifyjs', 'movehtml', 'movejson');
 });
