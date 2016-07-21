@@ -18,15 +18,15 @@ gulp.task('minifycss', function() {
     .pipe(minifycss())                      //执行压缩
     .pipe(gulp.dest('dist/css'));           //输出文件夹
 });
-//压缩GridManager.min.js
-gulp.task('minifyjs', function() {
+//压缩GridManager.js
+gulp.task('minifygm', function() {
     return gulp.src('src/js/GridManager.js')
-      //  .pipe(rename({suffix: '.min'}))   //rename压缩后的文件名
+   //     .pipe(rename({suffix: '.min'}))   //rename压缩后的文件名
         .pipe(uglify())    //压缩
         .pipe(gulp.dest('dist/js'));  //输出GridManager.min.js
 });
 //copy jquery to dist js
-gulp.task('minifyjs', function() {
+gulp.task('movejquery', function() {
     return gulp.src('src/js/jquery-2.1.4.min.js')
         .pipe(gulp.dest('dist/js'));  //输出GridManager.min.js
 });
@@ -40,11 +40,16 @@ gulp.task('movejson', function () {
     return gulp.src('src/data/*.json')
         .pipe(gulp.dest('dist/data'))
 });
+//移动fonts
+gulp.task('movefonts', function () {
+    return gulp.src('src/fonts/*.*')
+        .pipe(gulp.dest('dist/fonts'))
+});
 //执行压缩前，先删除文件夹里的内容
 gulp.task('clean', function() {
     del.sync(['dist/*']);
 });
 //默认命令，在cmd中输入gulp后，执行的就是这个命令
 gulp.task('default', ['clean'], function() {
-    gulp.start('minifycss', 'minifyjs', 'movehtml', 'movejson');
+    gulp.start('minifycss', 'minifygm', 'movejquery', 'movehtml', 'movejson', 'movefonts');
 });

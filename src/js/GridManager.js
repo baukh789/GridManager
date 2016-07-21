@@ -21,7 +21,9 @@
 	提供刷新表格数据的对外公开方:refreshGrid，示例： $('table').GridManager('refreshGrid':callback)
 	方法[getGridManager]简化为[get]
 	增加ajax事件[ajax_beforeSend, ajax_success, ajax_error, ajax_complete, ajax_cache]
-	
+	增加参数[ajax_data]如果存在配置数据ajax_data,将不再通过ajax_rul进行数据请求,且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
+	增加参数[emptyTemplate]当数据为空时显示的内容,可自行配置样式.
+
 	开发中的任务：
 	增加删除列功能 提供删除操作回调函数
 	增加字段可编辑功能
@@ -355,7 +357,7 @@
 				且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
 			*/
 			if(_this.ajax_data){
-				afterSuccessDrive(_this.ajax_data);
+				driveDomForSuccessAfter(_this.ajax_data);
 				_this.ajax_success(_this.ajax_data);
 				return;
 			}
@@ -391,7 +393,7 @@
 					_this.ajax_beforeSend(XMLHttpRequest);	
 				},
 				success: function(response){
-					afterSuccessDrive(response);
+					driveDomForSuccessAfter(response);
 					_this.ajax_success(response);
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown){
@@ -402,37 +404,42 @@
 				}
 			});
 			//执行ajax成功后重新渲染DOM
-			function afterSuccessDrive(response) {
+			function driveDomForSuccessAfter(response) {
 				if(!response){
 					_this.outLog('请求数据失败！请查看配置参数[ajax_url]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
 					return;
 				}
 				
 				var parseRes = typeof(response) === 'string' ? JSON.parse(response) : response;
-				//数据为空时
-				if(!parseRes.data){
-					_this.outLog('['+ _this.ajax_url + ']数据异常');
-					return;
-				}
 				var _data = parseRes.data;
 				var key,	//数据索引
 					alignAttr, //文本对齐属性
 					template,//数据模板
 					templateHTML;//数据模板导出的html
-				$.each(_data, function(i, v){
-					tbodyTmpHTML += '<tr>';
-					$.each(_this.columnData, function(i2, v2){
-						key = v2.key;
-						template = v2.template;
-						templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];		
-						alignAttr = v2.align ? 'align="'+v2.align+'"' : '';
-						tbodyTmpHTML += '<td '+ alignAttr +'>'+ templateHTML +'</td>';
+				//数据为空时
+				if(!_data ||_data.length === 0){
+					tbodyTmpHTML = '<tr emptyTemplate>'
+								 + '<td colspan="'+$('th[th-visible="visible"]', tableDOM).length+'">'
+								 + (_this.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>')
+								 + '</td>'
+								 + '</tr>';
+					parseRes.totals = 0;
+					tbodyDOM.html(tbodyTmpHTML);
+				}else {
+					$.each(_data, function(i, v){
+						tbodyTmpHTML += '<tr>';
+						$.each(_this.columnData, function(i2, v2){
+							key = v2.key;
+							template = v2.template;
+							templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];
+							alignAttr = v2.align ? 'align="'+v2.align+'"' : '';
+							tbodyTmpHTML += '<td '+ alignAttr +'>'+ templateHTML +'</td>';
+						});
+						tbodyTmpHTML += '</tr>';
 					});
-					tbodyTmpHTML += '</tr>';
-				});
-				tbodyDOM.html(tbodyTmpHTML);
-				//重置表格结构
-				_this.resetTd(tableDOM, false);
+					tbodyDOM.html(tbodyTmpHTML);
+					_this.resetTd(tableDOM, false);
+				}
 				//渲染分页
 				if(_this.supportAjaxPage){
 					_this.resetPageData(tableDOM, parseRes.totals);
@@ -453,12 +460,12 @@
 			}
 			var previousPage = $('[refresh-type="previous"]', gridMenu),
 				nextPage = $('[refresh-type="next"]', gridMenu);
-			if(_this.pageData.cPage === 1){
+			if(_this.pageData.cPage === 1 || _this.pageData.tPage === 0){
 				previousPage.addClass('disabled');
 			}else{
 				previousPage.removeClass('disabled');
 			}
-			if(_this.pageData.cPage === _this.pageData.tPage){
+			if(_this.pageData.cPage === _this.pageData.tPage || _this.pageData.tPage === 0){
 				nextPage.addClass('disabled');
 			}else{
 				nextPage.removeClass('disabled');
