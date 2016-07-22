@@ -31,6 +31,7 @@ hr{
 <body>
 <h2>GridManager:使用动态数据渲染</h2>
 <p>存在.json文件，谷歌需要放到环境中效果才能展现</p>
+<p>当前使用的排序方式为组合排序</p>
 <hr/>
 <div style="width:95%;margin:0px auto;">
     <table grid-manager="cccc"></table>
@@ -58,9 +59,11 @@ $(function(){
 		,disableCache:false
 		,disableOrder:false
 		,supportSorting: true
+		,isCombSorting: true
+		,sortDownText: 'up'
+		,sortUpText: 'down'
 		,supportDrag:true
 		,supportAjaxPage:true
-		,isCombSorting: false
     	,ajax_url: 'data/test.json'
     	,ajax_type: 'POST'
 		,pageSize:30
@@ -74,7 +77,6 @@ $(function(){
 			},{
 				key: 'age',
 				remind: 'the age',
-				sorting: '',
 				width: '200px',
 				text: 'age'
 			},{
@@ -86,8 +88,6 @@ $(function(){
 			},{
 				key: 'info',
 				remind: 'the info',
-				sorting: '',
-				width: '200px',
 				text: 'info'
 			},{
 				key: 'operation',
@@ -120,6 +120,10 @@ $(function(){
 		}
 	},function(query){
 		console.log('init方法回调query参数', query);
+		//手动配置排序
+//		$('table').GM('setSort',{
+//			'age':'asc'
+//		});
 	});
 });
 </script>

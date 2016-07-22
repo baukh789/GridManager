@@ -23,6 +23,8 @@
 	增加ajax事件[ajax_beforeSend, ajax_success, ajax_error, ajax_complete, ajax_cache]
 	增加参数[ajax_data]如果存在配置数据ajax_data,将不再通过ajax_rul进行数据请求,且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
 	增加参数[emptyTemplate]当数据为空时显示的内容,可自行配置样式.
+    修改方法[setSort]:增加是否刷新列表参数,如果为空,则默认为true.
+    优化了columnData中sorting,未设置==当前列无排序功能, 设置但值为空或不等于sortUpText或sortDownText时==当前列存在排序功能但未进行排序,设置值且值与sortUpText或sortDownText相同时==存在排序功能且将通过设置的值进行排序
 
 	开发中的任务：
 	增加删除列功能 提供删除操作回调函数
@@ -199,37 +201,43 @@
 			[对外公开方法]
 			@手动设置排序 
 			$.element: table [jquery object]
-			$._sortJson_: 需要排序的json串 
-			$.callback:回调函数		
-			ex: _sortJson_
-			_sortJson_ = {
+			$.sortJson: 需要排序的json串
+		 	$.callback: 回调函数
+		 	$.refresh: 是否对列表进行数据刷新[boolean]
+			ex: sortJson
+		 	sortJson = {
 				th-name:up/down 	//其中up/down 需要与参数 sortUpText、sortDownText值相同
 			}
 		*/
-		,setSort: function(element, _sortJson_, callback){
+		,setSort: function(table, sortJson, callback, refresh){
 			var _this = this;
-			if(element.length == 0 || !_sortJson_ || $.isEmptyObject(_sortJson_)){
+			if(table.length == 0 || !sortJson || $.isEmptyObject(sortJson)){
 				return false;
+			}
+			//默认执行完后进行刷新列表操作
+			if(typeof(refresh) === 'undefined'){
+				refresh = true;
 			}
 			var _th,
 				_sortAction,
 				_sortType;
-			for(var s in _sortJson_){
+			for(var s in sortJson){
 				_th = $('[th-name="'+ s +'"]', table);
-				_sortType = _sortJson_[s];
+				_sortType = sortJson[s];
 				_sortAction = $('.sorting-action', _th);
 				if(_sortType == _this.sortUpText){
 					_th.attr('sorting', _this.sortUpText);			
-					_sortAction.removeClass('sorting-' + _this.sortDownText);	
-					_sortAction.addClass('sorting-' + _this.sortUpText);	
+					_sortAction.removeClass('sorting-down');
+					_sortAction.addClass('sorting-up');
 				}
 				else if(_sortType == _this.sortDownText){
 					_th.attr('sorting', _this.sortDownText);
-					_sortAction.removeClass('sorting-' + _this.sortUpText);	
-					_sortAction.addClass('sorting-' + _this.sortDownText);			
+					_sortAction.removeClass('sorting-up');
+					_sortAction.addClass('sorting-down');
 				}
 			}
-			typeof(callback) == 'function' ? callback() : '';
+			refresh ? _this.__refreshGrid(callback) : (typeof(callback) === 'function' ? callback() : '');
+			return table;
 		}
 		/*
 			@加载所需文件
@@ -536,11 +544,21 @@
 				sortingHtml	= '';				//排序对应的html片段
 			//通过配置项[columnData]生成thead
 			$.each(_this.columnData, function(i, v){
-				if(_this.supportRemind){
-					remindHtml = 'remind' + v.remind;
+				if(_this.supportRemind && typeof(v.remind) === 'string' && v.remind !== ''){
+					remindHtml = 'remind="' + v.remind +'"';
 				}
-				if(_this.supportSorting){
-					sortingHtml = 'sorting' + v.sorting;
+				sortingHtml = '';
+				if(_this.supportSorting && typeof(v.sorting) === 'string'){
+					if(v.sorting === _this.sortDownText){
+						sortingHtml = 'sorting="' + _this.sortDownText +'"';
+						_this.sortData[v.key] = _this.sortDownText
+					}
+					else if(v.sorting === _this.sortUpText){
+						sortingHtml = 'sorting="' + _this.sortUpText +'"';
+						_this.sortData[v.key] = _this.sortUpText
+					}else {
+						sortingHtml = 'sorting';
+					}
 				}
 				if(v.width){
 					widthHtml = 'width="'+ v.width +'"';
