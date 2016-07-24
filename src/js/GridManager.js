@@ -13,15 +13,15 @@
 	增加getCheckedTr方法，用于获取当前选中的tr
 	清理无用代码
 	提供能否出表格数据公开方法：exportGridToXls， 示例： $('table').GridManager('exportGridToXls', fileName, onlyChecked)
-	取消$(table).GridManager(['reset','getGridManager'])格式的调用方法
+	取消$(table).GridManager(['reset','get'])格式的调用方法
 	取消多表同时渲染机制
 	增加对外公开方法验证，未经对外公开的方法将限制调用
 	增加全选、反选功能
 	增加配置项：columnData 通过配置的形式渲染table; 下属配置项template typeof == function时，会传入当前key所对应的数据与整行数据做为参数
 	提供刷新表格数据的对外公开方:refreshGrid，示例： $('table').GridManager('refreshGrid':callback)
-	方法[getGridManager]简化为[get]
+	方法[__getGridManager]简化为[get]
 	增加ajax事件[ajax_beforeSend, ajax_success, ajax_error, ajax_complete, ajax_cache]
-	增加参数[ajax_data]如果存在配置数据ajax_data,将不再通过ajax_rul进行数据请求,且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
+	增加参数[ajax_data]如果存在配置数据ajax_data,将不再通过ajax_url进行数据请求,且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
 	增加参数[emptyTemplate]当数据为空时显示的内容,可自行配置样式.
     修改方法[setSort]:增加是否刷新列表参数,如果为空,则默认为true.
     优化了columnData中sorting,未设置==当前列无排序功能, 设置但值为空或不等于sortUpText或sortDownText时==当前列存在排序功能但未进行排序,设置值且值与sortUpText或sortDownText相同时==存在排序功能且将通过设置的值进行排序
@@ -133,7 +133,6 @@
 		*/
 		,init: function(jQueryObj, callback){
 			var _this = this;
-			
 			//通过版本较验 清理缓存
 			_this.cleanTableCacheForVersion(jQueryObj);
 			
@@ -173,7 +172,7 @@
 				//启用回调
 				typeof(callback) == 'function' ? callback(query) :'';	
 			});
-			return _this.getGridManager(jQueryObj);
+			return jQueryObj;
 		}
 		/*
 			@存储对外实例至JQuery
@@ -188,13 +187,13 @@
 			$.table:table [jquery object]
 		*/
 		,get: function(table){
-			return this.getGridManager(table);
+			return this.__getGridManager(table);
 		}
 		/*
 			@通过JQuery实例获取gridManager
 			$.table:table [jquery object]
 		*/
-		,getGridManager: function(table){
+		,__getGridManager: function(table){
 			return table.data('gridManager');
 		}
 		/*
@@ -390,8 +389,7 @@
 			if(_this.supportSorting){
 				$.extend(parme, _this.sortData);
 			}
-			//执行ajax前事件	
-			var tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
+			//执行ajax前事件
 			$.ajax({
 				url: _this.ajax_url,
 				type: _this.ajax_type,
@@ -414,10 +412,11 @@
 			//执行ajax成功后重新渲染DOM
 			function driveDomForSuccessAfter(response) {
 				if(!response){
-					_this.outLog('请求数据失败！请查看配置参数[ajax_url]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
+					_this.outLog('请求数据失败！请查看配置参数[ajax_url或ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
 					return;
 				}
-				
+
+				var tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
 				var parseRes = typeof(response) === 'string' ? JSON.parse(response) : response;
 				var _data = parseRes.data;
 				var key,	//数据索引
@@ -494,7 +493,7 @@
 		*/
 		,initCheckboxDOM: function(element) {
 			var _this = this;			
-			var checkboxHtml = '<th th-name="'+ _this.checkboxThName +'" lm-checkbox="true" lm-create="true"><input type="checkbox"/></th>';		
+			var checkboxHtml = '<th th-name="'+ _this.checkboxThName +'" lm-checkbox="true" lm-create="true"><input type="checkbox"/><span style="display: none">'+ _this.i18nText('checkall-text') +'</span></th>';
 			$('thead tr', element).prepend(checkboxHtml);
 			//绑定选择事件
 			element.off('click','input[type="checkbox"]');
@@ -1540,6 +1539,7 @@
 					'top': top + tableWarp.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop),
 					'left': left + tableWarp.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft) 
 				});
+				$('.grid-menu[grid-master]').hide();
 				menuDOM.show();
 				_body.off('mouseup.gridMenu');
 				_body.on('mouseup.gridMenu', function(e){
@@ -1559,6 +1559,9 @@
 				if(isDisabled(this, e)){
 					return false;
 				}
+				var _gridMenu = $(this).closest('.grid-menu'),
+					_table = $('table[grid-manager="'+_gridMenu.attr('grid-master')+'"]');
+				_this = _this.__getGridManager(_table);
 				var refreshType = this.getAttribute('refresh-type');
 				//上一页
 				if(refreshType === 'previous' && _this.pageData.cPage > 1){
@@ -1577,7 +1580,7 @@
 					_this.pagingAfter(query);
 				});
 				_body.off('mousedown.gridMenu');
-				menuDOM.hide();
+				_gridMenu.hide();
 			});
 			//绑定事件：另存为EXCEL、已选中表格另存为Excel
 			var exportExcel = $('[grid-action="export-excel"]');
@@ -1586,14 +1589,15 @@
 				if(isDisabled(this, e)){
 					return false;
 				}
-				var _table = $('table[grid-manager="'+ _this.gridManagerName +'"]');
+				var _gridMenu = $(this).closest('.grid-menu'),
+					_table = $('table[grid-manager="'+_gridMenu.attr('grid-master')+'"]');
 				var onlyChecked = false;
 				if(this.getAttribute('only-checked') === 'true'){
 					onlyChecked = true;
 				}
 				_this.exportGridToXls(_table, undefined, onlyChecked);
 				_body.off('mousedown.gridMenu');
-				menuDOM.hide();
+				_gridMenu.hide();
 			});
 			//绑定事件：配置表
 			var settingGrid = $('[grid-action="setting-grid"]');
@@ -1602,10 +1606,12 @@
 				if(isDisabled(this, e)){
 					return false;
 				}
-				var configArea = $('.config-area', $('table[grid-manager="'+ _this.gridManagerName +'"]').closest('.table-warp'));
+				var _gridMenu = $(this).closest('.grid-menu'),
+					_table = $('table[grid-manager="'+_gridMenu.attr('grid-master')+'"]');
+				var configArea = $('.config-area', _table.closest('.table-warp'));
 				$('.config-action', configArea).trigger('click');
 				_body.off('mousedown.gridMenu');
-				menuDOM.hide();
+				_gridMenu.hide();
 			});
 			//验证当前是否禁用
 			function isDisabled(dom, events){
@@ -2301,7 +2307,9 @@
 		*/
 		,resetPageData: function(element, totals){
 			var _this = this;
-			
+			if(!totals || !Number(totals)){
+				return;
+			}
 			var _pageData = getPageData(totals);
 			//生成分页DOM节点
 			_this.createPageDOM(element, _pageData);
@@ -2420,6 +2428,11 @@
 				'zh-cn':'配置表',
 				'en-us':'Setting Grid'
 			}
+			,'checkall-text':{
+				'zh-cn':'全选',
+				'en-us':'All'
+			}
+
 		}
 		/*
 			[对外公开方法]
@@ -2485,7 +2498,7 @@
 			settings = {};
 			callback = undefined;
 		}
-		//ex: $(table).GridManager('getGridManager')
+		//ex: $(table).GridManager('get')
 		else if(arguments.length === 1 && typeof(arguments[0]) === 'string' && typeof(arguments[0]) !== 'init'){
 			name	 = arguments[0];
 			settings = undefined;
