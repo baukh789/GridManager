@@ -582,21 +582,21 @@
 			_this.setOriginalThDOM(table);
 			//表头提醒HTML
 			var _remindHtml  = '<div class="remind-action">'
-							 + '<i class="ra-help iconfont icon-help"></i>'
+							 + '<i class="ra-help iconfont icon-icon"></i>'
 							 + '<div class="ra-area">'
 							 + '<span class="ra-title"></span>'
 							 + '<span class="ra-con"></span>'
 							 + '</div>'
 							 + '</div>';
 			//配置列表HTML			 
-			var	_configHtml	 = '<div class="config-area"><span class="config-action" title="'+ _this.i18nText("config-action") +'"><i class="iconfont icon-set"></i></span>'
+			var	_configHtml	 = '<div class="config-area"><span class="config-action"><i class="iconfont icon-31xingdongdian"></i></span>'
 							 + '<ul class="config-list"></ul></div>';
 			//宽度调整HTML
 			var	_adjustHtml	 = '<span class="adjust-action"></span>';
 			//排序HTML
 			var	_sortingHtml = '<div class="sorting-action">'
-							 + '<i class="sa-icon sa-up iconfont icon-up"></i>'
-							 + '<i class="sa-icon sa-down iconfont icon-down"></i>'
+							 + '<i class="sa-icon sa-up iconfont icon-sanjiao2"></i>'
+							 + '<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>'
 							 + '</div>';
 			//导出表格数据所需的事件源DOM
 			var exportActionHtml = '<a href="" download="" id="lm-export-action"></a>';
@@ -607,7 +607,7 @@
 							 	 + '<div class="change-size"><select name="pSizeArea"></select></div>'
 								 + '<div class="goto-page">'+ _this.i18nText("goto-first-text") 
 								 + '<input type="text" class="gp-input"/>'+ _this.i18nText("goto-last-text") 
-								 + '<span class="gp-action">'+ _this.i18nText('page-go') +'</span></div>'
+								 + '<span class="gp-action"><i class="iconfont icon-shuaxin"></i></span></div>'
 							  	 + '<div class="ajax-page"><ul class="pagination"></ul></div>'
 							  	 + '</div>';	
 			}
@@ -1490,24 +1490,31 @@
 			//分页类操作
 			if(_this.supportAjaxPage){
 				menuHTML+= '<span grid-action="refresh-page" refresh-type="previous">'
-						 + _this.i18nText("previous-page") +'</span>'
+						 + _this.i18nText("previous-page")
+					     + '<i class="iconfont icon-sanjiao2"></i></span>'
 						 + '<span grid-action="refresh-page" refresh-type="next">'
-						 + _this.i18nText("next-page") +'</span>';
+						 + _this.i18nText("next-page")
+						 + '<i class="iconfont icon-sanjiao1"></i></span>';
 			}
 			menuHTML    += '<span grid-action="refresh-page" refresh-type="refresh">'
-						 + _this.i18nText("refresh") +'</span>'
+						 + _this.i18nText("refresh")
+						 + '<i class="iconfont icon-31shuaxin"></i></span>'
 						 + '<span class="grid-line"></span>';
 			//导出类
 			if(_this.supportExport){
 				menuHTML+= '<span grid-action="export-excel" only-checked="false">'
-						 + _this.i18nText("save-as-excel") +'</span>'
+						 + _this.i18nText("save-as-excel")
+						 + '<i class="iconfont icon-baocun"></i></span>'
 						 + '<span grid-action="export-excel" only-checked="true">'
-						 + _this.i18nText("save-as-excel-for-checked") +'</span>'
+						 + _this.i18nText("save-as-excel-for-checked")
+						 + '<i class="iconfont icon-saveas24"></i></span>'
 						 + '<span class="grid-line"></span>';
 			}
 			//配置类
 			if(_this.supportCheckbox){
-				menuHTML+= '<span grid-action="setting-grid">'+ _this.i18nText("setting-grid") +'</span>';
+				menuHTML+= '<span grid-action="setting-grid">'
+						+ _this.i18nText("setting-grid")
+						+ '<i class="iconfont icon-shezhi"></i></span>';
 			}
 				menuHTML+= '</div>';
 			var _body = $('body');
@@ -2372,11 +2379,7 @@
 		* 	@插件存在文本配置
 		* */
 		,textConfig: {
-			'config-action': {
-				'zh-cn':'配置表格',
-				'en-us':'The configuration form'
-			}
-			,'order-text': {
+			'order-text': {
 				'zh-cn':'序号',
 				'en-us':'order'
 			}
@@ -2407,10 +2410,6 @@
 			,'goto-last-text':{
 				'zh-cn':'页',
 				'en-us':'page '
-			}
-			,'page-go':{
-				'zh-cn':'确定',
-				'en-us':'Go '
 			}
 			,'refresh':{
 				'zh-cn':'重新加载',

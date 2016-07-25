@@ -1,5 +1,7 @@
-/* 列表页管理 */
-/*引入所需font-icon*/
+/*
+引入所需font-icon
+使用http://ww.iconfont.cn/阿里图标库
+*/
 @font-face {
 	font-family: "iconfont";
 	src: url('../fonts/iconfont.eot'); /* IE9*/
@@ -8,21 +10,37 @@
 	url('../fonts/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
 	url('../fonts/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
 }
+
 .iconfont {
 	font-family:"iconfont" !important;
 	font-size:16px;
 	font-style:normal;
 	-webkit-font-smoothing: antialiased;
-	-moz-font-smoothing: grayscale;
-	font-smoothing: grayscale;
 	-webkit-text-stroke-width: 0.2px;
-	-moz-text-stroke-width: 0.2px;
-	text-stroke-width: 0.2px;
+	-moz-osx-font-smoothing: grayscale;
 }
-.icon-set:before { content: "\e633"; }
-.icon-help:before { content: "\e6db"; }
-.icon-up:before { content: "\e7d3"; }
-.icon-down:before { content: "\e63a"; }
+.icon-liebiao:before { content: "\e60a"; }
+.icon-liebiao1:before { content: "\e600"; }
+.icon-erwei:before { content: "\e611"; }
+.icon-erwei1:before { content: "\e612"; }
+.icon-sousuo:before { content: "\e60b"; }
+.icon-chanpincanshu:before { content: "\e601"; }
+.icon-baocun:before { content: "\e613"; }
+.icon-sanjiao2:before { content: "\e602"; }
+.icon-sanjiao1:before { content: "\e603"; }
+.icon-search:before { content: "\e604"; }
+.icon-shuaxin:before { content: "\e60c"; }
+.icon-shezhi:before { content: "\e60d"; }
+.icon-liebiaomoshi:before { content: "\e605"; }
+.icon-31shuaxin:before { content: "\e606"; }
+.icon-31shanchu:before { content: "\e607"; }
+.icon-bianji:before { content: "\e608"; }
+.icon-31fanhui1:before { content: "\e60e"; }
+.icon-31fanhui2:before { content: "\e60f"; }
+.icon-31xingdongdian:before { content: "\e610"; }
+.icon-saveas24:before { content: "\e614"; }
+.icon-icon:before { content: "\e609"; }
+
 
 /*禁用文字选中*/
 .no-select-text{
@@ -121,7 +139,7 @@ table.grid-manager-default tbody tr:hover td{
 	height:20px;
 	position:absolute;
 	right:5px;
-	top:6px;
+	top:9px;
 	overflow:hidden;
 	vertical-align:middle;
 	text-align:center;
@@ -129,11 +147,17 @@ table.grid-manager-default tbody tr:hover td{
 }
 .table-warp .config-area .config-action i{
 	display:inline-block;
+	font-size:18px;
+}
+.table-warp .config-area .config-action:hover i{
+	color:#09f;
 }
 .table-warp .config-area:hover .config-action i{
+	/*
     -webkit-animation: rotationMedia 1s ease-in-out infinite;
        -moz-animation: rotationMedia 1s ease-in-out infinite;
             animation: rotationMedia 1s ease-in-out infinite;
+            */
 }
 .table-warp .config-area .config-list{
 	display:block;
@@ -248,7 +272,7 @@ table.grid-manager-default tbody tr:hover td{
 	display:block;
 	width:16px;
 	height:16px;
-	font-size:16px;
+	font-size:12px;
 	line-height: 18px;
 	color:#666;
 }
@@ -366,7 +390,7 @@ table.grid-manager-default tbody tr:hover td{
 .table-warp table[grid-manager] .sorting-action .sa-icon{
 	display:block;
 	height:10px;
-	font-size:18px;
+	font-size:12px;
 	line-height:10px;
 	position:absolute;
 }
@@ -545,24 +569,15 @@ table.grid-manager-default tbody tr:hover td{
 	padding:0px 10px;
 }
 .table-warp .page-toolbar .goto-page .gp-input{
-	width:30px;
+	width:50px;
 	height:30px;
 	border:1px solid #ccc;
 	padding:0px 5px;
 	margin:0px 5px;
 }
 .table-warp .page-toolbar .goto-page .gp-action{
-	display:inline-block;
-	width:60px;
-	height:30px;
-	border:1px solid #ccc;
-	line-height:28px;
-	text-align:center;
 	cursor:pointer;
 	margin-left:10px;
-}
-.table-warp .page-toolbar .goto-page .gp-action:hover{
-	background:#e8e8e8;
 }
 .table-warp .page-toolbar .ajax-page{
 	display:inline-block;	
@@ -636,6 +651,7 @@ table.grid-manager-default tbody tr:hover td{
 }
 .grid-menu[grid-master] [grid-action]{
 	display:block;
+	position: relative;
 	padding:5px 20px;
 	cursor:default;
 }
@@ -646,6 +662,15 @@ table.grid-manager-default tbody tr:hover td{
 .grid-menu[grid-master] [grid-action].disabled{
 	color:#ccc;
 	background-color:#fff;
+}
+.grid-menu[grid-master] [grid-action] .iconfont{
+	display: block;
+	width: 18px;
+	height: 18px;
+	font-size:18px;
+	position: absolute;
+	top: 5px;
+	right: 10px;
 }
 .grid-menu[grid-master] .grid-line{
 	display:block;
