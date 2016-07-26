@@ -25,7 +25,8 @@
 	增加参数[emptyTemplate]当数据为空时显示的内容,可自行配置样式.
     修改方法[setSort]:增加是否刷新列表参数,如果为空,则默认为true.
     优化了columnData中sorting,未设置==当前列无排序功能, 设置但值为空或不等于sortUpText或sortDownText时==当前列存在排序功能但未进行排序,设置值且值与sortUpText或sortDownText相同时==存在排序功能且将通过设置的值进行排序
-
+	增加配置项[dataKey,totalsKey],用于处理后端反回数据字段不为data,totals的情况
+	
 	开发中的任务：
 	增加删除列功能 提供删除操作回调函数
 	增加字段可编辑功能
@@ -99,7 +100,9 @@
 		this.ajax_success		= $.noop;					//ajax成功后,返回与jquery相同
 		this.ajax_complete		= $.noop;					//ajax完成后,返回与jquery相同
 		this.ajax_error			= $.noop;					//ajax失败后,返回与jquery相同
-		this.ajax_chang			= false;					//ajax禁止使用缓存
+		this.ajax_data			= undefined;				//ajax静态数据,配置后ajax_url将无效
+		this.dataKey			= 'data';					//ajax请求返回的列表数据key键值,默认为data
+		this.totalsKey			= 'totals';					//ajax请求返回的数据总条数key键值,默认为totals
 		//数据导出
 		this.supportExport		= true;						//支持导出表格数据
 		//用于支持全局属性配置  于v1.8 中将GridManagerConfig弱化且不再建议使用。
@@ -418,7 +421,7 @@
 
 				var tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
 				var parseRes = typeof(response) === 'string' ? JSON.parse(response) : response;
-				var _data = parseRes.data;
+				var _data = parseRes[_this.dataKey];
 				var key,	//数据索引
 					alignAttr, //文本对齐属性
 					template,//数据模板
@@ -449,7 +452,7 @@
 				}
 				//渲染分页
 				if(_this.supportAjaxPage){
-					_this.resetPageData(tableDOM, parseRes.totals);
+					_this.resetPageData(tableDOM, parseRes[_this.totalsKey]);
 					_this.checkMenuPageAction();
 				}
 				typeof callback === 'function' ? callback() : '';		
