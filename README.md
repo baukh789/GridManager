@@ -19,63 +19,65 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
 - [演示地址及使用说明](http://www.lovejavascript.com/#!plugIn/listManager/index.html)
 
 ###调用方式
+```
 	table.GM({
-    		supportRemind: true
-    		,i18n:'zh-cn'
-    		,textConfig:{
-    			'page-go': {
-    				'zh-cn':'跳转',
-    				'en-us':'Go '
-    			}
-    		}
-    		,gridManagerName:'aaa'
-    		,disableCache:false
-    		,disableOrder:false
-    		,supportSorting: true
-    		,isCombSorting: true
-    		,sortDownText: 'up'
-    		,sortUpText: 'down'
-    		,supportDrag:true
-    		,supportAjaxPage:true
-        	,ajax_url: 'data/test.json'
-        	,ajax_type: 'POST'
-    		,pageSize:30
-    		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
-    		,columnData: [{
-    				key: 'name',
-    				remind: 'the username',
-    				sorting: 'up',
-    				width: '200px',
-    				text: 'username'
-    			},{
-    				key: 'age',
-    				remind: 'the age',
-    				width: '200px',
-    				text: 'age'
-    			},{
-    				key: 'createDate',
-    				remind: 'the createDate',
-    				sorting: 'down',
-    				width: '200px',
-    				text: 'createDate'
-    			},{
-    				key: 'info',
-    				remind: 'the info',
-    				text: 'info'
-    			},{
-    				key: 'operation',
-    				remind: 'the operation',
-    				sorting: '',
-    				width: '200px',
-    				text: 'operation',
-    				template: function(operation, rowObject){  //operation:当前key所对应的单条数据；rowObject：单个一行完整数据
-    					return '<a href=javascript:alert("这是一个按纽");>'+operation+'</a>';
-    				}
-    			}
-    		]
-    	});
-
+        supportRemind: true
+        ,i18n:'zh-cn'
+        ,textConfig:{
+            'page-go': {
+                'zh-cn':'跳转',
+                'en-us':'Go '
+            }
+        }
+        ,gridManagerName:'aaa'
+        ,disableCache:false
+        ,disableOrder:false
+        ,supportSorting: true
+        ,isCombSorting: true
+        ,sortDownText: 'up'
+        ,sortUpText: 'down'
+        ,supportDrag:true
+        ,supportAjaxPage:true
+        ,ajax_url: 'data/test.json'
+        ,ajax_type: 'POST'
+        ,pageSize:30
+        ,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
+        ,columnData: [{
+                key: 'name',
+                remind: 'the username',
+                sorting: 'up',
+                width: '200px',
+                text: 'username'
+            },{
+                key: 'age',
+                remind: 'the age',
+                width: '200px',
+                text: 'age'
+            },{
+                key: 'createDate',
+                remind: 'the createDate',
+                sorting: 'down',
+                width: '200px',
+                text: 'createDate'
+            },{
+                key: 'info',
+                remind: 'the info',
+                text: 'info'
+            },{
+                key: 'operation',
+                remind: 'the operation',
+                sorting: '',
+                width: '200px',
+                text: 'operation',
+                template: function(operation, rowObject){  //operation:当前key所对应的单条数据；rowObject：单个一行完整数据
+                    return '<a href=javascript:alert("这是一个按纽");>'+operation+'</a>';
+                }
+            }
+        ]
+    });
+```
 ###数据格式
+```
    {
    	"data":[{
    			"name": "baukh",
@@ -101,6 +103,7 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
    	],
    	"totals": 1682
    }
+```
 ##常见问题解答
 ###1.数据在渲染前就已经存在,如何配置?
     可以通过参数ajax_data进行配置,如果存在配置数据ajax_data,将不再通过ajax_url进行数据请求,且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行.
