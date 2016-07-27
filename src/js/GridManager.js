@@ -26,7 +26,10 @@
     修改方法[setSort]:增加是否刷新列表参数,如果为空,则默认为true.
     优化了columnData中sorting,未设置==当前列无排序功能, 设置但值为空或不等于sortUpText或sortDownText时==当前列存在排序功能但未进行排序,设置值且值与sortUpText或sortDownText相同时==存在排序功能且将通过设置的值进行排序
 	增加配置项[dataKey,totalsKey],用于处理后端反回数据字段不为data,totals的情况
-	
+	增加鼠标右键功能菜单[1、上一页；2、上一页；3、重新加载；4、另存为Excel；5、选中行另存为Excel；6、配置列]
+	公开方法的调用进行了简易\优化
+ 	序列宽度优化
+ 	
 	开发中的任务：
 	增加删除列功能 提供删除操作回调函数
 	增加字段可编辑功能
@@ -34,14 +37,8 @@
 	当前页的搜索 匹配高亮
 	弹出框状态下的吸顶，需要将分页信息一直展现
 	排序增加前端当前页排序方式,增加配置当前页排序还是总数据排序标识
-	所有html中的标识均可通过js进行配置
 	提供现有功能的事件函数 如 宽度被调整后的事件
-	文档增加常见问题及解决方案	
-	可通过配置参进行表格渲染，无需在HTML中存在DOM节点
-	序列宽度优化
-	移除icon-fong
-	增加鼠标右键功能菜单(行与列同时高亮)[1、删除本行；2、隐藏本列；3、下一页；4、上一页；5、配置列；6、表数据另存为]
-	公开方法的调用需要优化，简易
+	文档增加常见问题及解决方案
 */
 ;(function(){
 	'use strict';	
@@ -2440,11 +2437,11 @@
 			[对外公开方法]
 			@配置query 该参数会在分页触发后返回至pagingAfter(query)方法
 			$.table: table [jquery object]
-			$._pageQuery_:配置的数据
+			$.query:配置的数据
 		*/
-		,setQuery: function(table, _pageQuery_){
+		,setQuery: function(table, query){
 			var _this = this;
-			table.GridManager('get')['query'] = 	_pageQuery_;
+			table.GridManager('get')['query'] = query;
 		}
 		/*
 			@输出日志
