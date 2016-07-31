@@ -371,8 +371,7 @@
 		,__refreshGrid: function(callback){
 			var _this = this;
 			var tableDOM = $('table[grid-manager="'+ _this.gridManagerName +'"]'),		//table dom
-				tbodyDOM = $('tbody', tableDOM),	//tbody dom
-				tWarp	= tableDOM.closest('div.table-warp'); //table-warp dom
+				tbodyDOM = $('tbody', tableDOM);	//tbody dom
 			/*
 			 使用配置数据
 			 如果存在配置数据ajax_data,将不再通过ajax_rul进行数据请求
