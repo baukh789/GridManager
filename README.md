@@ -131,6 +131,9 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
     排错重点为参数:autoLoadCss(是否自动加载CSS文件),basePath(当前基本路径,用于css自动加载样式文件)
     如果不能确定basePath,建议将autoLoadCss设置为false,通过link手动进行加载.
 
+###7.表格th中的文本显示不全
+    查看配置项[columnData]中的width, 将该值提高或不进行设置由插件自动控制. 如果还为生效,那是由于当臆实例开始了记忆功能,解决方法为:将localStorage中包含与当前表格grid-manager名称对应的项清除,或使用localStorage.clear()将本地存储全部清除.
+
 ###注意事项
    正在进行2.0版本功能测试。由于插件名称由listManager规范为GridManager，调用更简便，功能更强大。
 

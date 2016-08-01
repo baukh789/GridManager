@@ -90,36 +90,36 @@ table[grid-manager].GridManager-ready{
 .table-warp table[grid-manager] th[th-visible="visible"]{
 	display:table-cell;
 }
-
-.table-warp table[grid-manager] th{
+.table-warp table[grid-manager] th .th-text{
+	white-space: nowrap;
 }
 /* 提供的默认table样式 */
-table.grid-manager-default{ 
+table.grid-manager-default{
 	background-color: #dad9c7;
-    font-size: 12px;
-    width: 100%;
+	font-size: 12px;
+	width: 100%;
 	border-collapse:separate;
 	border-spacing:1px;
-    font-size: 12px !important;
-    font-family: arial !important;
+	font-size: 12px !important;
+	font-family: arial !important;
 }
-table.grid-manager-default thead tr th{ 
- 	background-color: #e6eeee;
-    border: 1px solid #fff;
-    font-size: 8pt;
+table.grid-manager-default thead tr th{
+	background-color: #e6eeee;
+	border: 1px solid #fff;
+	font-size: 8pt;
 	text-align: center;
 }
 table.grid-manager-default thead tr th:hover{
- 	background-color: #8dbdd8;
+	background-color: #8dbdd8;
 }
-table.grid-manager-default tbody tr td{    
+table.grid-manager-default tbody tr td{
 	background-color: #fff;
-    color: #3d3d3d;
-    padding: 4px;
-    vertical-align: top;
-    text-align: left;
+	color: #3d3d3d;
+	padding: 4px;
+	vertical-align: top;
+	text-align: left;
 }
-table.grid-manager-default tbody tr:hover td{ 
+table.grid-manager-default tbody tr:hover td{
 	background-color: #e6eeee;
 	color:#000;
 }
@@ -171,7 +171,7 @@ table.grid-manager-default tbody tr:hover td{
 	margin:0px;
 }
 .table-warp .config-area .config-list >li{
-	display:inline-block;	
+	display:inline-block;
 	padding:4px 10px;
 	line-height:20px;
 	background-color:#e8e8e8;
@@ -221,7 +221,7 @@ table.grid-manager-default tbody tr:hover td{
 	left:2px;
 	content:"";
 	background:#e8e8e8;
-	border-radius:50%;	
+	border-radius:50%;
 }
 .table-warp .config-area .config-list li:hover .fake-checkbox{
 	border-color:#09f;
@@ -385,7 +385,7 @@ table.grid-manager-default tbody tr:hover td{
 	content:"\f102";
 }
 .table-warp table[grid-manager] .sorting-action.sortion-down{
-	content:"\f103";	
+	content:"\f103";
 }
 .table-warp table[grid-manager] .sorting-action .sa-icon{
 	display:block;
@@ -419,9 +419,9 @@ table.grid-manager-default tbody tr:hover td{
 	display:block;
 	width:100%;
 	height:100%;
-/*	padding:0px 20px;*/
+	/*	padding:0px 20px;*/
 	cursor:all-scroll;
-}	
+}
 .table-warp table[grid-manager] .drag-ongoing{
 	cursor:all-scroll;
 	background:#000 !important;
@@ -431,9 +431,9 @@ table.grid-manager-default tbody tr:hover td{
 }
 .table-warp table[grid-manager] .drag-ongoing.opacityChange{
 	opacity:1;
-    -webkit-animation: opacityChange 1s ease-in-out infinite;
-       -moz-animation: opacityChange 1s ease-in-out infinite;
-            animation: opacityChange 1s ease-in-out infinite;
+	-webkit-animation: opacityChange 1s ease-in-out infinite;
+	-moz-animation: opacityChange 1s ease-in-out infinite;
+	animation: opacityChange 1s ease-in-out infinite;
 }
 .table-warp .dreamland-div{
 	display:none;
@@ -496,51 +496,51 @@ table.grid-manager-default tbody tr:hover td{
 }
 /*闪烁动画特效*/
 @-webkit-keyframes opacityChange{
-    0%{
+	0%{
 		opacity:0.1;
 	}
-    100%{
+	100%{
 		opacity:0.7;
 	}
 }
 @-moz-keyframes opacityChange{
-    0%{
+	0%{
 		opacity:0.1;
 	}
-    100%{
+	100%{
 		opacity:0.7;
 	}
 }
 @keyframes opacityChange{
-    0%{
+	0%{
 		opacity:0.1;
 	}
-    100%{
+	100%{
 		opacity:0.7;
 	}
 }
 /*旋转动画特效*/
 @-webkit-keyframes rotationMedia{
-    0%{
+	0%{
 		-webkit-transform: rotate(0deg);
 	}
-    100%{
+	100%{
 		-webkit-transform: rotate(360deg);
 	}
 }
 @-moz-keyframes rotationMedia{
-    0%{
+	0%{
 		-moz-transform: rotate(0deg);
 	}
-    100%{
+	100%{
 		-moz-transform: rotate(360deg);
 	}
 }
 @keyframes rotationMedia{
-    0%{
+	0%{
 		transform: rotate(0deg);
 	}
-    100%{
+	100%{
 		transform: rotate(360deg);
 	}
 }
@@ -549,7 +549,7 @@ table.grid-manager-default tbody tr:hover td{
 }
 
 
-/* 
+/*
 	@baukh20150504:分页默认样式
 */
 
@@ -578,76 +578,80 @@ table.grid-manager-default tbody tr:hover td{
 }
 .table-warp .page-toolbar .refresh-action{
 	display:inline-block;
-	padding: 7px;
+	padding: 7.5px;
 	vertical-align: top;
+	color: #777;
+}
+.table-warp .page-toolbar .refresh-action:hover{
 	color: #3276b1;
 }
 .table-warp .page-toolbar .refresh-action .iconfont{
 	display: block;
-	width: 16px;
-	height: 16px;
-	overflow: hidden;
+	width: 15px;
+	height: 15px;
 	cursor:pointer;
 	font-weight: 600;
+	line-height: 16px;
+	overflow: hidden;
 }
-.table-warp .page-toolbar .refresh-action.refreshing .iconfont{
-	-webkit-animation: rotationMedia 1.5s ease-in-out infinite;
-	-moz-animation: rotationMedia 1.5s ease-in-out infinite;
-	animation: rotationMedia 1.5s ease-in-out infinite;
+.table-warp .page-toolbar .refresh-action.refreshing{
+	-webkit-animation: rotationMedia 2s ease-in-out infinite;
+	-moz-animation: rotationMedia 2s ease-in-out infinite;
+	animation: rotationMedia 2s ease-in-out infinite;
 }
 .table-warp .page-toolbar .ajax-page{
-	display:inline-block;	
+	display:inline-block;
 	text-align:right;
 	vertical-align:middle;
 	float:right;
 }
 .table-warp .page-toolbar .ajax-page .pagination{
 	display: inline-block;
-	margin:0px; 
+	margin:0px;
 }
 .table-warp .page-toolbar .ajax-page .pagination li{
 	height:30px;
 	display:inline;
 }
 .pagination > li:first-child > a, .pagination > li:first-child > span {
-    border-bottom-left-radius: 2px;
-    border-top-left-radius: 2px;
-    margin-left: 0;
+	border-bottom-left-radius: 2px;
+	border-top-left-radius: 2px;
+	margin-left: 0;
 }
-.pagination li.disabled > a, .pagination li.disabled > a:focus, 
-.pagination li.disabled > a:hover, .pagination li.disabled > span, 
+.pagination li.disabled > a, .pagination li.disabled > a:focus,
+.pagination li.disabled > a:hover, .pagination li.disabled > span,
 .pagination li.disabled > span:focus, .pagination li.disabled > span:hover {
-    background-color: #fff;
-    border-color: #ddd;
-    color: #999;
-    cursor: not-allowed;
+	background-color: #fff;
+	border-color: #ddd;
+	color: #999;
+	cursor: not-allowed;
 }
-.pagination li.active > a, .pagination li.active > a:focus, 
-.pagination li.active > a:hover, .pagination li.active > span, 
+.pagination li.active > a, .pagination li.active > a:focus,
+.pagination li.active > a:hover, .pagination li.active > span,
 .pagination li.active > span:focus, .pagination li.active > span:hover {
-    background-color: #3276b1;
-    border-color: #3276b1;
-    color: #fff;
-    cursor: default;
-    z-index: 2;
+	background-color: #3276b1;
+	border-color: #3276b1;
+	color: #fff;
+	cursor: default;
+	z-index: 2;
 }
 .pagination > li > a, .pagination > li > span {
 	height:30px;
-    padding: 5px 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    color: #3276b1;
-    float: left;
-    line-height: 1.42857;
-    margin-left: -1px;
-    position: relative;
-    text-decoration: none;
+	padding: 5px 10px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	color: #3276b1;
+	float: left;
+	line-height: 1.42857;
+	margin-left: -1px;
+	position: relative;
+	text-decoration: none;
 }
-.pagination li > a:hover, .pagination li > span, 
+.pagination li > a:hover, .pagination li > span,
 .pagination li > span:focus, .pagination li > span:hover {
-    background-color: #eee;
-    border-color: #ddd;
-    color: #214e75;
+	background-color: #eee;
+	border-color: #ddd;
+	color: #214e75;
 }
 .table-warp .page-toolbar select[name="pSizeArea"]{
 	height:30px;

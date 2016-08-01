@@ -18,7 +18,7 @@
  增加对外公开方法验证，未经对外公开的方法将限制调用
  增加全选、反选功能
  增加配置项：columnData 通过配置的形式渲染table; 下属配置项template typeof == function时，会传入当前key所对应的数据与整行数据做为参数
- 提供刷新表格数据的对外公开方:refreshGrid，示例： $('table').GridManager('refreshGrid':callback)
+ 提供刷新表格数据的对外公开方:refreshGrid，示例： $('table').GridManager('refreshGrid',gotoFristPage, callback)
  方法[__getGridManager]简化为[get]
  增加ajax事件[ajax_beforeSend, ajax_success, ajax_error, ajax_complete, ajax_cache]
  增加参数[ajax_data]如果存在配置数据ajax_data,将不再通过ajax_url进行数据请求,且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
@@ -360,10 +360,18 @@
 		 [对外公开方法]
 		 @刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 		 $.table:当前操作的grid,由插件自动传入
+		 $.gotoFirstPage:  是否刷新时跳转至第一页
 		 $.callback: 回调函数
 		 */
-		,refreshGrid: function(table, callback){
+		,refreshGrid: function(table, gotoFirstPage, callback){
 			var _this = this;
+			if(typeof(gotoFirstPage) !== 'boolean'){
+				callback = gotoFirstPage;
+				gotoFirstPage = false;
+			}
+			if(gotoFirstPage){
+				_this.pageData['cPage'] = 1;
+			}
 			_this.__refreshGrid(callback);
 		}
 		/*
@@ -385,13 +393,13 @@
 			if(_this.ajax_data){
 				driveDomForSuccessAfter(_this.ajax_data);
 				_this.ajax_success(_this.ajax_data);
-				refreshAction.removeClass('refreshing');
+				removeRefreshingClass();
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
 			if(typeof(_this.ajax_url) != 'string' || _this.ajax_url === ''){
 				_this.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
-				refreshAction.removeClass('refreshing');
+				removeRefreshingClass();
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
@@ -411,6 +419,12 @@
 			if(_this.supportSorting){
 				$.extend(parme, _this.sortData);
 			}
+			if(parme.cPage < 1 || parme.cPage > parme.tPage){
+				_this.outLog('请求表格数据失败！分页信息错误', 'error');
+				removeRefreshingClass();
+				typeof callback === 'function' ? callback() : '';
+				return;
+			}
 			//执行ajax前事件
 			$.ajax({
 				url: _this.ajax_url,
@@ -429,9 +443,15 @@
 				},
 				complete: function(XMLHttpRequest, textStatus){
 					_this.ajax_complete(XMLHttpRequest, textStatus);
-					refreshAction.removeClass('refreshing');
+					removeRefreshingClass();
 				}
 			});
+			//移除刷新中样式
+			function removeRefreshingClass(){
+				window.setTimeout(function(){
+					refreshAction.removeClass('refreshing');
+				}, 2000);
+			}
 			//执行ajax成功后重新渲染DOM
 			function driveDomForSuccessAfter(response) {
 				if(!response){
@@ -1316,7 +1336,7 @@
 
 		}
 		/*
-		 @获取TH所占宽度
+		 @获取TH宽度
 		 $.element: th
 		 */
 		,getTextWidth: function(element){
@@ -2206,7 +2226,8 @@
 				pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);	//分页区域
 			//error
 			if(!_sizeData_ || !$.isArray(_sizeData_)){
-				$.error('参数:[sizeData]配置错误');
+				_this.outLog('渲染失败：参数[sizeData]配置错误' , 'error');
+				return;
 			}
 
 			var _ajaxPageHtml = '';
@@ -2365,7 +2386,7 @@
 		 */
 		,resetPageData: function(table, totals){
 			var _this = this;
-			if(!totals || !Number(totals)){
+			if(isNaN(parseInt(totals, 10))){
 				return;
 			}
 			var _pageData = getPageData(totals);
@@ -2499,16 +2520,13 @@
 		 $.type: 输出分类[info,warn,error]
 		 */
 		,outLog: function(msg, type){
-			if(!this.isDevelopMode){
-				return;
-			}
-			if(!type){
+			if(!this.isDevelopMode && !type){
 				return console.log('GridManager:', msg);
 			}
-			else if(type === 'info'){
+			else if(!this.isDevelopMode && type === 'info'){
 				return console.info('GridManager Info: ', msg);
 			}
-			else if(type === 'warn'){
+			else if(!this.isDevelopMode && type === 'warn'){
 				return console.warn('GridManager Warn: ', msg);
 			}
 			else if(type === 'error'){
