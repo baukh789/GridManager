@@ -560,24 +560,40 @@ table.grid-manager-default tbody tr:hover td{
 }
 .table-warp .page-toolbar .dataTables_info{
 	display:inline-block;
+	padding: 5px;
 }
 .table-warp .page-toolbar .change-size{
 	display:inline-block;
 }
 .table-warp .page-toolbar .goto-page{
 	display:inline-block;
-	padding:0px 10px;
+	padding:5px 10px;
 }
 .table-warp .page-toolbar .goto-page .gp-input{
 	width:50px;
-	height:30px;
+	height:20px;
 	border:1px solid #ccc;
 	padding:0px 5px;
 	margin:0px 5px;
 }
-.table-warp .page-toolbar .goto-page .gp-action{
+.table-warp .page-toolbar .refresh-action{
+	display:inline-block;
+	padding: 7px;
+	vertical-align: top;
+	color: #3276b1;
+}
+.table-warp .page-toolbar .refresh-action .iconfont{
+	display: block;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
 	cursor:pointer;
-	margin-left:10px;
+	font-weight: 600;
+}
+.table-warp .page-toolbar .refresh-action.refreshing .iconfont{
+	-webkit-animation: rotationMedia 1.5s ease-in-out infinite;
+	-moz-animation: rotationMedia 1.5s ease-in-out infinite;
+	animation: rotationMedia 1.5s ease-in-out infinite;
 }
 .table-warp .page-toolbar .ajax-page{
 	display:inline-block;	

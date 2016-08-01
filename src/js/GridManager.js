@@ -30,6 +30,8 @@
  公开方法的调用进行了简易\优化
  序列宽度优化
  增加公开方法[getRowData]:获取当前行渲染时使用的数据
+ 优化了跳转至页操作:可以在输入输入框中进行回车跳转,也可以通过刷新图标进行跳转
+
  开发中的任务：
  增加删除列功能 提供删除操作回调函数
  增加字段可编辑功能
@@ -371,7 +373,10 @@
 		,__refreshGrid: function(callback){
 			var _this = this;
 			var tableDOM = $('table[grid-manager="'+ _this.gridManagerName +'"]'),		//table dom
-				tbodyDOM = $('tbody', tableDOM);	//tbody dom
+				tbodyDOM = $('tbody', tableDOM),	//tbody dom
+				refreshAction = $('.page-toolbar .refresh-action', tableDOM.closest('.table-warp')); //刷新按纽
+			//增加刷新中标识
+			refreshAction.addClass('refreshing');
 			/*
 			 使用配置数据
 			 如果存在配置数据ajax_data,将不再通过ajax_rul进行数据请求
@@ -380,10 +385,13 @@
 			if(_this.ajax_data){
 				driveDomForSuccessAfter(_this.ajax_data);
 				_this.ajax_success(_this.ajax_data);
+				refreshAction.removeClass('refreshing');
+				typeof callback === 'function' ? callback() : '';
 				return;
 			}
 			if(typeof(_this.ajax_url) != 'string' || _this.ajax_url === ''){
 				_this.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
+				refreshAction.removeClass('refreshing');
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
@@ -421,6 +429,7 @@
 				},
 				complete: function(XMLHttpRequest, textStatus){
 					_this.ajax_complete(XMLHttpRequest, textStatus);
+					refreshAction.removeClass('refreshing');
 				}
 			});
 			//执行ajax成功后重新渲染DOM
@@ -623,7 +632,8 @@
 					+ '<div class="change-size"><select name="pSizeArea"></select></div>'
 					+ '<div class="goto-page">'+ _this.i18nText("goto-first-text")
 					+ '<input type="text" class="gp-input"/>'+ _this.i18nText("goto-last-text")
-					+ '<span class="gp-action"><i class="iconfont icon-shuaxin"></i></span></div>'
+					+ '</div>'
+					+ '<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>'
 					+ '<div class="ajax-page"><ul class="pagination"></ul></div>'
 					+ '</div>';
 			}
@@ -2215,7 +2225,8 @@
 				tableWarp	= table.closest('.table-warp'),
 				pageToolbar = $('.page-toolbar', tableWarp),		//分页工具条
 				pagination	= $('.pagination', pageToolbar),		//分页区域
-				gp_action	= $('.gp-action', pageToolbar);			//快捷跳转提交事件源
+				gp_input	= $('.gp-input', pageToolbar),			//快捷跳转
+				refreshAction	= $('.refresh-action', pageToolbar);//快捷跳转
 			//绑定分页点击事件
 			pageToolbar.off('click', 'li');
 			pageToolbar.on('click', 'li', function(){
@@ -2230,13 +2241,35 @@
 				gotoPage(_tableWarp, cPage);
 			});
 			//绑定快捷跳转事件
-			gp_action.unbind('click');
-			gp_action.bind('click', function(){
+			gp_input.unbind('keyup');
+			gp_input.bind('keyup', function(e){
+				if(e.which !== 13){
+					return;
+				}
 				var _tableWarp = $(this).closest('.table-warp'),
-					_pageToolbar = $('.page-toolbar', _tableWarp),
-					_input	= $('.gp-input', _pageToolbar),
-					_inputValue = _input.val().trim();
-				if(_inputValue == '' || /\D+/.test(_inputValue) || _inputValue < 1){
+					_inputValue = parseInt(this.value, 10);
+				if(!_inputValue){
+					this.focus();
+					return;
+				}
+				gotoPage(_tableWarp, _inputValue);
+				this.value = '';
+			});
+			//绑定刷新界面事件
+			refreshAction.unbind('click');
+			refreshAction.bind('click', function() {
+				var _action = $(this);
+				var _tableWarp = $(this).closest('.table-warp'),
+					_input = $('.page-toolbar .gp-input', _tableWarp),
+					_value = _input.val();
+				//跳转输入框为空时: 刷新当前菜
+				if(_value.trim() === ''){
+					_this.__refreshGrid();
+					return;
+				}
+				//跳转输入框不为空时: 验证输入值是否有效,如果有效跳转至指定页,如果无效对输入框进行聚焦
+				var _inputValue = parseInt(_input.val(), 10);
+				if(!_inputValue){
 					_input.focus();
 					return;
 				}
