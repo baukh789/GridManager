@@ -1115,17 +1115,17 @@
 			dragAction.unbind('mousedown');
 			dragAction.bind('mousedown',function(){
 				_th 			= $(this).closest('th'),				//事件源所在的th
-					_prevTh			= undefined,								//事件源的上一个th
-					_nextTh			= undefined,								//事件源的下一个th
-					_prevTd			= undefined,								//事件源对应的上一组td
-					_nextTd			= undefined,								//事件源对应的下一组td
-					_tr 			= _th.parent(),								//事件源所在的tr
-					_allTh 			= _tr.find('th'), 						//事件源同层级下的所有th
-					_table 			= _tr.parents('table').eq(0),			//事件源所在的table
-					_tableDiv 		= _table.parents('.table-div').eq(0),	//事件源所在的DIV
-					_td 			= _table.find('tbody')
-						.find('tr')
-						.find('td:eq('+_th.index()+')'); 		//与事件源同列的所有td
+				_prevTh			= undefined,							//事件源的上一个th
+				_nextTh			= undefined,							//事件源的下一个th
+				_prevTd			= undefined,							//事件源对应的上一组td
+				_nextTd			= undefined,							//事件源对应的下一组td
+				_tr 			= _th.parent(),							//事件源所在的tr
+				_allTh 			= _tr.find('th'), 						//事件源同层级下的所有th
+				_table 			= _tr.parents('table').eq(0),			//事件源所在的table
+				_tableDiv 		= _table.parents('.table-div').eq(0),	//事件源所在的DIV
+				_td 			= _table.find('tbody')
+								.find('tr')
+								.find('td:eq('+_th.index()+')'); 		//与事件源同列的所有td
 
 				//禁用文字选中效果
 				$('body').addClass('no-select-text');
@@ -1175,24 +1175,33 @@
 				$('body').unbind('mousemove');
 				$('body').bind('mousemove', function(e2){
 					_prevTh = undefined;
-					if(_th.index() != 0){ //当前移动的非第一列
+					//当前移动的非第一列
+					if(_th.index() != 0){
 						_prevTh = _allTh.eq(_th.index() - 1);
 					}
 					_nextTh = undefined;
-					if(_th.index() != _allTh.length -1){//当前移动的非最后一列
+					//当前移动的非最后一列
+					if(_th.index() != _allTh.length -1){
 						_nextTh = _allTh.eq(_th.index() + 1);
+					}
+					//插件自动创建的项,不允许移动
+					if(_prevTh.attr('lm-create') === 'true'){
+						_prevTh = undefined;
+					}
+					else if(_nextTh.attr('lm-create') === 'true'){
+						_nextTh = undefined;
 					}
 					_dreamlandDIV.show();
 					_dreamlandDIV.css({
 						width	: _th.get(0).offsetWidth,
 						height	: _table.get(0).offsetHeight,
 						left	: e2.clientX - _tableDiv.offset().left
-						//  + $('html').get(0).scrollLeft
-						+ _tableDiv.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft)
-						- _th.get(0).offsetWidth / 2,
+								//  + $('html').get(0).scrollLeft
+								+ _tableDiv.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft)
+								- _th.get(0).offsetWidth / 2,
 						top		: e2.clientY - _tableDiv.offset().top
-						+ _tableDiv.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop)
-						- _dreamlandDIV.find('th').get(0).offsetHeight / 2
+								+ _tableDiv.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop)
+								- _dreamlandDIV.find('th').get(0).offsetHeight / 2
 					});
 					//处理向左拖拽
 					if(_prevTh && _prevTh.length != 0
