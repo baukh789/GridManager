@@ -86,7 +86,7 @@
 
 		//选择、反选
 		this.supportCheckbox	= true;						//是否支持选择与反选
-		this.checkboxThName		= 'lm-checkbox';			//选择与反选列所使用的th-name
+		this.checkboxThName		= 'gm-checkbox';			//选择与反选列所使用的th-name
 		//国际化
 		this.i18n	 			= 'zh-cn';					//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
 
@@ -529,7 +529,7 @@
 		 */
 		,initOrderDOM: function(table) {
 			var _this = this;
-			var orderHtml = '<th th-name="'+ _this.orderThName +'" lm-order="true" lm-create="true">'+ _this.i18nText('order-text') +'</th>';
+			var orderHtml = '<th th-name="'+ _this.orderThName +'" gm-order="true" gm-create="true">'+ _this.i18nText('order-text') +'</th>';
 			$('thead tr', table).prepend(orderHtml);
 		}
 		/*
@@ -538,15 +538,15 @@
 		 */
 		,initCheckboxDOM: function(table) {
 			var _this = this;
-			var checkboxHtml = '<th th-name="'+ _this.checkboxThName +'" lm-checkbox="true" lm-create="true"><input type="checkbox"/><span style="display: none">'+ _this.i18nText('checkall-text') +'</span></th>';
+			var checkboxHtml = '<th th-name="'+ _this.checkboxThName +'" gm-checkbox="true" gm-create="true"><input type="checkbox"/><span style="display: none">'+ _this.i18nText('checkall-text') +'</span></th>';
 			$('thead tr', table).prepend(checkboxHtml);
 			//绑定选择事件
 			table.off('click','input[type="checkbox"]');
 			table.on('click','input[type="checkbox"]', function(){
 				var _checkAction = $(this),	//全选键事件源
 					_thChecked	= true,		//存储th中的checkbox的选中状态
-					_thCheckbox = $('thead th[lm-checkbox] input[type="checkbox"]', table),	//th中的选择框
-					_tdCheckbox = $('tbody td[lm-checkbox] input[type="checkbox"]', table);	//td中的选择框
+					_thCheckbox = $('thead th[gm-checkbox] input[type="checkbox"]', table),	//th中的选择框
+					_tdCheckbox = $('tbody td[gm-checkbox] input[type="checkbox"]', table);	//td中的选择框
 				//当前为全选事件源
 				if(_checkAction.closest('th[th-name="'+ _this.checkboxThName +'"]').length === 1){
 					$.each(_tdCheckbox, function(i, v){
@@ -571,7 +571,7 @@
 		 $.table:当前操作的grid,由插件自动传入
 		 */
 		,getCheckedTr: function(table) {
-			return $('tbody td[lm-checkbox] input[type="checkbox"]:checked', table).closest('tr');
+			return $('tbody td[gm-checkbox] input[type="checkbox"]:checked', table).closest('tr');
 		}
 		/*
 		 @渲染HTML，根据配置嵌入所需的事件源DOM
@@ -644,7 +644,7 @@
 				+ '<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>'
 				+ '</div>';
 			//导出表格数据所需的事件源DOM
-			var exportActionHtml = '<a href="" download="" id="lm-export-action"></a>';
+			var exportActionHtml = '<a href="" download="" id="gm-export-action"></a>';
 			//AJAX分页HTML
 			if(_this.supportAjaxPage){
 				var	_ajaxPageHtml= '<div class="page-toolbar">'
@@ -709,14 +709,14 @@
 				onlyTH.attr('th-visible','visible');
 
 				//是否为自动生成的序号列
-				if(_this.supportAutoOrder && onlyTH.attr('lm-order') == 'true'){
+				if(_this.supportAutoOrder && onlyTH.attr('gm-order') == 'true'){
 					isLmOrder = true;
 				}else{
 					isLmOrder = false;
 				}
 
 				//是否为自动生成的选择列
-				if(_this.supportCheckbox && onlyTH.attr('lm-checkbox') == 'true'){
+				if(_this.supportCheckbox && onlyTH.attr('gm-checkbox') == 'true'){
 					isLmCheckbox = true;
 				}else{
 					isLmCheckbox = false;
@@ -1185,10 +1185,10 @@
 						_nextTh = _allTh.eq(_th.index() + 1);
 					}
 					//插件自动创建的项,不允许移动
-					if(_prevTh.attr('lm-create') === 'true'){
+					if(_prevTh.attr('gm-create') === 'true'){
 						_prevTh = undefined;
 					}
-					else if(_nextTh.attr('lm-create') === 'true'){
+					else if(_nextTh.attr('gm-create') === 'true'){
 						_nextTh = undefined;
 					}
 					_dreamlandDIV.show();
@@ -1697,8 +1697,8 @@
 		 */
 		,exportGridToXls: function(table, fileName, onlyChecked){
 			var _this = this;
-			var lmExportAction = $('#lm-export-action'); //createDOM内添加
-			if(!_this.supportExport || lmExportAction.length === 0){
+			var gmExportAction = $('#gm-export-action'); //createDOM内添加
+			if(!_this.supportExport || gmExportAction.length === 0){
 				_this.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
 				return;
 			}
@@ -1708,7 +1708,7 @@
 				theadHTML= '',	//存储导出的thead数据
 				tbodyHTML ='', //存储导出的tbody下的数据
 				tableDOM = $(table);	//当前要导出的table
-			var thDOM = $('thead[class!="set-top"] th[th-visible="visible"][lm-create!="true"]', tableDOM),
+			var thDOM = $('thead[class!="set-top"] th[th-visible="visible"][gm-create!="true"]', tableDOM),
 				trDOM,
 				tdDOM;
 			//验证：是否只导出已选中的表格
@@ -1723,7 +1723,7 @@
 					+ '</th>';
 			});
 			$.each(trDOM, function(i, v){
-				tdDOM = $('td[lm-create!="true"]', v);
+				tdDOM = $('td[gm-create!="true"]', v);
 				tbodyHTML += '<tr>';
 				$.each(tdDOM, function(i2, v2){
 					tbodyHTML += v2.outerHTML
@@ -1741,9 +1741,9 @@
 				+ '</tbody>'
 				+ '</table></body>'
 				+ '</html>';
-			lmExportAction.prop('href', uri + base64(exportHTML));
-			lmExportAction.prop('download', (fileName || tableDOM.attr('grid-manager')) +'.xls');
-			lmExportAction.get(0).click();
+			gmExportAction.prop('href', uri + base64(exportHTML));
+			gmExportAction.prop('download', (fileName || tableDOM.attr('grid-manager')) +'.xls');
+			gmExportAction.get(0).click();
 
 			function base64(s) {
 				return window.btoa(unescape(encodeURIComponent(s)))
@@ -2026,9 +2026,9 @@
 				}
 				$.each(_tr, function(i, v){
 					_orderText = _orderBaseNumber + i;
-					onlyOrderTd = $('td[lm-order="true"]', v)
+					onlyOrderTd = $('td[gm-order="true"]', v)
 					if(onlyOrderTd.length == 0){
-						$(v).prepend('<td lm-order="true" lm-create="true">'+ _orderText +'</td>');
+						$(v).prepend('<td gm-order="true" gm-create="true">'+ _orderText +'</td>');
 					}else{
 						onlyOrderTd.text(_orderText);
 					}
@@ -2038,9 +2038,9 @@
 			if(_this.supportCheckbox){
 				var onlyCheckTd = undefined;
 				$.each(_tr, function(i, v){
-					onlyCheckTd = $('td[lm-checkbox="true"]', v);
+					onlyCheckTd = $('td[gm-checkbox="true"]', v);
 					if(onlyCheckTd.length == 0){
-						$(v).prepend('<td lm-checkbox="true" lm-create="true"><input type="checkbox"/></td>');
+						$(v).prepend('<td gm-checkbox="true" gm-create="true"><input type="checkbox"/></td>');
 					}else{
 						$('[type="checkbox"]', onlyCheckTd).prop('checked', false);
 					}
@@ -2632,18 +2632,18 @@
 			throw new Error('GridManager Error:方法调用错误，请确定方法名['+ name +']是否正确');
 			return false;
 		}
-		var lmObj;
+		var gmObj;
 		//当前为初始化方法
 		if(name == 'init') {
 			var options = $.extend({}, $.fn.GridManager.defaults, settings);
-			lmObj = new GridManager(options);
-			lmObj.init(_jqTable, callback);
+			gmObj = new GridManager(options);
+			gmObj.init(_jqTable, callback);
 			return _jqTable;
 		}
 		//当前为其它方法
 		else if(name != 'init'){
-			lmObj = _jqTable.data('gridManager');
-			var gmData = lmObj[name](_jqTable, settings, callback);
+			gmObj = _jqTable.data('gridManager');
+			var gmData = gmObj[name](_jqTable, settings, callback);
 			//如果方法存在返回值则返回，如果没有返回jquery object用于链式操作
 			return typeof(gmData) === 'undefined' ? _jqTable : gmData;
 		}

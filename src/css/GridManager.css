@@ -297,7 +297,7 @@ table.grid-manager-default tbody tr:hover td{
 	font-size: 0.9em;
 }
 /*导出excel*/
-#lm-export-action{
+#gm-export-action{
 	display:none;
 }
 /*表头置顶*/
@@ -456,21 +456,21 @@ table.grid-manager-default tbody tr:hover td{
 	text-overflow:ellipsis;
 }
 /*由插件生成的序号、全选样式*/
-.table-warp table[grid-manager] [lm-create="true"]{
+.table-warp table[grid-manager] [gm-create="true"]{
 	width:50px !important;
 	text-align:center;
 	cursor:default;
 }
-.table-warp table[grid-manager] th[lm-create="true"]{
+.table-warp table[grid-manager] th[gm-create="true"]{
 	background-color:#dad9c7;
 	opacity:0.9;
 }
-.table-warp table[grid-manager] td[lm-create="true"]{
+.table-warp table[grid-manager] td[gm-create="true"]{
 }
-.table-warp table[grid-manager] tr:hover td[lm-create="true"]{
+.table-warp table[grid-manager] tr:hover td[gm-create="true"]{
 	background-color:#e6eeee;
 }
-.table-warp table[grid-manager] [lm-checkbox="true"] input[type=checkbox]{
+.table-warp table[grid-manager] [gm-checkbox="true"] input[type=checkbox]{
 	vertical-align:middle;
 }
 /*空模板样式*/
