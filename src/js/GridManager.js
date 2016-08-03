@@ -31,6 +31,7 @@
  序列宽度优化
  增加公开方法[getRowData]:获取当前行渲染时使用的数据
  优化了跳转至页操作:可以在输入输入框中进行回车跳转,也可以通过刷新图标进行跳转
+ 增加公开方法[clear]:$('table').GM('clear'), 用于清理指定表的表格记忆数据
 
  开发中的任务：
  增加删除列功能 提供删除操作回调函数
@@ -1845,14 +1846,53 @@
 		}
 		/*
 		 [对外公开方法]
-		 @获取本地缓存
+		 @获取指定表格的本地存储数据
 		 $.table:table
+		 成功则返回本地存储数据,失败则返回空对象
 		 */
 		,getLocalStorage: function(table){
 			var _this = this;
 			var _table = $(table);
+			var _key = _this.getLocalStorageKey(_table);
+			if(!_key){
+				return {};
+			}
+			var _data = {},
+				_array = new Array(),
+				_localStorage = window.localStorage.getItem(_key);
+			//如无数据，增加属性标识：grid-manager-cache-error
+			if(!_localStorage){
+				_table.attr('grid-manager-cache-error','error');
+				return {};
+			}
+			_data.key = _key;
+			_data.cache = JSON.parse(_localStorage);
+			return _data;
+		}
+		/*
+		 [对外公开方法]
+		 @清除指定表的表格记忆数据
+		 $.table:table
+		 返回成功或者失败的布尔值
+		* */
+		,clear: function(table){
+			var _this = this;
+			var _table = $(table);
+			var _key = _this.getLocalStorageKey(_table);
+			if(!_key){
+				return false;
+			}
+			window.localStorage.removeItem(_key);
+			return true;
+		}
+		/*
+		* 获取指定表格本地存储所使用的key
+		* $table: table jquery
+		* */
+		,getLocalStorageKey: function($table){
+			var _this = this;
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-			var noCache = _table.attr('no-cache');
+			var noCache = $table.attr('no-cache');
 			if(noCache && noCache== 'true'){
 				_this.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
 				return false;
@@ -1861,30 +1901,18 @@
 				_this.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
 				return false;
 			}
-			if(!_table || _table.length == 0){
+			if(!$table || $table.length == 0){
 				_this.outLog('getLocalStorage:无效的table', 'error');
 				return false;
 			}
-			var _gridKey = _table.attr('grid-manager');
+			var _gridKey = $table.attr('grid-manager');
 			//验证当前表是否为GridManager
 			if(!_gridKey || $.trim(_gridKey) == ''){
 				_this.outLog('getLocalStorage:无效的grid-manager', 'error');
 				return false;
 			}
-			var thList = $('thead[class!="set-top"] th', _table);
-			var _key = window.location.pathname +  window.location.hash + '-'+ _gridKey;
-
-			var _data = {},
-				_array = new Array(),
-				_localStorage = window.localStorage.getItem(_key);
-			//如无数据，增加属性标识：grid-manager-cache-error
-			if(!_localStorage){
-				_table.attr('grid-manager-cache-error','error');
-				return false;
-			}
-			_data.key = _key;
-			_data.cache = JSON.parse(_localStorage);
-			return _data;
+			var thList = $('thead[class!="set-top"] th', $table);
+			return window.location.pathname +  window.location.hash + '-'+ _gridKey;
 		}
 		/*
 		 @根据本地缓存配置分页
@@ -2627,7 +2655,21 @@
 		}
 
 		//验证当前调用的方法是否为对外公开方法
-		var exposedMethodList = ['init', 'setSort', 'get', 'getCheckedTr', 'showTh', 'hideTh', 'exportGridToXls', 'getLocalStorage', 'resetTd', 'setQuery', 'refreshGrid', 'getRowData'];
+		var exposedMethodList = [
+			'init',					//初始化
+			'setSort',				//手动设置排序
+			'get',					//通过JQuery实例获取gridManager
+			'getCheckedTr',			//获取当前选中的列
+			'showTh',				//显示Th及对应的TD项
+			'hideTh',				//隐藏Th及对应的TD项
+			'exportGridToXls',		//导出表格 .xls
+			'getLocalStorage',		//获取指定表格的本地存储数据
+			'resetTd',				//重置列表[tbody]
+			'setQuery',				//配置query 该参数会在分页触发后返回至pagingAfter(query)方法
+			'refreshGrid',			//刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
+			'getRowData',			//获取当前行渲染时使用的数据
+			'clear'					//清除指定表的表格记忆数据
+		];
 		if(exposedMethodList.indexOf(name) === -1){
 			throw new Error('GridManager Error:方法调用错误，请确定方法名['+ name +']是否正确');
 			return false;

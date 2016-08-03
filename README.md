@@ -134,6 +134,8 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
 ###7.表格th中的文本显示不全
     查看配置项[columnData]中的width, 将该值提高或不进行设置由插件自动控制. 如果还为生效,那是由于当臆实例开始了记忆功能,解决方法为:将localStorage中包含与当前表格grid-manager名称对应的项清除,或使用localStorage.clear()将本地存储全部清除.
 
+###8.想清除当前记忆的宽度及列位置时怎么办?
+    可使用clear方法,调用方式:$('table').GM('clear');
 ###注意事项
    正在进行2.0版本功能测试。由于插件名称由listManager规范为GridManager，调用更简便，功能更强大。
 
