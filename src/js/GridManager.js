@@ -1604,10 +1604,11 @@
 					'top': top + tableWarp.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop),
 					'left': left + tableWarp.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft)
 				});
+				//隐藏非当前展示表格的菜单项
 				$('.grid-menu[grid-master]').hide();
 				menuDOM.show();
-				_body.off('mouseup.gridMenu');
-				_body.on('mouseup.gridMenu', function(e){
+				_body.off('mousedown.gridMenu');
+				_body.on('mousedown.gridMenu', function(e){
 					var eventSource = $(e.target);
 					if(eventSource.hasClass('.grid-menu') || eventSource.closest('.grid-menu').length === 1){
 						return;
