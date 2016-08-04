@@ -204,7 +204,7 @@
 		 $.table: table [jquery object]
 		 $.sortJson: 需要排序的json串
 		 $.callback: 回调函数
-		 $.refresh: 是否对列表进行数据刷新[boolean]
+		 $.refresh: 是否执行完成后对表格进行自动刷新[boolean]
 		 ex: sortJson
 		 sortJson = {
 		 th-name:up/down 	//其中up/down 需要与参数 sortUpText、sortDownText值相同
@@ -2657,19 +2657,19 @@
 
 		//验证当前调用的方法是否为对外公开方法
 		var exposedMethodList = [
-			'init',					//初始化
-			'setSort',				//手动设置排序
-			'get',					//通过JQuery实例获取gridManager
-			'getCheckedTr',			//获取当前选中的列
-			'showTh',				//显示Th及对应的TD项
-			'hideTh',				//隐藏Th及对应的TD项
-			'exportGridToXls',		//导出表格 .xls
-			'getLocalStorage',		//获取指定表格的本地存储数据
-			'resetTd',				//重置列表[tbody]
-			'setQuery',				//配置query 该参数会在分页触发后返回至pagingAfter(query)方法
-			'refreshGrid',			//刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
-			'getRowData',			//获取当前行渲染时使用的数据
-			'clear'					//清除指定表的表格记忆数据
+			'init',					//初始化 1
+			'setSort',				//手动设置排序 1
+			'get',					//通过JQuery实例获取GridManager  1
+			'getCheckedTr',			//获取当前选中的列 1
+			'showTh',				//显示Th及对应的TD项 1
+			'hideTh',				//隐藏Th及对应的TD项 1
+			'exportGridToXls',		//导出表格 .xls 1
+			'getLocalStorage',		//获取指定表格的本地存储数据 1
+			'resetTd',				//重置列表[tbody]  1
+			'setQuery',				//配置query 该参数会在分页触发后返回至pagingAfter(query)方法 1
+			'refreshGrid',			//刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染 1
+			'getRowData',			//获取当前行渲染时使用的数据 1
+			'clear'					//清除指定表的表格记忆数据 1
 		];
 		if(exposedMethodList.indexOf(name) === -1){
 			throw new Error('GridManager Error:方法调用错误，请确定方法名['+ name +']是否正确');
