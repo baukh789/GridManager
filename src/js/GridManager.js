@@ -1186,10 +1186,10 @@
 						_nextTh = _allTh.eq(_th.index() + 1);
 					}
 					//插件自动创建的项,不允许移动
-					if(_prevTh.attr('gm-create') === 'true'){
+					if(_prevTh && _prevTh.attr('gm-create') === 'true'){
 						_prevTh = undefined;
 					}
-					else if(_nextTh.attr('gm-create') === 'true'){
+					else if(_nextTh && _nextTh.attr('gm-create') === 'true'){
 						_nextTh = undefined;
 					}
 					_dreamlandDIV.show();
@@ -1875,7 +1875,7 @@
 		 @清除指定表的表格记忆数据
 		 $.table:table
 		 返回成功或者失败的布尔值
-		* */
+		 * */
 		,clear: function(table){
 			var _this = this;
 			var _table = $(table);
@@ -1887,9 +1887,9 @@
 			return true;
 		}
 		/*
-		* 获取指定表格本地存储所使用的key
-		* $table: table jquery
-		* */
+		 * 获取指定表格本地存储所使用的key
+		 * $table: table jquery
+		 * */
 		,getLocalStorageKey: function($table){
 			var _this = this;
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
