@@ -22,7 +22,7 @@
  方法[__getGridManager]简化为[get]
  增加ajax事件[ajax_beforeSend, ajax_success, ajax_error, ajax_complete, ajax_cache]
  增加参数[ajax_data]如果存在配置数据ajax_data,将不再通过ajax_url进行数据请求,且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
- 增加参数[emptyTemplate]当数据为空时显示的内容,可自行配置样式.
+ 增加参数[emptyTemplate]当数据为空时显示的内容,可自行配置html.
  修改方法[setSort]:增加是否刷新列表参数,如果为空,则默认为true.
  优化了columnData中sorting,未设置==当前列无排序功能, 设置但值为空或不等于sortUpText或sortDownText时==当前列存在排序功能但未进行排序,设置值且值与sortUpText或sortDownText相同时==存在排序功能且将通过设置的值进行排序
  增加配置项[dataKey,totalsKey],用于处理后端反回数据字段不为data,totals的情况
@@ -51,7 +51,7 @@
 		this.isDevelopMode  	= false;					//是否为开发模式，为true时将打印事件日志
 		this.basePath			= '';						//当前基本路径[用于加载分页所需样式文件]
 		this.useDefaultStyle	= true,						//是否使用默认的table样式
-			this.supportDrag 		= true; 					//是否支持拖拽功能
+			this.supportDrag 		= true; 				//是否支持拖拽功能
 		this.isRealTime			= false;					//列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
 		this.supportAdjust 		= true; 					//是否支持宽度调整功能]
 		this.supportRemind  	= false;					//是否支持表头提示信息[需在地应的TH上增加属性remind]
@@ -96,10 +96,10 @@
 		this.gridManagerName   	= '';						//表格grid-manager所对应的值[可在html中配置]
 		this.ajax_url			= '';						//获取表格数据地址，配置该参数后，将会动态获取数据
 		this.ajax_type			= 'GET';					//ajax请求类型['GET', 'POST']默认GET
-		this.ajax_beforeSend	= $.noop;					//ajax请求之前,返回与jquery相同
-		this.ajax_success		= $.noop;					//ajax成功后,返回与jquery相同
-		this.ajax_complete		= $.noop;					//ajax完成后,返回与jquery相同
-		this.ajax_error			= $.noop;					//ajax失败后,返回与jquery相同
+		this.ajax_beforeSend	= $.noop;					//ajax请求之前,与jquery的beforeSend使用方法相同
+		this.ajax_success		= $.noop;					//ajax成功后,与jquery的success使用方法相同
+		this.ajax_complete		= $.noop;					//ajax完成后,与jquery的complete使用方法相同
+		this.ajax_error			= $.noop;					//ajax失败后,与jquery的error使用方法相同
 		this.ajax_data			= undefined;				//ajax静态数据,配置后ajax_url将无效
 		this.dataKey			= 'data';					//ajax请求返回的列表数据key键值,默认为data
 		this.totalsKey			= 'totals';					//ajax请求返回的数据总条数key键值,默认为totals
@@ -1115,18 +1115,18 @@
 			var SIV_td;			//用于处理时实刷新造成的列表错乱
 			dragAction.unbind('mousedown');
 			dragAction.bind('mousedown',function(){
-				_th 			= $(this).closest('th'),				//事件源所在的th
-				_prevTh			= undefined,							//事件源的上一个th
-				_nextTh			= undefined,							//事件源的下一个th
-				_prevTd			= undefined,							//事件源对应的上一组td
-				_nextTd			= undefined,							//事件源对应的下一组td
-				_tr 			= _th.parent(),							//事件源所在的tr
-				_allTh 			= _tr.find('th'), 						//事件源同层级下的所有th
-				_table 			= _tr.parents('table').eq(0),			//事件源所在的table
-				_tableDiv 		= _table.parents('.table-div').eq(0),	//事件源所在的DIV
-				_td 			= _table.find('tbody')
-								.find('tr')
-								.find('td:eq('+_th.index()+')'); 		//与事件源同列的所有td
+				_th 			= $(this).closest('th'),					//事件源所在的th
+					_prevTh			= undefined,							//事件源的上一个th
+					_nextTh			= undefined,							//事件源的下一个th
+					_prevTd			= undefined,							//事件源对应的上一组td
+					_nextTd			= undefined,							//事件源对应的下一组td
+					_tr 			= _th.parent(),							//事件源所在的tr
+					_allTh 			= _tr.find('th'), 						//事件源同层级下的所有th
+					_table 			= _tr.parents('table').eq(0),			//事件源所在的table
+					_tableDiv 		= _table.parents('.table-div').eq(0),	//事件源所在的DIV
+					_td 			= _table.find('tbody')
+									.find('tr')
+									.find('td:eq('+_th.index()+')'); 		//与事件源同列的所有td
 
 				//禁用文字选中效果
 				$('body').addClass('no-select-text');
