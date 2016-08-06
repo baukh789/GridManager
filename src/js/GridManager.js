@@ -2,46 +2,6 @@
  http://www.lovejavascript.com/#!plugIn/GridManager/index.html
  @baukh:GridManager 表格管理插件
  当前版本：v2.0
-
- 开发完成的任务：
- 处理文本配置无法单个配置的BUG【已修复】
- 方法：resetPageData不再对外公开，由插件自动完成方法内的功能。
- 移除方法:pageCallback，使用事件pagingBefore与pagingAfter替代
- 移除方法:sortingCallback，使用事件sortingBefore与sortingAfter替代
- 增加ajax_url参数，用于自动获取数据，无需再在分页及排序时手动处理
- 优化console.outLog()方法
- 增加getCheckedTr方法，用于获取当前选中的tr
- 清理无用代码
- 提供能否出表格数据公开方法：exportGridToXls， 示例： $('table').GridManager('exportGridToXls', fileName, onlyChecked)
- 取消$(table).GridManager(['reset','get'])格式的调用方法
- 取消多表同时渲染机制
- 增加对外公开方法验证，未经对外公开的方法将限制调用
- 增加全选、反选功能
- 增加配置项：columnData 通过配置的形式渲染table; 下属配置项template typeof == function时，会传入当前key所对应的数据与整行数据做为参数
- 提供刷新表格数据的对外公开方:refreshGrid，示例： $('table').GridManager('refreshGrid',gotoFristPage, callback)
- 方法[__getGridManager]简化为[get]
- 增加ajax事件[ajax_beforeSend, ajax_success, ajax_error, ajax_complete, ajax_cache]
- 增加参数[ajax_data]如果存在配置数据ajax_data,将不再通过ajax_url进行数据请求,且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
- 增加参数[emptyTemplate]当数据为空时显示的内容,可自行配置html.
- 修改方法[setSort]:增加是否刷新列表参数,如果为空,则默认为true.
- 优化了columnData中sorting,未设置==当前列无排序功能, 设置但值为空或不等于sortUpText或sortDownText时==当前列存在排序功能但未进行排序,设置值且值与sortUpText或sortDownText相同时==存在排序功能且将通过设置的值进行排序
- 增加配置项[dataKey,totalsKey],用于处理后端反回数据字段不为data,totals的情况
- 增加鼠标右键功能菜单[1、上一页；2、上一页；3、重新加载；4、另存为Excel；5、选中行另存为Excel；6、配置列]
- 公开方法的调用进行了简易\优化
- 序列宽度优化
- 增加公开方法[getRowData]:获取当前行渲染时使用的数据
- 优化了跳转至页操作:可以在输入输入框中进行回车跳转,也可以通过刷新图标进行跳转
- 增加公开方法[clear]:$('table').GM('clear'), 用于清理指定表的表格记忆数据
-
- 开发中的任务：
- 增加删除列功能 提供删除操作回调函数
- 增加字段可编辑功能
- 支持快捷键 选择列
- 当前页的搜索 匹配高亮
- 弹出框状态下的吸顶，需要将分页信息一直展现
- 排序增加前端当前页排序方式,增加配置当前页排序还是总数据排序标识
- 提供现有功能的事件函数 如 宽度被调整后的事件
- 文档增加常见问题及解决方案
  */
 ;(function(){
 	'use strict';
