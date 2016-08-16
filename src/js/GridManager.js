@@ -380,11 +380,12 @@
 			if(_this.supportSorting){
 				$.extend(parme, _this.sortData);
 			}
-			if(parme.cPage < 1 || parme.cPage > parme.tPage){
-				_this.outLog('请求表格数据失败！分页信息错误', 'error');
-				removeRefreshingClass();
-				typeof callback === 'function' ? callback() : '';
-				return;
+			//当前页小于1时, 修正为1
+			if(parme.cPage < 1){
+				parme.cPage = 1;
+			//当前页大于总页数时, 修正为总页数
+			}else if(parme.cPage > parme.tPage){
+				parme.cPage = parme.tPage
 			}
 			//执行ajax前事件
 			$.ajax({
