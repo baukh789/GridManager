@@ -19,10 +19,10 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
 
 ###演示及文档
 
-- [静态数据demo](http://www.lovejavascript.com/#!plugIn/GridManager/demo1.html)
-- [动态数据demo](http://www.lovejavascript.com/#!plugIn/GridManager/demo2.html)
-- [特定容器demo](http://www.lovejavascript.com/#!plugIn/GridManager/demo3.html)
-- [演示地址及使用说明](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
+- [静态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo1.html)
+- [动态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo2.html)
+- [特定容器demo](http://www.lovejavascript.com/plugIn/GridManager/demo3.html)
+- [演示地址及使用说明](http://www.lovejavascript.com/plugIn/GridManager/index.html)
 
 ###调用方式
 ```html
