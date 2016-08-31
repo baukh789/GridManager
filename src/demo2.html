@@ -5,26 +5,35 @@
 <link rel="stylesheet" type="text/css" href="css/base.css">
 <title>GridManager:使用动态数据渲染</title>
 <style>
-html, body{
-	overflow-x:hidden;
-}
-h2{
-	font-size:22px;
-	padding:10px 30px;
-	color:#333;
-}
-p{
-	font-size:14px;
-	padding:10px 30px;
-	color:#333;
-	text-indent:2em;
-}
-hr{    
-	margin-top: 18px;
-    margin-bottom: 18px;
-    border: 0;
-    border-top: 1px solid #eee;
-}
+	html, body{
+		overflow-x:hidden;
+	}
+	h2{
+		font-size:22px;
+		padding:10px 30px;
+		color:#333;
+	}
+	p{
+		font-size:14px;
+		padding:10px 30px;
+		color:#333;
+		text-indent:2em;
+	}
+	hr{
+		margin-top: 18px;
+		margin-bottom: 18px;
+		border: 0;
+		border-top: 1px solid #eee;
+	}
+	.plugin-action{
+		display: inline-block;
+		color: steelblue;
+		margin-right: 10px;
+		cursor: pointer;
+	}
+	.plugin-action:hover{
+		text-decoration:underline;
+	}
 </style>
 </head>
 
@@ -34,9 +43,10 @@ hr{
 <p>1.存在.json文件，谷歌需要放到环境中效果才能展现.</p>
 <p>2.数据采用的是.json的模拟请求数据,所以在切换分页时数据看上去并未变化.</p>
 <p>3.当前使用的排序方式为组合排序</p>
+<p>4.此Demo存在跨域请求,只做为演示不可直接使用</p>
 <hr/>
 <div style="width:95%;margin:0px auto;">
-    <table grid-manager="cccc"></table>
+	<table grid-manager="plugIn-version"></table>
 </div>
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/GridManager.js"></script>
@@ -47,86 +57,97 @@ $(function(){
 	$.fn.GM.defaults = {
 		isDevelopMode: true, 
 		autoLoadCss:true  //自动加载CSS文件，无需在页面中引用
-	}
+	};
 	table.GM({
 		supportRemind: true
-		,i18n:'zh-cn'
-		,textConfig:{
-			'page-go': {
-				'zh-cn':'跳转',
-				'en-us':'Go '
-			}
-		}
-		,gridManagerName:'aaa'
-		,disableCache:false
-		,disableOrder:false
-		,supportSorting: true
-		,isCombSorting: true
-		,sortDownText: 'up'
-		,sortUpText: 'down'
-		,supportDrag:true
 		,supportAjaxPage:true
-    	,ajax_url: 'data/test.json'
-    	,ajax_type: 'POST'
-		,pageSize:30
-		,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
+		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajax_type: 'POST'
+		,query: {pluginId: 1}
+		,pageSize:20
 		,columnData: [{
-				key: 'name',
-				remind: 'the username',
-				sorting: 'up',
-				width: '200px',
-				text: 'username'
-			},{
-				key: 'age',
-				remind: 'the age',
-				width: '200px',
-				text: 'age'
-			},{
-				key: 'createDate',
-				remind: 'the createDate',
-				sorting: 'down',
-				width: '200px',
-				text: 'createDate'
-			},{
-				key: 'info',
-				remind: 'the info',
-				text: 'info'
-			},{
-				key: 'operation',
-				remind: 'the operation',
-				sorting: '',
-				width: '200px',
-				text: 'operation',
-				template: function(operation, rowObject){  //operation:当前key所对应的单条数据；rowObject：单个一行完整数据
-					return '<a href=javascript:alert("这是一个按纽");>'+operation+'</a>';
-				}
+			key: 'name',
+			remind: 'the name',
+			width: '100px',
+			text: '名称'
+		},{
+			key: 'info',
+			remind: 'the info',
+			text: '使用说明'
+		},{
+			key: 'url',
+			remind: 'the url',
+			text: 'url'
+		},{
+			key: 'createDate',
+			remind: 'the createDate',
+			width: '100px',
+			text: '创建时间',
+			template: function(createDate, rowObject){
+				return new Date(createDate).format('YYYY-MM-DD HH:mm:ss');
 			}
+		},{
+			key: 'lastDate',
+			remind: 'the lastDate',
+			width: '100px',
+			text: '最后修改时间',
+			template: function(lastDate, rowObject){
+				return new Date(lastDate).format('YYYY-MM-DD HH:mm:ss');
+			}
+		},{
+			key: 'action',
+			remind: 'the action',
+			width: '100px',
+			text: '操作',
+			template: function(action, rowObject){
+				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+			}
+		}
 		]
-		,pagingBefore:function(query){
-      		console.log('Event: 分页前', query);
-		}
-		,pagingAfter: function(query){
-		  	console.log('Event: 分页后', query);	
-		}
-		,sortingBefore:function(query){
-      		console.log('Event: 排序前', query);
-		}
-		,sortingAfter: function(query){
-		  	console.log('Event: 排序后', query);
-		}
 		,ajax_beforeSend: function(query){
-		  	console.log('Event: ajax_beforeSend', query);
+			console.log('ajax_beforeSend', query);
 		}
 		,ajax_complete: function(data){
-		  	console.log('Event: ajax_complete', data);
+			console.log('ajax_complete', data);
 		}
-	},function(query){
-		console.log('init方法回调query参数', query);
-		//手动配置排序
-//		$('table').GM('setSort',{
-//			'age':'asc'
-//		});
 	});
+
+	//绑定编辑功能
+	$('body').off('click','.edit-action');
+	$('body').on('click', '.edit-action', function(){
+		alert('可在此处进行编辑功能开发');
+	});
+	//绑定删除功能
+	$('body').off('click', '.del-action');
+	$('body').on('click', '.del-action', function(){
+		alert('可在此处进行删除功能开发');
+	});
+
+
+	// 日期格式化,不是插件的代码,只用于处理时间格式化
+	Date.prototype.format = function(fmt){
+		var o = {
+			"M+": this.getMonth() + 1, //月份
+			"D+": this.getDate(), //日
+			"d+": this.getDate(), //日
+			"H+": this.getHours(), //小时
+			"h+": this.getHours(), //小时
+			"m+": this.getMinutes(), //分
+			"s+": this.getSeconds(), //秒
+			"q+": Math.floor((this.getMonth() + 3) / 3), //季度
+			"S": this.getMilliseconds() //毫秒
+		};
+		if (/([Y,y]+)/.test(fmt)){
+			fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+		}
+		for (var k in o){
+			if(new RegExp("(" + k + ")").test(fmt)){
+				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			}
+		}
+		return fmt;
+	}
 });
 </script>
 
