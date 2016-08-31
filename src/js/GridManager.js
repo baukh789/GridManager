@@ -10,7 +10,7 @@
 		this.version			= '2.0';					//版本号
 		this.isDevelopMode  	= false;					//是否为开发模式，为true时将打印事件日志
 		this.basePath			= '';						//当前基本路径[用于加载分页所需样式文件]
-		this.useDefaultStyle	= true,						//是否使用默认的table样式
+		this.useDefaultStyle	= true;						//是否使用默认的table样式
 		this.supportDrag 		= true; 					//是否支持拖拽功能
 		this.isRealTime			= false;					//列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
 		this.supportAdjust 		= true; 					//是否支持宽度调整功能]
@@ -2532,7 +2532,7 @@
 				return console.error('GridManager Error: ', msg);
 			}
 		}
-	}
+	};
 	/*
 	 @提供多态化调用方式
 	 $._name_: GridManager下的方法名

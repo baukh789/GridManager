@@ -16,13 +16,16 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
 - 右键菜单: 常用功能在菜单中可进行快捷操作
 
 
+###浏览器兼容
+Firefox, Chrome,IE10+
+这里提一下为什么不支持低版本: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
 
 ###演示及文档
 
+- [API](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
 - [静态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo1.html)
 - [动态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo2.html)
 - [特定容器demo](http://www.lovejavascript.com/plugIn/GridManager/demo3.html)
-- [演示地址及使用说明](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
 
 ###调用方式
 ```html
