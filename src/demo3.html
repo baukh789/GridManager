@@ -3,35 +3,28 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="http://www.lovejavascript.com/baukhManager/app/libs/jquery/jquery-ui/jquery-ui.min.css">
 <title>listManager:在特定容器中使用的吸顶效果 [如dialog]</title>
 <style>
 html, body{
 	overflow-x:hidden;
 }
-h2{
+body>h2{
 	font-size:22px;
 	padding:10px 30px;
 	color:#333;
 }
-p{
+body>p{
 	font-size:14px;
 	padding:10px 30px;
 	color:#333;
 	text-indent:2em;
 }
-hr{    
+body>hr{
 	margin-top: 18px;
     margin-bottom: 18px;
     border: 0;
     border-top: 1px solid #eee;
-}
-.dialog-demo{
-	width:70%;
-	height:300px;
-	overflow-x:hidden;
-	overflow-y:auto;
-	margin:20px auto;
-	padding:20px;
 }
 </style>
 </head>
@@ -41,18 +34,33 @@ hr{
 <p>存在.json文件，谷歌需要放到环境中效果才能展现</p>
 <hr/>
 	<div class="dialog-demo">
-    <table grid-manager="demoOne"></table>
-</div>
+		<table grid-manager="demoOne"></table>
+	</div>
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://www.lovejavascript.com/baukhManager/app/libs/jquery/jquery-ui/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/GridManager.js"></script>
 <script type="text/javascript" >
 $(function(){
+	$('.dialog-demo').dialog({
+		resizable: true,
+		width: 1000,
+		height: 580,
+		modal: true,
+		buttons: {
+			"Delete all items": function () {
+				$(this).dialog("close");
+			},
+			Cancel: function () {
+				$(this).dialog("close");
+			}
+		}
+	});
 	//单列表简易渲染
 	var table = $('table[grid-manager]');
 	$.fn.GM.defaults = {
 		isDevelopMode: true, 
 		autoLoadCss:true  //自动加载CSS文件，无需在页面中引用
-	}
+	};
 	table.GM({
 		supportRemind: true
 		,scrollDOM: '.dialog-demo'

@@ -4,7 +4,7 @@ var http = require("http"),
     fs   = require("fs");
 
 http.createServer(function (req, res) {
-    var pathname=__dirname+url.parse(req.url).pathname;
+    var pathname=__dirname + url.parse(req.url).pathname;
     if (path.extname(pathname)=="") {
         pathname+="/";
     }
