@@ -3,75 +3,265 @@
  */
 ;(function($){
     'use strict';
-    function GridManager(){
+    // GridManager构造函数
+    function GridManager(_settings_){
     }
-    // 捆绑至选择器对象
-    $.prototype.GM = $.prototype.GridManager = function(_name_, _settings_, _callback_){
-        console.log(_name_)
+    var a = $('div');
+    a.data('abc', {a:2,b:2})
+    console.log(a.data('abc'));
+    // 通过原型绑定GM方法
+    GridManager.prototype = {
+        init : function(_name_, _callback_){
+            return this;
+        }
+        // 只读版本号
+        ,get version(){
+            return '2.0';
+        }
+        /*
+         @获取随机参数
+         */
+        ,getRandom: function(){
+            return this.version + Math.random();
+        }
     };
-    console.log($('.t3').hide(1))
-
+    // 捆绑至选择器对象
+    Element.prototype.GM = Element.prototype.GridManager = function(_name_, _settings_, _callback_){
+        var _GM = new GridManager(_settings_);
+        return _GM;
+    };
 // 即时执行选择器方法
-// 生成选择器,使用与jQuery同名的变量 => $, 虽然同名,却是不同的
+// 生成选择器,返回工具类
 // 该选择器只会在插件内部生效,在插件外部无法调用
 })((function(){
     'use strict';
     // 如果需要集成Angular,React,在此处进行集成
-    // 调用$()时,执行document.querySelectorAll()方法
-    // 并不做为构造函数进行使用. 在这里$是做为一个方法存在, 使用时并不是new $, 而是直接使用$.prototype
-    var $ = function (selector, context){
-        return $.prototype.sizzle(selector, context); // 相当于调用另外一个对象,只是将该对象存储$.prototype;
+    var cQuery = function (selector, context){
+        return cQuery.prototype.sizzle(selector, context);
     };
     // 实现所必须的公用方法
-    $.prototype = {
-        /*
-        * @该方法实现选择器功能,类似于jQuery.Sizzle
-        * 设置不允许出现同时渲染多个table, 所以不需要使用querySelectorAll
-        * */
-       sizzle:function(selector, context){
+    cQuery.prototype = {
+        // 用于存储当前选中的节点
+        DOMList: undefined
+        // 缓存容器
+        ,cache : {}
+        ,type: 'Boolean Number String Function Array Date RegExp Object Error Symbol'
+    };
+    /*
+    * @extend:扩展方法
+    * cQuery.extend => 可以直接使用$.extend调用
+    * cQuery.prototype.extend => 扩展操作后可以通过$.prototype获取
+    * */
+    cQuery.extend = cQuery.prototype.extend =  function(){
+        // 参数为空,返回空对象
+        if(arguments.length === 0){
+            return {};
+        }
+        var i = 1,
+            target = arguments[0],
+            options;
+        // 如果参数只有一个, 将认为是对cQuery进行扩展
+        if(arguments.length === 1){
+            target = this;
+            i=0;
+        }
+        for(; i<arguments.length; i++){
+            options = arguments[i] || {};
+            for (var p in options) {
+                if (options.hasOwnProperty(p)) {
+                    target[p] = options[p];
+                }
+            }
+        }
+        return target;
+    };
+    /*
+    * @cQuery扩展
+    * */
+    cQuery.extend({
+        // 是否为chrome浏览器
+        isChrome: function(){
+            return navigator.userAgent.indexOf('Chrome') == -1 ? false : true;
+        }
+        ,type: function(o){
+            if(o === null || o === undefined){
+                return o + '';
+            }
+            var type = '';
+            switch (o.constructor){
+                case Object:
+                    type = 'Object';
+                    break;
+                case Array:
+                    type = 'Array';
+                    break;
+                case NodeList:
+                    type = 'NodeList';
+                    break;
+                case String:
+                    type = 'String';
+                    break;
+                case Number:
+                    type = 'Number';
+                    break;
+                case Function:
+                    type = 'Function';
+                    break;
+                case Date:
+                    type = 'Date';
+                    break;
+                case RegExp:
+                    type = 'RegExp';
+                    break;
+                default:
+                    type = 'null';
+                    break;
+            }
+            return type;
+        }
+        // 循环
+        ,each: function(object, callback){
+            var type = this.type(object);
+            if(type === 'Array' || type === 'NodeList'){
+                // 由于存在类数组NodeList, 所以不能直接调用every方法
+                [].every.call(object, function(v, i){
+                    return callback.call(v, i, v) === false ? false : true;
+                });
+            }else if(type === 'Object'){
+                for(var i in object){
+                    if(callback.call(object[i], i, object[i]) === false){
+                        break;
+                    }
+                }
+            }
+        }
+    });
+    /*
+    * @cQuery.prototype扩展
+    * */
+    // sizzle选择器,类似于jQuery.Sizzle;
+    cQuery.prototype.extend({
+        sizzle:function(selector, context){
             if(typeof selector === 'undefined'){
                 this.error('无效的选择器');
                 return;
             }
-            var tableDOM = undefined;
+            var DOMList = undefined;
             // 验证容器是否为选择器,如果是则通过该选择器获取dom节点
             if(typeof context === 'string'){
-                context = document.querySelector(context);
+                context = document.querySelectorAll(context);
             }
             // 验证context是否为空节点
             if(context && context.length !== 0){
-                tableDOM = context.querySelector(selector);
-            // 没有容器,直接对通过选择器获取dom节点
+                DOMList = context.querySelectorAll(selector);
+                // 没有容器,直接对通过选择器获取dom节点
             }else{
-                tableDOM = document.querySelector(selector);
+                DOMList = document.querySelectorAll(selector);
             }
-            if(!tableDOM){
+            if(!DOMList){
                 this.error('无效的选择器');
                 return;
             }
-            this.tableDOM = tableDOM;
+            this.DOMList = DOMList;
             return this;
         }
+    });
+    // 获取/存储缓存对象
+    cQuery.prototype.extend({
+        // data唯一识别码
+        dataId: 1
         /*
-        * @显示
+        * 未完成,需要获取element唯一标识码
         * */
-        ,show: function(){
-            this.tableDOM.style.display = 'block';
-            return this;
+        ,data : function(key, object){
+            // 未指定参数,返回全部
+            if(typeof key === 'undefined' && typeof object === 'undefined'){
+                return cache;
+            }
+            // setter
+            if(typeof(object) !== 'undefined'){
+                this.cache['key'] = object;
+                return this;
+            // getter
+            }else{
+                return this.cache['key'];
+            }
         }
-        /*
-         * @隐藏
-         * */
-        ,hide: function(){
-            this.tableDOM.style.display = 'none';
-            return this;
+    });
+    // 获取指定索引的对象或DOM
+    cQuery.prototype.extend({
+        // 获取指定DOM Element
+        get: function(index){
+            return this.DOMList[0];
         }
-        ,extend: function(){
+        // 获取指定索引的cQuery对象:返回的是以指定索引继承的cQuery对象
+        ,eq: function(index){
+            var newObject = Object.create(this);
+            newObject.DOMList = [this.DOMList[index]];
+            return newObject;
         }
-        ,error: function(msg){
+    });
+    // 获取/存储缓存对象
+    cQuery.prototype.extend({
+        error: function(msg){
             throw new Error('GridManager Error:'+ msg);
         }
-    };
+    });
+    // 获取/设置节点文本
+    cQuery.prototype.extend({
+        text: function(text){
+            // setter
+            if(typeof(text) !== 'undefined'){
+                cQuery.each(this.DOMList, function(i, v){
+                    v.innerText = text;
+                });
+                return this;
+            // getter
+            }else{
+                return this.get(0).innerText;
+            }
+        }
+    });
+    // 显示/隐藏元素
+    cQuery.prototype.extend({
+        show: function(){
+            cQuery.each(this.DOMList, function(i, v){
+                v.style.display = 'block';
+            });
+            return this;
+        }
+        ,hide: function(){
+            cQuery.each(this.DOMList, function(i, v){
+                v.style.display = 'none';
+            });
+            return this;
+        }
+    });
+    // class相关操作
+    cQuery.prototype.extend({
+        addClass: function(className){
+            cQuery.each(this.DOMList, function(i, v){
+                v.classList.add(className);
+            });
+            return this;
+        }
+        ,removeClass: function(className){
+            cQuery.each(this.DOMList, function(i, v){
+                v.classList.remove(className);
+            });
+            return this;
+        }
+        ,toggleClass: function(className){
+            cQuery.each(this.DOMList, function(i, v){
+                v.classList.toggle(className);
+            });
+            return this;
+        }
+        // 如果DOMList为多值, 以第一个值为基准
+        ,hasClass: function(className){
+            return this.get(0).classList.contains(className);
+        }
 
-    return $;
+    });
+    return cQuery;
 })());

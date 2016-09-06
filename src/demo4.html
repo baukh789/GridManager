@@ -7,11 +7,15 @@
 <body>
 <div class="t1">1111</div>
 <div class="t2">22222</div>
-<div class="t3">333</div>
+<div class="t3">333t</div>
 <div class="t4">4</div>
 <script src="js/GridManager.free.js"></script>
 <script>
+    var t1 = document.querySelector('.t1');
+    var gm = t1.GM('222');
+   console.log(gm.init(1,2).getRandom());
 
+//$('.t1').GM('12').hide();
 </script>
 </body>
 </html>
