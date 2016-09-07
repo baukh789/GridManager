@@ -7,8 +7,9 @@
     function GridManager(_settings_){
     }
     var a = $('div');
-    a.data('abc', {a:2,b:2})
-    console.log(a.data('abc'));
+    a.attr('abc', {a:1,b:1})
+    a.removeAttr('abc');
+    console.log(a.attr('abc'));
     // 通过原型绑定GM方法
     GridManager.prototype = {
         init : function(_name_, _callback_){
@@ -83,6 +84,7 @@
         isChrome: function(){
             return navigator.userAgent.indexOf('Chrome') == -1 ? false : true;
         }
+        ,version: '1.0'
         ,type: function(o){
             if(o === null || o === undefined){
                 return o + '';
@@ -166,26 +168,73 @@
             return this;
         }
     });
-    // 获取/存储缓存对象
+    // DOM元素上获取/存储数值
     cQuery.prototype.extend({
         // data唯一识别码
-        dataId: 1
-        /*
-        * 未完成,需要获取element唯一标识码
-        * */
-        ,data : function(key, object){
+        dataKey: 'cQuery' + cQuery.version
+        // 设置\获取对象类属性
+        ,data: function(key, value){
+            var _this = this,
+                _data = {};
             // 未指定参数,返回全部
-            if(typeof key === 'undefined' && typeof object === 'undefined'){
-                return cache;
+            if(typeof key === 'undefined' && typeof value === 'undefined'){
+                return _this.DOMList[0][_this.dataKey]
             }
             // setter
-            if(typeof(object) !== 'undefined'){
-                this.cache['key'] = object;
+            if(typeof(value) !== 'undefined'){
+                // 存储值类型为字符或数字时, 使用attr执行
+                var _type = cQuery.type(value);
+                if(_type === 'String' || _type === 'Number'){
+                    _this.attr(key, value);
+                }
+                cQuery.each(_this.DOMList, function(i, v){
+                    _data = v[_this.dataKey] || {};
+                    _data[key] = value;
+                    v[_this.dataKey] = _data;
+                });
                 return this;
             // getter
             }else{
-                return this.cache['key'];
+                _data = _this.DOMList[0][_this.dataKey] || {};
+                return _data[key] || _this.attr(key);
             }
+        }
+        // 删除对象类属性
+        ,removeData: function(key){
+            var _this = this,
+                _data;
+            if(typeof key === 'undefined'){
+                return;
+            }
+            cQuery.each(_this.DOMList, function(i, v){
+                _data = v[_this.dataKey] || {};
+                delete _data[key];
+            });
+        }
+        // 普通属性
+        ,attr: function(key, value){
+            // 未指定参数,返回空字符
+            if(typeof key === 'undefined' && typeof value === 'undefined'){
+                return '';
+            }
+            // setter
+            if(typeof(value) !== 'undefined'){
+                cQuery.each(this.DOMList, function(i, v){
+                    v.setAttribute(key, value);
+                });
+            // getter
+            }else{
+                return this.DOMList[0].getAttribute(key);
+            }
+        }
+        // 删除普通属性
+        ,removeAttr: function(key){
+            if(typeof key === 'undefined'){
+                return;
+            }
+            cQuery.each(this.DOMList, function(i, v){
+                v.removeAttribute(key);
+            });
         }
     });
     // 获取指定索引的对象或DOM
