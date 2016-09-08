@@ -6,6 +6,9 @@
     // GridManager构造函数
     function GridManager(_settings_){
     }
+    var a = document.createElement('span');
+    a.innerHTML = 'aaaaa';
+    $('div').prepend(a);
     // 通过原型绑定GM方法
     GridManager.prototype = {
         init : function(_name_, _callback_){
@@ -198,6 +201,8 @@
     * */
     // sizzle选择器,类似于jQuery.Sizzle;
     cQuery.prototype.extend({
+
+        rquickExpr : /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
         sizzle:function(selector, context){
             if(typeof selector === 'undefined'){
                 this.error('无效的选择器');
@@ -337,6 +342,21 @@
         ,hide: function(){
             cQuery.each(this.DOMList, function(i, v){
                 v.style.display = 'none';
+            });
+            return this;
+        }
+    });
+    // DOM操作
+    cQuery.prototype.extend({
+        append: function(child){
+            cQuery.each(this.DOMList, function(i, v){
+                v.appendChild(child.cloneNode(true));
+            });
+            return this;
+        }
+        ,prepend: function(child){
+            cQuery.each(this.DOMList, function(i, v){
+                v.insertBefore(child.cloneNode(true), v.childNodes[0])
             });
             return this;
         }
