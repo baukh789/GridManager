@@ -781,7 +781,7 @@
 		 */
 		,checkTable: function(table){
 			var _this = this;
-			var table 	= $(table),			//当前表
+			var table 	= $(table),				//当前表
 				thList 	= $('thead th', table); //当前表的所有th
 			var noCache = false;				//是否禁用缓存
 			//校验[th-name]
