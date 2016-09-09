@@ -6,9 +6,15 @@
     // GridManager构造函数
     function GridManager(_settings_){
     }
-    var a = document.createElement('span');
-    a.innerHTML = 'aaaaa';
-    $('div').prepend(a);
+
+  // $('div').html('3333')
+    var t1 = $('.t1');
+   $('div').html(t1)
+  //  $('.t1').html(3)
+    // 多次调用后 cQuery.prototype 的this指向存在异常
+    // console.log($('div'))
+    // console.log($('.t1'))
+ //   console.log($('div'))
     // 通过原型绑定GM方法
     GridManager.prototype = {
         init : function(_name_, _callback_){
@@ -37,16 +43,44 @@
     'use strict';
     // 如果需要集成Angular,React,在此处进行集成
     var cQuery = function (selector, context){
-        return cQuery.prototype.sizzle(selector, context);
+        return new sizzle(selector, context);
     };
     // 实现所必须的公用方法
-    cQuery.prototype = {
+  //  cQuery.prototype = {};
+    // sizzle选择器,类似于jQuery.Sizzle;
+    var sizzle = function(selector, context){
+        if(typeof selector === 'undefined'){
+            this.error('无效的选择器');
+            return;
+        }
+        var DOMList = undefined;
+        // 验证容器是否为选择器,如果是则通过该选择器获取dom节点
+        if(typeof context === 'string'){
+            context = document.querySelectorAll(context);
+        }
+        // 验证context是否为空节点
+        if(context && context.length !== 0){
+            DOMList = context.querySelectorAll(selector);
+            // 没有容器,直接对通过选择器获取dom节点
+        }else{
+            DOMList = document.querySelectorAll(selector);
+        }
+        if(!DOMList){
+            this.error('无效的选择器');
+            return;
+        }
         // 用于存储当前选中的节点
-        DOMList: undefined
+        this.DOMList = DOMList;
+        // 存储选择器条件
+        this.querySelector = selector;
         // 缓存容器
-        ,cache : {}
-        ,type: 'Boolean Number String Function Array Date RegExp Object Error Symbol'
+        this.cache = {};
+        return this;
     };
+    /*
+    * 把jquery原先的jQuery.fn给省略了.原先的方式是 init = jQuery.fn.init; init.prototype = jQuery.fn;
+    * */
+    sizzle.prototype = cQuery.prototype = {};
     /*
     * @extend:扩展方法
     * cQuery.extend => 可以直接使用$.extend调用
@@ -99,6 +133,9 @@
                     break;
                 case Array:
                     type = 'Array';
+                    break;
+                case Element:
+                    type = 'Element';
                     break;
                 case NodeList:
                     type = 'NodeList';
@@ -199,35 +236,6 @@
     /*
     * @cQuery.prototype扩展
     * */
-    // sizzle选择器,类似于jQuery.Sizzle;
-    cQuery.prototype.extend({
-
-        rquickExpr : /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
-        sizzle:function(selector, context){
-            if(typeof selector === 'undefined'){
-                this.error('无效的选择器');
-                return;
-            }
-            var DOMList = undefined;
-            // 验证容器是否为选择器,如果是则通过该选择器获取dom节点
-            if(typeof context === 'string'){
-                context = document.querySelectorAll(context);
-            }
-            // 验证context是否为空节点
-            if(context && context.length !== 0){
-                DOMList = context.querySelectorAll(selector);
-                // 没有容器,直接对通过选择器获取dom节点
-            }else{
-                DOMList = document.querySelectorAll(selector);
-            }
-            if(!DOMList){
-                this.error('无效的选择器');
-                return;
-            }
-            this.DOMList = DOMList;
-            return this;
-        }
-    });
     // DOM元素上获取/存储数值
     cQuery.prototype.extend({
         // data唯一识别码
@@ -347,16 +355,41 @@
         }
     });
     // DOM操作
+    // 参数child可能为ElementNode,也可能是字符串
     cQuery.prototype.extend({
         append: function(child){
             cQuery.each(this.DOMList, function(i, v){
-                v.appendChild(child.cloneNode(true));
+                if(child.nodeType && child.nodeType === 1){
+                    v.appendChild(child.cloneNode(true));
+                }else{
+                    v.innerHTML = v.innerHTML + child;
+                }
             });
             return this;
         }
         ,prepend: function(child){
             cQuery.each(this.DOMList, function(i, v){
-                v.insertBefore(child.cloneNode(true), v.childNodes[0])
+                if(child.nodeType && child.nodeType === 1) {
+                    v.insertBefore(child.cloneNode(true), v.childNodes[0]);
+                }else{
+                    v.innerHTML = child + v.innerHTML;
+                }
+            });
+            return this;
+        }
+        ,html: function(child) {
+            // getter
+            if(!child){
+                return this.DOMList[0].innerHTML;
+            }
+            // setter
+            var childHtml = child.get(0).cloneNode(true).outerHTML;
+            cQuery.each(this.DOMList, function(i, v){
+                if(child.get(0).nodeType && child.get(0).nodeType === 1) {
+                    v.innerHTML = childHtml;
+                }else{
+                    v.innerHTML = child;
+                }
             });
             return this;
         }
