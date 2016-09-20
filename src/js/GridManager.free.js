@@ -1,424 +1,113 @@
 /**
  * Created by baukh on 16/9/3.
+ * 引入requrie js ,打包时再将代码整合
  */
-;(function($){
+define(['cTool', 'checkboxGM', 'adjustGM', 'ajaxPageGM', 'baseGM', 'configGM', 'dragGM', 'exportGM', 'i18nGM','menuGM', 'orderGM', 'remindGM', 'sortGM', 'topGM'],
+    function ($, CheckboxGM, AdjustGM, AjaxPageGM, BaseGM, ConfigGM, DragGM, ExportGM, I18NGM, MenuGM, OrderGM, RemindGM, SortGM, TopGM) {
     'use strict';
     // GridManager构造函数
-    function GridManager(_settings_){
-    }
+    function GridManager(settings){
+        typeof(settings) == 'undefined' ? settings = {} : '';
+        this.version			= '2.0';					//版本号
+        this.isDevelopMode  	= false;					//是否为开发模式，为true时将打印事件日志
+        this.basePath			= '';						//当前基本路径[用于加载分页所需样式文件]
+        this.useDefaultStyle	= true;						//是否使用默认的table样式
+        this.supportDrag 		= true; 					//是否支持拖拽功能
+        this.isRealTime			= false;					//列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
+        this.supportAdjust 		= true; 					//是否支持宽度调整功能]
+        this.supportRemind  	= false;					//是否支持表头提示信息[需在地应的TH上增加属性remind]
+        this.supportConfig		= true;						//是否支持配置列表功能[操作列是否可见]
+        this.supportSetTop  	= true;						//是否支持表头置顶
+        this.scrollDOM			= window;					//表头置顶所对应的容器[jquery选择器或jquery对象]
+        this.topValue		  	= 0;						//特殊情况下才进行设置，在有悬浮物遮挡住表头置顶区域时进行使用，配置值为遮挡的高度
+        this.animateTime    	= 300;						//动画效果时长
+        this.disableCache		= false;					//是否禁用本地缓存
+        this.autoLoadCss		= false;					//是否自动加载CSS文件
+        //排序 sort
+        this.supportSorting		= false; 					//排序：是否支持排序功能
+        this.isCombSorting		= false;					//是否为组合排序[只有在支持排序的情况下生效
+        this.sortData 			= {};						//存储排序数据[不对外公开参数]
+        this.sortUpText			= 'up';						//排序：升序标识[该标识将会传至数据接口]
+        this.sortDownText		= 'down';					//排序：降序标识[该标识将会传至数据接口]
+        this.sortingBefore		= $.noop;					//排序事件发生前
+        this.sortingAfter		= $.noop;					//排序事件发生后
 
-  // $('div').html('3333')
-    var t1 = $('.t1');
-   $('div').html(t1)
-  //  $('.t1').html(3)
-    // 多次调用后 cQuery.prototype 的this指向存在异常
-    // console.log($('div'))
-    // console.log($('.t1'))
- //   console.log($('div'))
-    // 通过原型绑定GM方法
-    GridManager.prototype = {
-        init : function(_name_, _callback_){
-            return this;
+        //分页 ajaxPag
+        this.supportAjaxPage	= false;					//是否支持配置列表ajxa分页
+        this.sizeData 			= [10,20,30,50,100]; 		//用于配置列表每页展示条数选择框
+        this.pageSize			= 20;						//每页显示条数，如果使用缓存且存在缓存数据，那么该值将失效
+        this.pageData 			= {};						//存储分页数据[不对外公开参数]
+        this.query 				= {};						//其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
+        this.pagingBefore		= $.noop;					//分页事件发生前
+        this.pagingAfter		= $.noop;					//分页事件发生后
+        this.pageCssFile 		= '';						//分页样式文件路径[用户自定义分页样式]
+
+        //序号
+        this.supportAutoOrder	= true;						//是否支持自动序号
+        this.orderThName		= 'order';					//序号列所使用的th-name
+
+        //选择、反选
+        this.supportCheckbox	= true;						//是否支持选择与反选
+        this.checkboxThName		= 'gm-checkbox';			//选择与反选列所使用的th-name
+        //国际化
+        this.i18n	 			= 'zh-cn';					//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
+
+        //用于支持通过数据渲染DOM
+        this.columnData			= [];						//表格列数据配置项
+        this.gridManagerName   	= '';						//表格grid-manager所对应的值[可在html中配置]
+        this.ajax_url			= '';						//获取表格数据地址，配置该参数后，将会动态获取数据
+        this.ajax_type			= 'GET';					//ajax请求类型['GET', 'POST']默认GET
+        this.ajax_beforeSend	= $.noop;					//ajax请求之前,与jquery的beforeSend使用方法相同
+        this.ajax_success		= $.noop;					//ajax成功后,与jquery的success使用方法相同
+        this.ajax_complete		= $.noop;					//ajax完成后,与jquery的complete使用方法相同
+        this.ajax_error			= $.noop;					//ajax失败后,与jquery的error使用方法相同
+        this.ajax_data			= undefined;				//ajax静态数据,配置后ajax_url将无效
+        this.dataKey			= 'data';					//ajax请求返回的列表数据key键值,默认为data
+        this.totalsKey			= 'totals';					//ajax请求返回的数据总条数key键值,默认为totals
+        //数据导出
+        this.supportExport		= true;						//支持导出表格数据
+        //用于支持全局属性配置  于v1.8 中将GridManagerConfig弱化且不再建议使用。
+
+        var textConfig = {};
+        if(typeof(gridManagerConfig) == 'object'){
+            $.extend(true, textConfig, this.textConfig, gridManagerConfig.textConfig)
+            $.extend(true, this, gridManagerConfig);
         }
-        // 只读版本号
-        ,get version(){
-            return '2.0';
-        }
-        /*
-         @获取随机参数
-         */
-        ,getRandom: function(){
-            return this.version + Math.random();
-        }
-    };
+        $.extend(true, textConfig, this.textConfig, settings.textConfig)
+        $.extend(this, settings, {textConfig: textConfig});
+    }
+    // GM prototype
+    GridManager.prototype = {};
+    // GM导入功能: 核心
+    $.extend(GridManager.prototype, BaseGM);
+    // GM导入功能: 选择
+    $.extend(GridManager.prototype, CheckboxGM);
+    // GM导入功能: 宽度调整
+    $.extend(GridManager.prototype, AdjustGM);
+    // GM导入功能: 分页
+    $.extend(GridManager.prototype, AjaxPageGM);
+    // GM导入功能: 配置列显示隐藏
+    $.extend(GridManager.prototype, ConfigGM);
+    // GM导入功能: 拖拽
+    $.extend(GridManager.prototype, DragGM);
+    // GM导入功能: 排序
+    $.extend(GridManager.prototype, SortGM);
+    // GM导入功能: 导出数据
+    $.extend(GridManager.prototype, ExportGM);
+    // GM导入功能: 国际化
+    $.extend(GridManager.prototype, I18NGM);
+    // GM导入功能: 右键菜单
+    $.extend(GridManager.prototype, MenuGM);
+    // GM导入功能: 序号
+    $.extend(GridManager.prototype, OrderGM);
+    // GM导入功能: 表头提示
+    $.extend(GridManager.prototype, RemindGM);
+    // GM导入功能: 表头吸顶
+    $.extend(GridManager.prototype, TopGM);
+
     // 捆绑至选择器对象
     Element.prototype.GM = Element.prototype.GridManager = function(_name_, _settings_, _callback_){
         var _GM = new GridManager(_settings_);
         return _GM;
     };
-// 即时执行选择器方法
-// 生成选择器,返回工具类
-// 该选择器只会在插件内部生效,在插件外部无法调用
-})((function(){
-    'use strict';
-    // 如果需要集成Angular,React,在此处进行集成
-    var cQuery = function (selector, context){
-        return new sizzle(selector, context);
-    };
-    // 实现所必须的公用方法
-  //  cQuery.prototype = {};
-    // sizzle选择器,类似于jQuery.Sizzle;
-    var sizzle = function(selector, context){
-        if(typeof selector === 'undefined'){
-            this.error('无效的选择器');
-            return;
-        }
-        var DOMList = undefined;
-        // 验证容器是否为选择器,如果是则通过该选择器获取dom节点
-        if(typeof context === 'string'){
-            context = document.querySelectorAll(context);
-        }
-        // 验证context是否为空节点
-        if(context && context.length !== 0){
-            DOMList = context.querySelectorAll(selector);
-            // 没有容器,直接对通过选择器获取dom节点
-        }else{
-            DOMList = document.querySelectorAll(selector);
-        }
-        if(!DOMList){
-            this.error('无效的选择器');
-            return;
-        }
-        // 用于存储当前选中的节点
-        this.DOMList = DOMList;
-        // 存储选择器条件
-        this.querySelector = selector;
-        // 缓存容器
-        this.cache = {};
-        return this;
-    };
-    /*
-    * 把jquery原先的jQuery.fn给省略了.原先的方式是 init = jQuery.fn.init; init.prototype = jQuery.fn;
-    * */
-    sizzle.prototype = cQuery.prototype = {};
-    /*
-    * @extend:扩展方法
-    * cQuery.extend => 可以直接使用$.extend调用
-    * cQuery.prototype.extend => 扩展操作后可以通过$.prototype获取
-    * */
-    cQuery.extend = cQuery.prototype.extend =  function(){
-        // 参数为空,返回空对象
-        if(arguments.length === 0){
-            return {};
-        }
-        var i = 1,
-            target = arguments[0],
-            options;
-        // 如果参数只有一个, 将认为是对cQuery进行扩展
-        if(arguments.length === 1){
-            target = this;
-            i=0;
-        }
-        for(; i<arguments.length; i++){
-            options = arguments[i] || {};
-            for (var p in options) {
-                if (options.hasOwnProperty(p)) {
-                    target[p] = options[p];
-                }
-            }
-        }
-        return target;
-    };
-    /*
-    * @cQuery工具扩展
-    * */
-    cQuery.extend({
-        // 是否为chrome浏览器
-        isChrome: function(){
-            return navigator.userAgent.indexOf('Chrome') == -1 ? false : true;
-        }
-        // 版本号
-        ,version: '1.0'
-        // 空函数
-        ,noop: function(){}
-        // 类型
-        ,type: function(o){
-            if(o === null || o === undefined){
-                return o + '';
-            }
-            var type = '';
-            switch (o.constructor){
-                case Object:
-                    type = 'Object';
-                    break;
-                case Array:
-                    type = 'Array';
-                    break;
-                case Element:
-                    type = 'Element';
-                    break;
-                case NodeList:
-                    type = 'NodeList';
-                    break;
-                case String:
-                    type = 'String';
-                    break;
-                case Number:
-                    type = 'Number';
-                    break;
-                case Function:
-                    type = 'Function';
-                    break;
-                case Date:
-                    type = 'Date';
-                    break;
-                case RegExp:
-                    type = 'RegExp';
-                    break;
-                default:
-                    type = 'null';
-                    break;
-            }
-            return type;
-        }
-        // 循环
-        ,each: function(object, callback){
-            var type = this.type(object);
-            if(type === 'Array' || type === 'NodeList'){
-                // 由于存在类数组NodeList, 所以不能直接调用every方法
-                [].every.call(object, function(v, i){
-                    return callback.call(v, i, v) === false ? false : true;
-                });
-            }else if(type === 'Object'){
-                for(var i in object){
-                    if(callback.call(object[i], i, object[i]) === false){
-                        break;
-                    }
-                }
-            }
-        }
-    });
-    // ajax
-    // type === GET: data格式 name=baukh&age=29
-    // type === POST: data格式 {name:'baukh',age:29}
-    // 与jquery不同的是,[success,error,complete]返回的第二个参数,并不是返回错误信息,而是错误码
-    cQuery.extend({
-        ajax: function(arg){
-            var url = arg.url,
-                type = arg.type || 'GET',
-                data = arg.data || undefined,
-                headers = arg.headers || {},
-                asynch = typeof(arg.asynch) === 'undefined' ? true : arg.asynch, // 是否使用异步
-                beforeSend = arg.beforeSend || cQuery.noop,
-                complete =  arg.complete || cQuery.noop,
-                success =  arg.success || cQuery.noop,
-                error = arg.error || cQuery.noop;
-            if(!arg){
-                cQuery.error('cQuery ajax: url不能为空');
-                return;
-            }
-            var xhr = new XMLHttpRequest();
-            if (type === 'POST' && cQuery.type(data) === 'Object') {
-                data = JSON.stringify(data);
-            } else if(type === 'GET' && cQuery.type(data) === 'String'){
-                url = url + (url.indexOf('?') === -1 ?  '?' : '&') + data;
-            }
-            xhr.open(type, url, asynch);
-            for(var key in headers){
-                xhr.setRequestHeader(key, headers[key]);
-            }
-            // 执行发送前事件
-            beforeSend(xhr);
-            // 监听onload并执行完成事件
-            xhr.onload = function () {
-                // jquery complete(XHR, TS)
-                complete(xhr, xhr.status);
-            };
-            // 监听onreadystatechange并执行成功后失败事件
-            xhr.onreadystatechange = function () {
-                if(xhr.readyState !== 4){
-                    return;
-                }
-                if(xhr.status >= 200 && xhr.status < 300 || xhr.status === 304){
-                    // jquery success(XHR, TS)
-                    success(xhr.response, xhr.status);
-                }else{
-                    // jquery error(XHR, TS, statusText)
-                    error(xhr, xhr.status, xhr.statusText);
-                }
-            };
-            xhr.send(data);
-        }
-        ,post: function(url, data, callback){
-            this.ajax({url:url, type: 'POST', data: data, success: callback})
-        }
-    });
-    /*
-    * @cQuery.prototype扩展
-    * */
-    // DOM元素上获取/存储数值
-    cQuery.prototype.extend({
-        // data唯一识别码
-        dataKey: 'cQuery' + cQuery.version
-        // 设置\获取对象类属性
-        ,data: function(key, value){
-            var _this = this,
-                _data = {};
-            // 未指定参数,返回全部
-            if(typeof key === 'undefined' && typeof value === 'undefined'){
-                return _this.DOMList[0][_this.dataKey]
-            }
-            // setter
-            if(typeof(value) !== 'undefined'){
-                // 存储值类型为字符或数字时, 使用attr执行
-                var _type = cQuery.type(value);
-                if(_type === 'String' || _type === 'Number'){
-                    _this.attr(key, value);
-                }
-                cQuery.each(_this.DOMList, function(i, v){
-                    _data = v[_this.dataKey] || {};
-                    _data[key] = value;
-                    v[_this.dataKey] = _data;
-                });
-                return this;
-            // getter
-            }else{
-                _data = _this.DOMList[0][_this.dataKey] || {};
-                return _data[key] || _this.attr(key);
-            }
-        }
-        // 删除对象类属性
-        ,removeData: function(key){
-            var _this = this,
-                _data;
-            if(typeof key === 'undefined'){
-                return;
-            }
-            cQuery.each(_this.DOMList, function(i, v){
-                _data = v[_this.dataKey] || {};
-                delete _data[key];
-            });
-        }
-        // 普通属性
-        ,attr: function(key, value){
-            // 未指定参数,返回空字符
-            if(typeof key === 'undefined' && typeof value === 'undefined'){
-                return '';
-            }
-            // setter
-            if(typeof(value) !== 'undefined'){
-                cQuery.each(this.DOMList, function(i, v){
-                    v.setAttribute(key, value);
-                });
-            // getter
-            }else{
-                return this.DOMList[0].getAttribute(key);
-            }
-        }
-        // 删除普通属性
-        ,removeAttr: function(key){
-            if(typeof key === 'undefined'){
-                return;
-            }
-            cQuery.each(this.DOMList, function(i, v){
-                v.removeAttribute(key);
-            });
-        }
-    });
-    // 获取指定索引的对象或DOM
-    cQuery.prototype.extend({
-        // 获取指定DOM Element
-        get: function(index){
-            return this.DOMList[0];
-        }
-        // 获取指定索引的cQuery对象:返回的是以指定索引继承的cQuery对象
-        ,eq: function(index){
-            var newObject = Object.create(this);
-            newObject.DOMList = [this.DOMList[index]];
-            return newObject;
-        }
-    });
-    // 获取/存储缓存对象
-    cQuery.prototype.extend({
-        error: function(msg){
-            throw new Error('GridManager Error:'+ msg);
-        }
-    });
-    // 获取/设置节点文本
-    cQuery.prototype.extend({
-        text: function(text){
-            // setter
-            if(typeof(text) !== 'undefined'){
-                cQuery.each(this.DOMList, function(i, v){
-                    v.innerText = text;
-                });
-                return this;
-            // getter
-            }else{
-                return this.get(0).innerText;
-            }
-        }
-    });
-    // 显示/隐藏元素
-    cQuery.prototype.extend({
-        show: function(){
-            cQuery.each(this.DOMList, function(i, v){
-                v.style.display = 'block';
-            });
-            return this;
-        }
-        ,hide: function(){
-            cQuery.each(this.DOMList, function(i, v){
-                v.style.display = 'none';
-            });
-            return this;
-        }
-    });
-    // DOM操作
-    // 参数child可能为ElementNode,也可能是字符串
-    cQuery.prototype.extend({
-        append: function(child){
-            cQuery.each(this.DOMList, function(i, v){
-                if(child.nodeType && child.nodeType === 1){
-                    v.appendChild(child.cloneNode(true));
-                }else{
-                    v.innerHTML = v.innerHTML + child;
-                }
-            });
-            return this;
-        }
-        ,prepend: function(child){
-            cQuery.each(this.DOMList, function(i, v){
-                if(child.nodeType && child.nodeType === 1) {
-                    v.insertBefore(child.cloneNode(true), v.childNodes[0]);
-                }else{
-                    v.innerHTML = child + v.innerHTML;
-                }
-            });
-            return this;
-        }
-        ,html: function(child) {
-            // getter
-            if(!child){
-                return this.DOMList[0].innerHTML;
-            }
-            // setter
-            var childHtml = child.get(0).cloneNode(true).outerHTML;
-            cQuery.each(this.DOMList, function(i, v){
-                if(child.get(0).nodeType && child.get(0).nodeType === 1) {
-                    v.innerHTML = childHtml;
-                }else{
-                    v.innerHTML = child;
-                }
-            });
-            return this;
-        }
-    });
-    // class相关操作
-    cQuery.prototype.extend({
-        addClass: function(className){
-            cQuery.each(this.DOMList, function(i, v){
-                v.classList.add(className);
-            });
-            return this;
-        }
-        ,removeClass: function(className){
-            cQuery.each(this.DOMList, function(i, v){
-                v.classList.remove(className);
-            });
-            return this;
-        }
-        ,toggleClass: function(className){
-            cQuery.each(this.DOMList, function(i, v){
-                v.classList.toggle(className);
-            });
-            return this;
-        }
-        // 如果DOMList为多值, 以第一个值为基准
-        ,hasClass: function(className){
-            return this.get(0).classList.contains(className);
-        }
-
-    });
-    return cQuery;
-})());
+});

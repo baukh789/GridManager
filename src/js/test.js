@@ -2,7 +2,7 @@
  * Created by baukh on 16/9/8.
  */
 // 测试ajax
-function testAjax(){
+function testAjax($){
     $.ajax({
         url: 'data/test.json',
         data: {
