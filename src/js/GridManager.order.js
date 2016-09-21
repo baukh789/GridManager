@@ -1,7 +1,7 @@
 /*
  * GridManager: 序号
  * */
-define(function() {
+define(['cTool'], function($) {
     var orderGM = {
         /*
          @生成序号DOM

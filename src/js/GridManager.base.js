@@ -1,7 +1,7 @@
 /*
 * GridManager base function
 * */
-define(function() {
+define(['cTool'], function($) {
     var baseGM = {
         /*
          @当前浏览器是否为谷歌[内部参数]

@@ -1,7 +1,7 @@
 /*
- * GridManager: 排序
+ * GridManager: th配置
  * */
-define(function() {
+define(['cTool'], function($) {
     var configGM = {
         /*
          @绑定配置列表事件[隐藏展示列]

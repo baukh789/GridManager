@@ -1,7 +1,7 @@
 /*
 * GridManager: 排序
 * */
-define(function() {
+define(['cTool'], function($) {
     var sortGM = {
         /*
          [对外公开方法]

@@ -1,7 +1,7 @@
 /*
  * GridManager: 拖拽
  * */
-define(function() {
+define(['cTool'], function($) {
     var dragGM = {
         /*
          @绑定拖拽换位事件

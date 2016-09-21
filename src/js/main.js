@@ -1,5 +1,6 @@
 require(['require.config'], function(){
-    require(['GridManagerFree'], function(){
+    require(['GridManager'], function(){
 
+        console.log('main')
     });
 });

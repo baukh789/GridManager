@@ -1,7 +1,7 @@
 /*
  * GridManager: 数据导出
  * */
-define(function() {
+define(['cTool'], function($) {
     var exportGM = {
 
         /*

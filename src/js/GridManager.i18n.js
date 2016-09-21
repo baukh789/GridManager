@@ -1,7 +1,7 @@
 /*
  * GridManager: 国际化
  * */
-define(function() {
+define(['cTool'], function($) {
     var i18nGM = {
         /*
          * @获取与当前配置国际化匹配的文本

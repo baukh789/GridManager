@@ -4,50 +4,92 @@
 define(function() {
     'use strict';
     // 如果需要集成Angular,React,在此处进行集成
-    var cQuery = function (selector, context){
-        return new sizzle(selector, context);
+    var cTool = function (selector, context){
+        return new Sizzle(selector, context);
     };
     // 实现所必须的公用方法
-    // sizzle选择器,类似于jQuery.Sizzle;
-    var sizzle = function(selector, context){
+    // Sizzle选择器,类似于jQuery.Sizzle;
+    var Sizzle = function(selector, context){
         if(typeof selector === 'undefined'){
             this.error('无效的选择器');
             return;
         }
         var DOMList = undefined;
-        // 验证容器是否为选择器,如果是则通过该选择器获取dom节点
-        if(typeof context === 'string'){
-            context = document.querySelectorAll(context);
+        // selector -> DOM
+        if(selector instanceof HTMLElement){
+            DOMList = [selector];
+            context = undefined;
         }
-        // 验证context是否为空节点
-        if(context && context.length !== 0){
-            DOMList = context.querySelectorAll(selector);
-            // 没有容器,直接对通过选择器获取dom节点
-        }else{
-            DOMList = document.querySelectorAll(selector);
+        // selector -> NodeList
+        else if(selector instanceof NodeList){
+            console.log('NodeList')
+            DOMList = selector;
+            context = undefined;
+        }
+        // selector -> cTool Object
+        else if(selector.cTool){
+            console.log('Object')
+            DOMList = selector.DOMList;
+            context = undefined;
+        }
+        // selector -> 字符CSS选择器
+        else {
+            // context -> undefined
+            if(!context){
+                DOMList = document.querySelectorAll(selector);
+            }
+            // context -> 字符CSS选择器
+            else if(typeof context === 'string'){
+                context = document.querySelectorAll(context);
+            }
+            // context -> DOM 将HTMLElement转换为数组
+            else if(context instanceof HTMLElement){
+                context = [context];
+            }
+            // context -> NodeList
+            else if(context instanceof NodeList){
+                context = context;
+            }
+            // context -> cTool Object
+            else if(context.cTool){
+                context = context.DOMList;
+            }
+            // 其它不可以用类型
+            else {
+                context = undefined;
+            }
+            // 通过父容器获取NodeList: 存在父容器
+            if(context){
+                DOMList = [];
+                cTool.each(context, function (i, v) {
+                    DOMList.concat(v.querySelectorAll(selector));
+                });
+            }
         }
         if(!DOMList){
             this.error('无效的选择器');
             return;
         }
+        // 用于确认是否为cTool对象
+        this.cTool = true;
         // 用于存储当前选中的节点
         this.DOMList = DOMList;
         // 存储选择器条件
         this.querySelector = selector;
         // 缓存容器
-        this.cache = {};
+    //    this.cache = {};
         return this;
     };
     /*
      * 把jquery原先的jQuery.fn给省略了.原先的方式是 init = jQuery.fn.init; init.prototype = jQuery.fn;
      * */
-    sizzle.prototype = cQuery.prototype = {};
+    Sizzle.prototype = cTool.prototype = {};
     /*
      * @extend:扩展方法
-     * cQuery.extend => 可以直接使用$.extend调用
-     * cQuery.prototype.extend => 扩展操作后可以通过$.prototype获取
+     * cTool.extend => 可以直接使用$.extend调用
+     * cTool.prototype.extend => 扩展操作后可以通过$.prototype获取
      * */
-    cQuery.extend = cQuery.prototype.extend =  function(){
+    cTool.extend = cTool.prototype.extend =  function(){
         // 参数为空,返回空对象
         if(arguments.length === 0){
             return {};
@@ -79,7 +121,7 @@ define(function() {
     /*
      * @cQuery工具扩展
      * */
-    cQuery.extend({
+    cTool.extend({
         // 是否为chrome浏览器
         isChrome: function(){
             return navigator.userAgent.indexOf('Chrome') == -1 ? false : true;
@@ -149,25 +191,25 @@ define(function() {
     // type === GET: data格式 name=baukh&age=29
     // type === POST: data格式 {name:'baukh',age:29}
     // 与jquery不同的是,[success,error,complete]返回的第二个参数,并不是返回错误信息,而是错误码
-    cQuery.extend({
+    cTool.extend({
         ajax: function(arg){
             var url = arg.url,
                 type = arg.type || 'GET',
                 data = arg.data || undefined,
                 headers = arg.headers || {},
                 asynch = typeof(arg.asynch) === 'undefined' ? true : arg.asynch, // 是否使用异步
-                beforeSend = arg.beforeSend || cQuery.noop,
-                complete =  arg.complete || cQuery.noop,
-                success =  arg.success || cQuery.noop,
-                error = arg.error || cQuery.noop;
+                beforeSend = arg.beforeSend || cTool.noop,
+                complete =  arg.complete || cTool.noop,
+                success =  arg.success || cTool.noop,
+                error = arg.error || cTool.noop;
             if(!arg){
-                cQuery.error('cQuery ajax: url不能为空');
+                cTool.error('cTool ajax: url不能为空');
                 return;
             }
             var xhr = new XMLHttpRequest();
-            if (type === 'POST' && cQuery.type(data) === 'Object') {
+            if (type === 'POST' && cTool.type(data) === 'Object') {
                 data = JSON.stringify(data);
-            } else if(type === 'GET' && cQuery.type(data) === 'String'){
+            } else if(type === 'GET' && cTool.type(data) === 'String'){
                 url = url + (url.indexOf('?') === -1 ?  '?' : '&') + data;
             }
             xhr.open(type, url, asynch);
@@ -201,12 +243,12 @@ define(function() {
         }
     });
     /*
-     * @cQuery.prototype扩展
+     * @cTool.prototype扩展
      * */
     // DOM元素上获取/存储数值
-    cQuery.prototype.extend({
+    cTool.prototype.extend({
         // data唯一识别码
-        dataKey: 'cQuery' + cQuery.version
+        dataKey: 'cTool' + cTool.version
         // 设置\获取对象类属性
         ,data: function(key, value){
             var _this = this,
@@ -218,18 +260,19 @@ define(function() {
             // setter
             if(typeof(value) !== 'undefined'){
                 // 存储值类型为字符或数字时, 使用attr执行
-                var _type = cQuery.type(value);
+                var _type = cTool.type(value);
                 if(_type === 'String' || _type === 'Number'){
                     _this.attr(key, value);
                 }
-                cQuery.each(_this.DOMList, function(i, v){
+                cTool.each(_this.DOMList, function(i, v){
                     _data = v[_this.dataKey] || {};
                     _data[key] = value;
                     v[_this.dataKey] = _data;
                 });
                 return this;
-                // getter
-            }else{
+            }
+            // getter
+            else{
                 _data = _this.DOMList[0][_this.dataKey] || {};
                 return _data[key] || _this.attr(key);
             }
@@ -241,7 +284,7 @@ define(function() {
             if(typeof key === 'undefined'){
                 return;
             }
-            cQuery.each(_this.DOMList, function(i, v){
+            cTool.each(_this.DOMList, function(i, v){
                 _data = v[_this.dataKey] || {};
                 delete _data[key];
             });
@@ -254,7 +297,7 @@ define(function() {
             }
             // setter
             if(typeof(value) !== 'undefined'){
-                cQuery.each(this.DOMList, function(i, v){
+                cTool.each(this.DOMList, function(i, v){
                     v.setAttribute(key, value);
                 });
                 // getter
@@ -267,13 +310,13 @@ define(function() {
             if(typeof key === 'undefined'){
                 return;
             }
-            cQuery.each(this.DOMList, function(i, v){
+            cTool.each(this.DOMList, function(i, v){
                 v.removeAttribute(key);
             });
         }
     });
     // 获取指定索引的对象或DOM
-    cQuery.prototype.extend({
+    cTool.prototype.extend({
         // 获取指定DOM Element
         get: function(index){
             return this.DOMList[0];
@@ -286,17 +329,17 @@ define(function() {
         }
     });
     // 获取/存储缓存对象
-    cQuery.prototype.extend({
+    cTool.prototype.extend({
         error: function(msg){
             throw new Error('GridManager Error:'+ msg);
         }
     });
     // 获取/设置节点文本
-    cQuery.prototype.extend({
+    cTool.prototype.extend({
         text: function(text){
             // setter
             if(typeof(text) !== 'undefined'){
-                cQuery.each(this.DOMList, function(i, v){
+                cTool.each(this.DOMList, function(i, v){
                     v.innerText = text;
                 });
                 return this;
@@ -307,15 +350,15 @@ define(function() {
         }
     });
     // 显示/隐藏元素
-    cQuery.prototype.extend({
+    cTool.prototype.extend({
         show: function(){
-            cQuery.each(this.DOMList, function(i, v){
+            cTool.each(this.DOMList, function(i, v){
                 v.style.display = 'block';
             });
             return this;
         }
         ,hide: function(){
-            cQuery.each(this.DOMList, function(i, v){
+            cTool.each(this.DOMList, function(i, v){
                 v.style.display = 'none';
             });
             return this;
@@ -323,9 +366,9 @@ define(function() {
     });
     // DOM操作
     // 参数child可能为ElementNode,也可能是字符串
-    cQuery.prototype.extend({
+    cTool.prototype.extend({
         append: function(child){
-            cQuery.each(this.DOMList, function(i, v){
+            cTool.each(this.DOMList, function(i, v){
                 if(child.nodeType && child.nodeType === 1){
                     v.appendChild(child.cloneNode(true));
                 }else{
@@ -335,7 +378,7 @@ define(function() {
             return this;
         }
         ,prepend: function(child){
-            cQuery.each(this.DOMList, function(i, v){
+            cTool.each(this.DOMList, function(i, v){
                 if(child.nodeType && child.nodeType === 1) {
                     v.insertBefore(child.cloneNode(true), v.childNodes[0]);
                 }else{
@@ -350,10 +393,9 @@ define(function() {
                 return this.DOMList[0].innerHTML;
             }
             // setter
-            var childHtml = child.get(0).cloneNode(true).outerHTML;
-            cQuery.each(this.DOMList, function(i, v){
-                if(child.get(0).nodeType && child.get(0).nodeType === 1) {
-                    v.innerHTML = childHtml;
+            cTool.each(this.DOMList, function(i, v){
+                if(child.nodeType && child.nodeType === 1) {
+                    v.innerHTML = child.cloneNode(true).outerHTML;;
                 }else{
                     v.innerHTML = child;
                 }
@@ -362,21 +404,21 @@ define(function() {
         }
     });
     // class相关操作
-    cQuery.prototype.extend({
+    cTool.prototype.extend({
         addClass: function(className){
-            cQuery.each(this.DOMList, function(i, v){
+            cTool.each(this.DOMList, function(i, v){
                 v.classList.add(className);
             });
             return this;
         }
         ,removeClass: function(className){
-            cQuery.each(this.DOMList, function(i, v){
+            cTool.each(this.DOMList, function(i, v){
                 v.classList.remove(className);
             });
             return this;
         }
         ,toggleClass: function(className){
-            cQuery.each(this.DOMList, function(i, v){
+            cTool.each(this.DOMList, function(i, v){
                 v.classList.toggle(className);
             });
             return this;
@@ -387,5 +429,48 @@ define(function() {
         }
 
     });
-    return cQuery;
+    // 事件相关操作
+    // 将事件触发执行的函数存储于DOM上, 在清除事件时使用
+    cTool.prototype.extend({
+        on: function(event, querySeletor, callback, useCapture){
+            return this;
+        }
+        ,off: function(event, querySeletor){
+            return this;
+        }
+        ,bind: function(event, callback, useCapture){
+            var eventFnList; //事件执行函数队列
+            cTool.each(this.DOMList, function(i, v){
+                if(!v['cToolEvent']){
+                    v['cToolEvent'] = {};
+                }
+                eventFnList = v['cToolEvent'][event];
+                if(cTool.type(eventFnList) !== 'Array'){
+                    v['cToolEvent'][event] = [callback];
+                }
+                else {
+                    eventFnList.push(callback);
+                }
+                v.addEventListener(event, callback, useCapture || false);
+            });
+            return this;
+        }
+        ,unbind: function(event){
+            var eventFnList; //事件执行函数队列
+            cTool.each(this.DOMList, function(i, v){
+                if(!v['cToolEvent']){
+                    return;
+                }
+                eventFnList = v['cToolEvent'][event];
+                if(eventFnList){
+                    cTool.each(eventFnList, function(i2, v2){
+                        v.removeEventListener(event, v2);
+                    });
+                    v['cToolEvent'] = undefined;
+                }
+            });
+            return this;
+        }
+    });
+    return cTool;
 });

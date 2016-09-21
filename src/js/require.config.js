@@ -6,8 +6,9 @@ requirejs.config({
     'urlArgs': 'v=0.0.1',
     'waitSeconds': 60,
     'paths': {
+        'jQuery':'jquery-3.1.0.js',
         'cTool':'cTool',
-        'GridManagerFree': 'GridManager.free',
+        'GridManager': 'GridManager',
         'checkboxGM': 'GridManager.checkbox',
         'adjustGM': 'GridManager.adjust',
         'ajaxPageGM': 'GridManager.ajaxPage',
