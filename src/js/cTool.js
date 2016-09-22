@@ -66,8 +66,9 @@ define(function() {
                 });
             }
         }
-        if(!DOMList){
-            this.error('无效的选择器');
+        // 与jQuery不同的是, 当选择器结果为空时会直接抛出异常,而不是返回空对象.这样做的好处是防止为空导致的排错困难
+        if(!DOMList || DOMList.length === 0){
+            this.error('无效的选择器-> ' + selector);
             return;
         }
         // 用于确认是否为cTool对象
@@ -324,14 +325,19 @@ define(function() {
         // 获取指定索引的cQuery对象:返回的是以指定索引继承的cQuery对象
         ,eq: function(index){
             var newObject = Object.create(this);
+            // 与jQuery不同的是, eq结果为空时会直接抛出异常,而不是返回空对象.这样做的好处是防止为空导致的排错困难
+            if(!this.DOMList[index]){
+                this.error('eq('+ index +')所指向的DOM不存在');
+                return;
+            }
             newObject.DOMList = [this.DOMList[index]];
             return newObject;
         }
     });
-    // 获取/存储缓存对象
+    // 抛出异常信息
     cTool.prototype.extend({
         error: function(msg){
-            throw new Error('GridManager Error:'+ msg);
+            throw new Error('[cTool Error: '+ msg + ']');
         }
     });
     // 获取/设置节点文本
@@ -403,7 +409,7 @@ define(function() {
             return this;
         }
     });
-    // class相关操作
+    // Class 相关操作
     cTool.prototype.extend({
         addClass: function(className){
             cTool.each(this.DOMList, function(i, v){
@@ -429,44 +435,89 @@ define(function() {
         }
 
     });
-    // 事件相关操作
+    // Event 事件相关操作
     // 将事件触发执行的函数存储于DOM上, 在清除事件时使用
     cTool.prototype.extend({
-        on: function(event, querySeletor, callback, useCapture){
-            return this;
+        on: function(event, querySelector, callback, useCapture){
+            return this.addEvent(this.getEventObject(event, querySelector, callback, useCapture));
         }
-        ,off: function(event, querySeletor){
-            return this;
+        ,off: function(event, querySelector){
+            return this.removeEvent(this.getEventObject(event, querySelector));
         }
         ,bind: function(event, callback, useCapture){
+            return this.on(event, callback, useCapture);
+        }
+        ,unbind: function(event){
+            return this.removeEvent(this.getEventObject(event));
+        }
+        ,trigger: function(event){
+
+        }
+        // 获取cTool Event 对象
+        ,getEventObject: function(event, querySelector, callback, useCapture){
+            // $(dom).on(event, callback);
+            if(typeof querySelector === 'function'){
+                callback  = querySelector;
+                useCapture = callback || false;
+                querySelector = undefined;
+            }
+            // event callback 为必要参数
+            if(!event){
+                this.error('事件绑定失败,原因: 参数中缺失事件类型');
+                return this;
+            }
+            if(!querySelector){
+                querySelector = '';
+            }
+            // 存在子选择器 -> 包装回调函数
+            if(querySelector !== ''){
+                var fn = callback;
+                callback = function(e){
+                    // 验证子选择器所匹配的nodeList中是否包含当前事件源
+                    if([].indexOf.call( this.querySelectorAll(querySelector), e.target) !== -1){
+                        fn.apply(e.target, arguments);
+                    }
+                };
+            }
+            var eventSplit = event.split('.');
+            var eventObj = {
+                eventName: event + querySelector,
+                type: eventSplit[0],
+                querySelector: querySelector,
+                callback: callback || cTool.noop,
+                useCapture: useCapture || false,
+                nameScope: eventSplit[1] || undefined
+            };
+            return eventObj;
+        }
+        // 增加事件,并将事件对象存储至DOM节点
+        ,addEvent: function(eventObj){
             var eventFnList; //事件执行函数队列
             cTool.each(this.DOMList, function(i, v){
                 if(!v['cToolEvent']){
                     v['cToolEvent'] = {};
                 }
-                eventFnList = v['cToolEvent'][event];
-                if(cTool.type(eventFnList) !== 'Array'){
-                    v['cToolEvent'][event] = [callback];
+                if(!v['cToolEvent'][eventObj.eventName]){
+                    v['cToolEvent'][eventObj.eventName] = [];
                 }
-                else {
-                    eventFnList.push(callback);
-                }
-                v.addEventListener(event, callback, useCapture || false);
+                v['cToolEvent'][eventObj.eventName].push(eventObj);
+                v.addEventListener(eventObj.type, eventObj.callback, eventObj.useCapture);
             });
             return this;
         }
-        ,unbind: function(event){
+        // 删除事件,并将事件对象移除出DOM节点
+        ,removeEvent: function(eventObj){
             var eventFnList; //事件执行函数队列
             cTool.each(this.DOMList, function(i, v){
                 if(!v['cToolEvent']){
                     return;
                 }
-                eventFnList = v['cToolEvent'][event];
+                eventFnList = v['cToolEvent'][eventObj.eventName];
                 if(eventFnList){
                     cTool.each(eventFnList, function(i2, v2){
-                        v.removeEventListener(event, v2);
+                        v.removeEventListener(v2.type, v2.callback);
                     });
-                    v['cToolEvent'] = undefined;
+                    v['cToolEvent'][eventObj.eventName] = undefined;
                 }
             });
             return this;

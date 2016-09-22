@@ -3,15 +3,34 @@
  */
 require(['require.config'], function(){
     require(['cTool'], function($){
-        // 测试sizzle
-        function testSizzle(){
-            $('p').unbind('click');
-            $('p').bind('click', function(e){
-                console.log(this.innerText)
+        // 测试on
+         testOn();
+        function testOn(){
+            $('div').off('click', 'p,span');
+            $('div').on('click', 'p,span', function(e){
+                console.log('click=', this.innerHTML)
             });
-            $('p').eq(0).unbind('click');
+            $('div').off('mousedown', 'p,span');
+            $('div').on('mousedown', 'p,span', function(e){
+                console.log('mousedown=', this.innerHTML)
+            });
+            $('.t1').off('click', 'p,span');
         }
-        testSizzle();
+        // 测试bind
+        // testBind();
+        function testBind(){
+            $('p').unbind('click.bind');
+            $('p').bind('click.bind', function(e){
+                console.log(this.innerHTML)
+            });
+            $('p').eq(1).unbind('click.bind');
+            $('p').eq(2).unbind('click');
+        }
+        // 测试sizzle
+        // testSizzle();
+        function testSizzle(){
+            console.log($('.t1'));
+        }
         // 测试ajax
         function testAjax(){
             $.ajax({
