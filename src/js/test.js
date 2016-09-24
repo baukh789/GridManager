@@ -3,8 +3,9 @@
  */
 require(['require.config'], function(){
     require(['cTool'], function($){
+        console.log($('p', $('.t1')))
         // 测试on
-         testOn();
+        // testOn();
         function testOn(){
             $('div').off('click', 'p,span');
             $('div').on('click', 'p,span', function(e){

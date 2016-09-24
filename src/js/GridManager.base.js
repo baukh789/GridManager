@@ -364,6 +364,7 @@ define(['cTool'], function($) {
                 remindHtml = '',				//提醒对应的html片段
                 sortingHtml	= '';				//排序对应的html片段
             //通过配置项[columnData]生成thead
+            console.log(_this)
             $.each(_this.columnData, function(i, v){
                 if(_this.supportRemind && typeof(v.remind) === 'string' && v.remind !== ''){
                     remindHtml = 'remind="' + v.remind +'"';

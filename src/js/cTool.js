@@ -22,13 +22,11 @@ define(function() {
         }
         // selector -> NodeList
         else if(selector instanceof NodeList){
-            console.log('NodeList')
             DOMList = selector;
             context = undefined;
         }
         // selector -> cTool Object
         else if(selector.cTool){
-            console.log('Object')
             DOMList = selector.DOMList;
             context = undefined;
         }
@@ -62,14 +60,15 @@ define(function() {
             if(context){
                 DOMList = [];
                 cTool.each(context, function (i, v) {
-                    DOMList.concat(v.querySelectorAll(selector));
+                    // NodeList 只是类数组,直接使用concat并不会将两个数组中的参数边接,而是会直接将NodeList做为一个参数合并成为二维数组
+                    cTool.each(v.querySelectorAll(selector), function (i2, v2) {
+                        DOMList.push(v2);
+                    });
                 });
             }
         }
-        // 与jQuery不同的是, 当选择器结果为空时会直接抛出异常,而不是返回空对象.这样做的好处是防止为空导致的排错困难
         if(!DOMList || DOMList.length === 0){
-            this.error('无效的选择器-> ' + selector);
-            return;
+            DOMList = undefined;
         }
         // 用于确认是否为cTool对象
         this.cTool = true;
@@ -173,6 +172,10 @@ define(function() {
         }
         // 循环
         ,each: function(object, callback){
+            // 当前为cTool对象,循环目标更换为cTool.DOMList
+            if(object && object.cTool){
+                object = object.DOMList;
+            }
             var type = this.type(object);
             if(type === 'Array' || type === 'NodeList'){
                 // 由于存在类数组NodeList, 所以不能直接调用every方法
@@ -186,6 +189,10 @@ define(function() {
                     }
                 }
             }
+        }
+        // 清除字符串前后的空格
+        ,trim: function (text) {
+            return text.trim();
         }
     });
     // ajax
@@ -333,6 +340,9 @@ define(function() {
             newObject.DOMList = [this.DOMList[index]];
             return newObject;
         }
+        ,find: function(selectText){
+            return cTool(selectText, this);
+        }
     });
     // 抛出异常信息
     cTool.prototype.extend({
@@ -340,7 +350,7 @@ define(function() {
             throw new Error('[cTool Error: '+ msg + ']');
         }
     });
-    // 获取/设置节点文本
+    // 节点文本
     cTool.prototype.extend({
         text: function(text){
             // setter

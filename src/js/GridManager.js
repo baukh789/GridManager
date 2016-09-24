@@ -69,6 +69,7 @@ define(['cTool', 'checkboxGM', 'adjustGM', 'ajaxPageGM', 'baseGM', 'configGM', '
         //用于支持全局属性配置  于v1.8 中将GridManagerConfig弱化且不再建议使用。
 
         var textConfig = {};
+        console.log(settings)
         if(typeof(gridManagerConfig) == 'object'){
             $.extend(true, textConfig, this.textConfig, gridManagerConfig.textConfig)
             $.extend(true, this, gridManagerConfig);
@@ -107,10 +108,121 @@ define(['cTool', 'checkboxGM', 'adjustGM', 'ajaxPageGM', 'baseGM', 'configGM', '
 
     // 捆绑至选择器对象
     Element.prototype.GM = Element.prototype.GridManager = function(_name_, _settings_, _callback_){
-        var _GM = new GridManager(_settings_);
-        console.log(this.nodeType)
-        _GM.init($(this), _callback_);
-        return _GM;
+
+        if(this.length == 0){
+            throw new Error('GridManager Error: DOM为空，请确定选择器匹配是否正确');
+            return false;
+        }
+        var table = this;
+        // 特殊情况处理：单组tr进行操作，如resetTd()方法
+        if(table.nodeName === 'TR'){
+            console.log('resetTd未执行');
+            return;
+         //   table = table.closest('table[grid-manager]');
+        }
+        var name,
+            settings,
+            callback;
+        //处理参数
+        //ex: $(table).GridManager()
+        if(arguments.length === 0){
+            name	 = 'init';
+            settings = {};
+            callback = undefined;
+        }
+        //ex: $(table).GridManager('init')
+        else if(arguments.length === 1 && typeof(arguments[0]) === 'string' && typeof(arguments[0]) === 'init'){
+            name	 = arguments[0];
+            settings = {};
+            callback = undefined;
+        }
+        //ex: $(table).GridManager('get')
+        else if(arguments.length === 1 && typeof(arguments[0]) === 'string' && typeof(arguments[0]) !== 'init'){
+            name	 = arguments[0];
+            settings = undefined;
+            callback = undefined;
+        }
+        //ex: $(table).GridManager({settings})
+        else if(arguments.length === 1 && $.type(arguments[0]) === 'Object'){
+            name	 = 'init';
+            settings = arguments[0];
+            callback = undefined;
+        }
+        //ex: $(table).GridManager(callback)
+        else if(arguments.length === 1 && typeof(arguments[0]) === 'function'){
+            name	 = 'init';
+            settings = undefined;
+            callback = arguments[0];
+        }
+        //ex: $(table).GridManager('init', callback)
+        else if(arguments.length === 2 && typeof(arguments[0]) === 'string' && typeof(arguments[1]) === 'function'){
+            name	 = arguments[0];
+            settings = arguments[1];
+            callback = undefined;
+        }
+        //ex: $(table).GridManager('init', {settings})
+        //ex: $(table).GridManager('resetTd', false)
+        //ex: $(table).GridManager('exportGridToXls', 'fileName')
+        else if(arguments.length === 2 && typeof(arguments[0]) === 'string' && typeof(arguments[1]) !== 'function'){
+            name	 = arguments[0];
+            settings = arguments[1];
+            callback = undefined;
+        }
+        //ex: $(table).GridManager({settings}, callback)
+        else if(arguments.length === 2 && $.isPlainObject(arguments[0]) && typeof(arguments[1]) === 'function'){
+            name	 = 'init';
+            settings = arguments[0];
+            callback = arguments[1];
+        }
+        //ex: $(table).GridManager('resetTd', false)
+        else if(arguments.length === 2 && typeof(arguments[0]) === 'string' && typeof(arguments[1]) === 'boolean'){
+            name	 = arguments[0];
+            settings = arguments[1];
+            callback = undefined;
+        }
+        //ex: $(table).GridManager('init', {settings}, callback)
+        else if(arguments.length === 3){
+            name	 = arguments[0];
+            settings = arguments[1];
+            callback = arguments[2];
+        }
+
+        //验证当前调用的方法是否为对外公开方法
+        var exposedMethodList = [
+            'init',					//初始化 1
+            'setSort',				//手动设置排序 1
+            'get',					//通过JQuery实例获取GridManager  1
+            'getCheckedTr',			//获取当前选中的列 1
+            'showTh',				//显示Th及对应的TD项 1
+            'hideTh',				//隐藏Th及对应的TD项 1
+            'exportGridToXls',		//导出表格 .xls 1
+            'getLocalStorage',		//获取指定表格的本地存储数据 1
+            'resetTd',				//重置列表[tbody]  1
+            'setQuery',				//配置query 该参数会在分页触发后返回至pagingAfter(query)方法 1
+            'refreshGrid',			//刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染 1
+            'getRowData',			//获取当前行渲染时使用的数据 1
+            'clear'					//清除指定表的表格记忆数据 1
+        ];
+        if(exposedMethodList.indexOf(name) === -1){
+            throw new Error('GridManager Error:方法调用错误，请确定方法名['+ name +']是否正确');
+            return false;
+        }
+        var gmObj;
+        //当前为初始化方法
+        if(name == 'init') {
+            var options = $.extend({}, /*$.fn.GridManager.defaults, */settings);
+            var _GM = new GridManager(options);
+            _GM.init($(this), _callback_);
+            return _GM;
+        }
+        //当前为其它方法
+        else if(name != 'init'){
+            var $table = table;
+            gmObj = $table.data('gridManager');
+            var gmData = gmObj[name]($table, settings, callback);
+            //如果方法存在返回值则返回，如果没有返回jquery object用于链式操作
+            return typeof(gmData) === 'undefined' ? $table : gmData;
+        }
+
     };
-        console.log('gm')
 });
