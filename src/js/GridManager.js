@@ -2,7 +2,7 @@
  * Created by baukh on 16/9/3.
  * 引入requrie js ,打包时再将代码整合
  */
-define(['cTool', 'checkboxGM', 'adjustGM', 'ajaxPageGM', 'baseGM', 'configGM', 'dragGM', 'exportGM', 'i18nGM','menuGM', 'orderGM', 'remindGM', 'sortGM', 'topGM'],
+define(['jTool', 'checkboxGM', 'adjustGM', 'ajaxPageGM', 'baseGM', 'configGM', 'dragGM', 'exportGM', 'i18nGM','menuGM', 'orderGM', 'remindGM', 'sortGM', 'topGM'],
     function ($, CheckboxGM, AdjustGM, AjaxPageGM, BaseGM, ConfigGM, DragGM, ExportGM, I18NGM, MenuGM, OrderGM, RemindGM, SortGM, TopGM) {
     'use strict';
     // GridManager构造函数

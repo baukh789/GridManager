@@ -1,7 +1,7 @@
 /*
  * GridManager: 表头吸顶
  * */
-define(['cTool'], function($) {
+define(['jTool'], function($) {
     var topGM = {
         /*
          @绑定表头吸顶功能

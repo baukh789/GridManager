@@ -1,7 +1,7 @@
 /*
  * GridManager: 宽度调整
  * */
-define(['cTool'], function($) {
+define(['jTool'], function($) {
     var adjustGM = {
         /*
          @绑定宽度调整事件

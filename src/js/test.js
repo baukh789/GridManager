@@ -1,8 +1,8 @@
 /**
- * cTool test
+ * jTool test
  */
 require(['require.config'], function(){
-    require(['cTool'], function($){
+    require(['jTool'], function($){
         console.log($('p', $('.t1')))
         // 测试on
         // testOn();

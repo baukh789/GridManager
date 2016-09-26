@@ -7,7 +7,7 @@ requirejs.config({
     'waitSeconds': 60,
     'paths': {
         'jQuery':'jquery-3.1.0.js',
-        'cTool':'cTool',
+        'jTool':'jTool',
         'GridManager': 'GridManager',
         'checkboxGM': 'GridManager.checkbox',
         'adjustGM': 'GridManager.adjust',

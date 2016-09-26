@@ -1,7 +1,7 @@
 /*
  * GridManager: 数据选择/全选/返选
  * */
-define(['cTool'], function($) {
+define(['jTool'], function($) {
     var checkboxGM = {
         /*
          @初始化选择与反选DOM

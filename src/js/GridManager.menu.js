@@ -1,7 +1,7 @@
 /*
  * GridManager: 右键菜单
  * */
-define(['cTool'], function($) {
+define(['jTool'], function($) {
     var menuGM = {
         /*
          @验证菜单区域: 禁用、开启分页操作

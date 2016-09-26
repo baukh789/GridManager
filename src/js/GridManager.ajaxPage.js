@@ -1,7 +1,7 @@
 /*
  * GridManager: 分页
  * */
-define(['cTool'], function($) {
+define(['jTool'], function($) {
     var ajaxPageGM = {
         /*
          @初始化分页

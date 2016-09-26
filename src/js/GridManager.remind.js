@@ -1,7 +1,7 @@
 /*
  * GridManager: 表头提醒
  * */
-define(['cTool'], function($) {
+define(['jTool'], function($) {
     var remindGM = {
         /*
          @绑定表头提醒功能
