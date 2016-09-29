@@ -16,7 +16,7 @@ define(['jTool'], function($) {
             //绑定模拟X轴滚动条
             $('.scroll-area').unbind('scroll');
             $('.scroll-area').bind('scroll', function(){
-                $(this).parents('.table-div').scrollLeft(this.scrollLeft);
+                $(this).closest('.table-div').scrollLeft(this.scrollLeft);
                 this.style.left = this.scrollLeft + 'px';
             });
             //_this.scrollDOM != window 时 清除_this.scrollDOM 的padding值
@@ -42,10 +42,10 @@ define(['jTool'], function($) {
                     _tDIVTop = 0;
                 var _tWarpMB	= undefined; //吸顶触发后,table所在外围容器的margin-bottom值
 
-                _tableDIV 		= table.parents('.table-div').eq(0);
-                _tableWarp 		= _tableDIV.parents('.table-warp').eq(0);
+                _tableDIV 		= table.closest('.table-div');
+                _tableWarp 		= _tableDIV.closest('.table-warp');
                 _table			= table.get(0);
-                _thead 			= $('> thead[class!="set-top"]', table);
+                _thead 			= $('body> thead[grid-manager-thead]', table);
                 _tbody 			= $('tbody', table);
 
                 if(!_tableDIV || _tableDIV.length == 0){
@@ -121,6 +121,7 @@ define(['jTool'], function($) {
                 if(_setTopHead.length == 0 || _isWindowResize_){
                     _setTopHead.length == 0 ? table.append(_thead.clone(false).addClass('set-top')) : '';
                     _setTopHead = $('.set-top', table);
+                    _setTopHead.removeAttr('grid-manager-thead');
                     _setTopHead.css({
                         width : _thead.width()
                         + Number(_thead.css('border-left-width').split('px')[0] || 0)

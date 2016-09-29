@@ -357,14 +357,13 @@ define(['jTool'], function($) {
         ,createDOM: function(table){
             var _this = this;
             table.attr({width: '100%', cellspacing: 1, cellpadding:0, 'grid-manager': _this.gridManagerName});
-            var theadHtml = '<thead>',
+            var theadHtml = '<thead grid-manager-thead>',
                 tbodyHtml = '<tbody></tbody>',
                 alignAttr = '', 				//文本对齐属性
                 widthHtml = '',					//宽度对应的html片段
                 remindHtml = '',				//提醒对应的html片段
                 sortingHtml	= '';				//排序对应的html片段
             //通过配置项[columnData]生成thead
-            console.log(_this)
             $.each(_this.columnData, function(i, v){
                 if(_this.supportRemind && typeof(v.remind) === 'string' && v.remind !== ''){
                     remindHtml = 'remind="' + v.remind +'"';
@@ -461,7 +460,7 @@ define(['jTool'], function($) {
             onlyThead = $('thead', table);
             onlyThList = onlyThead.find('th');
             table.wrap('<div class="table-warp"><div class="table-div"></div><span class="text-dreamland"></span></div>');
-            tableWarp = table.parents('.table-warp').eq(0);
+            tableWarp = table.closest('.table-warp');
             tableDiv = $('.table-div', tableWarp);
             //嵌入配置列表DOM
             if(_this.supportConfig){
@@ -649,7 +648,7 @@ define(['jTool'], function($) {
                 _pageCache 	= {},
                 _thCache	= new Array(),
                 _thData 	= {};
-            var thList = $('thead[class!="set-top"] th', _table);
+            var thList = $('thead[grid-manager-thead] th', _table);
             if(!thList || thList.length == 0){
                 _this.outLog('setToLocalStorage:无效的thList,请检查是否正确配置table,thead,th', 'error');
                 return false;
@@ -671,8 +670,7 @@ define(['jTool'], function($) {
                     _thData.th_width = v.offsetWidth;
                 }
                 if(_this.supportConfig){
-                    _thData.isShow = $('.config-area li[th-name="'+ _thData.th_name +'"]', _table.parents('.table-warp')
-                        .eq(0)).find('input[type="checkbox"]').get(0).checked;
+                    _thData.isShow = $('.config-area li[th-name="'+ _thData.th_name +'"]', _table.closest('.table-warp')).find('input[type="checkbox"]').get(0).checked;
                 }
                 _thCache.push(_thData);
             });
@@ -753,7 +751,7 @@ define(['jTool'], function($) {
                 _this.outLog('getLocalStorage:无效的grid-manager', 'error');
                 return false;
             }
-            var thList = $('thead[class!="set-top"] th', $table);
+     //       var thList = $('thead[class!="set-top"] th', $table);
             return window.location.pathname +  window.location.hash + '-'+ _gridKey;
         }
         /*
@@ -876,7 +874,7 @@ define(['jTool'], function($) {
             var _this = this;
             if(isSingleRow){
                 var _tr = $(dom),
-                    _table= _tr.parents('table').eq(0);
+                    _table= _tr.closest('table');
             }else{
                 var _table = $(dom),
                     _tr	= _table.find('tbody tr');
@@ -946,8 +944,8 @@ define(['jTool'], function($) {
             }
             //重置吸顶事件
             if(_this.supportSetTop){
-                var _tableDIV 	= _table.parents('.table-div').eq(0);
-                var _tableWarp 	= _tableDIV.parents('.table-warp').eq(0);
+                var _tableDIV 	= _table.closest('.table-div');
+                var _tableWarp 	= _tableDIV.closest('.table-warp');
                 _tableDIV.css({
                     height:'auto'
                 });

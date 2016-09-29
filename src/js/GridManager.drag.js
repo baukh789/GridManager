@@ -34,8 +34,8 @@ define(['jTool'], function($) {
                     _nextTd			= undefined,							//事件源对应的下一组td
                     _tr 			= _th.parent(),							//事件源所在的tr
                     _allTh 			= _tr.find('th'), 						//事件源同层级下的所有th
-                    _table 			= _tr.parents('table').eq(0),			//事件源所在的table
-                    _tableDiv 		= _table.parents('.table-div').eq(0),	//事件源所在的DIV
+                    _table 			= _tr.closest('table'),			        //事件源所在的table
+                    _tableDiv 		= _table.closest('.table-div'),	        //事件源所在的DIV
                     _td 			= _table.find('tbody')
                         .find('tr')
                         .find('td:eq('+_th.index()+')'); 		//与事件源同列的所有td

@@ -41,7 +41,7 @@ define(['jTool'], function($) {
         ,createPageDOM:function(_tableDOM_, _pageData_){
             var _this = this;
             var table 		= $(_tableDOM_),
-                tableWarp 	= table.parents('.table-warp').eq(0),
+                tableWarp 	= table.closest('.table-warp'),
                 pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
                 pagination	= $('.pagination', pageToolbar);		//分页区域
             var cPage = Number(_pageData_.cPage || 0),		//当前页
@@ -222,7 +222,7 @@ define(['jTool'], function($) {
         ,bindSetPageSizeEvent:function(_tableDOM_){
             var _this = this;
             var table 		=  $(_tableDOM_),
-                tableWarp 	= table.parents('.table-warp').eq(0),
+                tableWarp 	= table.closest('.table-warp'),
                 pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
                 sizeArea	= $('select[name=pSizeArea]', pageToolbar);	//切换条数区域
             if(!sizeArea || sizeArea.length == 0){
@@ -232,7 +232,7 @@ define(['jTool'], function($) {
             sizeArea.unbind('change');
             sizeArea.change(function(){
                 var _size = $(this);
-                var _tableWarp  = _size.parents('.table-warp').eq(0),
+                var _tableWarp  = _size.closest('.table-warp'),
                     _table		= $('table[grid-manager]', _tableWarp),
                     _tName 		= $('table', _tableWarp).attr('grid-manager'); //当前与分页同容器下的列表名称
                 _this.pageData = {
@@ -258,7 +258,7 @@ define(['jTool'], function($) {
         ,resetPSize: function(table, _pageData_){
             var _this = this;
             var table 		=  $(table),
-                tableWarp 	= table.parents('.table-warp').eq(0),
+                tableWarp 	= table.closest('.table-warp'),
                 toolBar   = $('.page-toolbar', tableWarp),
                 pSizeArea = $('select[name="pSizeArea"]', toolBar),
                 pSizeInfo = $('.dataTables_info', toolBar);
@@ -294,7 +294,7 @@ define(['jTool'], function($) {
             _this.resetPSize(table, _pageData);
 
             var table 		= $(table),
-                tableWarp 	= table.parents('.table-warp').eq(0),
+                tableWarp 	= table.closest('.table-warp'),
                 pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
             $.extend(_this.pageData, _pageData); //存储pageData信息
             pageToolbar.show();

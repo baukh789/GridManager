@@ -418,6 +418,25 @@ define(function() {
             });
             return this;
         }
+        ,wrap: function (elementText) {
+            var htmlString = '', //存储当前node 的html
+                parentNode;  // 存储父节点
+            jTool.each(this.DOMList, function(i, v){
+                parentNode = v.parentNode;
+                htmlString = v.outerHTML;
+                v.outerHTML = elementText;
+                parentNode.querySelector(':empty').innerHTML = htmlString;
+            });
+            return this;
+        }
+        /*
+        ,parents: function () {
+            console.log('parents开发中');
+        }
+        ,closest: function () {
+            console.log('closest开发中');
+        }
+        */
     });
     // Class 相关操作
     jTool.prototype.extend({

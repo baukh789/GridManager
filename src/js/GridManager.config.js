@@ -10,7 +10,7 @@ define(['jTool'], function($) {
         bindConfigEvent: function(table){
             var _this = this;
             //打开/关闭设置区域
-            var tableWarp = $(table).parents('div.table-warp');
+            var tableWarp = $(table).closest('div.table-warp');
             var configAction = $('.config-action', tableWarp);
             configAction.unbind('click');
             configAction.bind('click', function(){
@@ -24,7 +24,7 @@ define(['jTool'], function($) {
                 }
                 //打开
                 _configArea.show();
-                var _tableWarp = _configAction.parents('.table-warp').eq(0),//当前事件源所在的div
+                var _tableWarp = _configAction.closest('.table-warp'),//当前事件源所在的div
                     _table	= $('[grid-manager]', _tableWarp),				//对应的table
                     _thList = $('thead th', _table),							//所有的th
                     _trList = $('tbody tr', _table),							//tbody下的tr

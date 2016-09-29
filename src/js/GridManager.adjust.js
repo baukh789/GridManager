@@ -14,14 +14,13 @@ define(['jTool'], function($) {
             thList.off('mousedown', '.adjust-action');
             thList.on('mousedown', '.adjust-action', function(event){
                 var _dragAction 	= $(this);
-                var _th 			= _dragAction.parents('th').eq(0),		//事件源所在的th
+                var _th 			= _dragAction.closest('th'),		        //事件源所在的th
                     _tr 			= _th.parent(),								//事件源所在的tr
-                    _table 			= _tr.parents('table').eq(0),			//事件源所在的table
-                    _tableDiv 		= _table.parents('.table-div').eq(0),	//事件源所在的DIV
-                    _tableWarp		= _tableDiv.parents('.table-warp'),			//table外围DIV
+                    _table 			= _tr.closest('table'),			            //事件源所在的table
+                    _tableDiv 		= _table.closest('.table-div'),	            //事件源所在的DIV
                     _thWarp			= $('.th-warp', _th),						//th下所有内容的外围容器
                     _dragAction		= $('.drag-action', _thWarp),				//th文本在渲染后所在的容器
-                    _allTh 			= _tr.find('th[th-visible!=none]'),		//事件源同层级下的所有th
+                    _allTh 			= _tr.find('th[th-visible!=none]'),		    //事件源同层级下的所有th
                     _nextTh			= _allTh.eq(_th.index() + 1),				//事件源下一个可视th
                     _last 			= _allTh.eq(_allTh.length - 1), 			//事件源同层级倒数第一个th
                     _lastButOne 	= _allTh.eq(_allTh.length - 2), 			//事件源同层级倒数第二个th
@@ -104,7 +103,7 @@ define(['jTool'], function($) {
                 remindAction	= $('.remind-action', thWarp),	//提醒所在容器
                 sortingAction	= $('.sorting-action', thWarp);	//排序所在容器
             //文本镜象 用于处理实时获取文本长度
-            var textDreamland	= $('.text-dreamland', th.parents('.table-warp'));
+            var textDreamland	= $('.text-dreamland', th.closest('.table-warp'));
 
             //将th文本嵌入文本镜象 用于获取文本实时宽度
             textDreamland.text(thText.text());
