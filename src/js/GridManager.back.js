@@ -343,7 +343,7 @@
 			var _this = this;
 			var tableDOM = $('table[grid-manager="'+ _this.gridManagerName +'"]'),		//table dom
 				tbodyDOM = $('tbody', tableDOM),	//tbody dom
-				refreshAction = $('.page-toolbar .refresh-action', tableDOM.closest('.table-warp')); //刷新按纽
+				refreshAction = $('.page-toolbar .refresh-action', tableDOM.closest('.table-wrap')); //刷新按纽
 			//增加刷新中标识
 			refreshAction.addClass('refreshing');
 			/*
@@ -644,8 +644,8 @@
 			}
 			onlyThead = $('thead', table);
 			onlyThList = onlyThead.find('th');
-			table.wrap('<div class="table-warp"><div class="table-div"></div><span class="text-dreamland"></span></div>');
-			tableWarp = table.parents('.table-warp').eq(0);
+			table.wrap('<div class="table-wrap"><div class="table-div"></div><span class="text-dreamland"></span></div>');
+			tableWarp = table.parents('.table-wrap').eq(0);
 			tableDiv = $('.table-div', tableWarp);
 			//嵌入配置列表DOM
 			if(_this.supportConfig){
@@ -685,8 +685,8 @@
 				}
 
 				//嵌入th下外层div
-				onlyThWarp = $('<div class="th-warp"></div>');
-				//th存在padding时 转移至th-warp
+				onlyThWarp = $('<div class="th-wrap"></div>');
+				//th存在padding时 转移至th-wrap
 				if(_this.isChrome()){
 					thPadding = onlyTH.css('padding');  //firefox 不兼容
 				}else{
@@ -803,7 +803,7 @@
 		,bindConfigEvent: function(table){
 			var _this = this;
 			//打开/关闭设置区域
-			var tableWarp = $(table).parents('div.table-warp');
+			var tableWarp = $(table).parents('div.table-wrap');
 			var configAction = $('.config-action', tableWarp);
 			configAction.unbind('click');
 			configAction.bind('click', function(){
@@ -817,7 +817,7 @@
 				}
 				//打开
 				_configArea.show();
-				var _tableWarp = _configAction.parents('.table-warp').eq(0),//当前事件源所在的div
+				var _tableWarp = _configAction.parents('.table-wrap').eq(0),//当前事件源所在的div
 					_table	= $('[grid-manager]', _tableWarp),				//对应的table
 					_thList = $('thead th', _table),							//所有的th
 					_trList = $('tbody tr', _table),							//tbody下的tr
@@ -840,7 +840,7 @@
 					_configArea 	= _only.closest('.config-area'),					//事件源所在的区域
 					_thName 		= _only.attr('th-name'),							//单个设置项的thName
 					_checkbox 		= _only.find('input[type="checkbox"]'),			//事件下的checkbox
-					_tableWarp  	= _only.closest('.table-warp'), 					//所在的大容器
+					_tableWarp  	= _only.closest('.table-wrap'), 					//所在的大容器
 					_tableDiv	  	= $('.table-div', _tableWarp), 						//所在的table-div
 					_table	 		= $('[grid-manager]', _tableWarp),				//所对应的table
 					_th				= $('thead th[th-name="'+_thName +'"]', _table), 	//所对应的th
@@ -927,7 +927,7 @@
 			$.each(_thList_, function(i, v){
 				_th = $(v);
 				_table = _th.closest('table');
-				_tableWarp = _table.closest('.table-warp');
+				_tableWarp = _table.closest('.table-wrap');
 				_trList = $('tbody tr', _table);
 				_checkLi = $('.config-area li[th-name="'+ _th.attr('th-name') +'"]', _tableWarp);
 				_checkbox = _checkLi.find('input[type="checkbox"]');
@@ -1232,8 +1232,8 @@
 					_tr 			= _th.parent(),								//事件源所在的tr
 					_table 			= _tr.parents('table').eq(0),			//事件源所在的table
 					_tableDiv 		= _table.parents('.table-div').eq(0),	//事件源所在的DIV
-					_tableWarp		= _tableDiv.parents('.table-warp'),			//table外围DIV
-					_thWarp			= $('.th-warp', _th),						//th下所有内容的外围容器
+					_tableWarp		= _tableDiv.parents('.table-wrap'),			//table外围DIV
+					_thWarp			= $('.th-wrap', _th),						//th下所有内容的外围容器
 					_dragAction		= $('.drag-action', _thWarp),				//th文本在渲染后所在的容器
 					_allTh 			= _tr.find('th[th-visible!=none]'),		//事件源同层级下的所有th
 					_nextTh			= _allTh.eq(_th.index() + 1),				//事件源下一个可视th
@@ -1313,12 +1313,12 @@
 		,getTextWidth: function(element){
 			var _this = this;
 			var th 				= $(element),   				//th
-				thWarp 			= $('.th-warp', th),  			//th下的GridManager包裹容器
+				thWarp 			= $('.th-wrap', th),  			//th下的GridManager包裹容器
 				thText	 		= $('.th-text', th),			//文本所在容器
 				remindAction	= $('.remind-action', thWarp),	//提醒所在容器
 				sortingAction	= $('.sorting-action', thWarp);	//排序所在容器
 			//文本镜象 用于处理实时获取文本长度
-			var textDreamland	= $('.text-dreamland', th.parents('.table-warp'));
+			var textDreamland	= $('.text-dreamland', th.parents('.table-wrap'));
 
 			//将th文本嵌入文本镜象 用于获取文本实时宽度
 			textDreamland.text(thText.text());
@@ -1376,7 +1376,7 @@
 				var _tWarpMB	= undefined; //吸顶触发后,table所在外围容器的margin-bottom值
 
 				_tableDIV 		= table.parents('.table-div').eq(0);
-				_tableWarp 		= _tableDIV.parents('.table-warp').eq(0);
+				_tableWarp 		= _tableDIV.parents('.table-wrap').eq(0);
 				_table			= table.get(0);
 				_thead 			= $('> thead[class!="set-top"]', table);
 				_tbody 			= $('tbody', table);
@@ -1502,7 +1502,7 @@
 		 */
 		,bindRightMenuEvent: function(table){
 			var _this = this;
-			var tableWarp = $(table).closest('.table-warp'),
+			var tableWarp = $(table).closest('.table-wrap'),
 				tbody = $('tbody', tableWarp);
 			//刷新当前表格
 			var menuHTML = '<div class="grid-menu" grid-master="'+ _this.gridManagerName +'">';
@@ -1635,7 +1635,7 @@
 				}
 				var _gridMenu = $(this).closest('.grid-menu'),
 					_table = $('table[grid-manager="'+_gridMenu.attr('grid-master')+'"]');
-				var configArea = $('.config-area', _table.closest('.table-warp'));
+				var configArea = $('.config-area', _table.closest('.table-wrap'));
 				$('.config-action', configArea).trigger('click');
 				_body.off('mousedown.gridMenu');
 				_gridMenu.hide();
@@ -1791,7 +1791,7 @@
 					_thData.th_width = v.offsetWidth;
 				}
 				if(_this.supportConfig){
-					_thData.isShow = $('.config-area li[th-name="'+ _thData.th_name +'"]', _table.parents('.table-warp')
+					_thData.isShow = $('.config-area li[th-name="'+ _thData.th_name +'"]', _table.parents('.table-wrap')
 						.eq(0)).find('input[type="checkbox"]').get(0).checked;
 				}
 				_thCache.push(_thData);
@@ -1799,7 +1799,7 @@
 			_cache.th = _thCache;
 			//存储分页
 			if(_this.supportAjaxPage){
-				_pageCache.pSize = $('select[name="pSizeArea"]', _table.closest('.table-warp')).val();
+				_pageCache.pSize = $('select[name="pSizeArea"]', _table.closest('.table-wrap')).val();
 				_cache.page = _pageCache;
 			}
 			_cacheString = JSON.stringify(_cache);
@@ -2067,7 +2067,7 @@
 			//重置吸顶事件
 			if(_this.supportSetTop){
 				var _tableDIV 	= _table.parents('.table-div').eq(0);
-				var _tableWarp 	= _tableDIV.parents('.table-warp').eq(0);
+				var _tableWarp 	= _tableDIV.parents('.table-wrap').eq(0);
 				_tableDIV.css({
 					height:'auto'
 				});
@@ -2112,7 +2112,7 @@
 			var _this = this;
 			var table 		= $(table),
 				tName		= table.attr('grid-manager'),
-				tableWarp 	= table.closest('.table-warp'),
+				tableWarp 	= table.closest('.table-wrap'),
 				pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
 			/*
 			 //生成分页存储器
@@ -2142,7 +2142,7 @@
 		,createPageDOM:function(_tableDOM_, _pageData_){
 			var _this = this;
 			var table 		= $(_tableDOM_),
-				tableWarp 	= table.parents('.table-warp').eq(0),
+				tableWarp 	= table.parents('.table-wrap').eq(0),
 				pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 				pagination	= $('.pagination', pageToolbar);		//分页区域
 			var cPage = Number(_pageData_.cPage || 0),		//当前页
@@ -2220,7 +2220,7 @@
 		,createPageSizeDOM: function(_tableDOM_, _sizeData_){
 			var _this = this;
 			var table		= $(_tableDOM_),
-				tableWarp	= table.closest('.table-warp'),
+				tableWarp	= table.closest('.table-wrap'),
 				pageToolbar = $('.page-toolbar', tableWarp),				//分页工具条
 				pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);	//分页区域
 			//error
@@ -2242,7 +2242,7 @@
 		,bindPageJumpEvent:function(_tableDOM_){
 			var _this = this;
 			var table		= $(_tableDOM_),
-				tableWarp	= table.closest('.table-warp'),
+				tableWarp	= table.closest('.table-wrap'),
 				pageToolbar = $('.page-toolbar', tableWarp),		//分页工具条
 				pagination	= $('.pagination', pageToolbar),		//分页区域
 				gp_input	= $('.gp-input', pageToolbar),			//快捷跳转
@@ -2251,7 +2251,7 @@
 			pageToolbar.off('click', 'li');
 			pageToolbar.on('click', 'li', function(){
 				var _page 		= $(this),
-					_tableWarp 	= _page.closest('.table-warp');
+					_tableWarp 	= _page.closest('.table-wrap');
 				var cPage = _page.attr('cPage');	//分页页码
 				if(!cPage || !Number(cPage) || _page.hasClass('disabled')){
 					_this.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
@@ -2266,7 +2266,7 @@
 				if(e.which !== 13){
 					return;
 				}
-				var _tableWarp = $(this).closest('.table-warp'),
+				var _tableWarp = $(this).closest('.table-wrap'),
 					_inputValue = parseInt(this.value, 10);
 				if(!_inputValue){
 					this.focus();
@@ -2279,7 +2279,7 @@
 			refreshAction.unbind('click');
 			refreshAction.bind('click', function() {
 				var _action = $(this);
-				var _tableWarp = $(this).closest('.table-warp'),
+				var _tableWarp = $(this).closest('.table-wrap'),
 					_input = $('.page-toolbar .gp-input', _tableWarp),
 					_value = _input.val();
 				//跳转输入框为空时: 刷新当前菜
@@ -2323,7 +2323,7 @@
 		,bindSetPageSizeEvent:function(_tableDOM_){
 			var _this = this;
 			var table 		=  $(_tableDOM_),
-				tableWarp 	= table.parents('.table-warp').eq(0),
+				tableWarp 	= table.parents('.table-wrap').eq(0),
 				pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 				sizeArea	= $('select[name=pSizeArea]', pageToolbar);	//切换条数区域
 			if(!sizeArea || sizeArea.length == 0){
@@ -2333,7 +2333,7 @@
 			sizeArea.unbind('change');
 			sizeArea.change(function(){
 				var _size = $(this);
-				var _tableWarp  = _size.parents('.table-warp').eq(0),
+				var _tableWarp  = _size.parents('.table-wrap').eq(0),
 					_table		= $('table[grid-manager]', _tableWarp),
 					_tName 		= $('table', _tableWarp).attr('grid-manager'); //当前与分页同容器下的列表名称
 				_this.pageData = {
@@ -2359,7 +2359,7 @@
 		,resetPSize: function(table, _pageData_){
 			var _this = this;
 			var table 		=  $(table),
-				tableWarp 	= table.parents('.table-warp').eq(0),
+				tableWarp 	= table.parents('.table-wrap').eq(0),
 				toolBar   = $('.page-toolbar', tableWarp),
 				pSizeArea = $('select[name="pSizeArea"]', toolBar),
 				pSizeInfo = $('.dataTables_info', toolBar);
@@ -2395,7 +2395,7 @@
 			_this.resetPSize(table, _pageData);
 
 			var table 		= $(table),
-				tableWarp 	= table.parents('.table-warp').eq(0),
+				tableWarp 	= table.parents('.table-wrap').eq(0),
 				pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
 			$.extend(_this.pageData, _pageData); //存储pageData信息
 			pageToolbar.show();

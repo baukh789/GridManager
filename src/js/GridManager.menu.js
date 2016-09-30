@@ -32,7 +32,7 @@ define(['jTool'], function($) {
          */
         ,bindRightMenuEvent: function(table){
             var _this = this;
-            var tableWarp = $(table).closest('.table-warp'),
+            var tableWarp = $(table).closest('.table-wrap'),
                 tbody = $('tbody', tableWarp);
             //刷新当前表格
             var menuHTML = '<div class="grid-menu" grid-master="'+ _this.gridManagerName +'">';
@@ -165,7 +165,7 @@ define(['jTool'], function($) {
                 }
                 var _gridMenu = $(this).closest('.grid-menu'),
                     _table = $('table[grid-manager="'+_gridMenu.attr('grid-master')+'"]');
-                var configArea = $('.config-area', _table.closest('.table-warp'));
+                var configArea = $('.config-area', _table.closest('.table-wrap'));
                 $('.config-action', configArea).trigger('click');
                 _body.off('mousedown.gridMenu');
                 _gridMenu.hide();

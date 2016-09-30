@@ -21,13 +21,6 @@ var GridManagerConfig = {
 	,isCombSorting	: false					//是否为组合排序[只有在支持排序的情况下生效
 	,sortUpText		: 'up'					//排序：升序标识[该标识将会传至数据接口]
 	,sortDownText	: 'down'				//排序：降序标识[该标识将会传至数据接口]
-	,sortingCallback: {						//排序触发后的回调函数集合，该函数一般需指向搜索事件
-		//keyfunction(){
-		//},k2f2,
-		//...
-		//key需与talble上的grid-manager相同
-		//function排序后的数据操作，建意直接调用搜索事件
-	}						
 	
 	//分页 ajaxPag
 	
@@ -37,10 +30,6 @@ var GridManagerConfig = {
 	//tSize:总条数
 	,supportAjaxPage: false					//是否支持配置列表ajxa分页	
 	,sizeData 		: [10,20,30,50,100]		//用于配置列表每页展示条数选择框
-	,pageQuery 		: {						//其它需要带入的参数，该参数会在分页触发后返回至pageCallback方法
-	}
-	,pageCallback 	: {						//分页触发后的回调函数集合，该函数一般需指向搜索事件
-	}
 	,pageCssFile 	: ''						//分页样式文件路径[用户自定义分页样式]	
 	,i18n:'zh-cn'					//使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
 	//配置插件中使用的文本信息

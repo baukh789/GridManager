@@ -230,7 +230,7 @@ define(['jTool'], function($) {
             var _this = this;
             var tableDOM = $('table[grid-manager="'+ _this.gridManagerName +'"]'),		//table dom
                 tbodyDOM = $('tbody', tableDOM),	//tbody dom
-                refreshAction = $('.page-toolbar .refresh-action', tableDOM.closest('.table-warp')); //刷新按纽
+                refreshAction = $('.page-toolbar .refresh-action', tableDOM.closest('.table-wrap')); //刷新按纽
             //增加刷新中标识
             refreshAction.addClass('refreshing');
             /*
@@ -434,16 +434,16 @@ define(['jTool'], function($) {
                     + '<div class="ajax-page"><ul class="pagination"></ul></div>'
                     + '</div>';
             }
-            var	tableWarp,						//单个table所在的DIV容器
+            var	wrapHtml,                       //外围的html片段
+                setTopHtml,                     //表头置顶html片段
+                tableWarp,						//单个table所在的DIV容器
                 tName,							//table的GridManager属性值
                 tableDiv,						//单个table所在的父级DIV
                 onlyThead,						//单个table下的thead
                 onlyThList,						//单个table下的TH
                 onlyTH,							//单个TH
                 onlyThWarp,						//单个TH下的上层DIV
-                thHeight,						//TH的高
                 thPadding,						//TH当前的padding值
-                marginRigth,					//调整宽度节点所需要右移的数值
                 remindDOM,						//表头提醒DOM
                 adjustDOM,						//调整宽度DOM
                 sortingDom,						//排序DOM
@@ -459,8 +459,13 @@ define(['jTool'], function($) {
             }
             onlyThead = $('thead', table);
             onlyThList = onlyThead.find('th');
-            table.wrap('<div class="table-warp"><div class="table-div"></div><span class="text-dreamland"></span></div>');
-            tableWarp = table.closest('.table-warp');
+            //表头置顶
+            if(_this.supportSetTop){
+                setTopHtml = '<div class="scroll-area"><div class="sa-inner"></div></div>';
+            }
+            wrapHtml = '<div class="table-wrap"><div class="table-div"></div>'+ setTopHtml +'<span class="text-dreamland"></span></div>';
+            table.wrap(wrapHtml);
+            tableWarp = table.closest('.table-wrap');
             tableDiv = $('.table-div', tableWarp);
             //嵌入配置列表DOM
             if(_this.supportConfig){
@@ -475,10 +480,6 @@ define(['jTool'], function($) {
             //嵌入导出表格数据事件源
             if(_this.supportExport){
                 tableWarp.append(exportActionHtml);
-            }
-            //表头置顶
-            if(_this.supportSetTop){
-                tableDiv.after('<div class="scroll-area"><div class="sa-inner"></div></div>');
             }
 
             $.each(onlyThList, function(i2,v2){
@@ -500,8 +501,10 @@ define(['jTool'], function($) {
                 }
 
                 //嵌入th下外层div
-                onlyThWarp = $('<div class="th-warp"></div>');
-                //th存在padding时 转移至th-warp
+                onlyThWarp = document.createElement('div');
+                onlyThWarp.className = 'th-wrap';
+                onlyThWarp = $(onlyThWarp);
+                //th存在padding时 转移至th-wrap
                 if(_this.isChrome()){
                     thPadding = onlyTH.css('padding');  //firefox 不兼容
                 }else{
@@ -576,7 +579,7 @@ define(['jTool'], function($) {
 
                 //如果th上存在width属性，则表明配置项中存在该项配置；
                 //验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
-                var thWidthForConfig = onlyTH.prop('width');
+                var thWidthForConfig = onlyTH.attr('width');
                 if(thWidthForConfig && thWidthForConfig !== ''){
                     onlyTH.width(thWidthForConfig);
                     onlyTH.removeAttr('width');  //直接使用removeProp 无效
@@ -670,14 +673,14 @@ define(['jTool'], function($) {
                     _thData.th_width = v.offsetWidth;
                 }
                 if(_this.supportConfig){
-                    _thData.isShow = $('.config-area li[th-name="'+ _thData.th_name +'"]', _table.closest('.table-warp')).find('input[type="checkbox"]').get(0).checked;
+                    _thData.isShow = $('.config-area li[th-name="'+ _thData.th_name +'"]', _table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
                 }
                 _thCache.push(_thData);
             });
             _cache.th = _thCache;
             //存储分页
             if(_this.supportAjaxPage){
-                _pageCache.pSize = $('select[name="pSizeArea"]', _table.closest('.table-warp')).val();
+                _pageCache.pSize = $('select[name="pSizeArea"]', _table.closest('.table-wrap')).val();
                 _cache.page = _pageCache;
             }
             _cacheString = JSON.stringify(_cache);
@@ -763,8 +766,7 @@ define(['jTool'], function($) {
             var _this = this;
             var _data = _this.getLocalStorage(table),		//本地缓存的数据
                 _cache = _data.cache,		//缓存对应
-                _pSize,			 //每页显示条数
-                _query;			 //init 后的callback中的query参数
+                _pSize;			 //每页显示条数
             //验证是否存在每页显示条数缓存数据
             if(!_cache || !_cache.page || !_cache.page.pSize){
                 _pSize = _this.pageSize || 10.
@@ -945,7 +947,7 @@ define(['jTool'], function($) {
             //重置吸顶事件
             if(_this.supportSetTop){
                 var _tableDIV 	= _table.closest('.table-div');
-                var _tableWarp 	= _tableDIV.closest('.table-warp');
+                var _tableWarp 	= _tableDIV.closest('.table-wrap');
                 _tableDIV.css({
                     height:'auto'
                 });

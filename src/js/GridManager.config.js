@@ -10,7 +10,7 @@ define(['jTool'], function($) {
         bindConfigEvent: function(table){
             var _this = this;
             //打开/关闭设置区域
-            var tableWarp = $(table).closest('div.table-warp');
+            var tableWarp = $(table).closest('div.table-wrap');
             var configAction = $('.config-action', tableWarp);
             configAction.unbind('click');
             configAction.bind('click', function(){
@@ -24,7 +24,7 @@ define(['jTool'], function($) {
                 }
                 //打开
                 _configArea.show();
-                var _tableWarp = _configAction.closest('.table-warp'),//当前事件源所在的div
+                var _tableWarp = _configAction.closest('.table-wrap'),//当前事件源所在的div
                     _table	= $('[grid-manager]', _tableWarp),				//对应的table
                     _thList = $('thead th', _table),							//所有的th
                     _trList = $('tbody tr', _table),							//tbody下的tr
@@ -47,7 +47,7 @@ define(['jTool'], function($) {
                     _configArea 	= _only.closest('.config-area'),					//事件源所在的区域
                     _thName 		= _only.attr('th-name'),							//单个设置项的thName
                     _checkbox 		= _only.find('input[type="checkbox"]'),			//事件下的checkbox
-                    _tableWarp  	= _only.closest('.table-warp'), 					//所在的大容器
+                    _tableWarp  	= _only.closest('.table-wrap'), 					//所在的大容器
                     _tableDiv	  	= $('.table-div', _tableWarp), 						//所在的table-div
                     _table	 		= $('[grid-manager]', _tableWarp),				//所对应的table
                     _th				= $('thead th[th-name="'+_thName +'"]', _table), 	//所对应的th
@@ -134,7 +134,7 @@ define(['jTool'], function($) {
             $.each(_thList_, function(i, v){
                 _th = $(v);
                 _table = _th.closest('table');
-                _tableWarp = _table.closest('.table-warp');
+                _tableWarp = _table.closest('.table-wrap');
                 _trList = $('tbody tr', _table);
                 _checkLi = $('.config-area li[th-name="'+ _th.attr('th-name') +'"]', _tableWarp);
                 _checkbox = _checkLi.find('input[type="checkbox"]');

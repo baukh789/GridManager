@@ -43,7 +43,7 @@ define(['jTool'], function($) {
                 var _tWarpMB	= undefined; //吸顶触发后,table所在外围容器的margin-bottom值
 
                 _tableDIV 		= table.closest('.table-div');
-                _tableWarp 		= _tableDIV.closest('.table-warp');
+                _tableWarp 		= _tableDIV.closest('.table-wrap');
                 _table			= table.get(0);
                 _thead 			= $('body> thead[grid-manager-thead]', table);
                 _tbody 			= $('tbody', table);

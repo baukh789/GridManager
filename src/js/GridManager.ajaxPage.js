@@ -10,19 +10,9 @@ define(['jTool'], function($) {
         initAjaxPage: function(table){
             var _this = this;
             var table 		= $(table),
-                tName		= table.attr('grid-manager'),
-                tableWarp 	= table.closest('.table-warp'),
+                tableWarp 	= table.closest('.table-wrap'),
                 pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
-            /*
-             //生成分页存储器
-             _this.query.pageData = {
-             tPage: undefined,		//总页数
-             cPage: undefined,		//当前页
-             pSize: undefined,		//每页显示条数
-             tSize: undefined		//总条数
-             };
-             */
-            var	sizeData = $.isArray(_this.sizeData) ? _this.sizeData : _this.sizeData[tName];
+            var	sizeData = _this.sizeData ;
             pageToolbar.hide();
             //生成每页显示条数选择框
             _this.createPageSizeDOM(table, sizeData);
@@ -41,7 +31,7 @@ define(['jTool'], function($) {
         ,createPageDOM:function(_tableDOM_, _pageData_){
             var _this = this;
             var table 		= $(_tableDOM_),
-                tableWarp 	= table.closest('.table-warp'),
+                tableWarp 	= table.closest('.table-wrap'),
                 pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
                 pagination	= $('.pagination', pageToolbar);		//分页区域
             var cPage = Number(_pageData_.cPage || 0),		//当前页
@@ -119,11 +109,11 @@ define(['jTool'], function($) {
         ,createPageSizeDOM: function(_tableDOM_, _sizeData_){
             var _this = this;
             var table		= $(_tableDOM_),
-                tableWarp	= table.closest('.table-warp'),
+                tableWarp	= table.closest('.table-wrap'),
                 pageToolbar = $('.page-toolbar', tableWarp),				//分页工具条
                 pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);	//分页区域
             //error
-            if(!_sizeData_ || !$.isArray(_sizeData_)){
+            if(!_sizeData_ || _sizeData_.length === 0){
                 _this.outLog('渲染失败：参数[sizeData]配置错误' , 'error');
                 return;
             }
@@ -141,7 +131,7 @@ define(['jTool'], function($) {
         ,bindPageJumpEvent:function(_tableDOM_){
             var _this = this;
             var table		= $(_tableDOM_),
-                tableWarp	= table.closest('.table-warp'),
+                tableWarp	= table.closest('.table-wrap'),
                 pageToolbar = $('.page-toolbar', tableWarp),		//分页工具条
                 pagination	= $('.pagination', pageToolbar),		//分页区域
                 gp_input	= $('.gp-input', pageToolbar),			//快捷跳转
@@ -150,7 +140,7 @@ define(['jTool'], function($) {
             pageToolbar.off('click', 'li');
             pageToolbar.on('click', 'li', function(){
                 var _page 		= $(this),
-                    _tableWarp 	= _page.closest('.table-warp');
+                    _tableWarp 	= _page.closest('.table-wrap');
                 var cPage = _page.attr('cPage');	//分页页码
                 if(!cPage || !Number(cPage) || _page.hasClass('disabled')){
                     _this.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
@@ -165,7 +155,7 @@ define(['jTool'], function($) {
                 if(e.which !== 13){
                     return;
                 }
-                var _tableWarp = $(this).closest('.table-warp'),
+                var _tableWarp = $(this).closest('.table-wrap'),
                     _inputValue = parseInt(this.value, 10);
                 if(!_inputValue){
                     this.focus();
@@ -178,7 +168,7 @@ define(['jTool'], function($) {
             refreshAction.unbind('click');
             refreshAction.bind('click', function() {
                 var _action = $(this);
-                var _tableWarp = $(this).closest('.table-warp'),
+                var _tableWarp = $(this).closest('.table-wrap'),
                     _input = $('.page-toolbar .gp-input', _tableWarp),
                     _value = _input.val();
                 //跳转输入框为空时: 刷新当前菜
@@ -222,7 +212,7 @@ define(['jTool'], function($) {
         ,bindSetPageSizeEvent:function(_tableDOM_){
             var _this = this;
             var table 		=  $(_tableDOM_),
-                tableWarp 	= table.closest('.table-warp'),
+                tableWarp 	= table.closest('.table-wrap'),
                 pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
                 sizeArea	= $('select[name=pSizeArea]', pageToolbar);	//切换条数区域
             if(!sizeArea || sizeArea.length == 0){
@@ -230,15 +220,15 @@ define(['jTool'], function($) {
                 return false;
             }
             sizeArea.unbind('change');
-            sizeArea.change(function(){
+            sizeArea.bind('change', function(){
                 var _size = $(this);
-                var _tableWarp  = _size.closest('.table-warp'),
+                var _tableWarp  = _size.closest('.table-wrap'),
                     _table		= $('table[grid-manager]', _tableWarp),
                     _tName 		= $('table', _tableWarp).attr('grid-manager'); //当前与分页同容器下的列表名称
                 _this.pageData = {
                     cPage : 1,
                     pSize : _size.val()
-                }
+                };
 
                 _this.setToLocalStorage(_table);
                 //调用事件、渲染tbody
@@ -258,7 +248,7 @@ define(['jTool'], function($) {
         ,resetPSize: function(table, _pageData_){
             var _this = this;
             var table 		=  $(table),
-                tableWarp 	= table.closest('.table-warp'),
+                tableWarp 	= table.closest('.table-wrap'),
                 toolBar   = $('.page-toolbar', tableWarp),
                 pSizeArea = $('select[name="pSizeArea"]', toolBar),
                 pSizeInfo = $('.dataTables_info', toolBar);
@@ -294,7 +284,7 @@ define(['jTool'], function($) {
             _this.resetPSize(table, _pageData);
 
             var table 		= $(table),
-                tableWarp 	= table.closest('.table-warp'),
+                tableWarp 	= table.closest('.table-wrap'),
                 pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
             $.extend(_this.pageData, _pageData); //存储pageData信息
             pageToolbar.show();

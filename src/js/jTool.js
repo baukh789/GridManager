@@ -10,13 +10,13 @@ define(function() {
     // 实现所必须的公用方法
     // Sizzle选择器,类似于jQuery.Sizzle;
     var Sizzle = function(selector, context){
-        if(typeof selector === 'undefined'){
-            this.error('无效的选择器');
-            return;
-        }
         var DOMList = undefined;
+        // selector -> undefined || null
+        if(!selector){
+            selector = null;
+        }
         // selector -> DOM
-        if(selector instanceof HTMLElement){
+        else if(selector instanceof HTMLElement){
             DOMList = [selector];
             context = undefined;
         }
@@ -76,8 +76,7 @@ define(function() {
         this.DOMList = DOMList;
         // 存储选择器条件
         this.querySelector = selector;
-        // 缓存容器
-    //    this.cache = {};
+
         return this;
     };
     /*
@@ -365,6 +364,24 @@ define(function() {
             }
         }
     });
+    // Css操作
+    jTool.prototype.extend({
+        css: function(key, value){
+            // getter
+            if(!value){
+                return window.getComputedStyle(this.DOMList[0])[key];
+            }
+            // setter
+            jTool.each(this.DOMList, function(i, v){
+                v.style[key] = value;
+            });
+            return this;
+        }
+        ,width: function(value){
+            return this.css('width', value);
+        }
+
+    });
     // 显示/隐藏元素
     jTool.prototype.extend({
         show: function(){
@@ -419,24 +436,42 @@ define(function() {
             return this;
         }
         ,wrap: function (elementText) {
-            var htmlString = '', //存储当前node 的html
+            var selfDOM = '', //存储当前node 的html
                 parentNode;  // 存储父节点
             jTool.each(this.DOMList, function(i, v){
+                selfDOM = v;
                 parentNode = v.parentNode;
-                htmlString = v.outerHTML;
                 v.outerHTML = elementText;
-                parentNode.querySelector(':empty').innerHTML = htmlString;
+                // 将原节点添加入wrap中第一个为空的节点内
+                parentNode.querySelector(':empty').appendChild(selfDOM);
             });
             return this;
         }
-        /*
-        ,parents: function () {
-            console.log('parents开发中');
+        ,closest: function (selectorText) {
+            var parentDOM = this.DOMList[0].parentNode;
+            if(typeof selectorText === 'undefined'){
+                return Sizzle(parentDOM);
+            }
+            var target = document.querySelectorAll(selectorText);
+
+            // 递归查找匹配的父级元素
+            function getParentNode(){
+                console.log(parentDOM)
+                console.log(target)
+                console.log([].indexOf.call(target, parentDOM))
+                if(!parentDOM || target.length === 0 || parentDOM.nodeType !== 1){
+                    parentDOM = null;
+                    return;
+                }
+                if([].indexOf.call(target, parentDOM) !== -1){
+                    return;
+                }
+                parentDOM = parentDOM.parentNode;
+                getParentNode();
+            }
+            getParentNode();
+            return jTool(parentDOM);
         }
-        ,closest: function () {
-            console.log('closest开发中');
-        }
-        */
     });
     // Class 相关操作
     jTool.prototype.extend({

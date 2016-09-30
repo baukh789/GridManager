@@ -3,7 +3,19 @@
  */
 require(['require.config'], function(){
     require(['jTool'], function($){
-        console.log($('p', $('.t1')))
+        // 测试closest
+        //testClosest();
+        function testClosest(){
+            console.log($('.tt3').closest('p.t3'));
+        }
+        // 测试wrap
+        testWrap();
+        function testWrap(){
+            var t1 = $('.t1');
+            t1.wrap('<div class="wrap"></div>');
+            var wrap = t1.closest('.wrap');
+            console.log(wrap);
+        }
         // 测试on
         // testOn();
         function testOn(){
