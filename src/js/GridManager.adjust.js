@@ -93,14 +93,13 @@ define(['jTool'], function($) {
          $.element: th
          */
         ,getTextWidth: function(element){
-            var th 				= $(element),   				//th
-                thWarp 			= $('.th-wrap', th),  			//th下的GridManager包裹容器
+            var th 	= $(element);
+            var  thWarp 		= $('.th-wrap', th),  			//th下的GridManager包裹容器
                 thText	 		= $('.th-text', th),			//文本所在容器
                 remindAction	= $('.remind-action', thWarp),	//提醒所在容器
                 sortingAction	= $('.sorting-action', thWarp);	//排序所在容器
+
             //文本镜象 用于处理实时获取文本长度
-            console.log($('th').eq(0) == th)
-            console.log(th)
             var tableWrap = th.closest('.table-wrap');
             var textDreamland	= $('.text-dreamland', tableWrap);
             //将th文本嵌入文本镜象 用于获取文本实时宽度

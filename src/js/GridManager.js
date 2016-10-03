@@ -113,6 +113,7 @@ define(['jTool', 'checkboxGM', 'adjustGM', 'ajaxPageGM', 'baseGM', 'configGM', '
             return false;
         }
         var table = this;
+        var $table = $(table);
         // 特殊情况处理：单组tr进行操作，如resetTd()方法
         if(table.nodeName === 'TR'){
             console.log('resetTd未执行');
@@ -211,12 +212,11 @@ define(['jTool', 'checkboxGM', 'adjustGM', 'ajaxPageGM', 'baseGM', 'configGM', '
         if(name == 'init') {
             var options = $.extend({}, /*$.fn.GridManager.defaults, */settings);
             var _GM = new GridManager(options);
-            _GM.init($(this), _callback_);
+            _GM.init($table, _callback_);
             return _GM;
         }
         //当前为其它方法
         else if(name != 'init'){
-            var $table = table;
             gmObj = $table.data('gridManager');
             var gmData = gmObj[name]($table, settings, callback);
             //如果方法存在返回值则返回，如果没有返回jquery object用于链式操作

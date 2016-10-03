@@ -30,6 +30,11 @@ define(function() {
             DOMList = selector.DOMList;
             context = undefined;
         }
+        // selector -> Html String
+        else if(/<.+>/.test(selector)){
+            DOMList = jTool.prototype.createDOM(selector);
+            context = undefined;
+        }
         // selector -> 字符CSS选择器
         else {
             // context -> undefined
@@ -193,6 +198,10 @@ define(function() {
         ,trim: function (text) {
             return text.trim();
         }
+        // 抛出异常信息
+        ,error: function(msg){
+            throw new Error('[jTool Error: '+ msg + ']');
+        }
     });
     // ajax
     // type === GET: data格式 name=baukh&age=29
@@ -264,7 +273,7 @@ define(function() {
              var newObject = Object.create(this);
              // 与jQuery不同的是, eq结果为空时会直接抛出异常,而不是返回空对象.这样做的好处是防止为空导致的排错困难
              if(!this.DOMList[index]){
-             this.error('eq('+ index +')所指向的DOM不存在');
+             jTool.error('eq('+ index +')所指向的DOM不存在');
              return;
              }
              newObject.DOMList = [this.DOMList[index]];
@@ -399,51 +408,50 @@ define(function() {
             return this;
         }
     });
-    // DOM操作
-    // 参数child可能为ElementNode,也可能是字符串
+    // DOM操作 参数child可能为ElementNode,也可能是字符串
     jTool.prototype.extend({
-        append: function(child){
-            if(child.jTool){
-                child = child.get(0);
-            }
-            jTool.each(this.DOMList, function(i, v){
-                if(child.nodeType && child.nodeType === 1){
-                    v.appendChild(child.cloneNode(true));
-                }
-                else{
-                    v.innerHTML = v.innerHTML + child;
-                }
-            });
-            return this;
+        append: function(childList){
+            return this.html(childList, 'append');
         }
-        ,prepend: function(child){
-            if(child.jTool){
-                child = child.get(0);
-            }
-            jTool.each(this.DOMList, function(i, v){
-                if(child.nodeType && child.nodeType === 1) {
-                    v.insertBefore(child.cloneNode(true), v.childNodes[0]);
-                }else{
-                    v.innerHTML = child + v.innerHTML;
-                }
-            });
-            return this;
+        ,prepend: function(childList){
+            return this.html(childList, 'prepend');
         }
-        ,html: function(child) {
+        ,html: function(childList, type) {
             // getter
-            if(!child){
+            if(typeof(childList) == 'undefined' && typeof(type) == 'undefined'){
                 return this.DOMList[0].innerHTML;
             }
             // setter
-            if(child.jTool){
-                child = child.get(0);
+            var _this = this;
+            if(childList.jTool){
+                childList = childList.DOMList;
             }
-            jTool.each(this.DOMList, function(i, v){
-                if(child.nodeType && child.nodeType === 1) {
-                    v.innerHTML = child.cloneNode(true).outerHTML;;
-                }else{
-                    v.innerHTML = child;
+            else if(!childList.nodeType || childList.nodeType !== 1){
+                childList = _this.createDOM(childList || '');
+            }
+            var firstChild;
+            jTool.each(_this.DOMList, function(e, element){
+                // html
+                if(!type){
+                    element.innerHTML = '';
                 }
+                // prepend
+                else if(type === 'prepend'){
+                    firstChild = element.firstChild;
+                }
+                jTool.each(childList, function(c, child){
+                    // text node
+                    if(!child.nodeType){
+                        child = document.createTextNode(child);
+                    }
+                    if(firstChild){
+                        element.insertBefore(child, firstChild);
+                    }
+                    else{
+                        element.appendChild(child);
+                    }
+                    element.normalize();
+                });
             });
             return this;
         }
@@ -463,7 +471,7 @@ define(function() {
            var _this  =this;
             var parentDOM = this.DOMList[0].parentNode;
             if(typeof selectorText === 'undefined'){
-                return Sizzle(parentDOM);
+                return jTool(parentDOM);
             }
             var target = document.querySelectorAll(selectorText);
 
@@ -481,6 +489,42 @@ define(function() {
             }
             getParentNode();
             return jTool(parentDOM);
+        }
+        // 通过html字符串, 生成DOM.  返回生成后的子节点
+        ,createDOM: function (htmlString) {
+            var jToolDOM = document.querySelector('#jTool-create-dom');
+            if(!jToolDOM || jToolDOM.length === 0){
+                // table标签 可以在新建element时可以更好的容错.
+                // div标签, 添加thead,tbody等表格标签时,只会对中间的文本进行创建
+                // table标签,在添加任务标签时,都会成功生成.且会对table类标签进行自动补全
+                var el = document.createElement('table');
+                el.id = 'jTool-create-dom';
+                el.style.display = 'none';
+                document.body.appendChild(el);
+                jToolDOM = document.querySelector('#jTool-create-dom');
+            }
+            jToolDOM.innerHTML = htmlString || '';
+            var childNodes = [];
+            jTool.each(jToolDOM.childNodes, function(i, v){
+                if(!/<tbody|<TBODY/.test(htmlString) && v.nodeName === 'TBODY'){
+                    v = v.childNodes[0];
+                }
+                if(!/<thead|<THEAD/.test(htmlString) && v.nodeName === 'THEAD'){
+                    v = v.childNodes[0];
+                }
+                if(!/<tr|<TR/.test(htmlString) && v.nodeName === 'TR'){
+                    v = v.childNodes[0];
+                }
+                if(!/<td|<TD/.test(htmlString) && v.nodeName === 'TD'){
+                    v = v.childNodes[0];
+                }
+                if(!/<th|<TH/.test(htmlString) && v.nodeName === 'TH'){
+                    v = v.childNodes[0];
+                }
+                childNodes.push(v);
+            });
+            jToolDOM.innerHTML = '';
+            return childNodes;
         }
     });
     // Class 相关操作
@@ -537,7 +581,7 @@ define(function() {
             }
             // event callback 为必要参数
             if(!event){
-                this.error('事件绑定失败,原因: 参数中缺失事件类型');
+                jTool.error('事件绑定失败,原因: 参数中缺失事件类型');
                 return this;
             }
             if(!querySelector){

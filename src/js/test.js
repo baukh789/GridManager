@@ -10,9 +10,23 @@ require(['require.config'], function(){
         function testDOM(){
             var t1 = $('.t1');
             t1.wrap('<div class="wrap"><div class="table-div"></div></div>');
-            t1.append('<div class="append-div">append-div</div>')
+            var t1Text = t1.text();
+            t1.append('<div class="append-div">'+t1Text+'</div>');
+            t1.attr('auto-attr', 'false');
             var wrap = t1.closest('.wrap');
+            console.log(t1);
             console.log(wrap);
+        }
+        // 测试attr and each
+        //testAttr();
+        function testAttr(){
+            var t2 = $('.t2');
+            t2.append('<span>append span</span><span>append span</span><span>append span</span>');
+            var span = $('span', t2);
+            console.log(span);
+            $.each(span, function(i, v){
+                $(v).attr('test-attr', 'baukh');
+            });
         }
         // 测试on
         // testOn();

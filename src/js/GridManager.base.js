@@ -357,6 +357,7 @@ define(['jTool'], function($) {
         ,createDOM: function(table){
             var _this = this;
             table.attr({width: '100%', cellspacing: 1, cellpadding:0, 'grid-manager': _this.gridManagerName});
+
             var theadHtml = '<thead grid-manager-thead>',
                 tbodyHtml = '<tbody></tbody>',
                 alignAttr = '', 				//文本对齐属性
@@ -391,7 +392,6 @@ define(['jTool'], function($) {
             });
             theadHtml += '</thead>';
             table.html(theadHtml + tbodyHtml);
-
             //嵌入序号DOM
             if(_this.supportAutoOrder){
                 _this.initOrderDOM(table);
@@ -437,8 +437,6 @@ define(['jTool'], function($) {
             var	wrapHtml,                       //外围的html片段
                 setTopHtml,                     //表头置顶html片段
                 tableWarp,						//单个table所在的DIV容器
-                tName,							//table的GridManager属性值
-                tableDiv,						//单个table所在的父级DIV
                 onlyThead,						//单个table下的thead
                 onlyThList,						//单个table下的TH
                 onlyTH,							//单个TH
@@ -458,7 +456,7 @@ define(['jTool'], function($) {
                 table.addClass('grid-manager-default');
             }
             onlyThead = $('thead', table);
-            onlyThList = onlyThead.find('th');
+            onlyThList = $('th', onlyThead);
             //表头置顶
             if(_this.supportSetTop){
                 setTopHtml = '<div class="scroll-area"><div class="sa-inner"></div></div>';
@@ -466,12 +464,12 @@ define(['jTool'], function($) {
             wrapHtml = '<div class="table-wrap"><div class="table-div"></div>'+ setTopHtml +'<span class="text-dreamland"></span></div>';
             table.wrap(wrapHtml);
             tableWarp = table.closest('.table-wrap');
-            tableDiv = $('.table-div', tableWarp);
+         //   tableDiv = $('.table-div', tableWarp);
             //嵌入配置列表DOM
             if(_this.supportConfig){
                 tableWarp.append(_configHtml);
             }
-            tName = table.attr('grid-manager');
+         //   tName = table.attr('grid-manager');
             //嵌入Ajax分页DOM
             if(_this.supportAjaxPage){
                 tableWarp.append(_ajaxPageHtml);
@@ -481,11 +479,9 @@ define(['jTool'], function($) {
             if(_this.supportExport){
                 tableWarp.append(exportActionHtml);
             }
-
             $.each(onlyThList, function(i2,v2){
                 onlyTH = $(v2);
                 onlyTH.attr('th-visible','visible');
-
                 //是否为自动生成的序号列
                 if(_this.supportAutoOrder && onlyTH.attr('gm-order') == 'true'){
                     isLmOrder = true;
@@ -501,9 +497,9 @@ define(['jTool'], function($) {
                 }
 
                 //嵌入th下外层div
-                onlyThWarp = document.createElement('div');
-                onlyThWarp.className = 'th-wrap';
-                onlyThWarp = $(onlyThWarp);
+             //   onlyTH.html('<div class="th-wrap"></div>');
+             //   onlyThWarp = $('.th-wrap', onlyTH);
+                onlyThWarp = $('<div class="th-wrap"></div>');
                 //th存在padding时 转移至th-wrap
                 if(_this.isChrome()){
                     thPadding = onlyTH.css('padding');  //firefox 不兼容
