@@ -105,7 +105,7 @@ define(function() {
         if(typeof(target) === 'boolean'){
             doop = target;
             target = arguments[1] || {};
-            console.log('jTool不支持递归合并');
+//            console.log('jTool不支持递归合并');
         }
         for(; i<arguments.length; i++){
             options = arguments[i] || {};
@@ -252,6 +252,29 @@ define(function() {
     /*
      * @jTool.prototype扩展
      * */
+    // 获取指定索引的对象或DOM
+    jTool.prototype.extend({
+        // 获取指定DOM Element
+        get: function(index){
+            return this.DOMList[0];
+        }
+        // 获取指定索引的cQuery对象:返回的是以指定索引继承的cQuery对象
+        ,eq: function(index){
+            /*
+             var newObject = Object.create(this);
+             // 与jQuery不同的是, eq结果为空时会直接抛出异常,而不是返回空对象.这样做的好处是防止为空导致的排错困难
+             if(!this.DOMList[index]){
+             this.error('eq('+ index +')所指向的DOM不存在');
+             return;
+             }
+             newObject.DOMList = [this.DOMList[index]];
+             */
+            return jTool(this.DOMList[index]);
+        }
+        ,find: function(selectText){
+            return jTool(selectText, this);
+        }
+    });
     // DOM元素上获取/存储数值
     jTool.prototype.extend({
         // data唯一识别码
@@ -322,27 +345,6 @@ define(function() {
             });
         }
     });
-    // 获取指定索引的对象或DOM
-    jTool.prototype.extend({
-        // 获取指定DOM Element
-        get: function(index){
-            return this.DOMList[0];
-        }
-        // 获取指定索引的cQuery对象:返回的是以指定索引继承的cQuery对象
-        ,eq: function(index){
-            var newObject = Object.create(this);
-            // 与jQuery不同的是, eq结果为空时会直接抛出异常,而不是返回空对象.这样做的好处是防止为空导致的排错困难
-            if(!this.DOMList[index]){
-                this.error('eq('+ index +')所指向的DOM不存在');
-                return;
-            }
-            newObject.DOMList = [this.DOMList[index]];
-            return newObject;
-        }
-        ,find: function(selectText){
-            return jTool(selectText, this);
-        }
-    });
     // 抛出异常信息
     jTool.prototype.extend({
         error: function(msg){
@@ -401,16 +403,23 @@ define(function() {
     // 参数child可能为ElementNode,也可能是字符串
     jTool.prototype.extend({
         append: function(child){
+            if(child.jTool){
+                child = child.get(0);
+            }
             jTool.each(this.DOMList, function(i, v){
                 if(child.nodeType && child.nodeType === 1){
                     v.appendChild(child.cloneNode(true));
-                }else{
+                }
+                else{
                     v.innerHTML = v.innerHTML + child;
                 }
             });
             return this;
         }
         ,prepend: function(child){
+            if(child.jTool){
+                child = child.get(0);
+            }
             jTool.each(this.DOMList, function(i, v){
                 if(child.nodeType && child.nodeType === 1) {
                     v.insertBefore(child.cloneNode(true), v.childNodes[0]);
@@ -426,6 +435,9 @@ define(function() {
                 return this.DOMList[0].innerHTML;
             }
             // setter
+            if(child.jTool){
+                child = child.get(0);
+            }
             jTool.each(this.DOMList, function(i, v){
                 if(child.nodeType && child.nodeType === 1) {
                     v.innerHTML = child.cloneNode(true).outerHTML;;
@@ -448,6 +460,7 @@ define(function() {
             return this;
         }
         ,closest: function (selectorText) {
+           var _this  =this;
             var parentDOM = this.DOMList[0].parentNode;
             if(typeof selectorText === 'undefined'){
                 return Sizzle(parentDOM);
@@ -456,9 +469,6 @@ define(function() {
 
             // 递归查找匹配的父级元素
             function getParentNode(){
-                console.log(parentDOM)
-                console.log(target)
-                console.log([].indexOf.call(target, parentDOM))
                 if(!parentDOM || target.length === 0 || parentDOM.nodeType !== 1){
                     parentDOM = null;
                     return;
@@ -587,5 +597,6 @@ define(function() {
             return this;
         }
     });
+    window.$ = window.jTool = jTool;
     return jTool;
 });

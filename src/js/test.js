@@ -3,16 +3,14 @@
  */
 require(['require.config'], function(){
     require(['jTool'], function($){
-        // 测试closest
-        //testClosest();
-        function testClosest(){
-            console.log($('.tt3').closest('p.t3'));
-        }
-        // 测试wrap
-        testWrap();
-        function testWrap(){
+        window.$ = window.jTool = $;
+
+        // 测试wrap and closest
+        testDOM();
+        function testDOM(){
             var t1 = $('.t1');
-            t1.wrap('<div class="wrap"></div>');
+            t1.wrap('<div class="wrap"><div class="table-div"></div></div>');
+            t1.append('<div class="append-div">append-div</div>')
             var wrap = t1.closest('.wrap');
             console.log(wrap);
         }
@@ -74,6 +72,15 @@ require(['require.config'], function(){
                 console.log(data);
                 console.log(status);
             });
+        }
+
+        // 测试html
+        //testHtml();
+        function testHtml(){
+            var t1 = $('.t1');
+            var t2 = $('.t2');
+            t1.html(t2);
+            console.log(t1.html());
         }
 
         // 测试append

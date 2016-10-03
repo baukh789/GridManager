@@ -19,7 +19,6 @@ define(['jTool'], function($) {
                     _table 			= _tr.closest('table'),			            //事件源所在的table
                     _tableDiv 		= _table.closest('.table-div'),	            //事件源所在的DIV
                     _thWarp			= $('.th-wrap', _th),						//th下所有内容的外围容器
-                    _dragAction		= $('.drag-action', _thWarp),				//th文本在渲染后所在的容器
                     _allTh 			= _tr.find('th[th-visible!=none]'),		    //事件源同层级下的所有th
                     _nextTh			= _allTh.eq(_th.index() + 1),				//事件源下一个可视th
                     _last 			= _allTh.eq(_allTh.length - 1), 			//事件源同层级倒数第一个th
@@ -39,8 +38,7 @@ define(['jTool'], function($) {
                 _th.addClass('adjust-selected');
                 _td.addClass('adjust-selected');
                 //绑定鼠标拖动事件
-                var _X = event.clientX, //记录鼠标落下的横向坐标
-                    _w,
+                var _w,
                     _w2;
                 var _realWidthForThText = _this.getTextWidth(_th);
                 _table.unbind('mousemove');
@@ -89,31 +87,22 @@ define(['jTool'], function($) {
                 });
                 return false;
             });
-
         }
         /*
          @获取TH宽度
          $.element: th
          */
         ,getTextWidth: function(element){
-            var _this = this;
             var th 				= $(element),   				//th
                 thWarp 			= $('.th-wrap', th),  			//th下的GridManager包裹容器
                 thText	 		= $('.th-text', th),			//文本所在容器
                 remindAction	= $('.remind-action', thWarp),	//提醒所在容器
                 sortingAction	= $('.sorting-action', thWarp);	//排序所在容器
             //文本镜象 用于处理实时获取文本长度
-
-            console.log('----------')
-            //这里的closest获取存在问题
-            // 需要看一下jTool中的[].indexOf.call(target, parentDOM)
-            // 可能通过wrap增加的节点会存在取不到的情况
-            var tableWrap = th.closest('table-div');
-            console.log(tableWrap)
-            console.log('----------')
+            console.log($('th').eq(0) == th)
+            console.log(th)
+            var tableWrap = th.closest('.table-wrap');
             var textDreamland	= $('.text-dreamland', tableWrap);
-
-            console.log('----------')
             //将th文本嵌入文本镜象 用于获取文本实时宽度
             textDreamland.text(thText.text());
             textDreamland.css({

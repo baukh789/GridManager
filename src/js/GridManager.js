@@ -69,7 +69,6 @@ define(['jTool', 'checkboxGM', 'adjustGM', 'ajaxPageGM', 'baseGM', 'configGM', '
         //用于支持全局属性配置  于v1.8 中将GridManagerConfig弱化且不再建议使用。
 
         var textConfig = {};
-        console.log(settings)
         if(typeof(gridManagerConfig) == 'object'){
             $.extend(true, textConfig, this.textConfig, gridManagerConfig.textConfig)
             $.extend(true, this, gridManagerConfig);

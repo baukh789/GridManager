@@ -576,7 +576,6 @@ define(['jTool'], function($) {
                     onlyThWarp.append(adjustDOM);
                 }
                 onlyTH.html(onlyThWarp);
-
                 //如果th上存在width属性，则表明配置项中存在该项配置；
                 //验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
                 var thWidthForConfig = onlyTH.attr('width');
