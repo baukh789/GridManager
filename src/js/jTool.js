@@ -202,6 +202,14 @@ define(function() {
         ,error: function(msg){
             throw new Error('[jTool Error: '+ msg + ']');
         }
+        // 检测是否为空对象
+        ,isEmptyObject: function(obj){
+            var isEmptyObject = true;
+            for(var i in obj){
+                isEmptyObject = false;
+            }
+            return isEmptyObject;
+        }
     });
     // ajax
     // type === GET: data格式 name=baukh&age=29
@@ -569,7 +577,14 @@ define(function() {
             return this.removeEvent(this.getEventObject(event));
         }
         ,trigger: function(event){
-
+            jTool.each(this.DOMList, function(e, element){
+                try {
+                    element[event]();
+                }catch(e){
+                    jTool.error(e);
+                }
+            });
+            return this;
         }
         // 获取jTool Event 对象
         ,getEventObject: function(event, querySelector, callback, useCapture){

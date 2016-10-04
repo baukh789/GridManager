@@ -10,9 +10,9 @@ define(['jTool'], function($) {
         bindSetTopFunction: function(table){
             var _this = this;
             //绑定窗口变化事件
-            $(window).resize(function() {
+            window.onresize = function () {
                 $(_this.scrollDOM).trigger('scroll', [true]);
-            });
+            };
             //绑定模拟X轴滚动条
             $('.scroll-area').unbind('scroll');
             $('.scroll-area').bind('scroll', function(){
