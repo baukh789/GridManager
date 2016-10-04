@@ -391,13 +391,19 @@ define(function() {
                 v.removeAttribute(key);
             });
         }
+        // 索引
+        ,index: function () {
+            var node = this.DOMList[0],
+                nodeList = node.parentNode.childNodes;
+            return nodeList ? [].indexOf.call(nodeList, node) : -1;
+        }
     });
     // CSS
     jTool.prototype.extend({
         css: function(key, value){
             // getter
             if(!value){
-                return jTool.getStyle(this.DOMList[0])[key];
+                return jTool.getStyle(this.DOMList[0], key);
             }
             // setter
             jTool.each(this.DOMList, function(i, v){
@@ -439,7 +445,6 @@ define(function() {
                 }
                 getOffset(node.parentNode);
             }
-
         }
     });
     // 效果
