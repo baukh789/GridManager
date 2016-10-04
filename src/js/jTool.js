@@ -210,6 +210,10 @@ define(function() {
             }
             return isEmptyObject;
         }
+        // 获取节点样式
+        ,getStyle: function(dom, key){
+            return window.getComputedStyle(dom)[key]
+        }
     });
     // ajax
     // type === GET: data格式 name=baukh&age=29
@@ -269,7 +273,7 @@ define(function() {
     /*
      * @jTool.prototype扩展
      * */
-    // 获取指定索引的对象或DOM
+    // 筛选
     jTool.prototype.extend({
         // 获取指定DOM Element
         get: function(index){
@@ -292,7 +296,33 @@ define(function() {
             return jTool(selectText, this);
         }
     });
-    // DOM元素上获取/存储数值
+
+    // Class
+    jTool.prototype.extend({
+        addClass: function(className){
+            jTool.each(this.DOMList, function(i, v){
+                v.classList.add(className);
+            });
+            return this;
+        }
+        ,removeClass: function(className){
+            jTool.each(this.DOMList, function(i, v){
+                v.classList.remove(className);
+            });
+            return this;
+        }
+        ,toggleClass: function(className){
+            jTool.each(this.DOMList, function(i, v){
+                v.classList.toggle(className);
+            });
+            return this;
+        }
+        // 如果DOMList为多值, 以第一个值为基准
+        ,hasClass: function(className){
+            return this.get(0).classList.contains(className);
+        }
+    });
+    // 属性 数据
     jTool.prototype.extend({
         // data唯一识别码
         dataKey: 'jTool' + jTool.version
@@ -362,33 +392,12 @@ define(function() {
             });
         }
     });
-    // 抛出异常信息
-    jTool.prototype.extend({
-        error: function(msg){
-            throw new Error('[jTool Error: '+ msg + ']');
-        }
-    });
-    // 节点文本
-    jTool.prototype.extend({
-        text: function(text){
-            // setter
-            if(typeof(text) !== 'undefined'){
-                jTool.each(this.DOMList, function(i, v){
-                    v.innerText = text;
-                });
-                return this;
-                // getter
-            }else{
-                return this.get(0).innerText;
-            }
-        }
-    });
-    // Css操作
+    // CSS
     jTool.prototype.extend({
         css: function(key, value){
             // getter
             if(!value){
-                return window.getComputedStyle(this.DOMList[0])[key];
+                return jTool.getStyle(this.DOMList[0])[key];
             }
             // setter
             jTool.each(this.DOMList, function(i, v){
@@ -399,9 +408,41 @@ define(function() {
         ,width: function(value){
             return this.css('width', value);
         }
+        ,height: function(value){
+            return this.css('height', value);
+        }
+        ,offset: function(){
+            var offest = {
+                top: 0,
+                left:0
+            };
+            var _position;
+            getOffset(this.DOMList[0], true);
+            return offest;
 
+            // 递归获取offset
+            function getOffset(node, init){
+                if(node.nodeType !== 1){
+                    return;
+                }
+                _position = jTool.getStyle(node, 'position');
+                // position=static: 继续递归父节点
+                if(typeof(init) === 'undefined' && _position === 'static'){
+                    getOffset(node.parentNode);
+                    return;
+                }
+                offest.top = node.offsetTop + offest.top;
+                offest.left = node.offsetLeft + offest.left;
+                // position=fixed
+                if( _position === 'fixed'){
+                    return;
+                }
+                getOffset(node.parentNode);
+            }
+
+        }
     });
-    // 显示/隐藏元素
+    // 效果
     jTool.prototype.extend({
         show: function(){
             jTool.each(this.DOMList, function(i, v){
@@ -416,13 +457,25 @@ define(function() {
             return this;
         }
     });
-    // DOM操作 参数child可能为ElementNode,也可能是字符串
+    // 文档操作
     jTool.prototype.extend({
         append: function(childList){
             return this.html(childList, 'append');
         }
         ,prepend: function(childList){
             return this.html(childList, 'prepend');
+        }
+        ,text: function(text){
+            // setter
+            if(typeof(text) !== 'undefined'){
+                jTool.each(this.DOMList, function(i, v){
+                    v.innerText = text;
+                });
+                return this;
+                // getter
+            }else{
+                return this.get(0).innerText;
+            }
         }
         ,html: function(childList, type) {
             // getter
@@ -535,36 +588,10 @@ define(function() {
             return childNodes;
         }
     });
-    // Class 相关操作
-    jTool.prototype.extend({
-        addClass: function(className){
-            jTool.each(this.DOMList, function(i, v){
-                v.classList.add(className);
-            });
-            return this;
-        }
-        ,removeClass: function(className){
-            jTool.each(this.DOMList, function(i, v){
-                v.classList.remove(className);
-            });
-            return this;
-        }
-        ,toggleClass: function(className){
-            jTool.each(this.DOMList, function(i, v){
-                v.classList.toggle(className);
-            });
-            return this;
-        }
-        // 如果DOMList为多值, 以第一个值为基准
-        ,hasClass: function(className){
-            return this.get(0).classList.contains(className);
-        }
-
-    });
-    // Event 事件相关操作
-    // 将事件触发执行的函数存储于DOM上, 在清除事件时使用
+    // Event 事件
     jTool.prototype.extend({
         on: function(event, querySelector, callback, useCapture){
+            // 将事件触发执行的函数存储于DOM上, 在清除事件时使用
             return this.addEvent(this.getEventObject(event, querySelector, callback, useCapture));
         }
         ,off: function(event, querySelector){

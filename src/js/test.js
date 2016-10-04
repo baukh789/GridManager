@@ -5,8 +5,12 @@ require(['require.config'], function(){
     require(['jTool'], function($){
         window.$ = window.jTool = $;
 
+        testOffset();
+        function testOffset(){
+            console.log($('.tt3').offset());
+        }
         // 测试wrap and closest
-        testDOM();
+        //testDOM();
         function testDOM(){
             var t1 = $('.t1');
             t1.wrap('<div class="wrap"><div class="table-div"></div></div>');
