@@ -122,7 +122,7 @@ define(['jTool'], function($) {
          $.cb		: 回调函数
          */
         ,setAreVisible: function(_thList_, _visible_, _isInit_ ,cb){
-            var _this = $(this);
+            var _this = this;
             var _table,			//当前所在的table
                 _tableWarp, 	//当前所在的容器
                 _th,			//当前操作的th

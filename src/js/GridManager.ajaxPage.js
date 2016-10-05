@@ -223,8 +223,7 @@ define(['jTool'], function($) {
             sizeArea.bind('change', function(){
                 var _size = $(this);
                 var _tableWarp  = _size.closest('.table-wrap'),
-                    _table		= $('table[grid-manager]', _tableWarp),
-                    _tName 		= $('table', _tableWarp).attr('grid-manager'); //当前与分页同容器下的列表名称
+                    _table		= $('table[grid-manager]', _tableWarp);
                 _this.pageData = {
                     cPage : 1,
                     pSize : _size.val()

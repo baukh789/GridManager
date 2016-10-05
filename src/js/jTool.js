@@ -79,9 +79,9 @@ define(function() {
         this.jTool = true;
         // 用于存储当前选中的节点
         this.DOMList = DOMList;
+        this.length = this.DOMList ? this.DOMList.length : 0;
         // 存储选择器条件
         this.querySelector = selector;
-
         return this;
     };
     /*
@@ -147,9 +147,6 @@ define(function() {
                 case Array:
                     type = 'Array';
                     break;
-                case Element:
-                    type = 'Element';
-                    break;
                 case NodeList:
                     type = 'NodeList';
                     break;
@@ -172,6 +169,9 @@ define(function() {
                     type = 'null';
                     break;
             }
+            if(o instanceof Element){
+                type = 'Element';
+            }
             return type;
         }
         // 循环
@@ -184,6 +184,7 @@ define(function() {
             if(type === 'Array' || type === 'NodeList'){
                 // 由于存在类数组NodeList, 所以不能直接调用every方法
                 [].every.call(object, function(v, i){
+                    v.jTool ? v = v.get(0) : ''; // 处理jTool 对象
                     return callback.call(v, i, v) === false ? false : true;
                 });
             }else if(type === 'Object'){
@@ -277,7 +278,7 @@ define(function() {
     jTool.prototype.extend({
         // 获取指定DOM Element
         get: function(index){
-            return this.DOMList[0];
+            return this.DOMList[index];
         }
         // 获取指定索引的cQuery对象:返回的是以指定索引继承的cQuery对象
         ,eq: function(index){
@@ -332,7 +333,7 @@ define(function() {
                 _data = {};
             // 未指定参数,返回全部
             if(typeof key === 'undefined' && typeof value === 'undefined'){
-                return _this.DOMList[0][_this.dataKey]
+                return _this.get(0)[_this.dataKey]
             }
             // setter
             if(typeof(value) !== 'undefined'){
@@ -350,7 +351,7 @@ define(function() {
             }
             // getter
             else{
-                _data = _this.DOMList[0][_this.dataKey] || {};
+                _data = _this.get(0)[_this.dataKey] || {};
                 return _data[key] || _this.attr(key);
             }
         }
@@ -377,9 +378,11 @@ define(function() {
                 jTool.each(this.DOMList, function(i, v){
                     v.setAttribute(key, value);
                 });
-                // getter
-            }else{
-                return this.DOMList[0].getAttribute(key);
+                return this;
+            }
+            // getter
+            else{
+                return this.get(0).getAttribute(key);
             }
         }
         // 删除普通属性
@@ -391,9 +394,31 @@ define(function() {
                 v.removeAttribute(key);
             });
         }
+        // 配置固有属性
+        ,prop: function (key, value) {
+            // 未指定参数,返回空字符
+            if(typeof key === 'undefined' && typeof value === 'undefined'){
+                return '';
+            }
+            // setter
+            if(typeof(value) !== 'undefined'){
+                jTool.each(this.DOMList, function(i, v){
+                    v[key] = value;
+                });
+                return this;
+            }
+            // getter
+            else{
+                return this.get(0)[key];
+            }
+        }
+        // attr -> value
+        ,val: function (value) {
+            return this.attr('value', value);
+        }
         // 索引
         ,index: function () {
-            var node = this.DOMList[0],
+            var node = this.get(0),
                 nodeList = node.parentNode.childNodes;
             return nodeList ? [].indexOf.call(nodeList, node) : -1;
         }
@@ -403,7 +428,7 @@ define(function() {
         css: function(key, value){
             // getter
             if(!value){
-                return jTool.getStyle(this.DOMList[0], key);
+                return jTool.getStyle(this.get(0), key);
             }
             // setter
             jTool.each(this.DOMList, function(i, v){
@@ -423,7 +448,7 @@ define(function() {
                 left:0
             };
             var _position;
-            getOffset(this.DOMList[0], true);
+            getOffset(this.get(0), true);
             return offest;
 
             // 递归获取offset
@@ -482,30 +507,35 @@ define(function() {
                 return this.get(0).innerText;
             }
         }
-        ,html: function(childList, type) {
+        ,html: function(childList, insertType) {
             // getter
-            if(typeof(childList) == 'undefined' && typeof(type) == 'undefined'){
-                return this.DOMList[0].innerHTML;
+            if(typeof(childList) == 'undefined' && typeof(insertType) == 'undefined'){
+                return this.get(0).innerHTML;
             }
             // setter
             var _this = this;
+            var type = jTool.type(childList);
             if(childList.jTool){
                 childList = childList.DOMList;
             }
-            else if(!childList.nodeType || childList.nodeType !== 1){
+            else if(type === 'String'){
                 childList = _this.createDOM(childList || '');
+            }
+            else if(type === 'Element'){
+                childList = [childList];
             }
             var firstChild;
             jTool.each(_this.DOMList, function(e, element){
                 // html
-                if(!type){
+                if(!insertType){
                     element.innerHTML = '';
                 }
                 // prepend
-                else if(type === 'prepend'){
+                else if(insertType === 'prepend'){
                     firstChild = element.firstChild;
                 }
                 jTool.each(childList, function(c, child){
+                    child = child.cloneNode(true);
                     // text node
                     if(!child.nodeType){
                         child = document.createTextNode(child);
@@ -535,7 +565,7 @@ define(function() {
         }
         ,closest: function (selectorText) {
            var _this  =this;
-            var parentDOM = this.DOMList[0].parentNode;
+            var parentDOM = this.get(0).parentNode;
             if(typeof selectorText === 'undefined'){
                 return jTool(parentDOM);
             }
@@ -570,26 +600,25 @@ define(function() {
                 jToolDOM = document.querySelector('#jTool-create-dom');
             }
             jToolDOM.innerHTML = htmlString || '';
-            var childNodes = [];
-            jTool.each(jToolDOM.childNodes, function(i, v){
-                if(!/<tbody|<TBODY/.test(htmlString) && v.nodeName === 'TBODY'){
-                    v = v.childNodes[0];
-                }
-                if(!/<thead|<THEAD/.test(htmlString) && v.nodeName === 'THEAD'){
-                    v = v.childNodes[0];
-                }
-                if(!/<tr|<TR/.test(htmlString) && v.nodeName === 'TR'){
-                    v = v.childNodes[0];
-                }
-                if(!/<td|<TD/.test(htmlString) && v.nodeName === 'TD'){
-                    v = v.childNodes[0];
-                }
-                if(!/<th|<TH/.test(htmlString) && v.nodeName === 'TH'){
-                    v = v.childNodes[0];
-                }
-                childNodes.push(v);
-            });
-            jToolDOM.innerHTML = '';
+            var childNodes = jToolDOM.childNodes;
+
+            // 进行table类标签清理, 原因是在增加如th,td等table类标签时,浏览器会自动补全节点.
+            if(!/<tbody|<TBODY/.test(htmlString) && childNodes.length == 1 && childNodes[0].nodeName === 'TBODY'){
+                childNodes = childNodes[0].childNodes;
+            }
+            if(!/<thead|<THEAD/.test(htmlString) && childNodes.length == 1 &&  childNodes[0].nodeName === 'THEAD'){
+                childNodes = childNodes[0].childNodes;
+            }
+            if(!/<tr|<TR/.test(htmlString) && childNodes.length == 1 &&  childNodes[0].nodeName === 'TR'){
+                childNodes = childNodes[0].childNodes;
+            }
+            if(!/<td|<TD/.test(htmlString) && childNodes.length == 1 &&  childNodes[0].nodeName === 'TD'){
+                childNodes = childNodes[0].childNodes;
+            }
+            if(!/<th|<TH/.test(htmlString) && childNodes.length == 1 &&  childNodes[0].nodeName === 'TH'){
+                childNodes = childNodes[0].childNodes;
+            }
+            jToolDOM.remove();
             return childNodes;
         }
     });

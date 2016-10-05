@@ -251,13 +251,6 @@ define(['jTool'], function($) {
                 typeof callback === 'function' ? callback() : '';
                 return;
             }
-            /*
-             @baukh20160717:2。0版本中该验证将无用
-             if(!tbodyDOM || tbodyDOM.length === 0){
-             tableDOM.append('<tbody></tbody>');
-             tbodyDOM = $('tbody', tableDOM);
-             }
-             */
             var parme = $.extend({}, _this.query);
             //合并分页信息至请求参
             if(_this.supportAjaxPage){
@@ -356,8 +349,7 @@ define(['jTool'], function($) {
          */
         ,createDOM: function(table){
             var _this = this;
-            table.attr({width: '100%', cellspacing: 1, cellpadding:0, 'grid-manager': _this.gridManagerName});
-
+            table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', _this.gridManagerName);
             var theadHtml = '<thead grid-manager-thead>',
                 tbodyHtml = '<tbody></tbody>',
                 alignAttr = '', 				//文本对齐属性
@@ -739,7 +731,7 @@ define(['jTool'], function($) {
                 _this.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
                 return false;
             }
-            if(!$table || $table.length == 0){
+            if(!$table || $table.length === 0){
                 _this.outLog('getLocalStorage:无效的table', 'error');
                 return false;
             }
@@ -930,9 +922,9 @@ define(['jTool'], function($) {
                         //		console.log(_thList.index(_thList.eq($(v2).index())))
                         //		console.log('-------------------')
                         //baukh20160703:#注：这块被简化了，可能存在问题，需要验证
-                        _tdArray[_thList.eq(i2).index()] = v2;
+                        _tdArray[_thList.eq(i2).index()] = v2.outerHTML;
                     });
-                    _tmpHtml[i].html(_tdArray);
+                    _tmpHtml[i].html(_tdArray.join(''));
                 });
             }
             //依据配置对列表进行隐藏、显示
