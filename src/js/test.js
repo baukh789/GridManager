@@ -5,7 +5,7 @@ require(['require.config'], function(){
     require(['jTool'], function($){
         window.$ = window.jTool = $;
 
-        testOffset();
+        //testOffset();
         function testOffset(){
             console.log($('.tt3').offset());
         }
@@ -33,17 +33,20 @@ require(['require.config'], function(){
             });
         }
         // 测试on
-        // testOn();
+         testOn();
         function testOn(){
-            $('div').off('click', 'p,span');
-            $('div').on('click', 'p,span', function(e){
+            $('div').off('click', 'p');
+            $('div').on('click', 'p', function(e){
                 console.log('click=', this.innerHTML)
             });
+            $('div').append('<p>新增加的P元素</p>');
+            /*
             $('div').off('mousedown', 'p,span');
             $('div').on('mousedown', 'p,span', function(e){
                 console.log('mousedown=', this.innerHTML)
             });
             $('.t1').off('click', 'p,span');
+            */
         }
         // 测试bind
         // testBind();

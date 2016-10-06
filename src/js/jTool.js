@@ -414,7 +414,7 @@ define(function() {
         }
         // attr -> value
         ,val: function (value) {
-            return this.attr('value', value);
+            return this.attr('value', value) || '';
         }
         // 索引
         ,index: function () {

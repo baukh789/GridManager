@@ -904,7 +904,8 @@ define(['jTool'], function($) {
                 });
             }
             //依据顺序存储重置td顺序
-            if(_this.supportAdjust){
+            if(_this.supportAdjust){  // 这里应该是验证换位而不是宽度调整
+                return;
                 var _thList = _this.getOriginalThDOM(_table),
                     _td;
                 if(!_thList || _thList.length == 0 ){

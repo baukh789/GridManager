@@ -46,20 +46,20 @@ define(['jTool'], function($) {
                 previousClassName += ' disabled';
             }
             tHtml += '<li cPage="1" class="'+ firstClassName +'">'
-                +  '<a href="javascript:void(0);">'+ _this.i18nText("first-page") +'</a>'
+                +  _this.i18nText("first-page")
                 +  '</li>'
                 +  '<li cPage="'+(cPage-1)+'" class="'+ previousClassName +'">'
-                +  '<a href="javascript:void(0);">'+ _this.i18nText("previous-page") +'</a>'
+                +  _this.i18nText("previous-page")
                 +  '</li>';
             var i 	 = 1,		//循环开始数
                 maxI = tPage;	//循环结束数
             //配置first端省略符
             if(cPage > 4){
                 tHtml += '<li cPage="1">'
-                    +  '<a href="javascript:void(0);">1</a>'
+                    +  '1'
                     +  '</li>'
                     +  '<li class="disabled">'
-                    +	 '<a href="javascript:void(0);">...</a>'
+                    +	 '...'
                     +  '</li>';
                 i = cPage - 2;
             }
@@ -67,22 +67,22 @@ define(['jTool'], function($) {
             if((tPage - cPage) > 4){
                 maxI = cPage + 2;
                 lHtml += '<li class="disabled">'
-                    +	 '<a href="javascript:void(0);">...</a>'
+                    +	 '...'
                     +  '</li>'
                     +  '<li cPage="'+tPage+'">'
-                    +  '<a href="javascript:void(0);">'+ tPage +'</a>'
+                    +  tPage
                     +  '</li>';
             }
             // 配置页码
             for(i; i<= maxI;i++){
                 if(i == cPage){
                     tHtml += '<li class="active">'
-                        +  '<a href="javascript:void(0);">'+ cPage +'</a>'
+                        +  cPage
                         +  '</li>';
                     continue;
                 }
                 tHtml += '<li cPage="'+i+'">'
-                    +  '<a href="javascript:void(0);">'+ i +'</a>'
+                    +  i
                     +  '</li>';
             }
             tHtml += lHtml;
@@ -94,10 +94,10 @@ define(['jTool'], function($) {
                 lastClassName += ' disabled';
             }
             tHtml += '<li cPage="'+(cPage+1)+'" class="'+ nextClassName +'">'
-                +  '<a href="javascript:void(0);">'+ _this.i18nText("next-page") +'</a>'
+                +  _this.i18nText("next-page")
                 +  '</li>'
                 +  '<li cPage="'+tPage+'" class="'+ lastClassName +'">'
-                +  '<a href="javascript:void(0);">'+ _this.i18nText("last-page") +'</a>'
+                +  _this.i18nText("last-page")
                 +  '</li>';
             pagination.html(tHtml);
         }
@@ -167,7 +167,6 @@ define(['jTool'], function($) {
             //绑定刷新界面事件
             refreshAction.unbind('click');
             refreshAction.bind('click', function() {
-                var _action = $(this);
                 var _tableWarp = $(this).closest('.table-wrap'),
                     _input = $('.page-toolbar .gp-input', _tableWarp),
                     _value = _input.val();
@@ -187,8 +186,6 @@ define(['jTool'], function($) {
             });
             //跳转至指定页
             function gotoPage(_tableWarp, _cPage){
-                var _table		= $('table[grid-manager]', _tableWarp),
-                    _size 		= $('select[name="pSizeArea"]', _tableWarp);
                 //跳转的指定页大于总页数
                 if(_cPage > _this.pageData.tPage){
                     _cPage = _this.pageData.tPage;

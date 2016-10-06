@@ -608,34 +608,34 @@ table.grid-manager-default tbody tr:hover td{
 .table-wrap .page-toolbar .ajax-page .pagination{
 	display: inline-block;
 	margin:0px;
+	clear: both;
 }
 .table-wrap .page-toolbar .ajax-page .pagination li{
+	display:block;
 	height:30px;
-	display:inline;
+	float: left;
 }
-.pagination > li:first-child > a, .pagination > li:first-child > span {
+.pagination > li:first-child{
 	border-bottom-left-radius: 2px;
 	border-top-left-radius: 2px;
 	margin-left: 0;
 }
-.pagination li.disabled > a, .pagination li.disabled > a:focus,
-.pagination li.disabled > a:hover, .pagination li.disabled > span,
-.pagination li.disabled > span:focus, .pagination li.disabled > span:hover {
+.pagination li.disabled,
+.pagination li.disabled:focus, .pagination li.disabled:hover {
 	background-color: #fff;
 	border-color: #ddd;
 	color: #999;
 	cursor: not-allowed;
 }
-.pagination li.active > a, .pagination li.active > a:focus,
-.pagination li.active > a:hover, .pagination li.active > span,
-.pagination li.active > span:focus, .pagination li.active > span:hover {
+.pagination li.active,
+.pagination li.active:focus, .pagination li.active:hover {
 	background-color: #3276b1;
 	border-color: #3276b1;
 	color: #fff;
 	cursor: default;
 	z-index: 2;
 }
-.pagination > li > a, .pagination > li > span {
+.pagination > li{
 	height:30px;
 	padding: 5px 10px;
 	background-color: #fff;
@@ -647,8 +647,7 @@ table.grid-manager-default tbody tr:hover td{
 	position: relative;
 	text-decoration: none;
 }
-.pagination li > a:hover, .pagination li > span,
-.pagination li > span:focus, .pagination li > span:hover {
+.pagination li:focus, .pagination li:hover {
 	background-color: #eee;
 	border-color: #ddd;
 	color: #214e75;
