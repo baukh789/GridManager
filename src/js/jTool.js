@@ -20,8 +20,8 @@ define(function() {
             DOMList = [selector];
             context = undefined;
         }
-        // selector -> NodeList
-        else if(selector instanceof NodeList){
+        // selector -> NodeList || selector -> Array
+        else if(selector instanceof NodeList || selector instanceof Array){
             DOMList = selector;
             context = undefined;
         }
@@ -431,6 +431,11 @@ define(function() {
                 return jTool.getStyle(this.get(0), key);
             }
             // setter
+            var pxList = ['width', 'height'];
+            jTool.type(value) !== 'String' ? value = value.toString() : '';
+            if(pxList.indexOf(key) !==-1 && value.indexOf('px') === -1){
+                value = value + 'px';
+            }
             jTool.each(this.DOMList, function(i, v){
                 v.style[key] = value;
             });
@@ -563,6 +568,7 @@ define(function() {
             });
             return this;
         }
+        // 向上寻找匹配节点
         ,closest: function (selectorText) {
            var _this  =this;
             var parentDOM = this.get(0).parentNode;
@@ -585,6 +591,10 @@ define(function() {
             }
             getParentNode();
             return jTool(parentDOM);
+        }
+        // 获取当前元素父级,返回jTool对象
+        ,parent: function () {
+            return this.closest();
         }
         // 通过html字符串, 生成DOM.  返回生成后的子节点
         ,createDOM: function (htmlString) {
@@ -673,50 +683,66 @@ define(function() {
                     }
                 };
             }
-            var eventSplit = event.split('.');
-            var eventObj = {
-                eventName: event + querySelector,
-                type: eventSplit[0],
-                querySelector: querySelector,
-                callback: callback || jTool.noop,
-                useCapture: useCapture || false,
-                nameScope: eventSplit[1] || undefined
-            };
-            return eventObj;
+            var eventSplit = event.split(' ');
+            var eventList = [],
+                eventScopeSplit,
+                eventObj;
+            jTool.each(eventSplit, function (i, eventName) {
+                if(eventName.trim() === ''){
+                    return true;
+                }
+                eventScopeSplit = eventName.split('.');
+                eventObj = {
+                    eventName: eventName + querySelector,
+                    type: eventScopeSplit[0],
+                    querySelector: querySelector,
+                    callback: callback || jTool.noop,
+                    useCapture: useCapture || false,
+                    nameScope: eventScopeSplit[1] || undefined
+                };
+                eventList.push(eventObj);
+            });
+            return eventList;
         }
         // 增加事件,并将事件对象存储至DOM节点
-        ,addEvent: function(eventObj){
-            var eventFnList; //事件执行函数队列
-            jTool.each(this.DOMList, function(i, v){
-                if(!v['jToolEvent']){
-                    v['jToolEvent'] = {};
-                }
-                if(!v['jToolEvent'][eventObj.eventName]){
-                    v['jToolEvent'][eventObj.eventName] = [];
-                }
-                v['jToolEvent'][eventObj.eventName].push(eventObj);
-                v.addEventListener(eventObj.type, eventObj.callback, eventObj.useCapture);
+        // mouseleave 事件原生已经支持了?
+        ,addEvent: function(eventList){
+            var _this = this;
+            jTool.each(eventList, function (index, eventObj) {
+                jTool.each(_this.DOMList, function(i, v){
+                    if(!v['jToolEvent']){
+                        v['jToolEvent'] = {};
+                    }
+                    if(!v['jToolEvent'][eventObj.eventName]){
+                        v['jToolEvent'][eventObj.eventName] = [];
+                    }
+                    v['jToolEvent'][eventObj.eventName].push(eventObj);
+                    v.addEventListener(eventObj.type, eventObj.callback, eventObj.useCapture);
+                });
             });
-            return this;
+            return _this;
         }
         // 删除事件,并将事件对象移除出DOM节点
-        ,removeEvent: function(eventObj){
+        ,removeEvent: function(eventList){
+            var _this = this;
             var eventFnList; //事件执行函数队列
-            jTool.each(this.DOMList, function(i, v){
-                if(!v['jToolEvent']){
-                    return;
-                }
-                eventFnList = v['jToolEvent'][eventObj.eventName];
-                if(eventFnList){
-                    jTool.each(eventFnList, function(i2, v2){
-                        v.removeEventListener(v2.type, v2.callback);
-                    });
-                    v['jToolEvent'][eventObj.eventName] = undefined;
-                }
+            jTool.each(eventList, function (index, eventObj) {
+                jTool.each(_this.DOMList, function(i, v){
+                    if(!v['jToolEvent']){
+                        return;
+                    }
+                    eventFnList = v['jToolEvent'][eventObj.eventName];
+                    if(eventFnList){
+                        jTool.each(eventFnList, function(i2, v2){
+                            v.removeEventListener(v2.type, v2.callback);
+                        });
+                        v['jToolEvent'][eventObj.eventName] = undefined;
+                    }
+                });
             });
-            return this;
+            return _this;
         }
     });
-    window.$ = window.jTool = jTool;
+    window.$ = window.jTool = jTool;  //临时对外使用
     return jTool;
 });

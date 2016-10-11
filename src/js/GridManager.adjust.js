@@ -19,13 +19,16 @@ define(['jTool'], function($) {
                     _table 			= _tr.closest('table'),			            //事件源所在的table
                     _tableDiv 		= _table.closest('.table-div'),	            //事件源所在的DIV
                     _thWarp			= $('.th-wrap', _th),						//th下所有内容的外围容器
-                    _allTh 			= _tr.find('th[th-visible!=none]'),		    //事件源同层级下的所有th
+                    _allTh 			= _tr.find('th[th-visible="visible"]'),		//事件源同层级下的所有th
                     _nextTh			= _allTh.eq(_th.index() + 1),				//事件源下一个可视th
                     _last 			= _allTh.eq(_allTh.length - 1), 			//事件源同层级倒数第一个th
                     _lastButOne 	= _allTh.eq(_allTh.length - 2), 			//事件源同层级倒数第二个th
-                    _td 			= _table.find('tbody')
-                        .find('tr')
-                        .find('td:eq('+_th.index()+')'); 		//与事件源同列的所在td
+                    _td 	    	= [];  //存储与事件源同列的所有td
+                // 获取与事件源同列的所有td
+                $.each($('tbody tr', _table), function (i, v) {
+                    _td.push($('td', v).get(_th.index()));
+                });
+                _td = $(_td);
                 //	adjustActionToTr= $('.adjust-action',_tr);				//事件源所在的TR下的全部调整宽度节点
                 //重置width 防止auto现象
                 $.each(_allTh, function(i, v){
@@ -56,7 +59,7 @@ define(['jTool'], function($) {
                         _w2 = _th.width() - _w + _last.width();
                         _last.width(Math.ceil(_w2 < _realWidthForThText ? _realWidthForThText : _w2));
                     }
-                    _th.width(Math.ceil(_w));
+                    _th.css('width', Math.ceil(_w));
                     //_isSame:table的宽度与table-div宽度是否相同
                     //Chrome下 宽度会精确至小数点后三位 且 使用width时会进行四舍五入，需要对其进行特殊处理 宽度允许相差1px
                     var _isSame  = _this.isChrome() ?
