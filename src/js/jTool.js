@@ -102,7 +102,7 @@ define(function() {
             i = 1,
             target = arguments[0],
             options;
-        // 如果参数只有一个, 将认为是对cQuery进行扩展
+        // 如果参数只有一个, 将认为是对jTool进行扩展
         if(arguments.length === 1){
             target = this;
             i=0;
@@ -123,7 +123,7 @@ define(function() {
         return target;
     };
     /*
-     * @cQuery工具扩展
+     * @jTool工具扩展
      * */
     jTool.extend({
         // 是否为chrome浏览器
@@ -280,47 +280,60 @@ define(function() {
         get: function(index){
             return this.DOMList[index];
         }
-        // 获取指定索引的cQuery对象:返回的是以指定索引继承的cQuery对象
+        // 获取指定索引的jTool对象
         ,eq: function(index){
-            /*
-             var newObject = Object.create(this);
-             // 与jQuery不同的是, eq结果为空时会直接抛出异常,而不是返回空对象.这样做的好处是防止为空导致的排错困难
-             if(!this.DOMList[index]){
-             jTool.error('eq('+ index +')所指向的DOM不存在');
-             return;
-             }
-             newObject.DOMList = [this.DOMList[index]];
-             */
             return jTool(this.DOMList[index]);
         }
+        // 返回指定选择器的jTool对象
         ,find: function(selectText){
             return jTool(selectText, this);
+        }
+        // 获取与th同列的td jTool对象, 该方法的调用者只允许为Th
+        ,getRowTd: function () {
+            var th = this.eq(0);
+            if(th.get(0).tagName !== 'TH'){
+                jTool.error('getRowTd的调用者只允许为Th');
+                return;
+            }
+            var table = th.closest('table'),
+                trList = $('tbody tr', table);
+            var tdList = [],
+                thIndex = th.index();
+            jTool.each(trList, function (i, v) {
+                tdList.push(jTool('td', v).get(thIndex));
+            });
+            return jTool(tdList);
         }
     });
 
     // Class
     jTool.prototype.extend({
         addClass: function(className){
-            jTool.each(this.DOMList, function(i, v){
-                v.classList.add(className);
-            });
-            return this;
+            return this.changeClass(className, 'add');
         }
         ,removeClass: function(className){
-            jTool.each(this.DOMList, function(i, v){
-                v.classList.remove(className);
-            });
-            return this;
+            return this.changeClass(className, 'remove');
         }
         ,toggleClass: function(className){
-            jTool.each(this.DOMList, function(i, v){
-                v.classList.toggle(className);
-            });
-            return this;
+            return this.changeClass(className, 'toggle');
         }
         // 如果DOMList为多值, 以第一个值为基准
         ,hasClass: function(className){
             return this.get(0).classList.contains(className);
+        }
+        // 解析className 将以空格间格的字符串分割为数组
+        ,parseClassName: function (className) {
+            return className.indexOf(' ') ?  className.split(' ') : [className];
+        }
+        // 执行指定classList方法
+        ,changeClass: function (className, exeName) {
+            var classNameList = this.parseClassName(className);
+            jTool.each(this.DOMList, function(i, dom){
+                jTool.each(classNameList, function(index, name){
+                    dom.classList[exeName](name);
+                });
+            });
+            return this;
         }
     });
     // 属性 数据
@@ -491,6 +504,13 @@ define(function() {
             });
             return this;
         }
+        ,animate: function (style, time, callback) {
+            console.log('动画效果只是实现最终样式,并未实现渐变');
+            for(var key in style){
+                this.css(key, style[key]);
+            }
+            callback();
+        }
     });
     // 文档操作
     jTool.prototype.extend({
@@ -630,6 +650,10 @@ define(function() {
             }
             jToolDOM.remove();
             return childNodes;
+        }
+        //克隆节点: 参数deep克隆节点及其后代
+        ,clone: function (deep) {
+            return jTool(this.get(0).cloneNode(deep || false));
         }
     });
     // Event 事件

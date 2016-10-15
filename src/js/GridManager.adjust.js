@@ -18,18 +18,11 @@ define(['jTool'], function($) {
                     _tr 			= _th.parent(),								//事件源所在的tr
                     _table 			= _tr.closest('table'),			            //事件源所在的table
                     _tableDiv 		= _table.closest('.table-div'),	            //事件源所在的DIV
-                    _thWarp			= $('.th-wrap', _th),						//th下所有内容的外围容器
                     _allTh 			= _tr.find('th[th-visible="visible"]'),		//事件源同层级下的所有th
                     _nextTh			= _allTh.eq(_th.index() + 1),				//事件源下一个可视th
                     _last 			= _allTh.eq(_allTh.length - 1), 			//事件源同层级倒数第一个th
                     _lastButOne 	= _allTh.eq(_allTh.length - 2), 			//事件源同层级倒数第二个th
-                    _td 	    	= [];  //存储与事件源同列的所有td
-                // 获取与事件源同列的所有td
-                $.each($('tbody tr', _table), function (i, v) {
-                    _td.push($('td', v).get(_th.index()));
-                });
-                _td = $(_td);
-                //	adjustActionToTr= $('.adjust-action',_tr);				//事件源所在的TR下的全部调整宽度节点
+                    _td 	    	= _th.getRowTd();                           //存储与事件源同列的所有td
                 //重置width 防止auto现象
                 $.each(_allTh, function(i, v){
                     if(v.style.width == 'auto' || v.style.width == ''){

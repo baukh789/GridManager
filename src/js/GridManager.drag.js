@@ -28,17 +28,15 @@ define(['jTool'], function($) {
             dragAction.unbind('mousedown');
             dragAction.bind('mousedown',function(){
                 _th 			= $(this).closest('th'),					//事件源所在的th
-                    _prevTh			= undefined,							//事件源的上一个th
-                    _nextTh			= undefined,							//事件源的下一个th
-                    _prevTd			= undefined,							//事件源对应的上一组td
-                    _nextTd			= undefined,							//事件源对应的下一组td
-                    _tr 			= _th.parent(),							//事件源所在的tr
-                    _allTh 			= _tr.find('th'), 						//事件源同层级下的所有th
-                    _table 			= _tr.closest('table'),			        //事件源所在的table
-                    _tableDiv 		= _table.closest('.table-div'),	        //事件源所在的DIV
-                    _td 			= _table.find('tbody')
-                        .find('tr')
-                        .find('td:eq('+_th.index()+')'); 		//与事件源同列的所有td
+                _prevTh			= undefined,							//事件源的上一个th
+                _nextTh			= undefined,							//事件源的下一个th
+                _prevTd			= undefined,							//事件源对应的上一组td
+                _nextTd			= undefined,							//事件源对应的下一组td
+                _tr 			= _th.parent(),							//事件源所在的tr
+                _allTh 			= _tr.find('th'), 						//事件源同层级下的所有th
+                _table 			= _tr.closest('table'),			        //事件源所在的table
+                _tableDiv 		= _table.closest('.table-div'),	        //事件源所在的DIV
+                _td 			= _th.getRowTd();                       //存储与事件源同列的所有td
 
                 //禁用文字选中效果
                 $('body').addClass('no-select-text');
@@ -119,7 +117,7 @@ define(['jTool'], function($) {
                     //处理向左拖拽
                     if(_prevTh && _prevTh.length != 0
                         && _dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft){
-                        _prevTd = _table.find('tbody').find('tr').find('td:eq('+_prevTh.index()+')');
+                        _prevTd = _prevTh.getRowTd();
                         _prevTh.before(_th);
                         $.each(_td,function(i, v){
                             _prevTd.eq(i).before(v);
@@ -144,7 +142,6 @@ define(['jTool'], function($) {
                     //清除临时展示被移动的列
                     _dreamlandDIV = $('.dreamland-div');
                     if(_dreamlandDIV.length != 0){
-
                         _dreamlandDIV.animate({
                             top	: _table.get(0).offsetTop,
                             left: _th.get(0).offsetLeft - _tableDiv.get(0).scrollLeft
