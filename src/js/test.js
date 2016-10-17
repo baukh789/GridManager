@@ -5,6 +5,14 @@ require(['require.config'], function(){
     require(['jTool'], function($){
         window.$ = window.jTool = $;
 
+        testAnimate();
+        function testAnimate() {
+            
+            $('.t1').animate({height: '200px'}, 10000, function(){
+                console.log('高度等于200px了');
+            });
+        }
+        
         //testOffset();
         function testOffset(){
             console.log($('.tt3').offset());
@@ -33,7 +41,7 @@ require(['require.config'], function(){
             });
         }
         // 测试on
-         testOn();
+        // testOn();
         function testOn(){
             $('div').off('click', 'p');
             $('div').on('click', 'p', function(e){

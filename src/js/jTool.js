@@ -215,6 +215,22 @@ define(function() {
         ,getStyle: function(dom, key){
             return window.getComputedStyle(dom)[key]
         }
+        // 获取样式的单位
+        ,getStyleUnit: function (style) {
+            var unitList = ['px', 'em', 'vem', '%'],
+                unit = '';
+            // 样式本身为纯数字,则直接返回单位为空
+            if(typeof(style) === 'number'){
+                return unit;
+            }
+            jTool.each(unitList, function (i, v) {
+                if(style.indexOf(v) !== -1){
+                    unit = v;
+                    return false;
+                }
+            });
+            return unit;
+        }
     });
     // ajax
     // type === GET: data格式 name=baukh&age=29
@@ -504,11 +520,23 @@ define(function() {
             });
             return this;
         }
-        ,animate: function (style, time, callback) {
-            console.log('动画效果只是实现最终样式,并未实现渐变');
-            for(var key in style){
-                this.css(key, style[key]);
-            }
+        ,animate: function (styleObj, time, callback) {
+            var oldValue, targetvalue, value, style, interval, unit;
+            var index = 100;
+                for(var key in styleObj){
+                    style = styleObj[key];
+                    oldValue = parseInt(this.css(key)) || 0;
+                    targetvalue = parseInt(style);
+                    interval = targetvalue - oldValue;
+                    unit = jTool.getStyleUnit(style);
+                    alert('这里需要调整,考虑使用下css的animate');
+                    for(var i=1; index<=time; i++){
+                        value = oldValue + interval * index / time;
+                        console.log(value);
+                        this.css(key, value + unit);
+                        index = index + 100;
+                    }
+                }
             callback();
         }
     });
@@ -519,6 +547,28 @@ define(function() {
         }
         ,prepend: function(childList){
             return this.html(childList, 'prepend');
+        }
+        ,before: function (node) {
+            if(node.jTool){
+                node = node.get(0);
+            }
+            var thisNode = this.get(0);
+            var parentEl = thisNode.parentNode;
+            parentEl.insertBefore(node, thisNode);
+            return this;
+        }
+        ,after: function (node) {
+            if(node.jTool){
+                node = node.get(0);
+            }
+            var thisNode = this.get(0);
+            var parentEl = thisNode.parentNode;
+            if(parentEl.lastChild == thisNode){
+                parentEl.appendChild(node);
+            }else{
+                parentEl.insertBefore(node, thisNode.nextSibling);
+            }
+            parentEl.insertBefore(node, thisNode);
         }
         ,text: function(text){
             // setter

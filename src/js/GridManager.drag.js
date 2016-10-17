@@ -119,6 +119,7 @@ define(['jTool'], function($) {
                         && _dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft){
                         _prevTd = _prevTh.getRowTd();
                         _prevTh.before(_th);
+                        console.log('left')
                         $.each(_td,function(i, v){
                             _prevTd.eq(i).before(v);
                         });
@@ -129,9 +130,10 @@ define(['jTool'], function($) {
                         && _dreamlandDIV.get(0).offsetLeft > _nextTh.get(0).offsetLeft - _dreamlandDIV.get(0).offsetWidth / 2){
                         _nextTd = _table.find('tbody').find('tr').find('td:eq('+_nextTh.index()+')');
                         _nextTh.after(_th);
+                        console.log('right')
                         $.each(_td,function(i, v){
                             _nextTd.eq(i).after(v);
-                        })
+                        });
                         _allTh = _tr.find('th'); //重置TH对象数据
                     }
                 });
