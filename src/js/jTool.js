@@ -455,19 +455,33 @@ define(function() {
     // CSS
     jTool.prototype.extend({
         css: function(key, value){
+            var _this = this;
             // getter
-            if(!value){
+            if(jTool.type(key) === 'String' && !value){
                 return jTool.getStyle(this.get(0), key);
             }
             // setter
-            var pxList = ['width', 'height'];
-            jTool.type(value) !== 'String' ? value = value.toString() : '';
-            if(pxList.indexOf(key) !==-1 && value.indexOf('px') === -1){
-                value = value + 'px';
+            var pxList = ['width', 'height', 'top', 'left', 'right', 'bottom'];
+            // ex: {width:13px, height:10px}
+            if(jTool.type(key) === 'Object'){
+                var obj = key;
+                for(var k in obj){
+                    setStyle(k, obj[k]);
+                }
             }
-            jTool.each(this.DOMList, function(i, v){
-                v.style[key] = value;
-            });
+            // ex: width, 13px
+            else {
+                setStyle(key, value);
+            }
+            function setStyle(name, val) {
+                jTool.type(val) !== 'String' ? val = val.toString() : '';
+                if(pxList.indexOf(name) !==-1 && val.indexOf('px') === -1){
+                    val = val + 'px';
+                }
+                jTool.each(_this.DOMList, function(i, v){
+                    v.style[name] = val;
+                });
+            }
             return this;
         }
         ,width: function(value){
@@ -521,6 +535,9 @@ define(function() {
             return this;
         }
         ,animate: function (styleObj, time, callback) {
+            callback();
+            console.log('animate 是个空方法,考虑使用CSS实现');
+            return;
             var oldValue, targetvalue, value, style, interval, unit;
             var index = 100;
                 for(var key in styleObj){
@@ -529,10 +546,9 @@ define(function() {
                     targetvalue = parseInt(style);
                     interval = targetvalue - oldValue;
                     unit = jTool.getStyleUnit(style);
-                    alert('这里需要调整,考虑使用下css的animate');
+
                     for(var i=1; index<=time; i++){
                         value = oldValue + interval * index / time;
-                        console.log(value);
                         this.css(key, value + unit);
                         index = index + 100;
                     }
@@ -568,7 +584,7 @@ define(function() {
             }else{
                 parentEl.insertBefore(node, thisNode.nextSibling);
             }
-            parentEl.insertBefore(node, thisNode);
+          //  parentEl.insertBefore(node, thisNode);
         }
         ,text: function(text){
             // setter
@@ -667,6 +683,7 @@ define(function() {
             return this.closest();
         }
         // 通过html字符串, 生成DOM.  返回生成后的子节点
+        // 该方法无处处理包含table标签的字符串,但是可以处理table下属的标签
         ,createDOM: function (htmlString) {
             var jToolDOM = document.querySelector('#jTool-create-dom');
             if(!jToolDOM || jToolDOM.length === 0){
@@ -704,6 +721,12 @@ define(function() {
         //克隆节点: 参数deep克隆节点及其后代
         ,clone: function (deep) {
             return jTool(this.get(0).cloneNode(deep || false));
+        }
+        //批量删除节点
+        ,remove: function () {
+            jTool.each(this.DOMList, function(i, v) {
+                v.remove();
+            });
         }
     });
     // Event 事件

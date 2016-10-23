@@ -21,22 +21,24 @@ define(['jTool'], function($) {
                 _allTh,			//事件源同层级下的所有th
                 _table,			//事件源所在的table
                 _tableDiv,		//事件源所在的DIV
+                _tableWrap,     //事件源所在的容器
                 _td,			//与事件源同列的所在td
                 _divPosition,	//所在DIV使用定位方式
                 _dreamlandDIV;	//临时展示被移动的列
             var SIV_td;			//用于处理时实刷新造成的列表错乱
             dragAction.unbind('mousedown');
             dragAction.bind('mousedown',function(){
-                _th 			= $(this).closest('th'),					//事件源所在的th
-                _prevTh			= undefined,							//事件源的上一个th
-                _nextTh			= undefined,							//事件源的下一个th
-                _prevTd			= undefined,							//事件源对应的上一组td
-                _nextTd			= undefined,							//事件源对应的下一组td
-                _tr 			= _th.parent(),							//事件源所在的tr
-                _allTh 			= _tr.find('th'), 						//事件源同层级下的所有th
-                _table 			= _tr.closest('table'),			        //事件源所在的table
-                _tableDiv 		= _table.closest('.table-div'),	        //事件源所在的DIV
-                _td 			= _th.getRowTd();                       //存储与事件源同列的所有td
+                _th 			= $(this).closest('th'),
+                _prevTh			= undefined,
+                _nextTh			= undefined,
+                _prevTd			= undefined,
+                _nextTd			= undefined,
+                _tr 			= _th.parent(),
+                _allTh 			= _tr.find('th'),
+                _table 			= _tr.closest('table'),
+                _tableDiv 		= _table.closest('.table-div'),
+                _tableWrap      = _table.closest('.table-wrap'),
+                _td 			= _th.getRowTd();
 
                 //禁用文字选中效果
                 $('body').addClass('no-select-text');
@@ -60,17 +62,17 @@ define(['jTool'], function($) {
                     _td.addClass('drag-ongoing opacityChange');
                 }
                 //增加临时展示DOM
-                _dreamlandDIV = $('<div class="dreamland-div"></div>');
-                _tableDiv.parent().append(_dreamlandDIV);
-                var tmpHtml = '<table class="dreamland-table '+ _table.attr('class') +'">'
-                    + '<thead>'
-                    + '<tr>'
-                    + '<th style="height:'+_th.get(0).offsetHeight+'px">'
-                    + _th.find('.drag-action').get(0).outerHTML
-                    + '</th>'
-                    + '</tr>'
-                    + '</thead>'
-                    + '<tbody>';
+                _tableWrap.append('<div class="dreamland-div"></div>');
+                _dreamlandDIV = $('.dreamland-div', _tableWrap);
+                _dreamlandDIV.get(0).innerHTML = '<table class="dreamland-table '+ _table.attr('class') +'"></table>';
+                var tmpHtml = '<thead>'
+                            + '<tr>'
+                            + '<th style="height:'+_th.get(0).offsetHeight+'px">'
+                            + _th.find('.drag-action').get(0).outerHTML
+                            + '</th>'
+                            + '</tr>'
+                            + '</thead>'
+                            + '<tbody>';
                 //tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
                 var _cloneTr,_cloneTd;
                 $.each(_td, function(i, v){
@@ -79,9 +81,8 @@ define(['jTool'], function($) {
                     _cloneTr = $(v).closest('tr').clone();
                     tmpHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
                 });
-                tmpHtml += '</tbody>'
-                    + '</table>';
-                _dreamlandDIV.html(tmpHtml);
+                tmpHtml += '</tbody>';
+                $('.dreamland-table', _dreamlandDIV).html(tmpHtml);
                 //绑定拖拽滑动事件
                 $('body').unbind('mousemove');
                 $('body').bind('mousemove', function(e2){
@@ -108,18 +109,17 @@ define(['jTool'], function($) {
                         height	: _table.get(0).offsetHeight,
                         left	: e2.clientX - _tableDiv.offset().left
                         //  + $('html').get(0).scrollLeft
-                        + _tableDiv.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft)
-                        - _th.get(0).offsetWidth / 2,
+                                + _tableDiv.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft)
+                                - _th.get(0).offsetWidth / 2 + 'px',
                         top		: e2.clientY - _tableDiv.offset().top
-                        + _tableDiv.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop)
-                        - _dreamlandDIV.find('th').get(0).offsetHeight / 2
+                                + _tableDiv.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop)
+                                - _dreamlandDIV.find('th').get(0).offsetHeight / 2
                     });
                     //处理向左拖拽
                     if(_prevTh && _prevTh.length != 0
                         && _dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft){
                         _prevTd = _prevTh.getRowTd();
                         _prevTh.before(_th);
-                        console.log('left')
                         $.each(_td,function(i, v){
                             _prevTd.eq(i).before(v);
                         });
@@ -128,9 +128,8 @@ define(['jTool'], function($) {
                     //处理向右拖拽
                     if(_nextTh && _nextTh.length != 0
                         && _dreamlandDIV.get(0).offsetLeft > _nextTh.get(0).offsetLeft - _dreamlandDIV.get(0).offsetWidth / 2){
-                        _nextTd = _table.find('tbody').find('tr').find('td:eq('+_nextTh.index()+')');
+                        _nextTd = _nextTh.getRowTd();
                         _nextTh.after(_th);
-                        console.log('right')
                         $.each(_td,function(i, v){
                             _nextTd.eq(i).after(v);
                         });
