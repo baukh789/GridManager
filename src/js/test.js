@@ -4,11 +4,15 @@
 require(['require.config'], function(){
     require(['jTool'], function($){
         window.$ = window.jTool = $;
-
         testAnimate();
         function testAnimate() {
-            
-            $('.t1').animate({height: '200px'}, 10000, function(){
+            $('#testAnimate').animate({height: '200px','margin-left': '500px'}, 10000, function(){
+                console.log('高度等于200px了');
+            });
+            $('.t1').animate({height: '200px','margin-left': '500px'}, 3000, function(){
+                console.log('高度等于200px了');
+            });
+            $('.t2').animate({height: '200px','margin-left': '500px'}, 20000, function(){
                 console.log('高度等于200px了');
             });
         }
@@ -104,12 +108,11 @@ require(['require.config'], function(){
         }
 
         // 测试html
-        //testHtml();
+        // testHtml();
         function testHtml(){
             var t1 = $('.t1');
             var t2 = $('.t2');
             t1.html(t2);
-            console.log(t1.html());
         }
 
         // 测试append

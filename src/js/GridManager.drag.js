@@ -144,8 +144,8 @@ define(['jTool'], function($) {
                     _dreamlandDIV = $('.dreamland-div');
                     if(_dreamlandDIV.length != 0){
                         _dreamlandDIV.animate({
-                            top	: _table.get(0).offsetTop,
-                            left: _th.get(0).offsetLeft - _tableDiv.get(0).scrollLeft
+                            top	: _table.get(0).offsetTop + 'px',
+                            left: _th.get(0).offsetLeft - _tableDiv.get(0).scrollLeft  + 'px'
                         },_this.animateTime,function(){
                             _tableDiv.css('position',_divPosition);
                             _th.removeClass('drag-ongoing');

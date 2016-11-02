@@ -181,13 +181,16 @@ define(function() {
                 object = object.DOMList;
             }
             var type = this.type(object);
+            // 为数组或类数组时, 返回: index, value
             if(type === 'Array' || type === 'NodeList'){
                 // 由于存在类数组NodeList, 所以不能直接调用every方法
                 [].every.call(object, function(v, i){
                     v.jTool ? v = v.get(0) : ''; // 处理jTool 对象
                     return callback.call(v, i, v) === false ? false : true;
                 });
-            }else if(type === 'Object'){
+            }
+            // 为对象格式时,返回:key, value
+            else if(type === 'Object'){
                 for(var i in object){
                     if(callback.call(object[i], i, object[i]) === false){
                         break;
@@ -211,7 +214,7 @@ define(function() {
             }
             return isEmptyObject;
         }
-        // 获取节点样式
+        // 获取节点样式: key为空时则返回全部
         ,getStyle: function(dom, key){
             return window.getComputedStyle(dom)[key]
         }
@@ -230,6 +233,16 @@ define(function() {
                 }
             });
             return unit;
+        }
+        // 字符格式转换: 连字符转驼峰
+        ,toHump: function (text) {
+            return text.replace(/-\w/g, function(str){
+                return str.split('-')[1].toUpperCase();
+            });
+        }
+        //字符格式转换: 驼峰转连字符
+        ,toHyphen: function (text) {
+            return text.replace(/([A-Z])/g,"-$1").toLowerCase();
         }
     });
     // ajax
@@ -534,26 +547,49 @@ define(function() {
             });
             return this;
         }
+        // 动画效果, 动画样式仅支持以对象类型传入且值需要存在有效的单位
         ,animate: function (styleObj, time, callback) {
-            callback();
-            console.log('animate 是个空方法,考虑使用CSS实现');
-            return;
-            var oldValue, targetvalue, value, style, interval, unit;
-            var index = 100;
-                for(var key in styleObj){
-                    style = styleObj[key];
-                    oldValue = parseInt(this.css(key)) || 0;
-                    targetvalue = parseInt(style);
-                    interval = targetvalue - oldValue;
-                    unit = jTool.getStyleUnit(style);
+            var _this = this;
+            var animateText = '',        // 动画样式文本
+                animateFromText = '',   // 动画执行前样式文本
+                animateToText = '',     // 动画执行后样式文本
+                node = _this.get(0);
 
-                    for(var i=1; index<=time; i++){
-                        value = oldValue + interval * index / time;
-                        this.css(key, value + unit);
-                        index = index + 100;
-                    }
-                }
-            callback();
+            // 组装动画 keyframes
+            jTool.each(styleObj, function(key, v){
+                key = jTool.toHyphen(key);
+                animateFromText += key + ':' + jTool.getStyle(node, key) + ';';
+                animateToText += key + ':' + v + ';';
+            });
+            animateText = '@keyframes jToolAnimate {'
+                        + 'from {'
+                        + animateFromText
+                        + '}'
+                        + 'to {'
+                        + animateToText
+                        + '}'
+                        + '}';
+
+            // 引入动画样式至页面
+         //   var jToolAnimate = document.getElementById('jToolAnimate');
+         //   if(!jToolAnimate){
+                var jToolAnimate = document.createElement('style');
+                jToolAnimate.className = 'jTool-animate-style';
+                jToolAnimate.type = 'text/css';
+                document.head.appendChild(jToolAnimate);
+        //    }
+            jToolAnimate.textContent = jToolAnimate.textContent + animateText;
+
+            // 启用动画
+            node.style.animation = 'jToolAnimate ' + time / 1000 + 's ease-in-out forwards';
+
+            // 延时执行回调函数及清理操作
+            window.setTimeout(function(){
+                _this.css(styleObj);
+                node.style.animation = '';
+                jToolAnimate.remove();
+                callback();
+            }, time);
         }
     });
     // 文档操作
@@ -700,19 +736,19 @@ define(function() {
             var childNodes = jToolDOM.childNodes;
 
             // 进行table类标签清理, 原因是在增加如th,td等table类标签时,浏览器会自动补全节点.
-            if(!/<tbody|<TBODY/.test(htmlString) && childNodes.length == 1 && childNodes[0].nodeName === 'TBODY'){
+            if(childNodes.length == 1 && !/<tbody|<TBODY/.test(htmlString) && childNodes[0].nodeName === 'TBODY'){
                 childNodes = childNodes[0].childNodes;
             }
-            if(!/<thead|<THEAD/.test(htmlString) && childNodes.length == 1 &&  childNodes[0].nodeName === 'THEAD'){
+            if(childNodes.length == 1 && !/<thead|<THEAD/.test(htmlString) &&  childNodes[0].nodeName === 'THEAD'){
                 childNodes = childNodes[0].childNodes;
             }
-            if(!/<tr|<TR/.test(htmlString) && childNodes.length == 1 &&  childNodes[0].nodeName === 'TR'){
+            if(childNodes.length == 1 && !/<tr|<TR/.test(htmlString) &&  childNodes[0].nodeName === 'TR'){
                 childNodes = childNodes[0].childNodes;
             }
-            if(!/<td|<TD/.test(htmlString) && childNodes.length == 1 &&  childNodes[0].nodeName === 'TD'){
+            if(childNodes.length == 1 && !/<td|<TD/.test(htmlString) && childNodes[0].nodeName === 'TD'){
                 childNodes = childNodes[0].childNodes;
             }
-            if(!/<th|<TH/.test(htmlString) && childNodes.length == 1 &&  childNodes[0].nodeName === 'TH'){
+            if(childNodes.length == 1 && !/<th|<TH/.test(htmlString) && childNodes[0].nodeName === 'TH'){
                 childNodes = childNodes[0].childNodes;
             }
             jToolDOM.remove();
