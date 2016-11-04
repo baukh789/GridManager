@@ -83,17 +83,19 @@ define(['jTool'], function($) {
                 tmpHtml += '</tbody>';
                 $('.dreamland-table', _dreamlandDIV).html(tmpHtml);
                 //绑定拖拽滑动事件
+                var _thIndex = 0;  //存储移动时的th所处的位置
                 $('body').unbind('mousemove');
                 $('body').bind('mousemove', function(e2){
+                    _thIndex = _th.index(_allTh);
                     _prevTh = undefined;
                     //当前移动的非第一列
-                    if(_th.index() != 0){
-                        _prevTh = _allTh.eq(_th.index(_allTh) - 1);
+                    if(_thIndex > 0){
+                        _prevTh = _allTh.eq(_thIndex - 1);
                     }
                     _nextTh = undefined;
                     //当前移动的非最后一列
-                    if(_th.index() != _allTh.length -1){
-                        _nextTh = _allTh.eq(_th.index(_allTh) + 1);
+                    if(_thIndex < _allTh.length){
+                        _nextTh = _allTh.eq(_thIndex + 1);
                     }
                     //插件自动创建的项,不允许移动
                     if(_prevTh && _prevTh.length !== 0 && _prevTh.attr('gm-create') === 'true'){
