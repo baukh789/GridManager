@@ -15,20 +15,19 @@ define(['jTool'], function($) {
             configAction.unbind('click');
             configAction.bind('click', function(){
                 var _configAction = $(this),		//展示事件源
-                    _configArea = _configAction.closest('.config-area'),	//设置区域
-                    _configList = $('.config-list',_configArea);//设置列表
+                    _configArea = _configAction.closest('.config-area');	//设置区域
                 //关闭
-                if(_configArea.css('display') == 'block'){
+                if(_configArea.css('display') === 'block'){
                     _configArea.hide();
                     return false;
                 }
                 //打开
                 _configArea.show();
-                var _tableWarp = _configAction.closest('.table-wrap'),//当前事件源所在的div
-                    _table	= $('[grid-manager]', _tableWarp),				//对应的table
-                    _thList = $('thead th', _table),							//所有的th
-                    _trList = $('tbody tr', _table),							//tbody下的tr
-                    _td;														//与单个th对应的td
+                var _tableWarp = _configAction.closest('.table-wrap'),  //当前事件源所在的div
+                    _table	= $('[grid-manager]', _tableWarp),			//对应的table
+                    _thList = $('thead th', _table),					//所有的th
+                    _trList = $('tbody tr', _table),					//tbody下的tr
+                    _td;												//与单个th对应的td
                 $.each(_thList, function(i, v){
                     v = $(v);
                     $.each(_trList, function(i2, v2){
@@ -46,10 +45,10 @@ define(['jTool'], function($) {
                 var _only = $(this),		//单个的设置项
                     _configArea 	= _only.closest('.config-area'),					//事件源所在的区域
                     _thName 		= _only.attr('th-name'),							//单个设置项的thName
-                    _checkbox 		= _only.find('input[type="checkbox"]'),			//事件下的checkbox
+                    _checkbox 		= _only.find('input[type="checkbox"]'),			    //事件下的checkbox
                     _tableWarp  	= _only.closest('.table-wrap'), 					//所在的大容器
                     _tableDiv	  	= $('.table-div', _tableWarp), 						//所在的table-div
-                    _table	 		= $('[grid-manager]', _tableWarp),				//所对应的table
+                    _table	 		= $('[grid-manager]', _tableWarp),				    //所对应的table
                     _th				= $('thead th[th-name="'+_thName +'"]', _table), 	//所对应的th
                     _checkedList;		//当前处于选中状态的展示项
                 if(_only.hasClass('no-click')){
@@ -58,8 +57,8 @@ define(['jTool'], function($) {
                 _only.closest('.config-list').find('.no-click').removeClass('no-click');
                 var isVisible = !_checkbox.get(0).checked;
                 //设置与当前td同列的td是否可见
-                _tableDiv.addClass('config-editing')
-                _this.setAreVisible(_th, isVisible, false, function(){
+                _tableDiv.addClass('config-editing');
+                _this.setAreVisible(_th, isVisible, function(){
                     _tableDiv.removeClass('config-editing');
                 });
                 //最后一项禁止取消
@@ -117,11 +116,10 @@ define(['jTool'], function($) {
         /*
          @设置列是否可见
          $._thList_	： 即将配置的列所对应的th[jquery object，可以是多个]
-         $._visible_	: 是否可见[Boolean]
-         $._isInit_	: 是否初始加载[通过缓存进行的初始修改]
+         $._visible_: 是否可见[Boolean]
          $.cb		: 回调函数
          */
-        ,setAreVisible: function(_thList_, _visible_, _isInit_ ,cb){
+        ,setAreVisible: function(_thList_, _visible_ ,cb){
             var _this = this;
             var _table,			//当前所在的table
                 _tableWarp, 	//当前所在的容器
@@ -130,7 +128,6 @@ define(['jTool'], function($) {
                 _tdList = [], 	//所对应的td
                 _checkLi,		//所对应的显示隐藏所在的li
                 _checkbox;		//所对应的显示隐藏事件
-            var fadeTime = _isInit_ ? 0 : _this.animateTime;
             $.each(_thList_, function(i, v){
                 _th = $(v);
                 _table = _th.closest('table');
@@ -141,24 +138,25 @@ define(['jTool'], function($) {
                 if(_checkbox.length == 0){
                     return;
                 }
-                $.each(_trList, function(i, v){
-                    _tdList.push($(v).find('td').eq(_th.index()));
+                $.each(_trList, function(i2, v2){
+                    _tdList.push($(v2).find('td').eq(_th.index()));
                 });
                 //显示
                 if(_visible_){
                     _th.attr('th-visible','visible');
                     $.each(_tdList, function(i2, v2){
-                        _isInit_ ? $(v2).show() : $(v2).fadeIn(fadeTime);
+                        $(v2).show();
                     });
                     _checkLi.addClass('checked-li');
                     _checkbox.get(0).checked = true;
-                    //隐藏
-                }else{
+                }
+                //隐藏
+                else{
                     _th.attr('th-visible','none');
-                    $.each(_tdList, function(i, v2){
+                    $.each(_tdList, function(i2, v2){
                         $(v2).hide();
                     });
-                    _checkLi.removeClass('checked-li')
+                    _checkLi.removeClass('checked-li');
                     _checkbox.get(0).checked = false;
                 }
                 typeof(cb) == 'function' ? cb() : '';

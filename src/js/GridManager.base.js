@@ -475,14 +475,14 @@ define(['jTool'], function($) {
                 onlyTH = $(v2);
                 onlyTH.attr('th-visible','visible');
                 //是否为自动生成的序号列
-                if(_this.supportAutoOrder && onlyTH.attr('gm-order') == 'true'){
+                if(_this.supportAutoOrder && onlyTH.attr('gm-order') === 'true'){
                     isLmOrder = true;
                 }else{
                     isLmOrder = false;
                 }
 
                 //是否为自动生成的选择列
-                if(_this.supportCheckbox && onlyTH.attr('gm-checkbox') == 'true'){
+                if(_this.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true'){
                     isLmCheckbox = true;
                 }else{
                     isLmCheckbox = false;

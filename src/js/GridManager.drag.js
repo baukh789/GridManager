@@ -18,7 +18,7 @@ define(['jTool'], function($) {
                 _prevTd,		//事件源对应的上一组td
                 _nextTd,		//事件源对应的下一组td
                 _tr,			//事件源所在的tr
-                _allTh,			//事件源同层级下的所有th
+                _allTh,			//事件源同层级下的所有可视th
                 _table,			//事件源所在的table
                 _tableDiv,		//事件源所在的DIV
                 _tableWrap,     //事件源所在的容器
@@ -34,12 +34,11 @@ define(['jTool'], function($) {
                 _prevTd			= undefined,
                 _nextTd			= undefined,
                 _tr 			= _th.parent(),
-                _allTh 			= _tr.find('th'),
+                _allTh 			= _tr.find('th[th-visible="visible"]'),
                 _table 			= _tr.closest('table'),
                 _tableDiv 		= _table.closest('.table-div'),
                 _tableWrap      = _table.closest('.table-wrap'),
                 _td 			= _th.getRowTd();
-
                 //禁用文字选中效果
                 $('body').addClass('no-select-text');
 
@@ -89,18 +88,18 @@ define(['jTool'], function($) {
                     _prevTh = undefined;
                     //当前移动的非第一列
                     if(_th.index() != 0){
-                        _prevTh = _allTh.eq(_th.index() - 1);
+                        _prevTh = _allTh.eq(_th.index(_allTh) - 1);
                     }
                     _nextTh = undefined;
                     //当前移动的非最后一列
                     if(_th.index() != _allTh.length -1){
-                        _nextTh = _allTh.eq(_th.index() + 1);
+                        _nextTh = _allTh.eq(_th.index(_allTh) + 1);
                     }
                     //插件自动创建的项,不允许移动
-                    if(_prevTh && _prevTh.attr('gm-create') === 'true'){
+                    if(_prevTh && _prevTh.length !== 0 && _prevTh.attr('gm-create') === 'true'){
                         _prevTh = undefined;
                     }
-                    else if(_nextTh && _nextTh.attr('gm-create') === 'true'){
+                    else if(_nextTh && _nextTh.length !== 0 && _nextTh.attr('gm-create') === 'true'){
                         _nextTh = undefined;
                     }
                     _dreamlandDIV.show();

@@ -459,9 +459,16 @@ define(function() {
             return this.attr('value', value) || '';
         }
         // 索引
-        ,index: function () {
-            var node = this.get(0),
+        ,index: function (nodeList) {
+            var node = this.get(0);
+            // 查找范围参数为空时,找寻同层节点
+            if(!nodeList){
                 nodeList = node.parentNode.childNodes;
+            }
+            // 查找范围参数为jTool对象,则使用对象的DOMList
+            else if(nodeList.jTool){
+                nodeList = nodeList.DOMList;
+            }
             return nodeList ? [].indexOf.call(nodeList, node) : -1;
         }
     });
@@ -537,12 +544,18 @@ define(function() {
     jTool.prototype.extend({
         show: function(){
             jTool.each(this.DOMList, function(i, v){
-                v.style.display = 'block';
+                if(v.style.oldDisplay && v.style.oldDisplay !== 'none'){
+                    v.style.display = v.style.oldDisplay;
+                }
+                else{
+                    v.style.display = 'block';
+                }
             });
             return this;
         }
         ,hide: function(){
             jTool.each(this.DOMList, function(i, v){
+                v.style.oldDisplay = jTool.getStyle(v, 'display');
                 v.style.display = 'none';
             });
             return this;
@@ -550,18 +563,17 @@ define(function() {
         // 动画效果, 动画样式仅支持以对象类型传入且值需要存在有效的单位
         ,animate: function (styleObj, time, callback) {
             var _this = this;
-            var animateText = '',        // 动画样式文本
-                animateFromText = '',   // 动画执行前样式文本
+            var animateFromText = '',   // 动画执行前样式文本
                 animateToText = '',     // 动画执行后样式文本
                 node = _this.get(0);
-
             // 组装动画 keyframes
             jTool.each(styleObj, function(key, v){
                 key = jTool.toHyphen(key);
                 animateFromText += key + ':' + jTool.getStyle(node, key) + ';';
                 animateToText += key + ':' + v + ';';
             });
-            animateText = '@keyframes jToolAnimate {'
+            // 拼接动画样式文本
+            var animateText = '@keyframes jToolAnimate {'
                         + 'from {'
                         + animateFromText
                         + '}'
@@ -571,13 +583,10 @@ define(function() {
                         + '}';
 
             // 引入动画样式至页面
-         //   var jToolAnimate = document.getElementById('jToolAnimate');
-         //   if(!jToolAnimate){
-                var jToolAnimate = document.createElement('style');
-                jToolAnimate.className = 'jTool-animate-style';
-                jToolAnimate.type = 'text/css';
-                document.head.appendChild(jToolAnimate);
-        //    }
+            var jToolAnimate = document.createElement('style');
+            jToolAnimate.className = 'jTool-animate-style';
+            jToolAnimate.type = 'text/css';
+            document.head.appendChild(jToolAnimate);
             jToolAnimate.textContent = jToolAnimate.textContent + animateText;
 
             // 启用动画
@@ -626,12 +635,12 @@ define(function() {
             // setter
             if(typeof(text) !== 'undefined'){
                 jTool.each(this.DOMList, function(i, v){
-                    v.innerText = text;
+                    v.textContent = text;
                 });
                 return this;
                 // getter
             }else{
-                return this.get(0).innerText;
+                return this.get(0).textContent;
             }
         }
         ,html: function(childList, insertType) {
