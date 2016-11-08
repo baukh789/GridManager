@@ -3,7 +3,6 @@
  * */
 define(['jTool'], function($) {
     var exportGM = {
-
         /*
          [对外公开方法]
          @导出表格 .xls
@@ -20,7 +19,6 @@ define(['jTool'], function($) {
             }
 
             var uri = 'data:application/vnd.ms-excel;base64,',
-                exportHTML = '',	//要导出html格式数据
                 theadHTML= '',	//存储导出的thead数据
                 tbodyHTML ='', //存储导出的tbody下的数据
                 tableDOM = $(table);	//当前要导出的table
@@ -46,7 +44,8 @@ define(['jTool'], function($) {
                 });
                 tbodyHTML += '</tr>';
             });
-            exportHTML  = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
+            // 拼接要导出html格式数据
+            var exportHTML  = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
                 + '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
                 + '<body><table>'
                 + '<thead>'

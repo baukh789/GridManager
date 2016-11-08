@@ -1,5 +1,10 @@
 /*
  * GridManager: 表头吸顶
+ * 思考:
+ * 可以考虑使用固定表格高度方式, 将表头与分页工具条固定在上下方.
+ * 问题:
+ * 1.bind scroll未执行
+ * 2.x轴横向滚动条并不在这里,需要确认!
  * */
 define(['jTool'], function($) {
     var topGM = {
@@ -16,6 +21,7 @@ define(['jTool'], function($) {
             //绑定模拟X轴滚动条
             $('.scroll-area').unbind('scroll');
             $('.scroll-area').bind('scroll', function(){
+                console.log('scroll')
                 $(this).closest('.table-div').scrollLeft(this.scrollLeft);
                 this.style.left = this.scrollLeft + 'px';
             });
@@ -28,6 +34,7 @@ define(['jTool'], function($) {
             //$._isWindowResize_:是否为window.resize事件调用
             $(_this.scrollDOM).unbind('scroll');
             $(_this.scrollDOM).bind('scroll', function(e, _isWindowResize_){
+                console.log('scroll2')
                 var _scrollDOM = $(this),
                     _theadBackground,		//列表头的底色
                     _tableDIV,				//列表所在的DIV,该DIV的class标识为table-div

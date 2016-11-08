@@ -45,6 +45,6 @@ http.createServer(function (req, res) {
         }
     });
 
-}).listen(1987, "127.0.0.1");
+}).listen(1987);
 
 console.log("Server running at http://127.0.0.1:1987/");

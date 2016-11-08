@@ -70,10 +70,10 @@ define(['jTool', 'checkboxGM', 'adjustGM', 'ajaxPageGM', 'baseGM', 'configGM', '
 
         var textConfig = {};
         if(typeof(gridManagerConfig) == 'object'){
-            $.extend(true, textConfig, this.textConfig, gridManagerConfig.textConfig)
+            $.extend(true, textConfig, this.textConfig, gridManagerConfig.textConfig);
             $.extend(true, this, gridManagerConfig);
         }
-        $.extend(true, textConfig, this.textConfig, settings.textConfig)
+        $.extend(true, textConfig, this.textConfig, settings.textConfig);
         $.extend(this, settings, {textConfig: textConfig});
     }
     // GM prototype
