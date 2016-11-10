@@ -43,6 +43,8 @@ Firefox, Chrome,IE10+
 - [静态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo1.html)
 - [动态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo2.html)
 - [特定容器demo](http://www.lovejavascript.com/plugIn/GridManager/demo3.html)
+- [github](https://github.com/baukh789/GridManager)
+- [oschina](http://git.oschina.net/baukh/GridManager)
 - [npm](https://www.npmjs.com/package/GridManager/)
 
 ###调用方式
