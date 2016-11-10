@@ -14,7 +14,21 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
 - 全选: 自动生成全选列
 - 导出: 当前页数据下载,和仅针对已选中的表格下载
 - 右键菜单: 常用功能在菜单中可进行快捷操作
+###安装命令
+npm install GridManager
 
+###引入方式
+```
+<link rel="stylesheet" type="text/css" href="/node_modules/GridManager/dist/css/GridManager.css"/>
+<script type="text/javascript" src="/node_modules/GridManager/dist/js/GridManager.js"></script>
+```
+如果不想引入CSS文件,可以通过配置项basePath与autoLoadCss两个参数进行设置,让插件自动引入CSS,示例如下:
+```
+$('table').GM({
+    basePath:'/node_modules/GridManager/dist/',  //当前JS文件所在的路径
+    autoLoadCss: true;                          //采用自动加载CSS机制
+});
+```
 
 ###浏览器兼容
 Firefox, Chrome,IE10+
