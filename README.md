@@ -43,6 +43,7 @@ Firefox, Chrome,IE10+
 - [API](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
 - [github](https://github.com/baukh789/GridManager)
 - [oschina](http://git.oschina.net/baukh/GridManager)
+- [npm](https://www.npmjs.com/package/GridManager/)
 
 ###调用方式
 ```html
