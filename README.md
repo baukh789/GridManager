@@ -44,6 +44,7 @@ Firefox, Chrome,IE10+
 - [动态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo2.html)
 - [特定容器demo](http://www.lovejavascript.com/plugIn/GridManager/demo3.html)
 - [npm](https://www.npmjs.com/package/GridManager/)
+
 ###调用方式
 ```html
     <table grid-manager="test"></table>
