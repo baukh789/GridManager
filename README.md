@@ -19,15 +19,17 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
 npm install GridManager
 
 ###引入方式
+```
 <link rel="stylesheet" type="text/css" href="/node_modules/GridManager/dist/css/GridManager.css"/>
 <script type="text/javascript" src="/node_modules/GridManager/dist/js/GridManager.js"></script>
-
+```
 如果不想引入CSS文件,可以通过配置项basePath与autoLoadCss两个参数进行设置,让插件自动引入CSS,示例如下:
+```
 $('table').GM({
     basePath:'/node_modules/GridManager/dist/',  //当前JS文件所在的路径
     autoLoadCss: true;                          //采用自动加载CSS机制
-})
-
+});
+```
 ###浏览器兼容
 Firefox, Chrome,IE10+
 这里提一下为什么不支持低版本: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
