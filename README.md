@@ -29,7 +29,7 @@ npm install GridManager
 ```
 $('table').GM({
     basePath:'/node_modules/GridManager/dist/',  //当前JS文件所在的路径
-    autoLoadCss: true;                          //采用自动加载CSS机制
+    autoLoadCss: true                          //采用自动加载CSS机制
 });
 ```
 
