@@ -45,19 +45,26 @@
 <p>3.当前使用的排序方式为组合排序</p>
 <p>4.此Demo存在跨域请求,只做为演示不可直接使用</p>
 <hr/>
+<h2>插件版本信息</h2>
 <div style="width:95%;margin:0px auto;">
 	<table grid-manager="plugIn-version"></table>
+</div>
+<hr/>
+<h2>博客列表</h2>
+<div style="width:95%;margin:0px auto;">
+	<table grid-manager="blog-list"></table>
 </div>
 <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="js/GridManager.js"></script>
 <script type="text/javascript" >
 $(function(){
 	//单列表简易渲染
-	var table = $('table[grid-manager]');
 	$.fn.GM.defaults = {
 		isDevelopMode: true, 
 		autoLoadCss:true  //自动加载CSS文件，无需在页面中引用
 	};
+	// plugIn-version
+	var table = $('table[grid-manager="plugIn-version"]');
 	table.GM({
 		supportRemind: true
 		,supportAjaxPage:true
@@ -125,7 +132,46 @@ $(function(){
 	});
 
 
-	// 日期格式化,不是插件的代码,只用于处理时间格式化
+	//blog-list
+	var table = $('table[grid-manager="blog-list"]');
+	table.GM({
+		supportRemind: true
+		,supportAjaxPage:true
+		,ajax_url: 'http://www.lovejavascript.com/blogManager/getBlogList'
+		,ajax_type: 'POST'
+		,query: {pluginId: 1}
+		,pageSize:20
+		,columnData: [{
+			key: 'title',
+			remind: 'the title',
+			width: '100px',
+			text: '名称'
+		},{
+			key: 'readNumber',
+			remind: 'the readNumber',
+			text: '阅读次数'
+		},{
+			key: 'username',
+			remind: 'the username',
+			text: '作者'
+		},{
+			key: 'createDate',
+			remind: 'the createDate',
+			width: '100px',
+			text: '创建时间',
+			template: function(createDate, rowObject){
+				return new Date(createDate).format('YYYY-MM-DD HH:mm:ss');
+			}
+		}
+		]
+		,ajax_beforeSend: function(query){
+			console.log('ajax_beforeSend', query);
+		}
+		,ajax_complete: function(data){
+			console.log('ajax_complete', data);
+		}
+	});
+	// 公共方法: 日期格式化,不是插件的代码,只用于处理时间格式化
 	Date.prototype.format = function(fmt){
 		var o = {
 			"M+": this.getMonth() + 1, //月份
