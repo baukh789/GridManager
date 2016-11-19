@@ -80,7 +80,7 @@ define(['jTool'], function($) {
                 }
                 //验证：当前是否存在已选中的项
                 var exportExcelOfChecked = $('[grid-action="export-excel"][only-checked="true"]');
-                if($('tbody tr[checked="checked"]', 'table[grid-manager="'+ _this.gridManagerName +'"]').length === 0){
+                if($('tbody tr[checked="true"]', $('table[grid-manager="'+ _this.gridManagerName +'"]')).length === 0){
                     exportExcelOfChecked.addClass('disabled');
                 }else{
                     exportExcelOfChecked.removeClass('disabled');

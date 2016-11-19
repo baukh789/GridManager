@@ -380,7 +380,7 @@ define(['jTool'], function($) {
                     widthHtml = '';
                 }
                 alignAttr = v.align ? 'align="'+v.align+'"' : '';
-                theadHtml += '<th th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+' '+widthHtml+' '+alignAttr+'>'+ v.text +'</th>';
+                theadHtml += '<th gm-create="false" th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+' '+widthHtml+' '+alignAttr+'>'+ v.text +'</th>';
             });
             theadHtml += '</thead>';
             table.html(theadHtml + tbodyHtml);

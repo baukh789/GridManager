@@ -22,7 +22,7 @@ define(['jTool'], function($) {
                 theadHTML= '',	//存储导出的thead数据
                 tbodyHTML ='', //存储导出的tbody下的数据
                 tableDOM = $(table);	//当前要导出的table
-            var thDOM = $('thead[class!="set-top"] th[th-visible="visible"][gm-create!="true"]', tableDOM),
+            var thDOM = $('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', tableDOM),
                 trDOM,
                 tdDOM;
             //验证：是否只导出已选中的表格
@@ -37,7 +37,7 @@ define(['jTool'], function($) {
                     + '</th>';
             });
             $.each(trDOM, function(i, v){
-                tdDOM = $('td[gm-create!="true"]', v);
+                tdDOM = $('td[gm-create="false"]', v);
                 tbodyHTML += '<tr>';
                 $.each(tdDOM, function(i2, v2){
                     tbodyHTML += v2.outerHTML
