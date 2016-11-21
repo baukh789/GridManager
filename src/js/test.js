@@ -4,7 +4,21 @@
 require(['require.config'], function(){
     require(['jTool'], function($){
         window.$ = window.jTool = $;
-        testAnimate();
+
+        testScroll();
+        function testScroll() {
+            console.log('scroll', $(window).scrollTop());
+            console.log('scroll', $(document).scrollTop());
+            console.log('scroll', $('.t2').scrollTop());
+        }
+        
+        //testBindScroll();
+        function testBindScroll() {
+            $(window).bind('scroll', function (e) {
+               console.log(e)
+            });
+        }
+        //testAnimate();
         function testAnimate() {
             $('#testAnimate').animate({height: '200px','margin-left': '500px'}, 10000, function(){
                 console.log('高度等于200px了');

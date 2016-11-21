@@ -105,8 +105,8 @@ define(['jTool'], function($) {
                 fontWeight	: thText.css('font-weight'),
                 fontFamily	: thText.css('font-family')
             });
-            var thPaddingLeft = thWarp.css('padding-left').split('px')[0] || 0,
-                thPaddingRight = thWarp.css('padding-right').split('px')[0] || 0;
+            var thPaddingLeft = thWarp.css('padding-left'),
+                thPaddingRight = thWarp.css('padding-right');
             var thWidth = textDreamland.width()
                 + (Number(thPaddingLeft) ? Number(thPaddingLeft) : 0)
                 + (Number(thPaddingRight) ? Number(thPaddingRight) : 0)

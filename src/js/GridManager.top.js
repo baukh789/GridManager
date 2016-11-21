@@ -21,7 +21,6 @@ define(['jTool'], function($) {
             //绑定模拟X轴滚动条
             $('.scroll-area').unbind('scroll');
             $('.scroll-area').bind('scroll', function(){
-                console.log('scroll')
                 $(this).closest('.table-div').scrollLeft(this.scrollLeft);
                 this.style.left = this.scrollLeft + 'px';
             });
@@ -34,9 +33,7 @@ define(['jTool'], function($) {
             //$._isWindowResize_:是否为window.resize事件调用
             $(_this.scrollDOM).unbind('scroll');
             $(_this.scrollDOM).bind('scroll', function(e, _isWindowResize_){
-                console.log('scroll2')
                 var _scrollDOM = $(this),
-                    _theadBackground,		//列表头的底色
                     _tableDIV,				//列表所在的DIV,该DIV的class标识为table-div
                     _tableWarp,				//列表所在的外围容器
                     _setTopHead,			//吸顶元素
@@ -45,20 +42,18 @@ define(['jTool'], function($) {
                     _thead,					//列表head
                     _thList,				//列表下的th
                     _tbody;					//列表body
-                var _scrollDOMTop = _scrollDOM.scrollTop(),
-                    _tDIVTop = 0;
+                var _scrollDOMTop = _scrollDOM.scrollTop();
                 var _tWarpMB	= undefined; //吸顶触发后,table所在外围容器的margin-bottom值
-
+                var scrollDOMisWindow = $.isWindow(_this.scrollDOM);
                 _tableDIV 		= table.closest('.table-div');
                 _tableWarp 		= _tableDIV.closest('.table-wrap');
                 _table			= table.get(0);
-                _thead 			= $('body> thead[grid-manager-thead]', table);
+                _thead 			= $('thead[grid-manager-thead]', table);
                 _tbody 			= $('tbody', table);
-
                 if(!_tableDIV || _tableDIV.length == 0){
                     return true;
                 }
-                _tDIVTop 		= _this.scrollDOM == window ? _tableDIV.offset().top : 0;
+                var _tDIVTop 		= scrollDOMisWindow ? _tableDIV.offset().top : 0;
 
                 _tableOffsetTop = _table.offsetTop;
                 _setTopHead 	= $('.set-top', table);
@@ -69,7 +64,7 @@ define(['jTool'], function($) {
                 //配置X轴滚动条
                 var scrollArea = $('.scroll-area', _tableWarp);
                 if(_tableDIV.width() < table.width()){  //首先验证宽度是否超出了父级DIV
-                    if(_this.scrollDOM == window){
+                    if(scrollDOMisWindow){
                         _tWarpMB = Number(_tableDIV.height())
                             + Number(_tableWarp.css('margin-bottom').split('px')[0])
                             //		 - Number(_tableWarp.css('padding-bottom').split('px')[0])
@@ -102,9 +97,9 @@ define(['jTool'], function($) {
                 }else{
                     scrollArea.hide();
                 }
-
                 //表头完全可见 分两种情况 scrollDOM 为 window 或自定义容器
-                if(_this.scrollDOM == window ? (_tDIVTop - _scrollDOMTop >= -_tableOffsetTop) : (_scrollDOMTop == 0)){
+                if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop >= -_tableOffsetTop) : (_scrollDOMTop == 0)){
+                    console.log('表头完全可见')
                     if(_thead.hasClass('scrolling')){
                         _thead.removeClass('scrolling');
                     }
@@ -112,7 +107,11 @@ define(['jTool'], function($) {
                     return true;
                 }
                 //表完全不可见
-                if(_this.scrollDOM == window ? (_tDIVTop - _scrollDOMTop < 0 &&
+                console.log('表完全不可见')
+                console.log(Math.abs(_tDIVTop - _scrollDOMTop));
+                console.log(_thead.height());
+                console.log();
+                if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop < 0 &&
                     Math.abs(_tDIVTop - _scrollDOMTop) + _thead.height() - _tableOffsetTop > _tableDIV.height()) : false){
                     _setTopHead.show();
                     _setTopHead.css({
@@ -121,9 +120,6 @@ define(['jTool'], function($) {
                     });
                     return true;
                 }
-                //配置表头镜像
-                //当前表未插入吸顶区域 或 事件触发事件为window.resize
-
                 //配置吸顶区的宽度
                 if(_setTopHead.length == 0 || _isWindowResize_){
                     _setTopHead.length == 0 ? table.append(_thead.clone(false).addClass('set-top')) : '';
@@ -131,8 +127,8 @@ define(['jTool'], function($) {
                     _setTopHead.removeAttr('grid-manager-thead');
                     _setTopHead.css({
                         width : _thead.width()
-                        + Number(_thead.css('border-left-width').split('px')[0] || 0)
-                        + Number(_thead.css('border-right-width').split('px')[0] || 0)
+                        + Number(_thead.css('border-left-width'))
+                        + Number(_thead.css('border-right-width'))
                         ,left: table.css('border-left-width')
                     });
                     //$(v).width(_thList.get(i).offsetWidth)  获取值只能精确到整数
@@ -155,8 +151,10 @@ define(['jTool'], function($) {
                 }
 
                 //表部分可见
-                if( _this.scrollDOM == window ? (_tDIVTop - _scrollDOMTop < 0 &&
+                console.log('---------')
+                if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop < 0 &&
                     Math.abs(_tDIVTop - _scrollDOMTop) <= _tableDIV.height() +_tableOffsetTop) : true){
+                    console.log('表部分可见')
                     if(!_thead.hasClass('scrolling')){
                         _thead.addClass('scrolling');
                     }
@@ -169,7 +167,7 @@ define(['jTool'], function($) {
                 }
                 return true;
             });
-            $(_this.scrollDOM).trigger('scroll');
+       //     $(_this.scrollDOM).trigger('scroll');
         }
     };
     return topGM;

@@ -501,8 +501,7 @@ define(['jTool'], function($) {
                         + onlyTH.css('padding-bottom') + ' '
                         + onlyTH.css('padding-left');
                 }
-                thPadding = $.trim(thPadding);
-                if(thPadding != '' && thPadding != '0px' && thPadding != '0px 0px 0px 0px'){
+                if(thPadding !== 0 ){
                     onlyThWarp.css('padding', thPadding);
                     onlyTH.css('cssText','padding:0px!important');
                 }

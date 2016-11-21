@@ -15,6 +15,16 @@ define(function() {
         if(!selector){
             selector = null;
         }
+        // selector -> window
+        else if(jTool.isWindow(selector)){
+            DOMList = [selector];
+            context = undefined;
+        }
+        // selector -> document
+        else if(selector === document){
+            DOMList = [document];
+            context = undefined;
+        }
         // selector -> DOM
         else if(selector instanceof HTMLElement){
             DOMList = [selector];
@@ -130,6 +140,10 @@ define(function() {
         isChrome: function(){
             return navigator.userAgent.indexOf('Chrome') == -1 ? false : true;
         }
+        // 是否为window
+        ,isWindow: function(object){
+            return object != null && object === object.window;
+        }
         // 版本号
         ,version: '1.0'
         // 空函数
@@ -185,7 +199,7 @@ define(function() {
             if(type === 'Array' || type === 'NodeList'){
                 // 由于存在类数组NodeList, 所以不能直接调用every方法
                 [].every.call(object, function(v, i){
-                    v.jTool ? v = v.get(0) : ''; // 处理jTool 对象
+                    jTool.isWindow(v) ? '' : (v.jTool ? v = v.get(0) : ''); // 处理jTool 对象
                     return callback.call(v, i, v) === false ? false : true;
                 });
             }
@@ -478,10 +492,10 @@ define(function() {
             var _this = this;
             // getter
             if(jTool.type(key) === 'String' && !value){
-                return jTool.getStyle(this.get(0), key);
+                return parseInt(jTool.getStyle(this.get(0), key).split('px')[0] || '0');
             }
             // setter
-            var pxList = ['width', 'height', 'top', 'left', 'right', 'bottom'];
+            var pxList = ['width', 'height', 'top', 'left', 'right', 'bottom', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left','margin-top', 'margin-right', 'margin-bottom', 'margin-left'];
             // ex: {width:13px, height:10px}
             if(jTool.type(key) === 'Object'){
                 var obj = key;
@@ -510,7 +524,11 @@ define(function() {
         ,height: function(value){
             return this.css('height', value);
         }
-        ,offset: function(){
+    });
+    // 位置
+    jTool.prototype.extend({
+        // 获取匹配元素在当前视口的相对偏移。
+        offset: function(){
             var offest = {
                 top: 0,
                 left:0
@@ -537,6 +555,58 @@ define(function() {
                     return;
                 }
                 getOffset(node.parentNode);
+            }
+        }
+        // 获取|设置 匹配元素相对滚动条顶部的偏移
+        ,scrollTop: function (value) {
+            return this.scrollFN(value, 'top');
+        }
+        // 获取|设置 匹配元素相对滚动条左部的偏移
+        ,scrollLeft: function (value) {
+            return this.scrollFN(value, 'left');
+        }
+        // 根据参数对位置操作进行get,set分类操作
+        ,scrollFN: function (value, type) {
+            var node = this.DOMList[0];
+            // setter
+            if(value || value === 0){
+            //    ''.indexOf.call(value, 'px') !== -1 ? value = value + 'px' : '';
+                this.setScrollFN(node, type, value);
+                return this;
+            }
+            // getter
+            else {
+                return this.getScrollFN(node, type);
+            }
+        }
+        // 根据元素的不同对滚动轴进行获取
+        ,getScrollFN: function(node, type){
+            // node => window
+            if(jTool.isWindow(node)){
+                return type === 'top' ? node.pageYOffset : node.pageXOffset;
+            }
+            // node => document
+            else if(node.nodeType === 9){
+                return type === 'top' ? node.body.scrollTop : node.body.scrollLeft;
+            }
+            // node => element
+            else if(node.nodeType === 1){
+                return type === 'top' ? node.scrollTop : node.scrollLeft;
+            }
+        }
+        // 根据元素的不同对滚动轴进行设置
+        ,setScrollFN: function(node, type, value){
+            // node => window
+            if(jTool.isWindow(node)){
+                return type === 'top' ? node.document.body.scrollTop = value : node.document.body.scrollLeft = value;
+            }
+            // node => document
+            else if(node.nodeType === 9){
+                return type === 'top' ? node.body.scrollTop = value : node.body.scrollLeft = value;
+            }
+            // node => element
+            else if(node.nodeType === 1){
+                return type === 'top' ? node.scrollTop = value : node.scrollLeft = value;
             }
         }
     });
@@ -850,6 +920,8 @@ define(function() {
         // mouseleave 事件原生已经支持了?
         ,addEvent: function(eventList){
             var _this = this;
+            console.log(_this)
+            console.log(eventList)
             jTool.each(eventList, function (index, eventObj) {
                 jTool.each(_this.DOMList, function(i, v){
                     if(!v['jToolEvent']){
