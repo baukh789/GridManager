@@ -861,6 +861,7 @@ define(function() {
         }
         ,trigger: function(event){
             jTool.each(this.DOMList, function(e, element){
+                console.log(element[event])
                 try {
                     element[event]();
                 }catch(e){
@@ -904,7 +905,7 @@ define(function() {
                     return true;
                 }
                 eventScopeSplit = eventName.split('.');
-                eventObj = {
+                        eventObj = {
                     eventName: eventName + querySelector,
                     type: eventScopeSplit[0],
                     querySelector: querySelector,
@@ -920,8 +921,6 @@ define(function() {
         // mouseleave 事件原生已经支持了?
         ,addEvent: function(eventList){
             var _this = this;
-            console.log(_this)
-            console.log(eventList)
             jTool.each(eventList, function (index, eventObj) {
                 jTool.each(_this.DOMList, function(i, v){
                     if(!v['jToolEvent']){

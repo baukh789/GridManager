@@ -5,7 +5,7 @@ require(['require.config'], function(){
     require(['jTool'], function($){
         window.$ = window.jTool = $;
 
-        testScroll();
+       // testScroll();
         function testScroll() {
             console.log('scroll', $(window).scrollTop());
             console.log('scroll', $(document).scrollTop());
@@ -59,7 +59,7 @@ require(['require.config'], function(){
             });
         }
         // 测试on
-        // testOn();
+        //testOn();
         function testOn(){
             $('div').off('click', 'p');
             $('div').on('click', 'p', function(e){
