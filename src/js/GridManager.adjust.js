@@ -41,8 +41,8 @@ define(['jTool'], function($) {
                 _table.bind('mousemove',function(e){
                     _w = e.clientX -
                         _th.offset().left -
-                        _th.css('padding-left').split('px')[0] -
-                        _th.css('padding-right').split('px')[0];
+                        _th.css('padding-left')[0] -
+                        _th.css('padding-right')[0];
                     //限定最小值
                     if(_w < _realWidthForThText){
                         _w = _realWidthForThText;
