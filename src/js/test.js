@@ -59,14 +59,24 @@ require(['require.config'], function(){
             });
         }
         // 测试on
-        //testOn();
+        testOn();
         function testOn(){
-            $('div').off('click', 'p');
-            $('div').on('click', 'p', function(e){
+            /*
+            $('.t1').off('mousedown');
+            $('.t1').on('dblclick', function(e){
+                console.log('dblclick=', 'dblclick')
+            }).on('mousedown click', function(e){
+                console.log('mousedown click=', 'mousedown')
+            }).trigger('click');
+            */
+            $('.t1').off('click p');
+            $('.t1').on('click p', function(e){
                 console.log('click=', this.innerHTML)
             });
-            $('div').append('<p>新增加的P元素</p>');
+            $('.t1 p').eq(1).trigger('click');
             /*
+            $('div').append('<p>新增加的P元素</p>');
+
             $('div').off('mousedown', 'p,span');
             $('div').on('mousedown', 'p,span', function(e){
                 console.log('mousedown=', this.innerHTML)
