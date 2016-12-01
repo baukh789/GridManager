@@ -4,8 +4,10 @@
   "description": "表格管理插件",
   "author": "拭目以待",
   "respository": "https://github.com/baukh789/GridManager",
+  "repository": "",
+  "license": "",
   "dependencies": {
-    "jTool": "^1.0.0"
+    "jTool": "^0.0.5"
   },
   "devDependencies": {
     "del": "^2.2.1",
