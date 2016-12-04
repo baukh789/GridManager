@@ -610,11 +610,6 @@ table.grid-manager-default tbody tr:hover td{
 	margin:0px;
 	clear: both;
 }
-.table-wrap .page-toolbar .ajax-page .pagination li{
-	display:block;
-	height:30px;
-	float: left;
-}
 .pagination > li:first-child{
 	border-bottom-left-radius: 2px;
 	border-top-left-radius: 2px;
@@ -632,7 +627,6 @@ table.grid-manager-default tbody tr:hover td{
 	background-color: #3276b1;
 	border-color: #3276b1;
 	color: #fff;
-	cursor: default;
 	z-index: 2;
 }
 .pagination > li{
@@ -646,6 +640,7 @@ table.grid-manager-default tbody tr:hover td{
 	margin-left: -1px;
 	position: relative;
 	text-decoration: none;
+	cursor: default;
 }
 .pagination li:focus, .pagination li:hover {
 	background-color: #eee;

@@ -4,18 +4,35 @@
   "description": "表格管理插件",
   "author": "拭目以待",
   "respository": "https://github.com/baukh789/GridManager",
-  "repository": "",
-  "license": "",
   "dependencies": {
     "jTool": "^0.0.5"
   },
   "devDependencies": {
-    "del": "^2.2.1",
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.0",
-    "gulp-minify-css": "^1.2.4",
-    "gulp-order": "^1.1.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^1.5.4"
+    "browserify": "^13.0.0",
+    "codecov": "^1.0.1",
+    "jasmine-ajax": "^3.2.0",
+    "jasmine-core": "^2.3.4",
+    "jshint": "^2.8.0",
+    "karma": "^0.13.22",
+    "karma-browserify": "^5.0.4",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
+    "karma-jasmine": "^0.3.6",
+    "karma-jasmine-ajax": "^0.1.13",
+    "karma-jshint-preprocessor": "0.0.6",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "phantomjs-prebuilt": "^2.1.7",
+    "sinon": "^1.17.2",
+    "uglifyjs": "^2.4.10",
+    "watchify": "^3.7.0"
+  },
+  "license": "MIT",
+  "scripts": {
+    "report-coverage": "codecov",
+    "lint": "jshint src test",
+    "test": "karma start",
+    "build": "browserify src/js/GridManager.js > build/GridManager.js",
+    "build:minified": "browserify src/GridManager.js | uglifyjs -mc > build/GridManager.min.js",
+    "pub": "npm run build && npm run build:minified && npm publish build && cnpm sync GridManager"
   }
 }

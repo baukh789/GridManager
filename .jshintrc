@@ -1,0 +1,13 @@
+{
+  "browser": true,
+  "browserify": true,
+  "devel": true,
+  "globals": {
+    "jasmine": false,
+    "describe": false,
+    "it": false,
+    "expect": false,
+    "beforeEach": false,
+    "afterEach": false
+  }
+}
