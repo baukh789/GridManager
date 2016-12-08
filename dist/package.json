@@ -1,12 +1,12 @@
 {
   "name": "GridManager",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "表格管理插件",
   "author": "拭目以待",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/baukh789/GridManager.git"
+    "url": "https://github.com/baukh789/GridManager.git"
   },
   "bugs": {
     "url": "https://github.com/baukh789/GridManager/issues"
