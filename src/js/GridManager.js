@@ -1,25 +1,124 @@
 /*
-*  GridManager: 构造函数
-* */
-var Adjust = require('./Adjust');
-var AjaxPage = require('./AjaxPage');
-var Cache = require('./Cache');
-var Core = require('./Core');
-var Checkbox = require('./Checkbox');
-var Config = require('./Config');
-var Drag = require('./Drag');
-var Export = require('./Export');
-var I18n = require('./I18n');
-var Menu = require('./Menu');
-var Order = require('./Order');
-var Remind = require('./Remind');
-var SetTop = require('./SetTop');
-var Sort = require('./Sort');
-var Settings = require('./Settings');
-// var Element = require('./Element');
+ *  GridManager: 构造函数
+ * */
+import Adjust from './Adjust';
+import AjaxPage from './AjaxPage';
+import Cache from './Cache';
+import Core from './Core';
+import Config from './Config';
+import Checkbox from './Checkbox';
+import Drag from './Drag';
+import Export from './Export';
+import I18n from './I18n';
+import Menu from './Menu';
+import Order from './Order';
+import Remind from './Remind';
+import SetTop from './SetTop';
+import Sort from './Sort';
+import Settings from './Settings';
+import DOM from './DOM';
 
-// GridManager构造函数
-function GridManager(){
+class GridManager {
+	constructor() {
+		this.version = '2.0'
+	};
+	/*
+	 * [对外公开方法]
+	 * @初始化方法
+	 * $.jToolObj: table [jTool object]
+	 * $.settings: 参数
+	 * $.callback:回调
+	 * */
+	init(jToolObj, settings, callback) {
+
+		var _this = this;
+		// 参数
+		$.extend(Settings, settings);
+
+		//通过版本较验 清理缓存
+		Cache.cleanTableCacheForVersion(jToolObj, this.version);
+		if(typeof Settings.gridManagerName !== 'string' || Settings.gridManagerName.trim() === ''){
+			Settings.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
+		}
+		if(Settings.gridManagerName.trim() === ''){
+			Settings.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+			return false;
+		}
+
+		if(jToolObj.hasClass('GridManager-ready') || jToolObj.hasClass('GridManager-loading')){
+			Settings.outLog('渲染失败：可能该表格已经渲染或正在渲染' , 'error');
+			return false;
+		}
+		//根据本地缓存配置每页显示条数
+		if(Settings.supportAjaxPage){
+			AjaxPage.configPageForCache(jToolObj);
+		}
+		var query = $.extend({}, Settings.query, Settings.pageData);
+		//增加渲染中标注
+		jToolObj.addClass('GridManager-loading');
+		_this.initTable(jToolObj);
+
+		//如果初始获取缓存失败，则在mousedown时，首先存储一次数据
+		console.log(jToolObj.attr('grid-manager-cache-error'));
+		if(typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined'){
+			window.setTimeout(function(){
+				Cache.setToLocalStorage(jToolObj, true);
+				jToolObj.removeAttr('grid-manager-cache-error');
+			},1000);
+		}
+
+		//重置tbody存在数据的列表 @20160717:的2.0版本中，重置已在其它位置执行，该处已无用
+		//$('tbody tr', jToolObj).length > 0 ? _this.resetTd(v, false) : '';
+		//启用回调
+		typeof(callback) == 'function' ? callback(query) :'';
+		return jToolObj;
+	}
+	/*
+	 @初始化列表
+	 $.table: table[jTool object]
+	 */
+	initTable(table) {
+		var _this = this;
+
+		//渲染HTML，嵌入所需的事件源DOM
+		DOM.createDOM(table);
+		//获取本地缓存并对列表进行配置
+		if(!Settings.disableCache){
+			Cache.configTheadForCache(table);
+			Settings.supportAdjust ? Adjust.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
+		}
+		//绑定宽度调整事件
+		if(Settings.supportAdjust){
+			Adjust.bindAdjustEvent(table);
+		}
+		//绑定拖拽换位事件
+		if(Settings.supportDrag){
+			Drag.bindDragEvent(table);
+		}
+		//绑定排序事件
+		if(Settings.supportSorting){
+			Sort.bindSortingEvent(table);
+		}
+		//绑定表头提示事件
+		if(Settings.supportRemind){
+			Remind.bindRemindEvent(table);
+		}
+		//绑定配置列表事件
+		if(Settings.supportConfig){
+			Config.bindConfigEvent(table);
+		}
+		//绑定表头吸顶功能
+		if(Settings.supportSetTop){
+			SetTop.bindSetTopFunction(table);
+		}
+		//绑定右键菜单事件
+		Menu.bindRightMenuEvent(table);
+		//渲梁tbodyDOM
+		Core.__refreshGrid();
+		//将GridManager实例化对象存放于jTool data
+		Cache.setGridManagerToJTool(table);
+
+	}
 }
 // GM导入功能: 配置项
 $.extend(GridManager.prototype, Settings);
@@ -49,7 +148,8 @@ $.extend(GridManager.prototype, Order);
 $.extend(GridManager.prototype, Remind);
 // GM导入功能: 表头吸顶
 $.extend(GridManager.prototype, SetTop);
-
+// GM导入功能: DOM操作
+$.extend(GridManager.prototype, DOM);
 
 // 对外公开方法列表
 var publishList = [
@@ -170,4 +270,3 @@ var publishList = [
 
 
 })();
-module.exports = GridManager;

@@ -1,7 +1,8 @@
 /*
  * I18n: 国际化
  * */
-var I18n = {
+import Base from './Base';
+const I18n = {
 	//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
 	i18n : 'zh-cn'
 	/*
@@ -32,7 +33,7 @@ var I18n = {
 			});
 			return _lg;
 		}catch (e){
-			_this.outLog('未找到与'+ key +'相匹配的'+ _this.i18n +'语言', 'warn');
+			Base.outLog('未找到与'+ key +'相匹配的'+ _this.i18n +'语言', 'warn');
 			return '';
 		}
 	}
@@ -95,4 +96,4 @@ var I18n = {
 
 	}
 };
-module.exports = I18n;
+export default I18n;

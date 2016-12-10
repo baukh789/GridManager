@@ -1,14 +1,13 @@
 /*
  * Checkbox: 数据选择/全选/返选
  * */
-var I18n = require('./I18n');
+import I18n from './I18n';
 var Checkbox = {
 	/*
 	 @初始化选择与反选DOM
 	 $.table: table DOM
 	 */
-	initCheckboxDOM: function(table) {
-		var _this = this;
+	initDOM: function(table) {
 		var checkboxHtml = '<th th-name="gm_checkbox" gm-checkbox="true" gm-create="true"><input type="checkbox"/><span style="display: none">'+ I18n.i18nText('checkall-text') +'</span></th>';
 		$('thead tr', table).prepend(checkboxHtml);
 		//绑定选择事件
@@ -45,4 +44,4 @@ var Checkbox = {
 		return $('tbody td[gm-checkbox] input[type="checkbox"]:checked', table).closest('tr');
 	}
 };
-module.exports = Checkbox;
+export default Checkbox;

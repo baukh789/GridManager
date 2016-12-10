@@ -1,26 +1,27 @@
 /*
  * GridManager: 右键菜单
  * */
-var I18n = require('./I18n');
-var Menu = {
+import I18n from './I18n';
+import Settings from './Settings';
+import AjaxPage from './AjaxPage';
+const Menu = {
 	/*
 	 @验证菜单区域: 禁用、开启分页操作
 	 */
 	checkMenuPageAction: function(){
-		var _this = this;
 		//右键菜单区上下页限制
-		var gridMenu = $('.grid-menu[grid-master="'+ _this.gridManagerName +'"]');
+		var gridMenu = $('.grid-menu[grid-master="'+ Settings.gridManagerName +'"]');
 		if(!gridMenu || gridMenu.length === 0){
 			return;
 		}
 		var previousPage = $('[refresh-type="previous"]', gridMenu),
 			nextPage = $('[refresh-type="next"]', gridMenu);
-		if(_this.pageData.cPage === 1 || _this.pageData.tPage === 0){
+		if(Settings.pageData.cPage === 1 || Settings.pageData.tPage === 0){
 			previousPage.addClass('disabled');
 		}else{
 			previousPage.removeClass('disabled');
 		}
-		if(_this.pageData.cPage === _this.pageData.tPage || _this.pageData.tPage === 0){
+		if(Settings.pageData.cPage === Settings.pageData.tPage || Settings.pageData.tPage === 0){
 			nextPage.addClass('disabled');
 		}else{
 			nextPage.removeClass('disabled');
@@ -31,13 +32,12 @@ var Menu = {
 	 $.table:table
 	 */
 	,bindRightMenuEvent: function(table){
-		var _this = this;
 		var tableWarp = $(table).closest('.table-wrap'),
 			tbody = $('tbody', tableWarp);
 		//刷新当前表格
-		var menuHTML = '<div class="grid-menu" grid-master="'+ _this.gridManagerName +'">';
+		var menuHTML = '<div class="grid-menu" grid-master="'+ Settings.gridManagerName +'">';
 		//分页类操作
-		if(_this.supportAjaxPage){
+		if(Settings.supportAjaxPage){
 			menuHTML+= '<span grid-action="refresh-page" refresh-type="previous">'
 				+ I18n.i18nText("previous-page")
 				+ '<i class="iconfont icon-sanjiao2"></i></span>'
@@ -49,7 +49,7 @@ var Menu = {
 			+ I18n.i18nText("refresh")
 			+ '<i class="iconfont icon-31shuaxin"></i></span>';
 		//导出类
-		if(_this.supportExport){
+		if(Settings.supportExport){
 			menuHTML+='<span class="grid-line"></span>'
 				+ '<span grid-action="export-excel" only-checked="false">'
 				+ I18n.i18nText("save-as-excel")
@@ -59,17 +59,17 @@ var Menu = {
 				+ '<i class="iconfont icon-saveas24"></i></span>';
 		}
 		//配置类
-		if(_this.supportConfig){
+		if(Settings.supportConfig){
 			menuHTML+= '<span class="grid-line"></span>'
 				+ '<span grid-action="setting-grid">'
-				+ _this.i18nText("setting-grid")
+				+ I18n.i18nText("setting-grid")
 				+ '<i class="iconfont icon-shezhi"></i></span>';
 		}
 		menuHTML+= '</div>';
 		var _body = $('body');
 		_body.append(menuHTML);
 		//绑定打开右键菜单栏
-		var menuDOM = $('.grid-menu[grid-master="'+ _this.gridManagerName +'"]');
+		var menuDOM = $('.grid-menu[grid-master="'+ Settings.gridManagerName +'"]');
 		tableWarp.unbind('contextmenu');
 		tableWarp.bind('contextmenu', function(e){
 			e.preventDefault();
@@ -80,7 +80,7 @@ var Menu = {
 			}
 			//验证：当前是否存在已选中的项
 			var exportExcelOfChecked = $('[grid-action="export-excel"][only-checked="true"]');
-			if($('tbody tr[checked="true"]', $('table[grid-manager="'+ _this.gridManagerName +'"]')).length === 0){
+			if($('tbody tr[checked="true"]', $('table[grid-manager="'+ Settings.gridManagerName +'"]')).length === 0){
 				exportExcelOfChecked.addClass('disabled');
 			}else{
 				exportExcelOfChecked.removeClass('disabled');
@@ -122,11 +122,11 @@ var Menu = {
 			var refreshType = this.getAttribute('refresh-type');
 			var cPage = _GM.pageData.cPage;
 			//上一页
-			if(refreshType === 'previous' && _this.pageData.cPage > 1){
+			if(refreshType === 'previous' && Settings.pageData.cPage > 1){
 				cPage = _GM.pageData.cPage - 1;
 			}
 			//下一页
-			else if(refreshType === 'next' && _this.pageData.cPage < _this.pageData.tPage){
+			else if(refreshType === 'next' && Settings.pageData.cPage < Settings.pageData.tPage){
 				cPage = _GM.pageData.cPage + 1;
 			}
 			//重新加载
@@ -150,7 +150,7 @@ var Menu = {
 			if(this.getAttribute('only-checked') === 'true'){
 				onlyChecked = true;
 			}
-			_this.exportGridToXls(_table, undefined, onlyChecked);
+			Settings.exportGridToXls(_table, undefined, onlyChecked);
 			_body.off('mousedown.gridMenu');
 			_gridMenu.hide();
 		});
@@ -180,4 +180,4 @@ var Menu = {
 		}
 	}
 };
-module.exports = Menu;
+export default Menu;

@@ -1,6 +1,6 @@
 {
   "name": "GridManager",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "表格管理插件",
   "author": "拭目以待",
   "repository": {
@@ -8,34 +8,45 @@
     "url": "baukh789/GridManager"
   },
   "dependencies": {
-    "jTool": "^0.1.1"
+    "jTool": "^1.0.1"
   },
   "devDependencies": {
-    "browserify": "^13.0.0",
+    "babel-cli": "^6.7.7",
+    "babel-core": "^6.7.4",
+    "babel-eslint": "^4.1.3",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-stage-0": "^6.5.0",
     "codecov": "^1.0.1",
+    "eslint": "^1.8.0",
+    "eslint-friendly-formatter": "^1.2.2",
+    "eslint-loader": "^1.1.0",
+    "eslint-plugin-standard": "^1.3.1",
+    "istanbul-instrumenter-loader": "^1.1.0",
     "jasmine-ajax": "^3.2.0",
     "jasmine-core": "^2.3.4",
-    "jshint": "^2.8.0",
     "karma": "^0.13.22",
-    "karma-browserify": "^5.0.4",
     "karma-chrome-launcher": "^2.0.0",
     "karma-coverage": "^1.1.1",
     "karma-jasmine": "^0.3.6",
     "karma-jasmine-ajax": "^0.1.13",
-    "karma-jshint-preprocessor": "0.0.6",
     "karma-phantomjs-launcher": "^1.0.0",
+    "karma-webpack": "^1.7.0",
     "phantomjs-prebuilt": "^2.1.7",
     "sinon": "^1.17.2",
     "uglifyjs": "^2.4.10",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "webpack": "^1.13.0"
   },
   "license": "MIT",
   "scripts": {
     "report-coverage": "codecov",
-    "lint": "jshint src test",
+    "lint": "eslint src",
     "test": "karma start",
-    "build": "browserify src/js/GridManager.js > build/GridManager.js",
-    "build:minified": "browserify src/GridManager.js | uglifyjs -mc > build/GridManager.min.js",
-    "pub": "npm run build && npm run build:minified && npm publish build && cnpm sync GridManager"
+    "build": "rm -rf build && babel src --out-dir build --ignore *_spec.js && cp package.json build/package.json && cp README.md build/README.md",
+    "pub": "npm run build && npm publish build && cnpm sync jTool",
+    "bb": "webpack --config webpack-config.js"
   }
 }

@@ -1,7 +1,7 @@
 /**
  * Settings: 配置项
  */
-var Settings = {
+const Settings = {
 	//是否为开发模式，为true时将打印事件日志
 	isDevelopMode: false,
 
@@ -77,14 +77,14 @@ var Settings = {
 	gridManagerName   	: '',						//表格grid-manager所对应的值[可在html中配置]
 	ajax_url			: '',						//获取表格数据地址，配置该参数后，将会动态获取数据
 	ajax_type			: 'GET',					//ajax请求类型['GET', 'POST']默认GET
-	ajax_beforeSend	: $.noop,					//ajax请求之前,与jTool的beforeSend使用方法相同
+	ajax_beforeSend		: $.noop,					//ajax请求之前,与jTool的beforeSend使用方法相同
 	ajax_success		: $.noop,					//ajax成功后,与jTool的success使用方法相同
 	ajax_complete		: $.noop,					//ajax完成后,与jTool的complete使用方法相同
 	ajax_error			: $.noop,					//ajax失败后,与jTool的error使用方法相同
 	ajax_data			: undefined,				//ajax静态数据,配置后ajax_url将无效
-	dataKey			: 'data',					//ajax请求返回的列表数据key键值,默认为data
+	dataKey				: 'data',					//ajax请求返回的列表数据key键值,默认为data
 	totalsKey			: 'totals',					//ajax请求返回的数据总条数key键值,默认为totals
 	//数据导出
 	supportExport		: true						//支持导出表格数据
 };
-module.exports = Settings;
+export default Settings;

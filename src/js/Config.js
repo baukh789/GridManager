@@ -1,10 +1,10 @@
 /*
  * Config: th配置
  * */
-var Cache = require('./Cache');
-var Adjust = require('./Adjust');
-
-var Config = {
+import Cache from './Cache';
+import Adjust from './Adjust';
+import Settings from './Settings';
+const Config = {
 	html: function () {
 		var html = '<div class="config-area"><span class="config-action"><i class="iconfont icon-31xingdongdian"></i></span><ul class="config-list"></ul></div>';
 		return html;
@@ -14,7 +14,6 @@ var Config = {
 	 $.table: table [jTool object]
 	 */
 	,bindConfigEvent: function(table){
-		var _this = this;
 		//打开/关闭设置区域
 		var tableWarp = $(table).closest('div.table-wrap');
 		var configAction = $('.config-action', tableWarp);
@@ -64,7 +63,7 @@ var Config = {
 			var isVisible = !_checkbox.get(0).checked;
 			//设置与当前td同列的td是否可见
 			_tableDiv.addClass('config-editing');
-			_this.setAreVisible(_th, isVisible, function(){
+			Base.setAreVisible(_th, isVisible, function(){
 				_tableDiv.removeClass('config-editing');
 			});
 			//最后一项禁止取消
@@ -74,10 +73,12 @@ var Config = {
 			}
 
 			//重置调整宽度事件源
-			Adjust.resetAdjust(_table);
+			if(Settings.supportAdjust){
+				Adjust.resetAdjust(_table);
+			}
 
 			//重置镜像滚动条的宽度
-			if(_this.supportSetTop){
+			if(Settings.supportSetTop){
 				$('.sa-inner', _tableWarp).width('100%');
 			}
 			//重置当前可视th的宽度
@@ -88,7 +89,7 @@ var Config = {
 			//当前th文本所占宽度大于设置的宽度
 			//需要在上一个each执行完后才可以获取到准确的值
 			$.each(_visibleTh, function(i, v){
-				var _realWidthForThText = _this.getTextWidth(v),
+				var _realWidthForThText = Base.getTextWidth(v),
 					_thWidth = $(v).width();
 				if(_thWidth < _realWidthForThText){
 					$(v).width(_realWidthForThText);
@@ -99,74 +100,5 @@ var Config = {
 			Cache.setToLocalStorage(_table);	//缓存信息
 		});
 	}
-	/*
-	 [对外公开方法]
-	 @显示Th及对应的TD项
-	 $.table: table
-	 $.th:th
-	 */
-	,showTh: function(table, th){
-		var _this = this;
-		_this.setAreVisible($(th), true);
-	}
-	/*
-	 [对外公开方法]
-	 @隐藏Th及对应的TD项
-	 $.table: table
-	 $.th:th
-	 */
-	,hideTh: function(table, th){
-		var _this = this;
-		_this.setAreVisible($(th), false);
-	}
-	/*
-	 @设置列是否可见
-	 $._thList_	： 即将配置的列所对应的th[jTool object，可以是多个]
-	 $._visible_: 是否可见[Boolean]
-	 $.cb		: 回调函数
-	 */
-	,setAreVisible: function(_thList_, _visible_ ,cb){
-		var _this = this;
-		var _table,			//当前所在的table
-			_tableWarp, 	//当前所在的容器
-			_th,			//当前操作的th
-			_trList, 		//当前tbody下所有的tr
-			_tdList = [], 	//所对应的td
-			_checkLi,		//所对应的显示隐藏所在的li
-			_checkbox;		//所对应的显示隐藏事件
-		$.each(_thList_, function(i, v){
-			_th = $(v);
-			_table = _th.closest('table');
-			_tableWarp = _table.closest('.table-wrap');
-			_trList = $('tbody tr', _table);
-			_checkLi = $('.config-area li[th-name="'+ _th.attr('th-name') +'"]', _tableWarp);
-			_checkbox = _checkLi.find('input[type="checkbox"]');
-			if(_checkbox.length == 0){
-				return;
-			}
-			$.each(_trList, function(i2, v2){
-				_tdList.push($(v2).find('td').eq(_th.index()));
-			});
-			//显示
-			if(_visible_){
-				_th.attr('th-visible','visible');
-				$.each(_tdList, function(i2, v2){
-					$(v2).show();
-				});
-				_checkLi.addClass('checked-li');
-				_checkbox.get(0).checked = true;
-			}
-			//隐藏
-			else{
-				_th.attr('th-visible','none');
-				$.each(_tdList, function(i2, v2){
-					$(v2).hide();
-				});
-				_checkLi.removeClass('checked-li');
-				_checkbox.get(0).checked = false;
-			}
-			typeof(cb) == 'function' ? cb() : '';
-		});
-	}
 };
-module.exports = Config;
+export default Config;

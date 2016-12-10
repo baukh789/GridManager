@@ -1,7 +1,9 @@
 /*
  * Adjust: 宽度调整
  * */
-var Cache = require('./Cache');
+import Cache from './Cache';
+import Base from './Base';
+import Settings from './Settings';
 var Adjust = {
 	html: function () {
 		var html = '<span class="adjust-action"></span>';
@@ -40,7 +42,7 @@ var Adjust = {
 			//绑定鼠标拖动事件
 			var _w,
 				_w2;
-			var _realWidthForThText = _this.getTextWidth(_th);
+			var _realWidthForThText = Base.getTextWidth(_th);
 			_table.unbind('mousemove');
 			_table.bind('mousemove',function(e){
 				_w = e.clientX -
@@ -67,8 +69,8 @@ var Adjust = {
 					_nextTh.width(Math.ceil(_nextTh.width() + _th.width() - _w))
 				}
 				//重置镜像滚动条的宽度
-				if(_this.supportSetTop){
-					$(_this.scrollDOM).trigger('scroll');
+				if(Settings.supportSetTop){
+					$(Settings.scrollDOM).trigger('scroll');
 				}
 			});
 
@@ -79,8 +81,8 @@ var Adjust = {
 				_th.removeClass('adjust-selected');
 				_td.removeClass('adjust-selected');
 				//重置镜像滚动条的宽度
-				if(_this.supportSetTop){
-					$(_this.scrollDOM).trigger('scroll');
+				if(Settings.supportSetTop){
+					$(Settings.scrollDOM).trigger('scroll');
 				}
 				//缓存列表宽度信息
 				Cache.setToLocalStorage(_table);
@@ -89,46 +91,11 @@ var Adjust = {
 		});
 	}
 	/*
-	 @获取TH宽度
-	 $.element: th
-	 */
-	,getTextWidth: function(element){
-		var th 	= $(element);
-		var  thWarp 		= $('.th-wrap', th),  			//th下的GridManager包裹容器
-			thText	 		= $('.th-text', th),			//文本所在容器
-			remindAction	= $('.remind-action', thWarp),	//提醒所在容器
-			sortingAction	= $('.sorting-action', thWarp);	//排序所在容器
-
-		//文本镜象 用于处理实时获取文本长度
-		var tableWrap = th.closest('.table-wrap');
-		var textDreamland	= $('.text-dreamland', tableWrap);
-		//将th文本嵌入文本镜象 用于获取文本实时宽度
-		textDreamland.text(thText.text());
-		textDreamland.css({
-			fontSize 	: thText.css('font-size'),
-			fontWeight	: thText.css('font-weight'),
-			fontFamily	: thText.css('font-family')
-		});
-		var thPaddingLeft = thWarp.css('padding-left'),
-			thPaddingRight = thWarp.css('padding-right');
-		var thWidth = textDreamland.width()
-			+ (Number(thPaddingLeft) ? Number(thPaddingLeft) : 0)
-			+ (Number(thPaddingRight) ? Number(thPaddingRight) : 0)
-			+ (remindAction.length == 1 ? 20 : 5)
-			+ (sortingAction.length == 1 ? 20 : 5);
-		return thWidth;
-	}
-	/*
-	 @重置宽度调整事件源DOM
+	 @通过缓存配置成功后, 重置宽度调整事件源dom
 	 用于禁用最后一列调整宽度事件
 	 $.table:table
 	 */
 	,resetAdjust: function(table){
-		var _this = this;
-		//当前不支持宽度调整，直接跳出
-		if(!_this.supportAdjust){
-			return false;
-		}
 		var _table = $(table),
 			_thList = $('thead [th-visible="visible"]', _table),
 			_adjustAction = $('.adjust-action', _thList);
@@ -139,4 +106,4 @@ var Adjust = {
 		_adjustAction.eq(_adjustAction.length - 1).hide();
 	}
 };
-module.exports = Adjust;
+export default Adjust;

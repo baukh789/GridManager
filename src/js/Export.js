@@ -1,8 +1,8 @@
 /*
  * Export: 数据导出
  * */
-var Core = require('./Core');
-var Export = {
+import Core from './Core';
+const Export = {
 	html: function () {
 		var html = '<a href="" download="" id="gm-export-action"></a>';
 		return html;
@@ -69,4 +69,4 @@ var Export = {
 		}
 	}
 };
-module.exports = Export;
+export default Export;

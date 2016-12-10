@@ -1,7 +1,7 @@
 /*
  * Remind: 表头提醒
  * */
-var Remind = {
+const Remind = {
 	html: function(){
 		var html = '<div class="remind-action">'
 			+ '<i class="ra-help iconfont icon-icon"></i>'
@@ -39,4 +39,4 @@ var Remind = {
 		});
 	}
 };
-module.exports = Remind;
+export default Remind;

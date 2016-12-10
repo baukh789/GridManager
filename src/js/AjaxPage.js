@@ -1,9 +1,12 @@
 /*
  * AjaxPage: 分页
  * */
-var Cache = require('./Cache');
-var I18n = require('./I18n');
-var AjaxPage = {
+import Base from './Base';
+import Core from './Core';
+import Settings from './Settings';
+import Cache from './Cache';
+import I18n from './I18n';
+const AjaxPage = {
 	html: function () {
 		var html = '<div class="page-toolbar">'
 			+ '<div class="dataTables_info"></div>'
@@ -25,7 +28,7 @@ var AjaxPage = {
 		var table 		= $(table),
 			tableWarp 	= table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
-		var	sizeData = _this.sizeData ;
+		var	sizeData = Settings.sizeData ;
 		pageToolbar.hide();
 		//生成每页显示条数选择框
 		_this.createPageSizeDOM(table, sizeData);
@@ -42,7 +45,6 @@ var AjaxPage = {
 	 $._pageData_:分页数据格式
 	 */
 	,createPageDOM:function(_tableDOM_, _pageData_){
-		var _this = this;
 		var table 		= $(_tableDOM_),
 			tableWarp 	= table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
@@ -121,14 +123,13 @@ var AjaxPage = {
 	 $._sizeData_: 选择框自定义条数
 	 */
 	,createPageSizeDOM: function(_tableDOM_, _sizeData_){
-		var _this = this;
 		var table		= $(_tableDOM_),
 			tableWarp	= table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),				//分页工具条
 			pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);	//分页区域
 		//error
 		if(!_sizeData_ || _sizeData_.length === 0){
-			_this.outLog('渲染失败：参数[sizeData]配置错误' , 'error');
+			Base.outLog('渲染失败：参数[sizeData]配置错误' , 'error');
 			return;
 		}
 
@@ -156,7 +157,7 @@ var AjaxPage = {
 			var pageAction = $(this);
 			var cPage = pageAction.attr('c-page');	//分页页码
 			if(!cPage || !Number(cPage) || pageAction.hasClass('disabled')){
-				_this.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
+				Base.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
 				return false;
 			}
 			cPage = parseInt(cPage);
@@ -184,7 +185,7 @@ var AjaxPage = {
 				_value = _input.val();
 			//跳转输入框为空时: 刷新当前菜
 			if(_value.trim() === ''){
-				_this.__refreshGrid();
+				Core.__refreshGrid();
 				return;
 			}
 			//跳转输入框不为空时: 验证输入值是否有效,如果有效跳转至指定页,如果无效对输入框进行聚焦
@@ -201,21 +202,19 @@ var AjaxPage = {
 	* @跳转至指定页
 	* */
 	,gotoPage: function (_cPage) {
-		var _this = this;
 		//跳转的指定页大于总页数
-		if(_cPage > _this.pageData.tPage){
-			_cPage = _this.pageData.tPage;
+		if(_cPage > Settings.pageData.tPage){
+			_cPage = Settings.pageData.tPage;
 		}
 		//替换被更改的值
-		_this.pageData.cPage = _cPage;
-		_this.pageData.pSize = _this.pageData.pSize || _this.pageSize;
+		Settings.pageData.cPage = _cPage;
+		Settings.pageData.pSize = Settings.pageData.pSize || Settings.pageSize;
 
 		//调用事件、渲染DOM
-		var query = $.extend({}, _this.query, _this.sortData, _this.pageData);
-		console.log(_this);
-		_this.pagingBefore(query);
-		_this.__refreshGrid(function() {
-			_this.pagingAfter(query);
+		var query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
+		Settings.pagingBefore(query);
+		Core.__refreshGrid(function() {
+			Settings.pagingAfter(query);
 		});
 	}
 	/*
@@ -223,13 +222,12 @@ var AjaxPage = {
 	 $._tableDOM_: table的juqery实例化对象
 	 */
 	,bindSetPageSizeEvent:function(_tableDOM_){
-		var _this = this;
 		var table 		=  $(_tableDOM_),
 			tableWarp 	= table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 			sizeArea	= $('select[name=pSizeArea]', pageToolbar);	//切换条数区域
 		if(!sizeArea || sizeArea.length == 0){
-			_this.outLog('未找到单页显示数切换区域，停止该事件绑定', 'info');
+			Base.outLog('未找到单页显示数切换区域，停止该事件绑定', 'info');
 			return false;
 		}
 		sizeArea.unbind('change');
@@ -237,17 +235,17 @@ var AjaxPage = {
 			var _size = $(this);
 			var _tableWarp  = _size.closest('.table-wrap'),
 				_table		= $('table[grid-manager]', _tableWarp);
-			_this.pageData = {
+			Settings.pageData = {
 				cPage : 1,
 				pSize : _size.val()
 			};
 
 			Cache.setToLocalStorage(_table);
 			//调用事件、渲染tbody
-			var query = $.extend({}, _this.query, _this.sortData, _this.pageData);
-			_this.pagingBefore(query);
-			_this.__refreshGrid(function(){
-				_this.pagingAfter(query);
+			var query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
+			Settings.pagingBefore(query);
+			Core.__refreshGrid(function(){
+				Settings.pagingAfter(query);
 			});
 
 		});
@@ -258,14 +256,13 @@ var AjaxPage = {
 	 $._pageData_:分页数据格式
 	 */
 	,resetPSize: function(table, _pageData_){
-		var _this = this;
 		var table 		=  $(table),
 			tableWarp 	= table.closest('.table-wrap'),
 			toolBar   = $('.page-toolbar', tableWarp),
 			pSizeArea = $('select[name="pSizeArea"]', toolBar),
 			pSizeInfo = $('.dataTables_info', toolBar);
 		if(!pSizeArea || pSizeArea.length == 0){
-			_this.outLog('未找到条数切换区域，停止该事件绑定', 'info');
+			Base.outLog('未找到条数切换区域，停止该事件绑定', 'info');
 			return false;
 		}
 		var fromNum = _pageData_.cPage == 1 ? 1 : (_pageData_.cPage-1) * _pageData_.pSize + 1,	//从多少开始
@@ -297,14 +294,14 @@ var AjaxPage = {
 		var table 		= $(table),
 			tableWarp 	= table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
-		$.extend(_this.pageData, _pageData); //存储pageData信息
+		$.extend(Settings.pageData, _pageData); //存储pageData信息
 		pageToolbar.show();
 
 		//计算分页数据
 		function getPageData(tSize){
-			var _pSize = _this.pageData.pSize || _this.pageSize,
+			var _pSize = Settings.pageData.pSize || Settings.pageSize,
 				_tSize = tSize,
-				_cPage = _this.pageData.cPage || 1;
+				_cPage = Settings.pageData.cPage || 1;
 			return {
 				tPage: Math.ceil(_tSize / _pSize),		//总页数
 				cPage: _cPage,							//当前页
@@ -319,22 +316,20 @@ var AjaxPage = {
 	 配置当前页显示数
 	 */
 	,configPageForCache: function(table){
-		var _this = this;
 		var _data = Cache.getLocalStorage(table),		//本地缓存的数据
 			_cache = _data.cache,		//缓存对应
 			_pSize;			 //每页显示条数
 		//验证是否存在每页显示条数缓存数据
 		if(!_cache || !_cache.page || !_cache.page.pSize){
-			_pSize = _this.pageSize || 10.
+			_pSize = Settings.pageSize || 10.
 		}
 		else{
 			_pSize = _cache.page.pSize;
 		}
-		_this.pageData = {
+		Settings.pageData = {
 			pSize : _pSize,
 			cPage : 1
 		};
 	}
 };
-module.exports = AjaxPage;
-
+export default AjaxPage;

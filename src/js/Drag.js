@@ -1,14 +1,17 @@
 /*
  * Drag: 拖拽
  * */
-var Cache = require('./Cache');
-var Adjust = require('./Adjust');
-var Drag = {
+import Adjust from './Adjust';
+import Settings from './Settings';
+import Cache from './Cache';
+const Drag = {
+	// 动画执行时间
+	animateTime: Settings.animateTime
 	/*
 	 @绑定拖拽换位事件
 	 $.table: table [jTool object]
 	 */
-	bindDragEvent: function(table){
+	,bindDragEvent: function(table){
 		var _this = this;
 		var thList = $('thead th', table),	//匹配页面下所有的TH
 			dragAction	= thList.find('.drag-action');
@@ -148,7 +151,7 @@ var Drag = {
 					_dreamlandDIV.animate({
 						top	: _table.get(0).offsetTop + 'px',
 						left: _th.get(0).offsetLeft - _tableDiv.get(0).scrollLeft  + 'px'
-					},_this.animateTime,function(){
+					}, _this.animateTime, function(){
 						_tableDiv.css('position',_divPosition);
 						_th.removeClass('drag-ongoing');
 						_td.removeClass('drag-ongoing');
@@ -159,7 +162,9 @@ var Drag = {
 				Cache.setToLocalStorage(_table);
 
 				//重置调整宽度事件源
-				Adjust.resetAdjust(_table);
+				if(Settings.supportAdjust){
+					Adjust.resetAdjust(_table);
+				}
 				//开启文字选中效果
 				$('body').removeClass('no-select-text');
 				if(_this.isRealTime){
@@ -169,4 +174,4 @@ var Drag = {
 		});
 	}
 };
-module.exports = Drag;
+export default Drag;
