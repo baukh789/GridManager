@@ -1,6 +1,7 @@
 /*
  * Config: th配置
  * */
+import $ from './jTool';
 import Cache from './Cache';
 import Adjust from './Adjust';
 import Settings from './Settings';

@@ -1,6 +1,7 @@
 /*
  *  GridManager: 构造函数
  * */
+import $ from './jTool';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
 import Cache from './Cache';
@@ -17,10 +18,9 @@ import SetTop from './SetTop';
 import Sort from './Sort';
 import Settings from './Settings';
 import DOM from './DOM';
-
 class GridManager {
 	constructor() {
-		this.version = '2.0'
+		this.version = '2.1.0'
 	};
 	/*
 	 * [对外公开方法]
@@ -59,7 +59,6 @@ class GridManager {
 		_this.initTable(jToolObj);
 
 		//如果初始获取缓存失败，则在mousedown时，首先存储一次数据
-		console.log(jToolObj.attr('grid-manager-cache-error'));
 		if(typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined'){
 			window.setTimeout(function(){
 				Cache.setToLocalStorage(jToolObj, true);
@@ -167,8 +166,8 @@ var publishList = [
 	'getRowData',			//获取当前行渲染时使用的数据
 	'clear'					//清除指定表的表格记忆数据
 ];
-(function () {
-// 捆绑至选择器对象
+(function ($) {
+	// 捆绑至选择器对象
 	Element.prototype.GM = Element.prototype.GridManager = function(_name_, _settings_, _callback_){
 		if(this.length == 0){
 			throw new Error('GridManager Error: DOM为空，请确定选择器匹配是否正确');
@@ -267,6 +266,4 @@ var publishList = [
 			return typeof(gmData) === 'undefined' ? $table : gmData;
 		}
 	};
-
-
-})();
+})(jTool);

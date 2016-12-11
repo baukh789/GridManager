@@ -1,6 +1,7 @@
 /*
  * Remind: 表头提醒
  * */
+import $ from './jTool';
 const Remind = {
 	html: function(){
 		var html = '<div class="remind-action">'

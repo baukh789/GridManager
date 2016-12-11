@@ -1,6 +1,7 @@
 /**
  * Settings: 配置项
  */
+import $ from './jTool';
 const Settings = {
 	//是否为开发模式，为true时将打印事件日志
 	isDevelopMode: false,

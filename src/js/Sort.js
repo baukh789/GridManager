@@ -1,6 +1,7 @@
 /*
 * Sort: 排序
 * */
+import $ from './jTool';
 import Base from './Base';
 import Core from './Core';
 import Settings from './Settings';

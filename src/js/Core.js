@@ -1,6 +1,7 @@
 /*
 * Core: 核心方法
 * */
+import $ from './jTool';
 import Base from './Base';
 import DOM from './DOM';
 import Cache from './Cache';

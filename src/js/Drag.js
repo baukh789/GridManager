@@ -1,6 +1,7 @@
 /*
  * Drag: 拖拽
  * */
+import $ from './jTool';
 import Adjust from './Adjust';
 import Settings from './Settings';
 import Cache from './Cache';

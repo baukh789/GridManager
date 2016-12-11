@@ -1,6 +1,7 @@
 /*
  * GridManager: 右键菜单
  * */
+import $ from './jTool';
 import I18n from './I18n';
 import Settings from './Settings';
 import AjaxPage from './AjaxPage';

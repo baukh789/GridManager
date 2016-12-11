@@ -1,6 +1,7 @@
 /*
  * I18n: 国际化
  * */
+import $ from './jTool';
 import Base from './Base';
 const I18n = {
 	//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn

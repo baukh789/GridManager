@@ -1,6 +1,7 @@
 /*
  * Checkbox: 数据选择/全选/返选
  * */
+import $ from './jTool';
 import I18n from './I18n';
 var Checkbox = {
 	/*

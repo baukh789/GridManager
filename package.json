@@ -8,7 +8,7 @@
     "url": "baukh789/GridManager"
   },
   "dependencies": {
-    "jTool": "^1.0.1"
+    "jTool": "^1.2.2"
   },
   "devDependencies": {
     "babel-cli": "^6.7.7",
@@ -45,8 +45,8 @@
     "report-coverage": "codecov",
     "lint": "eslint src",
     "test": "karma start",
-    "build": "rm -rf build && babel src --out-dir build --ignore *_spec.js && cp package.json build/package.json && cp README.md build/README.md",
-    "pub": "npm run build && npm publish build && cnpm sync jTool",
-    "bb": "webpack --config webpack-config.js"
+    "build": "npm run build:dev && npm run build:minified && cp package.json build/package.json && cp README.md build/README.md",
+    "build:dev": "webpack --config webpack-config.js",
+    "build:minified": "uglifyjs build/GridManager.js -mc > build/GridManager.min.js"
   }
 }

@@ -1,3 +1,7 @@
+/*
+* DOM: 表格DOM相关操作
+* */
+import $ from './jTool';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
 import Cache from './Cache';
@@ -26,9 +30,11 @@ const DOM = {
 			sortingHtml	= '';				//排序对应的html片段
 		//通过配置项[columnData]生成thead
 		$.each(Settings.columnData, function(i, v){
+			// 表头提醒
 			if(Settings.supportRemind && typeof(v.remind) === 'string' && v.remind !== ''){
 				remindHtml = 'remind="' + v.remind +'"';
 			}
+			// 排序
 			sortingHtml = '';
 			if(Settings.supportSorting && typeof(v.sorting) === 'string'){
 				if(v.sorting === Settings.sortDownText){
@@ -39,7 +45,7 @@ const DOM = {
 					sortingHtml = 'sorting="' + Settings.sortUpText +'"';
 					Settings.sortData[v.key] = Settings.sortUpText
 				}else {
-					sortingHtml = 'sorting';
+					sortingHtml = 'sorting=""';
 				}
 			}
 			if(v.width){
@@ -177,13 +183,17 @@ const DOM = {
 			//嵌入排序事件源
 			//插件自动生成的排序与选择列不做事件绑定
 			sortType = onlyTH.attr('sorting');
-			if(Settings.supportSorting &&  sortType!= undefined && !isLmOrder && !isLmCheckbox){
+			if(Settings.supportSorting && sortType!= undefined && !isLmOrder && !isLmCheckbox){
 				sortingDom = $(_sortingHtml);
 				//依据 sortType 进行初始显示
 				switch(sortType){
-					case Settings.sortUpText : sortingDom.addClass('sorting-up');
+					case Settings.sortUpText:
+						sortingDom.addClass('sorting-up');
 						break;
-					case Settings.sortDownText : sortingDom.addClass('sorting-down');
+					case Settings.sortDownText:
+						sortingDom.addClass('sorting-down');
+						break;
+					default :
 						break;
 				}
 				if(onlyThWarpPaddingTop != ''  && onlyThWarpPaddingTop != '0px'){

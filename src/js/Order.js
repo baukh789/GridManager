@@ -1,6 +1,7 @@
 /*
  * Order: 序号
  * */
+import $ from './jTool';
 import I18n from './I18n';
 const Order = {
 	/*

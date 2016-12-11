@@ -1,6 +1,7 @@
 /*
  * Export: 数据导出
  * */
+import $ from './jTool';
 import Core from './Core';
 const Export = {
 	html: function () {

@@ -1,6 +1,7 @@
 /*
  * Adjust: 宽度调整
  * */
+import $ from './jTool';
 import Cache from './Cache';
 import Base from './Base';
 import Settings from './Settings';

@@ -26,7 +26,7 @@ var config = {
 				test: /\.(js|jsx)$/,
 				loader: 'eslint-loader',
 				include: [path.resolve(__dirname, "src/app")],
-				exclude: /(node_modules|bower_components)/,
+				exclude: /(node_modules|bower_components)/
 			}
 		],
 		loaders: [

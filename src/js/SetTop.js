@@ -6,6 +6,7 @@
  * 1.bind scroll未执行
  * 2.x轴横向滚动条并不在这里,需要确认!
  * */
+import $ from './jTool';
 const SetTop = {
 	initDOM: function () {
 		return '<div class="scroll-area"><div class="sa-inner"></div></div>';

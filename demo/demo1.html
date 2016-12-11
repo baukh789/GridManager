@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="../src/css/base.css">
     <link rel="stylesheet" type="text/css" href="../src/css/GridManager.css">
-    <title>GridManager:使用动态数据渲染</title>
+    <title>GridManager:使用静态数据渲染</title>
     <style>
         html, body{
             overflow-x:hidden;
@@ -39,21 +39,14 @@
 </head>
 
 <body>
-<h2>GridManager:使用动态数据渲染</h2>
+<h2>GridManager:使用静态数据渲染</h2>
 <p>注意:</p>
-<p>1.存在.json文件，谷歌需要放到环境中效果才能展现.</p>
-<p>2.数据采用的是.json的模拟请求数据,所以在切换分页时数据看上去并未变化.</p>
-<p>3.当前使用的排序方式为组合排序</p>
-<p>4.此Demo存在跨域请求,只做为演示不可直接使用</p>
+<h2>GridManager:使用静态数据渲染</h2>
 <button id="create-gm">渲染GridManager</button>
 <hr/>
 <div style="width:95%;margin:0px auto;">
     <table grid-manager="cccc"></table>
 </div>
-<script type="text/javascript" src="../node_modules/jTool/jTool.js"></script>
-<script type="text/javascript">
-	var $ = jTool;
-</script>
 <script type="text/javascript" src="../build/GridManager.js"></script>
 <script type="text/javascript">
     document.getElementById('create-gm').onclick = function(){

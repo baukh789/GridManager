@@ -1,6 +1,7 @@
 /*
  * AjaxPage: 分页
  * */
+import $ from './jTool';
 import Base from './Base';
 import Core from './Core';
 import Settings from './Settings';
@@ -237,7 +238,7 @@ const AjaxPage = {
 				_table		= $('table[grid-manager]', _tableWarp);
 			Settings.pageData = {
 				cPage : 1,
-				pSize : _size.val()
+				pSize : parseInt(_size.val())
 			};
 
 			Cache.setToLocalStorage(_table);

@@ -1,6 +1,7 @@
 /*
 * @Cache: 本地缓存
 * */
+import $ from './jTool';
 import Base from './Base';
 import Settings from './Settings';
 var Cache = {

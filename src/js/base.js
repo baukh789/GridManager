@@ -1,3 +1,7 @@
+/*
+* Base: 基础方法
+* */
+import $ from './jTool';
 const Base = {
 	/*
 	 @输出日志
