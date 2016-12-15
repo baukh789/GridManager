@@ -38,14 +38,16 @@
     "sinon": "^1.17.2",
     "uglifyjs": "^2.4.10",
     "watchify": "^3.7.0",
-    "webpack": "^1.13.0"
+    "webpack": "^1.13.0",
+    "transfer-webpack-plugin": "^0.1.4"
   },
   "license": "MIT",
   "scripts": {
     "report-coverage": "codecov",
     "lint": "eslint src",
     "test": "karma start",
-    "build": "npm run build:dev && npm run build:minified && cp package.json build/package.json && cp README.md build/README.md",
+    "build": "npm run build:dev && npm run build:minified && npm run copy",
+    "copy": "cp package.json build/package.json && cp README.md build/README.md",
     "build:dev": "webpack --config webpack-config.js",
     "build:minified": "uglifyjs build/GridManager.js -mc > build/GridManager.min.js"
   }

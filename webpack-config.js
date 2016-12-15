@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
 var buildPath = path.resolve(__dirname,"build");
-
+var TransferWebpackPlugin = require('transfer-webpack-plugin');
 var config = {
 	//入口文件配置
 	entry:path.resolve(__dirname,'src/js/GridManager.js'),
@@ -18,7 +18,11 @@ var config = {
 			include: /\.min\.js$/,
 			// mangle: false,
 			minimize: true
-		})
+		}),
+		new TransferWebpackPlugin([
+			{from: __dirname + '/src/fonts', to: '/fonts'},
+			{from: __dirname + '/src/css', to: '/css'}
+		])
 	],
 	module: {
 		preLoaders: [
