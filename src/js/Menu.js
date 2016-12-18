@@ -117,22 +117,20 @@ const Menu = {
 			if(isDisabled(this, e)){
 				return false;
 			}
-			var _gridMenu = $(this).closest('.grid-menu'),
-				_table = $('table[grid-manager="'+_gridMenu.attr('grid-master')+'"]');
-			_GM = Core.__getGridManager(_table);
+			var _gridMenu = $(this).closest('.grid-menu');
 			var refreshType = this.getAttribute('refresh-type');
-			var cPage = _GM.pageData.cPage;
+			var cPage = Settings.pageData.cPage;
 			//上一页
 			if(refreshType === 'previous' && Settings.pageData.cPage > 1){
-				cPage = _GM.pageData.cPage - 1;
+				cPage = Settings.pageData.cPage - 1;
 			}
 			//下一页
 			else if(refreshType === 'next' && Settings.pageData.cPage < Settings.pageData.tPage){
-				cPage = _GM.pageData.cPage + 1;
+				cPage = Settings.pageData.cPage + 1;
 			}
 			//重新加载
 			else if(refreshType === 'refresh'){
-				cPage = _GM.pageData.cPage;
+				cPage = Settings.pageData.cPage;
 			}
 			AjaxPage.gotoPage(cPage);
 			_body.off('mousedown.gridMenu');

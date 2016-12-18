@@ -41,7 +41,25 @@
 .icon-saveas24:before { content: "\e614"; }
 .icon-icon:before { content: "\e609"; }
 
-
+/*基础样式*/
+.table-wrap *, .grid-menu *{
+	box-sizing:border-box !important;
+	font-size:12px;
+	color:#000;
+	line-height: 18px;
+	margin: 0px;
+	padding: 0px;
+}
+.table-wrap fieldset, .table-wrap img {
+	border-style: none;
+	border-color: inherit;
+	border-width: medium;
+}
+.table-wrap ul, .table-wrap li, .grid-menu ul, .grid-menu li {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
 /*禁用文字选中*/
 .no-select-text{
 	user-select:none;
@@ -51,11 +69,6 @@
 /*table配置中样式*/
 table[grid-manager]{
 	visibility:hidden;
-	box-sizing:border-box !important;
-	border-collapse:separate !important;
-}
-table[grid-manager] *{
-	box-sizing:border-box !important;
 }
 table[grid-manager].GridManager-ready{
 	visibility:visible;
@@ -640,6 +653,7 @@ table.grid-manager-default tbody tr:hover td{
 	margin-left: -1px;
 	position: relative;
 	text-decoration: none;
+	line-height: 18px;
 	cursor: default;
 }
 .pagination li:focus, .pagination li:hover {
