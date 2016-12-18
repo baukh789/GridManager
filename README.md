@@ -166,7 +166,7 @@ $('table').GM({
     可使用clear方法,调用方式:$('table').GM('clear');
 
 ##版本信息
-[v2.1.0.md](./version/v2.1.0.md)
+[v2.1.0.md](/version/v2.1.0.md)
 
 
 
