@@ -20,7 +20,6 @@ import Settings from './Settings';
 import DOM from './DOM';
 class GridManager {
 	constructor() {
-		this.version = '2.1.0'
 	};
 	/*
 	 * [对外公开方法]
@@ -36,7 +35,7 @@ class GridManager {
 		$.extend(Settings, settings);
 
 		//通过版本较验 清理缓存
-		Cache.cleanTableCacheForVersion(jToolObj, this.version);
+		Cache.cleanTableCacheForVersion(jToolObj, Settings.version);
 		if(typeof Settings.gridManagerName !== 'string' || Settings.gridManagerName.trim() === ''){
 			Settings.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
 		}

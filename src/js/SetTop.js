@@ -7,6 +7,7 @@
  * 2.x轴横向滚动条并不在这里,需要确认!
  * */
 import $ from './jTool';
+import Settings from './Settings'
 const SetTop = {
 	initDOM: function () {
 		return '<div class="scroll-area"><div class="sa-inner"></div></div>';
@@ -19,7 +20,7 @@ const SetTop = {
 		var _this = this;
 		//绑定窗口变化事件
 		window.onresize = function () {
-			$(_this.scrollDOM).trigger('scroll', [true]);
+			$(Settings.scrollDOM).trigger('scroll', [true]);
 		};
 		//绑定模拟X轴滚动条
 		$('.scroll-area').unbind('scroll');
@@ -27,15 +28,15 @@ const SetTop = {
 			$(this).closest('.table-div').scrollLeft(this.scrollLeft);
 			this.style.left = this.scrollLeft + 'px';
 		});
-		//_this.scrollDOM != window 时 清除_this.scrollDOM 的padding值
-		if(_this.scrollDOM != window){
-			$(_this.scrollDOM).css('padding','0px');
+		//Settings.scrollDOM != window 时 清除Settings.scrollDOM 的padding值
+		if(Settings.scrollDOM != window){
+			$(Settings.scrollDOM).css('padding','0px');
 		}
 
 		//绑定滚动条事件
 		//$._isWindowResize_:是否为window.resize事件调用
-		$(_this.scrollDOM).unbind('scroll');
-		$(_this.scrollDOM).bind('scroll', function(e, _isWindowResize_){
+		$(Settings.scrollDOM).unbind('scroll');
+		$(Settings.scrollDOM).bind('scroll', function(e, _isWindowResize_){
 			var _scrollDOM = $(this),
 				_tableDIV,				//列表所在的DIV,该DIV的class标识为table-div
 				_tableWarp,				//列表所在的外围容器
@@ -47,7 +48,7 @@ const SetTop = {
 				_tbody;					//列表body
 			var _scrollDOMTop = _scrollDOM.scrollTop();
 			var _tWarpMB	= undefined; //吸顶触发后,table所在外围容器的margin-bottom值
-			var scrollDOMisWindow = $.isWindow(_this.scrollDOM);
+			var scrollDOMisWindow = $.isWindow(Settings.scrollDOM);
 			_tableDIV 		= table.closest('.table-div');
 			_tableWarp 		= _tableDIV.closest('.table-wrap');
 			_table			= table.get(0);
@@ -162,7 +163,7 @@ const SetTop = {
 			}
 			return true;
 		});
-   //     $(_this.scrollDOM).trigger('scroll');
+   //     $(Settings.scrollDOM).trigger('scroll');
 	}
 };
 export default SetTop;

@@ -26,8 +26,11 @@ var Cache = {
 	*  $.version: 版本号
 	* */
 	,cleanTableCacheForVersion: function(table, version){
-		this.clear(table);
-		window.localStorage.setItem('GridManagerVersion', version);
+		var cacheVersion = window.localStorage.getItem('GridManagerVersion');
+		if(!cacheVersion || cacheVersion !== version) {
+			this.cleanTableCache(table, '版本已升级,原缓存被自动清除');
+			window.localStorage.setItem('GridManagerVersion', version);
+		}
 	}
 	/*
 	* @清除列表缓存
@@ -226,7 +229,7 @@ var Cache = {
 	 */
 	,getLocalStorage: function(table){
 		var _table = $(table);
-		var _key = Cache.getLocalStorageKey(_table);
+		var _key = this.getLocalStorageKey(_table);
 		if(!_key){
 			return {};
 		}
