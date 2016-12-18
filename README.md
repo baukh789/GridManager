@@ -1,4 +1,8 @@
 # GridManager.js
+##使用需知
+下载时请下载release版本
+v2.0为jquery版本
+原生版本正在开发中
 ###实现功能
 GridManager.js可快速的对table标签进行实例化，实例化后将实现以下功能:
 
