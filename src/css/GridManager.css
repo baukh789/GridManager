@@ -41,7 +41,25 @@
 .icon-saveas24:before { content: "\e614"; }
 .icon-icon:before { content: "\e609"; }
 
-
+/*基础样式*/
+.table-wrap *, .grid-menu *{
+	box-sizing:border-box !important;
+	font-size:12px;
+	color:#000;
+	line-height: 18px;
+	margin: 0px;
+	padding: 0px;
+}
+.table-wrap fieldset, .table-wrap img {
+	border-style: none;
+	border-color: inherit;
+	border-width: medium;
+}
+.table-wrap ul, .table-wrap li, .grid-menu ul, .grid-menu li {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
 /*禁用文字选中*/
 .no-select-text{
 	user-select:none;
@@ -51,17 +69,12 @@
 /*table配置中样式*/
 table[grid-manager]{
 	visibility:hidden;
-	box-sizing:border-box !important;
-	border-collapse:separate !important;
-}
-table[grid-manager] *{
-	box-sizing:border-box !important;
 }
 table[grid-manager].GridManager-ready{
 	visibility:visible;
 }
 /*table所在的DIV*/
-.table-warp{
+.table-wrap{
 	position: relative;
 }
 .table-div{
@@ -73,24 +86,24 @@ table[grid-manager].GridManager-ready{
 	overflow-x: hidden;
 }
 /*table*/
-.table-warp table[grid-manager]{
+.table-wrap table[grid-manager]{
 	table-layout:fixed;
 	word-wrap:break-word;
 	text-align: center;
 	margin:0px !important;
 }
-.table-warp table[grid-manager] tr td{
+.table-wrap table[grid-manager] tr td{
 	white-space:nowrap;
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
-.table-warp table[grid-manager] th[th-visible="none"]{
+.table-wrap table[grid-manager] th[th-visible="none"]{
 	display:none;
 }
-.table-warp table[grid-manager] th[th-visible="visible"]{
+.table-wrap table[grid-manager] th[th-visible="visible"]{
 	display:table-cell;
 }
-.table-warp table[grid-manager] th .th-text{
+.table-wrap table[grid-manager] th .th-text{
 	white-space: nowrap;
 }
 /* 提供的默认table样式 */
@@ -124,7 +137,7 @@ table.grid-manager-default tbody tr:hover td{
 	color:#000;
 }
 /*列表设置显示隐藏*/
-.table-warp .config-area{
+.table-wrap .config-area{
 	display:none;
 	max-width:100%;
 	position:absolute;
@@ -133,7 +146,7 @@ table.grid-manager-default tbody tr:hover td{
 	cursor:pointer;
 	z-index:2;
 }
-.table-warp .config-area .config-action{
+.table-wrap .config-area .config-action{
 	display:block;
 	width:20px;
 	height:20px;
@@ -145,21 +158,21 @@ table.grid-manager-default tbody tr:hover td{
 	text-align:center;
 	z-index:2;
 }
-.table-warp .config-area .config-action i{
+.table-wrap .config-area .config-action i{
 	display:inline-block;
 	font-size:18px;
 }
-.table-warp .config-area .config-action:hover i{
+.table-wrap .config-area .config-action:hover i{
 	color:#09f;
 }
-.table-warp .config-area:hover .config-action i{
+.table-wrap .config-area:hover .config-action i{
 	/*
     -webkit-animation: rotationMedia 1s ease-in-out infinite;
        -moz-animation: rotationMedia 1s ease-in-out infinite;
             animation: rotationMedia 1s ease-in-out infinite;
             */
 }
-.table-warp .config-area .config-list{
+.table-wrap .config-area .config-list{
 	display:block;
 	width:100%;
 	padding:2px 30px 0px 2px;
@@ -170,7 +183,7 @@ table.grid-manager-default tbody tr:hover td{
 	border-radius:3px;
 	margin:0px;
 }
-.table-warp .config-area .config-list >li{
+.table-wrap .config-area .config-list >li{
 	display:inline-block;
 	padding:4px 10px;
 	line-height:20px;
@@ -178,30 +191,30 @@ table.grid-manager-default tbody tr:hover td{
 	margin-right:2px;
 	margin-bottom:2px;
 }
-.table-warp .config-area .config-list >li >label{
+.table-wrap .config-area .config-list >li >label{
 	margin:0px;
 }
-.table-warp .config-area .config-list li.no-click{
+.table-wrap .config-area .config-list li.no-click{
 	cursor:not-allowed;
 }
-.table-warp .config-area .config-list li.no-click *{
+.table-wrap .config-area .config-list li.no-click *{
 	cursor:not-allowed;
 }
-.table-warp .config-area .config-list li input[type="checkbox"]{
+.table-wrap .config-area .config-list li input[type="checkbox"]{
 	display:none;
 }
-.table-warp .config-area .config-list li label{
+.table-wrap .config-area .config-list li label{
 	cursor:pointer;
 	color:#666;
 	font-weight:500;
 }
-.table-warp .config-area .config-list li:hover label{
+.table-wrap .config-area .config-list li:hover label{
 	color:#09f;
 }
-.table-warp .config-area .config-list li.no-click:hover label{
+.table-wrap .config-area .config-list li.no-click:hover label{
 	color:#666;
 }
-.table-warp .config-area .config-list li .fake-checkbox{
+.table-wrap .config-area .config-list li .fake-checkbox{
 	display:inline-block;
 	width:14px;
 	height:14px;
@@ -212,7 +225,7 @@ table.grid-manager-default tbody tr:hover td{
 	vertical-align:middle;
 	margin-right:5px;
 }
-.table-warp .config-area .config-list li .fake-checkbox:after{
+.table-wrap .config-area .config-list li .fake-checkbox:after{
 	display:block;
 	width:8px;
 	height:8px;
@@ -223,14 +236,14 @@ table.grid-manager-default tbody tr:hover td{
 	background:#e8e8e8;
 	border-radius:50%;
 }
-.table-warp .config-area .config-list li:hover .fake-checkbox{
+.table-wrap .config-area .config-list li:hover .fake-checkbox{
 	border-color:#09f;
 }
-.table-warp .config-area .config-list li.checked-li .fake-checkbox:after{
+.table-wrap .config-area .config-list li.checked-li .fake-checkbox:after{
 	background:#09f;
 }
 /*表头提醒*/
-.table-warp table[grid-manager] th .remind-action{
+.table-wrap table[grid-manager] th .remind-action{
 	width:16px;
 	height:16px;
 	position:absolute;
@@ -238,7 +251,7 @@ table.grid-manager-default tbody tr:hover td{
 	left:4px;
 	cursor:help;
 }
-.table-warp table[grid-manager] th .remind-action .ra-area{
+.table-wrap table[grid-manager] th .remind-action .ra-area{
 	display:none;
 	min-width:150px;
 	max-width:300px;
@@ -255,20 +268,20 @@ table.grid-manager-default tbody tr:hover td{
 	line-height: 14px;
 	color:#fff;
 }
-.table-warp table[grid-manager] .set-top th .remind-action .ra-area{
+.table-wrap table[grid-manager] .set-top th .remind-action .ra-area{
 	visibility:hidden;
 	display:none;
 }
-.table-warp table[grid-manager] .set-top th .remind-action:hover .ra-area{
+.table-wrap table[grid-manager] .set-top th .remind-action:hover .ra-area{
 	visibility:visible;
 	display:block !important;
 }
 /*
-.table-warp table[grid-manager] th .remind-action:hover .ra-area{
+.table-wrap table[grid-manager] th .remind-action:hover .ra-area{
 	display:block;
 }
 */
-.table-warp table[grid-manager] th .remind-action .ra-help{
+.table-wrap table[grid-manager] th .remind-action .ra-help{
 	display:block;
 	width:16px;
 	height:16px;
@@ -276,10 +289,10 @@ table.grid-manager-default tbody tr:hover td{
 	line-height: 18px;
 	color:#666;
 }
-.table-warp table[grid-manager] th .remind-action:hover .ra-help{
+.table-wrap table[grid-manager] th .remind-action:hover .ra-help{
 	color:#2b669a;
 }
-.table-warp table[grid-manager] th .remind-action .ra-area .ra-title{
+.table-wrap table[grid-manager] th .remind-action .ra-area .ra-title{
 	display:block;
 	text-align:left;
 	white-space:nowrap;
@@ -290,7 +303,7 @@ table.grid-manager-default tbody tr:hover td{
 	font-size: 1.1em;
 	color:#FF6;
 }
-.table-warp table[grid-manager] th .remind-action .ra-area .ra-con{
+.table-wrap table[grid-manager] th .remind-action .ra-area .ra-con{
 	display:block;
 	font-weight:500;
 	text-align:left;
@@ -301,37 +314,37 @@ table.grid-manager-default tbody tr:hover td{
 	display:none;
 }
 /*表头置顶*/
-.table-warp .set-top{
+.table-wrap .set-top{
 	display:none;
 	position:absolute;
 	left:0px;
 	top:0px;
 	z-index:99;
 }
-.table-warp .set-top .adjust-action{
+.table-wrap .set-top .adjust-action{
 	display:none !important;
 }
-.table-warp .set-top .sorting-action{
+.table-wrap .set-top .sorting-action{
 	display:none !important;
 }
-.table-warp .set-top .drag-action{
+.table-wrap .set-top .drag-action{
 	cursor:default !important;
 }
-.table-warp table[grid-manager] thead.scrolling{
+.table-wrap table[grid-manager] thead.scrolling{
 	visibility:hidden;
 }
-.table-warp .scroll-area{
+.table-wrap .scroll-area{
 	height:18px;
 	margin-top: -18px;
 	z-index:9999;
 	overflow-x:auto;
 	overflow-y:hidden;
 }
-.table-warp .scroll-area .sa-inner{
+.table-wrap .scroll-area .sa-inner{
 	height:20px;
 }
 /*th内的上级DIV*/
-.table-warp table[grid-manager] th .th-warp{
+.table-wrap table[grid-manager] th .th-wrap{
 	width:100%;
 	height:100%;
 	position:relative;
@@ -339,7 +352,7 @@ table.grid-manager-default tbody tr:hover td{
 	text-align:center;
 }
 /*宽度调整*/
-.table-warp table[grid-manager] th .adjust-action{
+.table-wrap table[grid-manager] th .adjust-action{
 	display:block;
 	width:6px;
 	height:100%;
@@ -349,16 +362,16 @@ table.grid-manager-default tbody tr:hover td{
 	cursor:col-resize;
 	z-index:2;
 }
-.table-warp table[grid-manager] .adjust-selected{
+.table-wrap table[grid-manager] .adjust-selected{
 	border-right-width: 2px;
 	border-right-style: dashed;
 	border-right-color: #ccc;
 }
-.table-warp table[grid-manager] .adjust-selected .drag-action{
+.table-wrap table[grid-manager] .adjust-selected .drag-action{
 	cursor:col-resize;
 }
 /*文本镜像：用于实时获取th的文本宽度*/
-.table-warp .text-dreamland{
+.table-wrap .text-dreamland{
 	position:absolute;
 	top:0px;
 	left:0px;
@@ -367,7 +380,7 @@ table.grid-manager-default tbody tr:hover td{
 	z-index:-1;
 }
 /*排序*/
-.table-warp table[grid-manager] .sorting-action{
+.table-wrap table[grid-manager] .sorting-action{
 	display:block;
 	width:20px;
 	height:18px;
@@ -378,64 +391,64 @@ table.grid-manager-default tbody tr:hover td{
 	z-index:2;
 	color:#444;
 }
-.table-warp table[grid-manager] .sorting-action:hover{
+.table-wrap table[grid-manager] .sorting-action:hover{
 	color:#000;
 }
-.table-warp table[grid-manager] .sorting-action.sortion-up{
+.table-wrap table[grid-manager] .sorting-action.sortion-up{
 	content:"\f102";
 }
-.table-warp table[grid-manager] .sorting-action.sortion-down{
+.table-wrap table[grid-manager] .sorting-action.sortion-down{
 	content:"\f103";
 }
-.table-warp table[grid-manager] .sorting-action .sa-icon{
+.table-wrap table[grid-manager] .sorting-action .sa-icon{
 	display:block;
 	height:10px;
 	font-size:12px;
 	line-height:10px;
 	position:absolute;
 }
-.table-warp table[grid-manager] .sorting-action .sa-up{
+.table-wrap table[grid-manager] .sorting-action .sa-up{
 	top:0px;
 	right:0px;
 }
-.table-warp table[grid-manager] .sorting-action .sa-down{
+.table-wrap table[grid-manager] .sorting-action .sa-down{
 	bottom:0px;
 	right:0px;
 }
-.table-warp table[grid-manager] .sorting-action.sorting-up .sa-up{
+.table-wrap table[grid-manager] .sorting-action.sorting-up .sa-up{
 	opacity:1;
 }
-.table-warp table[grid-manager] .sorting-action.sorting-up .sa-down{
+.table-wrap table[grid-manager] .sorting-action.sorting-up .sa-down{
 	opacity:0.1;
 }
-.table-warp table[grid-manager] .sorting-action.sorting-down .sa-up{
+.table-wrap table[grid-manager] .sorting-action.sorting-down .sa-up{
 	opacity:0.1;
 }
-.table-warp table[grid-manager] .sorting-action.sorting-down .sa-down{
+.table-wrap table[grid-manager] .sorting-action.sorting-down .sa-down{
 	opacity:1;
 }
 /*拖拽换位*/
-.table-warp table[grid-manager] th .drag-action{
+.table-wrap table[grid-manager] th .drag-action{
 	display:block;
 	width:100%;
 	height:100%;
 	/*	padding:0px 20px;*/
 	cursor:all-scroll;
 }
-.table-warp table[grid-manager] .drag-ongoing{
+.table-wrap table[grid-manager] .drag-ongoing{
 	cursor:all-scroll;
 	background:#000 !important;
 	border-color:#ccc !important;
 	color:#fff !important;
 	opacity:0.5;
 }
-.table-warp table[grid-manager] .drag-ongoing.opacityChange{
+.table-wrap table[grid-manager] .drag-ongoing.opacityChange{
 	opacity:1;
 	-webkit-animation: opacityChange 1s ease-in-out infinite;
 	-moz-animation: opacityChange 1s ease-in-out infinite;
 	animation: opacityChange 1s ease-in-out infinite;
 }
-.table-warp .dreamland-div{
+.table-wrap .dreamland-div{
 	display:none;
 	position:absolute;
 	border:1px solid #ccc;
@@ -444,37 +457,37 @@ table.grid-manager-default tbody tr:hover td{
 	cursor:all-scroll;
 	z-index:9;
 }
-.table-warp .dreamland-div .dreamland-table{
+.table-wrap .dreamland-div .dreamland-table{
 	table-layout:fixed;
 	width:100%;
 	margin:0px !important;
 	padding:0px !important;
 }
-.table-warp .dreamland-div .dreamland-table td{
+.table-wrap .dreamland-div .dreamland-table td{
 	white-space:nowrap;
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
 /*由插件生成的序号、全选样式*/
-.table-warp table[grid-manager] [gm-create="true"]{
+.table-wrap table[grid-manager] [gm-create="true"]{
 	width:50px !important;
 	text-align:center;
 	cursor:default;
 }
-.table-warp table[grid-manager] th[gm-create="true"]{
+.table-wrap table[grid-manager] th[gm-create="true"]{
 	background-color:#dad9c7;
 	opacity:0.9;
 }
-.table-warp table[grid-manager] td[gm-create="true"]{
+.table-wrap table[grid-manager] td[gm-create="true"]{
 }
-.table-warp table[grid-manager] tr:hover td[gm-create="true"]{
+.table-wrap table[grid-manager] tr:hover td[gm-create="true"]{
 	background-color:#e6eeee;
 }
-.table-warp table[grid-manager] [gm-checkbox="true"] input[type=checkbox]{
+.table-wrap table[grid-manager] [gm-checkbox="true"] input[type=checkbox]{
 	vertical-align:middle;
 }
 /*空模板样式*/
-.table-warp table[grid-manager] .gm-emptyTemplate{
+.table-wrap table[grid-manager] .gm-emptyTemplate{
 	width: 100%;
 	height: 100px;
 	line-height: 100px;
@@ -484,7 +497,7 @@ table.grid-manager-default tbody tr:hover td{
 	background-color: #f8f8f8;
 }
 /*遮罩*/
-.table-warp .mask-element{
+.table-wrap .mask-element{
 	width:100%;
 	height:100%;
 	position:absolute;
@@ -553,39 +566,39 @@ table.grid-manager-default tbody tr:hover td{
 	@baukh20150504:分页默认样式
 */
 
-.table-warp .page-toolbar{
+.table-wrap .page-toolbar{
 	width:100%;
 	padding-top:10px;
 	clear:both;
 }
-.table-warp .page-toolbar .dataTables_info{
+.table-wrap .page-toolbar .dataTables_info{
 	display:inline-block;
 	padding: 5px;
 }
-.table-warp .page-toolbar .change-size{
+.table-wrap .page-toolbar .change-size{
 	display:inline-block;
 }
-.table-warp .page-toolbar .goto-page{
+.table-wrap .page-toolbar .goto-page{
 	display:inline-block;
 	padding:5px 10px;
 }
-.table-warp .page-toolbar .goto-page .gp-input{
+.table-wrap .page-toolbar .goto-page .gp-input{
 	width:50px;
 	height:20px;
 	border:1px solid #ccc;
 	padding:0px 5px;
 	margin:0px 5px;
 }
-.table-warp .page-toolbar .refresh-action{
+.table-wrap .page-toolbar .refresh-action{
 	display:inline-block;
 	padding: 7.5px;
 	vertical-align: top;
 	color: #777;
 }
-.table-warp .page-toolbar .refresh-action:hover{
+.table-wrap .page-toolbar .refresh-action:hover{
 	color: #3276b1;
 }
-.table-warp .page-toolbar .refresh-action .iconfont{
+.table-wrap .page-toolbar .refresh-action .iconfont{
 	display: block;
 	width: 15px;
 	height: 15px;
@@ -594,48 +607,42 @@ table.grid-manager-default tbody tr:hover td{
 	line-height: 16px;
 	overflow: hidden;
 }
-.table-warp .page-toolbar .refresh-action.refreshing{
+.table-wrap .page-toolbar .refresh-action.refreshing{
 	-webkit-animation: rotationMedia 2s ease-in-out infinite;
 	-moz-animation: rotationMedia 2s ease-in-out infinite;
 	animation: rotationMedia 2s ease-in-out infinite;
 }
-.table-warp .page-toolbar .ajax-page{
+.table-wrap .page-toolbar .ajax-page{
 	display:inline-block;
 	text-align:right;
 	vertical-align:middle;
 	float:right;
 }
-.table-warp .page-toolbar .ajax-page .pagination{
+.table-wrap .page-toolbar .ajax-page .pagination{
 	display: inline-block;
 	margin:0px;
+	clear: both;
 }
-.table-warp .page-toolbar .ajax-page .pagination li{
-	height:30px;
-	display:inline;
-}
-.pagination > li:first-child > a, .pagination > li:first-child > span {
+.pagination > li:first-child{
 	border-bottom-left-radius: 2px;
 	border-top-left-radius: 2px;
 	margin-left: 0;
 }
-.pagination li.disabled > a, .pagination li.disabled > a:focus,
-.pagination li.disabled > a:hover, .pagination li.disabled > span,
-.pagination li.disabled > span:focus, .pagination li.disabled > span:hover {
+.pagination li.disabled,
+.pagination li.disabled:focus, .pagination li.disabled:hover {
 	background-color: #fff;
 	border-color: #ddd;
 	color: #999;
 	cursor: not-allowed;
 }
-.pagination li.active > a, .pagination li.active > a:focus,
-.pagination li.active > a:hover, .pagination li.active > span,
-.pagination li.active > span:focus, .pagination li.active > span:hover {
+.pagination li.active,
+.pagination li.active:focus, .pagination li.active:hover {
 	background-color: #3276b1;
 	border-color: #3276b1;
 	color: #fff;
-	cursor: default;
 	z-index: 2;
 }
-.pagination > li > a, .pagination > li > span {
+.pagination > li{
 	height:30px;
 	padding: 5px 10px;
 	background-color: #fff;
@@ -646,14 +653,15 @@ table.grid-manager-default tbody tr:hover td{
 	margin-left: -1px;
 	position: relative;
 	text-decoration: none;
+	line-height: 18px;
+	cursor: default;
 }
-.pagination li > a:hover, .pagination li > span,
-.pagination li > span:focus, .pagination li > span:hover {
+.pagination li:focus, .pagination li:hover {
 	background-color: #eee;
 	border-color: #ddd;
 	color: #214e75;
 }
-.table-warp .page-toolbar select[name="pSizeArea"]{
+.table-wrap .page-toolbar select[name="pSizeArea"]{
 	height:30px;
 	padding:5px;
 	margin-left:10px;

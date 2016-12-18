@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="../build/css/GridManager.min.css">
+	<script type="text/javascript" src="../build/js/GridManager.min.js"></script>
+    <title>GridManager:使用动态数据渲染</title>
+    <style>
+        html, body{
+            overflow-x:hidden;
+        }
+        h2{
+            font-size:22px;
+            padding:10px 30px;
+            color:#333;
+        }
+        p{
+            font-size:14px;
+            padding:10px 30px;
+            color:#333;
+            text-indent:2em;
+        }
+        hr{
+            margin-top: 18px;
+            margin-bottom: 18px;
+            border: 0;
+            border-top: 1px solid #eee;
+        }
+        .plugin-action{
+            display: inline-block;
+            color: steelblue;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .plugin-action:hover{
+            text-decoration:underline;
+        }
+    </style>
+</head>
+
+<body>
+<h2>GridManager:使用动态数据渲染</h2>
+<p>注意:</p>
+<p>1.存在.json文件，谷歌需要放到环境中效果才能展现.</p>
+<p>2.数据采用的是.json的模拟请求数据,所以在切换分页时数据看上去并未变化.</p>
+<p>3.当前使用的排序方式为组合排序</p>
+<p>4.此Demo存在跨域请求,只做为演示不可直接使用</p>
+<button id="create-gm">渲染GridManager</button>
+<hr/>
+<div style="width:95%;margin:0px auto;">
+    <table grid-manager="cccc"></table>
+</div>
+<script type="text/javascript">
+    document.getElementById('create-gm').onclick = function(){
+
+        //单列表简易渲染
+        var table = document.querySelector('table[grid-manager]');
+		table.GM({
+			supportRemind: true
+			,supportAjaxPage:true
+			,supportSorting: true
+			,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+			,ajax_type: 'POST'
+			,query: {pluginId: 1}
+			,pageSize:20
+			,columnData: [{
+				key: 'name',
+				remind: 'the name',
+				width: '100px',
+				text: '名称',
+				sorting: 'up'
+			},{
+				key: 'info',
+				remind: 'the info',
+				text: '使用说明',
+				sorting: ''
+			},{
+				key: 'url',
+				remind: 'the url',
+				text: 'url'
+			},{
+				key: 'createDate',
+				remind: 'the createDate',
+				width: '100px',
+				text: '创建时间',
+				template: function(createDate, rowObject){
+					return new Date(createDate).format('YYYY-MM-DD HH:mm:ss');
+				}
+			},{
+				key: 'lastDate',
+				remind: 'the lastDate',
+				width: '100px',
+				text: '最后修改时间',
+				template: function(lastDate, rowObject){
+					return new Date(lastDate).format('YYYY-MM-DD HH:mm:ss');
+				}
+			},{
+				key: 'action',
+				remind: 'the action',
+				width: '100px',
+				text: '操作',
+				template: function(action, rowObject){
+					return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+				}
+			}
+			]
+			,pagingBefore: function(query){
+				console.log('pagingBefore', query);
+			}
+			,pagingAfter: function(data){
+				console.log('pagingAfter', data);
+			}
+		});
+
+        // 日期格式化,不是插件的代码,只用于处理时间格式化
+        Date.prototype.format = function(fmt){
+            var o = {
+                "M+": this.getMonth() + 1, //月份
+                "D+": this.getDate(), //日
+                "d+": this.getDate(), //日
+                "H+": this.getHours(), //小时
+                "h+": this.getHours(), //小时
+                "m+": this.getMinutes(), //分
+                "s+": this.getSeconds(), //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds() //毫秒
+            };
+            if (/([Y,y]+)/.test(fmt)){
+                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+            for (var k in o){
+                if(new RegExp("(" + k + ")").test(fmt)){
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                }
+            }
+            return fmt;
+        }
+    }
+</script>
+
+</body>
+</html>

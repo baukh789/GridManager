@@ -1,4 +1,8 @@
 # GridManager.js
+##使用需知
+下载时请下载release版本
+v2.0为jquery版本
+原生版本正在开发中
 ###实现功能
 GridManager.js可快速的对table标签进行实例化，实例化后将实现以下功能:
 
@@ -14,7 +18,6 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
 - 全选: 自动生成全选列
 - 导出: 当前页数据下载,和仅针对已选中的表格下载
 - 右键菜单: 常用功能在菜单中可进行快捷操作
-
 ###安装命令
 ```
 npm install GridManager
@@ -38,11 +41,10 @@ Firefox, Chrome,IE10+
 这里提一下为什么不支持低版本: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
 
 ###演示及文档
-
-- [API](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
 - [静态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo1.html)
 - [动态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo2.html)
 - [特定容器demo](http://www.lovejavascript.com/plugIn/GridManager/demo3.html)
+- [API](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
 - [github](https://github.com/baukh789/GridManager)
 - [oschina](http://git.oschina.net/baukh/GridManager)
 - [npm](https://www.npmjs.com/package/GridManager/)
