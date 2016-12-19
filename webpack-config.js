@@ -23,7 +23,7 @@ var config = {
 		new TransferWebpackPlugin([
 			{from: __dirname + '/src/fonts', to: '/fonts'},
 			{from: __dirname + '/src/css', to: '/css'},
-			{from: __dirname + '/src/version', to: '/version'}
+			{from: __dirname + '/version', to: '/version'}
 		])
 	],
 	module: {
