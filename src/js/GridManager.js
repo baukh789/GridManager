@@ -14,7 +14,7 @@ import I18n from './I18n';
 import Menu from './Menu';
 import Order from './Order';
 import Remind from './Remind';
-import SetTop from './SetTop';
+import Scroll from './Scroll';
 import Sort from './Sort';
 import Settings from './Settings';
 import DOM from './DOM';
@@ -106,9 +106,9 @@ class GridManager {
 			Config.bindConfigEvent(table);
 		}
 		//绑定表头吸顶功能
-		if(Settings.supportSetTop){
-			SetTop.bindSetTopFunction(table);
-		}
+		// if(Settings.supportSetTop){
+			Scroll.bindScrollFunction(table);
+		// }
 		//绑定右键菜单事件
 		Menu.bindRightMenuEvent(table);
 		//渲梁tbodyDOM
@@ -145,7 +145,7 @@ $.extend(GridManager.prototype, Order);
 // GM导入功能: 表头提示
 $.extend(GridManager.prototype, Remind);
 // GM导入功能: 表头吸顶
-$.extend(GridManager.prototype, SetTop);
+$.extend(GridManager.prototype, Scroll);
 // GM导入功能: DOM操作
 $.extend(GridManager.prototype, DOM);
 

@@ -79,8 +79,7 @@ table[grid-manager].GridManager-ready{
 }
 .table-div{
 	position:relative;
-	overflow-x: auto;
-	overflow-y: hidden;
+	overflow: auto;
 }
 .table-div.config-editing{  /*用于配置列表功能*/
 	overflow-x: hidden;
@@ -335,6 +334,8 @@ table.grid-manager-default tbody tr:hover td{
 }
 .table-wrap .scroll-area{
 	height:18px;
+	position: absolute;
+	bottom: 18px;
 	margin-top: -18px;
 	z-index:9999;
 	overflow-x:auto;

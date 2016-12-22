@@ -1,26 +1,23 @@
 /*
- * SetTop: 表头吸顶
- * 思考:
- * 可以考虑使用固定表格高度方式, 将表头与分页工具条固定在上下方.
- * 问题:
- * 1.bind scroll未执行
- * 2.x轴横向滚动条并不在这里,需要确认!
+ * Scroll: 滚动轴
  * */
 import $ from './jTool';
 import Settings from './Settings'
-const SetTop = {
+const Scroll = {
 	initDOM: function () {
 		return '<div class="scroll-area"><div class="sa-inner"></div></div>';
 	}
 	/*
-	 @绑定表头吸顶功能
+	 @绑定表格滚动轴功能
 	 $.table: table [jTool object]
 	 */
-	,bindSetTopFunction: function(table){
+	,bindScrollFunction: function(table){
 		var _this = this;
+		var _tableDIV = table.closest('.table-div'),		//列表所在的DIV,该DIV的class标识为table-div
+			_tableWarp = _tableDIV.closest('.table-wrap');//列表所在的外围容器
 		//绑定窗口变化事件
 		window.onresize = function () {
-			$(Settings.scrollDOM).trigger('scroll', [true]);
+			$('.table-div').trigger('scroll', [true]);
 		};
 		//绑定模拟X轴滚动条
 		$('.scroll-area').unbind('scroll');
@@ -29,37 +26,33 @@ const SetTop = {
 			this.style.left = this.scrollLeft + 'px';
 		});
 		//Settings.scrollDOM != window 时 清除Settings.scrollDOM 的padding值
-		if(Settings.scrollDOM != window){
-			$(Settings.scrollDOM).css('padding','0px');
-		}
+		// if(Settings.scrollDOM != window){
+		// 	$(Settings.scrollDOM).css('padding','0px');
+		// }
 
 		//绑定滚动条事件
-		//$._isWindowResize_:是否为window.resize事件调用
-		$(Settings.scrollDOM).unbind('scroll');
-		$(Settings.scrollDOM).bind('scroll', function(e, _isWindowResize_){
+		_tableDIV.unbind('scroll');
+		_tableDIV.bind('scroll', function(e, _isWindowResize_){
 			var _scrollDOM = $(this),
-				_tableDIV,				//列表所在的DIV,该DIV的class标识为table-div
-				_tableWarp,				//列表所在的外围容器
 				_setTopHead,			//吸顶元素
-				_tableOffsetTop,		//列表与_tableDIV之间的间隙，如marin-top,padding-top
 				_table,					//原生table
 				_thead,					//列表head
 				_thList,				//列表下的th
 				_tbody;					//列表body
 			var _scrollDOMTop = _scrollDOM.scrollTop();
+
 			var _tWarpMB	= undefined; //吸顶触发后,table所在外围容器的margin-bottom值
-			var scrollDOMisWindow = $.isWindow(Settings.scrollDOM);
+			// var scrollDOMisWindow = $.isWindow(Settings.scrollDOM);
 			_tableDIV 		= table.closest('.table-div');
 			_tableWarp 		= _tableDIV.closest('.table-wrap');
 			_table			= table.get(0);
 			_thead 			= $('thead[grid-manager-thead]', table);
 			_tbody 			= $('tbody', table);
-			if(!_tableDIV || _tableDIV.length == 0){
-				return true;
-			}
-			var _tDIVTop 		= scrollDOMisWindow ? _tableDIV.offset().top : 0;
 
-			_tableOffsetTop = _table.offsetTop;
+			var _tDIVTop = _tableDIV.offset().top;
+			// 列表与_tableDIV之间的间隙，如marin-top,padding-top
+			var _tableOffsetTop = _table.offsetTop;
+
 			_setTopHead 	= $('.set-top', table);
 			//当前列表数据为空
 			if($('tr', _tbody).length == 0){
@@ -68,26 +61,25 @@ const SetTop = {
 			//配置X轴滚动条
 			var scrollArea = $('.scroll-area', _tableWarp);
 			if(_tableDIV.width() < table.width()){  //首先验证宽度是否超出了父级DIV
-				if(scrollDOMisWindow){
-					_tWarpMB = Number(_tableDIV.height())
-						+ Number(_tableWarp.css('margin-bottom'))
-						- (document.body.scrollTop || document.documentElement.scrollTop || window.scrollY)
-						- (window.innerHeight - _tableDIV.offset().top);
-				}else{
-					_tWarpMB = Number(_tableDIV.height())
-						+ Number(_tableWarp.css('margin-bottom'))
-						- _scrollDOM.scrollTop()
-						- _scrollDOM.height();
-				}
-
-				if(_tWarpMB < 0){
-					_tWarpMB = 0;
-				}
+				// if(scrollDOMisWindow){
+				// 	_tWarpMB = Number(_tableDIV.height())
+				// 		+ Number(_tableWarp.css('margin-bottom'))
+				// 		- (document.body.scrollTop || document.documentElement.scrollTop || window.scrollY)
+				// 		- (window.innerHeight - _tableDIV.offset().top);
+				// }else{
+				// 	_tWarpMB = Number(_tableDIV.height())
+				// 		+ Number(_tableWarp.css('margin-bottom'))
+				// 		- _scrollDOM.scrollTop()
+				// 		- _scrollDOM.height();
+				// }
+                //
+				// if(_tWarpMB < 0){
+				// 	_tWarpMB = 0;
+				// }
 				$('.sa-inner', scrollArea).css({
 					width : table.width()
 				});
 				scrollArea.css({
-					bottom	: _tWarpMB - 18,
 					left	: _tableDIV.scrollLeft()
 				});
 				scrollArea.scrollLeft(_tableDIV.scrollLeft());
@@ -96,31 +88,31 @@ const SetTop = {
 				scrollArea.hide();
 			}
 			//表头完全可见 分两种情况 scrollDOM 为 window 或自定义容器
-			if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop >= -_tableOffsetTop) : (_scrollDOMTop == 0)){
-				console.log('表头完全可见')
-				if(_thead.hasClass('scrolling')){
-					_thead.removeClass('scrolling');
-				}
-				_setTopHead.remove();
-				return true;
-			}
+			// if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop >= -_tableOffsetTop) : (_scrollDOMTop == 0)){
+			// 	console.log('表头完全可见')
+			// 	if(_thead.hasClass('scrolling')){
+			// 		_thead.removeClass('scrolling');
+			// 	}
+			// 	_setTopHead.remove();
+			// 	return true;
+			// }
 			//表完全不可见
-			console.log('表完全不可见')
-			console.log(Math.abs(_tDIVTop - _scrollDOMTop));
-			console.log(_thead.height());
-			console.log();
-			if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop < 0 &&
-				Math.abs(_tDIVTop - _scrollDOMTop) + _thead.height() - _tableOffsetTop > _tableDIV.height()) : false){
-				_setTopHead.show();
-				_setTopHead.css({
-					top		: 'auto',
-					bottom	: '0px'
-				});
-				return true;
-			}
+			// console.log('表完全不可见')
+			// console.log(Math.abs(_tDIVTop - _scrollDOMTop));
+			// console.log(_thead.height());
+			// console.log();
+			// if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop < 0 &&
+			// 	Math.abs(_tDIVTop - _scrollDOMTop) + _thead.height() - _tableOffsetTop > _tableDIV.height()) : false){
+			// 	_setTopHead.show();
+			// 	_setTopHead.css({
+			// 		top		: 'auto',
+			// 		bottom	: '0px'
+			// 	});
+			// 	return true;
+			// }
 			//配置吸顶区的宽度
 			if(_setTopHead.length == 0 || _isWindowResize_){
-				_setTopHead.length == 0 ? table.append(_thead.clone(false).addClass('set-top')) : '';
+				_setTopHead.length == 0 ? table.append(_thead.clone(true).addClass('set-top')) : '';
 				_setTopHead = $('.set-top', table);
 				_setTopHead.removeAttr('grid-manager-thead');
 				_setTopHead.css({
@@ -136,8 +128,8 @@ const SetTop = {
 				$.each($('th', _setTopHead), function(i, v){
 					$(v).css({
 						width : _thList.eq(i).width()
-						+ Number(_thList.eq(i).css('border-left-width'))
-						+ Number(_thList.eq(i).css('border-right-width'))
+						+ _thList.eq(i).css('border-left-width')
+						+ _thList.eq(i).css('border-right-width')
 					});
 				});
 			}
@@ -149,21 +141,35 @@ const SetTop = {
 			}
 
 			//表部分可见
-			if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop < 0 &&
-				Math.abs(_tDIVTop - _scrollDOMTop) <= _tableDIV.height() +_tableOffsetTop) : true){
-				if(!_thead.hasClass('scrolling')){
-					_thead.addClass('scrolling');
-				}
+			// if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop < 0 &&
+			// 	Math.abs(_tDIVTop - _scrollDOMTop) <= _tableDIV.height() +_tableOffsetTop) : true){
+			// 	if(!_thead.hasClass('scrolling')){
+			// 		_thead.addClass('scrolling');
+			// 	}
+			// 	_setTopHead.css({
+			// 		top		: _scrollDOMTop  - _tDIVTop + _this.topValue,
+			// 		bottom	: 'auto'
+			// 	});
+			// 	_setTopHead.show();
+			// 	return true;
+			// }
+			// 隐藏表头置镜像顶条
+			if(_scrollDOMTop === 0){
+				_thead.removeClass('scrolling');
+				_setTopHead.remove();
+			}
+			// 显示表头置镜像顶条
+			else {
+				_thead.addClass('scrolling');
 				_setTopHead.css({
-					top		: _scrollDOMTop  - _tDIVTop + _this.topValue,
+					top		: _scrollDOMTop ,
 					bottom	: 'auto'
 				});
 				_setTopHead.show();
-				return true;
 			}
 			return true;
 		});
    //     $(Settings.scrollDOM).trigger('scroll');
 	}
 };
-export default SetTop;
+export default Scroll;

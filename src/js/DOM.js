@@ -11,7 +11,7 @@ import Base from './Base';
 import Export from './Export';
 import Order from './Order';
 import Remind from './Remind';
-import SetTop from './SetTop';
+import Scroll from './Scroll';
 import Sort from './Sort';
 import Settings from './Settings';
 const DOM = {
@@ -104,10 +104,10 @@ const DOM = {
 		onlyThead = $('thead', table);
 		onlyThList = $('th', onlyThead);
 		//表头置顶
-		if(Settings.supportSetTop){
-			setTopHtml = SetTop.initDOM();
-		}
-		wrapHtml = '<div class="table-wrap"><div class="table-div"></div>'+ setTopHtml +'<span class="text-dreamland"></span></div>';
+		// if(Settings.supportSetTop){
+			setTopHtml = Scroll.initDOM();
+		// }
+		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div>${setTopHtml}<span class="text-dreamland"></span></div>`;
 		table.wrap(wrapHtml);
 		tableWarp = table.closest('.table-wrap');
 		//嵌入配置列表DOM
@@ -305,16 +305,16 @@ const DOM = {
 			Config.setAreVisible($('[th-visible="none"]'), false ,true);
 		}
 		//重置吸顶事件
-		if(Settings.supportSetTop){
-			var _tableDIV 	= _table.closest('.table-div');
-			var _tableWarp 	= _tableDIV.closest('.table-wrap');
-			_tableDIV.css({
-				height:'auto'
-			});
-			_tableWarp.css({
-				marginBottom: 0
-			});
-		}
+		// if(Settings.supportSetTop){
+		// var _tableDIV 	= _table.closest('.table-div');
+		var _tableWarp 	= _tableDIV.closest('.table-wrap');
+		// _tableDIV.css({
+		// 	height:'auto'
+		// });
+		_tableWarp.css({
+			marginBottom: 0
+		});
+		// }
 	}
 };
 export default DOM;

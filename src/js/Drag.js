@@ -2,6 +2,7 @@
  * Drag: 拖拽
  * */
 import $ from './jTool';
+import Base from './Base';
 import Adjust from './Adjust';
 import Settings from './Settings';
 import Cache from './Cache';
@@ -43,7 +44,7 @@ const Drag = {
 			_table 			= _tr.closest('table'),
 			_tableDiv 		= _table.closest('.table-div'),
 			_tableWrap      = _table.closest('.table-wrap'),
-			_td 			= _th.getRowTd();
+			_td 			= Base.getRowTd(_th);
 			//禁用文字选中效果
 			$('body').addClass('no-select-text');
 
@@ -124,7 +125,7 @@ const Drag = {
 				//处理向左拖拽
 				if(_prevTh && _prevTh.length != 0
 					&& _dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft){
-					_prevTd = _prevTh.getRowTd();
+					_prevTd = Base.getRowTd(_prevTh);
 					_prevTh.before(_th);
 					$.each(_td,function(i, v){
 						_prevTd.eq(i).before(v);
@@ -134,7 +135,7 @@ const Drag = {
 				//处理向右拖拽
 				if(_nextTh && _nextTh.length != 0
 					&& _dreamlandDIV.get(0).offsetLeft > _nextTh.get(0).offsetLeft - _dreamlandDIV.get(0).offsetWidth / 2){
-					_nextTd = _nextTh.getRowTd();
+					_nextTd = Base.getRowTd(_nextTh);
 					_nextTh.after(_th);
 					$.each(_td,function(i, v){
 						_nextTd.eq(i).after(v);

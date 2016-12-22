@@ -79,9 +79,9 @@ const Config = {
 			}
 
 			//重置镜像滚动条的宽度
-			if(Settings.supportSetTop){
+			// if(Settings.supportScroll){
 				$('.sa-inner', _tableWarp).width('100%');
-			}
+			// }
 			//重置当前可视th的宽度
 			var _visibleTh = $('thead th[th-visible="visible"]', _table);
 			$.each(_visibleTh, function(i, v){

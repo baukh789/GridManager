@@ -29,7 +29,7 @@ var Adjust = {
 				_nextTh			= _allTh.eq(_th.index() + 1),				//事件源下一个可视th
 				_last 			= _allTh.eq(_allTh.length - 1), 			//事件源同层级倒数第一个th
 				_lastButOne 	= _allTh.eq(_allTh.length - 2), 			//事件源同层级倒数第二个th
-				_td 	    	= _th.getRowTd();                           //存储与事件源同列的所有td
+				_td 	    	= Base.getRowTd(_th);                           //存储与事件源同列的所有td
 			//重置width 防止auto现象
 			$.each(_allTh, function(i, v){
 				if(v.style.width == 'auto' || v.style.width == ''){
@@ -70,9 +70,9 @@ var Adjust = {
 					_nextTh.width(Math.ceil(_nextTh.width() + _th.width() - _w))
 				}
 				//重置镜像滚动条的宽度
-				if(Settings.supportSetTop){
-					$(Settings.scrollDOM).trigger('scroll');
-				}
+				// if(Settings.supportScroll){
+				// 	$(Settings.scrollDOM).trigger('scroll');
+				// }
 			});
 
 			//绑定鼠标放开、移出事件
@@ -82,9 +82,9 @@ var Adjust = {
 				_th.removeClass('adjust-selected');
 				_td.removeClass('adjust-selected');
 				//重置镜像滚动条的宽度
-				if(Settings.supportSetTop){
-					$(Settings.scrollDOM).trigger('scroll');
-				}
+				// if(Settings.supportScroll){
+				// 	$(Settings.scrollDOM).trigger('scroll');
+				// }
 				//缓存列表宽度信息
 				Cache.setToLocalStorage(_table);
 			});
