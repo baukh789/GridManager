@@ -50,7 +50,6 @@ const AjaxPage = {
 			tableWarp 	= table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 			pagination	= $('.pagination', pageToolbar);		//分页区域
-		console.log(_pageData_);
 		var cPage = Number(_pageData_.cPage || 0),		//当前页
 			tPage = Number(_pageData_.tPage || 0),		//总页数
 			tHtml = '',					//临时存储分页HTML片段
