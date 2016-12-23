@@ -1,5 +1,9 @@
 # GridManager.js
-###实现功能
+##使用需知
+下载时请下载release版本
+-v2.0为jquery版本
+-原生版本正在开发中
+##实现功能
 GridManager.js可快速的对table标签进行实例化，实例化后将实现以下功能:
 
 - 宽度调整: 表格的列宽度可进行拖拽式调整
@@ -15,12 +19,12 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
 - 导出: 当前页数据下载,和仅针对已选中的表格下载
 - 右键菜单: 常用功能在菜单中可进行快捷操作
 
-###安装命令
+##安装命令
 ```
 npm install GridManager
 ```
 
-###引入方式
+##引入方式
 ```
 <link rel="stylesheet" type="text/css" href="/node_modules/GridManager/dist/css/GridManager.css"/>
 <script type="text/javascript" src="/node_modules/GridManager/dist/js/GridManager.js"></script>
@@ -33,21 +37,20 @@ $('table').GM({
 });
 ```
 
-###浏览器兼容
-Firefox, Chrome,IE10+
-这里提一下为什么不支持低版本: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
+##浏览器兼容
+-Firefox, Chrome,IE10+
+-这里提一下为什么不支持低版本: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
 
-###演示及文档
-
-- [API](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
+##演示及文档
 - [静态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo1.html)
 - [动态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo2.html)
 - [特定容器demo](http://www.lovejavascript.com/plugIn/GridManager/demo3.html)
+- [API](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
 - [github](https://github.com/baukh789/GridManager)
 - [oschina](http://git.oschina.net/baukh/GridManager)
 - [npm](https://www.npmjs.com/package/GridManager/)
 
-###调用方式
+##调用方式
 ```html
     <table grid-manager="test"></table>
 ```
@@ -107,7 +110,7 @@ Firefox, Chrome,IE10+
         ]
     });
 ```
-###数据格式
+##数据格式
 ```JSON
    {
    	"data":[{
@@ -163,7 +166,8 @@ Firefox, Chrome,IE10+
 ###8.想清除当前记忆的宽度及列位置时怎么办?
     可使用clear方法,调用方式:$('table').GM('clear');
 
-
+##版本信息
+[v2.1.0.md](/version/v2.1.0.md)
 
 
 
