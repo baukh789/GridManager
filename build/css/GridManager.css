@@ -60,6 +60,9 @@
 	margin: 0px;
 	padding: 0px;
 }
+.table-wrap .clear{
+	clear: both;
+}
 /*禁用文字选中*/
 .no-select-text{
 	user-select:none;
@@ -143,7 +146,7 @@ table.grid-manager-default tbody tr:hover td{
 	top:0px;
 	right:0px;
 	cursor:pointer;
-	z-index:2;
+	z-index:3;
 }
 .table-wrap .config-area .config-action{
 	display:block;
@@ -566,18 +569,22 @@ table.grid-manager-default tbody tr:hover td{
 /*
 	@baukh20150504:分页默认样式
 */
-
 .table-wrap .page-toolbar{
 	width:100%;
+	position: relative;
 	padding-top:10px;
-	clear:both;
 }
 .table-wrap .page-toolbar .dataTables_info{
 	display:inline-block;
-	padding: 5px;
+	padding: 6px 5px;
 }
 .table-wrap .page-toolbar .change-size{
 	display:inline-block;
+	padding:5px 10px;
+}
+.table-wrap .page-toolbar .change-size select[name="pSizeArea"]{
+	height:20px;
+	padding:5px;
 }
 .table-wrap .page-toolbar .goto-page{
 	display:inline-block;
@@ -592,21 +599,20 @@ table.grid-manager-default tbody tr:hover td{
 }
 .table-wrap .page-toolbar .refresh-action{
 	display:inline-block;
-	padding: 7.5px;
-	vertical-align: top;
-	color: #777;
+	width: 30px;
+	height:30px;
+	padding:8px 6px 6px 8px;
+	vertical-align: middle;
 }
 .table-wrap .page-toolbar .refresh-action:hover{
 	color: #3276b1;
 }
-.table-wrap .page-toolbar .refresh-action .iconfont{
-	display: block;
-	width: 15px;
-	height: 15px;
+.table-wrap .page-toolbar .refresh-action i{
 	cursor:pointer;
+	line-height:15px;
+	font-size: 16px;
+	color: #4078c0;
 	font-weight: 600;
-	line-height: 16px;
-	overflow: hidden;
 }
 .table-wrap .page-toolbar .refresh-action.refreshing{
 	-webkit-animation: rotationMedia 2s ease-in-out infinite;
@@ -614,15 +620,25 @@ table.grid-manager-default tbody tr:hover td{
 	animation: rotationMedia 2s ease-in-out infinite;
 }
 .table-wrap .page-toolbar .ajax-page{
-	display:inline-block;
-	text-align:right;
 	vertical-align:middle;
-	float:right;
+	position: absolute;
+	right:0px;
+	bottom:0px;
 }
 .table-wrap .page-toolbar .ajax-page .pagination{
 	display: inline-block;
-	margin:0px;
-	clear: both;
+}
+.pagination > li{
+	display: inline-block;
+	height:30px;
+	padding: 5px 10px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	color: #3276b1;
+	margin-left: -1px;
+	position: relative;
+	line-height: 18px;
+	cursor: default;
 }
 .pagination > li:first-child{
 	border-bottom-left-radius: 2px;
@@ -643,29 +659,10 @@ table.grid-manager-default tbody tr:hover td{
 	color: #fff;
 	z-index: 2;
 }
-.pagination > li{
-	height:30px;
-	padding: 5px 10px;
-	background-color: #fff;
-	border: 1px solid #ddd;
-	color: #3276b1;
-	float: left;
-	line-height: 1.42857;
-	margin-left: -1px;
-	position: relative;
-	text-decoration: none;
-	line-height: 18px;
-	cursor: default;
-}
 .pagination li:focus, .pagination li:hover {
 	background-color: #eee;
 	border-color: #ddd;
 	color: #214e75;
-}
-.table-wrap .page-toolbar select[name="pSizeArea"]{
-	height:30px;
-	padding:5px;
-	margin-left:10px;
 }
 /*右键菜单*/
 .grid-menu[grid-master]{

@@ -1735,7 +1735,6 @@
 				_table.unbind('mousemove');
 				_table.bind('mousemove', function (e) {
 					_w = e.clientX - _th.offset().left - _th.css('padding-left') - _th.css('padding-right');
-					console.log(_th.offset().left);
 					//限定最小值
 					if (_w < _realWidthForThText) {
 						_w = _realWidthForThText;
@@ -2411,7 +2410,7 @@
 	 * */
 	var AjaxPage = {
 		html: function html() {
-			var html = '<div class="page-toolbar">' + '<div class="dataTables_info"></div>' + '<div class="change-size"><select name="pSizeArea"></select></div>' + '<div class="goto-page">' + _I18n2.default.i18nText("goto-first-text") + '<input type="text" class="gp-input"/>' + _I18n2.default.i18nText("goto-last-text") + '</div>' + '<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>' + '<div class="ajax-page"><ul class="pagination"></ul></div>' + '</div>';
+			var html = '<div class="page-toolbar">' + '<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>' + '<div class="goto-page">' + _I18n2.default.i18nText("goto-first-text") + '<input type="text" class="gp-input"/>' + _I18n2.default.i18nText("goto-last-text") + '</div>' + '<div class="change-size"><select name="pSizeArea"></select></div>' + '<div class="dataTables_info"></div>' + '<div class="ajax-page"><ul class="pagination"></ul></div>' + '</div>';
 			return html;
 		}
 		/*
@@ -2445,7 +2444,6 @@
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
 			    //分页工具条
 			pagination = (0, _jTool2.default)('.pagination', pageToolbar); //分页区域
-			console.log(_pageData_);
 			var cPage = Number(_pageData_.cPage || 0),
 			    //当前页
 			tPage = Number(_pageData_.tPage || 0),

@@ -10,12 +10,12 @@ import I18n from './I18n';
 const AjaxPage = {
 	html: function () {
 		var html = '<div class="page-toolbar">'
-			+ '<div class="dataTables_info"></div>'
-			+ '<div class="change-size"><select name="pSizeArea"></select></div>'
+			+ '<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>'
 			+ '<div class="goto-page">'+ I18n.i18nText("goto-first-text")
 			+ '<input type="text" class="gp-input"/>'+ I18n.i18nText("goto-last-text")
 			+ '</div>'
-			+ '<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>'
+			+ '<div class="change-size"><select name="pSizeArea"></select></div>'
+			+ '<div class="dataTables_info"></div>'
 			+ '<div class="ajax-page"><ul class="pagination"></ul></div>'
 			+ '</div>';
 		return html;
