@@ -5,7 +5,7 @@ import $ from './jTool';
 import Cache from './Cache';
 import Base from './Base';
 import Settings from './Settings';
-var Adjust = {
+const Adjust = {
 	html: function () {
 		var html = '<span class="adjust-action"></span>';
 		return html;
