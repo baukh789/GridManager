@@ -113,6 +113,18 @@
 			,pagingAfter: function(data){
 				console.log('pagingAfter', data);
 			}
+			,adjustBefore: function (event) {
+				console.log('adjustBefore', event);
+			}
+			,adjustAfter: function (event) {
+				console.log('adjustAfter', event);
+			}
+			,dragBefore: function (event) {
+				console.log('dragBefore', event);
+			}
+			,dragAfter: function (event) {
+				console.log('dragAfter', event);
+			}
 		});
 
         // 日期格式化,不是插件的代码,只用于处理时间格式化

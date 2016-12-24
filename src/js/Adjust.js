@@ -15,7 +15,6 @@ var Adjust = {
 	 $.table: table [jTool object]
 	 */
 	,bindAdjustEvent: function(table){
-		var _this = this;
 		var thList 	= $('thead th', table);	//table下的TH
 		//监听鼠标调整列宽度
 		thList.off('mousedown', '.adjust-action');
@@ -30,6 +29,8 @@ var Adjust = {
 				_last 			= _allTh.eq(_allTh.length - 1), 			//事件源同层级倒数第一个th
 				_lastButOne 	= _allTh.eq(_allTh.length - 2), 			//事件源同层级倒数第二个th
 				_td 	    	= Base.getRowTd(_th);                           //存储与事件源同列的所有td
+			// 宽度调整触发回调事件
+			Settings.adjustBefore(event);
 			//重置width 防止auto现象
 			$.each(_allTh, function(i, v){
 				if(v.style.width == 'auto' || v.style.width == ''){
@@ -87,6 +88,8 @@ var Adjust = {
 				// }
 				//缓存列表宽度信息
 				Cache.setToLocalStorage(_table);
+				// 宽度调整成功回调事件
+				Settings.adjustAfter(event);
 			});
 			return false;
 		});

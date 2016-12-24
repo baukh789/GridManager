@@ -14,14 +14,18 @@ const Settings = {
 	// 是否使用默认的table样式
 	useDefaultStyle: true,
 
-	// 是否支持拖拽功能
-	supportDrag: true,
+	// 拖拽
+	supportDrag: true,  // 是否支持拖拽功能
+	dragBefore: $.noop, // 拖拽前事件
+	dragAfter: $.noop,	// 拖拽后事件
 
 	// 列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
 	isRealTime: false,
 
-	// 是否支持宽度调整功能]
-	supportAdjust: true,
+	// 宽度调整
+	supportAdjust: true,  // 是否支持宽度调整功能
+	adjustBefore: $.noop, // 宽度调整前事件
+	adjustAfter: $.noop,  // 宽度调整后事件
 
 	// 是否支持表头提示信息[需在地应的TH上增加属性remind]
 	supportRemind: false,

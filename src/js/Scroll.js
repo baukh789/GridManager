@@ -124,14 +124,14 @@ const Scroll = {
 				//$(v).width(_thList.get(i).offsetWidth)  获取值只能精确到整数
 				//$(v).width(_thList.eq(i).width()) 取不到宽
 				//调整吸顶表头下每一个th的宽度[存在性能问题，后期需优化]
-				_thList = $('th', _thead);
-				$.each($('th', _setTopHead), function(i, v){
-					$(v).css({
-						width : _thList.eq(i).width()
-						+ _thList.eq(i).css('border-left-width')
-						+ _thList.eq(i).css('border-right-width')
-					});
-				});
+				// _thList = $('th', _thead);
+				// $.each($('th', _setTopHead), function(i, v){
+				// 	$(v).css({
+				// 		width : _thList.eq(i).width()
+				// 		+ _thList.eq(i).css('border-left-width')
+				// 		+ _thList.eq(i).css('border-right-width')
+				// 	});
+				// });
 			}
 			//当前吸引thead 没有背景时 添加默认背景
 			if(!_setTopHead.css('background') ||

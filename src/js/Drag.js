@@ -45,6 +45,9 @@ const Drag = {
 			_tableDiv 		= _table.closest('.table-div'),
 			_tableWrap      = _table.closest('.table-wrap'),
 			_td 			= Base.getRowTd(_th);
+			// 列拖拽触发回调事件
+			Settings.dragBefore(event);
+			
 			//禁用文字选中效果
 			$('body').addClass('no-select-text');
 
@@ -172,6 +175,8 @@ const Drag = {
 				if(_this.isRealTime){
 					window.clearInterval(SIV_td);
 				}
+				// 列拖拽成功回调事件
+				Settings.dragAfter(event);
 			});
 		});
 	}

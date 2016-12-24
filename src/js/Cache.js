@@ -130,7 +130,7 @@ var Cache = {
 				_thJson = v2;
 				_th = $('th[th-name='+ _thJson.th_name +']', table);
 				//配置列的宽度
-				if(Settings.supportAdjust){
+				if(Settings.supportAdjust && _th.attr('gm-create') !== 'true'){
 					_th.css('width',_thJson.th_width);
 				}
 				//配置列排序数据

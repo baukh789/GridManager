@@ -1696,7 +1696,6 @@
 	  $.table: table [jTool object]
 	  */
 		, bindAdjustEvent: function bindAdjustEvent(table) {
-			var _this = this;
 			var thList = (0, _jTool2.default)('thead th', table); //table下的TH
 			//监听鼠标调整列宽度
 			thList.off('mousedown', '.adjust-action');
@@ -1719,6 +1718,8 @@
 				_lastButOne = _allTh.eq(_allTh.length - 2),
 				    //事件源同层级倒数第二个th
 				_td = _Base2.default.getRowTd(_th); //存储与事件源同列的所有td
+				// 宽度调整触发回调事件
+				_Settings2.default.adjustBefore(event);
 				//重置width 防止auto现象
 				_jTool2.default.each(_allTh, function (i, v) {
 					if (v.style.width == 'auto' || v.style.width == '') {
@@ -1770,6 +1771,8 @@
 					// }
 					//缓存列表宽度信息
 					_Cache2.default.setToLocalStorage(_table);
+					// 宽度调整成功回调事件
+					_Settings2.default.adjustAfter(event);
 				});
 				return false;
 			});
@@ -1942,7 +1945,7 @@
 					_thJson = v2;
 					_th = (0, _jTool2.default)('th[th-name=' + _thJson.th_name + ']', table);
 					//配置列的宽度
-					if (_Settings2.default.supportAdjust) {
+					if (_Settings2.default.supportAdjust && _th.attr('gm-create') !== 'true') {
 						_th.css('width', _thJson.th_width);
 					}
 					//配置列排序数据
@@ -2283,14 +2286,18 @@
 		// 是否使用默认的table样式
 		useDefaultStyle: true,
 
-		// 是否支持拖拽功能
-		supportDrag: true,
+		// 拖拽
+		supportDrag: true, // 是否支持拖拽功能
+		dragBefore: _jTool2.default.noop, // 拖拽前事件
+		dragAfter: _jTool2.default.noop, // 拖拽后事件
 
 		// 列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
 		isRealTime: false,
 
-		// 是否支持宽度调整功能]
-		supportAdjust: true,
+		// 宽度调整
+		supportAdjust: true, // 是否支持宽度调整功能
+		adjustBefore: _jTool2.default.noop, // 宽度调整前事件
+		adjustAfter: _jTool2.default.noop, // 宽度调整后事件
 
 		// 是否支持表头提示信息[需在地应的TH上增加属性remind]
 		supportRemind: false,
@@ -3933,12 +3940,14 @@
 					//$(v).width(_thList.get(i).offsetWidth)  获取值只能精确到整数
 					//$(v).width(_thList.eq(i).width()) 取不到宽
 					//调整吸顶表头下每一个th的宽度[存在性能问题，后期需优化]
-					_thList = (0, _jTool2.default)('th', _thead);
-					_jTool2.default.each((0, _jTool2.default)('th', _setTopHead), function (i, v) {
-						(0, _jTool2.default)(v).css({
-							width: _thList.eq(i).width() + _thList.eq(i).css('border-left-width') + _thList.eq(i).css('border-right-width')
-						});
-					});
+					// _thList = $('th', _thead);
+					// $.each($('th', _setTopHead), function(i, v){
+					// 	$(v).css({
+					// 		width : _thList.eq(i).width()
+					// 		+ _thList.eq(i).css('border-left-width')
+					// 		+ _thList.eq(i).css('border-right-width')
+					// 	});
+					// });
 				}
 				//当前吸引thead 没有背景时 添加默认背景
 				if (!_setTopHead.css('background') || _setTopHead.css('background') == '' || _setTopHead.css('background') == 'none') {
@@ -4378,6 +4387,9 @@
 			dragAction.unbind('mousedown');
 			dragAction.bind('mousedown', function () {
 				_th = (0, _jTool2.default)(this).closest('th'), _prevTh = undefined, _nextTh = undefined, _prevTd = undefined, _nextTd = undefined, _tr = _th.parent(), _allTh = _tr.find('th[th-visible="visible"]'), _table = _tr.closest('table'), _tableDiv = _table.closest('.table-div'), _tableWrap = _table.closest('.table-wrap'), _td = _Base2.default.getRowTd(_th);
+				// 列拖拽触发回调事件
+				_Settings2.default.dragBefore(event);
+
 				//禁用文字选中效果
 				(0, _jTool2.default)('body').addClass('no-select-text');
 
@@ -4492,6 +4504,8 @@
 					if (_this.isRealTime) {
 						window.clearInterval(SIV_td);
 					}
+					// 列拖拽成功回调事件
+					_Settings2.default.dragAfter(event);
 				});
 			});
 		}
