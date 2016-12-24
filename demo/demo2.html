@@ -107,21 +107,35 @@
 				}
 			}
 			]
+			// 分页前事件
 			,pagingBefore: function(query){
 				console.log('pagingBefore', query);
 			}
+			// 分页后事件
 			,pagingAfter: function(data){
 				console.log('pagingAfter', data);
 			}
+			// 排序前事件
+			,sortingBefore: function (data) {
+				console.log('sortBefore', data);
+			}
+			// 排序后事件
+			,sortingAfter: function (data) {
+				console.log('sortAfter', data);
+			}
+			// 宽度调整前事件
 			,adjustBefore: function (event) {
 				console.log('adjustBefore', event);
 			}
+			// 宽度调整后事件
 			,adjustAfter: function (event) {
 				console.log('adjustAfter', event);
 			}
+			// 拖拽前事件
 			,dragBefore: function (event) {
 				console.log('dragBefore', event);
 			}
+			// 拖拽后事件
 			,dragAfter: function (event) {
 				console.log('dragAfter', event);
 			}

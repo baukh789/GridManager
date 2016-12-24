@@ -47,7 +47,7 @@ const Drag = {
 			_td 			= Base.getRowTd(_th);
 			// 列拖拽触发回调事件
 			Settings.dragBefore(event);
-			
+
 			//禁用文字选中效果
 			$('body').addClass('no-select-text');
 
@@ -161,6 +161,9 @@ const Drag = {
 						_th.removeClass('drag-ongoing');
 						_td.removeClass('drag-ongoing');
 						_dreamlandDIV.remove();
+						
+						// 列拖拽成功回调事件
+						Settings.dragAfter(event);
 					});
 				}
 				//缓存列表位置信息
@@ -175,8 +178,6 @@ const Drag = {
 				if(_this.isRealTime){
 					window.clearInterval(SIV_td);
 				}
-				// 列拖拽成功回调事件
-				Settings.dragAfter(event);
 			});
 		});
 	}

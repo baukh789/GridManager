@@ -1763,16 +1763,19 @@
 				_table.unbind('mouseup mouseleave');
 				_table.bind('mouseup mouseleave', function () {
 					_table.unbind('mousemove mouseleave');
-					_th.removeClass('adjust-selected');
-					_td.removeClass('adjust-selected');
 					//重置镜像滚动条的宽度
 					// if(Settings.supportScroll){
 					// 	$(Settings.scrollDOM).trigger('scroll');
 					// }
 					//缓存列表宽度信息
 					_Cache2.default.setToLocalStorage(_table);
-					// 宽度调整成功回调事件
-					_Settings2.default.adjustAfter(event);
+					if (_th.hasClass('adjust-selected')) {
+						//其它操作也在table以该事件进行绑定,所以通过class进行区别
+						// 宽度调整成功回调事件
+						_Settings2.default.adjustAfter(event);
+					}
+					_th.removeClass('adjust-selected');
+					_td.removeClass('adjust-selected');
 				});
 				return false;
 			});
@@ -4490,6 +4493,9 @@
 							_th.removeClass('drag-ongoing');
 							_td.removeClass('drag-ongoing');
 							_dreamlandDIV.remove();
+
+							// 列拖拽成功回调事件
+							_Settings2.default.dragAfter(event);
 						});
 					}
 					//缓存列表位置信息
@@ -4504,8 +4510,6 @@
 					if (_this.isRealTime) {
 						window.clearInterval(SIV_td);
 					}
-					// 列拖拽成功回调事件
-					_Settings2.default.dragAfter(event);
 				});
 			});
 		}

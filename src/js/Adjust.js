@@ -80,16 +80,18 @@ var Adjust = {
 			_table.unbind('mouseup mouseleave');
 			_table.bind('mouseup mouseleave',function(){
 				_table.unbind('mousemove mouseleave');
-				_th.removeClass('adjust-selected');
-				_td.removeClass('adjust-selected');
 				//重置镜像滚动条的宽度
 				// if(Settings.supportScroll){
 				// 	$(Settings.scrollDOM).trigger('scroll');
 				// }
 				//缓存列表宽度信息
 				Cache.setToLocalStorage(_table);
-				// 宽度调整成功回调事件
-				Settings.adjustAfter(event);
+				if(_th.hasClass('adjust-selected')) {  //其它操作也在table以该事件进行绑定,所以通过class进行区别
+					// 宽度调整成功回调事件
+					Settings.adjustAfter(event);
+				}
+				_th.removeClass('adjust-selected');
+				_td.removeClass('adjust-selected');
 			});
 			return false;
 		});
