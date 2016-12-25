@@ -2,24 +2,26 @@
 * Base: 基础方法
 * */
 import $ from './jTool';
+import Settings from './Settings';
 const Base = {
 	/*
 	 @输出日志
 	 $.type: 输出分类[info,warn,error]
 	 */
 	outLog: function(msg, type){
-		if(!this.isDevelopMode && !type){
-			return console.log('GridManager:', msg);
+		if(!Settings.isDevelopMode && !type){
+			console.log('GridManager:', msg);
 		}
-		else if(!this.isDevelopMode && type === 'info'){
-			return console.info('GridManager Info: ', msg);
+		else if(!Settings.isDevelopMode && type === 'info'){
+			console.info('GridManager Info: ', msg);
 		}
-		else if(!this.isDevelopMode && type === 'warn'){
-			return console.warn('GridManager Warn: ', msg);
+		else if(!Settings.isDevelopMode && type === 'warn'){
+			console.warn('GridManager Warn: ', msg);
 		}
 		else if(type === 'error'){
-			return console.error('GridManager Error: ', msg);
+			console.error('GridManager Error: ', msg);
 		}
+		return msg;
 	}
 
 	/*
@@ -91,7 +93,7 @@ const Base = {
 					$(v2).show();
 				});
 				_checkLi.addClass('checked-li');
-				_checkbox.get(0).checked = true;
+				_checkbox.prop('checked', true);
 			}
 			//隐藏
 			else{
@@ -100,7 +102,7 @@ const Base = {
 					$(v2).hide();
 				});
 				_checkLi.removeClass('checked-li');
-				_checkbox.get(0).checked = false;
+				_checkbox.prop('checked', false);
 			}
 			typeof(cb) == 'function' ? cb() : '';
 		});

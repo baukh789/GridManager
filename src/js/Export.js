@@ -3,6 +3,7 @@
  * */
 import $ from './jTool';
 import Core from './Core';
+import Settings from './Settings';
 const Export = {
 	html: function () {
 		var html = '<a href="" download="" id="gm-export-action"></a>';
@@ -32,7 +33,7 @@ const Export = {
 			tdDOM;
 		//验证：是否只导出已选中的表格
 		if(onlyChecked){
-			trDOM = $('tbody tr[checked="checked"]', tableDOM);
+			trDOM = $('tbody tr[checked="true"]', tableDOM);
 		}else{
 			trDOM = $('tbody tr', tableDOM);
 		}
@@ -62,7 +63,7 @@ const Export = {
 			+ '</table></body>'
 			+ '</html>';
 		gmExportAction.prop('href', uri + base64(exportHTML));
-		gmExportAction.prop('download', (fileName || tableDOM.attr('grid-manager')) +'.xls');
+		gmExportAction.prop('download', (fileName || Settings.gridManagerName) +'.xls');
 		gmExportAction.get(0).click();
 
 		function base64(s) {

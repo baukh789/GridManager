@@ -4,6 +4,7 @@
 import $ from './jTool';
 import I18n from './I18n';
 import Settings from './Settings';
+import Export from './Export';
 import AjaxPage from './AjaxPage';
 const Menu = {
 	/*
@@ -149,7 +150,7 @@ const Menu = {
 			if(this.getAttribute('only-checked') === 'true'){
 				onlyChecked = true;
 			}
-			Settings.exportGridToXls(_table, undefined, onlyChecked);
+			Export.exportGridToXls(_table, undefined, onlyChecked);
 			_body.off('mousedown.gridMenu');
 			_gridMenu.hide();
 		});

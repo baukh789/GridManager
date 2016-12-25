@@ -62,6 +62,11 @@ var Cache = {
 	 * $table: table jTool
 	 * */
 	,getLocalStorageKey: function($table){
+		// 验证table是否有效
+		if(!$table || $table.length === 0){
+			Base.outLog('getLocalStorage:无效的table', 'error');
+			return false;
+		}
 		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 		var noCache = $table.attr('no-cache');
 		if(noCache && noCache== 'true'){
@@ -72,17 +77,13 @@ var Cache = {
 			Base.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
 			return false;
 		}
-		if(!$table || $table.length === 0){
-			Base.outLog('getLocalStorage:无效的table', 'error');
-			return false;
-		}
-		var _gridKey = $table.attr('grid-manager');
-		//验证当前表是否为GridManager
-		if(!_gridKey || $.trim(_gridKey) == ''){
-			Base.outLog('getLocalStorage:无效的grid-manager', 'error');
-			return false;
-		}
-		return window.location.pathname +  window.location.hash + '-'+ _gridKey;
+		// var _gridKey = $table.attr('grid-manager');
+		// //验证当前表是否为GridManager
+		// if(!_gridKey || $.trim(_gridKey) == ''){
+		// 	Base.outLog('getLocalStorage:无效的grid-manager', 'error');
+		// 	return false;
+		// }
+		return window.location.pathname +  window.location.hash + '-'+ Settings.gridManagerName;
 	}
 	/*
 	* @根据本地缓存thead配置列表: 获取本地缓存, 存储原位置顺序, 根据本地缓存进行配置
@@ -176,12 +177,12 @@ var Cache = {
 			Base.outLog('setToLocalStorage:无效的table', 'error');
 			return false;
 		}
-		var _gridKey = _table.attr('grid-manager');
-		//验证当前表是否为GridManager
-		if(!_gridKey || $.trim(_gridKey) == ''){
-			Base.outLog('setToLocalStorage:无效的grid-manager', 'error');
-			return false;
-		}
+		// var _gridKey = _table.attr('grid-manager');
+		// //验证当前表是否为GridManager
+		// if(!_gridKey || $.trim(_gridKey) == ''){
+		// 	Base.outLog('setToLocalStorage:无效的grid-manager', 'error');
+		// 	return false;
+		// }
 		var _cache 		= {},
 			_cacheString= '',
 			_pageCache 	= {},

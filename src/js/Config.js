@@ -2,6 +2,7 @@
  * Config: th配置
  * */
 import $ from './jTool';
+import Base from './Base';
 import Cache from './Cache';
 import Adjust from './Adjust';
 import Settings from './Settings';
@@ -49,19 +50,18 @@ const Config = {
 		$('.config-list li', tableWarp).unbind('click');
 		$('.config-list li', tableWarp).bind('click', function(){
 			var _only = $(this),		//单个的设置项
-				_configArea 	= _only.closest('.config-area'),					//事件源所在的区域
 				_thName 		= _only.attr('th-name'),							//单个设置项的thName
 				_checkbox 		= _only.find('input[type="checkbox"]'),			    //事件下的checkbox
 				_tableWarp  	= _only.closest('.table-wrap'), 					//所在的大容器
 				_tableDiv	  	= $('.table-div', _tableWarp), 						//所在的table-div
 				_table	 		= $('[grid-manager]', _tableWarp),				    //所对应的table
-				_th				= $('thead th[th-name="'+_thName +'"]', _table), 	//所对应的th
+				_th				= $('thead[grid-manager-thead] th[th-name="'+_thName +'"]', _table), 	//所对应的th
 				_checkedList;		//当前处于选中状态的展示项
 			if(_only.hasClass('no-click')){
 				return false;
 			}
 			_only.closest('.config-list').find('.no-click').removeClass('no-click');
-			var isVisible = !_checkbox.get(0).checked;
+			var isVisible = !_checkbox.prop('checked');
 			//设置与当前td同列的td是否可见
 			_tableDiv.addClass('config-editing');
 			Base.setAreVisible(_th, isVisible, function(){

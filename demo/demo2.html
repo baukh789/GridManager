@@ -49,15 +49,16 @@
 <button id="create-gm">渲染GridManager</button>
 <hr/>
 <div style="width:95%;margin:0px auto;">
-    <table grid-manager="cccc"></table>
+    <table></table>
 </div>
 <script type="text/javascript">
     document.getElementById('create-gm').onclick = function(){
 
         //单列表简易渲染
-        var table = document.querySelector('table[grid-manager]');
+        var table = document.querySelector('table');
 		table.GM({
 			supportRemind: true
+			,gridManagerName: 'test'
 			,height: '300px'
 			,supportAjaxPage:true
 			,supportSorting: true
@@ -66,46 +67,46 @@
 			,query: {pluginId: 1}
 			,pageSize:20
 			,columnData: [{
-				key: 'name',
-				remind: 'the name',
-				width: '100px',
-				text: '名称',
-				sorting: 'up'
-			},{
-				key: 'info',
-				remind: 'the info',
-				text: '使用说明',
-				sorting: ''
-			},{
-				key: 'url',
-				remind: 'the url',
-				text: 'url'
-			},{
-				key: 'createDate',
-				remind: 'the createDate',
-				width: '100px',
-				text: '创建时间',
-				template: function(createDate, rowObject){
-					return new Date(createDate).format('YYYY-MM-DD HH:mm:ss');
+					key: 'name',
+					remind: 'the name',
+					width: '100px',
+					text: '名称',
+					sorting: 'up'
+				},{
+					key: 'info',
+					remind: 'the info',
+					text: '使用说明',
+					sorting: ''
+				},{
+					key: 'url',
+					remind: 'the url',
+					text: 'url'
+				},{
+					key: 'createDate',
+					remind: 'the createDate',
+					width: '100px',
+					text: '创建时间',
+					template: function(createDate, rowObject){
+						return new Date(createDate).format('YYYY-MM-DD HH:mm:ss');
+					}
+				},{
+					key: 'lastDate',
+					remind: 'the lastDate',
+					width: '100px',
+					text: '最后修改时间',
+					template: function(lastDate, rowObject){
+						return new Date(lastDate).format('YYYY-MM-DD HH:mm:ss');
+					}
+				},{
+					key: 'action',
+					remind: 'the action',
+					width: '100px',
+					text: '操作',
+					template: function(action, rowObject){
+						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+								+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+					}
 				}
-			},{
-				key: 'lastDate',
-				remind: 'the lastDate',
-				width: '100px',
-				text: '最后修改时间',
-				template: function(lastDate, rowObject){
-					return new Date(lastDate).format('YYYY-MM-DD HH:mm:ss');
-				}
-			},{
-				key: 'action',
-				remind: 'the action',
-				width: '100px',
-				text: '操作',
-				template: function(action, rowObject){
-					return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-				}
-			}
 			]
 			// 分页前事件
 			,pagingBefore: function(query){

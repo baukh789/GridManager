@@ -95,6 +95,7 @@ const Adjust = {
 			});
 			return false;
 		});
+		return this;
 	}
 	/*
 	 @通过缓存配置成功后, 重置宽度调整事件源dom

@@ -63,7 +63,6 @@ const Sort = {
 			_action,		//向上或向下事件源
 			_th,			//事件源所在的th
 			_table,			//事件源所在的table
-			_tName,			//table grid-manager
 			_thName;		//th对应的名称
 
 		//绑定排序事件
@@ -72,7 +71,6 @@ const Sort = {
 			_action = $(this);
 			_th 	= _action.closest('th');
 			_table 	= _th.closest('table');
-			_tName  = _table.attr('grid-manager');
 			_thName = _th.attr('th-name');
 			if(!_thName || $.trim(_thName) == ''){
 				Base.outLog('排序必要的参数丢失', 'error');

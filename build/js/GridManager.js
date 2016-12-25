@@ -135,15 +135,14 @@
 	   * [对外公开方法]
 	   * @初始化方法
 	   * $.jToolObj: table [jTool object]
-	   * $.settings: 参数
+	   * $.arg: 参数
 	   * $.callback:回调
 	   * */
-			value: function init(jToolObj, settings, callback) {
+			value: function init(jToolObj, arg, callback) {
 
 				var _this = this;
 				// 参数
-				_jTool2.default.extend(_Settings2.default, settings);
-
+				_jTool2.default.extend(_Settings2.default, arg);
 				//通过版本较验 清理缓存
 				_Cache2.default.cleanTableCacheForVersion(jToolObj, _Settings2.default.version);
 				if (typeof _Settings2.default.gridManagerName !== 'string' || _Settings2.default.gridManagerName.trim() === '') {
@@ -1779,6 +1778,7 @@
 				});
 				return false;
 			});
+			return this;
 		}
 		/*
 	  @通过缓存配置成功后, 重置宽度调整事件源dom
@@ -1880,6 +1880,11 @@
 	  * $table: table jTool
 	  * */
 		, getLocalStorageKey: function getLocalStorageKey($table) {
+			// 验证table是否有效
+			if (!$table || $table.length === 0) {
+				_Base2.default.outLog('getLocalStorage:无效的table', 'error');
+				return false;
+			}
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 			var noCache = $table.attr('no-cache');
 			if (noCache && noCache == 'true') {
@@ -1890,17 +1895,13 @@
 				_Base2.default.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
 				return false;
 			}
-			if (!$table || $table.length === 0) {
-				_Base2.default.outLog('getLocalStorage:无效的table', 'error');
-				return false;
-			}
-			var _gridKey = $table.attr('grid-manager');
-			//验证当前表是否为GridManager
-			if (!_gridKey || _jTool2.default.trim(_gridKey) == '') {
-				_Base2.default.outLog('getLocalStorage:无效的grid-manager', 'error');
-				return false;
-			}
-			return window.location.pathname + window.location.hash + '-' + _gridKey;
+			// var _gridKey = $table.attr('grid-manager');
+			// //验证当前表是否为GridManager
+			// if(!_gridKey || $.trim(_gridKey) == ''){
+			// 	Base.outLog('getLocalStorage:无效的grid-manager', 'error');
+			// 	return false;
+			// }
+			return window.location.pathname + window.location.hash + '-' + _Settings2.default.gridManagerName;
 		}
 		/*
 	 * @根据本地缓存thead配置列表: 获取本地缓存, 存储原位置顺序, 根据本地缓存进行配置
@@ -1994,12 +1995,12 @@
 				_Base2.default.outLog('setToLocalStorage:无效的table', 'error');
 				return false;
 			}
-			var _gridKey = _table.attr('grid-manager');
-			//验证当前表是否为GridManager
-			if (!_gridKey || _jTool2.default.trim(_gridKey) == '') {
-				_Base2.default.outLog('setToLocalStorage:无效的grid-manager', 'error');
-				return false;
-			}
+			// var _gridKey = _table.attr('grid-manager');
+			// //验证当前表是否为GridManager
+			// if(!_gridKey || $.trim(_gridKey) == ''){
+			// 	Base.outLog('setToLocalStorage:无效的grid-manager', 'error');
+			// 	return false;
+			// }
 			var _cache = {},
 			    _cacheString = '',
 			    _pageCache = {},
@@ -2118,23 +2119,31 @@
 
 	var _jTool2 = _interopRequireDefault(_jTool);
 
+	var _Settings = __webpack_require__(6);
+
+	var _Settings2 = _interopRequireDefault(_Settings);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/*
+	* Base: 基础方法
+	* */
 	var Base = {
 		/*
 	  @输出日志
 	  $.type: 输出分类[info,warn,error]
 	  */
 		outLog: function outLog(msg, type) {
-			if (!this.isDevelopMode && !type) {
-				return console.log('GridManager:', msg);
-			} else if (!this.isDevelopMode && type === 'info') {
-				return console.info('GridManager Info: ', msg);
-			} else if (!this.isDevelopMode && type === 'warn') {
-				return console.warn('GridManager Warn: ', msg);
+			if (!_Settings2.default.isDevelopMode && !type) {
+				console.log('GridManager:', msg);
+			} else if (!_Settings2.default.isDevelopMode && type === 'info') {
+				console.info('GridManager Info: ', msg);
+			} else if (!_Settings2.default.isDevelopMode && type === 'warn') {
+				console.warn('GridManager Warn: ', msg);
 			} else if (type === 'error') {
-				return console.error('GridManager Error: ', msg);
+				console.error('GridManager Error: ', msg);
 			}
+			return msg;
 		}
 
 		/*
@@ -2212,7 +2221,7 @@
 						(0, _jTool2.default)(v2).show();
 					});
 					_checkLi.addClass('checked-li');
-					_checkbox.get(0).checked = true;
+					_checkbox.prop('checked', true);
 				}
 				//隐藏
 				else {
@@ -2221,7 +2230,7 @@
 							(0, _jTool2.default)(v2).hide();
 						});
 						_checkLi.removeClass('checked-li');
-						_checkbox.get(0).checked = false;
+						_checkbox.prop('checked', false);
 					}
 				typeof cb == 'function' ? cb() : '';
 			});
@@ -2256,9 +2265,7 @@
 			var thWidth = textDreamland.width() + (Number(thPaddingLeft) ? Number(thPaddingLeft) : 0) + (Number(thPaddingRight) ? Number(thPaddingRight) : 0) + (remindAction.length == 1 ? 20 : 5) + (sortingAction.length == 1 ? 20 : 5);
 			return thWidth;
 		}
-	}; /*
-	   * Base: 基础方法
-	   * */
+	};
 	exports.default = Base;
 
 /***/ },
@@ -2887,7 +2894,7 @@
 							template = v2.template;
 							templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];
 							alignAttr = v2.align ? 'align="' + v2.align + '"' : '';
-							tbodyTmpHTML += '<td ' + alignAttr + '>' + templateHTML + '</td>';
+							tbodyTmpHTML += '<td gm-create="false" ' + alignAttr + '>' + templateHTML + '</td>';
 						});
 						tbodyTmpHTML += '</tr>';
 					});
@@ -3132,7 +3139,7 @@
 				}
 				//嵌入配置列表项
 				if (_Settings2.default.supportConfig) {
-					(0, _jTool2.default)('.config-list', tableWarp).append('<li th-name="' + onlyTH.attr('th-name') + '" class="checked-li">' + '<input type="checkbox" checked="checked"/>' + '<label>' + '<span class="fake-checkbox"></span>' + onlyTH.text() + '</label>' + '</li>');
+					(0, _jTool2.default)('.config-list', tableWarp).append('<li th-name="' + onlyTH.attr('th-name') + '" class="checked-li">' + '<input type="checkbox"/>' + '<label>' + '<span class="fake-checkbox"></span>' + onlyTH.text() + '</label>' + '</li>');
 				}
 				//嵌入拖拽事件源
 				//插件自动生成的排序与选择列不做事件绑定
@@ -3309,6 +3316,10 @@
 
 	var _jTool2 = _interopRequireDefault(_jTool);
 
+	var _Base = __webpack_require__(5);
+
+	var _Base2 = _interopRequireDefault(_Base);
+
 	var _Cache = __webpack_require__(4);
 
 	var _Cache2 = _interopRequireDefault(_Cache);
@@ -3323,9 +3334,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-	 * Config: th配置
-	 * */
 	var Config = {
 		html: function html() {
 			var html = '<div class="config-area"><span class="config-action"><i class="iconfont icon-31xingdongdian"></i></span><ul class="config-list"></ul></div>';
@@ -3376,8 +3384,6 @@
 			(0, _jTool2.default)('.config-list li', tableWarp).bind('click', function () {
 				var _only = (0, _jTool2.default)(this),
 				    //单个的设置项
-				_configArea = _only.closest('.config-area'),
-				    //事件源所在的区域
 				_thName = _only.attr('th-name'),
 				    //单个设置项的thName
 				_checkbox = _only.find('input[type="checkbox"]'),
@@ -3388,17 +3394,17 @@
 				    //所在的table-div
 				_table = (0, _jTool2.default)('[grid-manager]', _tableWarp),
 				    //所对应的table
-				_th = (0, _jTool2.default)('thead th[th-name="' + _thName + '"]', _table),
+				_th = (0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _thName + '"]', _table),
 				    //所对应的th
 				_checkedList; //当前处于选中状态的展示项
 				if (_only.hasClass('no-click')) {
 					return false;
 				}
 				_only.closest('.config-list').find('.no-click').removeClass('no-click');
-				var isVisible = !_checkbox.get(0).checked;
+				var isVisible = !_checkbox.prop('checked');
 				//设置与当前td同列的td是否可见
 				_tableDiv.addClass('config-editing');
-				Base.setAreVisible(_th, isVisible, function () {
+				_Base2.default.setAreVisible(_th, isVisible, function () {
 					_tableDiv.removeClass('config-editing');
 				});
 				//最后一项禁止取消
@@ -3424,7 +3430,7 @@
 				//当前th文本所占宽度大于设置的宽度
 				//需要在上一个each执行完后才可以获取到准确的值
 				_jTool2.default.each(_visibleTh, function (i, v) {
-					var _realWidthForThText = Base.getTextWidth(v),
+					var _realWidthForThText = _Base2.default.getTextWidth(v),
 					    _thWidth = (0, _jTool2.default)(v).width();
 					if (_thWidth < _realWidthForThText) {
 						(0, _jTool2.default)(v).width(_realWidthForThText);
@@ -3435,7 +3441,9 @@
 				_Cache2.default.setToLocalStorage(_table); //缓存信息
 			});
 		}
-	};
+	}; /*
+	    * Config: th配置
+	    * */
 	exports.default = Config;
 
 /***/ },
@@ -3646,11 +3654,12 @@
 
 	var _Core2 = _interopRequireDefault(_Core);
 
+	var _Settings = __webpack_require__(6);
+
+	var _Settings2 = _interopRequireDefault(_Settings);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-	 * Export: 数据导出
-	 * */
 	var Export = {
 		html: function html() {
 			var html = '<a href="" download="" id="gm-export-action"></a>';
@@ -3682,7 +3691,7 @@
 			    tdDOM;
 			//验证：是否只导出已选中的表格
 			if (onlyChecked) {
-				trDOM = (0, _jTool2.default)('tbody tr[checked="checked"]', tableDOM);
+				trDOM = (0, _jTool2.default)('tbody tr[checked="true"]', tableDOM);
 			} else {
 				trDOM = (0, _jTool2.default)('tbody tr', tableDOM);
 			}
@@ -3700,14 +3709,16 @@
 			// 拼接要导出html格式数据
 			var exportHTML = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' + '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' + '<body><table>' + '<thead>' + theadHTML + '</thead>' + '<tbody>' + tbodyHTML + '</tbody>' + '</table></body>' + '</html>';
 			gmExportAction.prop('href', uri + base64(exportHTML));
-			gmExportAction.prop('download', (fileName || tableDOM.attr('grid-manager')) + '.xls');
+			gmExportAction.prop('download', (fileName || _Settings2.default.gridManagerName) + '.xls');
 			gmExportAction.get(0).click();
 
 			function base64(s) {
 				return window.btoa(unescape(encodeURIComponent(s)));
 			}
 		}
-	};
+	}; /*
+	    * Export: 数据导出
+	    * */
 	exports.default = Export;
 
 /***/ },
@@ -4078,8 +4089,6 @@
 			    //事件源所在的th
 			_table,
 			    //事件源所在的table
-			_tName,
-			    //table grid-manager
 			_thName; //th对应的名称
 
 			//绑定排序事件
@@ -4088,7 +4097,6 @@
 				_action = (0, _jTool2.default)(this);
 				_th = _action.closest('th');
 				_table = _th.closest('table');
-				_tName = _table.attr('grid-manager');
 				_thName = _th.attr('th-name');
 				if (!_thName || _jTool2.default.trim(_thName) == '') {
 					_Base2.default.outLog('排序必要的参数丢失', 'error');
@@ -4159,15 +4167,16 @@
 
 	var _Settings2 = _interopRequireDefault(_Settings);
 
+	var _Export = __webpack_require__(13);
+
+	var _Export2 = _interopRequireDefault(_Export);
+
 	var _AjaxPage = __webpack_require__(7);
 
 	var _AjaxPage2 = _interopRequireDefault(_AjaxPage);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-	 * GridManager: 右键菜单
-	 * */
 	var Menu = {
 		/*
 	  @验证菜单区域: 禁用、开启分页操作
@@ -4296,7 +4305,7 @@
 				if (this.getAttribute('only-checked') === 'true') {
 					onlyChecked = true;
 				}
-				_Settings2.default.exportGridToXls(_table, undefined, onlyChecked);
+				_Export2.default.exportGridToXls(_table, undefined, onlyChecked);
 				_body.off('mousedown.gridMenu');
 				_gridMenu.hide();
 			});
@@ -4325,7 +4334,9 @@
 				}
 			}
 		}
-	};
+	}; /*
+	    * GridManager: 右键菜单
+	    * */
 	exports.default = Menu;
 
 /***/ },

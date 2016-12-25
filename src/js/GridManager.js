@@ -25,15 +25,14 @@ class GridManager {
 	 * [对外公开方法]
 	 * @初始化方法
 	 * $.jToolObj: table [jTool object]
-	 * $.settings: 参数
+	 * $.arg: 参数
 	 * $.callback:回调
 	 * */
-	init(jToolObj, settings, callback) {
+	init(jToolObj, arg, callback) {
 
 		var _this = this;
 		// 参数
-		$.extend(Settings, settings);
-
+		$.extend(Settings, arg);
 		//通过版本较验 清理缓存
 		Cache.cleanTableCacheForVersion(jToolObj, Settings.version);
 		if(typeof Settings.gridManagerName !== 'string' || Settings.gridManagerName.trim() === ''){
