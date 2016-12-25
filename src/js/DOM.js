@@ -279,10 +279,9 @@ const DOM = {
 				}
 			});
 		}
-		//依据顺序存储重置td顺序
+		//依据存储数据重置td顺序
 		if(Settings.supportAdjust){  // 这里应该是验证换位而不是宽度调整
-			return;
-			var _thList = _this.getOriginalThDOM(_table),
+			var _thList = Cache.getOriginalThDOM(_table),
 				_td;
 			if(!_thList || _thList.length == 0 ){
 				Base.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
@@ -302,18 +301,18 @@ const DOM = {
 		}
 		//依据配置对列表进行隐藏、显示
 		if(Settings.supportConfig){
-			Config.setAreVisible($('[th-visible="none"]'), false ,true);
+			Base.setAreVisible($('[th-visible="none"]'), false ,true);
 		}
 		//重置吸顶事件
 		// if(Settings.supportSetTop){
 		// var _tableDIV 	= _table.closest('.table-div');
-		var _tableWarp 	= _tableDIV.closest('.table-wrap');
+		//var _tableWarp 	= _tableDIV.closest('.table-wrap');
 		// _tableDIV.css({
 		// 	height:'auto'
 		// });
-		_tableWarp.css({
-			marginBottom: 0
-		});
+		// _tableWarp.css({
+		// 	marginBottom: 0
+		// });
 		// }
 	}
 };

@@ -426,18 +426,44 @@
 	var _Animate = {
 		show: function() {
 			utilities.each(this.DOMList, function(i, v) {
-				if(v.style.oldDisplay && v.style.oldDisplay !== 'none'){
-					v.style.display = v.style.oldDisplay;
+				var _display = '';
+				var inlineArray = ['SPAN', 'A', 'FONT', 'I'];
+				// inline
+				if(v.nodeName.indexOf(inlineArray) !== -1) {
+					v.style.display = 'inline-block';
+					return this;
 				}
-				else{
-					v.style.display = 'block';
+				// table or block
+				switch (v.nodeName){
+					case 'TABLE':
+						_display = 'table';
+						break;
+					case 'THEAD':
+						_display = 'table-header-group';
+						break;
+					case 'TBODY':
+						_display = 'table-row-group';
+						break;
+					case 'TR':
+						_display = 'table-row';
+						break;
+					case 'TH':
+						_display = 'table-cell';
+						break;
+					case 'TD':
+						_display = 'table-cell';
+						break;
+					default:
+						_display = 'block';
+						break;
 				}
+				console.log(v.nodeName);
+				v.style.display = _display;
 			});
 			return this;
 		},
 		hide: function() {
 			utilities.each(this.DOMList, function(i, v){
-				v.style.oldDisplay = utilities.getStyle(v, 'display');
 				v.style.display = 'none';
 			});
 			return this;
@@ -3259,11 +3285,10 @@
 					}
 				});
 			}
-			//依据顺序存储重置td顺序
+			//依据存储数据重置td顺序
 			if (_Settings2.default.supportAdjust) {
 				// 这里应该是验证换位而不是宽度调整
-				return;
-				var _thList = _this.getOriginalThDOM(_table),
+				var _thList = _Cache2.default.getOriginalThDOM(_table),
 				    _td;
 				if (!_thList || _thList.length == 0) {
 					_Base2.default.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
@@ -3283,18 +3308,18 @@
 			}
 			//依据配置对列表进行隐藏、显示
 			if (_Settings2.default.supportConfig) {
-				_Config2.default.setAreVisible((0, _jTool2.default)('[th-visible="none"]'), false, true);
+				_Base2.default.setAreVisible((0, _jTool2.default)('[th-visible="none"]'), false, true);
 			}
 			//重置吸顶事件
 			// if(Settings.supportSetTop){
 			// var _tableDIV 	= _table.closest('.table-div');
-			var _tableWarp = _tableDIV.closest('.table-wrap');
+			//var _tableWarp 	= _tableDIV.closest('.table-wrap');
 			// _tableDIV.css({
 			// 	height:'auto'
 			// });
-			_tableWarp.css({
-				marginBottom: 0
-			});
+			// _tableWarp.css({
+			// 	marginBottom: 0
+			// });
 			// }
 		}
 	}; /*
