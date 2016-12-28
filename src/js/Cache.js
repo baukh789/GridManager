@@ -250,14 +250,25 @@ var Cache = {
 	 $.table: table [jTool object]
 	 */
 	,setOriginalThDOM: function(table){
-		table.data('originalThDOM', $('thead th', table));
+		var _thDOM = $('thead[grid-manager-thead] th', table);
+		var _thList = [];
+		$.each(_thDOM, function (i, v) {
+			_thList.push(v.getAttribute('th-name'));
+		});
+		table.data('originalThList', _thList);
 	}
 	/*
 	 @获取原Th DOM至table data
 	 $.table: table [jTool object]
 	 */
 	,getOriginalThDOM: function(table){
-		return $(table).data('originalThDOM');
+		var _thList = $(table).data('originalThList');
+		var _thArray = [];
+
+		$.each(_thList, function (i, v) {
+			_thArray.push($('thead[grid-manager-thead] th[th-name="'+ v +'"]', table).get(0));
+		});
+		return $(_thArray);
 	}
 
 	/*

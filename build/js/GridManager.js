@@ -2094,14 +2094,25 @@
 	  $.table: table [jTool object]
 	  */
 		, setOriginalThDOM: function setOriginalThDOM(table) {
-			table.data('originalThDOM', (0, _jTool2.default)('thead th', table));
+			var _thDOM = (0, _jTool2.default)('thead[grid-manager-thead] th', table);
+			var _thList = [];
+			_jTool2.default.each(_thDOM, function (i, v) {
+				_thList.push(v.getAttribute('th-name'));
+			});
+			table.data('originalThList', _thList);
 		}
 		/*
 	  @获取原Th DOM至table data
 	  $.table: table [jTool object]
 	  */
 		, getOriginalThDOM: function getOriginalThDOM(table) {
-			return (0, _jTool2.default)(table).data('originalThDOM');
+			var _thList = (0, _jTool2.default)(table).data('originalThList');
+			var _thArray = [];
+
+			_jTool2.default.each(_thList, function (i, v) {
+				_thArray.push((0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + v + '"]', table).get(0));
+			});
+			return (0, _jTool2.default)(_thArray);
 		}
 
 		/*
@@ -3286,22 +3297,20 @@
 				});
 			}
 			//依据存储数据重置td顺序
-			if (_Settings2.default.supportAdjust) {
-				// 这里应该是验证换位而不是宽度调整
-				var _thList = _Cache2.default.getOriginalThDOM(_table),
+			if (_Settings2.default.supportDrag) {
+				var _thCacheList = _Cache2.default.getOriginalThDOM(_table),
 				    _td;
-				if (!_thList || _thList.length == 0) {
+				if (!_thCacheList || _thCacheList.length == 0) {
 					_Base2.default.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
 					return false;
 				}
 				var _tmpHtml = [],
 				    _tdArray = [];
-				//		console.log(_thList.eq(4).index())
 				_jTool2.default.each(_tr, function (i, v) {
 					_tmpHtml[i] = (0, _jTool2.default)(v);
 					_td = (0, _jTool2.default)(v).find('td');
 					_jTool2.default.each(_td, function (i2, v2) {
-						_tdArray[_thList.eq(i2).index()] = v2.outerHTML;
+						_tdArray[_thCacheList.eq(i2).index()] = v2.outerHTML;
 					});
 					_tmpHtml[i].html(_tdArray.join(''));
 				});

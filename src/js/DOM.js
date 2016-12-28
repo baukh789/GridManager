@@ -280,21 +280,20 @@ const DOM = {
 			});
 		}
 		//依据存储数据重置td顺序
-		if(Settings.supportAdjust){  // 这里应该是验证换位而不是宽度调整
-			var _thList = Cache.getOriginalThDOM(_table),
+		if(Settings.supportDrag){
+			var _thCacheList = Cache.getOriginalThDOM(_table),
 				_td;
-			if(!_thList || _thList.length == 0 ){
+			if(!_thCacheList || _thCacheList.length == 0 ){
 				Base.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
 				return false;
 			}
 			var _tmpHtml = [],
 				_tdArray = [];
-			//		console.log(_thList.eq(4).index())
 			$.each(_tr, function(i, v){
 				_tmpHtml[i] = $(v);
 				_td = $(v).find('td');
 				$.each(_td, function(i2, v2){
-					_tdArray[_thList.eq(i2).index()] = v2.outerHTML;
+					_tdArray[_thCacheList.eq(i2).index()] = v2.outerHTML;
 				});
 				_tmpHtml[i].html(_tdArray.join(''));
 			});
