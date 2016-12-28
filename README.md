@@ -1,4 +1,9 @@
 # GridManager.js
+
+[![Build Status](https://img.shields.io/travis/baukh789/GridManager.svg?style=flat-square)](https://travis-ci.org/baukh789/GridManager)
+[![npm version](https://img.shields.io/npm/v/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
+[![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
+
 ##使用需知
 下载时请下载release版本
 -v2.0为jquery版本
