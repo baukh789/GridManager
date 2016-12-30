@@ -1,7 +1,7 @@
 /*
  *  GridManager: 构造函数
  * */
-import $ from './jTool';
+import jTool from './jTool';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
 import Cache from './Cache';
@@ -32,7 +32,7 @@ class GridManager {
 
 		var _this = this;
 		// 参数
-		$.extend(Settings, arg);
+		jTool.extend(Settings, arg);
 		//通过版本较验 清理缓存
 		Cache.cleanTableCacheForVersion(jToolObj, Settings.version);
 		if(typeof Settings.gridManagerName !== 'string' || Settings.gridManagerName.trim() === ''){
@@ -51,7 +51,7 @@ class GridManager {
 		if(Settings.supportAjaxPage){
 			AjaxPage.configPageForCache(jToolObj);
 		}
-		var query = $.extend({}, Settings.query, Settings.pageData);
+		var query = jTool.extend({}, Settings.query, Settings.pageData);
 		//增加渲染中标注
 		jToolObj.addClass('GridManager-loading');
 		_this.initTable(jToolObj);
@@ -64,8 +64,6 @@ class GridManager {
 			},1000);
 		}
 
-		//重置tbody存在数据的列表 @20160717:的2.0版本中，重置已在其它位置执行，该处已无用
-		//$('tbody tr', jToolObj).length > 0 ? _this.resetTd(v, false) : '';
 		//启用回调
 		typeof(callback) == 'function' ? callback(query) :'';
 		return jToolObj;
@@ -118,35 +116,35 @@ class GridManager {
 	}
 }
 // GM导入功能: 配置项
-$.extend(GridManager.prototype, Settings);
+jTool.extend(GridManager.prototype, Settings);
 // GM导入功能: 核心
-$.extend(GridManager.prototype, Core);
+jTool.extend(GridManager.prototype, Core);
 // GM导入功能: 选择
-$.extend(GridManager.prototype, Checkbox);
+jTool.extend(GridManager.prototype, Checkbox);
 // GM导入功能: 宽度调整
-$.extend(GridManager.prototype, Adjust);
+jTool.extend(GridManager.prototype, Adjust);
 // GM导入功能: 分页
-$.extend(GridManager.prototype, AjaxPage);
+jTool.extend(GridManager.prototype, AjaxPage);
 // GM导入功能: 配置列显示隐藏
-$.extend(GridManager.prototype, Config);
+jTool.extend(GridManager.prototype, Config);
 // GM导入功能: 拖拽
-$.extend(GridManager.prototype, Drag);
+jTool.extend(GridManager.prototype, Drag);
 // GM导入功能: 排序
-$.extend(GridManager.prototype, Sort);
+jTool.extend(GridManager.prototype, Sort);
 // GM导入功能: 导出数据
-$.extend(GridManager.prototype, Export);
+jTool.extend(GridManager.prototype, Export);
 // GM导入功能: 国际化
-$.extend(GridManager.prototype, I18n);
+jTool.extend(GridManager.prototype, I18n);
 // GM导入功能: 右键菜单
-$.extend(GridManager.prototype, Menu);
+jTool.extend(GridManager.prototype, Menu);
 // GM导入功能: 序号
-$.extend(GridManager.prototype, Order);
+jTool.extend(GridManager.prototype, Order);
 // GM导入功能: 表头提示
-$.extend(GridManager.prototype, Remind);
+jTool.extend(GridManager.prototype, Remind);
 // GM导入功能: 表头吸顶
-$.extend(GridManager.prototype, Scroll);
+jTool.extend(GridManager.prototype, Scroll);
 // GM导入功能: DOM操作
-$.extend(GridManager.prototype, DOM);
+jTool.extend(GridManager.prototype, DOM);
 
 // 对外公开方法列表
 var publishList = [
@@ -265,3 +263,21 @@ var publishList = [
 		}
 	};
 })(jTool);
+
+// 兼容jquery
+(function(){
+	if(typeof(jQuery) !== 'undefined' && jQuery.fn.extend) {
+		jQuery.fn.extend({
+			GM: function(settings){
+				this.get(0).GM(settings)
+			},
+			GridManager: function(settings){
+				this.get(0).GridManager(settings)
+			}
+		});
+	}
+})();
+// 恢复jTool占用的$变量
+(function(){
+	window.$ = window._$ || undefined;
+})();

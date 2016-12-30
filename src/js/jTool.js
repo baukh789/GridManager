@@ -1,7 +1,6 @@
 /**
  * jTool: export jTool
  */
-
-import _jTool from '../../node_modules/jTool/jTool';
+import {} from '../../node_modules/jTool/jTool.min';
 const $ = jTool;
 export default $;
