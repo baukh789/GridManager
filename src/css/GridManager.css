@@ -317,20 +317,19 @@ table.grid-manager-default tbody tr:hover td{
 }
 /*表头置顶*/
 .table-wrap .set-top{
-	display:none;
 	position:absolute;
 	left:0px;
 	top:0px;
 	z-index:2;
 }
 .table-wrap .set-top .adjust-action{
-	display:none !important;
+	display:none;
 }
 .table-wrap .set-top .sorting-action{
-	display:none !important;
+	display:none;
 }
 .table-wrap .set-top .drag-action{
-	cursor:default !important;
+	cursor:default;
 }
 .table-wrap table[grid-manager] thead.scrolling{
 	visibility:hidden;

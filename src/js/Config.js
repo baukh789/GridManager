@@ -67,7 +67,7 @@ const Config = {
 			Base.setAreVisible(_th, isVisible, function(){
 				_tableDiv.removeClass('config-editing');
 			});
-			//最后一项禁止取消
+			//限制最少显示一列
 			_checkedList =  $('.config-area input[type="checkbox"]:checked', _tableWarp);
 			if(_checkedList.length == 1){
 				_checkedList.parent().addClass('no-click');

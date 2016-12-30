@@ -39,7 +39,7 @@ var Cache = {
 	* */
 	,cleanTableCache: function(table, cleanText){
 		this.clear(table);
-		this.outLog(v.getAttribute('grid-manager') + '清除缓存成功,清除原因：'+ cleanText, 'info');
+		Base.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：'+ cleanText, 'info');
 	}
 	/*
 	* [对外公开方法]
@@ -166,7 +166,7 @@ var Cache = {
 		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 		var noCache = _table.attr('no-cache');
 		if(noCache && noCache== 'true'){
-			Base.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
+			Base.outLog('缓存功能已被禁用：当前表缺失必要参数', 'info');
 			return false;
 		}
 		if(!window.localStorage){
@@ -184,7 +184,6 @@ var Cache = {
 		// 	return false;
 		// }
 		var _cache 		= {},
-			_cacheString= '',
 			_pageCache 	= {},
 			_thCache	= new Array(),
 			_thData 	= {};
@@ -198,14 +197,14 @@ var Cache = {
 		$.each(thList, function(i, v){
 			$v = $(v);
 			_thData = {};
-			_thData.th_name = v.getAttribute('th-name');
+			_thData.th_name = $v.attr('th-name');
 			if(Settings.supportDrag){
 				_thData.th_index = $v.index();
 			}
 			if(Settings.supportAdjust){
 				//用于处理宽度在特定情况下发生异常
-				isInit ? $v.css('width', $v.css('width')) : '';
-				_thData.th_width = v.offsetWidth;
+				// isInit ? $v.css('width', $v.css('width')) : '';
+				_thData.th_width = $v.width();;
 			}
 			if(Settings.supportConfig){
 				_thData.isShow = $('.config-area li[th-name="'+ _thData.th_name +'"]', _table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
@@ -218,7 +217,7 @@ var Cache = {
 			_pageCache.pSize = $('select[name="pSizeArea"]', _table.closest('.table-wrap')).val();
 			_cache.page = _pageCache;
 		}
-		_cacheString = JSON.stringify(_cache);
+		var _cacheString = JSON.stringify(_cache);
 		window.localStorage.setItem(_this.getLocalStorageKey(_table), _cacheString);
 		return _cacheString;
 	}

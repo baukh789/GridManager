@@ -1883,7 +1883,7 @@
 	 * */
 		, cleanTableCache: function cleanTableCache(table, cleanText) {
 			this.clear(table);
-			this.outLog(v.getAttribute('grid-manager') + '清除缓存成功,清除原因：' + cleanText, 'info');
+			_Base2.default.outLog(_Settings2.default.gridManagerName + '清除缓存成功,清除原因：' + cleanText, 'info');
 		}
 		/*
 	 * [对外公开方法]
@@ -2010,7 +2010,7 @@
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 			var noCache = _table.attr('no-cache');
 			if (noCache && noCache == 'true') {
-				_Base2.default.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
+				_Base2.default.outLog('缓存功能已被禁用：当前表缺失必要参数', 'info');
 				return false;
 			}
 			if (!window.localStorage) {
@@ -2028,7 +2028,6 @@
 			// 	return false;
 			// }
 			var _cache = {},
-			    _cacheString = '',
 			    _pageCache = {},
 			    _thCache = new Array(),
 			    _thData = {};
@@ -2042,14 +2041,14 @@
 			_jTool2.default.each(thList, function (i, v) {
 				$v = (0, _jTool2.default)(v);
 				_thData = {};
-				_thData.th_name = v.getAttribute('th-name');
+				_thData.th_name = $v.attr('th-name');
 				if (_Settings2.default.supportDrag) {
 					_thData.th_index = $v.index();
 				}
 				if (_Settings2.default.supportAdjust) {
 					//用于处理宽度在特定情况下发生异常
-					isInit ? $v.css('width', $v.css('width')) : '';
-					_thData.th_width = v.offsetWidth;
+					// isInit ? $v.css('width', $v.css('width')) : '';
+					_thData.th_width = $v.width();;
 				}
 				if (_Settings2.default.supportConfig) {
 					_thData.isShow = (0, _jTool2.default)('.config-area li[th-name="' + _thData.th_name + '"]', _table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
@@ -2062,7 +2061,7 @@
 				_pageCache.pSize = (0, _jTool2.default)('select[name="pSizeArea"]', _table.closest('.table-wrap')).val();
 				_cache.page = _pageCache;
 			}
-			_cacheString = JSON.stringify(_cache);
+			var _cacheString = JSON.stringify(_cache);
 			window.localStorage.setItem(_this.getLocalStorageKey(_table), _cacheString);
 			return _cacheString;
 		}
@@ -3176,7 +3175,7 @@
 				}
 				//嵌入配置列表项
 				if (_Settings2.default.supportConfig) {
-					(0, _jTool2.default)('.config-list', tableWarp).append('<li th-name="' + onlyTH.attr('th-name') + '" class="checked-li">' + '<input type="checkbox"/>' + '<label>' + '<span class="fake-checkbox"></span>' + onlyTH.text() + '</label>' + '</li>');
+					(0, _jTool2.default)('.config-list', tableWarp).append('<li th-name="' + onlyTH.attr('th-name') + '" class="checked-li">' + '<input type="checkbox" checked="checked"/>' + '<label>' + '<span class="fake-checkbox"></span>' + onlyTH.text() + '</label>' + '</li>');
 				}
 				//嵌入拖拽事件源
 				//插件自动生成的排序与选择列不做事件绑定
@@ -3441,7 +3440,7 @@
 				_Base2.default.setAreVisible(_th, isVisible, function () {
 					_tableDiv.removeClass('config-editing');
 				});
-				//最后一项禁止取消
+				//限制最少显示一列
 				_checkedList = (0, _jTool2.default)('.config-area input[type="checkbox"]:checked', _tableWarp);
 				if (_checkedList.length == 1) {
 					_checkedList.parent().addClass('no-click');
@@ -3854,15 +3853,8 @@
 
 	var _jTool2 = _interopRequireDefault(_jTool);
 
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-	 * Scroll: 滚动轴
-	 * */
 	var Scroll = {
 		initDOM: function initDOM() {
 			return '<div class="scroll-area"><div class="sa-inner"></div></div>';
@@ -3872,7 +3864,6 @@
 	  $.table: table [jTool object]
 	  */
 		, bindScrollFunction: function bindScrollFunction(table) {
-			var _this = this;
 			var _tableDIV = table.closest('.table-div'),
 			    //列表所在的DIV,该DIV的class标识为table-div
 			_tableWarp = _tableDIV.closest('.table-wrap'); //列表所在的外围容器
@@ -3886,39 +3877,16 @@
 				(0, _jTool2.default)(this).closest('.table-div').scrollLeft(this.scrollLeft);
 				this.style.left = this.scrollLeft + 'px';
 			});
-			//Settings.scrollDOM != window 时 清除Settings.scrollDOM 的padding值
-			// if(Settings.scrollDOM != window){
-			// 	$(Settings.scrollDOM).css('padding','0px');
-			// }
 
 			//绑定滚动条事件
 			_tableDIV.unbind('scroll');
 			_tableDIV.bind('scroll', function (e, _isWindowResize_) {
-				var _scrollDOM = (0, _jTool2.default)(this),
-				    _setTopHead,
-				    //吸顶元素
-				_table,
-				    //原生table
-				_thead,
-				    //列表head
-				_thList,
-				    //列表下的th
-				_tbody; //列表body
-				var _scrollDOMTop = _scrollDOM.scrollTop();
-
-				var _tWarpMB = undefined; //吸顶触发后,table所在外围容器的margin-bottom值
-				// var scrollDOMisWindow = $.isWindow(Settings.scrollDOM);
+				var _scrollDOMTop = (0, _jTool2.default)(this).scrollTop();
 				_tableDIV = table.closest('.table-div');
 				_tableWarp = _tableDIV.closest('.table-wrap');
-				_table = table.get(0);
-				_thead = (0, _jTool2.default)('thead[grid-manager-thead]', table);
-				_tbody = (0, _jTool2.default)('tbody', table);
-
-				var _tDIVTop = _tableDIV.offset().top;
-				// 列表与_tableDIV之间的间隙，如marin-top,padding-top
-				var _tableOffsetTop = _table.offsetTop;
-
-				_setTopHead = (0, _jTool2.default)('.set-top', table);
+				var _thead = (0, _jTool2.default)('thead[grid-manager-thead]', table); //列表head
+				var _tbody = (0, _jTool2.default)('tbody', table); //列表body
+				var _setTopHead = (0, _jTool2.default)('.set-top', table); //吸顶元素
 				//当前列表数据为空
 				if ((0, _jTool2.default)('tr', _tbody).length == 0) {
 					return true;
@@ -3927,21 +3895,6 @@
 				var scrollArea = (0, _jTool2.default)('.scroll-area', _tableWarp);
 				if (_tableDIV.width() < table.width()) {
 					//首先验证宽度是否超出了父级DIV
-					// if(scrollDOMisWindow){
-					// 	_tWarpMB = Number(_tableDIV.height())
-					// 		+ Number(_tableWarp.css('margin-bottom'))
-					// 		- (document.body.scrollTop || document.documentElement.scrollTop || window.scrollY)
-					// 		- (window.innerHeight - _tableDIV.offset().top);
-					// }else{
-					// 	_tWarpMB = Number(_tableDIV.height())
-					// 		+ Number(_tableWarp.css('margin-bottom'))
-					// 		- _scrollDOM.scrollTop()
-					// 		- _scrollDOM.height();
-					// }
-					//
-					// if(_tWarpMB < 0){
-					// 	_tWarpMB = 0;
-					// }
 					(0, _jTool2.default)('.sa-inner', scrollArea).css({
 						width: table.width()
 					});
@@ -3953,87 +3906,42 @@
 				} else {
 					scrollArea.hide();
 				}
-				//表头完全可见 分两种情况 scrollDOM 为 window 或自定义容器
-				// if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop >= -_tableOffsetTop) : (_scrollDOMTop == 0)){
-				// 	console.log('表头完全可见')
-				// 	if(_thead.hasClass('scrolling')){
-				// 		_thead.removeClass('scrolling');
-				// 	}
-				// 	_setTopHead.remove();
-				// 	return true;
-				// }
-				//表完全不可见
-				// console.log('表完全不可见')
-				// console.log(Math.abs(_tDIVTop - _scrollDOMTop));
-				// console.log(_thead.height());
-				// console.log();
-				// if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop < 0 &&
-				// 	Math.abs(_tDIVTop - _scrollDOMTop) + _thead.height() - _tableOffsetTop > _tableDIV.height()) : false){
-				// 	_setTopHead.show();
-				// 	_setTopHead.css({
-				// 		top		: 'auto',
-				// 		bottom	: '0px'
-				// 	});
-				// 	return true;
-				// }
 				//配置吸顶区的宽度
 				if (_setTopHead.length == 0 || _isWindowResize_) {
 					_setTopHead.length == 0 ? table.append(_thead.clone(true).addClass('set-top')) : '';
 					_setTopHead = (0, _jTool2.default)('.set-top', table);
 					_setTopHead.removeAttr('grid-manager-thead');
 					_setTopHead.css({
-						width: _thead.width() + Number(_thead.css('border-left-width')) + Number(_thead.css('border-right-width')),
-						left: table.css('border-left-width')
+						width: _thead.width() + _thead.css('border-left-width') + _thead.css('border-right-width'),
+						left: table.css('border-left-width') + 'px'
 					});
-					//$(v).width(_thList.get(i).offsetWidth)  获取值只能精确到整数
-					//$(v).width(_thList.eq(i).width()) 取不到宽
-					//调整吸顶表头下每一个th的宽度[存在性能问题，后期需优化]
-					// _thList = $('th', _thead);
-					// $.each($('th', _setTopHead), function(i, v){
-					// 	$(v).css({
-					// 		width : _thList.eq(i).width()
-					// 		+ _thList.eq(i).css('border-left-width')
-					// 		+ _thList.eq(i).css('border-right-width')
-					// 	});
-					// });
+				}
+				if (_setTopHead.length === 0) {
+					return;
 				}
 				//当前吸引thead 没有背景时 添加默认背景
 				if (!_setTopHead.css('background') || _setTopHead.css('background') == '' || _setTopHead.css('background') == 'none') {
 					_setTopHead.css('background', '#f5f5f5');
 				}
-
-				//表部分可见
-				// if(scrollDOMisWindow ? (_tDIVTop - _scrollDOMTop < 0 &&
-				// 	Math.abs(_tDIVTop - _scrollDOMTop) <= _tableDIV.height() +_tableOffsetTop) : true){
-				// 	if(!_thead.hasClass('scrolling')){
-				// 		_thead.addClass('scrolling');
-				// 	}
-				// 	_setTopHead.css({
-				// 		top		: _scrollDOMTop  - _tDIVTop + _this.topValue,
-				// 		bottom	: 'auto'
-				// 	});
-				// 	_setTopHead.show();
-				// 	return true;
-				// }
-				// 隐藏表头置镜像顶条
+				// 删除表头置顶
 				if (_scrollDOMTop === 0) {
 					_thead.removeClass('scrolling');
 					_setTopHead.remove();
 				}
-				// 显示表头置镜像顶条
+				// 显示表头置顶
 				else {
 						_thead.addClass('scrolling');
 						_setTopHead.css({
-							top: _scrollDOMTop,
-							bottom: 'auto'
+							top: _scrollDOMTop
 						});
-						_setTopHead.show();
 					}
 				return true;
 			});
 			//     $(Settings.scrollDOM).trigger('scroll');
 		}
-	};
+	}; /*
+	    * Scroll: 滚动轴
+	    * */
 	exports.default = Scroll;
 
 /***/ },

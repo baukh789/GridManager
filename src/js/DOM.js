@@ -154,7 +154,7 @@ const DOM = {
 			if(Settings.supportConfig){
 				$('.config-list', tableWarp)
 					.append('<li th-name="'+ onlyTH.attr('th-name') +'" class="checked-li">'
-						+ '<input type="checkbox"/>'
+						+ '<input type="checkbox" checked="checked"/>'
 						+ '<label>'
 						+ '<span class="fake-checkbox"></span>'
 						+ onlyTH.text()
