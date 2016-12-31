@@ -1870,9 +1870,10 @@
 			onlyThList = (0, _jTool2.default)('th', onlyThead);
 			//表头置顶
 			// if(Settings.supportSetTop){
-			setTopHtml = _Scroll2.default.initDOM();
+			// 	setTopHtml = Scroll.initDOM();
 			// }
-			wrapHtml = '<div class="table-wrap"><div class="table-div" style="height: ' + _Settings2.default.height + '"></div>' + setTopHtml + '<span class="text-dreamland"></span></div>';
+			// wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div>${setTopHtml}<span class="text-dreamland"></span></div>`;
+			wrapHtml = '<div class="table-wrap"><div class="table-div" style="height: ' + _Settings2.default.height + '"></div><span class="text-dreamland"></span></div>';
 			table.wrap(wrapHtml);
 			tableWarp = table.closest('.table-wrap');
 			//嵌入配置列表DOM
@@ -2596,7 +2597,8 @@
 
 	var Scroll = {
 		initDOM: function initDOM() {
-			return '<div class="scroll-area"><div class="sa-inner"></div></div>';
+			return '';
+			// return '<div class="scroll-area"><div class="sa-inner"></div></div>';
 		}
 		/*
 	  @绑定表格滚动轴功能
@@ -2611,11 +2613,11 @@
 				(0, _jTool2.default)('.table-div').trigger('scroll', [true]);
 			};
 			//绑定模拟X轴滚动条
-			(0, _jTool2.default)('.scroll-area').unbind('scroll');
-			(0, _jTool2.default)('.scroll-area').bind('scroll', function () {
-				(0, _jTool2.default)(this).closest('.table-div').scrollLeft(this.scrollLeft);
-				this.style.left = this.scrollLeft + 'px';
-			});
+			// $('.scroll-area').unbind('scroll');
+			// $('.scroll-area').bind('scroll', function(){
+			// 	$(this).closest('.table-div').scrollLeft(this.scrollLeft);
+			// 	this.style.left = this.scrollLeft + 'px';
+			// });
 
 			//绑定滚动条事件
 			_tableDIV.unbind('scroll');
@@ -2631,20 +2633,19 @@
 					return true;
 				}
 				//配置X轴滚动条
-				var scrollArea = (0, _jTool2.default)('.scroll-area', _tableWarp);
-				if (_tableDIV.width() < table.width()) {
-					//首先验证宽度是否超出了父级DIV
-					(0, _jTool2.default)('.sa-inner', scrollArea).css({
-						width: table.width()
-					});
-					scrollArea.css({
-						left: _tableDIV.scrollLeft()
-					});
-					scrollArea.scrollLeft(_tableDIV.scrollLeft());
-					scrollArea.show();
-				} else {
-					scrollArea.hide();
-				}
+				// var scrollArea = $('.scroll-area', _tableWarp);
+				// if(_tableDIV.width() < table.width()){  //首先验证宽度是否超出了父级DIV
+				// 	$('.sa-inner', scrollArea).css({
+				// 		width : table.width()
+				// 	});
+				// 	scrollArea.css({
+				// 		left	: _tableDIV.scrollLeft()
+				// 	});
+				// 	scrollArea.scrollLeft(_tableDIV.scrollLeft());
+				// 	scrollArea.show();
+				// }else{
+				// 	scrollArea.hide();
+				// }
 				//配置吸顶区的宽度
 				if (_setTopHead.length == 0 || _isWindowResize_) {
 					_setTopHead.length == 0 ? table.append(_thead.clone(true).addClass('set-top')) : '';

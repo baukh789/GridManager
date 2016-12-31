@@ -4,25 +4,26 @@
 import $ from './jTool';
 const Scroll = {
 	initDOM: function () {
-		return '<div class="scroll-area"><div class="sa-inner"></div></div>';
+		return '';
+		// return '<div class="scroll-area"><div class="sa-inner"></div></div>';
 	}
 	/*
 	 @绑定表格滚动轴功能
 	 $.table: table [jTool object]
 	 */
 	,bindScrollFunction: function(table){
-		var _tableDIV = table.closest('.table-div'),		//列表所在的DIV,该DIV的class标识为table-div
+		var _tableDIV = table.closest('.table-div'),	//列表所在的DIV,该DIV的class标识为table-div
 			_tableWarp = _tableDIV.closest('.table-wrap');//列表所在的外围容器
 		//绑定窗口变化事件
 		window.onresize = function () {
 			$('.table-div').trigger('scroll', [true]);
 		};
 		//绑定模拟X轴滚动条
-		$('.scroll-area').unbind('scroll');
-		$('.scroll-area').bind('scroll', function(){
-			$(this).closest('.table-div').scrollLeft(this.scrollLeft);
-			this.style.left = this.scrollLeft + 'px';
-		});
+		// $('.scroll-area').unbind('scroll');
+		// $('.scroll-area').bind('scroll', function(){
+		// 	$(this).closest('.table-div').scrollLeft(this.scrollLeft);
+		// 	this.style.left = this.scrollLeft + 'px';
+		// });
 
 		//绑定滚动条事件
 		_tableDIV.unbind('scroll');
@@ -38,19 +39,19 @@ const Scroll = {
 				return true;
 			}
 			//配置X轴滚动条
-			var scrollArea = $('.scroll-area', _tableWarp);
-			if(_tableDIV.width() < table.width()){  //首先验证宽度是否超出了父级DIV
-				$('.sa-inner', scrollArea).css({
-					width : table.width()
-				});
-				scrollArea.css({
-					left	: _tableDIV.scrollLeft()
-				});
-				scrollArea.scrollLeft(_tableDIV.scrollLeft());
-				scrollArea.show();
-			}else{
-				scrollArea.hide();
-			}
+			// var scrollArea = $('.scroll-area', _tableWarp);
+			// if(_tableDIV.width() < table.width()){  //首先验证宽度是否超出了父级DIV
+			// 	$('.sa-inner', scrollArea).css({
+			// 		width : table.width()
+			// 	});
+			// 	scrollArea.css({
+			// 		left	: _tableDIV.scrollLeft()
+			// 	});
+			// 	scrollArea.scrollLeft(_tableDIV.scrollLeft());
+			// 	scrollArea.show();
+			// }else{
+			// 	scrollArea.hide();
+			// }
 			//配置吸顶区的宽度
 			if(_setTopHead.length == 0 || _isWindowResize_){
 				_setTopHead.length == 0 ? table.append(_thead.clone(true).addClass('set-top')) : '';

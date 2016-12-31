@@ -105,9 +105,10 @@ const DOM = {
 		onlyThList = $('th', onlyThead);
 		//表头置顶
 		// if(Settings.supportSetTop){
-			setTopHtml = Scroll.initDOM();
+		// 	setTopHtml = Scroll.initDOM();
 		// }
-		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div>${setTopHtml}<span class="text-dreamland"></span></div>`;
+		// wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div>${setTopHtml}<span class="text-dreamland"></span></div>`;
+		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div><span class="text-dreamland"></span></div>`;
 		table.wrap(wrapHtml);
 		tableWarp = table.closest('.table-wrap');
 		//嵌入配置列表DOM

@@ -323,29 +323,29 @@ table.grid-manager-default tbody tr:hover td{
 	z-index:2;
 }
 .table-wrap .set-top .adjust-action{
-	display:none;
+	display:none !important;
 }
 .table-wrap .set-top .sorting-action{
 	display:none;
 }
 .table-wrap .set-top .drag-action{
-	cursor:default;
+	cursor:default !important;
 }
 .table-wrap table[grid-manager] thead.scrolling{
 	visibility:hidden;
 }
-.table-wrap .scroll-area{
-	height:18px;
-	position: absolute;
-	bottom: 18px;
-	margin-top: -18px;
-	z-index:9999;
-	overflow-x:auto;
-	overflow-y:hidden;
-}
-.table-wrap .scroll-area .sa-inner{
-	height:20px;
-}
+/*.table-wrap .scroll-area{*/
+	/*height:18px;*/
+	/*position: absolute;*/
+	/*bottom: 18px;*/
+	/*margin-top: -18px;*/
+	/*z-index:9999;*/
+	/*overflow-x:auto;*/
+	/*overflow-y:hidden;*/
+/*}*/
+/*.table-wrap .scroll-area .sa-inner{*/
+	/*height:20px;*/
+/*}*/
 /*th内的上级DIV*/
 .table-wrap table[grid-manager] th .th-wrap{
 	width:100%;
@@ -580,10 +580,11 @@ table.grid-manager-default tbody tr:hover td{
 .table-wrap .page-toolbar .change-size{
 	display:inline-block;
 	padding:5px 10px;
+	vertical-align: middle;
 }
 .table-wrap .page-toolbar .change-size select[name="pSizeArea"]{
-	height:20px;
-	padding:5px;
+	height:25px;
+	padding:4px;
 }
 .table-wrap .page-toolbar .goto-page{
 	display:inline-block;
@@ -591,7 +592,7 @@ table.grid-manager-default tbody tr:hover td{
 }
 .table-wrap .page-toolbar .goto-page .gp-input{
 	width:50px;
-	height:20px;
+	height:25px;
 	border:1px solid #ccc;
 	padding:0px 5px;
 	margin:0px 5px;
