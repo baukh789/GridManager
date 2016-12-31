@@ -18,9 +18,12 @@ import Scroll from './Scroll';
 import Sort from './Sort';
 import Settings from './Settings';
 import DOM from './DOM';
-class GridManager {
-	constructor() {
-	};
+function GridManager(Settings) {
+	// 版本号
+	this.version= '2.1.2';
+	jTool.extend(this, Settings);
+}
+GridManager.prototype = {
 	/*
 	 * [对外公开方法]
 	 * @初始化方法
@@ -28,13 +31,13 @@ class GridManager {
 	 * $.arg: 参数
 	 * $.callback:回调
 	 * */
-	init(jToolObj, arg, callback) {
+	init: function(jToolObj, arg, callback) {
 
 		var _this = this;
 		// 参数
 		jTool.extend(Settings, arg);
 		//通过版本较验 清理缓存
-		Cache.cleanTableCacheForVersion(jToolObj, Settings.version);
+		Cache.cleanTableCacheForVersion(jToolObj, this.version);
 		if(typeof Settings.gridManagerName !== 'string' || Settings.gridManagerName.trim() === ''){
 			Settings.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
 		}
@@ -56,7 +59,7 @@ class GridManager {
 		jToolObj.addClass('GridManager-loading');
 		_this.initTable(jToolObj);
 
-		//如果初始获取缓存失败，则在mousedown时，首先存储一次数据
+		//如果初始获取缓存失败，在渲染完成后首先存储一次数据
 		if(typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined'){
 			window.setTimeout(function(){
 				Cache.setToLocalStorage(jToolObj, true);
@@ -72,9 +75,8 @@ class GridManager {
 	 @初始化列表
 	 $.table: table[jTool object]
 	 */
-	initTable(table) {
+	,initTable: function(table) {
 		var _this = this;
-
 		//渲染HTML，嵌入所需的事件源DOM
 		DOM.createDOM(table);
 		//获取本地缓存并对列表进行配置
@@ -104,15 +106,14 @@ class GridManager {
 		}
 		//绑定表头吸顶功能
 		// if(Settings.supportSetTop){
-			Scroll.bindScrollFunction(table);
+		Scroll.bindScrollFunction(table);
 		// }
 		//绑定右键菜单事件
 		Menu.bindRightMenuEvent(table);
 		//渲梁tbodyDOM
 		Core.__refreshGrid();
 		//将GridManager实例化对象存放于jTool data
-		Cache.setGridManagerToJTool(table);
-
+		Cache.setGridManagerToJTool.call(this, table);
 	}
 }
 // GM导入功能: 配置项
@@ -121,6 +122,8 @@ jTool.extend(GridManager.prototype, Settings);
 jTool.extend(GridManager.prototype, Core);
 // GM导入功能: 选择
 jTool.extend(GridManager.prototype, Checkbox);
+// GM导入功能: 缓存
+jTool.extend(GridManager.prototype, Cache);
 // GM导入功能: 宽度调整
 jTool.extend(GridManager.prototype, Adjust);
 // GM导入功能: 分页
@@ -164,11 +167,7 @@ var publishList = [
 ];
 (function ($) {
 	// 捆绑至选择器对象
-	Element.prototype.GM = Element.prototype.GridManager = function(_name_, _settings_, _callback_){
-		if(this.length == 0){
-			throw new Error('GridManager Error: DOM为空，请确定选择器匹配是否正确');
-			return false;
-		}
+	Element.prototype.GM = Element.prototype.GridManager = function(){
 		var table = this;
 		var $table = $(table);
 		// 特殊情况处理：单组tr进行操作，如resetTd()方法
@@ -251,7 +250,7 @@ var publishList = [
 		// 当前为初始化方法
 		if(name == 'init') {
 			var _GM = new GridManager();
-			_GM.init($table, settings, _callback_);
+			_GM.init($table, settings, callback);
 			return _GM;
 		}
 		// 当前为其它方法
@@ -268,11 +267,33 @@ var publishList = [
 (function(){
 	if(typeof(jQuery) !== 'undefined' && jQuery.fn.extend) {
 		jQuery.fn.extend({
-			GM: function(settings){
-				this.get(0).GM(settings)
+			GM: function(){
+				if(arguments.length === 0) {
+					this.get(0).GM();
+				}
+				else if(arguments.length === 1) {
+					this.get(0).GM(arguments[0]);
+				}
+				else if(arguments.length === 2) {
+					this.get(0).GM(arguments[0], arguments[1]);
+				}
+				else if(arguments.length === 3) {
+					this.get(0).GM(arguments[0], arguments[1], arguments[2]);
+				}
 			},
-			GridManager: function(settings){
-				this.get(0).GridManager(settings)
+			GridManager: function(){
+				if(arguments.length === 0) {
+					this.get(0).GridManager();
+				}
+				else if(arguments.length === 1) {
+					this.get(0).GridManager(arguments[0]);
+				}
+				else if(arguments.length === 2) {
+					this.get(0).GridManager(arguments[0], arguments[1]);
+				}
+				else if(arguments.length === 3) {
+					this.get(0).GridManager(arguments[0], arguments[1], arguments[2]);
+				}
 			}
 		});
 	}

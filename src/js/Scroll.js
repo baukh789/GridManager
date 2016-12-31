@@ -15,15 +15,9 @@ const Scroll = {
 		var _tableDIV = table.closest('.table-div'),	//列表所在的DIV,该DIV的class标识为table-div
 			_tableWarp = _tableDIV.closest('.table-wrap');//列表所在的外围容器
 		//绑定窗口变化事件
-		window.onresize = function () {
-			$('.table-div').trigger('scroll', [true]);
-		};
-		//绑定模拟X轴滚动条
-		// $('.scroll-area').unbind('scroll');
-		// $('.scroll-area').bind('scroll', function(){
-		// 	$(this).closest('.table-div').scrollLeft(this.scrollLeft);
-		// 	this.style.left = this.scrollLeft + 'px';
-		// });
+		// window.onresize = function () {
+		// 	$('.table-div').trigger('scroll', [true]);
+		// };
 
 		//绑定滚动条事件
 		_tableDIV.unbind('scroll');
@@ -38,20 +32,7 @@ const Scroll = {
 			if($('tr', _tbody).length == 0){
 				return true;
 			}
-			//配置X轴滚动条
-			// var scrollArea = $('.scroll-area', _tableWarp);
-			// if(_tableDIV.width() < table.width()){  //首先验证宽度是否超出了父级DIV
-			// 	$('.sa-inner', scrollArea).css({
-			// 		width : table.width()
-			// 	});
-			// 	scrollArea.css({
-			// 		left	: _tableDIV.scrollLeft()
-			// 	});
-			// 	scrollArea.scrollLeft(_tableDIV.scrollLeft());
-			// 	scrollArea.show();
-			// }else{
-			// 	scrollArea.hide();
-			// }
+
 			//配置吸顶区的宽度
 			if(_setTopHead.length == 0 || _isWindowResize_){
 				_setTopHead.length == 0 ? table.append(_thead.clone(true).addClass('set-top')) : '';

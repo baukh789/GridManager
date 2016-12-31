@@ -1,6 +1,6 @@
 {
   "name": "GridManager",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "表格管理插件",
   "author": "拭目以待",
   "license": "MIT",
@@ -16,9 +16,9 @@
     "jquery"
   ],
   "dependencies": {
-    "jTool": "^1.2.7"
   },
   "devDependencies": {
+    "jTool": "^1.2.7",
     "babel-cli": "^6.7.7",
     "babel-core": "^6.7.4",
     "babel-eslint": "^4.1.3",

@@ -102,11 +102,6 @@ const DOM = {
 		}
 		onlyThead = $('thead', table);
 		onlyThList = $('th', onlyThead);
-		//表头置顶
-		// if(Settings.supportSetTop){
-		// 	setTopHtml = Scroll.initDOM();
-		// }
-		// wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div>${setTopHtml}<span class="text-dreamland"></span></div>`;
 		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div><span class="text-dreamland"></span></div>`;
 		table.wrap(wrapHtml);
 		tableWarp = table.closest('.table-wrap');
@@ -209,10 +204,15 @@ const DOM = {
 			if(onlyTH.attr('gm-create') !== 'true'){  //不对GM自动创建的列进行处理
 				if(thWidthForConfig && thWidthForConfig !== ''){
 					onlyTH.width(thWidthForConfig);
+					onlyTH.removeAttr('width');
 				}else{
 					var _realWidthForThText = Base.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
-					onlyTH.width(_realWidthForThText);
+					onlyTH.css('min-width', _realWidthForThText);
+					//重置width 防止auto现象
+					onlyTH.width(onlyTH.width());
 				}
+			} else{
+				onlyTH.width(50);
 			}
 		});
 		//删除渲染中标识、增加渲染完成标识
@@ -294,17 +294,6 @@ const DOM = {
 		if(Settings.supportConfig){
 			Base.setAreVisible($('[th-visible="none"]'), false ,true);
 		}
-		//重置吸顶事件
-		// if(Settings.supportSetTop){
-		// var _tableDIV 	= _table.closest('.table-div');
-		//var _tableWarp 	= _tableDIV.closest('.table-wrap');
-		// _tableDIV.css({
-		// 	height:'auto'
-		// });
-		// _tableWarp.css({
-		// 	marginBottom: 0
-		// });
-		// }
 	}
 };
 export default DOM;

@@ -3,8 +3,6 @@
  */
 import $ from './jTool';
 const Settings = {
-	// 版本号
-	version: '2.1.0',
 	// 是否为开发模式，为true时将打印事件日志
 	isDevelopMode: false,
 
