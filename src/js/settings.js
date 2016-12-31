@@ -9,7 +9,7 @@ const Settings = {
 	isDevelopMode: false,
 
 	//当前基本路径[用于加载分页所需样式文件]
-	basePath: '',
+	// basePath: '',
 
 	// 是否使用默认的table样式
 	useDefaultStyle: true,
@@ -20,7 +20,7 @@ const Settings = {
 	dragAfter: $.noop,	// 拖拽后事件
 
 	// 列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
-	isRealTime: false,
+	// isRealTime: false,
 
 	// 宽度调整
 	supportAdjust: true,  // 是否支持宽度调整功能
@@ -46,7 +46,7 @@ const Settings = {
 	// scrollDOM: window,
 
 	// 特殊情况下才进行设置，在有悬浮物遮挡住表头置顶区域时进行使用，配置值为遮挡的高度
-	topValue: 0,
+	// topValue: 0,
 
 	// 动画效果时长
 	animateTime: 300,
@@ -55,7 +55,7 @@ const Settings = {
 	disableCache: false,
 
 	// 是否自动加载CSS文件
-	autoLoadCss: false,
+	// autoLoadCss: false,
 	// 排序 sort
 	supportSorting		: false, 					//排序：是否支持排序功能
 	isCombSorting		: false,					//是否为组合排序[只有在支持排序的情况下生效
@@ -72,8 +72,8 @@ const Settings = {
 	pageData 			: {},						//存储分页数据[不对外公开参数]
 	query 				: {},						//其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
 	pagingBefore		: $.noop,					//分页事件发生前
-	pagingAfter		: $.noop,					//分页事件发生后
-	pageCssFile 		: '',						//分页样式文件路径[用户自定义分页样式]
+	pagingAfter			: $.noop,					//分页事件发生后
+	// pageCssFile 		: '',						//分页样式文件路径[用户自定义分页样式]
 
 	//序目录
 	supportAutoOrder	: true,						//是否支持自动序目录

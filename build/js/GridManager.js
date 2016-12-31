@@ -1066,7 +1066,7 @@
 		isDevelopMode: false,
 
 		//当前基本路径[用于加载分页所需样式文件]
-		basePath: '',
+		// basePath: '',
 
 		// 是否使用默认的table样式
 		useDefaultStyle: true,
@@ -1077,7 +1077,7 @@
 		dragAfter: _jTool2.default.noop, // 拖拽后事件
 
 		// 列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
-		isRealTime: false,
+		// isRealTime: false,
 
 		// 宽度调整
 		supportAdjust: true, // 是否支持宽度调整功能
@@ -1103,7 +1103,7 @@
 		// scrollDOM: window,
 
 		// 特殊情况下才进行设置，在有悬浮物遮挡住表头置顶区域时进行使用，配置值为遮挡的高度
-		topValue: 0,
+		// topValue: 0,
 
 		// 动画效果时长
 		animateTime: 300,
@@ -1112,7 +1112,7 @@
 		disableCache: false,
 
 		// 是否自动加载CSS文件
-		autoLoadCss: false,
+		// autoLoadCss: false,
 		// 排序 sort
 		supportSorting: false, //排序：是否支持排序功能
 		isCombSorting: false, //是否为组合排序[只有在支持排序的情况下生效
@@ -1130,7 +1130,7 @@
 		query: {}, //其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
 		pagingBefore: _jTool2.default.noop, //分页事件发生前
 		pagingAfter: _jTool2.default.noop, //分页事件发生后
-		pageCssFile: '', //分页样式文件路径[用户自定义分页样式]
+		// pageCssFile 		: '',						//分页样式文件路径[用户自定义分页样式]
 
 		//序目录
 		supportAutoOrder: true, //是否支持自动序目录
@@ -3094,19 +3094,10 @@
 				if (_divPosition != 'relative' && _divPosition != 'absolute') {
 					_tableDiv.css('position', 'relative');
 				}
-				//处理时实刷新造成的列表错乱
-				if (_this.isRealTime) {
-					_th.addClass('drag-ongoing');
-					_td.addClass('drag-ongoing');
-					window.clearInterval(SIV_td);
-					SIV_td = window.setInterval(function () {
-						_td = _table.find('tbody tr').find('td:eq(' + _th.index() + ')'); //与事件源同列的所有td
-						_td.addClass('drag-ongoing');
-					}, 100);
-				} else {
-					_th.addClass('drag-ongoing opacityChange');
-					_td.addClass('drag-ongoing opacityChange');
-				}
+				//增加拖拽中样式
+				_th.addClass('drag-ongoing opacityChange');
+				_td.addClass('drag-ongoing opacityChange');
+
 				//增加临时展示DOM
 				_tableWrap.append('<div class="dreamland-div"></div>');
 				_dreamlandDIV = (0, _jTool2.default)('.dreamland-div', _tableWrap);
@@ -3200,9 +3191,6 @@
 					}
 					//开启文字选中效果
 					(0, _jTool2.default)('body').removeClass('no-select-text');
-					if (_this.isRealTime) {
-						window.clearInterval(SIV_td);
-					}
 				});
 			});
 		}

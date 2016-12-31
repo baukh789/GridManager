@@ -56,19 +56,10 @@ const Drag = {
 			if(_divPosition != 'relative' && _divPosition != 'absolute'){
 				_tableDiv.css('position','relative');
 			}
-			//处理时实刷新造成的列表错乱
-			if(_this.isRealTime){
-				_th.addClass('drag-ongoing');
-				_td.addClass('drag-ongoing');
-				window.clearInterval(SIV_td);
-				SIV_td = window.setInterval(function(){
-					_td = _table.find('tbody tr').find('td:eq('+_th.index()+')'); 	//与事件源同列的所有td
-					_td.addClass('drag-ongoing');
-				},100);
-			}else{
-				_th.addClass('drag-ongoing opacityChange');
-				_td.addClass('drag-ongoing opacityChange');
-			}
+			//增加拖拽中样式
+			_th.addClass('drag-ongoing opacityChange');
+			_td.addClass('drag-ongoing opacityChange');
+
 			//增加临时展示DOM
 			_tableWrap.append('<div class="dreamland-div"></div>');
 			_dreamlandDIV = $('.dreamland-div', _tableWrap);
@@ -161,7 +152,7 @@ const Drag = {
 						_th.removeClass('drag-ongoing');
 						_td.removeClass('drag-ongoing');
 						_dreamlandDIV.remove();
-						
+
 						// 列拖拽成功回调事件
 						Settings.dragAfter(event);
 					});
@@ -175,9 +166,6 @@ const Drag = {
 				}
 				//开启文字选中效果
 				$('body').removeClass('no-select-text');
-				if(_this.isRealTime){
-					window.clearInterval(SIV_td);
-				}
 			});
 		});
 	}
