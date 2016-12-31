@@ -67,7 +67,6 @@ body>hr{
 		},{
 			key: 'createDate',
 			remind: 'the createDate',
-			width: '100px',
 			text: '创建时间',
 			template: function(createDate, rowObject){
 				return new Date(createDate).format('YYYY-MM-DD HH:mm:ss');
@@ -75,7 +74,6 @@ body>hr{
 		},{
 			key: 'lastDate',
 			remind: 'the lastDate',
-			width: '100px',
 			text: '最后修改时间',
 			template: function(lastDate, rowObject){
 				return new Date(lastDate).format('YYYY-MM-DD HH:mm:ss');
@@ -83,7 +81,6 @@ body>hr{
 		},{
 			key: 'action',
 			remind: 'the action',
-			width: '100px',
 			text: '操作',
 			template: function(action, rowObject){
 				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'

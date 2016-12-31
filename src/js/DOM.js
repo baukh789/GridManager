@@ -89,7 +89,6 @@ const DOM = {
 			onlyThList,						//单个table下的TH
 			onlyTH,							//单个TH
 			onlyThWarp,						//单个TH下的上层DIV
-			thPadding,						//TH当前的padding值
 			remindDOM,						//表头提醒DOM
 			adjustDOM,						//调整宽度DOM
 			sortingDom,						//排序DOM
@@ -142,15 +141,6 @@ const DOM = {
 			}
 
 			onlyThWarp = $('<div class="th-wrap"></div>');
-			//th存在padding时 转移至th-wrap
-			thPadding = onlyTH.css('padding-top')
-				+ onlyTH.css('padding-right')
-				+ onlyTH.css('padding-bottom')
-				+ onlyTH.css('padding-left');
-			if(thPadding !== 0 ){
-				onlyThWarp.css('padding', thPadding);
-				onlyTH.css('cssText','padding:0px!important');
-			}
 			//嵌入配置列表项
 			if(Settings.supportConfig){
 				$('.config-list', tableWarp)
@@ -216,12 +206,13 @@ const DOM = {
 			//如果th上存在width属性，则表明配置项中存在该项配置；
 			//验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
 			var thWidthForConfig = onlyTH.attr('width');
-			if(thWidthForConfig && thWidthForConfig !== ''){
-				onlyTH.width(thWidthForConfig);
-				onlyTH.removeAttr('width');  //直接使用removeProp 无效
-			}else{
-				var _realWidthForThText = Base.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
-				onlyTH.css('min-width', _realWidthForThText);
+			if(onlyTH.attr('gm-create') !== 'true'){  //不对GM自动创建的列进行处理
+				if(thWidthForConfig && thWidthForConfig !== ''){
+					onlyTH.width(thWidthForConfig);
+				}else{
+					var _realWidthForThText = Base.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
+					onlyTH.width(_realWidthForThText);
+				}
 			}
 		});
 		//删除渲染中标识、增加渲染完成标识

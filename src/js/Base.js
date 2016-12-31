@@ -132,8 +132,8 @@ const Base = {
 		var thPaddingLeft = thWarp.css('padding-left'),
 			thPaddingRight = thWarp.css('padding-right');
 		var thWidth = textDreamland.width()
-			+ (Number(thPaddingLeft) ? Number(thPaddingLeft) : 0)
-			+ (Number(thPaddingRight) ? Number(thPaddingRight) : 0)
+			+ (thPaddingLeft ? thPaddingLeft : 0)
+			+ (thPaddingRight ? thPaddingRight : 0)
 			+ (remindAction.length == 1 ? 20 : 5)
 			+ (sortingAction.length == 1 ? 20 : 5);
 		return thWidth;
