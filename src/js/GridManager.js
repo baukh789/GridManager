@@ -18,10 +18,9 @@ import Scroll from './Scroll';
 import Sort from './Sort';
 import Settings from './Settings';
 import DOM from './DOM';
-function GridManager(Settings) {
+function GridManager() {
 	// 版本号
 	this.version= '2.1.2';
-	jTool.extend(this, Settings);
 }
 GridManager.prototype = {
 	/*
@@ -34,27 +33,30 @@ GridManager.prototype = {
 	init: function(jToolObj, arg, callback) {
 
 		var _this = this;
+		if(typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === ''){
+			arg.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
+		}
 		// 参数
-		jTool.extend(Settings, arg);
+		Settings 域存在问题
+考虑将Settings中的内容放到GridManager中,在原引用Settings的地方引用GridManager
+		// jTool.extend(Settings, arg);
+		jTool.extend(this, Settings, arg);
 		//通过版本较验 清理缓存
 		Cache.cleanTableCacheForVersion(jToolObj, this.version);
-		if(typeof Settings.gridManagerName !== 'string' || Settings.gridManagerName.trim() === ''){
-			Settings.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
-		}
-		if(Settings.gridManagerName.trim() === ''){
-			Settings.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+		if(this.gridManagerName.trim() === ''){
+			this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 			return false;
 		}
 
 		if(jToolObj.hasClass('GridManager-ready') || jToolObj.hasClass('GridManager-loading')){
-			Settings.outLog('渲染失败：可能该表格已经渲染或正在渲染' , 'error');
+			this.outLog('渲染失败：可能该表格已经渲染或正在渲染' , 'error');
 			return false;
 		}
 		//根据本地缓存配置每页显示条数
-		if(Settings.supportAjaxPage){
-			AjaxPage.configPageForCache(jToolObj);
+		if(this.supportAjaxPage){
+			AjaxPage.configPageForCache.call(this, jToolObj);
 		}
-		var query = jTool.extend({}, Settings.query, Settings.pageData);
+		var query = jTool.extend({}, this.query, this.pageData);
 		//增加渲染中标注
 		jToolObj.addClass('GridManager-loading');
 		_this.initTable(jToolObj);
@@ -80,44 +82,42 @@ GridManager.prototype = {
 		//渲染HTML，嵌入所需的事件源DOM
 		DOM.createDOM(table);
 		//获取本地缓存并对列表进行配置
-		if(!Settings.disableCache){
+		if(!this.disableCache){
 			Cache.configTheadForCache(table);
-			Settings.supportAdjust ? Adjust.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
+			this.supportAdjust ? Adjust.resetAdjust.call(this, table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
 		}
 		//绑定宽度调整事件
-		if(Settings.supportAdjust){
-			Adjust.bindAdjustEvent(table);
+		if(this.supportAdjust){
+			Adjust.bindAdjustEvent.call(this, table);
 		}
 		//绑定拖拽换位事件
-		if(Settings.supportDrag){
-			Drag.bindDragEvent(table);
+		if(this.supportDrag){
+			Drag.bindDragEvent.call(this, table);
 		}
 		//绑定排序事件
-		if(Settings.supportSorting){
-			Sort.bindSortingEvent(table);
+		if(this.supportSorting){
+			Sort.bindSortingEvent.call(this, table);
 		}
 		//绑定表头提示事件
-		if(Settings.supportRemind){
-			Remind.bindRemindEvent(table);
+		if(this.supportRemind){
+			Remind.bindRemindEvent.call(this, table);
 		}
 		//绑定配置列表事件
-		if(Settings.supportConfig){
-			Config.bindConfigEvent(table);
+		if(this.supportConfig){
+			Config.bindConfigEvent.call(this, table);
 		}
-		//绑定表头吸顶功能
-		// if(Settings.supportSetTop){
-		Scroll.bindScrollFunction(table);
-		// }
+		//绑定表头置顶功能
+		Scroll.bindScrollFunction.call(this, table);
 		//绑定右键菜单事件
-		Menu.bindRightMenuEvent(table);
+		Menu.bindRightMenuEvent.call(this, table);
 		//渲梁tbodyDOM
 		Core.__refreshGrid();
 		//将GridManager实例化对象存放于jTool data
 		Cache.setGridManagerToJTool.call(this, table);
 	}
-}
+};
 // GM导入功能: 配置项
-jTool.extend(GridManager.prototype, Settings);
+// jTool.extend(GridManager.prototype, Settings);
 // GM导入功能: 核心
 jTool.extend(GridManager.prototype, Core);
 // GM导入功能: 选择
@@ -194,7 +194,7 @@ var publishList = [
 		// ex: $(table).GridManager('get')
 		else if(arguments.length === 1 && $.type(arguments[0]) === 'string' && $.type(arguments[0]) !== 'init'){
 			name	 = arguments[0];
-			settings = undefined;
+			settings = {};
 			callback = undefined;
 		}
 		// ex: $(table).GridManager({settings})
@@ -206,7 +206,7 @@ var publishList = [
 		// ex: $(table).GridManager(callback)
 		else if(arguments.length === 1 && $.type(arguments[0]) === 'function'){
 			name	 = 'init';
-			settings = undefined;
+			settings = {};
 			callback = arguments[0];
 		}
 		// ex: $(table).GridManager('init', callback)

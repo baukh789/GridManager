@@ -177,12 +177,6 @@ var Cache = {
 			Base.outLog('setToLocalStorage:无效的table', 'error');
 			return false;
 		}
-		// var _gridKey = _table.attr('grid-manager');
-		// //验证当前表是否为GridManager
-		// if(!_gridKey || $.trim(_gridKey) == ''){
-		// 	Base.outLog('setToLocalStorage:无效的grid-manager', 'error');
-		// 	return false;
-		// }
 		var _cache 		= {},
 			_pageCache 	= {},
 			_thCache	= new Array(),

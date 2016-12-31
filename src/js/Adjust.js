@@ -70,20 +70,12 @@ const Adjust = {
 				if(_isSame && _th.width() > _w){
 					_nextTh.width(Math.ceil(_nextTh.width() + _th.width() - _w))
 				}
-				//重置镜像滚动条的宽度
-				// if(Settings.supportScroll){
-				// 	$(Settings.scrollDOM).trigger('scroll');
-				// }
 			});
 
 			//绑定鼠标放开、移出事件
 			_table.unbind('mouseup mouseleave');
 			_table.bind('mouseup mouseleave',function(){
 				_table.unbind('mousemove mouseleave');
-				//重置镜像滚动条的宽度
-				// if(Settings.supportScroll){
-				// 	$(Settings.scrollDOM).trigger('scroll');
-				// }
 				//缓存列表宽度信息
 				Cache.setToLocalStorage(_table);
 				if(_th.hasClass('adjust-selected')) {  //其它操作也在table以该事件进行绑定,所以通过class进行区别
