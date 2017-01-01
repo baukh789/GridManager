@@ -4,7 +4,7 @@
 import $ from './jTool';
 import Base from './Base';
 import Core from './Core';
-import Settings from './Settings';
+import Cache from './Cache';
 const Sort = {
 	html: function () {
 		var html = '<div class="sorting-action">'
@@ -26,6 +26,7 @@ const Sort = {
 	 }
 	 */
 	,setSort: function(table, sortJson, callback, refresh){
+		let Settings = Cache.getSettings(table);
 		if(table.length == 0 || !sortJson || $.isEmptyObject(sortJson)){
 			return false;
 		}
@@ -51,7 +52,7 @@ const Sort = {
 				_sortAction.addClass('sorting-down');
 			}
 		}
-		refresh ? Core.__refreshGrid(callback) : (typeof(callback) === 'function' ? callback() : '');
+		refresh ? Core.__refreshGrid(table, callback) : (typeof(callback) === 'function' ? callback() : '');
 		return table;
 	}
 	/*
@@ -59,6 +60,7 @@ const Sort = {
 	 $.table: table [jTool object]
 	 */
 	,bindSortingEvent: function(table){
+		let Settings = Cache.getSettings(table);
 		var _thList = $('th[sorting]', table),	//所有包含排序的列
 			_action,		//向上或向下事件源
 			_th,			//事件源所在的th
@@ -110,7 +112,7 @@ const Sort = {
 			//调用事件、渲染tbody
 			var query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 			Settings.sortingBefore(query);
-			Core.__refreshGrid(function(){
+			Core.__refreshGrid(table, function(){
 				Settings.sortingAfter(query,  _th);
 			});
 

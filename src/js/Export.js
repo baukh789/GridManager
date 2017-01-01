@@ -3,7 +3,6 @@
  * */
 import $ from './jTool';
 import Core from './Core';
-import Settings from './Settings';
 const Export = {
 	html: function () {
 		var html = '<a href="" download="" id="gm-export-action"></a>';
@@ -17,6 +16,7 @@ const Export = {
 	 $.onlyChecked: 是否只导出已选中的表格
 	 */
 	,exportGridToXls: function(table, fileName, onlyChecked){
+		let Settings = Cache.getSettings(table);
 		var _this = this;
 		var gmExportAction = $('#gm-export-action'); //createDOM内添加
 		if(gmExportAction.length === 0){

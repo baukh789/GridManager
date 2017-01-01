@@ -4,7 +4,6 @@
 import $ from './jTool';
 import Cache from './Cache';
 import Base from './Base';
-import Settings from './Settings';
 const Adjust = {
 	html: function () {
 		var html = '<span class="adjust-action"></span>';
@@ -15,6 +14,7 @@ const Adjust = {
 	 $.table: table [jTool object]
 	 */
 	,bindAdjustEvent: function(table){
+		let Settings = Cache.getSettings(table);
 		var thList 	= $('thead th', table);	//table下的TH
 		//监听鼠标调整列宽度
 		thList.off('mousedown', '.adjust-action');

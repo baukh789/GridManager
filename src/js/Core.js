@@ -5,7 +5,6 @@ import $ from './jTool';
 import Base from './Base';
 import DOM from './DOM';
 import Cache from './Cache';
-import Settings from './Settings';
 import AjaxPage from './AjaxPage';
 import Menu from './Menu';
 const Core= {
@@ -17,6 +16,7 @@ const Core= {
 	 $.callback: 回调函数
 	 */
 	refreshGrid: function(table, gotoFirstPage, callback){
+		let Settings = Cache.getSettings(table);
 		var _this = this;
 		if(typeof(gotoFirstPage) !== 'boolean'){
 			callback = gotoFirstPage;
@@ -25,17 +25,16 @@ const Core= {
 		if(gotoFirstPage){
 			Settings.pageData['cPage'] = 1;
 		}
-		_this.__refreshGrid(callback);
+		_this.__refreshGrid(table, callback);
 	}
 	/*
 	 @刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	 $.callback: 回调函数
 	 */
-	,__refreshGrid: function(callback){
-		var _this = this;
-		var tableDOM = $('table[grid-manager="'+ Settings.gridManagerName +'"]'),		//table dom
-			tbodyDOM = $('tbody', tableDOM),	//tbody dom
-			refreshAction = $('.page-toolbar .refresh-action', tableDOM.closest('.table-wrap')); //刷新按纽
+	,__refreshGrid: function(table, callback){
+		let Settings = Cache.getSettings(table);
+		var tbodyDOM = $('tbody', table),	//tbody dom
+			refreshAction = $('.page-toolbar .refresh-action', table.closest('.table-wrap')); //刷新按纽
 		//增加刷新中标识
 		refreshAction.addClass('refreshing');
 		/*
@@ -56,27 +55,31 @@ const Core= {
 			typeof callback === 'function' ? callback() : '';
 			return;
 		}
-		var parme = $.extend({}, Settings.query);
+		console.log(table.attr('grid-manager'), JSON.stringify(Settings.query));
+		var pram = $.extend(true, {}, Settings.query);
 		//合并分页信息至请求参
 		if(Settings.supportAjaxPage){
-			$.extend(parme, Settings.pageData);
+			$.extend(pram, Settings.pageData);
 		}
 		//合并排序信息至请求参
 		if(Settings.supportSorting){
-			$.extend(parme, Settings.sortData);
+			$.extend(pram, Settings.sortData);
 		}
 		//当前页小于1时, 修正为1
-		if(parme.cPage < 1){
-			parme.cPage = 1;
+		if(pram.cPage < 1){
+			pram.cPage = 1;
 			//当前页大于总页数时, 修正为总页数
-		}else if(parme.cPage > parme.tPage){
-			parme.cPage = parme.tPage
+		}else if(pram.cPage > pram.tPage){
+			pram.cPage = pram.tPage
 		}
+		Settings.query = pram;
+		Cache.updateSettings(table, Settings);
+
 		//执行ajax前事件
 		$.ajax({
 			url: Settings.ajax_url,
 			type: Settings.ajax_type,
-			data: parme,
+			data: pram,
 			cache: true,
 			beforeSend: function(XMLHttpRequest){
 				Settings.ajax_beforeSend(XMLHttpRequest);
@@ -117,7 +120,7 @@ const Core= {
 			//数据为空时
 			if(!_data ||_data.length === 0){
 				tbodyTmpHTML = '<tr emptyTemplate>'
-					+ '<td colspan="'+$('th[th-visible="visible"]', tableDOM).length+'">'
+					+ '<td colspan="'+$('th[th-visible="visible"]', table).length+'">'
 					+ (Settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>')
 					+ '</td>'
 					+ '</tr>';
@@ -137,12 +140,12 @@ const Core= {
 					tbodyTmpHTML += '</tr>';
 				});
 				tbodyDOM.html(tbodyTmpHTML);
-				DOM.resetTd(tableDOM, false);
+				DOM.resetTd(table, false);
 			}
 			//渲染分页
 			if(Settings.supportAjaxPage){
-				AjaxPage.resetPageData(tableDOM, parseRes[Settings.totalsKey]);
-				Menu.checkMenuPageAction();
+				AjaxPage.resetPageData(table, parseRes[Settings.totalsKey]);
+				Menu.checkMenuPageAction(table);
 			}
 			typeof callback === 'function' ? callback() : '';
 		}
@@ -155,7 +158,10 @@ const Core= {
 	 $.query:配置的数据
 	 */
 	,setQuery: function(table, query){
-		table.GridManager('get')['query'] = query;
+		// table.GridManager('get')['query'] = query;
+		var settings = Cache.getSettings(table);
+		$.extend(settings, {query: query});
+		Cache.updateSettings(table, settings);
 	}
 
 };

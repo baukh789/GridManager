@@ -2,15 +2,16 @@
  * GridManager: 右键菜单
  * */
 import $ from './jTool';
+import Cache from './Cache';
 import I18n from './I18n';
-import Settings from './Settings';
 import Export from './Export';
 import AjaxPage from './AjaxPage';
 const Menu = {
 	/*
 	 @验证菜单区域: 禁用、开启分页操作
 	 */
-	checkMenuPageAction: function(){
+	checkMenuPageAction: function(table){
+		let Settings = Cache.getSettings(table);
 		//右键菜单区上下页限制
 		var gridMenu = $('.grid-menu[grid-master="'+ Settings.gridManagerName +'"]');
 		if(!gridMenu || gridMenu.length === 0){
@@ -34,6 +35,7 @@ const Menu = {
 	 $.table:table
 	 */
 	,bindRightMenuEvent: function(table){
+		let Settings = Cache.getSettings(table);
 		var tableWarp = $(table).closest('.table-wrap'),
 			tbody = $('tbody', tableWarp);
 		//刷新当前表格
@@ -118,9 +120,11 @@ const Menu = {
 			if(isDisabled(this, e)){
 				return false;
 			}
-			var _gridMenu = $(this).closest('.grid-menu');
-			var refreshType = this.getAttribute('refresh-type');
-			var cPage = Settings.pageData.cPage;
+			let _gridMenu = $(this).closest('.grid-menu');
+			let _table = $('table[grid-manager="'+ _gridMenu.attr('grid-master') +'"]');
+			let refreshType = this.getAttribute('refresh-type');
+			let Settings = Cache.getSettings(_table);
+			let cPage = Settings.pageData.cPage;
 			//上一页
 			if(refreshType === 'previous' && Settings.pageData.cPage > 1){
 				cPage = Settings.pageData.cPage - 1;
@@ -133,7 +137,7 @@ const Menu = {
 			else if(refreshType === 'refresh'){
 				cPage = Settings.pageData.cPage;
 			}
-			AjaxPage.gotoPage(cPage);
+			AjaxPage.gotoPage(_table, cPage);
 			_body.off('mousedown.gridMenu');
 			_gridMenu.hide();
 		});

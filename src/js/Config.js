@@ -5,7 +5,6 @@ import $ from './jTool';
 import Base from './Base';
 import Cache from './Cache';
 import Adjust from './Adjust';
-import Settings from './Settings';
 const Config = {
 	html: function () {
 		var html = '<div class="config-area"><span class="config-action"><i class="iconfont icon-31xingdongdian"></i></span><ul class="config-list"></ul></div>';
@@ -16,6 +15,7 @@ const Config = {
 	 $.table: table [jTool object]
 	 */
 	,bindConfigEvent: function(table){
+		let Settings = Cache.getSettings(table);
 		//打开/关闭设置区域
 		var tableWarp = $(table).closest('div.table-wrap');
 		var configAction = $('.config-action', tableWarp);

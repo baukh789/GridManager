@@ -11,15 +11,14 @@ import Base from './Base';
 import Export from './Export';
 import Order from './Order';
 import Remind from './Remind';
-import Scroll from './Scroll';
 import Sort from './Sort';
-import Settings from './Settings';
 const DOM = {
 	/*
 	 @渲染HTML，根据配置嵌入所需的事件源DOM
 	 $.table: table[jTool对象]
 	 */
 	createDOM: function(table){
+		let Settings = Cache.getSettings(table);
 		var _this = this;
 		table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', Settings.gridManagerName);
 		var theadHtml = '<thead grid-manager-thead>',
@@ -239,6 +238,7 @@ const DOM = {
 		if(!_tr || _tr.length == 0){
 			return false;
 		}
+		let Settings = Cache.getSettings(_table);
 		//重置表格序号
 		if(Settings.supportAutoOrder){
 			var _pageData = Settings.pageData;

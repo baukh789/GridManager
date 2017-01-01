@@ -16,9 +16,9 @@
     "jquery"
   ],
   "dependencies": {
+    "jTool": "^1.2.9"
   },
   "devDependencies": {
-    "jTool": "^1.2.7",
     "babel-cli": "^6.7.7",
     "babel-core": "^6.7.4",
     "babel-eslint": "^4.1.3",

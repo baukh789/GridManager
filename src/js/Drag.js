@@ -4,16 +4,14 @@
 import $ from './jTool';
 import Base from './Base';
 import Adjust from './Adjust';
-import Settings from './Settings';
 import Cache from './Cache';
 const Drag = {
-	// 动画执行时间
-	animateTime: Settings.animateTime
 	/*
 	 @绑定拖拽换位事件
 	 $.table: table [jTool object]
 	 */
-	,bindDragEvent: function(table){
+	bindDragEvent: function(table){
+		let Settings = Cache.getSettings(table);
 		var _this = this;
 		var thList = $('thead th', table),	//匹配页面下所有的TH
 			dragAction	= thList.find('.drag-action');
@@ -147,7 +145,7 @@ const Drag = {
 					_dreamlandDIV.animate({
 						top	: _table.get(0).offsetTop + 'px',
 						left: _th.get(0).offsetLeft - _tableDiv.get(0).scrollLeft  + 'px'
-					}, _this.animateTime, function(){
+					}, Settings.animateTime, function(){
 						_tableDiv.css('position',_divPosition);
 						_th.removeClass('drag-ongoing');
 						_td.removeClass('drag-ongoing');

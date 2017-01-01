@@ -2,20 +2,19 @@
 * Base: 基础方法
 * */
 import $ from './jTool';
-import Settings from './Settings';
 const Base = {
 	/*
 	 @输出日志
 	 $.type: 输出分类[info,warn,error]
 	 */
 	outLog: function(msg, type){
-		if(!Settings.isDevelopMode && !type){
+		if(!type){
 			console.log('GridManager:', msg);
 		}
-		else if(!Settings.isDevelopMode && type === 'info'){
+		else if(type === 'info'){
 			console.info('GridManager Info: ', msg);
 		}
-		else if(!Settings.isDevelopMode && type === 'warn'){
+		else if(type === 'warn'){
 			console.warn('GridManager Warn: ', msg);
 		}
 		else if(type === 'error'){
@@ -23,7 +22,6 @@ const Base = {
 		}
 		return msg;
 	}
-
 	/*
 	 [对外公开方法]
 	 @显示Th及对应的TD项

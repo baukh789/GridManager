@@ -54,77 +54,79 @@
 
 	var _Adjust2 = _interopRequireDefault(_Adjust);
 
-	var _AjaxPage = __webpack_require__(7);
+	var _AjaxPage = __webpack_require__(6);
 
 	var _AjaxPage2 = _interopRequireDefault(_AjaxPage);
+
+	var _Base = __webpack_require__(5);
+
+	var _Base2 = _interopRequireDefault(_Base);
 
 	var _Cache = __webpack_require__(4);
 
 	var _Cache2 = _interopRequireDefault(_Cache);
 
-	var _Core = __webpack_require__(8);
+	var _Core = __webpack_require__(7);
 
 	var _Core2 = _interopRequireDefault(_Core);
 
-	var _Config = __webpack_require__(10);
+	var _Config = __webpack_require__(9);
 
 	var _Config2 = _interopRequireDefault(_Config);
 
-	var _Checkbox = __webpack_require__(11);
+	var _Checkbox = __webpack_require__(10);
 
 	var _Checkbox2 = _interopRequireDefault(_Checkbox);
 
-	var _Drag = __webpack_require__(19);
+	var _Drag = __webpack_require__(17);
 
 	var _Drag2 = _interopRequireDefault(_Drag);
 
-	var _Export = __webpack_require__(13);
+	var _Export = __webpack_require__(12);
 
 	var _Export2 = _interopRequireDefault(_Export);
 
-	var _I18n = __webpack_require__(12);
+	var _I18n = __webpack_require__(11);
 
 	var _I18n2 = _interopRequireDefault(_I18n);
 
-	var _Menu = __webpack_require__(18);
+	var _Menu = __webpack_require__(16);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Order = __webpack_require__(14);
+	var _Order = __webpack_require__(13);
 
 	var _Order2 = _interopRequireDefault(_Order);
 
-	var _Remind = __webpack_require__(15);
+	var _Remind = __webpack_require__(14);
 
 	var _Remind2 = _interopRequireDefault(_Remind);
 
-	var _Scroll = __webpack_require__(16);
+	var _Scroll = __webpack_require__(18);
 
 	var _Scroll2 = _interopRequireDefault(_Scroll);
 
-	var _Sort = __webpack_require__(17);
+	var _Sort = __webpack_require__(15);
 
 	var _Sort2 = _interopRequireDefault(_Sort);
 
-	var _Settings = __webpack_require__(6);
+	var _Settings = __webpack_require__(19);
 
 	var _Settings2 = _interopRequireDefault(_Settings);
 
-	var _DOM = __webpack_require__(9);
+	var _DOM = __webpack_require__(8);
 
 	var _DOM2 = _interopRequireDefault(_DOM);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/*
+	 *  GridManager: 构造函数
+	 * */
 	function GridManager() {
 		// 版本号
 		this.version = '2.1.2';
 	}
-	// Settings 域存在问题
-	// 考虑将Settings中的内容放到GridManager中,在原引用Settings的地方引用GridManager
-	/*
-	 *  GridManager: 构造函数
-	 * */
 	GridManager.prototype = {
 		/*
 	  * [对外公开方法]
@@ -140,24 +142,27 @@
 				arg.gridManagerName = jToolObj.attr('grid-manager'); //存储gridManagerName值
 			}
 			// 参数
-			// jTool.extend(Settings, arg);
-			_jTool2.default.extend(this, _Settings2.default, arg);
+			// Settings 域存在问题
+			// 考虑将Settings中的内容放到GridManager中,在原引用Settings的地方引用GridManager
+			_jTool2.default.extend(false, _Settings2.default, arg);
+			_this.updateSettings(jToolObj, _Settings2.default);
+			_jTool2.default.extend(true, this, arg);
 			//通过版本较验 清理缓存
-			_Cache2.default.cleanTableCacheForVersion(jToolObj, this.version);
-			if (this.gridManagerName.trim() === '') {
-				this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+			_this.cleanTableCacheForVersion(jToolObj, this.version);
+			if (_this.gridManagerName.trim() === '') {
+				_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 				return false;
 			}
 
 			if (jToolObj.hasClass('GridManager-ready') || jToolObj.hasClass('GridManager-loading')) {
-				this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
+				_this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
 				return false;
 			}
 			//根据本地缓存配置每页显示条数
-			if (this.supportAjaxPage) {
-				_AjaxPage2.default.configPageForCache.call(this, jToolObj);
+			if (_this.supportAjaxPage) {
+				_this.configPageForCache(jToolObj);
 			}
-			var query = _jTool2.default.extend({}, this.query, this.pageData);
+			var query = _jTool2.default.extend({}, _this.query, _this.pageData);
 			//增加渲染中标注
 			jToolObj.addClass('GridManager-loading');
 			_this.initTable(jToolObj);
@@ -165,7 +170,7 @@
 			//如果初始获取缓存失败，在渲染完成后首先存储一次数据
 			if (typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined') {
 				window.setTimeout(function () {
-					_Cache2.default.setToLocalStorage(jToolObj, true);
+					_this.setToLocalStorage(jToolObj, true);
 					jToolObj.removeAttr('grid-manager-cache-error');
 				}, 1000);
 			}
@@ -183,43 +188,44 @@
 			//渲染HTML，嵌入所需的事件源DOM
 			_DOM2.default.createDOM(table);
 			//获取本地缓存并对列表进行配置
-			if (!this.disableCache) {
-				_Cache2.default.configTheadForCache(table);
-				this.supportAdjust ? _Adjust2.default.resetAdjust.call(this, table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
+			if (!_this.disableCache) {
+				_this.configTheadForCache(table);
+				_this.supportAdjust ? _this.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
 			}
 			//绑定宽度调整事件
-			if (this.supportAdjust) {
-				_Adjust2.default.bindAdjustEvent.call(this, table);
+			if (_this.supportAdjust) {
+				_this.bindAdjustEvent(table);
 			}
 			//绑定拖拽换位事件
-			if (this.supportDrag) {
-				_Drag2.default.bindDragEvent.call(this, table);
+			if (_this.supportDrag) {
+				_this.bindDragEvent(table);
 			}
 			//绑定排序事件
-			if (this.supportSorting) {
-				_Sort2.default.bindSortingEvent.call(this, table);
+			if (_this.supportSorting) {
+				_this.bindSortingEvent(table);
 			}
 			//绑定表头提示事件
-			if (this.supportRemind) {
-				_Remind2.default.bindRemindEvent.call(this, table);
+			if (_this.supportRemind) {
+				_this.bindRemindEvent(table);
 			}
 			//绑定配置列表事件
-			if (this.supportConfig) {
-				_Config2.default.bindConfigEvent.call(this, table);
+			if (_this.supportConfig) {
+				_this.bindConfigEvent(table);
 			}
 			//绑定表头置顶功能
-			_Scroll2.default.bindScrollFunction.call(this, table);
+			_this.bindScrollFunction(table);
 			//绑定右键菜单事件
-			_Menu2.default.bindRightMenuEvent.call(this, table);
+			_this.bindRightMenuEvent(table);
 			//渲梁tbodyDOM
-			_Core2.default.__refreshGrid();
+			_this.__refreshGrid(table);
 			//将GridManager实例化对象存放于jTool data
-			_Cache2.default.setGridManagerToJTool.call(this, table);
+			_this.setGridManagerToJTool.call(_this, table);
 		}
 	};
 	// GM导入功能: 配置项
-	// jTool.extend(GridManager.prototype, Settings);
+	_jTool2.default.extend(true, GridManager.prototype, _Settings2.default);
 	// GM导入功能: 核心
+	_jTool2.default.extend(GridManager.prototype, _Base2.default);
 	_jTool2.default.extend(GridManager.prototype, _Core2.default);
 	// GM导入功能: 选择
 	_jTool2.default.extend(GridManager.prototype, _Checkbox2.default);
@@ -254,6 +260,7 @@
 	var publishList = ['init', //初始化
 	'setSort', //手动设置排序
 	'get', //通过jTool实例获取GridManager
+	'getSettings', //获取配置参数
 	'getCheckedTr', //获取当前选中的行
 	'showTh', //显示Th及对应的TD项
 	'hideTh', //隐藏Th及对应的TD项
@@ -367,24 +374,24 @@
 			jQuery.fn.extend({
 				GM: function GM() {
 					if (arguments.length === 0) {
-						this.get(0).GM();
+						return this.get(0).GM();
 					} else if (arguments.length === 1) {
-						this.get(0).GM(arguments[0]);
+						return this.get(0).GM(arguments[0]);
 					} else if (arguments.length === 2) {
-						this.get(0).GM(arguments[0], arguments[1]);
+						return this.get(0).GM(arguments[0], arguments[1]);
 					} else if (arguments.length === 3) {
-						this.get(0).GM(arguments[0], arguments[1], arguments[2]);
+						return this.get(0).GM(arguments[0], arguments[1], arguments[2]);
 					}
 				},
 				GridManager: function GridManager() {
 					if (arguments.length === 0) {
-						this.get(0).GridManager();
+						return this.get(0).GridManager();
 					} else if (arguments.length === 1) {
-						this.get(0).GridManager(arguments[0]);
+						return this.get(0).GridManager(arguments[0]);
 					} else if (arguments.length === 2) {
-						this.get(0).GridManager(arguments[0], arguments[1]);
+						return this.get(0).GridManager(arguments[0], arguments[1]);
 					} else if (arguments.length === 3) {
-						this.get(0).GridManager(arguments[0], arguments[1], arguments[2]);
+						return this.get(0).GridManager(arguments[0], arguments[1], arguments[2]);
 					}
 				}
 			});
@@ -416,7 +423,7 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var require;!function t(e,n,o){function i(s,u){if(!n[s]){if(!e[s]){var a="function"==typeof require&&require;if(!u&&a)return require(s,!0);if(r)return r(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var l=n[s]={exports:{}};e[s][0].call(l.exports,function(t){var n=e[s][1][t];return i(n?n:t)},l,l.exports,t,e,n,o)}return n[s].exports}for(var r="function"==typeof require&&require,s=0;s<o.length;s++)i(o[s]);return i}({1:[function(t,e){var n=t("./utilities"),o=t("../src/Css"),i={show:function(){return n.each(this.DOMList,function(t,e){var n="",o=["SPAN","A","FONT","I"];if(-1!==e.nodeName.indexOf(o))return e.style.display="inline-block",this;switch(e.nodeName){case"TABLE":n="table";break;case"THEAD":n="table-header-group";break;case"TBODY":n="table-row-group";break;case"TR":n="table-row";break;case"TH":n="table-cell";break;case"TD":n="table-cell";break;default:n="block"}e.style.display=n}),this},hide:function(){return n.each(this.DOMList,function(t,e){e.style.display="none"}),this},animate:function(t,e,i){var r=this,s="",u="",a=r.DOMList[0];if(t){"undefined"===n.type(i)&&"function"===n.type(e)&&(i=e,e=0),"undefined"===n.type(i)&&(i=n.noop),"undefined"===n.type(e)&&(e=0),n.each(t,function(t,e){t=n.toHyphen(t),s+=t+":"+n.getStyle(a,t)+";",u+=t+":"+e+";"});var c="@keyframes jToolAnimate {from {"+s+"}to {"+u+"}}",l=document.createElement("style");l.className="jTool-animate-style",l.type="text/css",document.head.appendChild(l),l.textContent=l.textContent+c,a.style.animation="jToolAnimate "+e/1e3+"s ease-in-out forwards",window.setTimeout(function(){o.css.call(r,t),a.style.animation="",l.remove(),i()},e)}}};e.exports=i},{"../src/Css":3,"./utilities":13}],2:[function(t,e){var n=t("./utilities"),o={addClass:function(t){return this.changeClass(t,"add")},removeClass:function(t){return this.changeClass(t,"remove")},toggleClass:function(t){return this.changeClass(t,"toggle")},hasClass:function(t){return[].some.call(this.DOMList,function(e){return e.classList.contains(t)})},parseClassName:function(t){return t.indexOf(" ")?t.split(" "):[t]},changeClass:function(t,e){var o=this.parseClassName(t);return n.each(this.DOMList,function(t,i){n.each(o,function(t,n){i.classList[e](n)})}),this}};e.exports=o},{"./utilities":13}],3:[function(t,e){var n=t("./utilities"),o={css:function(t,e){function o(t,e){"number"===n.type(e)&&(e=e.toString()),-1!==r.indexOf(t)&&-1===e.indexOf("px")&&(e+="px"),n.each(i.DOMList,function(n,o){o.style[t]=e})}var i=this,r=["width","height","min-width","max-width","min-height","min-height","top","left","right","bottom","padding-top","padding-right","padding-bottom","padding-left","margin-top","margin-right","margin-bottom","margin-left","border-width","border-top-width","border-left-width","border-right-width","border-bottom-width"];if("string"===n.type(t)&&!e&&0!==e)return-1!==r.indexOf(t)?parseInt(n.getStyle(this.DOMList[0],t),10):n.getStyle(this.DOMList[0],t);if("object"===n.type(t)){var s=t;for(var u in s)o(u,s[u])}else o(t,e);return this},width:function(t){return this.css("width",t)},height:function(t){return this.css("height",t)}};e.exports=o},{"./utilities":13}],4:[function(t,e){var n=t("./utilities"),o={dataKey:"jTool"+n.version,data:function(t,e){var o=this,i={};if("undefined"==typeof t&&"undefined"==typeof e)return o.DOMList[0][o.dataKey];if("undefined"!=typeof e){var r=n.type(e);return("string"===r||"number"===r)&&o.attr(t,e),n.each(o.DOMList,function(n,r){i=r[o.dataKey]||{},i[t]=e,r[o.dataKey]=i}),this}return i=o.DOMList[0][o.dataKey]||{},this.transformValue(i[t]||o.attr(t))},removeData:function(t){var e,o=this;"undefined"!=typeof t&&(n.each(o.DOMList,function(n,i){e=i[o.dataKey]||{},delete e[t]}),o.removeAttr(t))},attr:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o.setAttribute(t,e)}),this):this.transformValue(this.DOMList[0].getAttribute(t))},removeAttr:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){n.removeAttribute(t)})},prop:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o[t]=e}),this):this.transformValue(this.DOMList[0][t])},removeProp:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){delete n[t]})},val:function(t){return this.prop("value",t)||""},transformValue:function(t){return"null"===n.type(t)&&(t=void 0),t}};e.exports=o},{"./utilities":13}],5:[function(t,e){var n=t("./utilities"),o=t("./Sizzle"),i={append:function(t){return this.html(t,"append")},prepend:function(t){return this.html(t,"prepend")},before:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;return n.insertBefore(t,e),this},after:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;n.lastChild==e?n.appendChild(t):n.insertBefore(t,e.nextSibling)},text:function(t){return"undefined"!=typeof t?(n.each(this.DOMList,function(e,n){n.textContent=t}),this):this.DOMList[0].textContent},html:function(t,e){if("undefined"==typeof t&&"undefined"==typeof e)return this.DOMList[0].innerHTML;var o=this,i=n.type(t);t.jTool?t=t.DOMList:"string"===i?t=n.createDOM(t||""):"element"===i&&(t=[t]);var r;return n.each(o.DOMList,function(o,i){e?"prepend"===e&&(r=i.firstChild):i.innerHTML="",n.each(t,function(t,e){e=e.cloneNode(!0),e.nodeType||(e=document.createTextNode(e)),r?i.insertBefore(e,r):i.appendChild(e),i.normalize()})}),this},wrap:function(t){var e,o="";return n.each(this.DOMList,function(n,i){o=i,e=i.parentNode,i.outerHTML=t,e.querySelector(":empty").appendChild(o)}),this},closest:function(t){function e(){return n&&0!==i.length&&1===n.nodeType?void(-1===[].indexOf.call(i,n)&&(n=n.parentNode,e())):void(n=null)}var n=this.DOMList[0].parentNode;if("undefined"==typeof t)return new o(n);var i=document.querySelectorAll(t);return e(),new o(n)},parent:function(){return this.closest()},clone:function(t){return new o(this.DOMList[0].cloneNode(t||!1))},remove:function(){n.each(this.DOMList,function(t,e){e.remove()})}};e.exports=i},{"./Sizzle":9,"./utilities":13}],6:[function(t,e){var n=t("./Sizzle"),o={get:function(t){return this.DOMList[t]},eq:function(t){return new n(this.DOMList[t])},find:function(t){return new n(t,this)},index:function(t){var e=this.DOMList[0];return t?t.jTool&&(t=t.DOMList):t=e.parentNode.childNodes,t?[].indexOf.call(t,e):-1}};e.exports=o},{"./Sizzle":9}],7:[function(t,e){var n=t("./utilities"),o={on:function(t,e,n,o){return this.addEvent(this.getEventObject(t,e,n,o))},off:function(t,e){return this.removeEvent(this.getEventObject(t,e))},bind:function(t,e,n){return this.on(t,void 0,e,n)},unbind:function(t){return this.removeEvent(this.getEventObject(t))},trigger:function(t){return n.each(this.DOMList,function(e,o){try{if(o.jToolEvent&&o.jToolEvent[t].length>0){var i=new Event(t);o.dispatchEvent(i)}else o[t]()}catch(r){n.error("事件:["+t+"]未能正确执行, 请确定方法已经绑定成功")}}),this},getEventObject:function(t,e,o,i){if("function"==typeof e&&(i=o||!1,o=e,e=void 0),!t)return n.error("事件绑定失败,原因: 参数中缺失事件类型"),this;if(e&&"element"===n.type(this.DOMList[0])||(e=""),""!==e){var r=o;o=function(t){-1!==[].indexOf.call(this.querySelectorAll(e),t.target)&&r.apply(t.target,arguments)}}var s,u,a=t.split(" "),c=[];return n.each(a,function(t,r){return""===r.trim()?!0:(s=r.split("."),u={eventName:r+e,type:s[0],querySelector:e,callback:o||n.noop,useCapture:i||!1,nameScope:s[1]||void 0},void c.push(u))}),c},addEvent:function(t){var e=this;return n.each(t,function(t,o){n.each(e.DOMList,function(t,e){e.jToolEvent=e.jToolEvent||{},e.jToolEvent[o.eventName]=e.jToolEvent[o.eventName]||[],e.jToolEvent[o.eventName].push(o),e.addEventListener(o.type,o.callback,o.useCapture)})}),e},removeEvent:function(t){var e,o=this;return n.each(t,function(t,i){n.each(o.DOMList,function(t,o){o.jToolEvent&&(e=o.jToolEvent[i.eventName],e&&(n.each(e,function(t,e){o.removeEventListener(e.type,e.callback)}),o.jToolEvent[i.eventName]=void 0))})}),o}};e.exports=o},{"./utilities":13}],8:[function(t,e){var n=t("./utilities"),o={offset:function(){function t(i,r){if(1===i.nodeType){if(e=n.getStyle(i,"position"),"undefined"==typeof r&&"static"===e)return void t(i.parentNode);o.top=i.offsetTop+o.top-i.scrollTop,o.left=i.offsetLeft+o.left-i.scrollLeft,"fixed"!==e&&t(i.parentNode)}}var e,o={top:0,left:0};return t(this.DOMList[0],!0),o},scrollTop:function(t){return this.scrollFN(t,"top")},scrollLeft:function(t){return this.scrollFN(t,"left")},scrollFN:function(t,e){var n=this.DOMList[0];return t||0===t?(this.setScrollFN(n,e,t),this):this.getScrollFN(n,e)},getScrollFN:function(t,e){return n.isWindow(t)?"top"===e?t.pageYOffset:t.pageXOffset:9===t.nodeType?"top"===e?t.body.scrollTop:t.body.scrollLeft:1===t.nodeType?"top"===e?t.scrollTop:t.scrollLeft:void 0},setScrollFN:function(t,e,o){return n.isWindow(t)?"top"===e?t.document.body.scrollTop=o:t.document.body.scrollLeft=o:9===t.nodeType?"top"===e?t.body.scrollTop=o:t.body.scrollLeft=o:1===t.nodeType?"top"===e?t.scrollTop=o:t.scrollLeft=o:void 0}};e.exports=o},{"./utilities":13}],9:[function(t,e){var n=t("./utilities"),o=function(t,e){var o;return t?n.isWindow(t)?(o=[t],e=void 0):t===document?(o=[document],e=void 0):t instanceof HTMLElement?(o=[t],e=void 0):t instanceof NodeList||t instanceof Array?(o=t,e=void 0):t.jTool?(o=t.DOMList,e=void 0):/<.+>/.test(t)?(o=n.createDOM(t),e=void 0):(e?e="string"==typeof e?document.querySelectorAll(e):e instanceof HTMLElement?[e]:e instanceof NodeList?e:e.jTool?e.DOMList:void 0:o=document.querySelectorAll(t),e&&(o=[],n.each(e,function(e,i){n.each(i.querySelectorAll(t),function(t,e){o.push(e)})}))):t=null,o&&0!==o.length||(o=void 0),this.jTool=!0,this.DOMList=o,this.length=this.DOMList?this.DOMList.length:0,this.querySelector=t,this};e.exports=o},{"./utilities":13}],10:[function(t,e){function n(t){var e={url:null,type:"GET",data:null,headers:{},async:!0,beforeSend:r.noop,complete:r.noop,success:r.noop,error:r.noop};if(t=i(e,t),!t.url)return void r.error("jTool ajax: url不能为空");var n=new XMLHttpRequest,o="";"object"===r.type(t.data)?r.each(t.data,function(t,e){""!==o&&(o+="&"),o+=t+"="+e}):o=t.data,"GET"===t.type&&o&&(t.url=t.url+(-1===t.url.indexOf("?")?"?":"&")+o,o=null),n.open(t.type,t.url,t.async);for(var s in t.headers)n.setRequestHeader(s,t.headers[s]);t.beforeSend(n),n.onload=function(){t.complete(n,n.status)},n.onreadystatechange=function(){4===n.readyState&&(n.status>=200&&n.status<300||304===n.status?t.success(n.response,n.status):t.error(n,n.status,n.statusText))},n.send(o)}function o(t,e,o){n({url:t,type:"POST",data:e,success:o})}var i=t("./extend"),r=t("./utilities");e.exports={ajax:n,post:o}},{"./extend":11,"./utilities":13}],11:[function(t,e){function n(){if(0===arguments.length)return{};var t,e=1,n=arguments[0];for(1===arguments.length&&(n=this,e=0),"boolean"==typeof n&&(n=arguments[1]||{});e<arguments.length;e++){t=arguments[e]||{};for(var o in t)t.hasOwnProperty(o)&&(n[o]=t[o])}return n}e.exports=n},{}],12:[function(t,e){var n=t("./Sizzle"),o=t("./extend"),i=t("./utilities"),r=t("./ajax"),s=t("./Event"),u=t("./Css"),a=t("./Class"),c=t("./Document"),l=t("./Offset"),d=t("./Element"),f=t("./Animate"),p=t("./Data"),h=function(t,e){return new n(t,e)};n.prototype=h.prototype={},h.extend=h.prototype.extend=o,h.extend(i),h.extend(r),h.prototype.extend(s),h.prototype.extend(u),h.prototype.extend(a),h.prototype.extend(c),h.prototype.extend(l),h.prototype.extend(d),h.prototype.extend(f),h.prototype.extend(p),"undefined"!=typeof window.$&&(window._$=$),window.jTool=window.$=h,e.exports=h},{"./Animate":1,"./Class":2,"./Css":3,"./Data":4,"./Document":5,"./Element":6,"./Event":7,"./Offset":8,"./Sizzle":9,"./ajax":10,"./extend":11,"./utilities":13}],13:[function(t,e){function n(){return-1==navigator.userAgent.indexOf("Chrome")?!1:!0}function o(t){return null!==t&&t===t.window}function i(t){return Array.isArray(t)}function r(t){return m[y.call(t)]||(t instanceof Element?"element":"")}function s(){}function u(t,e){t&&t.jTool&&(t=t.DOMList);var n=r(t);if("array"===n||"nodeList"===n||"arguments"===n)[].every.call(t,function(t,n){o(t)?s():t.jTool?t=t.get(0):s();return e.call(t,n,t)===!1?!1:!0});else if("object"===n)for(var i in t)if(e.call(t[i],i,t[i])===!1)break}function a(t){return t.trim()}function c(t){throw new Error("[jTool Error: "+t+"]")}function l(t){var e=!0;for(var n in t)t.hasOwnProperty(n)&&(e=!1);return e}function d(t,e){return e?window.getComputedStyle(t)[e]:window.getComputedStyle(t)}function f(t){var e=["px","vem","em","%"],n="";return"number"==typeof t?n:(u(e,function(e,o){return-1!==t.indexOf(o)?(n=o,!1):void 0}),n)}function p(t){return t.replace(/-\w/g,function(t){return t.split("-")[1].toUpperCase()})}function h(t){return t.replace(/([A-Z])/g,"-$1").toLowerCase()}function v(t){var e=document.querySelector("#jTool-create-dom");if(!e||0===e.length){var n=document.createElement("table");n.id="jTool-create-dom",n.style.display="none",document.body.appendChild(n),e=document.querySelector("#jTool-create-dom")}e.innerHTML=t||"";var o=e.childNodes;return 1!=o.length||/<tbody|<TBODY/.test(t)||"TBODY"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<thead|<THEAD/.test(t)||"THEAD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<tr|<TR/.test(t)||"TR"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<td|<TD/.test(t)||"TD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<th|<TH/.test(t)||"TH"!==o[0].nodeName||(o=o[0].childNodes),e.remove(),o}var y=Object.prototype.toString,m={"[object String]":"string","[object Boolean]":"boolean","[object Undefined]":"undefined","[object Number]":"number","[object Object]":"object","[object Error]":"error","[object Function]":"function","[object Date]":"date","[object Array]":"array","[object RegExp]":"regexp","[object Null]":"null","[object NodeList]":"nodeList","[object Arguments]":"arguments","[object Window]":"window","[object HTMLDocument]":"document"};e.exports={isWindow:o,isChrome:n,isArray:i,noop:s,type:r,toHyphen:h,toHump:p,getStyleUnit:f,getStyle:d,isEmptyObject:l,trim:a,error:c,each:u,createDOM:v,version:"1.1.0"}},{}]},{},[12]);
+	var require;var require;!function t(e,n,o){function i(s,u){if(!n[s]){if(!e[s]){var a="function"==typeof require&&require;if(!u&&a)return require(s,!0);if(r)return r(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var l=n[s]={exports:{}};e[s][0].call(l.exports,function(t){var n=e[s][1][t];return i(n?n:t)},l,l.exports,t,e,n,o)}return n[s].exports}for(var r="function"==typeof require&&require,s=0;s<o.length;s++)i(o[s]);return i}({1:[function(t,e){var n=t("./utilities"),o=t("../src/Css"),i={show:function(){return n.each(this.DOMList,function(t,e){var n="",o=["SPAN","A","FONT","I"];if(-1!==e.nodeName.indexOf(o))return e.style.display="inline-block",this;switch(e.nodeName){case"TABLE":n="table";break;case"THEAD":n="table-header-group";break;case"TBODY":n="table-row-group";break;case"TR":n="table-row";break;case"TH":n="table-cell";break;case"TD":n="table-cell";break;default:n="block"}e.style.display=n}),this},hide:function(){return n.each(this.DOMList,function(t,e){e.style.display="none"}),this},animate:function(t,e,i){var r=this,s="",u="",a=r.DOMList[0];if(t){"undefined"===n.type(i)&&"function"===n.type(e)&&(i=e,e=0),"undefined"===n.type(i)&&(i=n.noop),"undefined"===n.type(e)&&(e=0),n.each(t,function(t,e){t=n.toHyphen(t),s+=t+":"+n.getStyle(a,t)+";",u+=t+":"+e+";"});var c="@keyframes jToolAnimate {from {"+s+"}to {"+u+"}}",l=document.createElement("style");l.className="jTool-animate-style",l.type="text/css",document.head.appendChild(l),l.textContent=l.textContent+c,a.style.animation="jToolAnimate "+e/1e3+"s ease-in-out forwards",window.setTimeout(function(){o.css.call(r,t),a.style.animation="",l.remove(),i()},e)}}};e.exports=i},{"../src/Css":3,"./utilities":13}],2:[function(t,e){var n=t("./utilities"),o={addClass:function(t){return this.changeClass(t,"add")},removeClass:function(t){return this.changeClass(t,"remove")},toggleClass:function(t){return this.changeClass(t,"toggle")},hasClass:function(t){return[].some.call(this.DOMList,function(e){return e.classList.contains(t)})},parseClassName:function(t){return t.indexOf(" ")?t.split(" "):[t]},changeClass:function(t,e){var o=this.parseClassName(t);return n.each(this.DOMList,function(t,i){n.each(o,function(t,n){i.classList[e](n)})}),this}};e.exports=o},{"./utilities":13}],3:[function(t,e){var n=t("./utilities"),o={css:function(t,e){function o(t,e){"number"===n.type(e)&&(e=e.toString()),-1!==r.indexOf(t)&&-1===e.indexOf("px")&&(e+="px"),n.each(i.DOMList,function(n,o){o.style[t]=e})}var i=this,r=["width","height","min-width","max-width","min-height","min-height","top","left","right","bottom","padding-top","padding-right","padding-bottom","padding-left","margin-top","margin-right","margin-bottom","margin-left","border-width","border-top-width","border-left-width","border-right-width","border-bottom-width"];if("string"===n.type(t)&&!e&&0!==e)return-1!==r.indexOf(t)?parseInt(n.getStyle(this.DOMList[0],t),10):n.getStyle(this.DOMList[0],t);if("object"===n.type(t)){var s=t;for(var u in s)o(u,s[u])}else o(t,e);return this},width:function(t){return this.css("width",t)},height:function(t){return this.css("height",t)}};e.exports=o},{"./utilities":13}],4:[function(t,e){var n=t("./utilities"),o={dataKey:"jTool"+n.version,data:function(t,e){var o=this,i={};if("undefined"==typeof t&&"undefined"==typeof e)return o.DOMList[0][o.dataKey];if("undefined"!=typeof e){var r=n.type(e);return("string"===r||"number"===r)&&o.attr(t,e),n.each(o.DOMList,function(n,r){i=r[o.dataKey]||{},i[t]=e,r[o.dataKey]=i}),this}return i=o.DOMList[0][o.dataKey]||{},this.transformValue(i[t]||o.attr(t))},removeData:function(t){var e,o=this;"undefined"!=typeof t&&(n.each(o.DOMList,function(n,i){e=i[o.dataKey]||{},delete e[t]}),o.removeAttr(t))},attr:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o.setAttribute(t,e)}),this):this.transformValue(this.DOMList[0].getAttribute(t))},removeAttr:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){n.removeAttribute(t)})},prop:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o[t]=e}),this):this.transformValue(this.DOMList[0][t])},removeProp:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){delete n[t]})},val:function(t){return this.prop("value",t)||""},transformValue:function(t){return"null"===n.type(t)&&(t=void 0),t}};e.exports=o},{"./utilities":13}],5:[function(t,e){var n=t("./utilities"),o=t("./Sizzle"),i={append:function(t){return this.html(t,"append")},prepend:function(t){return this.html(t,"prepend")},before:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;return n.insertBefore(t,e),this},after:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;n.lastChild==e?n.appendChild(t):n.insertBefore(t,e.nextSibling)},text:function(t){return"undefined"!=typeof t?(n.each(this.DOMList,function(e,n){n.textContent=t}),this):this.DOMList[0].textContent},html:function(t,e){if("undefined"==typeof t&&"undefined"==typeof e)return this.DOMList[0].innerHTML;var o=this,i=n.type(t);t.jTool?t=t.DOMList:"string"===i?t=n.createDOM(t||""):"element"===i&&(t=[t]);var r;return n.each(o.DOMList,function(o,i){e?"prepend"===e&&(r=i.firstChild):i.innerHTML="",n.each(t,function(t,e){e=e.cloneNode(!0),e.nodeType||(e=document.createTextNode(e)),r?i.insertBefore(e,r):i.appendChild(e),i.normalize()})}),this},wrap:function(t){var e,o="";return n.each(this.DOMList,function(n,i){o=i,e=i.parentNode,i.outerHTML=t,e.querySelector(":empty").appendChild(o)}),this},closest:function(t){function e(){return n&&0!==i.length&&1===n.nodeType?void(-1===[].indexOf.call(i,n)&&(n=n.parentNode,e())):void(n=null)}var n=this.DOMList[0].parentNode;if("undefined"==typeof t)return new o(n);var i=document.querySelectorAll(t);return e(),new o(n)},parent:function(){return this.closest()},clone:function(t){return new o(this.DOMList[0].cloneNode(t||!1))},remove:function(){n.each(this.DOMList,function(t,e){e.remove()})}};e.exports=i},{"./Sizzle":9,"./utilities":13}],6:[function(t,e){var n=t("./Sizzle"),o={get:function(t){return this.DOMList[t]},eq:function(t){return new n(this.DOMList[t])},find:function(t){return new n(t,this)},index:function(t){var e=this.DOMList[0];return t?t.jTool&&(t=t.DOMList):t=e.parentNode.childNodes,t?[].indexOf.call(t,e):-1}};e.exports=o},{"./Sizzle":9}],7:[function(t,e){var n=t("./utilities"),o={on:function(t,e,n,o){return this.addEvent(this.getEventObject(t,e,n,o))},off:function(t,e){return this.removeEvent(this.getEventObject(t,e))},bind:function(t,e,n){return this.on(t,void 0,e,n)},unbind:function(t){return this.removeEvent(this.getEventObject(t))},trigger:function(t){return n.each(this.DOMList,function(e,o){try{if(o.jToolEvent&&o.jToolEvent[t].length>0){var i=new Event(t);o.dispatchEvent(i)}else o[t]()}catch(r){n.error("事件:["+t+"]未能正确执行, 请确定方法已经绑定成功")}}),this},getEventObject:function(t,e,o,i){if("function"==typeof e&&(i=o||!1,o=e,e=void 0),!t)return n.error("事件绑定失败,原因: 参数中缺失事件类型"),this;if(e&&"element"===n.type(this.DOMList[0])||(e=""),""!==e){var r=o;o=function(t){-1!==[].indexOf.call(this.querySelectorAll(e),t.target)&&r.apply(t.target,arguments)}}var s,u,a=t.split(" "),c=[];return n.each(a,function(t,r){return""===r.trim()?!0:(s=r.split("."),u={eventName:r+e,type:s[0],querySelector:e,callback:o||n.noop,useCapture:i||!1,nameScope:s[1]||void 0},void c.push(u))}),c},addEvent:function(t){var e=this;return n.each(t,function(t,o){n.each(e.DOMList,function(t,e){e.jToolEvent=e.jToolEvent||{},e.jToolEvent[o.eventName]=e.jToolEvent[o.eventName]||[],e.jToolEvent[o.eventName].push(o),e.addEventListener(o.type,o.callback,o.useCapture)})}),e},removeEvent:function(t){var e,o=this;return n.each(t,function(t,i){n.each(o.DOMList,function(t,o){o.jToolEvent&&(e=o.jToolEvent[i.eventName],e&&(n.each(e,function(t,e){o.removeEventListener(e.type,e.callback)}),o.jToolEvent[i.eventName]=void 0))})}),o}};e.exports=o},{"./utilities":13}],8:[function(t,e){var n=t("./utilities"),o={offset:function(){function t(i,r){if(1===i.nodeType){if(e=n.getStyle(i,"position"),"undefined"==typeof r&&"static"===e)return void t(i.parentNode);o.top=i.offsetTop+o.top-i.scrollTop,o.left=i.offsetLeft+o.left-i.scrollLeft,"fixed"!==e&&t(i.parentNode)}}var e,o={top:0,left:0};return t(this.DOMList[0],!0),o},scrollTop:function(t){return this.scrollFN(t,"top")},scrollLeft:function(t){return this.scrollFN(t,"left")},scrollFN:function(t,e){var n=this.DOMList[0];return t||0===t?(this.setScrollFN(n,e,t),this):this.getScrollFN(n,e)},getScrollFN:function(t,e){return n.isWindow(t)?"top"===e?t.pageYOffset:t.pageXOffset:9===t.nodeType?"top"===e?t.body.scrollTop:t.body.scrollLeft:1===t.nodeType?"top"===e?t.scrollTop:t.scrollLeft:void 0},setScrollFN:function(t,e,o){return n.isWindow(t)?"top"===e?t.document.body.scrollTop=o:t.document.body.scrollLeft=o:9===t.nodeType?"top"===e?t.body.scrollTop=o:t.body.scrollLeft=o:1===t.nodeType?"top"===e?t.scrollTop=o:t.scrollLeft=o:void 0}};e.exports=o},{"./utilities":13}],9:[function(t,e){var n=t("./utilities"),o=function(t,e){var o;return t?n.isWindow(t)?(o=[t],e=void 0):t===document?(o=[document],e=void 0):t instanceof HTMLElement?(o=[t],e=void 0):t instanceof NodeList||t instanceof Array?(o=t,e=void 0):t.jTool?(o=t.DOMList,e=void 0):/<.+>/.test(t)?(o=n.createDOM(t),e=void 0):(e?e="string"==typeof e?document.querySelectorAll(e):e instanceof HTMLElement?[e]:e instanceof NodeList?e:e.jTool?e.DOMList:void 0:o=document.querySelectorAll(t),e&&(o=[],n.each(e,function(e,i){n.each(i.querySelectorAll(t),function(t,e){o.push(e)})}))):t=null,o&&0!==o.length||(o=void 0),this.jTool=!0,this.DOMList=o,this.length=this.DOMList?this.DOMList.length:0,this.querySelector=t,this};e.exports=o},{"./utilities":13}],10:[function(t,e){function n(t){var e={url:null,type:"GET",data:null,headers:{},async:!0,beforeSend:r.noop,complete:r.noop,success:r.noop,error:r.noop};if(t=i(e,t),!t.url)return void r.error("jTool ajax: url不能为空");var n=new XMLHttpRequest,o="";"object"===r.type(t.data)?r.each(t.data,function(t,e){""!==o&&(o+="&"),o+=t+"="+e}):o=t.data,"GET"===t.type&&o&&(t.url=t.url+(-1===t.url.indexOf("?")?"?":"&")+o,o=null),n.open(t.type,t.url,t.async);for(var s in t.headers)n.setRequestHeader(s,t.headers[s]);t.beforeSend(n),n.onload=function(){t.complete(n,n.status)},n.onreadystatechange=function(){4===n.readyState&&(n.status>=200&&n.status<300||304===n.status?t.success(n.response,n.status):t.error(n,n.status,n.statusText))},n.send(o)}function o(t,e,o){n({url:t,type:"POST",data:e,success:o})}var i=t("./extend"),r=t("./utilities");e.exports={ajax:n,post:o}},{"./extend":11,"./utilities":13}],11:[function(t,e){function n(){function t(e,i){for(var r in e)e.hasOwnProperty(r)&&(n&&"object"===o.type(e[r])&&"object"===o.type(i[r])?t(e[r],i[r]):i[r]=e[r])}if(0===arguments.length)return{};var e,n=!1,i=1,r=arguments[0];for(1===arguments.length&&"object"==typeof arguments[0]?(r=this,i=0):2===arguments.length&&"boolean"==typeof arguments[0]?(n=arguments[0],r=this,i=1):arguments.length>2&&"boolean"==typeof arguments[0]&&(n=arguments[0],r=arguments[1]||{},i=2);i<arguments.length;i++)e=arguments[i]||{},t(e,r);return r}var o=t("./utilities");e.exports=n},{"./utilities":13}],12:[function(t,e){var n=t("./Sizzle"),o=t("./extend"),i=t("./utilities"),r=t("./ajax"),s=t("./Event"),u=t("./Css"),a=t("./Class"),c=t("./Document"),l=t("./Offset"),d=t("./Element"),f=t("./Animate"),p=t("./Data"),h=function(t,e){return new n(t,e)};n.prototype=h.prototype={},h.extend=h.prototype.extend=o,h.extend(i),h.extend(r),h.prototype.extend(s),h.prototype.extend(u),h.prototype.extend(a),h.prototype.extend(c),h.prototype.extend(l),h.prototype.extend(d),h.prototype.extend(f),h.prototype.extend(p),"undefined"!=typeof window.$&&(window._$=$),window.jTool=window.$=h,e.exports=h},{"./Animate":1,"./Class":2,"./Css":3,"./Data":4,"./Document":5,"./Element":6,"./Event":7,"./Offset":8,"./Sizzle":9,"./ajax":10,"./extend":11,"./utilities":13}],13:[function(t,e){function n(){return-1==navigator.userAgent.indexOf("Chrome")?!1:!0}function o(t){return null!==t&&t===t.window}function i(t){return Array.isArray(t)}function r(t){return v[m.call(t)]||(t instanceof Element?"element":"")}function s(){}function u(t,e){t&&t.jTool&&(t=t.DOMList);var n=r(t);if("array"===n||"nodeList"===n||"arguments"===n)[].every.call(t,function(t,n){o(t)?s():t.jTool?t=t.get(0):s();return e.call(t,n,t)===!1?!1:!0});else if("object"===n)for(var i in t)if(e.call(t[i],i,t[i])===!1)break}function a(t){return t.trim()}function c(t){throw new Error("[jTool Error: "+t+"]")}function l(t){var e=!0;for(var n in t)t.hasOwnProperty(n)&&(e=!1);return e}function d(t,e){return e?window.getComputedStyle(t)[e]:window.getComputedStyle(t)}function f(t){var e=["px","vem","em","%"],n="";return"number"==typeof t?n:(u(e,function(e,o){return-1!==t.indexOf(o)?(n=o,!1):void 0}),n)}function p(t){return t.replace(/-\w/g,function(t){return t.split("-")[1].toUpperCase()})}function h(t){return t.replace(/([A-Z])/g,"-$1").toLowerCase()}function y(t){var e=document.querySelector("#jTool-create-dom");if(!e||0===e.length){var n=document.createElement("table");n.id="jTool-create-dom",n.style.display="none",document.body.appendChild(n),e=document.querySelector("#jTool-create-dom")}e.innerHTML=t||"";var o=e.childNodes;return 1!=o.length||/<tbody|<TBODY/.test(t)||"TBODY"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<thead|<THEAD/.test(t)||"THEAD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<tr|<TR/.test(t)||"TR"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<td|<TD/.test(t)||"TD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<th|<TH/.test(t)||"TH"!==o[0].nodeName||(o=o[0].childNodes),e.remove(),o}var m=Object.prototype.toString,v={"[object String]":"string","[object Boolean]":"boolean","[object Undefined]":"undefined","[object Number]":"number","[object Object]":"object","[object Error]":"error","[object Function]":"function","[object Date]":"date","[object Array]":"array","[object RegExp]":"regexp","[object Null]":"null","[object NodeList]":"nodeList","[object Arguments]":"arguments","[object Window]":"window","[object HTMLDocument]":"document"};e.exports={isWindow:o,isChrome:n,isArray:i,noop:s,type:r,toHyphen:h,toHump:p,getStyleUnit:f,getStyle:d,isEmptyObject:l,trim:a,error:c,each:u,createDOM:y,version:"1.1.0"}},{}]},{},[12]);
 
 /***/ },
 /* 3 */
@@ -440,15 +447,8 @@
 
 	var _Base2 = _interopRequireDefault(_Base);
 
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-	 * Adjust: 宽度调整
-	 * */
 	var Adjust = {
 		html: function html() {
 			var html = '<span class="adjust-action"></span>';
@@ -459,6 +459,7 @@
 	  $.table: table [jTool object]
 	  */
 		, bindAdjustEvent: function bindAdjustEvent(table) {
+			var Settings = _Cache2.default.getSettings(table);
 			var thList = (0, _jTool2.default)('thead th', table); //table下的TH
 			//监听鼠标调整列宽度
 			thList.off('mousedown', '.adjust-action');
@@ -482,7 +483,7 @@
 				    //事件源同层级倒数第二个th
 				_td = _Base2.default.getRowTd(_th); //存储与事件源同列的所有td
 				// 宽度调整触发回调事件
-				_Settings2.default.adjustBefore(event);
+				Settings.adjustBefore(event);
 				//重置width 防止auto现象
 				_jTool2.default.each(_allTh, function (i, v) {
 					if (v.style.width == 'auto' || v.style.width == '') {
@@ -527,7 +528,7 @@
 					if (_th.hasClass('adjust-selected')) {
 						//其它操作也在table以该事件进行绑定,所以通过class进行区别
 						// 宽度调整成功回调事件
-						_Settings2.default.adjustAfter(event);
+						Settings.adjustAfter(event);
 					}
 					_th.removeClass('adjust-selected');
 					_td.removeClass('adjust-selected');
@@ -551,7 +552,9 @@
 			_adjustAction.show();
 			_adjustAction.eq(_adjustAction.length - 1).hide();
 		}
-	};
+	}; /*
+	    * Adjust: 宽度调整
+	    * */
 	exports.default = Adjust;
 
 /***/ },
@@ -572,19 +575,28 @@
 
 	var _Base2 = _interopRequireDefault(_Base);
 
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/*
+	* @Cache: 本地缓存
+	* */
 	var Cache = {
 		/*
 	 * @缓存数据
 	 * 用于存储当前渲染表格的数据
 	 * 通过每个tr上的cache-key进行获取
 	 * */
-		cacheData: {}
+		cacheData: {},
+		updateSettings: function updateSettings(table, settings) {
+			if (table.attr('grid-manager') == 'test2' && settings.query.ccname == 'baukh') {
+				_jTool2.default.error('kouzi');
+			}
+			var data = _jTool2.default.extend(true, {}, settings);
+			table.data('settings', data);
+		},
+		getSettings: function getSettings(table) {
+			return table.data('settings');
+		}
 		/*
 	  * [对外公开方法]
 	  * @获取当前行渲染时使用的数据
@@ -612,8 +624,9 @@
 	 * $.cleanText: 清除缓存的原因
 	 * */
 		, cleanTableCache: function cleanTableCache(table, cleanText) {
+			var Settings = Cache.getSettings(table);
 			this.clear(table);
-			_Base2.default.outLog(_Settings2.default.gridManagerName + '清除缓存成功,清除原因：' + cleanText, 'info');
+			_Base2.default.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：' + cleanText, 'info');
 		}
 		/*
 	 * [对外公开方法]
@@ -633,16 +646,17 @@
 
 		/*
 	  * 获取指定表格本地存储所使用的key
-	  * $table: table jTool
+	  * table: table jTool
 	  * */
-		, getLocalStorageKey: function getLocalStorageKey($table) {
+		, getLocalStorageKey: function getLocalStorageKey(table) {
+			var Settings = Cache.getSettings(table);
 			// 验证table是否有效
-			if (!$table || $table.length === 0) {
+			if (!table || table.length === 0) {
 				_Base2.default.outLog('getLocalStorage:无效的table', 'error');
 				return false;
 			}
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-			var noCache = $table.attr('no-cache');
+			var noCache = table.attr('no-cache');
 			if (noCache && noCache == 'true') {
 				_Base2.default.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
 				return false;
@@ -651,19 +665,14 @@
 				_Base2.default.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
 				return false;
 			}
-			// var _gridKey = $table.attr('grid-manager');
-			// //验证当前表是否为GridManager
-			// if(!_gridKey || $.trim(_gridKey) == ''){
-			// 	Base.outLog('getLocalStorage:无效的grid-manager', 'error');
-			// 	return false;
-			// }
-			return window.location.pathname + window.location.hash + '-' + _Settings2.default.gridManagerName;
+			return window.location.pathname + window.location.hash + '-' + Settings.gridManagerName;
 		}
 		/*
 	 * @根据本地缓存thead配置列表: 获取本地缓存, 存储原位置顺序, 根据本地缓存进行配置
 	 * $.table: table [jTool object]
 	 * */
 		, configTheadForCache: function configTheadForCache(table) {
+			var Settings = Cache.getSettings(table);
 			var _this = this;
 			var _data = _this.getLocalStorage(table),
 			    //本地缓存的数据
@@ -705,22 +714,22 @@
 					_thJson = v2;
 					_th = (0, _jTool2.default)('th[th-name=' + _thJson.th_name + ']', table);
 					//配置列的宽度
-					if (_Settings2.default.supportAdjust && _th.attr('gm-create') !== 'true') {
+					if (Settings.supportAdjust && _th.attr('gm-create') !== 'true') {
 						_th.css('width', _thJson.th_width);
 					}
 					//配置列排序数据
-					if (_Settings2.default.supportDrag && typeof _thJson.th_index !== 'undefined') {
+					if (Settings.supportDrag && typeof _thJson.th_index !== 'undefined') {
 						_domArray[_thJson.th_index] = _th;
 					} else {
 						_domArray[i2] = _th;
 					}
 					//配置列的可见
-					if (_Settings2.default.supportConfig) {
+					if (Settings.supportConfig) {
 						_Base2.default.setAreVisible(_th, typeof _thJson.isShow == 'undefined' ? true : _thJson.isShow, true);
 					}
 				});
 				//配置列的顺序
-				if (_Settings2.default.supportDrag) {
+				if (Settings.supportDrag) {
 					table.find('thead tr').html(_domArray);
 				}
 			}
@@ -731,9 +740,10 @@
 	  $.isInit: 是否为初始存储缓存[用于处理宽度在特定情况下发生异常]
 	  */
 		, setToLocalStorage: function setToLocalStorage(table, isInit) {
+			var Settings = Cache.getSettings(table);
 			var _this = this;
 			//当前为禁用缓存模式，直接跳出
-			if (_Settings2.default.disableCache) {
+			if (Settings.disableCache) {
 				return;
 			}
 			var _table = (0, _jTool2.default)(table);
@@ -766,22 +776,22 @@
 				$v = (0, _jTool2.default)(v);
 				_thData = {};
 				_thData.th_name = $v.attr('th-name');
-				if (_Settings2.default.supportDrag) {
+				if (Settings.supportDrag) {
 					_thData.th_index = $v.index();
 				}
-				if (_Settings2.default.supportAdjust) {
+				if (Settings.supportAdjust) {
 					//用于处理宽度在特定情况下发生异常
 					// isInit ? $v.css('width', $v.css('width')) : '';
 					_thData.th_width = $v.width();;
 				}
-				if (_Settings2.default.supportConfig) {
+				if (Settings.supportConfig) {
 					_thData.isShow = (0, _jTool2.default)('.config-area li[th-name="' + _thData.th_name + '"]', _table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
 				}
 				_thCache.push(_thData);
 			});
 			_cache.th = _thCache;
 			//存储分页
-			if (_Settings2.default.supportAjaxPage) {
+			if (Settings.supportAjaxPage) {
 				_pageCache.pSize = (0, _jTool2.default)('select[name="pSizeArea"]', _table.closest('.table-wrap')).val();
 				_cache.page = _pageCache;
 			}
@@ -860,9 +870,7 @@
 		, __getGridManager: function __getGridManager(table) {
 			return table.data('gridManager');
 		}
-	}; /*
-	   * @Cache: 本地缓存
-	   * */
+	};
 	exports.default = Cache;
 
 /***/ },
@@ -879,33 +887,25 @@
 
 	var _jTool2 = _interopRequireDefault(_jTool);
 
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-	* Base: 基础方法
-	* */
 	var Base = {
 		/*
 	  @输出日志
 	  $.type: 输出分类[info,warn,error]
 	  */
 		outLog: function outLog(msg, type) {
-			if (!_Settings2.default.isDevelopMode && !type) {
+			if (!type) {
 				console.log('GridManager:', msg);
-			} else if (!_Settings2.default.isDevelopMode && type === 'info') {
+			} else if (type === 'info') {
 				console.info('GridManager Info: ', msg);
-			} else if (!_Settings2.default.isDevelopMode && type === 'warn') {
+			} else if (type === 'warn') {
 				console.warn('GridManager Warn: ', msg);
 			} else if (type === 'error') {
 				console.error('GridManager Error: ', msg);
 			}
 			return msg;
 		}
-
 		/*
 	  [对外公开方法]
 	  @显示Th及对应的TD项
@@ -1025,7 +1025,9 @@
 			var thWidth = textDreamland.width() + (thPaddingLeft ? thPaddingLeft : 0) + (thPaddingRight ? thPaddingRight : 0) + (remindAction.length == 1 ? 20 : 5) + (sortingAction.length == 1 ? 20 : 5);
 			return thWidth;
 		}
-	};
+	}; /*
+	   * Base: 基础方法
+	   * */
 	exports.default = Base;
 
 /***/ },
@@ -1042,147 +1044,24 @@
 
 	var _jTool2 = _interopRequireDefault(_jTool);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Settings = {
-		// 是否为开发模式，为true时将打印事件日志
-		isDevelopMode: false,
-
-		//当前基本路径[用于加载分页所需样式文件]
-		// basePath: '',
-
-		// 是否使用默认的table样式
-		useDefaultStyle: true,
-
-		// 拖拽
-		supportDrag: true, // 是否支持拖拽功能
-		dragBefore: _jTool2.default.noop, // 拖拽前事件
-		dragAfter: _jTool2.default.noop, // 拖拽后事件
-
-		// 列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
-		// isRealTime: false,
-
-		// 宽度调整
-		supportAdjust: true, // 是否支持宽度调整功能
-		adjustBefore: _jTool2.default.noop, // 宽度调整前事件
-		adjustAfter: _jTool2.default.noop, // 宽度调整后事件
-
-		// 是否支持表头提示信息[需在地应的TH上增加属性remind]
-		supportRemind: false,
-
-		// 是否支持配置列表功能[操作列是否可见]
-		supportConfig: true,
-
-		// 是否支持表头置顶
-		// supportSetTop: true,
-
-		// 宽度配置
-		width: '100%',
-
-		// 高度配置, 可配置的最小宽度为300px
-		height: '300px',
-
-		//是否支持表头置顶
-		// scrollDOM: window,
-
-		// 特殊情况下才进行设置，在有悬浮物遮挡住表头置顶区域时进行使用，配置值为遮挡的高度
-		// topValue: 0,
-
-		// 动画效果时长
-		animateTime: 300,
-
-		// 是否禁用本地缓存
-		disableCache: false,
-
-		// 是否自动加载CSS文件
-		// autoLoadCss: false,
-		// 排序 sort
-		supportSorting: false, //排序：是否支持排序功能
-		isCombSorting: false, //是否为组合排序[只有在支持排序的情况下生效
-		sortData: {}, //存储排序数据[不对外公开参数]
-		sortUpText: 'up', //排序：升序标识[该标识将会传至数据接口]
-		sortDownText: 'down', //排序：降序标识[该标识将会传至数据接口]
-		sortingBefore: _jTool2.default.noop, //排序事件发生前
-		sortingAfter: _jTool2.default.noop, //排序事件发生后
-
-		// 分页 ajaxPag
-		supportAjaxPage: false, //是否支持配置列表ajxa分页
-		sizeData: [10, 20, 30, 50, 100], //用于配置列表每页展示条数选择框
-		pageSize: 20, //每页显示条数，如果使用缓存且存在缓存数据，那么该值将失效
-		pageData: {}, //存储分页数据[不对外公开参数]
-		query: {}, //其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
-		pagingBefore: _jTool2.default.noop, //分页事件发生前
-		pagingAfter: _jTool2.default.noop, //分页事件发生后
-		// pageCssFile 		: '',						//分页样式文件路径[用户自定义分页样式]
-
-		//序目录
-		supportAutoOrder: true, //是否支持自动序目录
-		// baukh20161104:移除 orderThName		: 'order',					//序目录所使用的th-name
-
-		//全选项
-		supportCheckbox: true, //是否支持选择与反选
-		// baukh20161104:移除 checkboxThName		: 'gm-checkbox',			//选择与反选列所使用的th-name
-		//国际化
-		i18n: 'zh-cn', //选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
-
-		//用于支持通过数据渲染DOM
-		columnData: [], //表格列数据配置项
-		gridManagerName: '', //表格grid-manager所对应的值[可在html中配置]
-		ajax_url: '', //获取表格数据地址，配置该参数后，将会动态获取数据
-		ajax_type: 'GET', //ajax请求类型['GET', 'POST']默认GET
-		ajax_beforeSend: _jTool2.default.noop, //ajax请求之前,与jTool的beforeSend使用方法相同
-		ajax_success: _jTool2.default.noop, //ajax成功后,与jTool的success使用方法相同
-		ajax_complete: _jTool2.default.noop, //ajax完成后,与jTool的complete使用方法相同
-		ajax_error: _jTool2.default.noop, //ajax失败后,与jTool的error使用方法相同
-		ajax_data: undefined, //ajax静态数据,配置后ajax_url将无效
-		dataKey: 'data', //ajax请求返回的列表数据key键值,默认为data
-		totalsKey: 'totals', //ajax请求返回的数据总条数key键值,默认为totals
-		//数据导出
-		supportExport: true //支持导出表格数据
-	}; /**
-	    * Settings: 配置项
-	    */
-	exports.default = Settings;
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _jTool = __webpack_require__(1);
-
-	var _jTool2 = _interopRequireDefault(_jTool);
-
 	var _Base = __webpack_require__(5);
 
 	var _Base2 = _interopRequireDefault(_Base);
 
-	var _Core = __webpack_require__(8);
+	var _Core = __webpack_require__(7);
 
 	var _Core2 = _interopRequireDefault(_Core);
-
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
 
 	var _Cache = __webpack_require__(4);
 
 	var _Cache2 = _interopRequireDefault(_Cache);
 
-	var _I18n = __webpack_require__(12);
+	var _I18n = __webpack_require__(11);
 
 	var _I18n2 = _interopRequireDefault(_I18n);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-	 * AjaxPage: 分页
-	 * */
 	var AjaxPage = {
 		html: function html() {
 			var html = '<div class="page-toolbar">' + '<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>' + '<div class="goto-page">' + _I18n2.default.i18nText("goto-first-text") + '<input type="text" class="gp-input"/>' + _I18n2.default.i18nText("goto-last-text") + '</div>' + '<div class="change-size"><select name="pSizeArea"></select></div>' + '<div class="dataTables_info"></div>' + '<div class="ajax-page"><ul class="pagination"></ul></div>' + '</div>';
@@ -1193,11 +1072,12 @@
 	  $.table:table
 	  */
 		, initAjaxPage: function initAjaxPage(table) {
+			var Settings = _Cache2.default.getSettings(table);
 			var _this = this;
 			var table = (0, _jTool2.default)(table),
 			    tableWarp = table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp); //分页工具条
-			var sizeData = _Settings2.default.sizeData;
+			var sizeData = Settings.sizeData;
 			pageToolbar.hide();
 			//生成每页显示条数选择框
 			_this.createPageSizeDOM(table, sizeData);
@@ -1210,11 +1090,11 @@
 		}
 		/*
 	  @生成分页DOM节点据
-	  $._tableDOM_: table的juqery实例化对象
+	  $.table: table的juqery实例化对象
 	  $._pageData_:分页数据格式
 	  */
-		, createPageDOM: function createPageDOM(_tableDOM_, _pageData_) {
-			var table = (0, _jTool2.default)(_tableDOM_),
+		, createPageDOM: function createPageDOM(table, _pageData_) {
+			var table = (0, _jTool2.default)(table),
 			    tableWarp = table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
 			    //分页工具条
@@ -1268,11 +1148,11 @@
 		}
 		/*
 	  @生成每页显示条数选择框据
-	  $._tableDOM_: table的juqery实例化对象
+	  $.table: table的juqery实例化对象
 	  $._sizeData_: 选择框自定义条数
 	  */
-		, createPageSizeDOM: function createPageSizeDOM(_tableDOM_, _sizeData_) {
-			var table = (0, _jTool2.default)(_tableDOM_),
+		, createPageSizeDOM: function createPageSizeDOM(table, _sizeData_) {
+			var table = (0, _jTool2.default)(table),
 			    tableWarp = table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
 			    //分页工具条
@@ -1291,11 +1171,11 @@
 		}
 		/*
 	  @绑定页面跳转事件
-	  $._tableDOM_: table的juqery实例化对象
+	  $.table: table的juqery实例化对象
 	  */
-		, bindPageJumpEvent: function bindPageJumpEvent(_tableDOM_) {
+		, bindPageJumpEvent: function bindPageJumpEvent(table) {
 			var _this = this;
-			var table = (0, _jTool2.default)(_tableDOM_),
+			var table = (0, _jTool2.default)(table),
 			    tableWarp = table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
 			    //分页工具条
@@ -1314,7 +1194,7 @@
 					return false;
 				}
 				cPage = parseInt(cPage);
-				_this.gotoPage(cPage);
+				_this.gotoPage(table, cPage);
 			});
 			//绑定快捷跳转事件
 			gp_input.unbind('keyup');
@@ -1327,18 +1207,19 @@
 					this.focus();
 					return;
 				}
-				_this.gotoPage(_inputValue);
+				_this.gotoPage(table, _inputValue);
 				this.value = '';
 			});
 			//绑定刷新界面事件
 			refreshAction.unbind('click');
 			refreshAction.bind('click', function () {
 				var _tableWarp = (0, _jTool2.default)(this).closest('.table-wrap'),
+				    _table = (0, _jTool2.default)('table[grid-manager]', _tableWarp),
 				    _input = (0, _jTool2.default)('.page-toolbar .gp-input', _tableWarp),
 				    _value = _input.val();
-				//跳转输入框为空时: 刷新当前菜
+				//跳转输入框为空时: 刷新当前页
 				if (_value.trim() === '') {
-					_Core2.default.__refreshGrid();
+					_Core2.default.__refreshGrid(_table);
 					return;
 				}
 				//跳转输入框不为空时: 验证输入值是否有效,如果有效跳转至指定页,如果无效对输入框进行聚焦
@@ -1347,35 +1228,35 @@
 					_input.focus();
 					return;
 				}
-				_this.gotoPage(_inputValue);
+				_this.gotoPage(table, _inputValue);
 				_input.val('');
 			});
 		}
 		/*
 	 * @跳转至指定页
 	 * */
-		, gotoPage: function gotoPage(_cPage) {
+		, gotoPage: function gotoPage(table, _cPage) {
+			var Settings = _Cache2.default.getSettings(table);
 			//跳转的指定页大于总页数
-			if (_cPage > _Settings2.default.pageData.tPage) {
-				_cPage = _Settings2.default.pageData.tPage;
+			if (_cPage > Settings.pageData.tPage) {
+				_cPage = Settings.pageData.tPage;
 			}
 			//替换被更改的值
-			_Settings2.default.pageData.cPage = _cPage;
-			_Settings2.default.pageData.pSize = _Settings2.default.pageData.pSize || _Settings2.default.pageSize;
-
+			Settings.pageData.cPage = _cPage;
+			Settings.pageData.pSize = Settings.pageData.pSize || Settings.pageSize;
 			//调用事件、渲染DOM
-			var query = _jTool2.default.extend({}, _Settings2.default.query, _Settings2.default.sortData, _Settings2.default.pageData);
-			_Settings2.default.pagingBefore(query);
-			_Core2.default.__refreshGrid(function () {
-				_Settings2.default.pagingAfter(query);
+			var query = _jTool2.default.extend({}, Settings.query, Settings.sortData, Settings.pageData);
+			Settings.pagingBefore(query);
+			_Core2.default.__refreshGrid(table, function () {
+				Settings.pagingAfter(query);
 			});
 		}
 		/*
 	  @绑定设置当前页显示数事件
-	  $._tableDOM_: table的juqery实例化对象
+	  $.table: table的juqery实例化对象
 	  */
-		, bindSetPageSizeEvent: function bindSetPageSizeEvent(_tableDOM_) {
-			var table = (0, _jTool2.default)(_tableDOM_),
+		, bindSetPageSizeEvent: function bindSetPageSizeEvent(table) {
+			var table = (0, _jTool2.default)(table),
 			    tableWarp = table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
 			    //分页工具条
@@ -1389,17 +1270,18 @@
 				var _size = (0, _jTool2.default)(this);
 				var _tableWarp = _size.closest('.table-wrap'),
 				    _table = (0, _jTool2.default)('table[grid-manager]', _tableWarp);
-				_Settings2.default.pageData = {
+				var Settings = _Cache2.default.getSettings(table);
+				Settings.pageData = {
 					cPage: 1,
 					pSize: parseInt(_size.val())
 				};
 
 				_Cache2.default.setToLocalStorage(_table);
 				//调用事件、渲染tbody
-				var query = _jTool2.default.extend({}, _Settings2.default.query, _Settings2.default.sortData, _Settings2.default.pageData);
-				_Settings2.default.pagingBefore(query);
-				_Core2.default.__refreshGrid(function () {
-					_Settings2.default.pagingAfter(query);
+				var query = _jTool2.default.extend({}, Settings.query, Settings.sortData, Settings.pageData);
+				Settings.pagingBefore(query);
+				_Core2.default.__refreshGrid(_table, function () {
+					Settings.pagingAfter(query);
 				});
 			});
 		}
@@ -1436,6 +1318,7 @@
 	  $.totals: 总条数
 	  */
 		, resetPageData: function resetPageData(table, totals) {
+			var Settings = _Cache2.default.getSettings(table);
 			var _this = this;
 			if (isNaN(parseInt(totals, 10))) {
 				return;
@@ -1445,18 +1328,16 @@
 			_this.createPageDOM(table, _pageData);
 			//重置当前页显示条数
 			_this.resetPSize(table, _pageData);
-
-			var table = (0, _jTool2.default)(table),
-			    tableWarp = table.closest('.table-wrap'),
+			_Cache2.default.updateSettings(table, _jTool2.default.extend(true, Settings, { pageData: _pageData }));
+			var tableWarp = table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp); //分页工具条
-			_jTool2.default.extend(_Settings2.default.pageData, _pageData); //存储pageData信息
 			pageToolbar.show();
 
 			//计算分页数据
 			function getPageData(tSize) {
-				var _pSize = _Settings2.default.pageData.pSize || _Settings2.default.pageSize,
+				var _pSize = Settings.pageData.pSize || Settings.pageSize,
 				    _tSize = tSize,
-				    _cPage = _Settings2.default.pageData.cPage || 1;
+				    _cPage = Settings.pageData.cPage || 1;
 				return {
 					tPage: Math.ceil(_tSize / _pSize), //总页数
 					cPage: _cPage, //当前页
@@ -1471,6 +1352,7 @@
 	  配置当前页显示数
 	  */
 		, configPageForCache: function configPageForCache(table) {
+			var Settings = _Cache2.default.getSettings(table);
 			var _data = _Cache2.default.getLocalStorage(table),
 			    //本地缓存的数据
 			_cache = _data.cache,
@@ -1478,20 +1360,24 @@
 			_pSize; //每页显示条数
 			//验证是否存在每页显示条数缓存数据
 			if (!_cache || !_cache.page || !_cache.page.pSize) {
-				_pSize = _Settings2.default.pageSize || 10.;
+				_pSize = Settings.pageSize || 10.;
 			} else {
 				_pSize = _cache.page.pSize;
 			}
-			_Settings2.default.pageData = {
+			var pageData = {
 				pSize: _pSize,
 				cPage: 1
 			};
+			_jTool2.default.extend(Settings, { pageData: pageData });
+			_Cache2.default.updateSettings(table, Settings);
 		}
-	};
+	}; /*
+	    * AjaxPage: 分页
+	    * */
 	exports.default = AjaxPage;
 
 /***/ },
-/* 8 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1508,7 +1394,7 @@
 
 	var _Base2 = _interopRequireDefault(_Base);
 
-	var _DOM = __webpack_require__(9);
+	var _DOM = __webpack_require__(8);
 
 	var _DOM2 = _interopRequireDefault(_DOM);
 
@@ -1516,20 +1402,19 @@
 
 	var _Cache2 = _interopRequireDefault(_Cache);
 
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
-
-	var _AjaxPage = __webpack_require__(7);
+	var _AjaxPage = __webpack_require__(6);
 
 	var _AjaxPage2 = _interopRequireDefault(_AjaxPage);
 
-	var _Menu = __webpack_require__(18);
+	var _Menu = __webpack_require__(16);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/*
+	* Core: 核心方法
+	* */
 	var Core = {
 		/*
 	  [对外公开方法]
@@ -1539,27 +1424,26 @@
 	  $.callback: 回调函数
 	  */
 		refreshGrid: function refreshGrid(table, gotoFirstPage, callback) {
+			var Settings = _Cache2.default.getSettings(table);
 			var _this = this;
 			if (typeof gotoFirstPage !== 'boolean') {
 				callback = gotoFirstPage;
 				gotoFirstPage = false;
 			}
 			if (gotoFirstPage) {
-				_Settings2.default.pageData['cPage'] = 1;
+				Settings.pageData['cPage'] = 1;
 			}
-			_this.__refreshGrid(callback);
+			_this.__refreshGrid(table, callback);
 		}
 		/*
 	  @刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	  $.callback: 回调函数
 	  */
-		, __refreshGrid: function __refreshGrid(callback) {
-			var _this = this;
-			var tableDOM = (0, _jTool2.default)('table[grid-manager="' + _Settings2.default.gridManagerName + '"]'),
-			    //table dom
-			tbodyDOM = (0, _jTool2.default)('tbody', tableDOM),
+		, __refreshGrid: function __refreshGrid(table, callback) {
+			var Settings = _Cache2.default.getSettings(table);
+			var tbodyDOM = (0, _jTool2.default)('tbody', table),
 			    //tbody dom
-			refreshAction = (0, _jTool2.default)('.page-toolbar .refresh-action', tableDOM.closest('.table-wrap')); //刷新按纽
+			refreshAction = (0, _jTool2.default)('.page-toolbar .refresh-action', table.closest('.table-wrap')); //刷新按纽
 			//增加刷新中标识
 			refreshAction.addClass('refreshing');
 			/*
@@ -1567,53 +1451,57 @@
 	   如果存在配置数据ajax_data,将不再通过ajax_rul进行数据请求
 	   且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
 	   */
-			if (_Settings2.default.ajax_data) {
-				driveDomForSuccessAfter(_Settings2.default.ajax_data);
-				_Settings2.default.ajax_success(_Settings2.default.ajax_data);
+			if (Settings.ajax_data) {
+				driveDomForSuccessAfter(Settings.ajax_data);
+				Settings.ajax_success(Settings.ajax_data);
 				removeRefreshingClass();
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
-			if (typeof _Settings2.default.ajax_url != 'string' || _Settings2.default.ajax_url === '') {
-				_Settings2.default.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
+			if (typeof Settings.ajax_url != 'string' || Settings.ajax_url === '') {
+				Settings.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
 				removeRefreshingClass();
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
-			var parme = _jTool2.default.extend({}, _Settings2.default.query);
+			console.log(table.attr('grid-manager'), JSON.stringify(Settings.query));
+			var pram = _jTool2.default.extend(true, {}, Settings.query);
 			//合并分页信息至请求参
-			if (_Settings2.default.supportAjaxPage) {
-				_jTool2.default.extend(parme, _Settings2.default.pageData);
+			if (Settings.supportAjaxPage) {
+				_jTool2.default.extend(pram, Settings.pageData);
 			}
 			//合并排序信息至请求参
-			if (_Settings2.default.supportSorting) {
-				_jTool2.default.extend(parme, _Settings2.default.sortData);
+			if (Settings.supportSorting) {
+				_jTool2.default.extend(pram, Settings.sortData);
 			}
 			//当前页小于1时, 修正为1
-			if (parme.cPage < 1) {
-				parme.cPage = 1;
+			if (pram.cPage < 1) {
+				pram.cPage = 1;
 				//当前页大于总页数时, 修正为总页数
-			} else if (parme.cPage > parme.tPage) {
-				parme.cPage = parme.tPage;
+			} else if (pram.cPage > pram.tPage) {
+				pram.cPage = pram.tPage;
 			}
+			Settings.query = pram;
+			_Cache2.default.updateSettings(table, Settings);
+
 			//执行ajax前事件
 			_jTool2.default.ajax({
-				url: _Settings2.default.ajax_url,
-				type: _Settings2.default.ajax_type,
-				data: parme,
+				url: Settings.ajax_url,
+				type: Settings.ajax_type,
+				data: pram,
 				cache: true,
 				beforeSend: function beforeSend(XMLHttpRequest) {
-					_Settings2.default.ajax_beforeSend(XMLHttpRequest);
+					Settings.ajax_beforeSend(XMLHttpRequest);
 				},
 				success: function success(response) {
 					driveDomForSuccessAfter(response);
-					_Settings2.default.ajax_success(response);
+					Settings.ajax_success(response);
 				},
 				error: function error(XMLHttpRequest, textStatus, errorThrown) {
-					_Settings2.default.ajax_error(XMLHttpRequest, textStatus, errorThrown);
+					Settings.ajax_error(XMLHttpRequest, textStatus, errorThrown);
 				},
 				complete: function complete(XMLHttpRequest, textStatus) {
-					_Settings2.default.ajax_complete(XMLHttpRequest, textStatus);
+					Settings.ajax_complete(XMLHttpRequest, textStatus);
 					removeRefreshingClass();
 				}
 			});
@@ -1632,7 +1520,7 @@
 
 				var tbodyTmpHTML = ''; //用于拼接tbody的HTML结构
 				var parseRes = typeof response === 'string' ? JSON.parse(response) : response;
-				var _data = parseRes[_Settings2.default.dataKey];
+				var _data = parseRes[Settings.dataKey];
 				var key, //数据索引
 				alignAttr, //文本对齐属性
 				template, //数据模板
@@ -1640,14 +1528,14 @@
 				_Cache2.default.cacheData = {};
 				//数据为空时
 				if (!_data || _data.length === 0) {
-					tbodyTmpHTML = '<tr emptyTemplate>' + '<td colspan="' + (0, _jTool2.default)('th[th-visible="visible"]', tableDOM).length + '">' + (_Settings2.default.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>') + '</td>' + '</tr>';
+					tbodyTmpHTML = '<tr emptyTemplate>' + '<td colspan="' + (0, _jTool2.default)('th[th-visible="visible"]', table).length + '">' + (Settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>') + '</td>' + '</tr>';
 					parseRes.totals = 0;
 					tbodyDOM.html(tbodyTmpHTML);
 				} else {
 					_jTool2.default.each(_data, function (i, v) {
 						_Cache2.default.cacheData[i] = v;
 						tbodyTmpHTML += '<tr cache-key="' + i + '">';
-						_jTool2.default.each(_Settings2.default.columnData, function (i2, v2) {
+						_jTool2.default.each(Settings.columnData, function (i2, v2) {
 							key = v2.key;
 							template = v2.template;
 							templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];
@@ -1657,12 +1545,12 @@
 						tbodyTmpHTML += '</tr>';
 					});
 					tbodyDOM.html(tbodyTmpHTML);
-					_DOM2.default.resetTd(tableDOM, false);
+					_DOM2.default.resetTd(table, false);
 				}
 				//渲染分页
-				if (_Settings2.default.supportAjaxPage) {
-					_AjaxPage2.default.resetPageData(tableDOM, parseRes[_Settings2.default.totalsKey]);
-					_Menu2.default.checkMenuPageAction();
+				if (Settings.supportAjaxPage) {
+					_AjaxPage2.default.resetPageData(table, parseRes[Settings.totalsKey]);
+					_Menu2.default.checkMenuPageAction(table);
 				}
 				typeof callback === 'function' ? callback() : '';
 			}
@@ -1675,16 +1563,17 @@
 	  $.query:配置的数据
 	  */
 		, setQuery: function setQuery(table, query) {
-			table.GridManager('get')['query'] = query;
+			// table.GridManager('get')['query'] = query;
+			var settings = _Cache2.default.getSettings(table);
+			_jTool2.default.extend(settings, { query: query });
+			_Cache2.default.updateSettings(table, settings);
 		}
 
-	}; /*
-	   * Core: 核心方法
-	   * */
+	};
 	exports.default = Core;
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1701,7 +1590,7 @@
 
 	var _Adjust2 = _interopRequireDefault(_Adjust);
 
-	var _AjaxPage = __webpack_require__(7);
+	var _AjaxPage = __webpack_require__(6);
 
 	var _AjaxPage2 = _interopRequireDefault(_AjaxPage);
 
@@ -1709,11 +1598,11 @@
 
 	var _Cache2 = _interopRequireDefault(_Cache);
 
-	var _Config = __webpack_require__(10);
+	var _Config = __webpack_require__(9);
 
 	var _Config2 = _interopRequireDefault(_Config);
 
-	var _Checkbox = __webpack_require__(11);
+	var _Checkbox = __webpack_require__(10);
 
 	var _Checkbox2 = _interopRequireDefault(_Checkbox);
 
@@ -1721,29 +1610,21 @@
 
 	var _Base2 = _interopRequireDefault(_Base);
 
-	var _Export = __webpack_require__(13);
+	var _Export = __webpack_require__(12);
 
 	var _Export2 = _interopRequireDefault(_Export);
 
-	var _Order = __webpack_require__(14);
+	var _Order = __webpack_require__(13);
 
 	var _Order2 = _interopRequireDefault(_Order);
 
-	var _Remind = __webpack_require__(15);
+	var _Remind = __webpack_require__(14);
 
 	var _Remind2 = _interopRequireDefault(_Remind);
 
-	var _Scroll = __webpack_require__(16);
-
-	var _Scroll2 = _interopRequireDefault(_Scroll);
-
-	var _Sort = __webpack_require__(17);
+	var _Sort = __webpack_require__(15);
 
 	var _Sort2 = _interopRequireDefault(_Sort);
-
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1753,8 +1634,9 @@
 	  $.table: table[jTool对象]
 	  */
 		createDOM: function createDOM(table) {
+			var Settings = _Cache2.default.getSettings(table);
 			var _this = this;
-			table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', _Settings2.default.gridManagerName);
+			table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', Settings.gridManagerName);
 			var theadHtml = '<thead grid-manager-thead>',
 			    tbodyHtml = '<tbody></tbody>',
 			    alignAttr = '',
@@ -1765,20 +1647,20 @@
 			    //提醒对应的html片段
 			sortingHtml = ''; //排序对应的html片段
 			//通过配置项[columnData]生成thead
-			_jTool2.default.each(_Settings2.default.columnData, function (i, v) {
+			_jTool2.default.each(Settings.columnData, function (i, v) {
 				// 表头提醒
-				if (_Settings2.default.supportRemind && typeof v.remind === 'string' && v.remind !== '') {
+				if (Settings.supportRemind && typeof v.remind === 'string' && v.remind !== '') {
 					remindHtml = 'remind="' + v.remind + '"';
 				}
 				// 排序
 				sortingHtml = '';
-				if (_Settings2.default.supportSorting && typeof v.sorting === 'string') {
-					if (v.sorting === _Settings2.default.sortDownText) {
-						sortingHtml = 'sorting="' + _Settings2.default.sortDownText + '"';
-						_Settings2.default.sortData[v.key] = _Settings2.default.sortDownText;
-					} else if (v.sorting === _Settings2.default.sortUpText) {
-						sortingHtml = 'sorting="' + _Settings2.default.sortUpText + '"';
-						_Settings2.default.sortData[v.key] = _Settings2.default.sortUpText;
+				if (Settings.supportSorting && typeof v.sorting === 'string') {
+					if (v.sorting === Settings.sortDownText) {
+						sortingHtml = 'sorting="' + Settings.sortDownText + '"';
+						Settings.sortData[v.key] = Settings.sortDownText;
+					} else if (v.sorting === Settings.sortUpText) {
+						sortingHtml = 'sorting="' + Settings.sortUpText + '"';
+						Settings.sortData[v.key] = Settings.sortUpText;
 					} else {
 						sortingHtml = 'sorting=""';
 					}
@@ -1794,11 +1676,11 @@
 			theadHtml += '</thead>';
 			table.html(theadHtml + tbodyHtml);
 			//嵌入序号DOM
-			if (_Settings2.default.supportAutoOrder) {
+			if (Settings.supportAutoOrder) {
 				_Order2.default.initDOM(table);
 			}
 			//嵌入选择返选DOM
-			if (_Settings2.default.supportCheckbox) {
+			if (Settings.supportCheckbox) {
 				_Checkbox2.default.initDOM(table);
 			}
 			//存储原始th DOM
@@ -1814,7 +1696,7 @@
 			//导出表格数据所需的事件源DOM
 			var exportActionHtml = _Export2.default.html();
 			//AJAX分页HTML
-			if (_Settings2.default.supportAjaxPage) {
+			if (Settings.supportAjaxPage) {
 				var _ajaxPageHtml = _AjaxPage2.default.html();
 			}
 			var wrapHtml,
@@ -1844,39 +1726,39 @@
 			isLmCheckbox; //是否为插件自动生成的选择列
 
 			//根据配置使用默认的表格样式
-			if (_Settings2.default.useDefaultStyle) {
+			if (Settings.useDefaultStyle) {
 				table.addClass('grid-manager-default');
 			}
 			onlyThead = (0, _jTool2.default)('thead', table);
 			onlyThList = (0, _jTool2.default)('th', onlyThead);
-			wrapHtml = '<div class="table-wrap"><div class="table-div" style="height: ' + _Settings2.default.height + '"></div><span class="text-dreamland"></span></div>';
+			wrapHtml = '<div class="table-wrap"><div class="table-div" style="height: ' + Settings.height + '"></div><span class="text-dreamland"></span></div>';
 			table.wrap(wrapHtml);
 			tableWarp = table.closest('.table-wrap');
 			//嵌入配置列表DOM
-			if (_Settings2.default.supportConfig) {
+			if (Settings.supportConfig) {
 				tableWarp.append(_configHtml);
 			}
 			//嵌入Ajax分页DOM
-			if (_Settings2.default.supportAjaxPage) {
+			if (Settings.supportAjaxPage) {
 				tableWarp.append(_ajaxPageHtml);
 				_AjaxPage2.default.initAjaxPage(table);
 			}
 			//嵌入导出表格数据事件源
-			if (_Settings2.default.supportExport) {
+			if (Settings.supportExport) {
 				tableWarp.append(exportActionHtml);
 			}
 			_jTool2.default.each(onlyThList, function (i2, v2) {
 				onlyTH = (0, _jTool2.default)(v2);
 				onlyTH.attr('th-visible', 'visible');
 				//是否为自动生成的序号列
-				if (_Settings2.default.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
+				if (Settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
 					isLmOrder = true;
 				} else {
 					isLmOrder = false;
 				}
 
 				//是否为自动生成的选择列
-				if (_Settings2.default.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true') {
+				if (Settings.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true') {
 					isLmCheckbox = true;
 				} else {
 					isLmCheckbox = false;
@@ -1884,12 +1766,12 @@
 
 				onlyThWarp = (0, _jTool2.default)('<div class="th-wrap"></div>');
 				//嵌入配置列表项
-				if (_Settings2.default.supportConfig) {
+				if (Settings.supportConfig) {
 					(0, _jTool2.default)('.config-list', tableWarp).append('<li th-name="' + onlyTH.attr('th-name') + '" class="checked-li">' + '<input type="checkbox" checked="checked"/>' + '<label>' + '<span class="fake-checkbox"></span>' + onlyTH.text() + '</label>' + '</li>');
 				}
 				//嵌入拖拽事件源
 				//插件自动生成的排序与选择列不做事件绑定
-				if (_Settings2.default.supportDrag && !isLmOrder && !isLmCheckbox) {
+				if (Settings.supportDrag && !isLmOrder && !isLmCheckbox) {
 					onlyThWarp.html('<span class="th-text drag-action">' + onlyTH.html() + '</span>');
 				} else {
 					onlyThWarp.html('<span class="th-text">' + onlyTH.html() + '</span>');
@@ -1897,7 +1779,7 @@
 				var onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
 				//嵌入表头提醒事件源
 				//插件自动生成的排序与选择列不做事件绑定
-				if (_Settings2.default.supportRemind && onlyTH.attr('remind') != undefined && !isLmOrder && !isLmCheckbox) {
+				if (Settings.supportRemind && onlyTH.attr('remind') != undefined && !isLmOrder && !isLmCheckbox) {
 					remindDOM = (0, _jTool2.default)(_remindHtml);
 					remindDOM.find('.ra-title').text(onlyTH.text());
 					remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
@@ -1909,14 +1791,14 @@
 				//嵌入排序事件源
 				//插件自动生成的排序与选择列不做事件绑定
 				sortType = onlyTH.attr('sorting');
-				if (_Settings2.default.supportSorting && sortType != undefined && !isLmOrder && !isLmCheckbox) {
+				if (Settings.supportSorting && sortType != undefined && !isLmOrder && !isLmCheckbox) {
 					sortingDom = (0, _jTool2.default)(_sortingHtml);
 					//依据 sortType 进行初始显示
 					switch (sortType) {
-						case _Settings2.default.sortUpText:
+						case Settings.sortUpText:
 							sortingDom.addClass('sorting-up');
 							break;
-						case _Settings2.default.sortDownText:
+						case Settings.sortDownText:
 							sortingDom.addClass('sorting-down');
 							break;
 						default:
@@ -1929,7 +1811,7 @@
 				}
 				//嵌入宽度调整事件源
 				//插件自动生成的选择列不做事件绑定
-				if (_Settings2.default.supportAdjust && !isLmCheckbox) {
+				if (Settings.supportAdjust && !isLmCheckbox) {
 					adjustDOM = (0, _jTool2.default)(_adjustHtml);
 					//最后一列不支持调整宽度
 					if (i2 == onlyThList.length - 1) {
@@ -1980,9 +1862,10 @@
 			if (!_tr || _tr.length == 0) {
 				return false;
 			}
+			var Settings = _Cache2.default.getSettings(_table);
 			//重置表格序号
-			if (_Settings2.default.supportAutoOrder) {
-				var _pageData = _Settings2.default.pageData;
+			if (Settings.supportAutoOrder) {
+				var _pageData = Settings.pageData;
 				var onlyOrderTd = undefined,
 				    _orderBaseNumber = 1,
 				    _orderText;
@@ -2001,7 +1884,7 @@
 				});
 			}
 			//重置表格选择 checkbox
-			if (_Settings2.default.supportCheckbox) {
+			if (Settings.supportCheckbox) {
 				var onlyCheckTd = undefined;
 				_jTool2.default.each(_tr, function (i, v) {
 					onlyCheckTd = (0, _jTool2.default)('td[gm-checkbox="true"]', v);
@@ -2013,7 +1896,7 @@
 				});
 			}
 			//依据存储数据重置td顺序
-			if (_Settings2.default.supportDrag) {
+			if (Settings.supportDrag) {
 				var _thCacheList = _Cache2.default.getOriginalThDOM(_table),
 				    _td;
 				if (!_thCacheList || _thCacheList.length == 0) {
@@ -2032,7 +1915,7 @@
 				});
 			}
 			//依据配置对列表进行隐藏、显示
-			if (_Settings2.default.supportConfig) {
+			if (Settings.supportConfig) {
 				_Base2.default.setAreVisible((0, _jTool2.default)('[th-visible="none"]'), false, true);
 			}
 		}
@@ -2042,7 +1925,7 @@
 	exports.default = DOM;
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2067,12 +1950,11 @@
 
 	var _Adjust2 = _interopRequireDefault(_Adjust);
 
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/*
+	 * Config: th配置
+	 * */
 	var Config = {
 		html: function html() {
 			var html = '<div class="config-area"><span class="config-action"><i class="iconfont icon-31xingdongdian"></i></span><ul class="config-list"></ul></div>';
@@ -2083,6 +1965,7 @@
 	  $.table: table [jTool object]
 	  */
 		, bindConfigEvent: function bindConfigEvent(table) {
+			var Settings = _Cache2.default.getSettings(table);
 			//打开/关闭设置区域
 			var tableWarp = (0, _jTool2.default)(table).closest('div.table-wrap');
 			var configAction = (0, _jTool2.default)('.config-action', tableWarp);
@@ -2153,7 +2036,7 @@
 				}
 
 				//重置调整宽度事件源
-				if (_Settings2.default.supportAdjust) {
+				if (Settings.supportAdjust) {
 					_Adjust2.default.resetAdjust(_table);
 				}
 
@@ -2180,13 +2063,11 @@
 				_Cache2.default.setToLocalStorage(_table); //缓存信息
 			});
 		}
-	}; /*
-	    * Config: th配置
-	    * */
+	};
 	exports.default = Config;
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2199,7 +2080,7 @@
 
 	var _jTool2 = _interopRequireDefault(_jTool);
 
-	var _I18n = __webpack_require__(12);
+	var _I18n = __webpack_require__(11);
 
 	var _I18n2 = _interopRequireDefault(_I18n);
 
@@ -2256,7 +2137,7 @@
 	exports.default = Checkbox;
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2269,10 +2150,6 @@
 	                                                                                                                                                                                                                                                                               * I18n: 国际化
 	                                                                                                                                                                                                                                                                               * */
 
-
-	var _jTool = __webpack_require__(1);
-
-	var _jTool2 = _interopRequireDefault(_jTool);
 
 	var _Base = __webpack_require__(5);
 
@@ -2376,7 +2253,7 @@
 	exports.default = I18n;
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2389,16 +2266,15 @@
 
 	var _jTool2 = _interopRequireDefault(_jTool);
 
-	var _Core = __webpack_require__(8);
+	var _Core = __webpack_require__(7);
 
 	var _Core2 = _interopRequireDefault(_Core);
 
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/*
+	 * Export: 数据导出
+	 * */
 	var Export = {
 		html: function html() {
 			var html = '<a href="" download="" id="gm-export-action"></a>';
@@ -2412,6 +2288,7 @@
 	  $.onlyChecked: 是否只导出已选中的表格
 	  */
 		, exportGridToXls: function exportGridToXls(table, fileName, onlyChecked) {
+			var Settings = Cache.getSettings(table);
 			var _this = this;
 			var gmExportAction = (0, _jTool2.default)('#gm-export-action'); //createDOM内添加
 			if (gmExportAction.length === 0) {
@@ -2448,20 +2325,18 @@
 			// 拼接要导出html格式数据
 			var exportHTML = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' + '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' + '<body><table>' + '<thead>' + theadHTML + '</thead>' + '<tbody>' + tbodyHTML + '</tbody>' + '</table></body>' + '</html>';
 			gmExportAction.prop('href', uri + base64(exportHTML));
-			gmExportAction.prop('download', (fileName || _Settings2.default.gridManagerName) + '.xls');
+			gmExportAction.prop('download', (fileName || Settings.gridManagerName) + '.xls');
 			gmExportAction.get(0).click();
 
 			function base64(s) {
 				return window.btoa(unescape(encodeURIComponent(s)));
 			}
 		}
-	}; /*
-	    * Export: 数据导出
-	    * */
+	};
 	exports.default = Export;
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2474,7 +2349,7 @@
 
 	var _jTool2 = _interopRequireDefault(_jTool);
 
-	var _I18n = __webpack_require__(12);
+	var _I18n = __webpack_require__(11);
 
 	var _I18n2 = _interopRequireDefault(_I18n);
 
@@ -2496,7 +2371,7 @@
 	exports.default = Order;
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2546,93 +2421,7 @@
 	exports.default = Remind;
 
 /***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _jTool = __webpack_require__(1);
-
-	var _jTool2 = _interopRequireDefault(_jTool);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Scroll = {
-		initDOM: function initDOM() {
-			return '';
-			// return '<div class="scroll-area"><div class="sa-inner"></div></div>';
-		}
-		/*
-	  @绑定表格滚动轴功能
-	  $.table: table [jTool object]
-	  */
-		, bindScrollFunction: function bindScrollFunction(table) {
-			var _tableDIV = table.closest('.table-div'),
-			    //列表所在的DIV,该DIV的class标识为table-div
-			_tableWarp = _tableDIV.closest('.table-wrap'); //列表所在的外围容器
-			//绑定窗口变化事件
-			// window.onresize = function () {
-			// 	$('.table-div').trigger('scroll', [true]);
-			// };
-
-			//绑定滚动条事件
-			_tableDIV.unbind('scroll');
-			_tableDIV.bind('scroll', function (e, _isWindowResize_) {
-				var _scrollDOMTop = (0, _jTool2.default)(this).scrollTop();
-				_tableDIV = table.closest('.table-div');
-				_tableWarp = _tableDIV.closest('.table-wrap');
-				var _thead = (0, _jTool2.default)('thead[grid-manager-thead]', table); //列表head
-				var _tbody = (0, _jTool2.default)('tbody', table); //列表body
-				var _setTopHead = (0, _jTool2.default)('.set-top', table); //吸顶元素
-				//当前列表数据为空
-				if ((0, _jTool2.default)('tr', _tbody).length == 0) {
-					return true;
-				}
-
-				//配置吸顶区的宽度
-				if (_setTopHead.length == 0 || _isWindowResize_) {
-					_setTopHead.length == 0 ? table.append(_thead.clone(true).addClass('set-top')) : '';
-					_setTopHead = (0, _jTool2.default)('.set-top', table);
-					_setTopHead.removeAttr('grid-manager-thead');
-					_setTopHead.css({
-						width: _thead.width() + _thead.css('border-left-width') + _thead.css('border-right-width'),
-						left: table.css('border-left-width') + 'px'
-					});
-				}
-				if (_setTopHead.length === 0) {
-					return;
-				}
-				//当前吸引thead 没有背景时 添加默认背景
-				if (!_setTopHead.css('background') || _setTopHead.css('background') == '' || _setTopHead.css('background') == 'none') {
-					_setTopHead.css('background', '#f5f5f5');
-				}
-				// 删除表头置顶
-				if (_scrollDOMTop === 0) {
-					_thead.removeClass('scrolling');
-					_setTopHead.remove();
-				}
-				// 显示表头置顶
-				else {
-						_thead.addClass('scrolling');
-						_setTopHead.css({
-							top: _scrollDOMTop
-						});
-					}
-				return true;
-			});
-			//     $(Settings.scrollDOM).trigger('scroll');
-		}
-	}; /*
-	    * Scroll: 滚动轴
-	    * */
-	exports.default = Scroll;
-
-/***/ },
-/* 17 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2649,13 +2438,13 @@
 
 	var _Base2 = _interopRequireDefault(_Base);
 
-	var _Core = __webpack_require__(8);
+	var _Core = __webpack_require__(7);
 
 	var _Core2 = _interopRequireDefault(_Core);
 
-	var _Settings = __webpack_require__(6);
+	var _Cache = __webpack_require__(4);
 
-	var _Settings2 = _interopRequireDefault(_Settings);
+	var _Cache2 = _interopRequireDefault(_Cache);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2680,6 +2469,7 @@
 	  }
 	  */
 		, setSort: function setSort(table, sortJson, callback, refresh) {
+			var Settings = _Cache2.default.getSettings(table);
 			if (table.length == 0 || !sortJson || _jTool2.default.isEmptyObject(sortJson)) {
 				return false;
 			}
@@ -2692,17 +2482,17 @@
 				_th = (0, _jTool2.default)('[th-name="' + s + '"]', table);
 				_sortType = sortJson[s];
 				_sortAction = (0, _jTool2.default)('.sorting-action', _th);
-				if (_sortType == _Settings2.default.sortUpText) {
-					_th.attr('sorting', _Settings2.default.sortUpText);
+				if (_sortType == Settings.sortUpText) {
+					_th.attr('sorting', Settings.sortUpText);
 					_sortAction.removeClass('sorting-down');
 					_sortAction.addClass('sorting-up');
-				} else if (_sortType == _Settings2.default.sortDownText) {
-					_th.attr('sorting', _Settings2.default.sortDownText);
+				} else if (_sortType == Settings.sortDownText) {
+					_th.attr('sorting', Settings.sortDownText);
 					_sortAction.removeClass('sorting-up');
 					_sortAction.addClass('sorting-down');
 				}
 			}
-			refresh ? _Core2.default.__refreshGrid(callback) : typeof callback === 'function' ? callback() : '';
+			refresh ? _Core2.default.__refreshGrid(table, callback) : typeof callback === 'function' ? callback() : '';
 			return table;
 		}
 		/*
@@ -2710,6 +2500,7 @@
 	  $.table: table [jTool object]
 	  */
 		, bindSortingEvent: function bindSortingEvent(table) {
+			var Settings = _Cache2.default.getSettings(table);
 			var _thList = (0, _jTool2.default)('th[sorting]', table),
 			    //所有包含排序的列
 			_action,
@@ -2732,7 +2523,7 @@
 					return false;
 				}
 				//根据组合排序配置项判定：是否清除原排序及排序样式
-				if (!_Settings2.default.isCombSorting) {
+				if (!Settings.isCombSorting) {
 					_jTool2.default.each((0, _jTool2.default)('.sorting-action', _table), function (i, v) {
 						if (v != _action.get(0)) {
 							//_action.get(0) 当前事件源的DOM
@@ -2745,29 +2536,29 @@
 				if (_action.hasClass('sorting-down')) {
 					_action.addClass('sorting-up');
 					_action.removeClass('sorting-down');
-					_th.attr('sorting', _Settings2.default.sortUpText);
+					_th.attr('sorting', Settings.sortUpText);
 				}
 				//排序操作：降序
 				else {
 						_action.addClass('sorting-down');
 						_action.removeClass('sorting-up');
-						_th.attr('sorting', _Settings2.default.sortDownText);
+						_th.attr('sorting', Settings.sortDownText);
 					}
 				//生成排序数据
-				if (!_Settings2.default.isCombSorting) {
-					_Settings2.default.sortData[_th.attr('th-name')] = _th.attr('sorting');
+				if (!Settings.isCombSorting) {
+					Settings.sortData[_th.attr('th-name')] = _th.attr('sorting');
 				} else {
 					_jTool2.default.each((0, _jTool2.default)('th[th-name][sorting]', _table), function (i, v) {
 						if (v.getAttribute('sorting') != '') {
-							_Settings2.default.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
+							Settings.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
 						}
 					});
 				}
 				//调用事件、渲染tbody
-				var query = _jTool2.default.extend({}, _Settings2.default.query, _Settings2.default.sortData, _Settings2.default.pageData);
-				_Settings2.default.sortingBefore(query);
-				_Core2.default.__refreshGrid(function () {
-					_Settings2.default.sortingAfter(query, _th);
+				var query = _jTool2.default.extend({}, Settings.query, Settings.sortData, Settings.pageData);
+				Settings.sortingBefore(query);
+				_Core2.default.__refreshGrid(table, function () {
+					Settings.sortingAfter(query, _th);
 				});
 			});
 		}
@@ -2775,7 +2566,7 @@
 	exports.default = Sort;
 
 /***/ },
-/* 18 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2788,19 +2579,19 @@
 
 	var _jTool2 = _interopRequireDefault(_jTool);
 
-	var _I18n = __webpack_require__(12);
+	var _Cache = __webpack_require__(4);
+
+	var _Cache2 = _interopRequireDefault(_Cache);
+
+	var _I18n = __webpack_require__(11);
 
 	var _I18n2 = _interopRequireDefault(_I18n);
 
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
-
-	var _Export = __webpack_require__(13);
+	var _Export = __webpack_require__(12);
 
 	var _Export2 = _interopRequireDefault(_Export);
 
-	var _AjaxPage = __webpack_require__(7);
+	var _AjaxPage = __webpack_require__(6);
 
 	var _AjaxPage2 = _interopRequireDefault(_AjaxPage);
 
@@ -2810,20 +2601,21 @@
 		/*
 	  @验证菜单区域: 禁用、开启分页操作
 	  */
-		checkMenuPageAction: function checkMenuPageAction() {
+		checkMenuPageAction: function checkMenuPageAction(table) {
+			var Settings = _Cache2.default.getSettings(table);
 			//右键菜单区上下页限制
-			var gridMenu = (0, _jTool2.default)('.grid-menu[grid-master="' + _Settings2.default.gridManagerName + '"]');
+			var gridMenu = (0, _jTool2.default)('.grid-menu[grid-master="' + Settings.gridManagerName + '"]');
 			if (!gridMenu || gridMenu.length === 0) {
 				return;
 			}
 			var previousPage = (0, _jTool2.default)('[refresh-type="previous"]', gridMenu),
 			    nextPage = (0, _jTool2.default)('[refresh-type="next"]', gridMenu);
-			if (_Settings2.default.pageData.cPage === 1 || _Settings2.default.pageData.tPage === 0) {
+			if (Settings.pageData.cPage === 1 || Settings.pageData.tPage === 0) {
 				previousPage.addClass('disabled');
 			} else {
 				previousPage.removeClass('disabled');
 			}
-			if (_Settings2.default.pageData.cPage === _Settings2.default.pageData.tPage || _Settings2.default.pageData.tPage === 0) {
+			if (Settings.pageData.cPage === Settings.pageData.tPage || Settings.pageData.tPage === 0) {
 				nextPage.addClass('disabled');
 			} else {
 				nextPage.removeClass('disabled');
@@ -2834,28 +2626,29 @@
 	  $.table:table
 	  */
 		, bindRightMenuEvent: function bindRightMenuEvent(table) {
+			var Settings = _Cache2.default.getSettings(table);
 			var tableWarp = (0, _jTool2.default)(table).closest('.table-wrap'),
 			    tbody = (0, _jTool2.default)('tbody', tableWarp);
 			//刷新当前表格
-			var menuHTML = '<div class="grid-menu" grid-master="' + _Settings2.default.gridManagerName + '">';
+			var menuHTML = '<div class="grid-menu" grid-master="' + Settings.gridManagerName + '">';
 			//分页类操作
-			if (_Settings2.default.supportAjaxPage) {
+			if (Settings.supportAjaxPage) {
 				menuHTML += '<span grid-action="refresh-page" refresh-type="previous">' + _I18n2.default.i18nText("previous-page") + '<i class="iconfont icon-sanjiao2"></i></span>' + '<span grid-action="refresh-page" refresh-type="next">' + _I18n2.default.i18nText("next-page") + '<i class="iconfont icon-sanjiao1"></i></span>';
 			}
 			menuHTML += '<span grid-action="refresh-page" refresh-type="refresh">' + _I18n2.default.i18nText("refresh") + '<i class="iconfont icon-31shuaxin"></i></span>';
 			//导出类
-			if (_Settings2.default.supportExport) {
+			if (Settings.supportExport) {
 				menuHTML += '<span class="grid-line"></span>' + '<span grid-action="export-excel" only-checked="false">' + _I18n2.default.i18nText("save-as-excel") + '<i class="iconfont icon-baocun"></i></span>' + '<span grid-action="export-excel" only-checked="true">' + _I18n2.default.i18nText("save-as-excel-for-checked") + '<i class="iconfont icon-saveas24"></i></span>';
 			}
 			//配置类
-			if (_Settings2.default.supportConfig) {
+			if (Settings.supportConfig) {
 				menuHTML += '<span class="grid-line"></span>' + '<span grid-action="setting-grid">' + _I18n2.default.i18nText("setting-grid") + '<i class="iconfont icon-shezhi"></i></span>';
 			}
 			menuHTML += '</div>';
 			var _body = (0, _jTool2.default)('body');
 			_body.append(menuHTML);
 			//绑定打开右键菜单栏
-			var menuDOM = (0, _jTool2.default)('.grid-menu[grid-master="' + _Settings2.default.gridManagerName + '"]');
+			var menuDOM = (0, _jTool2.default)('.grid-menu[grid-master="' + Settings.gridManagerName + '"]');
 			tableWarp.unbind('contextmenu');
 			tableWarp.bind('contextmenu', function (e) {
 				e.preventDefault();
@@ -2866,7 +2659,7 @@
 				}
 				//验证：当前是否存在已选中的项
 				var exportExcelOfChecked = (0, _jTool2.default)('[grid-action="export-excel"][only-checked="true"]');
-				if ((0, _jTool2.default)('tbody tr[checked="true"]', (0, _jTool2.default)('table[grid-manager="' + _Settings2.default.gridManagerName + '"]')).length === 0) {
+				if ((0, _jTool2.default)('tbody tr[checked="true"]', (0, _jTool2.default)('table[grid-manager="' + Settings.gridManagerName + '"]')).length === 0) {
 					exportExcelOfChecked.addClass('disabled');
 				} else {
 					exportExcelOfChecked.removeClass('disabled');
@@ -2903,21 +2696,23 @@
 					return false;
 				}
 				var _gridMenu = (0, _jTool2.default)(this).closest('.grid-menu');
+				var _table = (0, _jTool2.default)('table[grid-manager="' + _gridMenu.attr('grid-master') + '"]');
 				var refreshType = this.getAttribute('refresh-type');
-				var cPage = _Settings2.default.pageData.cPage;
+				var Settings = _Cache2.default.getSettings(_table);
+				var cPage = Settings.pageData.cPage;
 				//上一页
-				if (refreshType === 'previous' && _Settings2.default.pageData.cPage > 1) {
-					cPage = _Settings2.default.pageData.cPage - 1;
+				if (refreshType === 'previous' && Settings.pageData.cPage > 1) {
+					cPage = Settings.pageData.cPage - 1;
 				}
 				//下一页
-				else if (refreshType === 'next' && _Settings2.default.pageData.cPage < _Settings2.default.pageData.tPage) {
-						cPage = _Settings2.default.pageData.cPage + 1;
+				else if (refreshType === 'next' && Settings.pageData.cPage < Settings.pageData.tPage) {
+						cPage = Settings.pageData.cPage + 1;
 					}
 					//重新加载
 					else if (refreshType === 'refresh') {
-							cPage = _Settings2.default.pageData.cPage;
+							cPage = Settings.pageData.cPage;
 						}
-				_AjaxPage2.default.gotoPage(cPage);
+				_AjaxPage2.default.gotoPage(_table, cPage);
 				_body.off('mousedown.gridMenu');
 				_gridMenu.hide();
 			});
@@ -2969,7 +2764,7 @@
 	exports.default = Menu;
 
 /***/ },
-/* 19 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2990,24 +2785,22 @@
 
 	var _Adjust2 = _interopRequireDefault(_Adjust);
 
-	var _Settings = __webpack_require__(6);
-
-	var _Settings2 = _interopRequireDefault(_Settings);
-
 	var _Cache = __webpack_require__(4);
 
 	var _Cache2 = _interopRequireDefault(_Cache);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/*
+	 * Drag: 拖拽
+	 * */
 	var Drag = {
-		// 动画执行时间
-		animateTime: _Settings2.default.animateTime
 		/*
 	  @绑定拖拽换位事件
 	  $.table: table [jTool object]
 	  */
-		, bindDragEvent: function bindDragEvent(table) {
+		bindDragEvent: function bindDragEvent(table) {
+			var Settings = _Cache2.default.getSettings(table);
 			var _this = this;
 			var thList = (0, _jTool2.default)('thead th', table),
 			    //匹配页面下所有的TH
@@ -3031,7 +2824,7 @@
 			dragAction.bind('mousedown', function () {
 				_th = (0, _jTool2.default)(this).closest('th'), _prevTh = undefined, _nextTh = undefined, _prevTd = undefined, _nextTd = undefined, _tr = _th.parent(), _allTh = _tr.find('th[th-visible="visible"]'), _table = _tr.closest('table'), _tableDiv = _table.closest('.table-div'), _tableWrap = _table.closest('.table-wrap'), _td = _Base2.default.getRowTd(_th);
 				// 列拖拽触发回调事件
-				_Settings2.default.dragBefore(event);
+				Settings.dragBefore(event);
 
 				//禁用文字选中效果
 				(0, _jTool2.default)('body').addClass('no-select-text');
@@ -3119,21 +2912,21 @@
 						_dreamlandDIV.animate({
 							top: _table.get(0).offsetTop + 'px',
 							left: _th.get(0).offsetLeft - _tableDiv.get(0).scrollLeft + 'px'
-						}, _this.animateTime, function () {
+						}, Settings.animateTime, function () {
 							_tableDiv.css('position', _divPosition);
 							_th.removeClass('drag-ongoing');
 							_td.removeClass('drag-ongoing');
 							_dreamlandDIV.remove();
 
 							// 列拖拽成功回调事件
-							_Settings2.default.dragAfter(event);
+							Settings.dragAfter(event);
 						});
 					}
 					//缓存列表位置信息
 					_Cache2.default.setToLocalStorage(_table);
 
 					//重置调整宽度事件源
-					if (_Settings2.default.supportAdjust) {
+					if (Settings.supportAdjust) {
 						_Adjust2.default.resetAdjust(_table);
 					}
 					//开启文字选中效果
@@ -3141,10 +2934,210 @@
 				});
 			});
 		}
-	}; /*
-	    * Drag: 拖拽
-	    * */
+	};
 	exports.default = Drag;
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _jTool = __webpack_require__(1);
+
+	var _jTool2 = _interopRequireDefault(_jTool);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Scroll = {
+		initDOM: function initDOM() {
+			return '';
+			// return '<div class="scroll-area"><div class="sa-inner"></div></div>';
+		}
+		/*
+	  @绑定表格滚动轴功能
+	  $.table: table [jTool object]
+	  */
+		, bindScrollFunction: function bindScrollFunction(table) {
+			var _tableDIV = table.closest('.table-div'),
+			    //列表所在的DIV,该DIV的class标识为table-div
+			_tableWarp = _tableDIV.closest('.table-wrap'); //列表所在的外围容器
+			//绑定窗口变化事件
+			// window.onresize = function () {
+			// 	$('.table-div').trigger('scroll', [true]);
+			// };
+
+			//绑定滚动条事件
+			_tableDIV.unbind('scroll');
+			_tableDIV.bind('scroll', function (e, _isWindowResize_) {
+				var _scrollDOMTop = (0, _jTool2.default)(this).scrollTop();
+				_tableDIV = table.closest('.table-div');
+				_tableWarp = _tableDIV.closest('.table-wrap');
+				var _thead = (0, _jTool2.default)('thead[grid-manager-thead]', table); //列表head
+				var _tbody = (0, _jTool2.default)('tbody', table); //列表body
+				var _setTopHead = (0, _jTool2.default)('.set-top', table); //吸顶元素
+				//当前列表数据为空
+				if ((0, _jTool2.default)('tr', _tbody).length == 0) {
+					return true;
+				}
+
+				//配置吸顶区的宽度
+				if (_setTopHead.length == 0 || _isWindowResize_) {
+					_setTopHead.length == 0 ? table.append(_thead.clone(true).addClass('set-top')) : '';
+					_setTopHead = (0, _jTool2.default)('.set-top', table);
+					_setTopHead.removeAttr('grid-manager-thead');
+					_setTopHead.css({
+						width: _thead.width() + _thead.css('border-left-width') + _thead.css('border-right-width'),
+						left: table.css('border-left-width') + 'px'
+					});
+				}
+				if (_setTopHead.length === 0) {
+					return;
+				}
+				//当前吸引thead 没有背景时 添加默认背景
+				if (!_setTopHead.css('background') || _setTopHead.css('background') == '' || _setTopHead.css('background') == 'none') {
+					_setTopHead.css('background', '#f5f5f5');
+				}
+				// 删除表头置顶
+				if (_scrollDOMTop === 0) {
+					_thead.removeClass('scrolling');
+					_setTopHead.remove();
+				}
+				// 显示表头置顶
+				else {
+						_thead.addClass('scrolling');
+						_setTopHead.css({
+							top: _scrollDOMTop
+						});
+					}
+				return true;
+			});
+			//     $(Settings.scrollDOM).trigger('scroll');
+		}
+	}; /*
+	    * Scroll: 滚动轴
+	    * */
+	exports.default = Scroll;
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _jTool = __webpack_require__(1);
+
+	var _jTool2 = _interopRequireDefault(_jTool);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Settings = {
+		// 是否为开发模式，为true时将打印事件日志
+		// isDevelopMode: false,
+
+		//当前基本路径[用于加载分页所需样式文件]
+		// basePath: '',
+
+		// 是否使用默认的table样式
+		useDefaultStyle: true,
+
+		// 拖拽
+		supportDrag: true, // 是否支持拖拽功能
+		dragBefore: _jTool2.default.noop, // 拖拽前事件
+		dragAfter: _jTool2.default.noop, // 拖拽后事件
+
+		// 列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
+		// isRealTime: false,
+
+		// 宽度调整
+		supportAdjust: true, // 是否支持宽度调整功能
+		adjustBefore: _jTool2.default.noop, // 宽度调整前事件
+		adjustAfter: _jTool2.default.noop, // 宽度调整后事件
+
+		// 是否支持表头提示信息[需在地应的TH上增加属性remind]
+		supportRemind: false,
+
+		// 是否支持配置列表功能[操作列是否可见]
+		supportConfig: true,
+
+		// 是否支持表头置顶
+		// supportSetTop: true,
+
+		// 宽度配置
+		width: '100%',
+
+		// 高度配置, 可配置的最小宽度为300px
+		height: '300px',
+
+		//是否支持表头置顶
+		// scrollDOM: window,
+
+		// 特殊情况下才进行设置，在有悬浮物遮挡住表头置顶区域时进行使用，配置值为遮挡的高度
+		// topValue: 0,
+
+		// 动画效果时长
+		animateTime: 300,
+
+		// 是否禁用本地缓存
+		disableCache: false,
+
+		// 是否自动加载CSS文件
+		// autoLoadCss: false,
+		// 排序 sort
+		supportSorting: false, //排序：是否支持排序功能
+		isCombSorting: false, //是否为组合排序[只有在支持排序的情况下生效
+		sortData: {}, //存储排序数据[不对外公开参数]
+		sortUpText: 'up', //排序：升序标识[该标识将会传至数据接口]
+		sortDownText: 'down', //排序：降序标识[该标识将会传至数据接口]
+		sortingBefore: _jTool2.default.noop, //排序事件发生前
+		sortingAfter: _jTool2.default.noop, //排序事件发生后
+
+		// 分页 ajaxPag
+		supportAjaxPage: false, //是否支持配置列表ajxa分页
+		sizeData: [10, 20, 30, 50, 100], //用于配置列表每页展示条数选择框
+		pageSize: 20, //每页显示条数，如果使用缓存且存在缓存数据，那么该值将失效
+		pageData: {}, //存储分页数据[不对外公开参数]
+		query: {}, //其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
+		pagingBefore: _jTool2.default.noop, //分页事件发生前
+		pagingAfter: _jTool2.default.noop, //分页事件发生后
+		// pageCssFile 		: '',						//分页样式文件路径[用户自定义分页样式]
+
+		//序目录
+		supportAutoOrder: true, //是否支持自动序目录
+		// baukh20161104:移除 orderThName		: 'order',					//序目录所使用的th-name
+
+		//全选项
+		supportCheckbox: true, //是否支持选择与反选
+		// baukh20161104:移除 checkboxThName		: 'gm-checkbox',			//选择与反选列所使用的th-name
+		//国际化
+		i18n: 'zh-cn', //选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
+
+		//用于支持通过数据渲染DOM
+		columnData: [], //表格列数据配置项
+		gridManagerName: '', //表格grid-manager所对应的值[可在html中配置]
+		ajax_url: '', //获取表格数据地址，配置该参数后，将会动态获取数据
+		ajax_type: 'GET', //ajax请求类型['GET', 'POST']默认GET
+		ajax_beforeSend: _jTool2.default.noop, //ajax请求之前,与jTool的beforeSend使用方法相同
+		ajax_success: _jTool2.default.noop, //ajax成功后,与jTool的success使用方法相同
+		ajax_complete: _jTool2.default.noop, //ajax完成后,与jTool的complete使用方法相同
+		ajax_error: _jTool2.default.noop, //ajax失败后,与jTool的error使用方法相同
+		ajax_data: undefined, //ajax静态数据,配置后ajax_url将无效
+		dataKey: 'data', //ajax请求返回的列表数据key键值,默认为data
+		totalsKey: 'totals', //ajax请求返回的数据总条数key键值,默认为totals
+		//数据导出
+		supportExport: true //支持导出表格数据
+	}; /**
+	    * Settings: 配置项
+	    */
+	exports.default = Settings;
 
 /***/ }
 /******/ ]);

@@ -3,7 +3,6 @@
 * */
 import $ from './jTool';
 import Base from './Base';
-import Settings from './Settings';
 var Cache = {
 	/*
 	* @缓存数据
@@ -11,6 +10,13 @@ var Cache = {
 	* 通过每个tr上的cache-key进行获取
 	* */
 	cacheData: {}
+	,updateSettings: function (table, settings) {
+		var data = $.extend(true, {}, settings);
+		table.data('settings', data);
+	}
+	,getSettings: function(table) {
+		return table.data('settings');
+	}
 	/*
 	 * [对外公开方法]
 	 * @获取当前行渲染时使用的数据
@@ -38,6 +44,7 @@ var Cache = {
 	* $.cleanText: 清除缓存的原因
 	* */
 	,cleanTableCache: function(table, cleanText){
+		let Settings = Cache.getSettings(table);
 		this.clear(table);
 		Base.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：'+ cleanText, 'info');
 	}
@@ -59,16 +66,17 @@ var Cache = {
 
 	/*
 	 * 获取指定表格本地存储所使用的key
-	 * $table: table jTool
+	 * table: table jTool
 	 * */
-	,getLocalStorageKey: function($table){
+	,getLocalStorageKey: function(table){
+		let Settings = Cache.getSettings(table);
 		// 验证table是否有效
-		if(!$table || $table.length === 0){
+		if(!table || table.length === 0){
 			Base.outLog('getLocalStorage:无效的table', 'error');
 			return false;
 		}
 		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-		var noCache = $table.attr('no-cache');
+		var noCache = table.attr('no-cache');
 		if(noCache && noCache== 'true'){
 			Base.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
 			return false;
@@ -77,12 +85,6 @@ var Cache = {
 			Base.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
 			return false;
 		}
-		// var _gridKey = $table.attr('grid-manager');
-		// //验证当前表是否为GridManager
-		// if(!_gridKey || $.trim(_gridKey) == ''){
-		// 	Base.outLog('getLocalStorage:无效的grid-manager', 'error');
-		// 	return false;
-		// }
 		return window.location.pathname +  window.location.hash + '-'+ Settings.gridManagerName;
 	}
 	/*
@@ -90,6 +92,7 @@ var Cache = {
 	* $.table: table [jTool object]
 	* */
 	,configTheadForCache: function(table){
+		let Settings = Cache.getSettings(table);
 		var _this = this;
 		var _data = _this.getLocalStorage(table),		//本地缓存的数据
 			_domArray = [];
@@ -157,6 +160,7 @@ var Cache = {
 	 $.isInit: 是否为初始存储缓存[用于处理宽度在特定情况下发生异常]
 	 */
 	,setToLocalStorage: function(table, isInit){
+		let Settings = Cache.getSettings(table);
 		var _this = this;
 		//当前为禁用缓存模式，直接跳出
 		if(Settings.disableCache){

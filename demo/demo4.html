@@ -45,6 +45,9 @@
 <div style="width:95%;margin:0px auto;">
     <table grid-manager="test1"></table>
 </div>
+<br/>
+<br/>
+<br/>
 <div style="width:95%;margin:0px auto;">
 	<table grid-manager="test2"></table>
 </div>
@@ -56,7 +59,7 @@
 		,supportSorting: true
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
-		,query: {pluginId: 2}
+		,query: {pluginId: 1, ccname: 'baukh'}
 		,pageSize:20
 		,columnData: [{
 			key: 'name',
@@ -83,15 +86,18 @@
 			}
 		}
 		]
+		,ajax_success: function () {
+			console.log('test1 ajax_success');
+		}
 	});
 	$('table[grid-manager="test2"]').GM({
 		supportRemind: true
-		,height: '300px'
+		,height: '400px'
 		,supportAjaxPage:true
 		,supportSorting: true
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
-		,query: {pluginId: 1}
+		,query: {pluginId: 2, 'bbname': 'kouzi'}
 		,pageSize:20
 		,columnData: [{
 			key: 'name',
@@ -118,6 +124,10 @@
 			}
 		}
 		]
+		,ajax_success: function () {
+			console.log($('table[grid-manager="test2"]').GM('getSettings'))
+			console.log('test2 ajax_success');
+		}
 	});
 
 

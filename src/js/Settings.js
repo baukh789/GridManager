@@ -2,9 +2,9 @@
  * Settings: 配置项
  */
 import $ from './jTool';
-const Settings = {
+let Settings = {
 	// 是否为开发模式，为true时将打印事件日志
-	isDevelopMode: false,
+	// isDevelopMode: false,
 
 	//当前基本路径[用于加载分页所需样式文件]
 	// basePath: '',

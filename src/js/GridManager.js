@@ -4,6 +4,7 @@
 import jTool from './jTool';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
+import Base from './Base';
 import Cache from './Cache';
 import Core from './Core';
 import Config from './Config';
@@ -37,26 +38,27 @@ GridManager.prototype = {
 			arg.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
 		}
 		// 参数
-		Settings 域存在问题
-考虑将Settings中的内容放到GridManager中,在原引用Settings的地方引用GridManager
-		// jTool.extend(Settings, arg);
-		jTool.extend(this, Settings, arg);
+		// Settings 域存在问题
+// 考虑将Settings中的内容放到GridManager中,在原引用Settings的地方引用GridManager
+		jTool.extend(false, Settings, arg);
+		_this.updateSettings(jToolObj, Settings);
+		jTool.extend(true, this, arg);
 		//通过版本较验 清理缓存
-		Cache.cleanTableCacheForVersion(jToolObj, this.version);
-		if(this.gridManagerName.trim() === ''){
-			this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+		_this.cleanTableCacheForVersion(jToolObj, this.version);
+		if(_this.gridManagerName.trim() === ''){
+			_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 			return false;
 		}
 
 		if(jToolObj.hasClass('GridManager-ready') || jToolObj.hasClass('GridManager-loading')){
-			this.outLog('渲染失败：可能该表格已经渲染或正在渲染' , 'error');
+			_this.outLog('渲染失败：可能该表格已经渲染或正在渲染' , 'error');
 			return false;
 		}
 		//根据本地缓存配置每页显示条数
-		if(this.supportAjaxPage){
-			AjaxPage.configPageForCache.call(this, jToolObj);
+		if(_this.supportAjaxPage){
+			_this.configPageForCache(jToolObj);
 		}
-		var query = jTool.extend({}, this.query, this.pageData);
+		var query = jTool.extend({}, _this.query, _this.pageData);
 		//增加渲染中标注
 		jToolObj.addClass('GridManager-loading');
 		_this.initTable(jToolObj);
@@ -64,7 +66,7 @@ GridManager.prototype = {
 		//如果初始获取缓存失败，在渲染完成后首先存储一次数据
 		if(typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined'){
 			window.setTimeout(function(){
-				Cache.setToLocalStorage(jToolObj, true);
+				_this.setToLocalStorage(jToolObj, true);
 				jToolObj.removeAttr('grid-manager-cache-error');
 			},1000);
 		}
@@ -82,43 +84,44 @@ GridManager.prototype = {
 		//渲染HTML，嵌入所需的事件源DOM
 		DOM.createDOM(table);
 		//获取本地缓存并对列表进行配置
-		if(!this.disableCache){
-			Cache.configTheadForCache(table);
-			this.supportAdjust ? Adjust.resetAdjust.call(this, table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
+		if(!_this.disableCache){
+			_this.configTheadForCache(table);
+			_this.supportAdjust ? _this.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
 		}
 		//绑定宽度调整事件
-		if(this.supportAdjust){
-			Adjust.bindAdjustEvent.call(this, table);
+		if(_this.supportAdjust){
+			_this.bindAdjustEvent(table);
 		}
 		//绑定拖拽换位事件
-		if(this.supportDrag){
-			Drag.bindDragEvent.call(this, table);
+		if(_this.supportDrag){
+			_this.bindDragEvent(table);
 		}
 		//绑定排序事件
-		if(this.supportSorting){
-			Sort.bindSortingEvent.call(this, table);
+		if(_this.supportSorting){
+			_this.bindSortingEvent(table);
 		}
 		//绑定表头提示事件
-		if(this.supportRemind){
-			Remind.bindRemindEvent.call(this, table);
+		if(_this.supportRemind){
+			_this.bindRemindEvent(table);
 		}
 		//绑定配置列表事件
-		if(this.supportConfig){
-			Config.bindConfigEvent.call(this, table);
+		if(_this.supportConfig){
+			_this.bindConfigEvent(table);
 		}
 		//绑定表头置顶功能
-		Scroll.bindScrollFunction.call(this, table);
+		_this.bindScrollFunction(table);
 		//绑定右键菜单事件
-		Menu.bindRightMenuEvent.call(this, table);
+		_this.bindRightMenuEvent(table);
 		//渲梁tbodyDOM
-		Core.__refreshGrid();
+		_this.__refreshGrid(table);
 		//将GridManager实例化对象存放于jTool data
-		Cache.setGridManagerToJTool.call(this, table);
+		_this.setGridManagerToJTool.call(_this, table);
 	}
 };
 // GM导入功能: 配置项
-// jTool.extend(GridManager.prototype, Settings);
+jTool.extend(true, GridManager.prototype, Settings);
 // GM导入功能: 核心
+jTool.extend(GridManager.prototype, Base);
 jTool.extend(GridManager.prototype, Core);
 // GM导入功能: 选择
 jTool.extend(GridManager.prototype, Checkbox);
@@ -154,6 +157,7 @@ var publishList = [
 	'init',					//初始化
 	'setSort',				//手动设置排序
 	'get',					//通过jTool实例获取GridManager
+	'getSettings',			//获取配置参数
 	'getCheckedTr',			//获取当前选中的行
 	'showTh',				//显示Th及对应的TD项
 	'hideTh',				//隐藏Th及对应的TD项
@@ -269,30 +273,30 @@ var publishList = [
 		jQuery.fn.extend({
 			GM: function(){
 				if(arguments.length === 0) {
-					this.get(0).GM();
+					return this.get(0).GM();
 				}
 				else if(arguments.length === 1) {
-					this.get(0).GM(arguments[0]);
+					return this.get(0).GM(arguments[0]);
 				}
 				else if(arguments.length === 2) {
-					this.get(0).GM(arguments[0], arguments[1]);
+					return this.get(0).GM(arguments[0], arguments[1]);
 				}
 				else if(arguments.length === 3) {
-					this.get(0).GM(arguments[0], arguments[1], arguments[2]);
+					return this.get(0).GM(arguments[0], arguments[1], arguments[2]);
 				}
 			},
 			GridManager: function(){
 				if(arguments.length === 0) {
-					this.get(0).GridManager();
+					return this.get(0).GridManager();
 				}
 				else if(arguments.length === 1) {
-					this.get(0).GridManager(arguments[0]);
+					return this.get(0).GridManager(arguments[0]);
 				}
 				else if(arguments.length === 2) {
-					this.get(0).GridManager(arguments[0], arguments[1]);
+					return this.get(0).GridManager(arguments[0], arguments[1]);
 				}
 				else if(arguments.length === 3) {
-					this.get(0).GridManager(arguments[0], arguments[1], arguments[2]);
+					return this.get(0).GridManager(arguments[0], arguments[1], arguments[2]);
 				}
 			}
 		});
