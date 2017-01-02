@@ -82,7 +82,6 @@ const DOM = {
 			var	_ajaxPageHtml= AjaxPage.html();
 		}
 		var	wrapHtml,                       //外围的html片段
-			setTopHtml = '',                     //表头置顶html片段
 			tableWarp,						//单个table所在的DIV容器
 			onlyThead,						//单个table下的thead
 			onlyThList,						//单个table下的TH
