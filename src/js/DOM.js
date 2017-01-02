@@ -199,17 +199,23 @@ const DOM = {
 			//如果th上存在width属性，则表明配置项中存在该项配置；
 			//验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
 			var thWidthForConfig = onlyTH.attr('width');
-			if(onlyTH.attr('gm-create') !== 'true'){  //不对GM自动创建的列进行处理
+			// 宽度配置: 非GM自动创建的列
+			if(onlyTH.attr('gm-create') !== 'true'){
+				// 当前列被手动配置了宽度
 				if(thWidthForConfig && thWidthForConfig !== ''){
 					onlyTH.width(thWidthForConfig);
 					onlyTH.removeAttr('width');
-				}else{
-					var _realWidthForThText = Base.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
-					onlyTH.css('min-width', _realWidthForThText);
-					//重置width 防止auto现象
-					onlyTH.width(onlyTH.width());
 				}
-			} else{
+				// 当前列宽度未进行手动配置
+				else{
+					var _realWidthForThText = Base.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
+					// onlyTH.css('min-width', _realWidthForThText);
+					//重置width 防止auto现象
+					onlyTH.width(_realWidthForThText);
+				}
+			}
+			// 宽度配置: GM自动创建为固定宽度
+			else{
 				onlyTH.width(50);
 			}
 		});
