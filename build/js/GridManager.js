@@ -125,7 +125,7 @@
 	 * */
 	function GridManager() {
 		// 版本号
-		this.version = '2.1.2';
+		this.version = '2.1.5';
 	}
 	GridManager.prototype = {
 		/*
@@ -1816,10 +1816,11 @@
 					}
 					// 当前列宽度未进行手动配置
 					else {
-							var _realWidthForThText = _Base2.default.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
+							var _minWidth = _Base2.default.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
 							// onlyTH.css('min-width', _realWidthForThText);
 							//重置width 防止auto现象
-							onlyTH.width(_realWidthForThText);
+							var _oldWidth = onlyTH.width();
+							onlyTH.width(_oldWidth > _minWidth ? _oldWidth : _minWidth);
 						}
 				}
 				// 宽度配置: GM自动创建为固定宽度
