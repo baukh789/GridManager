@@ -14,11 +14,11 @@ const Adjust = {
 	 $.table: table [jTool object]
 	 */
 	,bindAdjustEvent: function(table){
-		let Settings = Cache.getSettings(table);
 		var thList 	= $('thead th', table);	//table下的TH
 		//监听鼠标调整列宽度
 		thList.off('mousedown', '.adjust-action');
 		thList.on('mousedown', '.adjust-action', function(event){
+			let Settings = Cache.getSettings(table);
 			var _dragAction 	= $(this);
 			var _th 			= _dragAction.closest('th'),		        //事件源所在的th
 				_tr 			= _th.parent(),								//事件源所在的tr
@@ -74,7 +74,8 @@ const Adjust = {
 
 			//绑定鼠标放开、移出事件
 			_table.unbind('mouseup mouseleave');
-			_table.bind('mouseup mouseleave',function(){
+			_table.bind('mouseup mouseleave',function(event){
+				let Settings = Cache.getSettings(table);
 				_table.unbind('mousemove mouseleave');
 				//缓存列表宽度信息
 				Cache.setToLocalStorage(_table);

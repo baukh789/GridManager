@@ -458,11 +458,11 @@
 	  $.table: table [jTool object]
 	  */
 		, bindAdjustEvent: function bindAdjustEvent(table) {
-			var Settings = _Cache2.default.getSettings(table);
 			var thList = (0, _jTool2.default)('thead th', table); //table下的TH
 			//监听鼠标调整列宽度
 			thList.off('mousedown', '.adjust-action');
 			thList.on('mousedown', '.adjust-action', function (event) {
+				var Settings = _Cache2.default.getSettings(table);
 				var _dragAction = (0, _jTool2.default)(this);
 				var _th = _dragAction.closest('th'),
 				    //事件源所在的th
@@ -520,7 +520,8 @@
 
 				//绑定鼠标放开、移出事件
 				_table.unbind('mouseup mouseleave');
-				_table.bind('mouseup mouseleave', function () {
+				_table.bind('mouseup mouseleave', function (event) {
+					var Settings = _Cache2.default.getSettings(table);
 					_table.unbind('mousemove mouseleave');
 					//缓存列表宽度信息
 					_Cache2.default.setToLocalStorage(_table);
@@ -2788,8 +2789,6 @@
 	  $.table: table [jTool object]
 	  */
 		bindDragEvent: function bindDragEvent(table) {
-			var Settings = _Cache2.default.getSettings(table);
-			var _this = this;
 			var thList = (0, _jTool2.default)('thead th', table),
 			    //匹配页面下所有的TH
 			dragAction = thList.find('.drag-action');
@@ -2807,9 +2806,9 @@
 			_td, //与事件源同列的所在td
 			_divPosition, //所在DIV使用定位方式
 			_dreamlandDIV; //临时展示被移动的列
-			var SIV_td; //用于处理时实刷新造成的列表错乱
 			dragAction.unbind('mousedown');
-			dragAction.bind('mousedown', function () {
+			dragAction.bind('mousedown', function (event) {
+				var Settings = _Cache2.default.getSettings(table);
 				_th = (0, _jTool2.default)(this).closest('th'), _prevTh = undefined, _nextTh = undefined, _prevTd = undefined, _nextTd = undefined, _tr = _th.parent(), _allTh = _tr.find('th[th-visible="visible"]'), _table = _tr.closest('table'), _tableDiv = _table.closest('.table-div'), _tableWrap = _table.closest('.table-wrap'), _td = _Base2.default.getRowTd(_th);
 				// 列拖拽触发回调事件
 				Settings.dragBefore(event);
@@ -2892,7 +2891,8 @@
 				});
 				//绑定拖拽停止事件
 				(0, _jTool2.default)('body').unbind('mouseup');
-				(0, _jTool2.default)('body').bind('mouseup', function () {
+				(0, _jTool2.default)('body').bind('mouseup', function (event) {
+					var Settings = _Cache2.default.getSettings(table);
 					(0, _jTool2.default)('body').unbind('mousemove');
 					//清除临时展示被移动的列
 					_dreamlandDIV = (0, _jTool2.default)('.dreamland-div');

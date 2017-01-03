@@ -3,7 +3,6 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel="stylesheet" type="text/css" href="../css/GridManager.css">
-	<script type="text/javascript" src="http://www.lovejavascript.com/js/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript" src="../js/GridManager.js"></script>
     <title>GridManager:多表渲染</title>
     <style>
@@ -41,6 +40,11 @@
 
 <body>
 <h2>GridManager:多表渲染</h2>
+<p>注意:</p>
+<p>1.存在.json文件，谷歌需要放到环境中效果才能展现.</p>
+<p>2.数据采用的是.json的模拟请求数据,所以在切换分页时数据看上去并未变化.</p>
+<p>3.当前使用的排序方式为组合排序</p>
+<p>4.此Demo存在跨域请求,只做为演示不可直接使用</p>
 <hr/>
 <div style="width:95%;margin:0px auto;">
     <table grid-manager="test1"></table>
@@ -52,7 +56,7 @@
 	<table grid-manager="test2"></table>
 </div>
 <script type="text/javascript">
-	$('table[grid-manager="test1"]').GM({
+	document.querySelector('table[grid-manager="test1"]').GM({
 		supportRemind: true
 		,height: '300px'
 		,supportAjaxPage:true
@@ -90,7 +94,7 @@
 			console.log('test1 ajax_success');
 		}
 	});
-	$('table[grid-manager="test2"]').GM({
+	document.querySelector('table[grid-manager="test2"]').GM({
 		supportRemind: true
 		,height: '400px'
 		,supportAjaxPage:true
@@ -125,7 +129,7 @@
 		}
 		]
 		,ajax_success: function () {
-			console.log($('table[grid-manager="test2"]').GM('getSettings'))
+			console.log(document.querySelector('table[grid-manager="test2"]').GM('getSettings'))
 			console.log('test2 ajax_success');
 		}
 	});

@@ -11,8 +11,6 @@ const Drag = {
 	 $.table: table [jTool object]
 	 */
 	bindDragEvent: function(table){
-		let Settings = Cache.getSettings(table);
-		var _this = this;
 		var thList = $('thead th', table),	//匹配页面下所有的TH
 			dragAction	= thList.find('.drag-action');
 		//指定拖拽换位事件源,配置拖拽样式
@@ -29,9 +27,9 @@ const Drag = {
 			_td,			//与事件源同列的所在td
 			_divPosition,	//所在DIV使用定位方式
 			_dreamlandDIV;	//临时展示被移动的列
-		var SIV_td;			//用于处理时实刷新造成的列表错乱
 		dragAction.unbind('mousedown');
-		dragAction.bind('mousedown',function(){
+		dragAction.bind('mousedown',function(event){
+			let Settings = Cache.getSettings(table);
 			_th 			= $(this).closest('th'),
 			_prevTh			= undefined,
 			_nextTh			= undefined,
@@ -137,7 +135,8 @@ const Drag = {
 			});
 			//绑定拖拽停止事件
 			$('body').unbind('mouseup');
-			$('body').bind('mouseup',function(){
+			$('body').bind('mouseup',function(event){
+				let Settings = Cache.getSettings(table);
 				$('body').unbind('mousemove');
 				//清除临时展示被移动的列
 				_dreamlandDIV = $('.dreamland-div');
