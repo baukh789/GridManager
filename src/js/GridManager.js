@@ -176,7 +176,6 @@ var publishList = [
 		var $table = $(table);
 		// 特殊情况处理：单组tr进行操作，如resetTd()方法
 		if(table.nodeName === 'TR'){
-			console.log('resetTd未执行');
 			return;
 		}
 		var name,

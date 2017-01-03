@@ -3,12 +3,6 @@
  */
 import $ from './jTool';
 let Settings = {
-	// 是否为开发模式，为true时将打印事件日志
-	// isDevelopMode: false,
-
-	//当前基本路径[用于加载分页所需样式文件]
-	// basePath: '',
-
 	// 是否使用默认的table样式
 	useDefaultStyle: true,
 
@@ -16,9 +10,6 @@ let Settings = {
 	supportDrag: true,  // 是否支持拖拽功能
 	dragBefore: $.noop, // 拖拽前事件
 	dragAfter: $.noop,	// 拖拽后事件
-
-	// 列表内是否存在实时刷新[平时尽量不要设置为true，以免消耗资源]
-	// isRealTime: false,
 
 	// 宽度调整
 	supportAdjust: true,  // 是否支持宽度调整功能
@@ -31,20 +22,11 @@ let Settings = {
 	// 是否支持配置列表功能[操作列是否可见]
 	supportConfig: true,
 
-	// 是否支持表头置顶
-	// supportSetTop: true,
-
 	// 宽度配置
 	width: '100%',
 
 	// 高度配置, 可配置的最小宽度为300px
 	height: '300px',
-
-	//是否支持表头置顶
-	// scrollDOM: window,
-
-	// 特殊情况下才进行设置，在有悬浮物遮挡住表头置顶区域时进行使用，配置值为遮挡的高度
-	// topValue: 0,
 
 	// 动画效果时长
 	animateTime: 300,
@@ -71,15 +53,13 @@ let Settings = {
 	query 				: {},						//其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
 	pagingBefore		: $.noop,					//分页事件发生前
 	pagingAfter			: $.noop,					//分页事件发生后
-	// pageCssFile 		: '',						//分页样式文件路径[用户自定义分页样式]
 
 	//序目录
 	supportAutoOrder	: true,						//是否支持自动序目录
-	// baukh20161104:移除 orderThName		: 'order',					//序目录所使用的th-name
 
 	//全选项
 	supportCheckbox	: true,						//是否支持选择与反选
-	// baukh20161104:移除 checkboxThName		: 'gm-checkbox',			//选择与反选列所使用的th-name
+
 	//国际化
 	i18n	 			: 'zh-cn',					//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
 

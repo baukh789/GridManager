@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="../css/GridManager.css">
+	<script type="text/javascript" src="http://www.lovejavascript.com/js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="../js/GridManager.js"></script>
+    <title>GridManager:多表渲染</title>
+    <style>
+        html, body{
+            overflow-x:hidden;
+        }
+        h2{
+            font-size:22px;
+            padding:10px 30px;
+            color:#333;
+        }
+        p{
+            font-size:14px;
+            padding:10px 30px;
+            color:#333;
+            text-indent:2em;
+        }
+        hr{
+            margin-top: 18px;
+            margin-bottom: 18px;
+            border: 0;
+            border-top: 1px solid #eee;
+        }
+        .plugin-action{
+            display: inline-block;
+            color: steelblue;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .plugin-action:hover{
+            text-decoration:underline;
+        }
+    </style>
+</head>
+
+<body>
+<h2>GridManager:多表渲染</h2>
+<hr/>
+<div style="width:95%;margin:0px auto;">
+    <table grid-manager="test1"></table>
+</div>
+<br/>
+<br/>
+<br/>
+<div style="width:95%;margin:0px auto;">
+	<table grid-manager="test2"></table>
+</div>
+<script type="text/javascript">
+	$('table[grid-manager="test1"]').GM({
+		supportRemind: true
+		,height: '300px'
+		,supportAjaxPage:true
+		,supportSorting: true
+		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajax_type: 'POST'
+		,query: {pluginId: 1, ccname: 'baukh'}
+		,pageSize:20
+		,columnData: [{
+			key: 'name',
+			remind: 'the name',
+			width: '100px',
+			text: '名称',
+			sorting: 'up'
+		},{
+			key: 'info',
+			remind: 'the info',
+			text: '使用说明',
+			sorting: ''
+		},{
+			key: 'url',
+			remind: 'the url',
+			text: 'url'
+		},{
+			key: 'action',
+			remind: 'the action',
+			text: '操作',
+			template: function(action, rowObject){
+				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+			}
+		}
+		]
+		,ajax_success: function () {
+			console.log('test1 ajax_success');
+		}
+	});
+	$('table[grid-manager="test2"]').GM({
+		supportRemind: true
+		,height: '400px'
+		,supportAjaxPage:true
+		,supportSorting: true
+		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajax_type: 'POST'
+		,query: {pluginId: 2, 'bbname': 'kouzi'}
+		,pageSize:20
+		,columnData: [{
+			key: 'name',
+			remind: 'the name',
+			width: '100px',
+			text: '名称',
+			sorting: 'up'
+		},{
+			key: 'info',
+			remind: 'the info',
+			text: '使用说明',
+			sorting: ''
+		},{
+			key: 'url',
+			remind: 'the url',
+			text: 'url'
+		},{
+			key: 'action',
+			remind: 'the action',
+			text: '操作',
+			template: function(action, rowObject){
+				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+			}
+		}
+		]
+		,ajax_success: function () {
+			console.log($('table[grid-manager="test2"]').GM('getSettings'))
+			console.log('test2 ajax_success');
+		}
+	});
+
+
+</script>
+
+</body>
+</html>

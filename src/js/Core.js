@@ -55,7 +55,6 @@ const Core= {
 			typeof callback === 'function' ? callback() : '';
 			return;
 		}
-		console.log(table.attr('grid-manager'), JSON.stringify(Settings.query));
 		var pram = $.extend(true, {}, Settings.query);
 		//合并分页信息至请求参
 		if(Settings.supportAjaxPage){
