@@ -291,14 +291,14 @@
 			}
 			// ex: $(table).GridManager('init')
 			else if (arguments.length === 1 && $.type(arguments[0]) === 'string' && $.type(arguments[0]) === 'init') {
-					name = arguments[0];
+					name = 'init';
 					settings = {};
 					callback = undefined;
 				}
 				// ex: $(table).GridManager('get')
 				else if (arguments.length === 1 && $.type(arguments[0]) === 'string' && $.type(arguments[0]) !== 'init') {
 						name = arguments[0];
-						settings = {};
+						settings = undefined;
 						callback = undefined;
 					}
 					// ex: $(table).GridManager({settings})
@@ -1631,7 +1631,6 @@
 	  */
 		createDOM: function createDOM(table) {
 			var Settings = _Cache2.default.getSettings(table);
-			var _this = this;
 			table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', Settings.gridManagerName);
 			var theadHtml = '<thead grid-manager-thead>',
 			    tbodyHtml = '<tbody></tbody>',
@@ -1840,7 +1839,6 @@
 	  $.isSingleRow: 指定DOM节点是否为tr[布尔值]
 	  */
 		, resetTd: function resetTd(dom, isSingleRow) {
-			var _this = this;
 			if (isSingleRow) {
 				var _tr = (0, _jTool2.default)(dom),
 				    _table = _tr.closest('table');
@@ -1892,15 +1890,18 @@
 					_Base2.default.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
 					return false;
 				}
-				var _tmpHtml = [],
-				    _tdArray = [];
+				var _tdArray = [];
 				_jTool2.default.each(_tr, function (i, v) {
-					_tmpHtml[i] = (0, _jTool2.default)(v);
-					_td = (0, _jTool2.default)(v).find('td');
+					_tdArray = [];
+					_td = (0, _jTool2.default)('td', v);
 					_jTool2.default.each(_td, function (i2, v2) {
+						// console.log(_tdArray.join(','));
 						_tdArray[_thCacheList.eq(i2).index()] = v2.outerHTML;
 					});
-					_tmpHtml[i].html(_tdArray.join(''));
+					console.log(_td);
+					console.log(_tdArray);
+					console.log('=====');
+					v.innerHTML = _tdArray.join('');
 				});
 			}
 			//依据配置对列表进行隐藏、显示

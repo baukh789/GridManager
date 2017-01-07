@@ -19,7 +19,6 @@ const DOM = {
 	 */
 	createDOM: function(table){
 		let Settings = Cache.getSettings(table);
-		var _this = this;
 		table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', Settings.gridManagerName);
 		var theadHtml = '<thead grid-manager-thead>',
 			tbodyHtml = '<tbody></tbody>',
@@ -233,7 +232,6 @@ const DOM = {
 	 $.isSingleRow: 指定DOM节点是否为tr[布尔值]
 	 */
 	,resetTd: function(dom, isSingleRow){
-		var _this = this;
 		if(isSingleRow){
 			var _tr = $(dom),
 				_table= _tr.closest('table');
@@ -285,15 +283,14 @@ const DOM = {
 				Base.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
 				return false;
 			}
-			var _tmpHtml = [],
-				_tdArray = [];
+			var _tdArray = [];
 			$.each(_tr, function(i, v){
-				_tmpHtml[i] = $(v);
-				_td = $(v).find('td');
+				_tdArray = [];
+				_td = $('td', v);
 				$.each(_td, function(i2, v2){
 					_tdArray[_thCacheList.eq(i2).index()] = v2.outerHTML;
 				});
-				_tmpHtml[i].html(_tdArray.join(''));
+				v.innerHTML = _tdArray.join('');
 			});
 		}
 		//依据配置对列表进行隐藏、显示

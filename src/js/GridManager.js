@@ -163,7 +163,7 @@ var publishList = [
 	'hideTh',				//隐藏Th及对应的TD项
 	'exportGridToXls',		//导出表格 .xls
 	'getLocalStorage',		//获取指定表格的本地存储数据
-	'resetTd',				//重置列表[tbody]
+	// 'resetTd',				//重置列表[tbody]
 	'setQuery',				//配置query 该参数会在分页触发后返回至pagingAfter(query)方法
 	'refreshGrid',			//刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	'getRowData',			//获取当前行渲染时使用的数据
@@ -190,14 +190,14 @@ var publishList = [
 		}
 		// ex: $(table).GridManager('init')
 		else if(arguments.length === 1 && $.type(arguments[0]) === 'string' && $.type(arguments[0]) === 'init'){
-			name	 = arguments[0];
+			name	 = 'init';
 			settings = {};
 			callback = undefined;
 		}
 		// ex: $(table).GridManager('get')
 		else if(arguments.length === 1 && $.type(arguments[0]) === 'string' && $.type(arguments[0]) !== 'init'){
 			name	 = arguments[0];
-			settings = {};
+			settings = undefined;
 			callback = undefined;
 		}
 		// ex: $(table).GridManager({settings})
@@ -219,9 +219,8 @@ var publishList = [
 			callback = undefined;
 		}
 		// ex: $(table).GridManager('init', {settings})
-		// ex: $(table).GridManager('resetTd', false)
 		// ex: $(table).GridManager('exportGridToXls', 'fileName')
-		else if(arguments.length === 2 && $.type(arguments[0]) === 'string' && $.type(arguments[1]) !== 'function'){
+		else if(arguments.length === 2 && $.type(arguments[0]) === 'string' && $.type(arguments[1]) === 'string'){
 			name	 = arguments[0];
 			settings = arguments[1];
 			callback = undefined;
@@ -232,7 +231,7 @@ var publishList = [
 			settings = arguments[0];
 			callback = arguments[1];
 		}
-		// ex: $(table).GridManager('resetTd', false)
+		// ex: $(table).GridManager('showTh', false)
 		else if(arguments.length === 2 && $.type(arguments[0]) === 'string' && $.type(arguments[1]) === 'boolean'){
 			name	 = arguments[0];
 			settings = arguments[1];

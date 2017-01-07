@@ -1,6 +1,6 @@
 /*
-* Base: 基础方法
-* */
+ * Base: 基础方法
+ * */
 import $ from './jTool';
 const Base = {
 	/*
@@ -41,9 +41,9 @@ const Base = {
 		this.setAreVisible($(th), false);
 	}
 	/*
-	* @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
-	* $.th: jTool th
-	* */
+	 * @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
+	 * $.th: jTool th
+	 * */
 	,getRowTd: function(th) {
 		var tableWrap = th.closest('.table-wrap'),
 			trList = $('tbody tr', tableWrap);
