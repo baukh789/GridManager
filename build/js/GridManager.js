@@ -266,7 +266,6 @@
 	'hideTh', //隐藏Th及对应的TD项
 	'exportGridToXls', //导出表格 .xls
 	'getLocalStorage', //获取指定表格的本地存储数据
-	'resetTd', //重置列表[tbody]
 	'setQuery', //配置query 该参数会在分页触发后返回至pagingAfter(query)方法
 	'refreshGrid', //刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	'getRowData', //获取当前行渲染时使用的数据
@@ -281,70 +280,32 @@
 			if (table.nodeName === 'TR') {
 				return;
 			}
-			var name, settings, callback;
+			var name, // 方法名
+			settings, // 参数
+			callback, // 回调函数
+			condition; // 条件
 			// 格式化参数
-			// ex: $(table).GridManager()
+			// ex: document.querySelector('table').GridManager()
 			if (arguments.length === 0) {
 				name = 'init';
 				settings = {};
 				callback = undefined;
 			}
-			// ex: $(table).GridManager('init')
-			else if (arguments.length === 1 && $.type(arguments[0]) === 'string' && $.type(arguments[0]) === 'init') {
+			// ex: document.querySelector('table').GridManager({settings}, callback)
+			else if ($.type(arguments[0]) !== 'string') {
 					name = 'init';
-					settings = {};
-					callback = undefined;
+					settings = arguments[0];
+					callback = arguments[1];
 				}
-				// ex: $(table).GridManager('get')
-				else if (arguments.length === 1 && $.type(arguments[0]) === 'string' && $.type(arguments[0]) !== 'init') {
+				// ex: document.querySelector('table').GridManager('get')
+				// ex: document.querySelector('table').GM('showTh', $th);
+				// ex: document.querySelector('table').GM('setSort',sortJson,callback, refresh);
+				else {
 						name = arguments[0];
-						settings = undefined;
-						callback = undefined;
+						settings = arguments[1];
+						callback = arguments[2];
+						condition = arguments[3];
 					}
-					// ex: $(table).GridManager({settings})
-					else if (arguments.length === 1 && $.type(arguments[0]) === 'object') {
-							name = 'init';
-							settings = arguments[0];
-							callback = undefined;
-						}
-						// ex: $(table).GridManager(callback)
-						else if (arguments.length === 1 && $.type(arguments[0]) === 'function') {
-								name = 'init';
-								settings = {};
-								callback = arguments[0];
-							}
-							// ex: $(table).GridManager('init', callback)
-							else if (arguments.length === 2 && $.type(arguments[0]) === 'string' && $.type(arguments[1]) === 'function') {
-									name = arguments[0];
-									settings = arguments[1];
-									callback = undefined;
-								}
-								// ex: $(table).GridManager('init', {settings})
-								// ex: $(table).GridManager('resetTd', false)
-								// ex: $(table).GridManager('exportGridToXls', 'fileName')
-								else if (arguments.length === 2 && $.type(arguments[0]) === 'string' && $.type(arguments[1]) !== 'function') {
-										name = arguments[0];
-										settings = arguments[1];
-										callback = undefined;
-									}
-									// ex: $(table).GridManager({settings}, callback)
-									else if (arguments.length === 2 && $.isPlainObject(arguments[0]) && $.type(arguments[1]) === 'function') {
-											name = 'init';
-											settings = arguments[0];
-											callback = arguments[1];
-										}
-										// ex: $(table).GridManager('resetTd', false)
-										else if (arguments.length === 2 && $.type(arguments[0]) === 'string' && $.type(arguments[1]) === 'boolean') {
-												name = arguments[0];
-												settings = arguments[1];
-												callback = undefined;
-											}
-											// ex: $(table).GridManager('init', {settings}, callback)
-											else if (arguments.length === 3) {
-													name = arguments[0];
-													settings = arguments[1];
-													callback = arguments[2];
-												}
 
 			if (publishList.indexOf(name) === -1) {
 				throw new Error('GridManager Error:方法调用错误，请确定方法名[' + name + ']是否正确');
@@ -360,7 +321,7 @@
 			// 当前为其它方法
 			else if (name != 'init') {
 					gmObj = $table.data('gridManager');
-					var gmData = gmObj[name]($table, settings, callback);
+					var gmData = gmObj[name]($table, settings, callback, condition);
 					//如果方法存在返回值则返回，如果没有返回jTool object用于链式操作
 					return typeof gmData === 'undefined' ? $table : gmData;
 				}
@@ -602,6 +563,9 @@
 	  * */
 		, getRowData: function getRowData(table, tr) {
 			return this.cacheData[(0, _jTool2.default)(tr).attr('cache-key')];
+		},
+		setRowData: function setRowData(key, value) {
+			this.cacheData[key] = value;
 		}
 		/*
 	 *  @验证版本号清除列表缓存
@@ -922,9 +886,9 @@
 			this.setAreVisible((0, _jTool2.default)(th), false);
 		}
 		/*
-	 * @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
-	 * $.th: jTool th
-	 * */
+	  * @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
+	  * $.th: jTool th
+	  * */
 		, getRowTd: function getRowTd(th) {
 			var tableWrap = th.closest('.table-wrap'),
 			    trList = (0, _jTool2.default)('tbody tr', tableWrap);
@@ -969,7 +933,7 @@
 					return;
 				}
 				_jTool2.default.each(_trList, function (i2, v2) {
-					_tdList.push((0, _jTool2.default)(v2).find('td').eq(_th.index()));
+					_tdList.push((0, _jTool2.default)(v2).find('td').get(_th.index()));
 				});
 				//显示
 				if (_visible_) {
@@ -1023,8 +987,8 @@
 			return thWidth;
 		}
 	}; /*
-	   * Base: 基础方法
-	   * */
+	    * Base: 基础方法
+	    * */
 	exports.default = Base;
 
 /***/ },
@@ -1521,7 +1485,6 @@
 				alignAttr, //文本对齐属性
 				template, //数据模板
 				templateHTML; //数据模板导出的html
-				_Cache2.default.cacheData = {};
 				//数据为空时
 				if (!_data || _data.length === 0) {
 					tbodyTmpHTML = '<tr emptyTemplate>' + '<td colspan="' + (0, _jTool2.default)('th[th-visible="visible"]', table).length + '">' + (Settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>') + '</td>' + '</tr>';
@@ -1529,7 +1492,7 @@
 					tbodyDOM.html(tbodyTmpHTML);
 				} else {
 					_jTool2.default.each(_data, function (i, v) {
-						_Cache2.default.cacheData[i] = v;
+						_Cache2.default.setRowData(i, v);
 						tbodyTmpHTML += '<tr cache-key="' + i + '">';
 						_jTool2.default.each(Settings.columnData, function (i2, v2) {
 							key = v2.key;
@@ -1895,12 +1858,8 @@
 					_tdArray = [];
 					_td = (0, _jTool2.default)('td', v);
 					_jTool2.default.each(_td, function (i2, v2) {
-						// console.log(_tdArray.join(','));
 						_tdArray[_thCacheList.eq(i2).index()] = v2.outerHTML;
 					});
-					console.log(_td);
-					console.log(_tdArray);
-					console.log('=====');
 					v.innerHTML = _tdArray.join('');
 				});
 			}
@@ -2121,7 +2080,7 @@
 	  $.table:当前操作的grid
 	  */
 		, getCheckedTr: function getCheckedTr(table) {
-			return (0, _jTool2.default)('tbody td[gm-checkbox] input[type="checkbox"]:checked', table).closest('tr');
+			return (0, _jTool2.default)('tbody tr[checked="true"]', table).DOMList || [];
 		}
 	};
 	exports.default = Checkbox;
@@ -2260,11 +2219,12 @@
 
 	var _Core2 = _interopRequireDefault(_Core);
 
+	var _Cache = __webpack_require__(4);
+
+	var _Cache2 = _interopRequireDefault(_Cache);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-	 * Export: 数据导出
-	 * */
 	var Export = {
 		html: function html() {
 			var html = '<a href="" download="" id="gm-export-action"></a>';
@@ -2278,7 +2238,7 @@
 	  $.onlyChecked: 是否只导出已选中的表格
 	  */
 		, exportGridToXls: function exportGridToXls(table, fileName, onlyChecked) {
-			var Settings = Cache.getSettings(table);
+			var Settings = _Cache2.default.getSettings(table);
 			var _this = this;
 			var gmExportAction = (0, _jTool2.default)('#gm-export-action'); //createDOM内添加
 			if (gmExportAction.length === 0) {
@@ -2322,7 +2282,9 @@
 				return window.btoa(unescape(encodeURIComponent(s)));
 			}
 		}
-	};
+	}; /*
+	    * Export: 数据导出
+	    * */
 	exports.default = Export;
 
 /***/ },
@@ -2459,6 +2421,7 @@
 	  }
 	  */
 		, setSort: function setSort(table, sortJson, callback, refresh) {
+			console.log(refresh);
 			var Settings = _Cache2.default.getSettings(table);
 			if (table.length == 0 || !sortJson || _jTool2.default.isEmptyObject(sortJson)) {
 				return false;

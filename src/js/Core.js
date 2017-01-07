@@ -115,7 +115,6 @@ const Core= {
 				alignAttr, //文本对齐属性
 				template,//数据模板
 				templateHTML;//数据模板导出的html
-			Cache.cacheData = {};
 			//数据为空时
 			if(!_data ||_data.length === 0){
 				tbodyTmpHTML = '<tr emptyTemplate>'
@@ -127,7 +126,7 @@ const Core= {
 				tbodyDOM.html(tbodyTmpHTML);
 			}else {
 				$.each(_data, function(i, v){
-					Cache.cacheData[i] = v;
+					Cache.setRowData(i, v);
 					tbodyTmpHTML += '<tr cache-key="'+ i +'">';
 					$.each(Settings.columnData, function(i2, v2){
 						key = v2.key;

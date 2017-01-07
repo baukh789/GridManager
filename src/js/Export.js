@@ -3,6 +3,7 @@
  * */
 import $ from './jTool';
 import Core from './Core';
+import Cache from './Cache';
 const Export = {
 	html: function () {
 		var html = '<a href="" download="" id="gm-export-action"></a>';

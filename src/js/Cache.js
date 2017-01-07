@@ -26,6 +26,9 @@ var Cache = {
 	,getRowData: function(table, tr) {
 		return this.cacheData[$(tr).attr('cache-key')];
 	}
+	,setRowData: function(key, value){
+		this.cacheData[key] = value;
+	}
 	/*
 	*  @验证版本号清除列表缓存
 	*  $.table: jTool table

@@ -82,7 +82,7 @@ const Base = {
 				return;
 			}
 			$.each(_trList, function(i2, v2){
-				_tdList.push($(v2).find('td').eq(_th.index()));
+				_tdList.push($(v2).find('td').get(_th.index()));
 			});
 			//显示
 			if(_visible_){

@@ -42,7 +42,7 @@ var Checkbox = {
 	 $.table:当前操作的grid
 	 */
 	,getCheckedTr: function(table) {
-		return $('tbody td[gm-checkbox] input[type="checkbox"]:checked', table).closest('tr');
+		return $('tbody tr[checked="true"]', table).DOMList || [];
 	}
 };
 export default Checkbox;

@@ -26,6 +26,7 @@ const Sort = {
 	 }
 	 */
 	,setSort: function(table, sortJson, callback, refresh){
+		console.log(refresh);
 		let Settings = Cache.getSettings(table);
 		if(table.length == 0 || !sortJson || $.isEmptyObject(sortJson)){
 			return false;
