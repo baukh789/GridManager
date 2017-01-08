@@ -12,12 +12,6 @@
     "url": "https://github.com/baukh789/GridManager/issues"
   },
   "homepage": "https://github.com/baukh789/GridManager#readme",
-  "Dependencies": [
-    "jquery"
-  ],
-  "dependencies": {
-    "jTool": "^1.2.9"
-  },
   "devDependencies": {
     "babel-cli": "^6.7.7",
     "babel-core": "^6.7.4",
