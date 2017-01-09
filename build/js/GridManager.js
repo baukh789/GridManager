@@ -902,7 +902,6 @@
 					tdList.push(_td);
 				}
 			});
-			console.log(tdList);
 			return (0, _jTool2.default)(tdList);
 		}
 		/*
