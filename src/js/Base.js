@@ -136,5 +136,34 @@ const Base = {
 			+ (sortingAction.length == 1 ? 20 : 5);
 		return thWidth;
 	}
+	,showLoading: function (dom ,cb) {
+		if (!dom || dom.length === 0) {
+			return;
+		}
+		var loading = dom.find('.load-area');
+		if (loading.length > 0) {
+			loading.remove();
+		}
+		var loadingDom= $('<div class="load-area loading"><div class="loadInner kernel"></div></div>');
+		dom.append(loadingDom);
+
+		//进行loading图标居中显示
+		var loadInner = dom.find('.load-area').find('.loadInner');
+		var domHeight = dom.height(),
+			loadInnerHeight = loadInner.height();
+		loadInner.css('margin-top', (domHeight - loadInnerHeight) / 2);
+		window.setTimeout(function(){
+			typeof(cb) === 'function' ? cb() : '';
+		}, 100);
+	},
+	hideLoading: function (dom, cb) {
+		if (!dom || dom.length === 0) {
+			return;
+		}
+		window.setTimeout(function(){
+			$('.load-area', dom).remove();
+			typeof(cb) === 'function' ? cb() : '';
+		}, 500);
+	}
 };
 export default Base;

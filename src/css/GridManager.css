@@ -310,6 +310,7 @@ table.grid-manager-default tbody tr:hover td{
 	font-weight:500;
 	text-align:left;
 	font-size: 0.9em;
+	color: #fff;
 }
 /*导出excel*/
 #gm-export-action{
@@ -704,4 +705,128 @@ table.grid-manager-default tbody tr:hover td{
 	background-color:#e8e8e8;
 	border-top:1px solid #f8f8f8;
 	border-bottom:1px solid #f8f8f8;
+}
+
+
+
+/*loading*/
+.table-wrap .loading {
+	z-index: 999;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background: #fff;
+	opacity: 0.7;
+}
+
+.table-wrap .loading .kernel {
+	width: 20px;
+	height: 20px;
+	border: 1px #4078c0 solid;
+	background-color: #fff;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	-webkit-animation: gm_fill_color 5s linear infinite;
+	-moz-animation: gm_fill_color 5s linear infinite;
+	animation: gm_fill_color 5s linear infinite;
+}
+
+.table-wrap .loading .kernel:after {
+	width: 4px;
+	height: 4px;
+	position: absolute;
+	content: "";
+	background-color: #4078c0;
+	top: -8px;
+	left: 0px;
+	-webkit-animation: gm_square_check 1s ease-in-out infinite;
+	-moz-animation: gm_square_check 1s ease-in-out infinite;
+	animation: gm_square_check 1s ease-in-out infinite;
+}
+
+@-webkit-keyframes gm_square_check {
+	25% {
+		left: 22px;
+		top: -8px;
+	}
+	50% {
+		left: 22px;
+		top: 22px;
+	}
+	75% {
+		left: -9px;
+		top: 22px;
+	}
+	100% {
+		left: -9px;
+		top: -7px;
+	}
+}
+
+@-moz-keyframes gm_square_check {
+	25% {
+		left: 22px;
+		top: -8px;
+	}
+	50% {
+		left: 22px;
+		top: 22px;
+	}
+	75% {
+		left: -9px;
+		top: 22px;
+	}
+	100% {
+		left: -9px;
+		top: -7px;
+	}
+}
+
+@keyframes gm_square_check {
+	25% {
+		left: 22px;
+		top: -8px;
+	}
+	50% {
+		left: 22px;
+		top: 22px;
+	}
+	75% {
+		left: -9px;
+		top: 22px;
+	}
+	100% {
+		left: -9px;
+		top: -7px;
+	}
+}
+
+@-webkit-keyframes gm_fill_color {
+	0% {
+		box-shadow: inset 0px 0px 0px 0px rgba(64, 120, 192, 0.1);
+	}
+	100% {
+		box-shadow: inset 0px -20px 0px 0px rgba(64, 120, 192, 1);
+	}
+}
+
+@-moz-keyframes gm_fill_color {
+	0% {
+		box-shadow: inset 0px 0px 0px 0px rgba(64, 120, 192, 0.1);
+	}
+	100% {
+		box-shadow: inset 0px -20px 0px 0px rgba(64, 120, 192, 1);
+	}
+}
+
+@keyframes gm_fill_color {
+	0% {
+		box-shadow: inset 0px 0px 0px 0px rgba(64, 120, 192, 0.1);
+	}
+	100% {
+		box-shadow: inset 0px -20px 0px 0px rgba(64, 120, 192, 1);
+	}
 }

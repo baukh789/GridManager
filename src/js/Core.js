@@ -34,7 +34,8 @@ const Core= {
 	,__refreshGrid: function(table, callback){
 		let Settings = Cache.getSettings(table);
 		var tbodyDOM = $('tbody', table),	//tbody dom
-			refreshAction = $('.page-toolbar .refresh-action', table.closest('.table-wrap')); //刷新按纽
+			tableWrap = table.closest('.table-wrap'),
+			refreshAction = $('.page-toolbar .refresh-action', tableWrap); //刷新按纽
 		//增加刷新中标识
 		refreshAction.addClass('refreshing');
 		/*
@@ -74,7 +75,8 @@ const Core= {
 		Settings.query = pram;
 		Cache.updateSettings(table, Settings);
 
-		//执行ajax前事件
+		Base.showLoading(tableWrap);
+		//执行ajax
 		$.ajax({
 			url: Settings.ajax_url,
 			type: Settings.ajax_type,
@@ -93,6 +95,7 @@ const Core= {
 			complete: function(XMLHttpRequest, textStatus){
 				Settings.ajax_complete(XMLHttpRequest, textStatus);
 				removeRefreshingClass();
+				Base.hideLoading(tableWrap);
 			}
 		});
 		//移除刷新中样式

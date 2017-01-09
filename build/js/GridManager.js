@@ -985,6 +985,36 @@
 			    thPaddingRight = thWarp.css('padding-right');
 			var thWidth = textDreamland.width() + (thPaddingLeft ? thPaddingLeft : 0) + (thPaddingRight ? thPaddingRight : 0) + (remindAction.length == 1 ? 20 : 5) + (sortingAction.length == 1 ? 20 : 5);
 			return thWidth;
+		},
+		showLoading: function showLoading(dom, cb) {
+			if (!dom || dom.length === 0) {
+				return;
+			}
+			var loading = dom.find('.load-area');
+			if (loading.length > 0) {
+				loading.remove();
+			}
+			var loadingDom = (0, _jTool2.default)('<div class="load-area loading"><div class="loadInner kernel"></div></div>');
+			dom.append(loadingDom);
+
+			//进行loading图标居中显示
+			var loadInner = dom.find('.load-area').find('.loadInner');
+			var domHeight = dom.height(),
+			    loadInnerHeight = loadInner.height();
+			loadInner.css('margin-top', (domHeight - loadInnerHeight) / 2);
+			window.setTimeout(function () {
+				typeof cb === 'function' ? cb() : '';
+			}, 100);
+		},
+		hideLoading: function hideLoading(dom, cb) {
+			return;
+			if (!dom || dom.length === 0) {
+				return;
+			}
+			window.setTimeout(function () {
+				(0, _jTool2.default)('.load-area', dom).remove();
+				typeof cb === 'function' ? cb() : '';
+			}, 500);
 		}
 	}; /*
 	    * Base: 基础方法
@@ -1404,7 +1434,8 @@
 			var Settings = _Cache2.default.getSettings(table);
 			var tbodyDOM = (0, _jTool2.default)('tbody', table),
 			    //tbody dom
-			refreshAction = (0, _jTool2.default)('.page-toolbar .refresh-action', table.closest('.table-wrap')); //刷新按纽
+			tableWrap = table.closest('.table-wrap'),
+			    refreshAction = (0, _jTool2.default)('.page-toolbar .refresh-action', tableWrap); //刷新按纽
 			//增加刷新中标识
 			refreshAction.addClass('refreshing');
 			/*
@@ -1444,7 +1475,8 @@
 			Settings.query = pram;
 			_Cache2.default.updateSettings(table, Settings);
 
-			//执行ajax前事件
+			_Base2.default.showLoading(tableWrap);
+			//执行ajax
 			_jTool2.default.ajax({
 				url: Settings.ajax_url,
 				type: Settings.ajax_type,
@@ -1463,6 +1495,7 @@
 				complete: function complete(XMLHttpRequest, textStatus) {
 					Settings.ajax_complete(XMLHttpRequest, textStatus);
 					removeRefreshingClass();
+					_Base2.default.hideLoading(tableWrap);
 				}
 			});
 			//移除刷新中样式
@@ -2774,7 +2807,6 @@
 			dragAction.bind('mousedown', function (event) {
 				var Settings = _Cache2.default.getSettings(table);
 				_th = (0, _jTool2.default)(this).closest('th'), _prevTh = undefined, _nextTh = undefined, _prevTd = undefined, _nextTd = undefined, _tr = _th.parent(), _allTh = _tr.find('th[th-visible="visible"]'), _table = _tr.closest('table'), _tableDiv = _table.closest('.table-div'), _tableWrap = _table.closest('.table-wrap'), _td = _Base2.default.getRowTd(_th);
-				console.log(_td);
 				// 列拖拽触发回调事件
 				Settings.dragBefore(event);
 
