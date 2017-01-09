@@ -46,7 +46,6 @@ const Drag = {
 
 			//禁用文字选中效果
 			$('body').addClass('no-select-text');
-
 			//父级DIV使用相对定位
 			_divPosition = _tableDiv.css('position');
 			if(_divPosition != 'relative' && _divPosition != 'absolute'){

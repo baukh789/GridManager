@@ -895,11 +895,14 @@
 
 			var tdList = [],
 			    thIndex = th.index();
-
+			var _td;
 			_jTool2.default.each(trList, function (i, v) {
-				tdList.push((0, _jTool2.default)('td', v).get(thIndex));
+				_td = (0, _jTool2.default)('td', v).get(thIndex);
+				if (_td) {
+					tdList.push(_td);
+				}
 			});
-
+			console.log(tdList);
 			return (0, _jTool2.default)(tdList);
 		}
 		/*
@@ -1007,7 +1010,6 @@
 			}, 100);
 		},
 		hideLoading: function hideLoading(dom, cb) {
-			return;
 			if (!dom || dom.length === 0) {
 				return;
 			}
@@ -2812,7 +2814,6 @@
 
 				//禁用文字选中效果
 				(0, _jTool2.default)('body').addClass('no-select-text');
-
 				//父级DIV使用相对定位
 				_divPosition = _tableDiv.css('position');
 				if (_divPosition != 'relative' && _divPosition != 'absolute') {

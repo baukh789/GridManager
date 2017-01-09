@@ -50,11 +50,13 @@ const Base = {
 
 		var tdList = [],
 			thIndex = th.index();
-
+		var _td;
 		$.each(trList, function(i, v) {
-			tdList.push($('td', v).get(thIndex));
+			_td = $('td', v).get(thIndex);
+			if(_td){
+				tdList.push(_td);
+			}
 		});
-
 		return $(tdList);
 	}
 	/*

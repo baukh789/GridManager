@@ -79,6 +79,8 @@ table[grid-manager].GridManager-ready{
 /*table所在的DIV*/
 .table-wrap{
 	position: relative;
+	padding: 3px;
+	background-color: #efefef;
 }
 .table-div{
 	position:relative;
@@ -724,7 +726,7 @@ table.grid-manager-default tbody tr:hover td{
 .table-wrap .loading .kernel {
 	width: 20px;
 	height: 20px;
-	border: 1px #4078c0 solid;
+	border: 2px #4078c0 solid;
 	background-color: #fff;
 	margin-left: auto;
 	margin-right: auto;
