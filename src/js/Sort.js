@@ -101,6 +101,7 @@ const Sort = {
 				_th.attr('sorting', Settings.sortDownText);
 			}
 			//生成排序数据
+			Settings.sortData = {};
 			if(!Settings.isCombSorting){
 				Settings.sortData[_th.attr('th-name')] = _th.attr('sorting');
 			}else{
@@ -111,6 +112,7 @@ const Sort = {
 				});
 			}
 			//调用事件、渲染tbody
+			Cache.updateSettings(table, Settings);
 			var query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 			Settings.sortingBefore(query);
 			Core.__refreshGrid(table, function(){

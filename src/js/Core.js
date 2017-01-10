@@ -72,7 +72,7 @@ const Core= {
 		}else if(pram.cPage > pram.tPage){
 			pram.cPage = pram.tPage
 		}
-		Settings.query = pram;
+		// Settings.query = pram;
 		Cache.updateSettings(table, Settings);
 
 		Base.showLoading(tableWrap);

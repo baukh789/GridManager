@@ -1473,7 +1473,7 @@
 			} else if (pram.cPage > pram.tPage) {
 				pram.cPage = pram.tPage;
 			}
-			Settings.query = pram;
+			// Settings.query = pram;
 			_Cache2.default.updateSettings(table, Settings);
 
 			_Base2.default.showLoading(tableWrap);
@@ -2532,6 +2532,7 @@
 						_th.attr('sorting', Settings.sortDownText);
 					}
 				//生成排序数据
+				Settings.sortData = {};
 				if (!Settings.isCombSorting) {
 					Settings.sortData[_th.attr('th-name')] = _th.attr('sorting');
 				} else {
@@ -2542,6 +2543,7 @@
 					});
 				}
 				//调用事件、渲染tbody
+				_Cache2.default.updateSettings(table, Settings);
 				var query = _jTool2.default.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 				Settings.sortingBefore(query);
 				_Core2.default.__refreshGrid(table, function () {
