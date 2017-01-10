@@ -445,12 +445,12 @@
 				// 宽度调整触发回调事件
 				Settings.adjustBefore(event);
 				//重置width 防止auto现象
-				_jTool2.default.each(_allTh, function (i, v) {
-					if (v.style.width == 'auto' || v.style.width == '') {
-						//	$(v).css('width',$(v).width());
-						(0, _jTool2.default)(v).width((0, _jTool2.default)(v).width());
-					}
-				});
+				// $.each(_allTh, function(i, v){
+				// 	if(v.style.width === 'auto' || v.style.width === ''){
+				// 		//	$(v).css('width',$(v).width());
+				// 		$(v).width($(v).width());
+				// 	}
+				// });
 				//增加宽度调整中样式
 				_th.addClass('adjust-selected');
 				_td.addClass('adjust-selected');
@@ -469,14 +469,14 @@
 						_w2 = _th.width() - _w + _last.width();
 						_last.width(Math.ceil(_w2 < _realWidthForThText ? _realWidthForThText : _w2));
 					}
-					_th.css('width', Math.ceil(_w));
-					//_isSame:table的宽度与table-div宽度是否相同
-					//Chrome下 宽度会精确至小数点后三位 且 使用width时会进行四舍五入，需要对其进行特殊处理 宽度允许相差1px
+					_th.width(Math.ceil(_w));
+					// Chrome下 宽度会精确至小数点后三位 且 使用width时会进行四舍五入，需要对其进行特殊处理 宽度允许相差1px
+					// _isSame: table的宽度与table-div宽度是否相同
 					var _isSame = _jTool2.default.isChrome() ? _table.get(0).offsetWidth == _tableDiv.width() || _table.get(0).offsetWidth == _tableDiv.width() + 1 || _table.get(0).offsetWidth == _tableDiv.width() - 1 : _table.get(0).offsetWidth == _tableDiv.width();
 					//table宽度与table-div宽度相同 且 当前处理缩小HT宽度操作时
-					if (_isSame && _th.width() > _w) {
-						_nextTh.width(Math.ceil(_nextTh.width() + _th.width() - _w));
-					}
+					// if(_isSame && _th.width() > _w){
+					_nextTh.width(Math.ceil(_nextTh.width() + _th.width() - _w));
+					// }
 				});
 
 				//绑定鼠标放开、移出事件
@@ -2941,22 +2941,14 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Scroll = {
-		initDOM: function initDOM() {
-			return '';
-			// return '<div class="scroll-area"><div class="sa-inner"></div></div>';
-		}
 		/*
 	  @绑定表格滚动轴功能
 	  $.table: table [jTool object]
 	  */
-		, bindScrollFunction: function bindScrollFunction(table) {
+		bindScrollFunction: function bindScrollFunction(table) {
 			var _tableDIV = table.closest('.table-div'),
 			    //列表所在的DIV,该DIV的class标识为table-div
 			_tableWarp = _tableDIV.closest('.table-wrap'); //列表所在的外围容器
-			//绑定窗口变化事件
-			// window.onresize = function () {
-			// 	$('.table-div').trigger('scroll', [true]);
-			// };
 
 			//绑定滚动条事件
 			_tableDIV.unbind('scroll');
@@ -2978,17 +2970,24 @@
 					_setTopHead = (0, _jTool2.default)('.set-top', table);
 					_setTopHead.removeAttr('grid-manager-thead');
 					_setTopHead.css({
-						width: _thead.width() + _thead.css('border-left-width') + _thead.css('border-right-width'),
-						left: table.css('border-left-width') + 'px'
+						width: _thead.width()
+						// + _thead.css('border-left-width')
+						// + _thead.css('border-right-width')
+						, left: table.css('border-left-width') + 'px'
 					});
+					// $.each($('th', _thead), function (i, v) {
+					// 	$('th', _setTopHead).eq(i).width($(v).width());
+					// });
 				}
 				if (_setTopHead.length === 0) {
 					return;
 				}
 				//当前吸引thead 没有背景时 添加默认背景
-				if (!_setTopHead.css('background') || _setTopHead.css('background') == '' || _setTopHead.css('background') == 'none') {
-					_setTopHead.css('background', '#f5f5f5');
-				}
+				// if(!_setTopHead.css('background') ||
+				// 	_setTopHead.css('background') == '' ||
+				// 	_setTopHead.css('background') == 'none'){
+				// 	_setTopHead.css('background', '#f5f5f5');
+				// }
 				// 删除表头置顶
 				if (_scrollDOMTop === 0) {
 					_thead.removeClass('scrolling');
