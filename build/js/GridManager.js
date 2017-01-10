@@ -125,7 +125,7 @@
 	 * */
 	function GridManager() {
 		// 版本号
-		this.version = '2.1.5';
+		this.version = '2.1.9';
 	}
 	GridManager.prototype = {
 		/*
