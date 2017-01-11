@@ -42,34 +42,52 @@ const Adjust = {
 			_th.addClass('adjust-selected');
 			_td.addClass('adjust-selected');
 			//绑定鼠标拖动事件
-			var _w,
-				_w2;
-			var _realWidthForThText = Base.getTextWidth(_th);
+			var _thWidth,
+				_NextWidth;
+			var _thMinWidth = Base.getTextWidth(_th),
+				_NextThMinWidth = Base.getTextWidth(_nextTh);
 			_table.unbind('mousemove');
 			_table.bind('mousemove',function(e){
-				_w = e.clientX -
+				_thWidth = e.clientX -
 					_th.offset().left -
 					_th.css('padding-left') -
 					_th.css('padding-right');
+				_thWidth = Math.ceil(_thWidth);
+				_NextWidth = _nextTh.width() + _th.width() - _thWidth;
+				_NextWidth = Math.ceil(_NextWidth);
 				//限定最小值
-				if(_w < _realWidthForThText){
-					_w = _realWidthForThText;
+				if(_thWidth < _thMinWidth){
+					_thWidth = _thMinWidth;
 				}
+				if(_NextWidth < _NextThMinWidth){
+					_NextWidth = _NextThMinWidth;
+				}
+				// 验证是否更改
+				if(_thWidth === _th.width()){
+					return;
+				}
+				// 验证宽度是否匹配
+				if(_thWidth + _NextWidth < _th.width() + _nextTh.width()){
+					_NextWidth = _th.width() + _nextTh.width() - _thWidth;
+				}
+				_th.width(_thWidth);
+				_nextTh.width(_NextWidth);
 				//触发源为倒数第二列时 缩小倒数第一列
-				if(_th.index() == _lastButOne.index()){
-					_w2 = _th.width() - _w + _last.width();
-					_last.width(Math.ceil(_w2 < _realWidthForThText ? _realWidthForThText : _w2));
-				}
-				_th.width(Math.ceil(_w));
+				// if(_th.index() == _lastButOne.index()){
+				// 	_w2 = _th.width() - _w + _last.width();
+				// 	_last.width(Math.ceil(_w2 < _realWidthForThText ? _realWidthForThText : _w2));
+				// 	return;
+				// }
 				// Chrome下 宽度会精确至小数点后三位 且 使用width时会进行四舍五入，需要对其进行特殊处理 宽度允许相差1px
 				// _isSame: table的宽度与table-div宽度是否相同
-				var _isSame  = $.isChrome() ?
-					(_table.get(0).offsetWidth == _tableDiv.width() || _table.get(0).offsetWidth == _tableDiv.width() + 1 || _table.get(0).offsetWidth == _tableDiv.width() - 1)
-					: _table.get(0).offsetWidth == _tableDiv.width();
+				// var _isSame  = $.isChrome() ?
+				// 	(_table.get(0).offsetWidth == _tableDiv.width() || _table.get(0).offsetWidth == _tableDiv.width() + 1 || _table.get(0).offsetWidth == _tableDiv.width() - 1)
+				// 	: _table.get(0).offsetWidth == _tableDiv.width();
 				//table宽度与table-div宽度相同 且 当前处理缩小HT宽度操作时
 				// if(_isSame && _th.width() > _w){
-					_nextTh.width(Math.ceil(_nextTh.width() + _th.width() - _w));
+				// 	_nextTh.width(Math.ceil(_nextTh.width() + _th.width() - _w));
 				// }
+
 			});
 
 			//绑定鼠标放开、移出事件
