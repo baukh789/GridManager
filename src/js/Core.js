@@ -81,6 +81,7 @@ const Core= {
 			url: Settings.ajax_url,
 			type: Settings.ajax_type,
 			data: pram,
+			headers: Settings.ajax_headers,
 			cache: true,
 			beforeSend: function(XMLHttpRequest){
 				Settings.ajax_beforeSend(XMLHttpRequest);

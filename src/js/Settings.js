@@ -68,6 +68,7 @@ let Settings = {
 	gridManagerName   	: '',						//表格grid-manager所对应的值[可在html中配置]
 	ajax_url			: '',						//获取表格数据地址，配置该参数后，将会动态获取数据
 	ajax_type			: 'GET',					//ajax请求类型['GET', 'POST']默认GET
+	ajax_headers		: {},						//ajax请求头信息
 	ajax_beforeSend		: $.noop,					//ajax请求之前,与jTool的beforeSend使用方法相同
 	ajax_success		: $.noop,					//ajax成功后,与jTool的success使用方法相同
 	ajax_complete		: $.noop,					//ajax完成后,与jTool的complete使用方法相同

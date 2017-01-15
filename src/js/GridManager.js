@@ -21,7 +21,7 @@ import Settings from './Settings';
 import DOM from './DOM';
 function GridManager() {
 	// 版本号
-	this.version= '2.1.9';
+	this.version= '2.1.11';
 }
 GridManager.prototype = {
 	/*
