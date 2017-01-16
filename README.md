@@ -5,9 +5,9 @@
 [![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 
 ##使用需知
-下载时请下载release版本
--v2.0为jquery版本
--v2.0为原生js版本
+下载时请选择对应的tag进行下载, 请不要直接使用分支上的代码.
+- v2.0和之前版本为jquery版本
+- v2.1开始为原生js版本
 ##实现功能
 GridManager.js可快速的对table标签进行实例化，实例化后将实现以下功能:
 
