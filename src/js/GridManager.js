@@ -164,6 +164,7 @@ var publishList = [
 	'exportGridToXls',		//导出表格 .xls
 	'getLocalStorage',		//获取指定表格的本地存储数据
 	'setQuery',				//配置query 该参数会在分页触发后返回至pagingAfter(query)方法
+	'setAjaxData',
 	'refreshGrid',			//刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	'getRowData',			//获取当前行渲染时使用的数据
 	'clear'					//清除指定表的表格记忆数据

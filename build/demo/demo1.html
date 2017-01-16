@@ -42,14 +42,76 @@
 <body>
 <h2>GridManager:使用静态数据渲染</h2>
 <button id="create-gm">渲染GridManager</button>
+<button id="reset-gm" style="display: none">更换GridManage数据</button>
 <hr/>
 <div style="width:95%;margin:0px auto;">
 </div>
 <table grid-manager="cccc"></table>
 <script type="text/javascript">
-    document.getElementById('create-gm').onclick = function(){
 
-        //单列表静态数据渲染
+	// 创建方法
+    document.getElementById('create-gm').onclick = function(){
+		document.getElementById('reset-gm').style.display = 'inline-block';
+		var ajaxData1 = {
+			"data":[
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				},
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				},
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				},
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				},
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				},{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				},
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				},
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				}
+			],
+			"totals": 8
+		};
         var table = document.querySelector('table[grid-manager]');
         table.GM({
             supportRemind: true
@@ -70,142 +132,7 @@
             ,supportDrag:true
             ,supportAjaxPage:true
             ,emptyTemplate: '<div class="gm-emptyTemplate">什么也没有</div>'
-            ,ajax_data : {
-                "data":[
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					},
-					{
-						"name": "baukh",
-						"age": "28",
-						"createDate": "2015-03-12",
-						"info": "野生前端程序",
-						"operation": "修改"
-					}
-				],
-                "totals": 1682
-            }
+            ,ajax_data : ajaxData1
             ,isCombSorting: false
             ,pageSize:30
             ,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
@@ -284,6 +211,45 @@
             return fmt;
         }
     }
+
+	// 修改数据方法
+	document.getElementById('reset-gm').onclick = function(){
+		var ajaxData2 = {
+			"data":[
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				},
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				},
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				},
+				{
+					"name": "baukh",
+					"age": "28",
+					"createDate": "2015-03-12",
+					"info": "野生前端程序",
+					"operation": "修改"
+				}
+			],
+			"totals": 4
+		};
+		document.querySelector('table[grid-manager]').GM('setAjaxData', ajaxData2);
+	};
+
 </script>
 
 </body>

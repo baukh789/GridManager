@@ -152,7 +152,6 @@ const Core= {
 			typeof callback === 'function' ? callback() : '';
 		}
 	}
-
 	/*
 	 [对外公开方法]
 	 @配置query 该参数会在分页触发后返回至pagingAfter(query)方法
@@ -164,6 +163,18 @@ const Core= {
 		var settings = Cache.getSettings(table);
 		$.extend(settings, {query: query});
 		Cache.updateSettings(table, settings);
+	}
+	/*
+	 [对外公开方法]
+	 @配置ajaxData
+	 $.table: table [jTool object]
+	 $.query:配置的数据
+	 */
+	,setAjaxData: function (table, ajaxData) {
+		var settings = Cache.getSettings(table);
+		$.extend(settings, {ajax_data: ajaxData});
+		Cache.updateSettings(table, settings);
+		this.__refreshGrid(table);
 	}
 
 };

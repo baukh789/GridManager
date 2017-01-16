@@ -125,7 +125,7 @@
 	 * */
 	function GridManager() {
 		// 版本号
-		this.version = '2.1.9';
+		this.version = '2.1.11';
 	}
 	GridManager.prototype = {
 		/*
@@ -267,7 +267,7 @@
 	'exportGridToXls', //导出表格 .xls
 	'getLocalStorage', //获取指定表格的本地存储数据
 	'setQuery', //配置query 该参数会在分页触发后返回至pagingAfter(query)方法
-	'refreshGrid', //刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
+	'setAjaxData', 'refreshGrid', //刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	'getRowData', //获取当前行渲染时使用的数据
 	'clear' //清除指定表的表格记忆数据
 	];
@@ -1568,7 +1568,6 @@
 				typeof callback === 'function' ? callback() : '';
 			}
 		}
-
 		/*
 	  [对外公开方法]
 	  @配置query 该参数会在分页触发后返回至pagingAfter(query)方法
@@ -1580,6 +1579,18 @@
 			var settings = _Cache2.default.getSettings(table);
 			_jTool2.default.extend(settings, { query: query });
 			_Cache2.default.updateSettings(table, settings);
+		}
+		/*
+	  [对外公开方法]
+	  @配置ajaxData
+	  $.table: table [jTool object]
+	  $.query:配置的数据
+	  */
+		, setAjaxData: function setAjaxData(table, ajaxData) {
+			var settings = _Cache2.default.getSettings(table);
+			_jTool2.default.extend(settings, { ajax_data: ajaxData });
+			_Cache2.default.updateSettings(table, settings);
+			this.__refreshGrid(table);
 		}
 
 	};
