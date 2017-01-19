@@ -4,13 +4,8 @@
 [![npm version](https://img.shields.io/npm/v/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 [![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 
-###文档介绍
+###文档介绍及源码
 - [文档](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
-
-###QQ群
-- [一键加群](http://shang.qq.com/wpa/qunwpa?idkey=dd0a8265f21acc3c1ac579ec94a5c07e524d14d2a27981a8cb680d35ad495684)
-
-###源码地址
 - [github](https://github.com/baukh789/GridManager)
 - [oschina](http://git.oschina.net/baukh/GridManager)
 - [npm](https://www.npmjs.com/package/GridManager/)
@@ -171,5 +166,8 @@ npm install GridManager
 ##版本信息
 [v2.1.x.md](/version/v2.1.x.md)
 
+
+##联系我
+QQ群号: 452781895
 
 
