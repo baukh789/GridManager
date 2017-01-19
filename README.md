@@ -4,6 +4,17 @@
 [![npm version](https://img.shields.io/npm/v/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 [![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 
+###文档介绍
+- [文档](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
+
+###QQ群
+- [一键加群](http://shang.qq.com/wpa/qunwpa?idkey=dd0a8265f21acc3c1ac579ec94a5c07e524d14d2a27981a8cb680d35ad495684)
+
+###源码地址
+- [github](https://github.com/baukh789/GridManager)
+- [oschina](http://git.oschina.net/baukh/GridManager)
+- [npm](https://www.npmjs.com/package/GridManager/)
+
 ##使用需知
 下载时请选择对应的tag进行下载, 请不要直接使用分支上的代码.
 - v2.0和之前版本为jquery版本
@@ -39,14 +50,10 @@ npm install GridManager
 -Firefox, Chrome,IE10+
 -这里提一下为什么不支持低版本: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
 
-##演示及文档
+##demo演示
 - [静态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo1.html)
 - [动态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo2.html)
 - [特定容器demo](http://www.lovejavascript.com/plugIn/GridManager/demo3.html)
-- [API](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
-- [github](https://github.com/baukh789/GridManager)
-- [oschina](http://git.oschina.net/baukh/GridManager)
-- [npm](https://www.npmjs.com/package/GridManager/)
 
 ##调用方式
 ```html
