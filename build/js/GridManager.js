@@ -125,7 +125,7 @@
 	 * */
 	function GridManager() {
 		// 版本号
-		this.version = '2.1.11';
+		this.version = '2.2.0';
 	}
 	GridManager.prototype = {
 		/*
@@ -443,13 +443,7 @@
 				_td = _Base2.default.getRowTd(_th); //存储与事件源同列的所有td
 				// 宽度调整触发回调事件
 				Settings.adjustBefore(event);
-				//重置width 防止auto现象
-				// $.each(_allTh, function(i, v){
-				// 	if(v.style.width === 'auto' || v.style.width === ''){
-				// 		//	$(v).css('width',$(v).width());
-				// 		$(v).width($(v).width());
-				// 	}
-				// });
+
 				//增加宽度调整中样式
 				_th.addClass('adjust-selected');
 				_td.addClass('adjust-selected');
@@ -480,21 +474,6 @@
 					}
 					_th.width(_thWidth);
 					_nextTh.width(_NextWidth);
-					//触发源为倒数第二列时 缩小倒数第一列
-					// if(_th.index() == _lastButOne.index()){
-					// 	_w2 = _th.width() - _w + _last.width();
-					// 	_last.width(Math.ceil(_w2 < _realWidthForThText ? _realWidthForThText : _w2));
-					// 	return;
-					// }
-					// Chrome下 宽度会精确至小数点后三位 且 使用width时会进行四舍五入，需要对其进行特殊处理 宽度允许相差1px
-					// _isSame: table的宽度与table-div宽度是否相同
-					// var _isSame  = $.isChrome() ?
-					// 	(_table.get(0).offsetWidth == _tableDiv.width() || _table.get(0).offsetWidth == _tableDiv.width() + 1 || _table.get(0).offsetWidth == _tableDiv.width() - 1)
-					// 	: _table.get(0).offsetWidth == _tableDiv.width();
-					//table宽度与table-div宽度相同 且 当前处理缩小HT宽度操作时
-					// if(_isSame && _th.width() > _w){
-					// 	_nextTh.width(Math.ceil(_nextTh.width() + _th.width() - _w));
-					// }
 				});
 
 				//绑定鼠标放开、移出事件
@@ -1823,7 +1802,7 @@
 				}
 				//嵌入宽度调整事件源
 				//插件自动生成的选择列不做事件绑定
-				if (Settings.supportAdjust && !isLmCheckbox) {
+				if (Settings.supportAdjust && !isLmOrder && !isLmCheckbox) {
 					adjustDOM = (0, _jTool2.default)(_adjustHtml);
 					//最后一列不支持调整宽度
 					if (i2 == onlyThList.length - 1) {
@@ -1835,25 +1814,25 @@
 				//如果th上存在width属性，则表明配置项中存在该项配置；
 				//验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
 				var thWidthForConfig = onlyTH.attr('width');
-				// 宽度配置: 非GM自动创建的列
-				if (onlyTH.attr('gm-create') !== 'true') {
-					// 当前列被手动配置了宽度
-					if (thWidthForConfig && thWidthForConfig !== '') {
-						onlyTH.width(thWidthForConfig);
-						onlyTH.removeAttr('width');
-					}
-					// 当前列宽度未进行手动配置
-					else {
-							var _minWidth = _Base2.default.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
-							// onlyTH.css('min-width', _realWidthForThText);
-							//重置width 防止auto现象
-							var _oldWidth = onlyTH.width();
-							onlyTH.width(_oldWidth > _minWidth ? _oldWidth : _minWidth);
-						}
-				}
 				// 宽度配置: GM自动创建为固定宽度
+				if (isLmOrder || isLmCheckbox) {
+					onlyTH.width(50);
+				}
+				// 宽度配置: 非GM自动创建的列
 				else {
-						onlyTH.width(50);
+						// 当前列被手动配置了宽度
+						if (thWidthForConfig && thWidthForConfig !== '') {
+							onlyTH.width(thWidthForConfig);
+							onlyTH.removeAttr('width');
+						}
+						// 当前列宽度未进行手动配置
+						else {
+								var _minWidth = _Base2.default.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
+								// onlyTH.css('min-width', _realWidthForThText);
+								//重置width 防止auto现象
+								var _oldWidth = onlyTH.width();
+								onlyTH.width(_oldWidth > _minWidth ? _oldWidth : _minWidth);
+							}
 					}
 			});
 			//删除渲染中标识、增加渲染完成标识

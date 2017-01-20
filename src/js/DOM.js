@@ -186,7 +186,7 @@ const DOM = {
 			}
 			//嵌入宽度调整事件源
 			//插件自动生成的选择列不做事件绑定
-			if(Settings.supportAdjust && !isLmCheckbox){
+			if(Settings.supportAdjust && !isLmOrder && !isLmCheckbox){
 				adjustDOM = $(_adjustHtml);
 				//最后一列不支持调整宽度
 				if(i2 == onlyThList.length - 1){
@@ -198,8 +198,12 @@ const DOM = {
 			//如果th上存在width属性，则表明配置项中存在该项配置；
 			//验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
 			var thWidthForConfig = onlyTH.attr('width');
+			// 宽度配置: GM自动创建为固定宽度
+			if(isLmOrder || isLmCheckbox){
+				onlyTH.width(50);
+			}
 			// 宽度配置: 非GM自动创建的列
-			if(onlyTH.attr('gm-create') !== 'true'){
+			else {
 				// 当前列被手动配置了宽度
 				if(thWidthForConfig && thWidthForConfig !== ''){
 					onlyTH.width(thWidthForConfig);
@@ -208,15 +212,10 @@ const DOM = {
 				// 当前列宽度未进行手动配置
 				else{
 					var _minWidth = Base.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
-					// onlyTH.css('min-width', _realWidthForThText);
 					//重置width 防止auto现象
 					var _oldWidth = onlyTH.width();
 					onlyTH.width(_oldWidth > _minWidth ? _oldWidth : _minWidth);
 				}
-			}
-			// 宽度配置: GM自动创建为固定宽度
-			else{
-				onlyTH.width(50);
 			}
 		});
 		//删除渲染中标识、增加渲染完成标识
