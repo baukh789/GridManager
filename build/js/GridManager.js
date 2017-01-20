@@ -274,10 +274,9 @@
 	(function ($) {
 		// 捆绑至选择器对象
 		Element.prototype.GM = Element.prototype.GridManager = function () {
-			var table = this;
-			var $table = $(table);
+			var $table = $(this);
 			// 特殊情况处理：单组tr进行操作，如resetTd()方法
-			if (table.nodeName === 'TR') {
+			if (this.nodeName === 'TR') {
 				return;
 			}
 			var name, // 方法名
@@ -322,8 +321,8 @@
 			else if (name != 'init') {
 					gmObj = $table.data('gridManager');
 					var gmData = gmObj[name]($table, settings, callback, condition);
-					//如果方法存在返回值则返回，如果没有返回jTool object用于链式操作
-					return typeof gmData === 'undefined' ? $table : gmData;
+					//如果方法存在返回值则返回，如果没有返回dom, 用于链式操作
+					return typeof gmData === 'undefined' ? this : gmData;
 				}
 		};
 	})(_jTool2.default);
@@ -1483,7 +1482,10 @@
 			}
 			//合并排序信息至请求参
 			if (Settings.supportSorting) {
-				_jTool2.default.extend(pram, Settings.sortData);
+				_jTool2.default.each(Settings.sortData, function (key, value) {
+					pram['sort_' + key] = value; // 增加sort_前缀,防止与搜索时的条件重叠
+				});
+				// $.extend(pram, Settings.sortData);
 			}
 			//当前页小于1时, 修正为1
 			if (pram.cPage < 1) {
@@ -3093,9 +3095,10 @@
 		// 排序 sort
 		supportSorting: false, //排序：是否支持排序功能
 		isCombSorting: false, //是否为组合排序[只有在支持排序的情况下生效
+		sortKey: 'sort_', //排序字段前缀, 示例: 列名='date', sortKey='sort_', 排序参数则为sort_date
 		sortData: {}, //存储排序数据[不对外公开参数]
-		sortUpText: 'up', //排序：升序标识[该标识将会传至数据接口]
-		sortDownText: 'down', //排序：降序标识[该标识将会传至数据接口]
+		sortUpText: 'ASC', //排序：升序标识[该标识将会传至数据接口]
+		sortDownText: 'DESC', //排序：降序标识[该标识将会传至数据接口]
 		sortingBefore: _jTool2.default.noop, //排序事件发生前
 		sortingAfter: _jTool2.default.noop, //排序事件发生后
 

@@ -63,7 +63,10 @@ const Core= {
 		}
 		//合并排序信息至请求参
 		if(Settings.supportSorting){
-			$.extend(pram, Settings.sortData);
+			$.each(Settings.sortData, function (key, value) {
+				pram['sort_'+ key] = value;  // 增加sort_前缀,防止与搜索时的条件重叠
+			});
+			// $.extend(pram, Settings.sortData);
 		}
 		//当前页小于1时, 修正为1
 		if(pram.cPage < 1){

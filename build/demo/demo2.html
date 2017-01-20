@@ -6,27 +6,6 @@
 	<script type="text/javascript" src="../js/GridManager.js"></script>
     <title>GridManager:使用动态数据渲染</title>
     <style>
-        html, body{
-            overflow-x:hidden;
-        }
-        h2{
-            font-size:22px;
-            padding:10px 30px;
-            color:#333;
-        }
-        p{
-            font-size:14px;
-            padding:10px 30px;
-            color:#333;
-            text-indent:2em;
-			margin: 0px;
-        }
-        hr{
-            margin-top: 18px;
-            margin-bottom: 18px;
-            border: 0;
-            border-top: 1px solid #eee;
-        }
         .plugin-action{
             display: inline-block;
             color: steelblue;
@@ -36,137 +15,196 @@
         .plugin-action:hover{
             text-decoration:underline;
         }
+		.search-area{
+			padding: 10px 20px;
+			border: 1px solid #ccc;
+			background: #efefef;
+		}
+		.search-area .sa-ele{
+			display: inline-block;
+			margin-right: 20px;
+			font-size: 12px;
+		}
+		.search-area .sa-ele .se-title{
+			display: inline-block;
+			margin-right: 10px;
+		}
+		.search-area .sa-ele .se-con{
+			display: inline-block;
+			width:180px;
+			height: 24px;
+			border: 1px solid #ccc;
+			padding: 0px 4px;
+			line-height: 24px;
+		}
+		.search-area .sa-ele .search-action{
+			display: inline-block;
+			width:100px;
+			height: 26px;
+			border: 1px solid #ccc;
+			background: #e8e8e8;
+			padding: 0px 4px;
+			line-height: 26px;
+			text-align: center;
+			cursor: pointer;
+		}
+		.search-area .sa-ele .search-action:hover{
+			opacity: 0.7;
+		}
     </style>
 </head>
 
 <body>
-<h2>GridManager:使用动态数据渲染</h2>
-<p>注意:</p>
-<p>1.存在.json文件，谷歌需要放到环境中效果才能展现.</p>
-<p>2.数据采用的是.json的模拟请求数据,所以在切换分页时数据看上去并未变化.</p>
-<p>3.当前使用的排序方式为组合排序</p>
-<p>4.此Demo存在跨域请求,只做为演示不可直接使用</p>
-<button id="create-gm">渲染GridManager</button>
-<hr/>
-<div style="width:95%;margin:0px auto;">
-    <table></table>
-</div>
+	<h2>GridManager:使用动态数据渲染</h2>
+	<br/>
+	<div class="search-area">
+		<div class="sa-ele">
+			<label class="se-title">名称:</label>
+			<input class="se-con" name="name"/>
+		</div>
+		<div class="sa-ele">
+			<label class="se-title">使用说明:</label>
+			<input class="se-con" name="info"/>
+		</div>
+		<div class="sa-ele">
+			<label class="se-title">url:</label>
+			<input class="se-con" name="url"/>
+		</div>
+		<div class="sa-ele">
+			<button class="search-action">搜索</button>
+		</div>
+	</div>
+	<br/>
+	<table></table>
 <script type="text/javascript">
-    document.getElementById('create-gm').onclick = function(){
-        var table = document.querySelector('table');
-		table.GM({
-			supportRemind: true
-			,gridManagerName: 'test'
+	var table = document.querySelector('table');
+	table.GM({
+		supportRemind: true
+		,gridManagerName: 'test'
 //			,disableCache:true
-			,isCombSorting: true
-			,height: '300px'
-			,supportAjaxPage:true
-			,supportSorting: true
-			,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,isCombSorting: true
+		,height: '300px'
+		,supportAjaxPage:true
+		,supportSorting: true
+//		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajax_url: 'http://127.0.0.1:1314/learnLinkManager/getLearnLinkList'
 //			,ajax_headers: {'header-test': 'baukh'}
-			,ajax_type: 'POST'
-			,query: {pluginId: 1}
-			,pageSize:20
-			,columnData: [{
-					key: 'name',
-					remind: 'the name',
-					width: '100px',
-					text: '名称',
-					sorting: 'up'
-				},{
-					key: 'info',
-					remind: 'the info',
-					text: '使用说明',
-					sorting: ''
-				},{
-					key: 'url',
-					remind: 'the url',
-					text: 'url'
-				},{
-					key: 'createDate',
-					remind: 'the createDate',
-					width: '100px',
-					text: '创建时间',
-					template: function(createDate, rowObject){
-						return new Date(createDate).format('YYYY-MM-DD HH:mm:ss');
-					}
-				},{
-					key: 'lastDate',
-					remind: 'the lastDate',
-					width: '100px',
-					text: '最后修改时间',
-					template: function(lastDate, rowObject){
-						return new Date(lastDate).format('YYYY-MM-DD HH:mm:ss');
-					}
-				},{
-					key: 'action',
-					remind: 'the action',
-					width: '100px',
-					text: '操作',
-					template: function(action, rowObject){
-						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-								+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-					}
+		,ajax_type: 'POST'
+		,query: {pluginId: 1}
+		,pageSize:20
+		,columnData: [{
+				key: 'name',
+				remind: 'the name',
+				width: '100px',
+				text: '名称',
+				sorting: ''
+			},{
+				key: 'info',
+				remind: 'the info',
+				text: '使用说明'
+			},{
+				key: 'url',
+				remind: 'the url',
+				text: 'url'
+			},{
+				key: 'createDate',
+				remind: 'the createDate',
+				width: '100px',
+				text: '创建时间',
+				sorting: 'DESC',
+				template: function(createDate, rowObject){
+					return new Date(createDate).format('YYYY-MM-DD HH:mm:ss');
 				}
-			]
-			// 分页前事件
-			,pagingBefore: function(query){
-				console.log('pagingBefore', query);
+			},{
+				key: 'lastDate',
+				remind: 'the lastDate',
+				width: '100px',
+				text: '最后修改时间',
+				sorting: '',
+				template: function(lastDate, rowObject){
+					return new Date(lastDate).format('YYYY-MM-DD HH:mm:ss');
+				}
+			},{
+				key: 'action',
+				remind: 'the action',
+				width: '100px',
+				text: '操作',
+				template: function(action, rowObject){
+					return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+				}
 			}
-			// 分页后事件
-			,pagingAfter: function(data){
-				console.log('pagingAfter', data);
-			}
-			// 排序前事件
-			,sortingBefore: function (data) {
-				console.log('sortBefore', data);
-			}
-			// 排序后事件
-			,sortingAfter: function (data) {
-				console.log('sortAfter', data);
-			}
-			// 宽度调整前事件
-			,adjustBefore: function (event) {
-				console.log('adjustBefore', event);
-			}
-			// 宽度调整后事件
-			,adjustAfter: function (event) {
-				console.log('adjustAfter', event);
-			}
-			// 拖拽前事件
-			,dragBefore: function (event) {
-				console.log('dragBefore', event);
-			}
-			// 拖拽后事件
-			,dragAfter: function (event) {
-				console.log('dragAfter', event);
-			}
-		});
+		]
+		// 分页前事件
+		,pagingBefore: function(query){
+			console.log('pagingBefore', query);
+		}
+		// 分页后事件
+		,pagingAfter: function(data){
+			console.log('pagingAfter', data);
+		}
+		// 排序前事件
+		,sortingBefore: function (data) {
+			console.log('sortBefore', data);
+		}
+		// 排序后事件
+		,sortingAfter: function (data) {
+			console.log('sortAfter', data);
+		}
+		// 宽度调整前事件
+		,adjustBefore: function (event) {
+			console.log('adjustBefore', event);
+		}
+		// 宽度调整后事件
+		,adjustAfter: function (event) {
+			console.log('adjustAfter', event);
+		}
+		// 拖拽前事件
+		,dragBefore: function (event) {
+			console.log('dragBefore', event);
+		}
+		// 拖拽后事件
+		,dragAfter: function (event) {
+			console.log('dragAfter', event);
+		}
+	});
 
-        // 日期格式化,不是插件的代码,只用于处理时间格式化
-        Date.prototype.format = function(fmt){
-            var o = {
-                "M+": this.getMonth() + 1, //月份
-                "D+": this.getDate(), //日
-                "d+": this.getDate(), //日
-                "H+": this.getHours(), //小时
-                "h+": this.getHours(), //小时
-                "m+": this.getMinutes(), //分
-                "s+": this.getSeconds(), //秒
-                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-                "S": this.getMilliseconds() //毫秒
-            };
-            if (/([Y,y]+)/.test(fmt)){
-                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-            }
-            for (var k in o){
-                if(new RegExp("(" + k + ")").test(fmt)){
-                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-                }
-            }
-            return fmt;
-        }
-    }
+	// 日期格式化,不是插件的代码,只用于处理时间格式化
+	Date.prototype.format = function(fmt){
+		var o = {
+			"M+": this.getMonth() + 1, //月份
+			"D+": this.getDate(), //日
+			"d+": this.getDate(), //日
+			"H+": this.getHours(), //小时
+			"h+": this.getHours(), //小时
+			"m+": this.getMinutes(), //分
+			"s+": this.getSeconds(), //秒
+			"q+": Math.floor((this.getMonth() + 3) / 3), //季度
+			"S": this.getMilliseconds() //毫秒
+		};
+		if (/([Y,y]+)/.test(fmt)){
+			fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+		}
+		for (var k in o){
+			if(new RegExp("(" + k + ")").test(fmt)){
+				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			}
+		}
+		return fmt;
+	};
+
+	// 绑定搜索事件
+	document.querySelector('.search-action').addEventListener('click', function () {
+		var _query = {
+			name: document.querySelector('[name="name"]').value,
+			info: document.querySelector('[name="info"]').value,
+			url: document.querySelector('[name="url"]').value
+		};
+		console.log(_query);
+		table.GM('setQuery', _query).GM('refreshGrid', function () {
+			console.log('搜索成功...');
+		});
+	});
 </script>
 
 </body>

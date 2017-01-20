@@ -172,10 +172,9 @@ var publishList = [
 (function ($) {
 	// 捆绑至选择器对象
 	Element.prototype.GM = Element.prototype.GridManager = function(){
-		var table = this;
-		var $table = $(table);
+		var $table = $(this);
 		// 特殊情况处理：单组tr进行操作，如resetTd()方法
-		if(table.nodeName === 'TR'){
+		if(this.nodeName === 'TR'){
 			return;
 		}
 		var name,  // 方法名
@@ -220,8 +219,8 @@ var publishList = [
 		else if(name != 'init'){
 			gmObj = $table.data('gridManager');
 			var gmData = gmObj[name]($table, settings, callback, condition);
-			//如果方法存在返回值则返回，如果没有返回jTool object用于链式操作
-			return typeof(gmData) === 'undefined' ? $table : gmData;
+			//如果方法存在返回值则返回，如果没有返回dom, 用于链式操作
+			return typeof(gmData) === 'undefined' ? this : gmData;
 		}
 	};
 })(jTool);

@@ -39,9 +39,10 @@ let Settings = {
 	// 排序 sort
 	supportSorting		: false, 					//排序：是否支持排序功能
 	isCombSorting		: false,					//是否为组合排序[只有在支持排序的情况下生效
+	sortKey				: 'sort_',					//排序字段前缀, 示例: 列名='date', sortKey='sort_', 排序参数则为sort_date
 	sortData 			: {},						//存储排序数据[不对外公开参数]
-	sortUpText			: 'up',						//排序：升序标识[该标识将会传至数据接口]
-	sortDownText		: 'down',					//排序：降序标识[该标识将会传至数据接口]
+	sortUpText			: 'ASC',					//排序：升序标识[该标识将会传至数据接口]
+	sortDownText		: 'DESC',					//排序：降序标识[该标识将会传至数据接口]
 	sortingBefore		: $.noop,					//排序事件发生前
 	sortingAfter		: $.noop,					//排序事件发生后
 

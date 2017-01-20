@@ -4,10 +4,16 @@
 [![npm version](https://img.shields.io/npm/v/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 [![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 
+###文档介绍及源码
+- [文档](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
+- [github](https://github.com/baukh789/GridManager)
+- [oschina](http://git.oschina.net/baukh/GridManager)
+- [npm](https://www.npmjs.com/package/GridManager/)
+
 ##使用需知
-下载时请下载release版本
--v2.0为jquery版本
--v2.0为原生js版本
+下载时请选择对应的tag进行下载, 请不要直接使用分支上的代码.
+- v2.0和之前版本为jquery版本
+- v2.1开始为原生js版本
 ##实现功能
 GridManager.js可快速的对table标签进行实例化，实例化后将实现以下功能:
 
@@ -39,14 +45,10 @@ npm install GridManager
 -Firefox, Chrome,IE10+
 -这里提一下为什么不支持低版本: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
 
-##演示及文档
+##demo演示
 - [静态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo1.html)
 - [动态数据demo](http://www.lovejavascript.com/plugIn/GridManager/demo2.html)
 - [特定容器demo](http://www.lovejavascript.com/plugIn/GridManager/demo3.html)
-- [API](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
-- [github](https://github.com/baukh789/GridManager)
-- [oschina](http://git.oschina.net/baukh/GridManager)
-- [npm](https://www.npmjs.com/package/GridManager/)
 
 ##调用方式
 ```html
@@ -164,5 +166,8 @@ npm install GridManager
 ##版本信息
 [v2.1.x.md](/version/v2.1.x.md)
 
+
+##联系我
+QQ群号: 452781895
 
 
