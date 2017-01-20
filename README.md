@@ -164,6 +164,7 @@ npm install GridManager
     可使用clear方法,调用方式:document.querySelector('table').GM('clear');
 
 ##版本信息
+[v2.2.x.md](/version/v2.2.x.md)
 [v2.1.x.md](/version/v2.1.x.md)
 
 
