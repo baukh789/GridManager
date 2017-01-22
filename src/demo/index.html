@@ -30,16 +30,17 @@
 		}
 		.demo-tabs .demo-ele{
 			display: inline-block;
-			padding: 5px 30px;
-			margin-left: 10px;
-			border: 1px solid #ccc;
+			padding: 10px 30px;
+			margin-left: 5px;
+			border: 1px solid #e8e8e8;
 			border-bottom: 0px;
-			background-color: #efefef;
+			background-color: #e8e8e8;
+			margin-bottom: -1px;
 			cursor: pointer;
 		}
 		.demo-tabs .demo-ele[selected="selected"]{
-			background-color: #0099ff;
-			color: #fff;
+			background-color: #fff;
+			color: #000;
 		}
 		.demo-tabs .demo-ele:hover{
 			opacity: 0.7;;
@@ -74,6 +75,7 @@
 				this.setAttribute('selected', 'selected')
 			});
 		});
+		document.querySelector('.demo-ele').click();
 	</script>
 </body>
 </html>
