@@ -1828,7 +1828,6 @@
 						// 当前列宽度未进行手动配置
 						else {
 								var _minWidth = _Base2.default.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
-								// onlyTH.css('min-width', _realWidthForThText);
 								//重置width 防止auto现象
 								var _oldWidth = onlyTH.width();
 								onlyTH.width(_oldWidth > _minWidth ? _oldWidth : _minWidth);

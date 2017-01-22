@@ -1,8 +1,6 @@
 # GridManager.js
 
-[![Build Status](https://img.shields.io/travis/baukh789/GridManager.svg?style=flat-square)](https://travis-ci.org/baukh789/GridManager)
-[![npm version](https://img.shields.io/npm/v/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
-[![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
+[![Build Status](https://img.shields.io/travis/baukh789/GridManager.svg?style=flat-square)](https://travis-ci.org/baukh789/GridManager) [![npm version](https://img.shields.io/npm/v/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager) [![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 
 ###文档介绍及源码
 - [文档](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
@@ -11,7 +9,7 @@
 - [npm](https://www.npmjs.com/package/GridManager/)
 
 ##使用需知
-下载时请选择对应的tag进行下载, 请不要直接使用分支上的代码.
+下载时请选择对应的tag进行下载, 请不要直接使用marset分支上的代码.
 - v2.0和之前版本为jquery版本
 - v2.1开始为原生js版本
 ##实现功能
@@ -20,11 +18,10 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
 - 宽度调整: 表格的列宽度可进行拖拽式调整
 - 位置更换: 表格的列位置进行拖拽式调整
 - 配置列: 可通过配置对列进行显示隐藏转换
-- 表头吸顶: 在表存在可视区域的情况下,表头将一下存在于顶部
+- 表头吸顶: 在表存在可视区域的情况下,表头将一直存在于顶部
 - 排序: 表格单项排序或组合排序
 - 分页: 表格ajax分页,包含选择每页显示总条数和跳转至指定页功能
 - 用户偏好记忆: 记住用户行为,含用户调整的列宽、列顺序、列可视状态及每页显示条数
-- 分页、排序、刷新时自动进行数据加载，且提供相应的before、after事件
 - 序号: 自动生成序号列
 - 全选: 自动生成全选列
 - 导出: 当前页数据下载,和仅针对已选中的表格下载
@@ -79,7 +76,7 @@ npm install GridManager
         ,columnData: [{
                 key: 'name',
                 remind: 'the username',
-                sorting: 'up',
+                sorting: 'ASC',
                 width: '200px',
                 text: 'username'
             },{
@@ -90,7 +87,7 @@ npm install GridManager
             },{
                 key: 'createDate',
                 remind: 'the createDate',
-                sorting: 'down',
+                sorting: 'DESC',
                 width: '200px',
                 text: 'createDate'
             },{
