@@ -162,7 +162,6 @@ const Core= {
 	 $.query:配置的数据
 	 */
 	,setQuery: function(table, query){
-		// table.GridManager('get')['query'] = query;
 		var settings = Cache.getSettings(table);
 		$.extend(settings, {query: query});
 		Cache.updateSettings(table, settings);

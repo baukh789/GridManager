@@ -58,7 +58,6 @@ const Scroll = {
 			}
 			return true;
 		});
-   //     $(Settings.scrollDOM).trigger('scroll');
 	}
 };
 export default Scroll;
