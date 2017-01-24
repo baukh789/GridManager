@@ -500,7 +500,7 @@ table.grid-manager-default tbody tr:hover td{
 }
 /*由插件生成的序号、全选样式*/
 .table-wrap table[grid-manager] [gm-create="true"]{
-	width:50px !important;
+	width:50px;
 	text-align:center;
 	cursor:default;
 }

@@ -184,8 +184,7 @@ const DOM = {
 				}
 				onlyThWarp.append(sortingDom);
 			}
-			//嵌入宽度调整事件源
-			//插件自动生成的选择列不做事件绑定
+			//嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
 			if(Settings.supportAdjust && !isLmOrder && !isLmCheckbox){
 				adjustDOM = $(_adjustHtml);
 				//最后一列不支持调整宽度

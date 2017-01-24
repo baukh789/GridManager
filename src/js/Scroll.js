@@ -36,19 +36,14 @@ const Scroll = {
 							// + _thead.css('border-right-width')
 					,left: table.css('border-left-width') + 'px'
 				});
-				// $.each($('th', _thead), function (i, v) {
-				// 	$('th', _setTopHead).eq(i).width($(v).width());
-				// });
+				// 防止window.resize事件后导致的吸顶宽度错误
+				$.each($('th', _thead), function (i, v) {
+					$('th', _setTopHead).eq(i).width($(v).width());
+				});
 			}
 			if(_setTopHead.length === 0){
 				return;
 			}
-			//当前吸引thead 没有背景时 添加默认背景
-			// if(!_setTopHead.css('background') ||
-			// 	_setTopHead.css('background') == '' ||
-			// 	_setTopHead.css('background') == 'none'){
-			// 	_setTopHead.css('background', '#f5f5f5');
-			// }
 			// 删除表头置顶
 			if(_scrollDOMTop === 0){
 				_thead.removeClass('scrolling');

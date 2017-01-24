@@ -125,7 +125,7 @@
 	 * */
 	function GridManager() {
 		// 版本号
-		this.version = '2.2.0';
+		this.version = '2.2.3';
 	}
 	GridManager.prototype = {
 		/*
@@ -430,16 +430,10 @@
 				    //事件源所在的tr
 				_table = _tr.closest('table'),
 				    //事件源所在的table
-				_tableDiv = _table.closest('.table-div'),
-				    //事件源所在的DIV
 				_allTh = _tr.find('th[th-visible="visible"]'),
 				    //事件源同层级下的所有th
-				_nextTh = _allTh.eq(_th.index() + 1),
+				_nextTh = _allTh.eq(_th.index(_allTh) + 1),
 				    //事件源下一个可视th
-				_last = _allTh.eq(_allTh.length - 1),
-				    //事件源同层级倒数第一个th
-				_lastButOne = _allTh.eq(_allTh.length - 2),
-				    //事件源同层级倒数第二个th
 				_td = _Base2.default.getRowTd(_th); //存储与事件源同列的所有td
 				// 宽度调整触发回调事件
 				Settings.adjustBefore(event);
@@ -1800,8 +1794,7 @@
 					}
 					onlyThWarp.append(sortingDom);
 				}
-				//嵌入宽度调整事件源
-				//插件自动生成的选择列不做事件绑定
+				//嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
 				if (Settings.supportAdjust && !isLmOrder && !isLmCheckbox) {
 					adjustDOM = (0, _jTool2.default)(_adjustHtml);
 					//最后一列不支持调整宽度
@@ -2986,19 +2979,14 @@
 						// + _thead.css('border-right-width')
 						, left: table.css('border-left-width') + 'px'
 					});
-					// $.each($('th', _thead), function (i, v) {
-					// 	$('th', _setTopHead).eq(i).width($(v).width());
-					// });
+					_jTool2.default.each((0, _jTool2.default)('th', _thead), function (i, v) {
+						console.log((0, _jTool2.default)(v).width());
+						(0, _jTool2.default)('th', _setTopHead).eq(i).width((0, _jTool2.default)(v).width());
+					});
 				}
 				if (_setTopHead.length === 0) {
 					return;
 				}
-				//当前吸引thead 没有背景时 添加默认背景
-				// if(!_setTopHead.css('background') ||
-				// 	_setTopHead.css('background') == '' ||
-				// 	_setTopHead.css('background') == 'none'){
-				// 	_setTopHead.css('background', '#f5f5f5');
-				// }
 				// 删除表头置顶
 				if (_scrollDOMTop === 0) {
 					_thead.removeClass('scrolling');

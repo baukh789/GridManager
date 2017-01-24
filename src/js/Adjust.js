@@ -23,11 +23,8 @@ const Adjust = {
 			var _th 			= _dragAction.closest('th'),		        //事件源所在的th
 				_tr 			= _th.parent(),								//事件源所在的tr
 				_table 			= _tr.closest('table'),			            //事件源所在的table
-				_tableDiv 		= _table.closest('.table-div'),	            //事件源所在的DIV
 				_allTh 			= _tr.find('th[th-visible="visible"]'),		//事件源同层级下的所有th
-				_nextTh			= _allTh.eq(_th.index() + 1),				//事件源下一个可视th
-				_last 			= _allTh.eq(_allTh.length - 1), 			//事件源同层级倒数第一个th
-				_lastButOne 	= _allTh.eq(_allTh.length - 2), 			//事件源同层级倒数第二个th
+				_nextTh			= _allTh.eq(_th.index(_allTh) + 1),				//事件源下一个可视th
 				_td 	    	= Base.getRowTd(_th);                           //存储与事件源同列的所有td
 			// 宽度调整触发回调事件
 			Settings.adjustBefore(event);
