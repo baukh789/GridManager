@@ -66,10 +66,11 @@
 
 	</iframe>
 	<script>
-		document.querySelectorAll('.demo-ele').forEach(function(v, i){
+
+		[].forEach.call(document.querySelectorAll('.demo-ele'), function(v, i){
 			v.addEventListener('click', function () {
 				document.querySelector('#demo-iframe').src = this.getAttribute('data-url');
-				document.querySelectorAll('.demo-ele').forEach(function(v2, i2){
+				[].forEach.call(document.querySelectorAll('.demo-ele'), function(v2, i2){
 					v2.removeAttribute('selected');
 				});
 				this.setAttribute('selected', 'selected')
