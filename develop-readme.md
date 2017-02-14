@@ -18,7 +18,9 @@ node server.js
 npm test
 ```
 - 测试文件路径及文件名规范
+```
 /test/****_text.js
+```
 
 ##联系我
 QQ群号: 452781895
