@@ -166,4 +166,7 @@ npm install GridManager
 ##联系我
 QQ群号: 452781895
 
+##参与开发
+[开发者帮助文档](./develop-readme.md)
+
 
