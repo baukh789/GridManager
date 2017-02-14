@@ -58,6 +58,9 @@ var Cache = {
 	* return 成功或者失败的布尔值
 	* */
 	,clear: function(table){
+		if(!table){
+			return false;
+		}
 		var _table = $(table);
 		var _key = this.getLocalStorageKey(_table);
 		if(!_key){
