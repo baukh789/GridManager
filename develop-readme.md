@@ -8,8 +8,10 @@ git clone https://github.com/baukh789/GridManager.git
 ```javascript
 node server.js
 ```
-- 展示路径
+- 展示路径 
+```
 127.0.0.1:1987/build/demo/index.html
+```
 ##单元测试
 - 执行命令
 ```
