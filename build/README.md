@@ -1,15 +1,16 @@
 # GridManager.js
 
-[![Build Status](https://img.shields.io/travis/baukh789/GridManager.svg?style=flat-square)](https://travis-ci.org/baukh789/GridManager) [![npm version](https://img.shields.io/npm/v/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager) [![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
+[![Build Status](https://img.shields.io/travis/baukh789/GridManager.svg?style=flat-square)](https://travis-ci.org/baukh789/GridManager)
+[![Build Status](https://travis-ci.org/baukh789/GridManager.svg?branch=master&style=flat-square)](https://travis-ci.org/baukh789/GridManager)
+[![npm version](https://img.shields.io/npm/v/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
+[![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 
-###文档介绍及源码
+###文档及演示
 - [文档](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
-- [github](https://github.com/baukh789/GridManager)
-- [oschina](http://git.oschina.net/baukh/GridManager)
-- [npm](https://www.npmjs.com/package/GridManager/)
+- [演示](http://www.lovejavascript.com/node_modules/GridManager/demo/index.html)
 
 ##使用需知
-下载时请选择对应的tag进行下载, 请不要直接使用marset分支上的代码.
+下载时请选择对应的tag进行下载, 请不要直接使用master分支上的代码.
 - v2.0和之前版本为jquery版本
 - v2.1开始为原生js版本
 ##实现功能
@@ -34,8 +35,8 @@ npm install GridManager
 
 ##引入方式
 ```
-<link rel="stylesheet" type="text/css" href="/node_modules/GridManager/dist/css/GridManager.css"/>
-<script type="text/javascript" src="/node_modules/GridManager/dist/js/GridManager.js"></script>
+<link rel="stylesheet" type="text/css" href="/node_modules/GridManager/css/GridManager.css"/>
+<script type="text/javascript" src="/node_modules/GridManager/js/GridManager.js"></script>
 ```
 
 ##浏览器兼容
@@ -165,5 +166,8 @@ npm install GridManager
 
 ##联系我
 QQ群号: 452781895
+
+##参与开发
+[开发者帮助文档](./develop-readme.md)
 
 
