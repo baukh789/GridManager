@@ -33,7 +33,7 @@ GridManager.prototype = {
 	 * */
 	init: function(jToolObj, arg, callback) {
 
-		var _this = this;
+		const _this = this;
 		if(typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === ''){
 			arg.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
 		}
@@ -58,14 +58,14 @@ GridManager.prototype = {
 		if(_this.supportAjaxPage){
 			_this.configPageForCache(jToolObj);
 		}
-		var query = jTool.extend({}, _this.query, _this.pageData);
+		const query = jTool.extend({}, _this.query, _this.pageData);
 		//增加渲染中标注
 		jToolObj.addClass('GridManager-loading');
 		_this.initTable(jToolObj);
 
 		//如果初始获取缓存失败，在渲染完成后首先存储一次数据
 		if(typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined'){
-			window.setTimeout(function(){
+			window.setTimeout(() => {
 				_this.setToLocalStorage(jToolObj, true);
 				jToolObj.removeAttr('grid-manager-cache-error');
 			},1000);
@@ -80,7 +80,7 @@ GridManager.prototype = {
 	 $.table: table[jTool object]
 	 */
 	,initTable: function(table) {
-		var _this = this;
+		const _this = this;
 		//渲染HTML，嵌入所需的事件源DOM
 		DOM.createDOM(table);
 		//获取本地缓存并对列表进行配置
@@ -112,7 +112,7 @@ GridManager.prototype = {
 		_this.bindScrollFunction(table);
 		//绑定右键菜单事件
 		_this.bindRightMenuEvent(table);
-		//渲梁tbodyDOM
+		//渲染tbodyDOM
 		_this.__refreshGrid(table);
 		//将GridManager实例化对象存放于jTool data
 		_this.setGridManagerToJTool.call(_this, table);
@@ -153,7 +153,7 @@ jTool.extend(GridManager.prototype, Scroll);
 jTool.extend(GridManager.prototype, DOM);
 
 // 对外公开方法列表
-var publishList = [
+const publishList = [
 	'init',					//初始化
 	'setSort',				//手动设置排序
 	'get',					//通过jTool实例获取GridManager
@@ -171,16 +171,16 @@ var publishList = [
 ];
 (function ($) {
 	// 捆绑至选择器对象
-	Element.prototype.GM = Element.prototype.GridManager = function(){
-		var $table = $(this);
+	Element.prototype.GM = Element.prototype.GridManager = function () {
+		const $table = $(this);
 		// 特殊情况处理：单组tr进行操作，如resetTd()方法
 		if(this.nodeName === 'TR'){
 			return;
 		}
-		var name,  // 方法名
-			settings, // 参数
-			callback, // 回调函数
-			condition; // 条件
+		let name;  // 方法名
+		let	settings; // 参数
+		let	callback; // 回调函数
+		let	condition; // 条件
 		// 格式化参数
 		// ex: document.querySelector('table').GridManager()
 		if(arguments.length === 0){
@@ -208,17 +208,17 @@ var publishList = [
 			throw new Error('GridManager Error:方法调用错误，请确定方法名['+ name +']是否正确');
 			return false;
 		}
-		var gmObj;
+		let gmObj;
 		// 当前为初始化方法
 		if(name == 'init') {
-			var _GM = new GridManager();
+			const _GM = new GridManager();
 			_GM.init($table, settings, callback);
 			return _GM;
 		}
 		// 当前为其它方法
 		else if(name != 'init'){
 			gmObj = $table.data('gridManager');
-			var gmData = gmObj[name]($table, settings, callback, condition);
+			const gmData = gmObj[name]($table, settings, callback, condition);
 			//如果方法存在返回值则返回，如果没有返回dom, 用于链式操作
 			return typeof(gmData) === 'undefined' ? this : gmData;
 		}
@@ -229,7 +229,7 @@ var publishList = [
 (function(){
 	if(typeof(jQuery) !== 'undefined' && jQuery.fn.extend) {
 		jQuery.fn.extend({
-			GM: function(){
+			GM: function () {
 				if(arguments.length === 0) {
 					return this.get(0).GM();
 				}
@@ -243,7 +243,7 @@ var publishList = [
 					return this.get(0).GM(arguments[0], arguments[1], arguments[2]);
 				}
 			},
-			GridManager: function(){
+			GridManager: function () {
 				if(arguments.length === 0) {
 					return this.get(0).GridManager();
 				}
