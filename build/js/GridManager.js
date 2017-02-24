@@ -216,7 +216,7 @@
 			_this.bindScrollFunction(table);
 			//绑定右键菜单事件
 			_this.bindRightMenuEvent(table);
-			//渲梁tbodyDOM
+			//渲染tbodyDOM
 			_this.__refreshGrid(table);
 			//将GridManager实例化对象存放于jTool data
 			_this.setGridManagerToJTool.call(_this, table);
@@ -279,10 +279,10 @@
 			if (this.nodeName === 'TR') {
 				return;
 			}
-			var name, // 方法名
-			settings, // 参数
-			callback, // 回调函数
-			condition; // 条件
+			var name = void 0; // 方法名
+			var settings = void 0; // 参数
+			var callback = void 0; // 回调函数
+			var condition = void 0; // 条件
 			// 格式化参数
 			// ex: document.querySelector('table').GridManager()
 			if (arguments.length === 0) {
@@ -310,7 +310,7 @@
 				throw new Error('GridManager Error:方法调用错误，请确定方法名[' + name + ']是否正确');
 				return false;
 			}
-			var gmObj;
+			var gmObj = void 0;
 			// 当前为初始化方法
 			if (name == 'init') {
 				var _GM = new GridManager();
@@ -587,6 +587,9 @@
 	 * return 成功或者失败的布尔值
 	 * */
 		, clear: function clear(table) {
+			if (!table) {
+				return false;
+			}
 			var _table = (0, _jTool2.default)(table);
 			var _key = this.getLocalStorageKey(_table);
 			if (!_key) {

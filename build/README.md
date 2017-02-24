@@ -34,8 +34,8 @@ npm install GridManager
 
 ##引入方式
 ```
-<link rel="stylesheet" type="text/css" href="/node_modules/GridManager/dist/css/GridManager.css"/>
-<script type="text/javascript" src="/node_modules/GridManager/dist/js/GridManager.js"></script>
+<link rel="stylesheet" type="text/css" href="/node_modules/GridManager/css/GridManager.css"/>
+<script type="text/javascript" src="/node_modules/GridManager/js/GridManager.js"></script>
 ```
 
 ##浏览器兼容
@@ -165,5 +165,8 @@ npm install GridManager
 
 ##联系我
 QQ群号: 452781895
+
+##参与开发
+[开发者帮助文档](./develop-readme.md)
 
 
