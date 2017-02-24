@@ -587,14 +587,10 @@
 	 * return 成功或者失败的布尔值
 	 * */
 		, clear: function clear(table) {
-			if (!table) {
-				return false;
-			}
+			if (!table) return false;
 			var _table = (0, _jTool2.default)(table);
 			var _key = this.getLocalStorageKey(_table);
-			if (!_key) {
-				return false;
-			}
+			if (!_key) return false;
 			window.localStorage.removeItem(_key);
 			return true;
 		}
@@ -632,27 +628,28 @@
 			var _data = _this.getLocalStorage(table),
 			    //本地缓存的数据
 			_domArray = [];
-			var _th, //单一的th
-			_td, //单列的td，与_th对应
-			_cache, //列表的缓存数据
-			_thCache, //th相关 缓存
-			_thJson, //th的缓存json
-			_thArray, _tbodyArray;
+
 			//验证：当前table 没有缓存数据
 			if (!_data || _jTool2.default.isEmptyObject(_data)) {
 				_Base2.default.outLog('configTheadForCache:当前table没有缓存数据', 'info');
 				return;
 			}
-			_cache = _data.cache;
-			_thCache = _cache.th;
+			// 列表的缓存数据
+			var _cache = _data.cache;
+			// th相关 缓存
+			var _thCache = _cache.th;
 			//验证：缓存数据与当前列表是否匹配
 			if (!_thCache || _thCache.length != (0, _jTool2.default)('thead th', table).length) {
 				_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
 				return;
 			}
 			//验证：缓存数据与当前列表项是否匹配
-			var _thNameTmpList = [],
-			    _dataAvailable = true;
+			var _thNameTmpList = [];
+			var _dataAvailable = true;
+			// 单一的th
+			var _th = void 0;
+			// th的缓存json
+			var _thJson = void 0;
 			_jTool2.default.each(_thCache, function (i2, v2) {
 				_thJson = v2;
 				_th = (0, _jTool2.default)('th[th-name=' + _thJson.th_name + ']', table);
@@ -698,12 +695,14 @@
 			var Settings = Cache.getSettings(table);
 			var _this = this;
 			//当前为禁用缓存模式，直接跳出
-			if (Settings.disableCache) {
-				return;
-			}
+			if (Settings.disableCache) return false;
 			var _table = (0, _jTool2.default)(table);
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 			var noCache = _table.attr('no-cache');
+			if (!_table || _table.length == 0) {
+				_Base2.default.outLog('setToLocalStorage:无效的table', 'error');
+				return false;
+			}
 			if (noCache && noCache == 'true') {
 				_Base2.default.outLog('缓存功能已被禁用：当前表缺失必要参数', 'info');
 				return false;
@@ -712,21 +711,18 @@
 				_Base2.default.outLog('当前浏览器不支持：localStorage，缓存功能失效。', 'error');
 				return false;
 			}
-			if (!_table || _table.length == 0) {
-				_Base2.default.outLog('setToLocalStorage:无效的table', 'error');
-				return false;
-			}
-			var _cache = {},
-			    _pageCache = {},
-			    _thCache = new Array(),
-			    _thData = {};
 			var thList = (0, _jTool2.default)('thead[grid-manager-thead] th', _table);
 			if (!thList || thList.length == 0) {
 				_Base2.default.outLog('setToLocalStorage:无效的thList,请检查是否正确配置table,thead,th', 'error');
 				return false;
 			}
 
-			var $v;
+			var _cache = {},
+			    _pageCache = {},
+			    _thCache = [],
+			    _thData = {};
+
+			var $v = void 0;
 			_jTool2.default.each(thList, function (i, v) {
 				$v = (0, _jTool2.default)(v);
 				_thData = {};
@@ -737,7 +733,7 @@
 				if (Settings.supportAdjust) {
 					//用于处理宽度在特定情况下发生异常
 					// isInit ? $v.css('width', $v.css('width')) : '';
-					_thData.th_width = $v.width();;
+					_thData.th_width = $v.width();
 				}
 				if (Settings.supportConfig) {
 					_thData.isShow = (0, _jTool2.default)('.config-area li[th-name="' + _thData.th_name + '"]', _table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
@@ -763,18 +759,20 @@
 		, getLocalStorage: function getLocalStorage(table) {
 			var _table = (0, _jTool2.default)(table);
 			var _key = this.getLocalStorageKey(_table);
-			if (!_key) {
-				return {};
-			}
-			var _data = {},
-			    _localStorage = window.localStorage.getItem(_key);
+
+			if (!_key) return {};
+
+			var _localStorage = window.localStorage.getItem(_key);
 			//如无数据，增加属性标识：grid-manager-cache-error
 			if (!_localStorage) {
 				_table.attr('grid-manager-cache-error', 'error');
 				return {};
 			}
-			_data.key = _key;
-			_data.cache = JSON.parse(_localStorage);
+
+			var _data = {
+				key: _key,
+				cache: JSON.parse(_localStorage)
+			};
 			return _data;
 		}
 		/*
@@ -782,8 +780,9 @@
 	  $.table: table [jTool object]
 	  */
 		, setOriginalThDOM: function setOriginalThDOM(table) {
-			var _thDOM = (0, _jTool2.default)('thead[grid-manager-thead] th', table);
 			var _thList = [];
+			var _thDOM = (0, _jTool2.default)('thead[grid-manager-thead] th', table);
+
 			_jTool2.default.each(_thDOM, function (i, v) {
 				_thList.push(v.getAttribute('th-name'));
 			});
@@ -794,8 +793,8 @@
 	  $.table: table [jTool object]
 	  */
 		, getOriginalThDOM: function getOriginalThDOM(table) {
-			var _thList = (0, _jTool2.default)(table).data('originalThList');
 			var _thArray = [];
+			var _thList = (0, _jTool2.default)(table).data('originalThList');
 
 			_jTool2.default.each(_thList, function (i, v) {
 				_thArray.push((0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + v + '"]', table).get(0));
@@ -811,19 +810,19 @@
 			table.data('gridManager', this);
 		}
 		/*
-	  [对外公开方法]
-	  @通过jTool实例获取gridManager
-	  $.table:table [jTool object]
-	  */
-		, get: function get(table) {
-			return this.__getGridManager(table);
-		}
-		/*
 	  @获取gridManager
 	  $.table:table [jTool object]
 	  */
 		, __getGridManager: function __getGridManager(table) {
 			return table.data('gridManager');
+		}
+		/*
+	  [对外公开方法]
+	  @通过jTool实例获取gridManager
+	  $.table:table [jTool object]
+	  */
+		, get: function get(table) {
+			return undefined.__getGridManager(table);
 		}
 	};
 	exports.default = Cache;
