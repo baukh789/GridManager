@@ -588,7 +588,6 @@
 	 * */
 		, clear: function clear(table) {
 			if (!table) return false;
-
 			var _table = (0, _jTool2.default)(table);
 			var _key = this.getLocalStorageKey(_table);
 			if (!_key) return false;
