@@ -19,35 +19,33 @@ const AjaxPage = {
 			+ '</div>';
 		return html;
 	}
-	/*
-	 @初始化分页
-	 $.table:table
+	/**
+	 * 初始化分页
+	 * @param $table：[jTool object]
 	 */
-	,initAjaxPage: function(table){
-		const Settings = Cache.getSettings(table);
+	,initAjaxPage: function($table){
+		const Settings = Cache.getSettings($table);
 		const _this = this;
-		let table 	= $(table),
-			tableWarp 	= table.closest('.table-wrap'),
+		let tableWarp 	= $table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp);	//分页工具条
 		const sizeData = Settings.sizeData ;
 		pageToolbar.hide();
 		//生成每页显示条数选择框
-		_this.createPageSizeDOM(table, sizeData);
+		_this.createPageSizeDOM($table, sizeData);
 
 		//绑定页面跳转事件
-		_this.bindPageJumpEvent(table);
+		_this.bindPageJumpEvent($table);
 
 		//绑定设置显示条数切换事件
-		_thisgs.bindSetPageSizeEvent(table);
+		_this.bindSetPageSizeEvent($table);
 	}
-	/*
-	 @生成分页DOM节点据
-	 $.table: table的juqery实例化对象
-	 $._pageData_:分页数据格式
+	/**
+	 * 生成分页DOM节点据
+	 * @param $table [jTool object]
+	 * @param _pageData_  分页数据格式
 	 */
-	,createPageDOM:function(table, _pageData_){
-		const table 	= $(table),
-			tableWarp 	= table.closest('.table-wrap'),
+	,createPageDOM: function($table, _pageData_){
+		const tableWarp = $table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 			pagination	= $('.pagination', pageToolbar);		//分页区域
 		let cPage = Number(_pageData_.cPage || 0),		//当前页
@@ -117,14 +115,13 @@ const AjaxPage = {
 			+  '</li>';
 		pagination.html(tHtml);
 	}
-	/*
-	 @生成每页显示条数选择框据
-	 $.table: table的juqery实例化对象
-	 $._sizeData_: 选择框自定义条数
+	/**
+	 * 生成每页显示条数选择框据
+	 * @param $table: [table jTool object]
+	 * @param _sizeData: _选择框自定义条数
 	 */
-	,createPageSizeDOM: function(table, _sizeData_){
-		const table		= $(table),
-			tableWarp	= table.closest('.table-wrap'),
+	,createPageSizeDOM: function($table, _sizeData_){
+		const tableWarp	= $table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),				//分页工具条
 			pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);	//分页区域
 		//error
@@ -139,14 +136,13 @@ const AjaxPage = {
 		});
 		pSizeArea.html(_ajaxPageHtml);
 	}
-	/*
-	 @绑定页面跳转事件
-	 $.table: table的juqery实例化对象
+	/**
+	 * 绑定页面跳转事件
+	 * @param $table: [table jTool object]
 	 */
-	,bindPageJumpEvent:function(table){
+	,bindPageJumpEvent:function($table){
 		const _this = this;
-		const table		= $(table),
-			tableWarp	= table.closest('.table-wrap'),
+		const tableWarp	= $table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),		//分页工具条
 			pagination	= $('.pagination', pageToolbar),		//分页区域
 			gp_input	= $('.gp-input', pageToolbar),			//快捷跳转
@@ -161,7 +157,7 @@ const AjaxPage = {
 				return false;
 			}
 			cPage = parseInt(cPage);
-			_this.gotoPage(table, cPage);
+			_this.gotoPage($table, cPage);
 		});
 		//绑定快捷跳转事件
 		gp_input.unbind('keyup');
@@ -174,7 +170,7 @@ const AjaxPage = {
 				this.focus();
 				return;
 			}
-			_this.gotoPage(table, _inputValue);
+			_this.gotoPage($table, _inputValue);
 			this.value = '';
 		});
 		//绑定刷新界面事件
@@ -195,15 +191,18 @@ const AjaxPage = {
 				_input.focus();
 				return;
 			}
-			_this.gotoPage(table, _inputValue);
+			_this.gotoPage($table, _inputValue);
 			_input.val('');
 		});
 	}
-	/*
-	* @跳转至指定页
-	* */
-	,gotoPage: function (table, _cPage) {
-		const Settings = Cache.getSettings(table);
+
+	/**
+	 * 跳转至指定页
+	 * @param $table: [table jTool object]
+	 * @param _cPage: 指定页
+	 */
+	,gotoPage: function ($table, _cPage) {
+		const Settings = Cache.getSettings($table);
 		//跳转的指定页大于总页数
 		if(_cPage > Settings.pageData.tPage){
 			_cPage = Settings.pageData.tPage;
@@ -214,17 +213,18 @@ const AjaxPage = {
 		//调用事件、渲染DOM
 		const query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 		Settings.pagingBefore(query);
-		Core.__refreshGrid(table, function() {
+		Core.__refreshGrid($table, function() {
 			Settings.pagingAfter(query);
 		});
 	}
-	/*
-	 @绑定设置当前页显示数事件
-	 $.table: table的juqery实例化对象
+
+	/**
+	 * 绑定设置当前页显示数事件
+	 * @param $table: [table jTool object]
+	 * @returns {boolean}
 	 */
-	,bindSetPageSizeEvent:function(table){
-		const table 	=  $(table),
-			tableWarp 	= table.closest('.table-wrap'),
+	,bindSetPageSizeEvent: function($table){
+		const tableWarp = $table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 			sizeArea	= $('select[name=pSizeArea]', pageToolbar);	//切换条数区域
 		if(!sizeArea || sizeArea.length == 0){
@@ -236,7 +236,7 @@ const AjaxPage = {
 			const _size = $(this);
 			const _tableWarp  = _size.closest('.table-wrap'),
 				  _table	  = $('table[grid-manager]', _tableWarp);
-			const Settings = Cache.getSettings(table);
+			const Settings = Cache.getSettings($table);
 			Settings.pageData = {
 				cPage : 1,
 				pSize : parseInt(_size.val())
@@ -252,14 +252,15 @@ const AjaxPage = {
 
 		});
 	}
-	/*
-	 @重置当前页显示条数据
-	 $.table: table的juqery实例化对象
-	 $._pageData_:分页数据格式
+
+	/**
+	 * 重置当前页显示条数据
+	 * @param $table: [table jTool object]
+	 * @param _pageData_: 分页数据格式
+	 * @returns {boolean}
 	 */
-	,resetPSize: function(table, _pageData_){
-		const table   =  $(table),
-			tableWarp = table.closest('.table-wrap'),
+	,resetPSize: function($table, _pageData_){
+		const tableWarp = $table.closest('.table-wrap'),
 			toolBar   = $('.page-toolbar', tableWarp),
 			pSizeArea = $('select[name="pSizeArea"]', toolBar),
 			pSizeInfo = $('.dataTables_info', toolBar);
@@ -277,24 +278,24 @@ const AjaxPage = {
 		pSizeInfo.html(tmpHtml);
 		pSizeArea.show();
 	}
-	/*
-	 @重置分页数据
-	 $.table: table
-	 $.totals: 总条数
+	/**
+	 * 重置分页数据
+	 * @param $table: [table jTool object]
+	 * @param totals: 总条数
 	 */
-	,resetPageData: function(table, totals){
-		const Settings = Cache.getSettings(table);
+	,resetPageData: function($table, totals){
+		const Settings = Cache.getSettings($table);
 		const _this = this;
 		if(isNaN(parseInt(totals, 10))){
 			return;
 		}
 		const _pageData = getPageData(totals);
 		//生成分页DOM节点
-		_this.createPageDOM(table, _pageData);
+		_this.createPageDOM($table, _pageData);
 		//重置当前页显示条数
-		_this.resetPSize(table, _pageData);
-		Cache.updateSettings(table, $.extend(true, Settings, {pageData: _pageData}));
-		const tableWarp 	= table.closest('.table-wrap'),
+		_this.resetPSize($table, _pageData);
+		Cache.updateSettings($table, $.extend(true, Settings, {pageData: _pageData}));
+		const tableWarp 	= $table.closest('.table-wrap'),
 			  pageToolbar   = $('.page-toolbar', tableWarp);	//分页工具条
 		pageToolbar.show();
 
@@ -311,14 +312,13 @@ const AjaxPage = {
 			}
 		}
 	}
-	/*
-	 @根据本地缓存配置分页数据
-	 $.table: table[jTool object]
-	 配置当前页显示数
+	/**
+	 * 根据本地缓存配置分页数据
+	 * @param $table: [table jTool object]
 	 */
-	,configPageForCache: function(table){
-		const Settings = Cache.getSettings(table);
-		let _data  = Cache.getLocalStorage(table),		//本地缓存的数据
+	,configPageForCache: function($table){
+		const Settings = Cache.getSettings($table);
+		let _data  = Cache.getLocalStorage($table),		//本地缓存的数据
 			_cache = _data.cache,		//缓存对应
 			_pSize;			 //每页显示条数
 		//验证是否存在每页显示条数缓存数据
@@ -333,7 +333,7 @@ const AjaxPage = {
 			cPage : 1
 		};
 		$.extend(Settings, {pageData: pageData});
-		Cache.updateSettings(table, Settings);
+		Cache.updateSettings($table, Settings);
 	}
 };
 export default AjaxPage;
