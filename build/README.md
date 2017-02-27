@@ -43,9 +43,6 @@ npm install GridManager
 -Firefox, Chrome,IE10+
 -这里提一下为什么不支持低版本: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
 
-##demo演示
-- [GridManager查看演示](http://www.lovejavascript.com/node_modules/GridManager/demo/index.html)
-
 ##调用方式
 ```html
     <table grid-manager="test"></table>
