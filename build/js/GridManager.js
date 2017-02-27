@@ -416,17 +416,15 @@
 		}
 		/*
 	  @绑定宽度调整事件
-	  $.table: table [jTool object]
+	  $table: table [jTool object]
 	  */
-		, bindAdjustEvent: function bindAdjustEvent(table) {
-			var _this = this;
-
-			var thList = (0, _jTool2.default)('thead th', table); //table下的TH
+		, bindAdjustEvent: function bindAdjustEvent($table) {
+			var thList = (0, _jTool2.default)('thead th', $table); //table下的TH
 			//监听鼠标调整列宽度
 			thList.off('mousedown', '.adjust-action');
 			thList.on('mousedown', '.adjust-action', function (event) {
-				var Settings = _Cache2.default.getSettings(table);
-				var _dragAction = (0, _jTool2.default)(_this);
+				var Settings = _Cache2.default.getSettings($table);
+				var _dragAction = (0, _jTool2.default)(this);
 				var _th = _dragAction.closest('th'),
 				    //事件源所在的th
 				_tr = _th.parent(),
@@ -450,8 +448,8 @@
 				var _thMinWidth = _Base2.default.getTextWidth(_th),
 				    _NextThMinWidth = _Base2.default.getTextWidth(_nextTh);
 				_table.unbind('mousemove');
-				_table.bind('mousemove', function (e) {
-					_thWidth = e.clientX - _th.offset().left - _th.css('padding-left') - _th.css('padding-right');
+				_table.bind('mousemove', function (event) {
+					_thWidth = event.clientX - _th.offset().left - _th.css('padding-left') - _th.css('padding-right');
 					_thWidth = Math.ceil(_thWidth);
 					_NextWidth = _nextTh.width() + _th.width() - _thWidth;
 					_NextWidth = Math.ceil(_NextWidth);
@@ -477,7 +475,7 @@
 				//绑定鼠标放开、移出事件
 				_table.unbind('mouseup mouseleave');
 				_table.bind('mouseup mouseleave', function (event) {
-					var Settings = _Cache2.default.getSettings(table);
+					var Settings = _Cache2.default.getSettings($table);
 					_table.unbind('mousemove mouseleave');
 					//缓存列表宽度信息
 					_Cache2.default.setToLocalStorage(_table);
@@ -496,11 +494,10 @@
 		/*
 	  @通过缓存配置成功后, 重置宽度调整事件源dom
 	  用于禁用最后一列调整宽度事件
-	  $.table:table
+	  $.table: table[jTool Object]
 	  */
-		, resetAdjust: function resetAdjust(table) {
-			var _table = (0, _jTool2.default)(table),
-			    _thList = (0, _jTool2.default)('thead [th-visible="visible"]', _table),
+		, resetAdjust: function resetAdjust($table) {
+			var _thList = (0, _jTool2.default)('thead [th-visible="visible"]', $table),
 			    _adjustAction = (0, _jTool2.default)('.adjust-action', _thList);
 			if (!_adjustAction || _adjustAction.length == 0) {
 				return false;
@@ -856,7 +853,7 @@
 	var Base = {
 		/*
 	  @输出日志
-	  $.type: 输出分类[info,warn,error]
+	  type: 输出分类[info,warn,error]
 	  */
 		outLog: function outLog(msg, type) {
 			if (!type) {
@@ -873,8 +870,8 @@
 		/*
 	  [对外公开方法]
 	  @显示Th及对应的TD项
-	  $.table: table
-	  $.th:th
+	  table: table [jTool Object]
+	  th: th
 	  */
 		, showTh: function showTh(table, th) {
 			this.setAreVisible((0, _jTool2.default)(th), true);
@@ -882,8 +879,8 @@
 		/*
 	  [对外公开方法]
 	  @隐藏Th及对应的TD项
-	  $.table: table
-	  $.th:th
+	  table: table
+	  th:th
 	  */
 		, hideTh: function hideTh(table, th) {
 			this.setAreVisible((0, _jTool2.default)(th), false);
@@ -1166,8 +1163,6 @@
 	  * @param $table: [table jTool object]
 	  */
 		, bindPageJumpEvent: function bindPageJumpEvent($table) {
-			var _this2 = this;
-
 			var _this = this;
 			var tableWarp = $table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
@@ -1180,7 +1175,7 @@
 			//绑定分页点击事件
 			pageToolbar.off('click', 'li');
 			pageToolbar.on('click', 'li', function () {
-				var pageAction = (0, _jTool2.default)(_this2);
+				var pageAction = (0, _jTool2.default)(this);
 				var cPage = pageAction.attr('c-page'); //分页页码
 				if (!cPage || !Number(cPage) || pageAction.hasClass('disabled')) {
 					_Base2.default.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
@@ -1191,17 +1186,17 @@
 			});
 			//绑定快捷跳转事件
 			gp_input.unbind('keyup');
-			gp_input.bind('keyup', function (e) {
+			gp_input.bind('keyup', function () {
 				if (e.which !== 13) {
 					return;
 				}
-				var _inputValue = parseInt(_this2.value, 10);
+				var _inputValue = parseInt(this.value, 10);
 				if (!_inputValue) {
-					_this2.focus();
+					this.focus();
 					return;
 				}
 				_this.gotoPage($table, _inputValue);
-				_this2.value = '';
+				this.value = '';
 			});
 			//绑定刷新界面事件
 			refreshAction.unbind('click');

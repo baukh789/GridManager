@@ -149,7 +149,7 @@ const AjaxPage = {
 			refreshAction	= $('.refresh-action', pageToolbar);//快捷跳转
 		//绑定分页点击事件
 		pageToolbar.off('click', 'li');
-		pageToolbar.on('click', 'li', () => {
+		pageToolbar.on('click', 'li', function() {
 			const pageAction = $(this);
 			let cPage = pageAction.attr('c-page');	//分页页码
 			if(!cPage || !Number(cPage) || pageAction.hasClass('disabled')){
@@ -161,7 +161,7 @@ const AjaxPage = {
 		});
 		//绑定快捷跳转事件
 		gp_input.unbind('keyup');
-		gp_input.bind('keyup', e => {
+		gp_input.bind('keyup', function() {
 			if(e.which !== 13){
 				return;
 			}
@@ -213,7 +213,7 @@ const AjaxPage = {
 		//调用事件、渲染DOM
 		const query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 		Settings.pagingBefore(query);
-		Core.__refreshGrid($table, function() {
+		Core.__refreshGrid($table, () => {
 			Settings.pagingAfter(query);
 		});
 	}
@@ -246,7 +246,7 @@ const AjaxPage = {
 			//调用事件、渲染tbody
 			const query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 			Settings.pagingBefore(query);
-			Core.__refreshGrid(_table, function(){
+			Core.__refreshGrid(_table, () => {
 				Settings.pagingAfter(query);
 			});
 

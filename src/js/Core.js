@@ -104,7 +104,7 @@ const Core= {
 		});
 		//移除刷新中样式
 		function removeRefreshingClass(){
-			window.setTimeout(function(){
+			window.setTimeout(() => {
 				refreshAction.removeClass('refreshing');
 			}, 2000);
 		}
