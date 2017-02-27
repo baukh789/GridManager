@@ -267,7 +267,8 @@
 	'exportGridToXls', //导出表格 .xls
 	'getLocalStorage', //获取指定表格的本地存储数据
 	'setQuery', //配置query 该参数会在分页触发后返回至pagingAfter(query)方法
-	'setAjaxData', 'refreshGrid', //刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
+	'setAjaxData', //用于再次配置ajax_data数据, 配置后会根据配置的数据即刻刷新表格
+	'refreshGrid', //刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	'getRowData', //获取当前行渲染时使用的数据
 	'clear' //清除指定表的表格记忆数据
 	];
@@ -382,7 +383,7 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var require;!function t(e,n,o){function i(s,u){if(!n[s]){if(!e[s]){var a="function"==typeof require&&require;if(!u&&a)return require(s,!0);if(r)return r(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var l=n[s]={exports:{}};e[s][0].call(l.exports,function(t){var n=e[s][1][t];return i(n?n:t)},l,l.exports,t,e,n,o)}return n[s].exports}for(var r="function"==typeof require&&require,s=0;s<o.length;s++)i(o[s]);return i}({1:[function(t,e){var n=t("./utilities"),o=t("../src/Css"),i={show:function(){return n.each(this.DOMList,function(t,e){var n="",o=["SPAN","A","FONT","I"];if(-1!==e.nodeName.indexOf(o))return e.style.display="inline-block",this;switch(e.nodeName){case"TABLE":n="table";break;case"THEAD":n="table-header-group";break;case"TBODY":n="table-row-group";break;case"TR":n="table-row";break;case"TH":n="table-cell";break;case"TD":n="table-cell";break;default:n="block"}e.style.display=n}),this},hide:function(){return n.each(this.DOMList,function(t,e){e.style.display="none"}),this},animate:function(t,e,i){var r=this,s="",u="",a=r.DOMList[0];if(t){"undefined"===n.type(i)&&"function"===n.type(e)&&(i=e,e=0),"undefined"===n.type(i)&&(i=n.noop),"undefined"===n.type(e)&&(e=0),n.each(t,function(t,e){t=n.toHyphen(t),s+=t+":"+n.getStyle(a,t)+";",u+=t+":"+e+";"});var c="@keyframes jToolAnimate {from {"+s+"}to {"+u+"}}",l=document.createElement("style");l.className="jTool-animate-style",l.type="text/css",document.head.appendChild(l),l.textContent=l.textContent+c,a.style.animation="jToolAnimate "+e/1e3+"s ease-in-out forwards",window.setTimeout(function(){o.css.call(r,t),a.style.animation="",l.remove(),i()},e)}}};e.exports=i},{"../src/Css":3,"./utilities":13}],2:[function(t,e){var n=t("./utilities"),o={addClass:function(t){return this.changeClass(t,"add")},removeClass:function(t){return this.changeClass(t,"remove")},toggleClass:function(t){return this.changeClass(t,"toggle")},hasClass:function(t){return[].some.call(this.DOMList,function(e){return e.classList.contains(t)})},parseClassName:function(t){return t.indexOf(" ")?t.split(" "):[t]},changeClass:function(t,e){var o=this.parseClassName(t);return n.each(this.DOMList,function(t,i){n.each(o,function(t,n){i.classList[e](n)})}),this}};e.exports=o},{"./utilities":13}],3:[function(t,e){var n=t("./utilities"),o={css:function(t,e){function o(t,e){"number"===n.type(e)&&(e=e.toString()),-1!==r.indexOf(t)&&-1===e.indexOf("px")&&(e+="px"),n.each(i.DOMList,function(n,o){o.style[t]=e})}var i=this,r=["width","height","min-width","max-width","min-height","min-height","top","left","right","bottom","padding-top","padding-right","padding-bottom","padding-left","margin-top","margin-right","margin-bottom","margin-left","border-width","border-top-width","border-left-width","border-right-width","border-bottom-width"];if("string"===n.type(t)&&!e&&0!==e)return-1!==r.indexOf(t)?parseInt(n.getStyle(this.DOMList[0],t),10):n.getStyle(this.DOMList[0],t);if("object"===n.type(t)){var s=t;for(var u in s)o(u,s[u])}else o(t,e);return this},width:function(t){return this.css("width",t)},height:function(t){return this.css("height",t)}};e.exports=o},{"./utilities":13}],4:[function(t,e){var n=t("./utilities"),o={dataKey:"jTool"+n.version,data:function(t,e){var o=this,i={};if("undefined"==typeof t&&"undefined"==typeof e)return o.DOMList[0][o.dataKey];if("undefined"!=typeof e){var r=n.type(e);return("string"===r||"number"===r)&&o.attr(t,e),n.each(o.DOMList,function(n,r){i=r[o.dataKey]||{},i[t]=e,r[o.dataKey]=i}),this}return i=o.DOMList[0][o.dataKey]||{},this.transformValue(i[t]||o.attr(t))},removeData:function(t){var e,o=this;"undefined"!=typeof t&&(n.each(o.DOMList,function(n,i){e=i[o.dataKey]||{},delete e[t]}),o.removeAttr(t))},attr:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o.setAttribute(t,e)}),this):this.transformValue(this.DOMList[0].getAttribute(t))},removeAttr:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){n.removeAttribute(t)})},prop:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o[t]=e}),this):this.transformValue(this.DOMList[0][t])},removeProp:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){delete n[t]})},val:function(t){return this.prop("value",t)||""},transformValue:function(t){return"null"===n.type(t)&&(t=void 0),t}};e.exports=o},{"./utilities":13}],5:[function(t,e){var n=t("./utilities"),o=t("./Sizzle"),i={append:function(t){return this.html(t,"append")},prepend:function(t){return this.html(t,"prepend")},before:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;return n.insertBefore(t,e),this},after:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;n.lastChild==e?n.appendChild(t):n.insertBefore(t,e.nextSibling)},text:function(t){return"undefined"!=typeof t?(n.each(this.DOMList,function(e,n){n.textContent=t}),this):this.DOMList[0].textContent},html:function(t,e){if("undefined"==typeof t&&"undefined"==typeof e)return this.DOMList[0].innerHTML;var o=this,i=n.type(t);t.jTool?t=t.DOMList:"string"===i?t=n.createDOM(t||""):"element"===i&&(t=[t]);var r;return n.each(o.DOMList,function(o,i){e?"prepend"===e&&(r=i.firstChild):i.innerHTML="",n.each(t,function(t,e){e=e.cloneNode(!0),e.nodeType||(e=document.createTextNode(e)),r?i.insertBefore(e,r):i.appendChild(e),i.normalize()})}),this},wrap:function(t){var e;return n.each(this.DOMList,function(n,i){e=i.parentNode;var r=new o(t,i.ownerDocument).get(0);e.insertBefore(r,i),r.querySelector(":empty").appendChild(i)}),this},closest:function(t){function e(){return n&&0!==i.length&&1===n.nodeType?void(-1===[].indexOf.call(i,n)&&(n=n.parentNode,e())):void(n=null)}var n=this.DOMList[0].parentNode;if("undefined"==typeof t)return new o(n);var i=document.querySelectorAll(t);return e(),new o(n)},parent:function(){return this.closest()},clone:function(t){return new o(this.DOMList[0].cloneNode(t||!1))},remove:function(){n.each(this.DOMList,function(t,e){e.remove()})}};e.exports=i},{"./Sizzle":9,"./utilities":13}],6:[function(t,e){var n=t("./Sizzle"),o={get:function(t){return this.DOMList[t]},eq:function(t){return new n(this.DOMList[t])},find:function(t){return new n(t,this)},index:function(t){var e=this.DOMList[0];return t?t.jTool&&(t=t.DOMList):t=e.parentNode.childNodes,t?[].indexOf.call(t,e):-1}};e.exports=o},{"./Sizzle":9}],7:[function(t,e){var n=t("./utilities"),o={on:function(t,e,n,o){return this.addEvent(this.getEventObject(t,e,n,o))},off:function(t,e){return this.removeEvent(this.getEventObject(t,e))},bind:function(t,e,n){return this.on(t,void 0,e,n)},unbind:function(t){return this.removeEvent(this.getEventObject(t))},trigger:function(t){return n.each(this.DOMList,function(e,o){try{if(o.jToolEvent&&o.jToolEvent[t].length>0){var i=new Event(t);o.dispatchEvent(i)}else o[t]()}catch(r){n.error("事件:["+t+"]未能正确执行, 请确定方法已经绑定成功")}}),this},getEventObject:function(t,e,o,i){if("function"==typeof e&&(i=o||!1,o=e,e=void 0),!t)return n.error("事件绑定失败,原因: 参数中缺失事件类型"),this;if(e&&"element"===n.type(this.DOMList[0])||(e=""),""!==e){var r=o;o=function(t){-1!==[].indexOf.call(this.querySelectorAll(e),t.target)&&r.apply(t.target,arguments)}}var s,u,a=t.split(" "),c=[];return n.each(a,function(t,r){return""===r.trim()?!0:(s=r.split("."),u={eventName:r+e,type:s[0],querySelector:e,callback:o||n.noop,useCapture:i||!1,nameScope:s[1]||void 0},void c.push(u))}),c},addEvent:function(t){var e=this;return n.each(t,function(t,o){n.each(e.DOMList,function(t,e){e.jToolEvent=e.jToolEvent||{},e.jToolEvent[o.eventName]=e.jToolEvent[o.eventName]||[],e.jToolEvent[o.eventName].push(o),e.addEventListener(o.type,o.callback,o.useCapture)})}),e},removeEvent:function(t){var e,o=this;return n.each(t,function(t,i){n.each(o.DOMList,function(t,o){o.jToolEvent&&(e=o.jToolEvent[i.eventName],e&&(n.each(e,function(t,e){o.removeEventListener(e.type,e.callback)}),o.jToolEvent[i.eventName]=void 0))})}),o}};e.exports=o},{"./utilities":13}],8:[function(t,e){var n=t("./utilities"),o={offset:function(){function t(i,r){if(1===i.nodeType){if(e=n.getStyle(i,"position"),"undefined"==typeof r&&"static"===e)return void t(i.parentNode);o.top=i.offsetTop+o.top-i.scrollTop,o.left=i.offsetLeft+o.left-i.scrollLeft,"fixed"!==e&&t(i.parentNode)}}var e,o={top:0,left:0};return t(this.DOMList[0],!0),o},scrollTop:function(t){return this.scrollFN(t,"top")},scrollLeft:function(t){return this.scrollFN(t,"left")},scrollFN:function(t,e){var n=this.DOMList[0];return t||0===t?(this.setScrollFN(n,e,t),this):this.getScrollFN(n,e)},getScrollFN:function(t,e){return n.isWindow(t)?"top"===e?t.pageYOffset:t.pageXOffset:9===t.nodeType?"top"===e?t.body.scrollTop:t.body.scrollLeft:1===t.nodeType?"top"===e?t.scrollTop:t.scrollLeft:void 0},setScrollFN:function(t,e,o){return n.isWindow(t)?"top"===e?t.document.body.scrollTop=o:t.document.body.scrollLeft=o:9===t.nodeType?"top"===e?t.body.scrollTop=o:t.body.scrollLeft=o:1===t.nodeType?"top"===e?t.scrollTop=o:t.scrollLeft=o:void 0}};e.exports=o},{"./utilities":13}],9:[function(t,e){var n=t("./utilities"),o=function(t,e){var o;return t?n.isWindow(t)?(o=[t],e=void 0):t===document?(o=[document],e=void 0):t instanceof HTMLElement?(o=[t],e=void 0):t instanceof NodeList||t instanceof Array?(o=t,e=void 0):t.jTool?(o=t.DOMList,e=void 0):/<.+>/.test(t)?(o=n.createDOM(t),e=void 0):(e?e="string"==typeof e?document.querySelectorAll(e):e instanceof HTMLElement?[e]:e instanceof NodeList?e:e.jTool?e.DOMList:void 0:o=document.querySelectorAll(t),e&&(o=[],n.each(e,function(e,i){n.each(i.querySelectorAll(t),function(t,e){e&&o.push(e)})}))):t=null,o&&0!==o.length||(o=void 0),this.jTool=!0,this.DOMList=o,this.length=this.DOMList?this.DOMList.length:0,this.querySelector=t,this};e.exports=o},{"./utilities":13}],10:[function(t,e){function n(t){var e={url:null,type:"GET",data:null,headers:{},async:!0,beforeSend:s.noop,complete:s.noop,success:s.noop,error:s.noop};if(t=r(e,t),!t.url)return void s.error("jTool ajax: url不能为空");var n=new XMLHttpRequest,o="";"object"===s.type(t.data)?s.each(t.data,function(t,e){""!==o&&(o+="&"),o+=t+"="+e}):o=t.data,"GET"===t.type&&o&&(t.url=t.url+(-1===t.url.indexOf("?")?"?":"&")+o,o=null),n.open(t.type,t.url,t.async);for(var i in t.headers)n.setRequestHeader(i,t.headers[i]);t.beforeSend(n),n.onload=function(){t.complete(n,n.status)},n.onreadystatechange=function(){4===n.readyState&&(n.status>=200&&n.status<300||304===n.status?t.success(n.response,n.status):t.error(n,n.status,n.statusText))},n.send(o)}function o(t,e,o){n({url:t,type:"POST",data:e,success:o})}function i(t,e,o){n({url:t,type:"GET",data:e,success:o})}var r=t("./extend"),s=t("./utilities");e.exports={ajax:n,post:o,get:i}},{"./extend":11,"./utilities":13}],11:[function(t,e){function n(){function t(e,i){for(var r in e)e.hasOwnProperty(r)&&(n&&"object"===o.type(e[r])&&"object"===o.type(i[r])?t(e[r],i[r]):i[r]=e[r])}if(0===arguments.length)return{};var e,n=!1,i=1,r=arguments[0];for(1===arguments.length&&"object"==typeof arguments[0]?(r=this,i=0):2===arguments.length&&"boolean"==typeof arguments[0]?(n=arguments[0],r=this,i=1):arguments.length>2&&"boolean"==typeof arguments[0]&&(n=arguments[0],r=arguments[1]||{},i=2);i<arguments.length;i++)e=arguments[i]||{},t(e,r);return r}var o=t("./utilities");e.exports=n},{"./utilities":13}],12:[function(t,e){var n=t("./Sizzle"),o=t("./extend"),i=t("./utilities"),r=t("./ajax"),s=t("./Event"),u=t("./Css"),a=t("./Class"),c=t("./Document"),l=t("./Offset"),d=t("./Element"),f=t("./Animate"),p=t("./Data"),h=function(t,e){return new n(t,e)};n.prototype=h.prototype={},h.extend=h.prototype.extend=o,h.extend(i),h.extend(r),h.prototype.extend(s),h.prototype.extend(u),h.prototype.extend(a),h.prototype.extend(c),h.prototype.extend(l),h.prototype.extend(d),h.prototype.extend(f),h.prototype.extend(p),"undefined"!=typeof window.$&&(window._$=$),window.jTool=window.$=h,e.exports=h},{"./Animate":1,"./Class":2,"./Css":3,"./Data":4,"./Document":5,"./Element":6,"./Event":7,"./Offset":8,"./Sizzle":9,"./ajax":10,"./extend":11,"./utilities":13}],13:[function(t,e){function n(){return-1==navigator.userAgent.indexOf("Chrome")?!1:!0}function o(t){return null!==t&&t===t.window}function i(t){return Array.isArray(t)}function r(t){return v[m.call(t)]||(t instanceof Element?"element":"")}function s(){}function u(t,e){t&&t.jTool&&(t=t.DOMList);var n=r(t);if("array"===n||"nodeList"===n||"arguments"===n)[].every.call(t,function(t,n){o(t)?s():t.jTool?t=t.get(0):s();return e.call(t,n,t)===!1?!1:!0});else if("object"===n)for(var i in t)if(e.call(t[i],i,t[i])===!1)break}function a(t){return t.trim()}function c(t){throw new Error("[jTool Error: "+t+"]")}function l(t){var e=!0;for(var n in t)t.hasOwnProperty(n)&&(e=!1);return e}function d(t,e){return e?window.getComputedStyle(t)[e]:window.getComputedStyle(t)}function f(t){var e=["px","vem","em","%"],n="";return"number"==typeof t?n:(u(e,function(e,o){return-1!==t.indexOf(o)?(n=o,!1):void 0}),n)}function p(t){return t.replace(/-\w/g,function(t){return t.split("-")[1].toUpperCase()})}function h(t){return t.replace(/([A-Z])/g,"-$1").toLowerCase()}function y(t){var e=document.querySelector("#jTool-create-dom");if(!e||0===e.length){var n=document.createElement("table");n.id="jTool-create-dom",n.style.display="none",document.body.appendChild(n),e=document.querySelector("#jTool-create-dom")}e.innerHTML=t||"";var o=e.childNodes;return 1!=o.length||/<tbody|<TBODY/.test(t)||"TBODY"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<thead|<THEAD/.test(t)||"THEAD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<tr|<TR/.test(t)||"TR"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<td|<TD/.test(t)||"TD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<th|<TH/.test(t)||"TH"!==o[0].nodeName||(o=o[0].childNodes),e.remove(),o}var m=Object.prototype.toString,v={"[object String]":"string","[object Boolean]":"boolean","[object Undefined]":"undefined","[object Number]":"number","[object Object]":"object","[object Error]":"error","[object Function]":"function","[object Date]":"date","[object Array]":"array","[object RegExp]":"regexp","[object Null]":"null","[object NodeList]":"nodeList","[object Arguments]":"arguments","[object Window]":"window","[object HTMLDocument]":"document"};e.exports={isWindow:o,isChrome:n,isArray:i,noop:s,type:r,toHyphen:h,toHump:p,getStyleUnit:f,getStyle:d,isEmptyObject:l,trim:a,error:c,each:u,createDOM:y,version:"1.1.0"}},{}]},{},[12]);
+	var require;var require;!function t(e,n,o){function i(s,u){if(!n[s]){if(!e[s]){var a="function"==typeof require&&require;if(!u&&a)return require(s,!0);if(r)return r(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var l=n[s]={exports:{}};e[s][0].call(l.exports,function(t){var n=e[s][1][t];return i(n?n:t)},l,l.exports,t,e,n,o)}return n[s].exports}for(var r="function"==typeof require&&require,s=0;s<o.length;s++)i(o[s]);return i}({1:[function(t,e){var n=t("./utilities"),o=t("../src/Css"),i={show:function(){return n.each(this.DOMList,function(t,e){var n="",o=["SPAN","A","FONT","I"];if(-1!==e.nodeName.indexOf(o))return e.style.display="inline-block",this;switch(e.nodeName){case"TABLE":n="table";break;case"THEAD":n="table-header-group";break;case"TBODY":n="table-row-group";break;case"TR":n="table-row";break;case"TH":n="table-cell";break;case"TD":n="table-cell";break;default:n="block"}e.style.display=n}),this},hide:function(){return n.each(this.DOMList,function(t,e){e.style.display="none"}),this},animate:function(t,e,i){var r=this,s="",u="",a=r.DOMList[0];if(t){"undefined"===n.type(i)&&"function"===n.type(e)&&(i=e,e=0),"undefined"===n.type(i)&&(i=n.noop),"undefined"===n.type(e)&&(e=0),n.each(t,function(t,e){t=n.toHyphen(t),s+=t+":"+n.getStyle(a,t)+";",u+=t+":"+e+";"});var c="@keyframes jToolAnimate {from {"+s+"}to {"+u+"}}",l=document.createElement("style");l.className="jTool-animate-style",l.type="text/css",document.head.appendChild(l),l.textContent=l.textContent+c,a.style.animation="jToolAnimate "+e/1e3+"s ease-in-out forwards",window.setTimeout(function(){o.css.call(r,t),a.style.animation="",l.remove(),i()},e)}}};e.exports=i},{"../src/Css":3,"./utilities":13}],2:[function(t,e){var n=t("./utilities"),o={addClass:function(t){return this.changeClass(t,"add")},removeClass:function(t){return this.changeClass(t,"remove")},toggleClass:function(t){return this.changeClass(t,"toggle")},hasClass:function(t){return[].some.call(this.DOMList,function(e){return e.classList.contains(t)})},parseClassName:function(t){return t.indexOf(" ")?t.split(" "):[t]},changeClass:function(t,e){var o=this.parseClassName(t);return n.each(this.DOMList,function(t,i){n.each(o,function(t,n){i.classList[e](n)})}),this}};e.exports=o},{"./utilities":13}],3:[function(t,e){var n=t("./utilities"),o={css:function(t,e){function o(t,e){"number"===n.type(e)&&(e=e.toString()),-1!==r.indexOf(t)&&-1===e.indexOf("px")&&(e+="px"),n.each(i.DOMList,function(n,o){o.style[t]=e})}var i=this,r=["width","height","min-width","max-width","min-height","min-height","top","left","right","bottom","padding-top","padding-right","padding-bottom","padding-left","margin-top","margin-right","margin-bottom","margin-left","border-width","border-top-width","border-left-width","border-right-width","border-bottom-width"];if("string"===n.type(t)&&!e&&0!==e)return-1!==r.indexOf(t)?parseInt(n.getStyle(this.DOMList[0],t),10):n.getStyle(this.DOMList[0],t);if("object"===n.type(t)){var s=t;for(var u in s)o(u,s[u])}else o(t,e);return this},width:function(t){return this.css("width",t)},height:function(t){return this.css("height",t)}};e.exports=o},{"./utilities":13}],4:[function(t,e){var n=t("./utilities"),o={dataKey:"jTool"+n.version,data:function(t,e){var o=this,i={};if("undefined"==typeof t&&"undefined"==typeof e)return o.DOMList[0][o.dataKey];if("undefined"!=typeof e){var r=n.type(e);return("string"===r||"number"===r)&&o.attr(t,e),n.each(o.DOMList,function(n,r){i=r[o.dataKey]||{},i[t]=e,r[o.dataKey]=i}),this}return i=o.DOMList[0][o.dataKey]||{},this.transformValue(i[t]||o.attr(t))},removeData:function(t){var e,o=this;"undefined"!=typeof t&&(n.each(o.DOMList,function(n,i){e=i[o.dataKey]||{},delete e[t]}),o.removeAttr(t))},attr:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o.setAttribute(t,e)}),this):this.transformValue(this.DOMList[0].getAttribute(t))},removeAttr:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){n.removeAttribute(t)})},prop:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o[t]=e}),this):this.transformValue(this.DOMList[0][t])},removeProp:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){delete n[t]})},val:function(t){return this.prop("value",t)||""},transformValue:function(t){return"null"===n.type(t)&&(t=void 0),t}};e.exports=o},{"./utilities":13}],5:[function(t,e){var n=t("./utilities"),o=t("./Sizzle"),i={append:function(t){return this.html(t,"append")},prepend:function(t){return this.html(t,"prepend")},before:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;return n.insertBefore(t,e),this},after:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;n.lastChild==e?n.appendChild(t):n.insertBefore(t,e.nextSibling)},text:function(t){return"undefined"!=typeof t?(n.each(this.DOMList,function(e,n){n.textContent=t}),this):this.DOMList[0].textContent},html:function(t,e){if("undefined"==typeof t&&"undefined"==typeof e)return this.DOMList[0].innerHTML;var o=this,i=n.type(t);t.jTool?t=t.DOMList:"string"===i?t=n.createDOM(t||""):"element"===i&&(t=[t]);var r;return n.each(o.DOMList,function(o,i){e?"prepend"===e&&(r=i.firstChild):i.innerHTML="",n.each(t,function(t,e){e=e.cloneNode(!0),e.nodeType||(e=document.createTextNode(e)),r?i.insertBefore(e,r):i.appendChild(e),i.normalize()})}),this},wrap:function(t){var e;return n.each(this.DOMList,function(n,i){e=i.parentNode;var r=new o(t,i.ownerDocument).get(0);e.insertBefore(r,i),r.querySelector(":empty").appendChild(i)}),this},closest:function(t){function e(){return n&&0!==i.length&&1===n.nodeType?void(-1===[].indexOf.call(i,n)&&(n=n.parentNode,e())):void(n=null)}var n=this.DOMList[0].parentNode;if("undefined"==typeof t)return new o(n);var i=document.querySelectorAll(t);return e(),new o(n)},parent:function(){return this.closest()},clone:function(t){return new o(this.DOMList[0].cloneNode(t||!1))},remove:function(){n.each(this.DOMList,function(t,e){e.remove()})}};e.exports=i},{"./Sizzle":9,"./utilities":13}],6:[function(t,e){var n=t("./Sizzle"),o={get:function(t){return this.DOMList[t]},eq:function(t){return new n(this.DOMList[t])},find:function(t){return new n(t,this)},index:function(t){var e=this.DOMList[0];return t?t.jTool&&(t=t.DOMList):t=e.parentNode.childNodes,t?[].indexOf.call(t,e):-1}};e.exports=o},{"./Sizzle":9}],7:[function(t,e){var n=t("./utilities"),o={on:function(t,e,n,o){return this.addEvent(this.getEventObject(t,e,n,o))},off:function(t,e){return this.removeEvent(this.getEventObject(t,e))},bind:function(t,e,n){return this.on(t,void 0,e,n)},unbind:function(t){return this.removeEvent(this.getEventObject(t))},trigger:function(t){return n.each(this.DOMList,function(e,o){try{if(o.jToolEvent&&o.jToolEvent[t].length>0){var i=new Event(t);o.dispatchEvent(i)}else o[t]()}catch(r){n.error("事件:["+t+"]未能正确执行, 请确定方法已经绑定成功")}}),this},getEventObject:function(t,e,o,i){if("function"==typeof e&&(i=o||!1,o=e,e=void 0),!t)return n.error("事件绑定失败,原因: 参数中缺失事件类型"),this;if(e&&"element"===n.type(this.DOMList[0])||(e=""),""!==e){var r=o;o=function(t){-1!==[].indexOf.call(this.querySelectorAll(e),t.target)&&r.apply(t.target,arguments)}}var s,u,a=t.split(" "),c=[];return n.each(a,function(t,r){return""===r.trim()?!0:(s=r.split("."),u={eventName:r+e,type:s[0],querySelector:e,callback:o||n.noop,useCapture:i||!1,nameScope:s[1]||void 0},void c.push(u))}),c},addEvent:function(t){var e=this;return n.each(t,function(t,o){n.each(e.DOMList,function(t,e){e.jToolEvent=e.jToolEvent||{},e.jToolEvent[o.eventName]=e.jToolEvent[o.eventName]||[],e.jToolEvent[o.eventName].push(o),e.addEventListener(o.type,o.callback,o.useCapture)})}),e},removeEvent:function(t){var e,o=this;return n.each(t,function(t,i){n.each(o.DOMList,function(t,o){o.jToolEvent&&(e=o.jToolEvent[i.eventName],e&&(n.each(e,function(t,e){o.removeEventListener(e.type,e.callback)}),o.jToolEvent[i.eventName]=void 0))})}),o}};e.exports=o},{"./utilities":13}],8:[function(t,e){var n=t("./utilities"),o={offset:function(){function t(i,r){if(1===i.nodeType){if(e=n.getStyle(i,"position"),"undefined"==typeof r&&"static"===e)return void t(i.parentNode);o.top=i.offsetTop+o.top-i.scrollTop,o.left=i.offsetLeft+o.left-i.scrollLeft,"fixed"!==e&&t(i.parentNode)}}var e,o={top:0,left:0};return t(this.DOMList[0],!0),o},scrollTop:function(t){return this.scrollFN(t,"top")},scrollLeft:function(t){return this.scrollFN(t,"left")},scrollFN:function(t,e){var n=this.DOMList[0];return t||0===t?(this.setScrollFN(n,e,t),this):this.getScrollFN(n,e)},getScrollFN:function(t,e){return n.isWindow(t)?"top"===e?t.pageYOffset:t.pageXOffset:9===t.nodeType?"top"===e?t.body.scrollTop:t.body.scrollLeft:1===t.nodeType?"top"===e?t.scrollTop:t.scrollLeft:void 0},setScrollFN:function(t,e,o){return n.isWindow(t)?"top"===e?t.document.body.scrollTop=o:t.document.body.scrollLeft=o:9===t.nodeType?"top"===e?t.body.scrollTop=o:t.body.scrollLeft=o:1===t.nodeType?"top"===e?t.scrollTop=o:t.scrollLeft=o:void 0}};e.exports=o},{"./utilities":13}],9:[function(t,e){var n=t("./utilities"),o=function(t,e){var o;return t?n.isWindow(t)?(o=[t],e=void 0):t===document?(o=[document],e=void 0):t instanceof HTMLElement?(o=[t],e=void 0):t instanceof NodeList||t instanceof Array?(o=t,e=void 0):t.jTool?(o=t.DOMList,e=void 0):/<.+>/.test(t)?(o=n.createDOM(t),e=void 0):(e?e="string"==typeof e?document.querySelectorAll(e):e instanceof HTMLElement?[e]:e instanceof NodeList?e:e.jTool?e.DOMList:void 0:o=document.querySelectorAll(t),e&&(o=[],n.each(e,function(e,i){n.each(i.querySelectorAll(t),function(t,e){e&&o.push(e)})}))):t=null,o&&0!==o.length||(o=void 0),this.jTool=!0,this.DOMList=o,this.length=this.DOMList?this.DOMList.length:0,this.querySelector=t,this};e.exports=o},{"./utilities":13}],10:[function(t,e){function n(t){var e={url:null,type:"GET",data:null,headers:{},async:!0,beforeSend:r.noop,complete:r.noop,success:r.noop,error:r.noop};if(t=i(e,t),!t.url)return void r.error("jTool ajax: url不能为空");var n=new XMLHttpRequest,o="";"object"===r.type(t.data)?r.each(t.data,function(t,e){""!==o&&(o+="&"),o+=t+"="+e}):o=t.data,"GET"===t.type&&o&&(t.url=t.url+(-1===t.url.indexOf("?")?"?":"&")+o,o=null),n.open(t.type,t.url,t.async);for(var s in t.headers)n.setRequestHeader(s,t.headers[s]);t.beforeSend(n),n.onload=function(){t.complete(n,n.status)},n.onreadystatechange=function(){4===n.readyState&&(n.status>=200&&n.status<300||304===n.status?t.success(n.response,n.status):t.error(n,n.status,n.statusText))},n.send(o)}function o(t,e,o){n({url:t,type:"POST",data:e,success:o})}var i=t("./extend"),r=t("./utilities");e.exports={ajax:n,post:o}},{"./extend":11,"./utilities":13}],11:[function(t,e){function n(){function t(e,i){for(var r in e)e.hasOwnProperty(r)&&(n&&"object"===o.type(e[r])&&"object"===o.type(i[r])?t(e[r],i[r]):i[r]=e[r])}if(0===arguments.length)return{};var e,n=!1,i=1,r=arguments[0];for(1===arguments.length&&"object"==typeof arguments[0]?(r=this,i=0):2===arguments.length&&"boolean"==typeof arguments[0]?(n=arguments[0],r=this,i=1):arguments.length>2&&"boolean"==typeof arguments[0]&&(n=arguments[0],r=arguments[1]||{},i=2);i<arguments.length;i++)e=arguments[i]||{},t(e,r);return r}var o=t("./utilities");e.exports=n},{"./utilities":13}],12:[function(t,e){var n=t("./Sizzle"),o=t("./extend"),i=t("./utilities"),r=t("./ajax"),s=t("./Event"),u=t("./Css"),a=t("./Class"),c=t("./Document"),l=t("./Offset"),d=t("./Element"),f=t("./Animate"),p=t("./Data"),h=function(t,e){return new n(t,e)};n.prototype=h.prototype={},h.extend=h.prototype.extend=o,h.extend(i),h.extend(r),h.prototype.extend(s),h.prototype.extend(u),h.prototype.extend(a),h.prototype.extend(c),h.prototype.extend(l),h.prototype.extend(d),h.prototype.extend(f),h.prototype.extend(p),"undefined"!=typeof window.$&&(window._$=$),window.jTool=window.$=h,e.exports=h},{"./Animate":1,"./Class":2,"./Css":3,"./Data":4,"./Document":5,"./Element":6,"./Event":7,"./Offset":8,"./Sizzle":9,"./ajax":10,"./extend":11,"./utilities":13}],13:[function(t,e){function n(){return-1==navigator.userAgent.indexOf("Chrome")?!1:!0}function o(t){return null!==t&&t===t.window}function i(t){return Array.isArray(t)}function r(t){return v[m.call(t)]||(t instanceof Element?"element":"")}function s(){}function u(t,e){t&&t.jTool&&(t=t.DOMList);var n=r(t);if("array"===n||"nodeList"===n||"arguments"===n)[].every.call(t,function(t,n){o(t)?s():t.jTool?t=t.get(0):s();return e.call(t,n,t)===!1?!1:!0});else if("object"===n)for(var i in t)if(e.call(t[i],i,t[i])===!1)break}function a(t){return t.trim()}function c(t){throw new Error("[jTool Error: "+t+"]")}function l(t){var e=!0;for(var n in t)t.hasOwnProperty(n)&&(e=!1);return e}function d(t,e){return e?window.getComputedStyle(t)[e]:window.getComputedStyle(t)}function f(t){var e=["px","vem","em","%"],n="";return"number"==typeof t?n:(u(e,function(e,o){return-1!==t.indexOf(o)?(n=o,!1):void 0}),n)}function p(t){return t.replace(/-\w/g,function(t){return t.split("-")[1].toUpperCase()})}function h(t){return t.replace(/([A-Z])/g,"-$1").toLowerCase()}function y(t){var e=document.querySelector("#jTool-create-dom");if(!e||0===e.length){var n=document.createElement("table");n.id="jTool-create-dom",n.style.display="none",document.body.appendChild(n),e=document.querySelector("#jTool-create-dom")}e.innerHTML=t||"";var o=e.childNodes;return 1!=o.length||/<tbody|<TBODY/.test(t)||"TBODY"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<thead|<THEAD/.test(t)||"THEAD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<tr|<TR/.test(t)||"TR"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<td|<TD/.test(t)||"TD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<th|<TH/.test(t)||"TH"!==o[0].nodeName||(o=o[0].childNodes),e.remove(),o}var m=Object.prototype.toString,v={"[object String]":"string","[object Boolean]":"boolean","[object Undefined]":"undefined","[object Number]":"number","[object Object]":"object","[object Error]":"error","[object Function]":"function","[object Date]":"date","[object Array]":"array","[object RegExp]":"regexp","[object Null]":"null","[object NodeList]":"nodeList","[object Arguments]":"arguments","[object Window]":"window","[object HTMLDocument]":"document"};e.exports={isWindow:o,isChrome:n,isArray:i,noop:s,type:r,toHyphen:h,toHump:p,getStyleUnit:f,getStyle:d,isEmptyObject:l,trim:a,error:c,each:u,createDOM:y,version:"1.1.0"}},{}]},{},[12]);
 
 /***/ },
 /* 3 */
@@ -418,12 +419,14 @@
 	  $.table: table [jTool object]
 	  */
 		, bindAdjustEvent: function bindAdjustEvent(table) {
+			var _this = this;
+
 			var thList = (0, _jTool2.default)('thead th', table); //table下的TH
 			//监听鼠标调整列宽度
 			thList.off('mousedown', '.adjust-action');
 			thList.on('mousedown', '.adjust-action', function (event) {
 				var Settings = _Cache2.default.getSettings(table);
-				var _dragAction = (0, _jTool2.default)(this);
+				var _dragAction = (0, _jTool2.default)(_this);
 				var _th = _dragAction.closest('th'),
 				    //事件源所在的th
 				_tr = _th.parent(),
@@ -442,7 +445,8 @@
 				_th.addClass('adjust-selected');
 				_td.addClass('adjust-selected');
 				//绑定鼠标拖动事件
-				var _thWidth, _NextWidth;
+				var _thWidth = void 0,
+				    _NextWidth = void 0;
 				var _thMinWidth = _Base2.default.getTextWidth(_th),
 				    _NextThMinWidth = _Base2.default.getTextWidth(_nextTh);
 				_table.unbind('mousemove');
@@ -538,14 +542,7 @@
 	 * 用于存储当前渲染表格的数据
 	 * 通过每个tr上的cache-key进行获取
 	 * */
-		cacheData: {},
-		updateSettings: function updateSettings(table, settings) {
-			var data = _jTool2.default.extend(true, {}, settings);
-			table.data('settings', data);
-		},
-		getSettings: function getSettings(table) {
-			return table.data('settings');
-		}
+		cacheData: {}
 		/*
 	  * [对外公开方法]
 	  * @获取当前行渲染时使用的数据
@@ -554,6 +551,66 @@
 	  * */
 		, getRowData: function getRowData(table, tr) {
 			return this.cacheData[(0, _jTool2.default)(tr).attr('cache-key')];
+		}
+		/*
+	  * [对外公开方法]
+	  * @清除指定表的缓存数据
+	  * $.table:table
+	  * return 成功或者失败的布尔值
+	  * */
+		, clear: function clear(table) {
+			if (!table) {
+				return false;
+			}
+			var _table = (0, _jTool2.default)(table);
+			var _key = this.getLocalStorageKey(_table);
+			if (!_key) {
+				return false;
+			}
+			window.localStorage.removeItem(_key);
+			return true;
+		}
+		/*
+	  [对外公开方法]
+	  @获取指定表格的本地存储数据
+	  $.table:table
+	  成功则返回本地存储数据,失败则返回空对象
+	  */
+		, getLocalStorage: function getLocalStorage(table) {
+			var _table = (0, _jTool2.default)(table);
+			var _key = this.getLocalStorageKey(_table);
+
+			if (!_key) {
+				return {};
+			}
+
+			var _localStorage = window.localStorage.getItem(_key);
+			//如无数据，增加属性标识：grid-manager-cache-error
+			if (!_localStorage) {
+				_table.attr('grid-manager-cache-error', 'error');
+				return {};
+			}
+
+			var _data = {
+				key: _key,
+				cache: JSON.parse(_localStorage)
+			};
+			return _data;
+		}
+		/*
+	  [对外公开方法]
+	  @通过jTool实例获取gridManager
+	  $.table:table [jTool object]
+	  */
+		, get: function get(table) {
+			return this.__getGridManager(table);
+		},
+		updateSettings: function updateSettings(table, settings) {
+			var data = _jTool2.default.extend(true, {}, settings);
+			table.data('settings', data);
+		},
+		getSettings: function getSettings(table) {
+			return table.data('settings');
 		},
 		setRowData: function setRowData(key, value) {
 			this.cacheData[key] = value;
@@ -580,22 +637,6 @@
 			this.clear(table);
 			_Base2.default.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：' + cleanText, 'info');
 		}
-		/*
-	 * [对外公开方法]
-	 * @清除指定表的缓存数据
-	 * $.table:table
-	 * return 成功或者失败的布尔值
-	 * */
-		, clear: function clear(table) {
-			if (!table) return false;
-
-			var _table = (0, _jTool2.default)(table);
-			var _key = this.getLocalStorageKey(_table);
-			if (!_key) return false;
-			window.localStorage.removeItem(_key);
-			return true;
-		}
-
 		/*
 	  * 获取指定表格本地存储所使用的key
 	  * table: table jTool
@@ -639,11 +680,6 @@
 			var _cache = _data.cache;
 			// th相关 缓存
 			var _thCache = _cache.th;
-			//验证：缓存数据与当前列表是否匹配
-			if (!_thCache || _thCache.length != (0, _jTool2.default)('thead th', table).length) {
-				_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
-				return;
-			}
 			//验证：缓存数据与当前列表项是否匹配
 			var _thNameTmpList = [];
 			var _dataAvailable = true;
@@ -651,6 +687,11 @@
 			var _th = void 0;
 			// th的缓存json
 			var _thJson = void 0;
+			//验证：缓存数据与当前列表是否匹配
+			if (!_thCache || _thCache.length != (0, _jTool2.default)('thead th', table).length) {
+				_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
+				return;
+			}
 			_jTool2.default.each(_thCache, function (i2, v2) {
 				_thJson = v2;
 				_th = (0, _jTool2.default)('th[th-name=' + _thJson.th_name + ']', table);
@@ -696,7 +737,9 @@
 			var Settings = Cache.getSettings(table);
 			var _this = this;
 			//当前为禁用缓存模式，直接跳出
-			if (Settings.disableCache) return false;
+			if (Settings.disableCache) {
+				return false;
+			}
 			var _table = (0, _jTool2.default)(table);
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 			var noCache = _table.attr('no-cache');
@@ -752,31 +795,6 @@
 			return _cacheString;
 		}
 		/*
-	  [对外公开方法]
-	  @获取指定表格的本地存储数据
-	  $.table:table
-	  成功则返回本地存储数据,失败则返回空对象
-	  */
-		, getLocalStorage: function getLocalStorage(table) {
-			var _table = (0, _jTool2.default)(table);
-			var _key = this.getLocalStorageKey(_table);
-
-			if (!_key) return {};
-
-			var _localStorage = window.localStorage.getItem(_key);
-			//如无数据，增加属性标识：grid-manager-cache-error
-			if (!_localStorage) {
-				_table.attr('grid-manager-cache-error', 'error');
-				return {};
-			}
-
-			var _data = {
-				key: _key,
-				cache: JSON.parse(_localStorage)
-			};
-			return _data;
-		}
-		/*
 	  @存储原Th DOM至table data
 	  $.table: table [jTool object]
 	  */
@@ -802,7 +820,6 @@
 			});
 			return (0, _jTool2.default)(_thArray);
 		}
-
 		/*
 	  @存储对外实例
 	  $.table:当前被实例化的table
@@ -816,14 +833,6 @@
 	  */
 		, __getGridManager: function __getGridManager(table) {
 			return table.data('gridManager');
-		}
-		/*
-	  [对外公开方法]
-	  @通过jTool实例获取gridManager
-	  $.table:table [jTool object]
-	  */
-		, get: function get(table) {
-			return undefined.__getGridManager(table);
 		}
 	};
 	exports.default = Cache;
@@ -885,11 +894,11 @@
 	  * */
 		, getRowTd: function getRowTd(th) {
 			var tableWrap = th.closest('.table-wrap'),
+			    thIndex = th.index(),
 			    trList = (0, _jTool2.default)('tbody tr', tableWrap);
 
 			var tdList = [],
-			    thIndex = th.index();
-			var _td;
+			    _td = void 0;
 			_jTool2.default.each(trList, function (i, v) {
 				_td = (0, _jTool2.default)('td', v).get(thIndex);
 				if (_td) {
@@ -905,19 +914,19 @@
 	  $.cb		: 回调函数
 	  */
 		, setAreVisible: function setAreVisible(_thList_, _visible_, cb) {
-			var _table,
+			var _table = void 0,
 			    //当前所在的table
-			_tableWarp,
+			_tableWarp = void 0,
 			    //当前所在的容器
-			_th,
+			_th = void 0,
 			    //当前操作的th
-			_trList,
+			_trList = void 0,
 			    //当前tbody下所有的tr
 			_tdList = [],
 			    //所对应的td
-			_checkLi,
+			_checkLi = void 0,
 			    //所对应的显示隐藏所在的li
-			_checkbox; //所对应的显示隐藏事件
+			_checkbox = void 0; //所对应的显示隐藏事件
 			_jTool2.default.each(_thList_, function (i, v) {
 				_th = (0, _jTool2.default)(v);
 				_table = _th.closest('table');
@@ -1053,35 +1062,33 @@
 			var html = '<div class="page-toolbar">' + '<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>' + '<div class="goto-page">' + _I18n2.default.i18nText("goto-first-text") + '<input type="text" class="gp-input"/>' + _I18n2.default.i18nText("goto-last-text") + '</div>' + '<div class="change-size"><select name="pSizeArea"></select></div>' + '<div class="dataTables_info"></div>' + '<div class="ajax-page"><ul class="pagination"></ul></div>' + '</div>';
 			return html;
 		}
-		/*
-	  @初始化分页
-	  $.table:table
+		/**
+	  * 初始化分页
+	  * @param $table：[jTool object]
 	  */
-		, initAjaxPage: function initAjaxPage(table) {
-			var Settings = _Cache2.default.getSettings(table);
+		, initAjaxPage: function initAjaxPage($table) {
+			var Settings = _Cache2.default.getSettings($table);
 			var _this = this;
-			var table = (0, _jTool2.default)(table),
-			    tableWarp = table.closest('.table-wrap'),
+			var tableWarp = $table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp); //分页工具条
 			var sizeData = Settings.sizeData;
 			pageToolbar.hide();
 			//生成每页显示条数选择框
-			_this.createPageSizeDOM(table, sizeData);
+			_this.createPageSizeDOM($table, sizeData);
 
 			//绑定页面跳转事件
-			_this.bindPageJumpEvent(table);
+			_this.bindPageJumpEvent($table);
 
 			//绑定设置显示条数切换事件
-			_this.bindSetPageSizeEvent(table);
+			_this.bindSetPageSizeEvent($table);
 		}
-		/*
-	  @生成分页DOM节点据
-	  $.table: table的juqery实例化对象
-	  $._pageData_:分页数据格式
+		/**
+	  * 生成分页DOM节点据
+	  * @param $table [jTool object]
+	  * @param _pageData_  分页数据格式
 	  */
-		, createPageDOM: function createPageDOM(table, _pageData_) {
-			var table = (0, _jTool2.default)(table),
-			    tableWarp = table.closest('.table-wrap'),
+		, createPageDOM: function createPageDOM($table, _pageData_) {
+			var tableWarp = $table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
 			    //分页工具条
 			pagination = (0, _jTool2.default)('.pagination', pageToolbar); //分页区域
@@ -1132,14 +1139,13 @@
 			tHtml += '<li c-page="' + (cPage + 1) + '" class="' + nextClassName + '">' + _I18n2.default.i18nText("next-page") + '</li>' + '<li c-page="' + tPage + '" class="' + lastClassName + '">' + _I18n2.default.i18nText("last-page") + '</li>';
 			pagination.html(tHtml);
 		}
-		/*
-	  @生成每页显示条数选择框据
-	  $.table: table的juqery实例化对象
-	  $._sizeData_: 选择框自定义条数
+		/**
+	  * 生成每页显示条数选择框据
+	  * @param $table: [table jTool object]
+	  * @param _sizeData: _选择框自定义条数
 	  */
-		, createPageSizeDOM: function createPageSizeDOM(table, _sizeData_) {
-			var table = (0, _jTool2.default)(table),
-			    tableWarp = table.closest('.table-wrap'),
+		, createPageSizeDOM: function createPageSizeDOM($table, _sizeData_) {
+			var tableWarp = $table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
 			    //分页工具条
 			pSizeArea = (0, _jTool2.default)('select[name="pSizeArea"]', pageToolbar); //分页区域
@@ -1155,14 +1161,15 @@
 			});
 			pSizeArea.html(_ajaxPageHtml);
 		}
-		/*
-	  @绑定页面跳转事件
-	  $.table: table的juqery实例化对象
+		/**
+	  * 绑定页面跳转事件
+	  * @param $table: [table jTool object]
 	  */
-		, bindPageJumpEvent: function bindPageJumpEvent(table) {
+		, bindPageJumpEvent: function bindPageJumpEvent($table) {
+			var _this2 = this;
+
 			var _this = this;
-			var table = (0, _jTool2.default)(table),
-			    tableWarp = table.closest('.table-wrap'),
+			var tableWarp = $table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
 			    //分页工具条
 			pagination = (0, _jTool2.default)('.pagination', pageToolbar),
@@ -1173,14 +1180,14 @@
 			//绑定分页点击事件
 			pageToolbar.off('click', 'li');
 			pageToolbar.on('click', 'li', function () {
-				var pageAction = (0, _jTool2.default)(this);
+				var pageAction = (0, _jTool2.default)(_this2);
 				var cPage = pageAction.attr('c-page'); //分页页码
 				if (!cPage || !Number(cPage) || pageAction.hasClass('disabled')) {
 					_Base2.default.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
 					return false;
 				}
 				cPage = parseInt(cPage);
-				_this.gotoPage(table, cPage);
+				_this.gotoPage($table, cPage);
 			});
 			//绑定快捷跳转事件
 			gp_input.unbind('keyup');
@@ -1188,13 +1195,13 @@
 				if (e.which !== 13) {
 					return;
 				}
-				var _inputValue = parseInt(this.value, 10);
+				var _inputValue = parseInt(_this2.value, 10);
 				if (!_inputValue) {
-					this.focus();
+					_this2.focus();
 					return;
 				}
-				_this.gotoPage(table, _inputValue);
-				this.value = '';
+				_this.gotoPage($table, _inputValue);
+				_this2.value = '';
 			});
 			//绑定刷新界面事件
 			refreshAction.unbind('click');
@@ -1214,15 +1221,18 @@
 					_input.focus();
 					return;
 				}
-				_this.gotoPage(table, _inputValue);
+				_this.gotoPage($table, _inputValue);
 				_input.val('');
 			});
 		}
-		/*
-	 * @跳转至指定页
-	 * */
-		, gotoPage: function gotoPage(table, _cPage) {
-			var Settings = _Cache2.default.getSettings(table);
+
+		/**
+	  * 跳转至指定页
+	  * @param $table: [table jTool object]
+	  * @param _cPage: 指定页
+	  */
+		, gotoPage: function gotoPage($table, _cPage) {
+			var Settings = _Cache2.default.getSettings($table);
 			//跳转的指定页大于总页数
 			if (_cPage > Settings.pageData.tPage) {
 				_cPage = Settings.pageData.tPage;
@@ -1233,17 +1243,18 @@
 			//调用事件、渲染DOM
 			var query = _jTool2.default.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 			Settings.pagingBefore(query);
-			_Core2.default.__refreshGrid(table, function () {
+			_Core2.default.__refreshGrid($table, function () {
 				Settings.pagingAfter(query);
 			});
 		}
-		/*
-	  @绑定设置当前页显示数事件
-	  $.table: table的juqery实例化对象
+
+		/**
+	  * 绑定设置当前页显示数事件
+	  * @param $table: [table jTool object]
+	  * @returns {boolean}
 	  */
-		, bindSetPageSizeEvent: function bindSetPageSizeEvent(table) {
-			var table = (0, _jTool2.default)(table),
-			    tableWarp = table.closest('.table-wrap'),
+		, bindSetPageSizeEvent: function bindSetPageSizeEvent($table) {
+			var tableWarp = $table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
 			    //分页工具条
 			sizeArea = (0, _jTool2.default)('select[name=pSizeArea]', pageToolbar); //切换条数区域
@@ -1256,7 +1267,7 @@
 				var _size = (0, _jTool2.default)(this);
 				var _tableWarp = _size.closest('.table-wrap'),
 				    _table = (0, _jTool2.default)('table[grid-manager]', _tableWarp);
-				var Settings = _Cache2.default.getSettings(table);
+				var Settings = _Cache2.default.getSettings($table);
 				Settings.pageData = {
 					cPage: 1,
 					pSize: parseInt(_size.val())
@@ -1271,14 +1282,15 @@
 				});
 			});
 		}
-		/*
-	  @重置当前页显示条数据
-	  $.table: table的juqery实例化对象
-	  $._pageData_:分页数据格式
+
+		/**
+	  * 重置当前页显示条数据
+	  * @param $table: [table jTool object]
+	  * @param _pageData_: 分页数据格式
+	  * @returns {boolean}
 	  */
-		, resetPSize: function resetPSize(table, _pageData_) {
-			var table = (0, _jTool2.default)(table),
-			    tableWarp = table.closest('.table-wrap'),
+		, resetPSize: function resetPSize($table, _pageData_) {
+			var tableWarp = $table.closest('.table-wrap'),
 			    toolBar = (0, _jTool2.default)('.page-toolbar', tableWarp),
 			    pSizeArea = (0, _jTool2.default)('select[name="pSizeArea"]', toolBar),
 			    pSizeInfo = (0, _jTool2.default)('.dataTables_info', toolBar);
@@ -1298,24 +1310,24 @@
 			pSizeInfo.html(tmpHtml);
 			pSizeArea.show();
 		}
-		/*
-	  @重置分页数据
-	  $.table: table
-	  $.totals: 总条数
+		/**
+	  * 重置分页数据
+	  * @param $table: [table jTool object]
+	  * @param totals: 总条数
 	  */
-		, resetPageData: function resetPageData(table, totals) {
-			var Settings = _Cache2.default.getSettings(table);
+		, resetPageData: function resetPageData($table, totals) {
+			var Settings = _Cache2.default.getSettings($table);
 			var _this = this;
 			if (isNaN(parseInt(totals, 10))) {
 				return;
 			}
 			var _pageData = getPageData(totals);
 			//生成分页DOM节点
-			_this.createPageDOM(table, _pageData);
+			_this.createPageDOM($table, _pageData);
 			//重置当前页显示条数
-			_this.resetPSize(table, _pageData);
-			_Cache2.default.updateSettings(table, _jTool2.default.extend(true, Settings, { pageData: _pageData }));
-			var tableWarp = table.closest('.table-wrap'),
+			_this.resetPSize($table, _pageData);
+			_Cache2.default.updateSettings($table, _jTool2.default.extend(true, Settings, { pageData: _pageData }));
+			var tableWarp = $table.closest('.table-wrap'),
 			    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp); //分页工具条
 			pageToolbar.show();
 
@@ -1332,18 +1344,17 @@
 				};
 			}
 		}
-		/*
-	  @根据本地缓存配置分页数据
-	  $.table: table[jTool object]
-	  配置当前页显示数
+		/**
+	  * 根据本地缓存配置分页数据
+	  * @param $table: [table jTool object]
 	  */
-		, configPageForCache: function configPageForCache(table) {
-			var Settings = _Cache2.default.getSettings(table);
-			var _data = _Cache2.default.getLocalStorage(table),
+		, configPageForCache: function configPageForCache($table) {
+			var Settings = _Cache2.default.getSettings($table);
+			var _data = _Cache2.default.getLocalStorage($table),
 			    //本地缓存的数据
 			_cache = _data.cache,
 			    //缓存对应
-			_pSize; //每页显示条数
+			_pSize = void 0; //每页显示条数
 			//验证是否存在每页显示条数缓存数据
 			if (!_cache || !_cache.page || !_cache.page.pSize) {
 				_pSize = Settings.pageSize || 10.;
@@ -1355,7 +1366,7 @@
 				cPage: 1
 			};
 			_jTool2.default.extend(Settings, { pageData: pageData });
-			_Cache2.default.updateSettings(table, Settings);
+			_Cache2.default.updateSettings($table, Settings);
 		}
 	}; /*
 	    * AjaxPage: 分页
@@ -1409,8 +1420,8 @@
 	  $.gotoFirstPage:  是否刷新时跳转至第一页
 	  $.callback: 回调函数
 	  */
-		refreshGrid: function refreshGrid(table, gotoFirstPage, callback) {
-			var Settings = _Cache2.default.getSettings(table);
+		refreshGrid: function refreshGrid($table, gotoFirstPage, callback) {
+			var Settings = _Cache2.default.getSettings($table);
 			var _this = this;
 			if (typeof gotoFirstPage !== 'boolean') {
 				callback = gotoFirstPage;
@@ -1419,17 +1430,17 @@
 			if (gotoFirstPage) {
 				Settings.pageData['cPage'] = 1;
 			}
-			_this.__refreshGrid(table, callback);
+			_this.__refreshGrid($table, callback);
 		}
 		/*
 	  @刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	  $.callback: 回调函数
 	  */
-		, __refreshGrid: function __refreshGrid(table, callback) {
-			var Settings = _Cache2.default.getSettings(table);
-			var tbodyDOM = (0, _jTool2.default)('tbody', table),
+		, __refreshGrid: function __refreshGrid($table, callback) {
+			var Settings = _Cache2.default.getSettings($table);
+			var tbodyDOM = (0, _jTool2.default)('tbody', $table),
 			    //tbody dom
-			tableWrap = table.closest('.table-wrap'),
+			tableWrap = $table.closest('.table-wrap'),
 			    refreshAction = (0, _jTool2.default)('.page-toolbar .refresh-action', tableWrap); //刷新按纽
 			//增加刷新中标识
 			refreshAction.addClass('refreshing');
@@ -1471,7 +1482,7 @@
 				pram.cPage = pram.tPage;
 			}
 			// Settings.query = pram;
-			_Cache2.default.updateSettings(table, Settings);
+			_Cache2.default.updateSettings($table, Settings);
 
 			_Base2.default.showLoading(tableWrap);
 			//执行ajax
@@ -1513,13 +1524,16 @@
 				var tbodyTmpHTML = ''; //用于拼接tbody的HTML结构
 				var parseRes = typeof response === 'string' ? JSON.parse(response) : response;
 				var _data = parseRes[Settings.dataKey];
-				var key, //数据索引
-				alignAttr, //文本对齐属性
-				template, //数据模板
-				templateHTML; //数据模板导出的html
+				var key = void 0,
+				    //数据索引
+				alignAttr = void 0,
+				    //文本对齐属性
+				template = void 0,
+				    //数据模板
+				templateHTML = void 0; //数据模板导出的html
 				//数据为空时
 				if (!_data || _data.length === 0) {
-					tbodyTmpHTML = '<tr emptyTemplate>' + '<td colspan="' + (0, _jTool2.default)('th[th-visible="visible"]', table).length + '">' + (Settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>') + '</td>' + '</tr>';
+					tbodyTmpHTML = '<tr emptyTemplate>' + '<td colspan="' + (0, _jTool2.default)('th[th-visible="visible"]', $table).length + '">' + (Settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>') + '</td>' + '</tr>';
 					parseRes.totals = 0;
 					tbodyDOM.html(tbodyTmpHTML);
 				} else {
@@ -1536,38 +1550,38 @@
 						tbodyTmpHTML += '</tr>';
 					});
 					tbodyDOM.html(tbodyTmpHTML);
-					_DOM2.default.resetTd(table, false);
+					_DOM2.default.resetTd($table, false);
 				}
 				//渲染分页
 				if (Settings.supportAjaxPage) {
-					_AjaxPage2.default.resetPageData(table, parseRes[Settings.totalsKey]);
-					_Menu2.default.checkMenuPageAction(table);
+					_AjaxPage2.default.resetPageData($table, parseRes[Settings.totalsKey]);
+					_Menu2.default.checkMenuPageAction($table);
 				}
 				typeof callback === 'function' ? callback() : '';
 			}
 		}
-		/*
-	  [对外公开方法]
-	  @配置query 该参数会在分页触发后返回至pagingAfter(query)方法
-	  $.table: table [jTool object]
-	  $.query:配置的数据
+		/**
+	  * [对外公开方法]
+	  * 配置query 该参数会在分页触发后返回至pagingAfter(query)方法
+	  * @param $table: table [jTool object]
+	  * @param query: 配置的数据
 	  */
-		, setQuery: function setQuery(table, query) {
-			var settings = _Cache2.default.getSettings(table);
+		, setQuery: function setQuery($table, query) {
+			var settings = _Cache2.default.getSettings($table);
 			_jTool2.default.extend(settings, { query: query });
-			_Cache2.default.updateSettings(table, settings);
+			_Cache2.default.updateSettings($table, settings);
 		}
-		/*
-	  [对外公开方法]
-	  @配置ajaxData
-	  $.table: table [jTool object]
-	  $.query:配置的数据
+		/**
+	  * [对外公开方法]
+	  * 配置ajaxData
+	  * @param $table: table [jTool object]
+	  * @param ajaxData: 配置的数据
 	  */
-		, setAjaxData: function setAjaxData(table, ajaxData) {
-			var settings = _Cache2.default.getSettings(table);
+		, setAjaxData: function setAjaxData($table, ajaxData) {
+			var settings = _Cache2.default.getSettings($table);
 			_jTool2.default.extend(settings, { ajax_data: ajaxData });
-			_Cache2.default.updateSettings(table, settings);
-			this.__refreshGrid(table);
+			_Cache2.default.updateSettings($table, settings);
+			this.__refreshGrid($table);
 		}
 
 	};

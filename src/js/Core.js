@@ -15,9 +15,9 @@ const Core= {
 	 $.gotoFirstPage:  是否刷新时跳转至第一页
 	 $.callback: 回调函数
 	 */
-	refreshGrid: function(table, gotoFirstPage, callback){
-		let Settings = Cache.getSettings(table);
-		var _this = this;
+	refreshGrid: function($table, gotoFirstPage, callback){
+		const Settings = Cache.getSettings($table);
+		const _this = this;
 		if(typeof(gotoFirstPage) !== 'boolean'){
 			callback = gotoFirstPage;
 			gotoFirstPage = false;
@@ -25,16 +25,16 @@ const Core= {
 		if(gotoFirstPage){
 			Settings.pageData['cPage'] = 1;
 		}
-		_this.__refreshGrid(table, callback);
+		_this.__refreshGrid($table, callback);
 	}
 	/*
 	 @刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	 $.callback: 回调函数
 	 */
-	,__refreshGrid: function(table, callback){
-		let Settings = Cache.getSettings(table);
-		var tbodyDOM = $('tbody', table),	//tbody dom
-			tableWrap = table.closest('.table-wrap'),
+	,__refreshGrid: function($table, callback){
+		const Settings = Cache.getSettings($table);
+		const tbodyDOM = $('tbody', $table),	//tbody dom
+			tableWrap = $table.closest('.table-wrap'),
 			refreshAction = $('.page-toolbar .refresh-action', tableWrap); //刷新按纽
 		//增加刷新中标识
 		refreshAction.addClass('refreshing');
@@ -56,7 +56,7 @@ const Core= {
 			typeof callback === 'function' ? callback() : '';
 			return;
 		}
-		var pram = $.extend(true, {}, Settings.query);
+		let pram = $.extend(true, {}, Settings.query);
 		//合并分页信息至请求参
 		if(Settings.supportAjaxPage){
 			$.extend(pram, Settings.pageData);
@@ -76,7 +76,7 @@ const Core= {
 			pram.cPage = pram.tPage
 		}
 		// Settings.query = pram;
-		Cache.updateSettings(table, Settings);
+		Cache.updateSettings($table, Settings);
 
 		Base.showLoading(tableWrap);
 		//执行ajax
@@ -115,17 +115,17 @@ const Core= {
 				return;
 			}
 
-			var tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
-			var parseRes = typeof(response) === 'string' ? JSON.parse(response) : response;
-			var _data = parseRes[Settings.dataKey];
-			var key,	//数据索引
+			let tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
+			let parseRes = typeof(response) === 'string' ? JSON.parse(response) : response;
+			let _data = parseRes[Settings.dataKey];
+			let key,	//数据索引
 				alignAttr, //文本对齐属性
 				template,//数据模板
 				templateHTML;//数据模板导出的html
 			//数据为空时
 			if(!_data ||_data.length === 0){
 				tbodyTmpHTML = '<tr emptyTemplate>'
-					+ '<td colspan="'+$('th[th-visible="visible"]', table).length+'">'
+					+ '<td colspan="'+$('th[th-visible="visible"]', $table).length+'">'
 					+ (Settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>')
 					+ '</td>'
 					+ '</tr>';
@@ -145,38 +145,38 @@ const Core= {
 					tbodyTmpHTML += '</tr>';
 				});
 				tbodyDOM.html(tbodyTmpHTML);
-				DOM.resetTd(table, false);
+				DOM.resetTd($table, false);
 			}
 			//渲染分页
 			if(Settings.supportAjaxPage){
-				AjaxPage.resetPageData(table, parseRes[Settings.totalsKey]);
-				Menu.checkMenuPageAction(table);
+				AjaxPage.resetPageData($table, parseRes[Settings.totalsKey]);
+				Menu.checkMenuPageAction($table);
 			}
 			typeof callback === 'function' ? callback() : '';
 		}
 	}
-	/*
-	 [对外公开方法]
-	 @配置query 该参数会在分页触发后返回至pagingAfter(query)方法
-	 $.table: table [jTool object]
-	 $.query:配置的数据
+	/**
+	 * [对外公开方法]
+	 * 配置query 该参数会在分页触发后返回至pagingAfter(query)方法
+	 * @param $table: table [jTool object]
+	 * @param query: 配置的数据
 	 */
-	,setQuery: function(table, query){
-		var settings = Cache.getSettings(table);
+	,setQuery: function($table, query){
+		const settings = Cache.getSettings($table);
 		$.extend(settings, {query: query});
-		Cache.updateSettings(table, settings);
+		Cache.updateSettings($table, settings);
 	}
-	/*
-	 [对外公开方法]
-	 @配置ajaxData
-	 $.table: table [jTool object]
-	 $.query:配置的数据
+	/**
+	 * [对外公开方法]
+	 * 配置ajaxData
+	 * @param $table: table [jTool object]
+	 * @param ajaxData: 配置的数据
 	 */
-	,setAjaxData: function (table, ajaxData) {
-		var settings = Cache.getSettings(table);
+	,setAjaxData: function ($table, ajaxData) {
+		const settings = Cache.getSettings($table);
 		$.extend(settings, {ajax_data: ajaxData});
-		Cache.updateSettings(table, settings);
-		this.__refreshGrid(table);
+		Cache.updateSettings($table, settings);
+		this.__refreshGrid($table);
 	}
 
 };

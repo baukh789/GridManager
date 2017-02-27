@@ -6,7 +6,7 @@ import Cache from './Cache';
 import Base from './Base';
 const Adjust = {
 	html: function () {
-		var html = '<span class="adjust-action"></span>';
+		const html = '<span class="adjust-action"></span>';
 		return html;
 	}
 	/*
@@ -14,13 +14,13 @@ const Adjust = {
 	 $.table: table [jTool object]
 	 */
 	,bindAdjustEvent: function(table){
-		var thList 	= $('thead th', table);	//table下的TH
+		const thList 	= $('thead th', table);	//table下的TH
 		//监听鼠标调整列宽度
 		thList.off('mousedown', '.adjust-action');
-		thList.on('mousedown', '.adjust-action', function(event){
-			let Settings = Cache.getSettings(table);
-			var _dragAction 	= $(this);
-			var _th 			= _dragAction.closest('th'),		        //事件源所在的th
+		thList.on('mousedown', '.adjust-action', event => {
+			const Settings = Cache.getSettings(table);
+			const _dragAction 	= $(this);
+			let _th 			= _dragAction.closest('th'),		        //事件源所在的th
 				_tr 			= _th.parent(),								//事件源所在的tr
 				_table 			= _tr.closest('table'),			            //事件源所在的table
 				_allTh 			= _tr.find('th[th-visible="visible"]'),		//事件源同层级下的所有th
@@ -33,12 +33,12 @@ const Adjust = {
 			_th.addClass('adjust-selected');
 			_td.addClass('adjust-selected');
 			//绑定鼠标拖动事件
-			var _thWidth,
+			let _thWidth,
 				_NextWidth;
-			var _thMinWidth = Base.getTextWidth(_th),
+			let _thMinWidth = Base.getTextWidth(_th),
 				_NextThMinWidth = Base.getTextWidth(_nextTh);
 			_table.unbind('mousemove');
-			_table.bind('mousemove',function(e){
+			_table.bind('mousemove', e => {
 				_thWidth = e.clientX -
 					_th.offset().left -
 					_th.css('padding-left') -
@@ -67,8 +67,8 @@ const Adjust = {
 
 			//绑定鼠标放开、移出事件
 			_table.unbind('mouseup mouseleave');
-			_table.bind('mouseup mouseleave',function(event){
-				let Settings = Cache.getSettings(table);
+			_table.bind('mouseup mouseleave', event => {
+				const Settings = Cache.getSettings(table);
 				_table.unbind('mousemove mouseleave');
 				//缓存列表宽度信息
 				Cache.setToLocalStorage(_table);
@@ -89,7 +89,7 @@ const Adjust = {
 	 $.table:table
 	 */
 	,resetAdjust: function(table){
-		var _table = $(table),
+		let _table = $(table),
 			_thList = $('thead [th-visible="visible"]', _table),
 			_adjustAction = $('.adjust-action', _thList);
 		if(!_adjustAction || _adjustAction.length == 0){
