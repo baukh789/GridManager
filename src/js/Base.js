@@ -5,7 +5,7 @@ import $ from './jTool';
 const Base = {
 	/*
 	 @输出日志
-	 $.type: 输出分类[info,warn,error]
+	 type: 输出分类[info,warn,error]
 	 */
 	outLog: function(msg, type){
 		if(!type){
@@ -25,8 +25,8 @@ const Base = {
 	/*
 	 [对外公开方法]
 	 @显示Th及对应的TD项
-	 $.table: table
-	 $.th:th
+	 table: table [jTool Object]
+	 th: th
 	 */
 	,showTh: function(table, th){
 		this.setAreVisible($(th), true);
@@ -34,8 +34,8 @@ const Base = {
 	/*
 	 [对外公开方法]
 	 @隐藏Th及对应的TD项
-	 $.table: table
-	 $.th:th
+	 table: table
+	 th:th
 	 */
 	,hideTh: function(table, th){
 		this.setAreVisible($(th), false);

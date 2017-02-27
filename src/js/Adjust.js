@@ -11,14 +11,14 @@ const Adjust = {
 	}
 	/*
 	 @绑定宽度调整事件
-	 $.table: table [jTool object]
+	 $table: table [jTool object]
 	 */
-	,bindAdjustEvent: function(table){
-		const thList 	= $('thead th', table);	//table下的TH
+	,bindAdjustEvent: function($table){
+		const thList 	= $('thead th', $table);	//table下的TH
 		//监听鼠标调整列宽度
 		thList.off('mousedown', '.adjust-action');
-		thList.on('mousedown', '.adjust-action', event => {
-			const Settings = Cache.getSettings(table);
+		thList.on('mousedown', '.adjust-action', function(event) {
+			const Settings = Cache.getSettings($table);
 			const _dragAction 	= $(this);
 			let _th 			= _dragAction.closest('th'),		        //事件源所在的th
 				_tr 			= _th.parent(),								//事件源所在的tr
@@ -38,8 +38,8 @@ const Adjust = {
 			let _thMinWidth = Base.getTextWidth(_th),
 				_NextThMinWidth = Base.getTextWidth(_nextTh);
 			_table.unbind('mousemove');
-			_table.bind('mousemove', e => {
-				_thWidth = e.clientX -
+			_table.bind('mousemove', function(event) {
+				_thWidth = event.clientX -
 					_th.offset().left -
 					_th.css('padding-left') -
 					_th.css('padding-right');
@@ -67,8 +67,8 @@ const Adjust = {
 
 			//绑定鼠标放开、移出事件
 			_table.unbind('mouseup mouseleave');
-			_table.bind('mouseup mouseleave', event => {
-				const Settings = Cache.getSettings(table);
+			_table.bind('mouseup mouseleave', function(event) {
+				const Settings = Cache.getSettings($table);
 				_table.unbind('mousemove mouseleave');
 				//缓存列表宽度信息
 				Cache.setToLocalStorage(_table);
@@ -86,11 +86,10 @@ const Adjust = {
 	/*
 	 @通过缓存配置成功后, 重置宽度调整事件源dom
 	 用于禁用最后一列调整宽度事件
-	 $.table:table
+	 $.table: table[jTool Object]
 	 */
-	,resetAdjust: function(table){
-		let _table = $(table),
-			_thList = $('thead [th-visible="visible"]', _table),
+	,resetAdjust: function($table){
+		let _thList = $('thead [th-visible="visible"]', $table),
 			_adjustAction = $('.adjust-action', _thList);
 		if(!_adjustAction || _adjustAction.length == 0){
 			return false;
