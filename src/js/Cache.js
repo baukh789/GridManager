@@ -10,13 +10,6 @@ const Cache = {
 	* 通过每个tr上的cache-key进行获取
 	* */
 	cacheData: {}
-	,updateSettings:  function(table, settings) {
-		const data = $.extend(true, {}, settings);
-		table.data('settings', data);
-	}
-	,getSettings: function(table) {
-		return table.data('settings');
-	}
 	/*
 	 * [对外公开方法]
 	 * @获取当前行渲染时使用的数据
@@ -25,6 +18,66 @@ const Cache = {
 	 * */
 	,getRowData: function(table, tr) {
 		return this.cacheData[$(tr).attr('cache-key')];
+	}
+	/*
+	 * [对外公开方法]
+	 * @清除指定表的缓存数据
+	 * $.table:table
+	 * return 成功或者失败的布尔值
+	 * */
+	,clear: function(table) {
+		if(!table) {
+			return false;
+		}
+		const _table = $(table);
+		const _key = this.getLocalStorageKey(_table);
+		if (!_key) {
+			return false;
+		}
+		window.localStorage.removeItem(_key);
+		return true;
+	}
+	/*
+	 [对外公开方法]
+	 @获取指定表格的本地存储数据
+	 $.table:table
+	 成功则返回本地存储数据,失败则返回空对象
+	 */
+	,getLocalStorage: function(table) {
+		const _table = $(table);
+		const _key = this.getLocalStorageKey(_table);
+
+		if(!_key) {
+			return {};
+		}
+
+		const _localStorage = window.localStorage.getItem(_key);
+		//如无数据，增加属性标识：grid-manager-cache-error
+		if(!_localStorage){
+			_table.attr('grid-manager-cache-error','error');
+			return {};
+		}
+
+		const _data = {
+			key: _key,
+			cache: JSON.parse(_localStorage)
+		};
+		return _data;
+	}
+	/*
+	 [对外公开方法]
+	 @通过jTool实例获取gridManager
+	 $.table:table [jTool object]
+	 */
+	,get: function(table) {
+		return this.__getGridManager(table);
+	}
+	,updateSettings:  function(table, settings) {
+		const data = $.extend(true, {}, settings);
+		table.data('settings', data);
+	}
+	,getSettings: function(table) {
+		return table.data('settings');
 	}
 	,setRowData: function(key, value) {
 		this.cacheData[key] = value;
@@ -51,21 +104,6 @@ const Cache = {
 		this.clear(table);
 		Base.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：'+ cleanText, 'info');
 	}
-	/*
-	* [对外公开方法]
-	* @清除指定表的缓存数据
-	* $.table:table
-	* return 成功或者失败的布尔值
-	* */
-	,clear: function(table) {
-		if(!table) return false;
-		const _table = $(table);
-		const _key = this.getLocalStorageKey(_table);
-		if (!_key) return false;
-		window.localStorage.removeItem(_key);
-		return true;
-	}
-
 	/*
 	 * 获取指定表格本地存储所使用的key
 	 * table: table jTool
@@ -108,11 +146,6 @@ const Cache = {
 		let _cache = _data.cache;
 		// th相关 缓存
 		let _thCache=_cache.th;
-		//验证：缓存数据与当前列表是否匹配
-		if(!_thCache || _thCache.length != $('thead th', table).length){
-			_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
-			return;
-		}
 		//验证：缓存数据与当前列表项是否匹配
 		let _thNameTmpList = [];
 		let	_dataAvailable = true;
@@ -120,6 +153,11 @@ const Cache = {
 		let	_th;
 		// th的缓存json
 		let	_thJson;
+		//验证：缓存数据与当前列表是否匹配
+		if(!_thCache || _thCache.length != $('thead th', table).length){
+			_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
+			return;
+		}
 		$.each(_thCache, (i2, v2) => {
 			_thJson = v2;
 			_th = $('th[th-name='+ _thJson.th_name +']', table);
@@ -165,7 +203,9 @@ const Cache = {
 		const Settings = Cache.getSettings(table);
 		const _this = this;
 		//当前为禁用缓存模式，直接跳出
-		if (Settings.disableCache) return false;
+		if (Settings.disableCache) {
+			return false;
+		}
 		const _table = $(table);
 		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 		const noCache = _table.attr('no-cache');
@@ -221,31 +261,6 @@ const Cache = {
 		return _cacheString;
 	}
 	/*
-	 [对外公开方法]
-	 @获取指定表格的本地存储数据
-	 $.table:table
-	 成功则返回本地存储数据,失败则返回空对象
-	 */
-	,getLocalStorage: function(table) {
-		const _table = $(table);
-		const _key = this.getLocalStorageKey(_table);
-
-		if(!_key) return {};
-
-		const _localStorage = window.localStorage.getItem(_key);
-		//如无数据，增加属性标识：grid-manager-cache-error
-		if(!_localStorage){
-			_table.attr('grid-manager-cache-error','error');
-			return {};
-		}
-
-		const _data = {
-			key: _key,
-			cache: JSON.parse(_localStorage)
-		};
-		return _data;
-	}
-	/*
 	 @存储原Th DOM至table data
 	 $.table: table [jTool object]
 	 */
@@ -271,7 +286,6 @@ const Cache = {
 		});
 		return $(_thArray);
 	}
-
 	/*
 	 @存储对外实例
 	 $.table:当前被实例化的table
@@ -285,14 +299,6 @@ const Cache = {
 	 */
 	,__getGridManager: function(table) {
 		return table.data('gridManager');
-	}
-	/*
-	 [对外公开方法]
-	 @通过jTool实例获取gridManager
-	 $.table:table [jTool object]
-	 */
-	,get: table => {
-		return this.__getGridManager(table);
 	}
 };
 export default Cache;

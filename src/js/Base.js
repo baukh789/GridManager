@@ -45,13 +45,13 @@ const Base = {
 	 * $.th: jTool th
 	 * */
 	,getRowTd: function(th) {
-		var tableWrap = th.closest('.table-wrap'),
-			trList = $('tbody tr', tableWrap);
+		const tableWrap = th.closest('.table-wrap'),
+			    thIndex = th.index(),
+			     trList = $('tbody tr', tableWrap);
 
-		var tdList = [],
-			thIndex = th.index();
-		var _td;
-		$.each(trList, function(i, v) {
+		let tdList = [],
+		    _td;
+		$.each(trList, (i, v) => {
 			_td = $('td', v).get(thIndex);
 			if(_td){
 				tdList.push(_td);
@@ -66,14 +66,14 @@ const Base = {
 	 $.cb		: 回调函数
 	 */
 	,setAreVisible: function(_thList_, _visible_ ,cb){
-		var _table,			//当前所在的table
+		let _table,			//当前所在的table
 			_tableWarp, 	//当前所在的容器
 			_th,			//当前操作的th
 			_trList, 		//当前tbody下所有的tr
 			_tdList = [], 	//所对应的td
 			_checkLi,		//所对应的显示隐藏所在的li
 			_checkbox;		//所对应的显示隐藏事件
-		$.each(_thList_, function(i, v){
+		$.each(_thList_, (i, v) => {
 			_th = $(v);
 			_table = _th.closest('table');
 			_tableWarp = _table.closest('.table-wrap');
@@ -83,13 +83,13 @@ const Base = {
 			if(_checkbox.length == 0){
 				return;
 			}
-			$.each(_trList, function(i2, v2){
+			$.each(_trList, (i2, v2) => {
 				_tdList.push($(v2).find('td').get(_th.index()));
 			});
 			//显示
 			if(_visible_){
 				_th.attr('th-visible','visible');
-				$.each(_tdList, function(i2, v2){
+				$.each(_tdList, (i2, v2) => {
 					$(v2).show();
 				});
 				_checkLi.addClass('checked-li');
@@ -98,7 +98,7 @@ const Base = {
 			//隐藏
 			else{
 				_th.attr('th-visible','none');
-				$.each(_tdList, function(i2, v2){
+				$.each(_tdList, (i2, v2) => {
 					$(v2).hide();
 				});
 				_checkLi.removeClass('checked-li');
@@ -113,15 +113,15 @@ const Base = {
 	 $.element: th
 	 */
 	,getTextWidth: function(element){
-		var th 	= $(element);
-		var  thWarp 		= $('.th-wrap', th),  			//th下的GridManager包裹容器
+		const th 	= $(element);
+		const thWarp 		= $('.th-wrap', th),  			//th下的GridManager包裹容器
 			thText	 		= $('.th-text', th),			//文本所在容器
 			remindAction	= $('.remind-action', thWarp),	//提醒所在容器
 			sortingAction	= $('.sorting-action', thWarp);	//排序所在容器
 
 		//文本镜象 用于处理实时获取文本长度
-		var tableWrap = th.closest('.table-wrap');
-		var textDreamland	= $('.text-dreamland', tableWrap);
+		const tableWrap = th.closest('.table-wrap');
+		const textDreamland	= $('.text-dreamland', tableWrap);
 		//将th文本嵌入文本镜象 用于获取文本实时宽度
 		textDreamland.text(thText.text());
 		textDreamland.css({
@@ -129,9 +129,9 @@ const Base = {
 			fontWeight	: thText.css('font-weight'),
 			fontFamily	: thText.css('font-family')
 		});
-		var thPaddingLeft = thWarp.css('padding-left'),
+		const thPaddingLeft = thWarp.css('padding-left'),
 			thPaddingRight = thWarp.css('padding-right');
-		var thWidth = textDreamland.width()
+		const thWidth = textDreamland.width()
 			+ (thPaddingLeft ? thPaddingLeft : 0)
 			+ (thPaddingRight ? thPaddingRight : 0)
 			+ (remindAction.length == 1 ? 20 : 5)
@@ -142,16 +142,16 @@ const Base = {
 		if (!dom || dom.length === 0) {
 			return;
 		}
-		var loading = dom.find('.load-area');
+		const loading = dom.find('.load-area');
 		if (loading.length > 0) {
 			loading.remove();
 		}
-		var loadingDom= $('<div class="load-area loading"><div class="loadInner kernel"></div></div>');
+		const loadingDom= $('<div class="load-area loading"><div class="loadInner kernel"></div></div>');
 		dom.append(loadingDom);
 
 		//进行loading图标居中显示
-		var loadInner = dom.find('.load-area').find('.loadInner');
-		var domHeight = dom.height(),
+		const loadInner = dom.find('.load-area').find('.loadInner');
+		const domHeight = dom.height(),
 			loadInnerHeight = loadInner.height();
 		loadInner.css('margin-top', (domHeight - loadInnerHeight) / 2);
 		window.setTimeout(function(){
