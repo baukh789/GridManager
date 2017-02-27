@@ -418,12 +418,14 @@
 	  $.table: table [jTool object]
 	  */
 		, bindAdjustEvent: function bindAdjustEvent(table) {
+			var _this = this;
+
 			var thList = (0, _jTool2.default)('thead th', table); //table下的TH
 			//监听鼠标调整列宽度
 			thList.off('mousedown', '.adjust-action');
 			thList.on('mousedown', '.adjust-action', function (event) {
 				var Settings = _Cache2.default.getSettings(table);
-				var _dragAction = (0, _jTool2.default)(this);
+				var _dragAction = (0, _jTool2.default)(_this);
 				var _th = _dragAction.closest('th'),
 				    //事件源所在的th
 				_tr = _th.parent(),
@@ -442,7 +444,8 @@
 				_th.addClass('adjust-selected');
 				_td.addClass('adjust-selected');
 				//绑定鼠标拖动事件
-				var _thWidth, _NextWidth;
+				var _thWidth = void 0,
+				    _NextWidth = void 0;
 				var _thMinWidth = _Base2.default.getTextWidth(_th),
 				    _NextThMinWidth = _Base2.default.getTextWidth(_nextTh);
 				_table.unbind('mousemove');
@@ -538,14 +541,7 @@
 	 * 用于存储当前渲染表格的数据
 	 * 通过每个tr上的cache-key进行获取
 	 * */
-		cacheData: {},
-		updateSettings: function updateSettings(table, settings) {
-			var data = _jTool2.default.extend(true, {}, settings);
-			table.data('settings', data);
-		},
-		getSettings: function getSettings(table) {
-			return table.data('settings');
-		}
+		cacheData: {}
 		/*
 	  * [对外公开方法]
 	  * @获取当前行渲染时使用的数据
@@ -554,6 +550,66 @@
 	  * */
 		, getRowData: function getRowData(table, tr) {
 			return this.cacheData[(0, _jTool2.default)(tr).attr('cache-key')];
+		}
+		/*
+	  * [对外公开方法]
+	  * @清除指定表的缓存数据
+	  * $.table:table
+	  * return 成功或者失败的布尔值
+	  * */
+		, clear: function clear(table) {
+			if (!table) {
+				return false;
+			}
+			var _table = (0, _jTool2.default)(table);
+			var _key = this.getLocalStorageKey(_table);
+			if (!_key) {
+				return false;
+			}
+			window.localStorage.removeItem(_key);
+			return true;
+		}
+		/*
+	  [对外公开方法]
+	  @获取指定表格的本地存储数据
+	  $.table:table
+	  成功则返回本地存储数据,失败则返回空对象
+	  */
+		, getLocalStorage: function getLocalStorage(table) {
+			var _table = (0, _jTool2.default)(table);
+			var _key = this.getLocalStorageKey(_table);
+
+			if (!_key) {
+				return {};
+			}
+
+			var _localStorage = window.localStorage.getItem(_key);
+			//如无数据，增加属性标识：grid-manager-cache-error
+			if (!_localStorage) {
+				_table.attr('grid-manager-cache-error', 'error');
+				return {};
+			}
+
+			var _data = {
+				key: _key,
+				cache: JSON.parse(_localStorage)
+			};
+			return _data;
+		}
+		/*
+	  [对外公开方法]
+	  @通过jTool实例获取gridManager
+	  $.table:table [jTool object]
+	  */
+		, get: function get(table) {
+			return this.__getGridManager(table);
+		},
+		updateSettings: function updateSettings(table, settings) {
+			var data = _jTool2.default.extend(true, {}, settings);
+			table.data('settings', data);
+		},
+		getSettings: function getSettings(table) {
+			return table.data('settings');
 		},
 		setRowData: function setRowData(key, value) {
 			this.cacheData[key] = value;
@@ -580,21 +636,6 @@
 			this.clear(table);
 			_Base2.default.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：' + cleanText, 'info');
 		}
-		/*
-	 * [对外公开方法]
-	 * @清除指定表的缓存数据
-	 * $.table:table
-	 * return 成功或者失败的布尔值
-	 * */
-		, clear: function clear(table) {
-			if (!table) return false;
-			var _table = (0, _jTool2.default)(table);
-			var _key = this.getLocalStorageKey(_table);
-			if (!_key) return false;
-			window.localStorage.removeItem(_key);
-			return true;
-		}
-
 		/*
 	  * 获取指定表格本地存储所使用的key
 	  * table: table jTool
@@ -638,11 +679,6 @@
 			var _cache = _data.cache;
 			// th相关 缓存
 			var _thCache = _cache.th;
-			//验证：缓存数据与当前列表是否匹配
-			if (!_thCache || _thCache.length != (0, _jTool2.default)('thead th', table).length) {
-				_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
-				return;
-			}
 			//验证：缓存数据与当前列表项是否匹配
 			var _thNameTmpList = [];
 			var _dataAvailable = true;
@@ -650,6 +686,11 @@
 			var _th = void 0;
 			// th的缓存json
 			var _thJson = void 0;
+			//验证：缓存数据与当前列表是否匹配
+			if (!_thCache || _thCache.length != (0, _jTool2.default)('thead th', table).length) {
+				_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
+				return;
+			}
 			_jTool2.default.each(_thCache, function (i2, v2) {
 				_thJson = v2;
 				_th = (0, _jTool2.default)('th[th-name=' + _thJson.th_name + ']', table);
@@ -695,7 +736,9 @@
 			var Settings = Cache.getSettings(table);
 			var _this = this;
 			//当前为禁用缓存模式，直接跳出
-			if (Settings.disableCache) return false;
+			if (Settings.disableCache) {
+				return false;
+			}
 			var _table = (0, _jTool2.default)(table);
 			//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
 			var noCache = _table.attr('no-cache');
@@ -751,31 +794,6 @@
 			return _cacheString;
 		}
 		/*
-	  [对外公开方法]
-	  @获取指定表格的本地存储数据
-	  $.table:table
-	  成功则返回本地存储数据,失败则返回空对象
-	  */
-		, getLocalStorage: function getLocalStorage(table) {
-			var _table = (0, _jTool2.default)(table);
-			var _key = this.getLocalStorageKey(_table);
-
-			if (!_key) return {};
-
-			var _localStorage = window.localStorage.getItem(_key);
-			//如无数据，增加属性标识：grid-manager-cache-error
-			if (!_localStorage) {
-				_table.attr('grid-manager-cache-error', 'error');
-				return {};
-			}
-
-			var _data = {
-				key: _key,
-				cache: JSON.parse(_localStorage)
-			};
-			return _data;
-		}
-		/*
 	  @存储原Th DOM至table data
 	  $.table: table [jTool object]
 	  */
@@ -801,7 +819,6 @@
 			});
 			return (0, _jTool2.default)(_thArray);
 		}
-
 		/*
 	  @存储对外实例
 	  $.table:当前被实例化的table
@@ -815,14 +832,6 @@
 	  */
 		, __getGridManager: function __getGridManager(table) {
 			return table.data('gridManager');
-		}
-		/*
-	  [对外公开方法]
-	  @通过jTool实例获取gridManager
-	  $.table:table [jTool object]
-	  */
-		, get: function get(table) {
-			return undefined.__getGridManager(table);
 		}
 	};
 	exports.default = Cache;
