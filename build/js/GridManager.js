@@ -893,11 +893,11 @@
 	  * */
 		, getRowTd: function getRowTd(th) {
 			var tableWrap = th.closest('.table-wrap'),
+			    thIndex = th.index(),
 			    trList = (0, _jTool2.default)('tbody tr', tableWrap);
 
 			var tdList = [],
-			    thIndex = th.index();
-			var _td;
+			    _td = void 0;
 			_jTool2.default.each(trList, function (i, v) {
 				_td = (0, _jTool2.default)('td', v).get(thIndex);
 				if (_td) {
@@ -913,19 +913,19 @@
 	  $.cb		: 回调函数
 	  */
 		, setAreVisible: function setAreVisible(_thList_, _visible_, cb) {
-			var _table,
+			var _table = void 0,
 			    //当前所在的table
-			_tableWarp,
+			_tableWarp = void 0,
 			    //当前所在的容器
-			_th,
+			_th = void 0,
 			    //当前操作的th
-			_trList,
+			_trList = void 0,
 			    //当前tbody下所有的tr
 			_tdList = [],
 			    //所对应的td
-			_checkLi,
+			_checkLi = void 0,
 			    //所对应的显示隐藏所在的li
-			_checkbox; //所对应的显示隐藏事件
+			_checkbox = void 0; //所对应的显示隐藏事件
 			_jTool2.default.each(_thList_, function (i, v) {
 				_th = (0, _jTool2.default)(v);
 				_table = _th.closest('table');
