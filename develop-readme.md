@@ -32,5 +32,5 @@ npm test
 ### npm install 总是失败?
 这是由于在国内加载时,有些依赖包无法加载导致的. 可以将package.json中的( karma-phantomjs-launcher )移除掉再进行install.
 
-##联系我
-QQ群号: 452781895
+##参与开发
+QQ群号: 151094839
