@@ -3,21 +3,21 @@
  * */
 import $ from './jTool';
 import I18n from './I18n';
-var Checkbox = {
+const Checkbox = {
 	/*
 	 @初始化选择与反选DOM
 	 $.table: table DOM
 	 */
 	initDOM: function(table) {
-		var checkboxHtml = '<th th-name="gm_checkbox" gm-checkbox="true" gm-create="true"><input type="checkbox"/><span style="display: none">'+ I18n.i18nText('checkall-text') +'</span></th>';
+		let checkboxHtml = '<th th-name="gm_checkbox" gm-checkbox="true" gm-create="true"><input type="checkbox"/><span style="display: none">'+ I18n.i18nText('checkall-text') +'</span></th>';
 		$('thead tr', table).prepend(checkboxHtml);
 		//绑定选择事件
 		table.off('click','input[type="checkbox"]');
 		table.on('click','input[type="checkbox"]', function(){
-			var _checkAction = $(this),	//全选键事件源
-				_thChecked	= true,		//存储th中的checkbox的选中状态
-				_thCheckbox = $('thead th[gm-checkbox] input[type="checkbox"]', table),	//th中的选择框
-				_tdCheckbox = $('tbody td[gm-checkbox] input[type="checkbox"]', table);	//td中的选择框
+			let _thChecked	= true;		//存储th中的checkbox的选中状态
+			const 	_checkAction = $(this),	//全选键事件源
+					_thCheckbox = $('thead th[gm-checkbox] input[type="checkbox"]', table),	//th中的选择框
+					_tdCheckbox = $('tbody td[gm-checkbox] input[type="checkbox"]', table);	//td中的选择框
 			//当前为全选事件源
 			if(_checkAction.closest('th[th-name="gm_checkbox"]').length === 1){
 				$.each(_tdCheckbox, function(i, v){

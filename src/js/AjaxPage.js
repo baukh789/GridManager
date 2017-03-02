@@ -161,7 +161,7 @@ const AjaxPage = {
 		});
 		//绑定快捷跳转事件
 		gp_input.unbind('keyup');
-		gp_input.bind('keyup', function() {
+		gp_input.bind('keyup', function(e) {
 			if(e.which !== 13){
 				return;
 			}

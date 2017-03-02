@@ -1186,7 +1186,7 @@
 			});
 			//绑定快捷跳转事件
 			gp_input.unbind('keyup');
-			gp_input.bind('keyup', function () {
+			gp_input.bind('keyup', function (e) {
 				if (e.which !== 13) {
 					return;
 				}
@@ -2098,10 +2098,9 @@
 			//绑定选择事件
 			table.off('click', 'input[type="checkbox"]');
 			table.on('click', 'input[type="checkbox"]', function () {
+				var _thChecked = true; //存储th中的checkbox的选中状态
 				var _checkAction = (0, _jTool2.default)(this),
 				    //全选键事件源
-				_thChecked = true,
-				    //存储th中的checkbox的选中状态
 				_thCheckbox = (0, _jTool2.default)('thead th[gm-checkbox] input[type="checkbox"]', table),
 				    //th中的选择框
 				_tdCheckbox = (0, _jTool2.default)('tbody td[gm-checkbox] input[type="checkbox"]', table); //td中的选择框
