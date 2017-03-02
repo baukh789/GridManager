@@ -10,7 +10,7 @@
 - [中文](./README-CN.md)
 
 ##API and Demo
-- [文档](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
-- [演示](http://www.lovejavascript.com/node_modules/GridManager/demo/index.html)
+- [API](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
+- [Demo](http://www.lovejavascript.com/node_modules/GridManager/demo/index.html)
 
 
