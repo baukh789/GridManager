@@ -50,7 +50,7 @@
     "lint": "eslint src",
     "test": "karma start",
     "build": "npm run build:dev && npm run build:minified:js && npm run build:minified:css && npm run copy",
-    "copy": "cp package.json build/package.json && cp README.md build/README.md",
+    "copy": "cp package.json build/package.json && cp README.md build/README.md && cp README-CN.md build/README-CN.md && cp README-EN.md build/README-EN.md",
     "build:dev": "webpack --config webpack-config.js",
     "build:minified:js": "uglifyjs build/js/GridManager.js -mc > build/js/GridManager.min.js",
     "build:minified:css": "uglifycss build/css/GridManager.css > build/css/GridManager.min.css"
