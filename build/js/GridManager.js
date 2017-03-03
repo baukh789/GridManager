@@ -1726,10 +1726,6 @@
 			isLmOrder, //是否为插件自动生成的序号列
 			isLmCheckbox; //是否为插件自动生成的选择列
 
-			//根据配置使用默认的表格样式
-			if (Settings.useDefaultStyle) {
-				table.addClass('grid-manager-default');
-			}
 			onlyThead = (0, _jTool2.default)('thead', table);
 			onlyThList = (0, _jTool2.default)('th', onlyThead);
 			wrapHtml = '<div class="table-wrap"><div class="table-div" style="height: ' + Settings.height + '"></div><span class="text-dreamland"></span></div>';
@@ -3045,7 +3041,7 @@
 
 	var Settings = {
 		// 是否使用默认的table样式
-		useDefaultStyle: true,
+		// useDefaultStyle: true, 弃用参数
 
 		// 拖拽
 		supportDrag: true, // 是否支持拖拽功能
@@ -3076,7 +3072,6 @@
 		disableCache: false,
 
 		// 是否自动加载CSS文件
-		// autoLoadCss: false,
 		// 排序 sort
 		supportSorting: false, //排序：是否支持排序功能
 		isCombSorting: false, //是否为组合排序[只有在支持排序的情况下生效

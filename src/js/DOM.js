@@ -93,10 +93,6 @@ const DOM = {
 			isLmOrder,						//是否为插件自动生成的序号列
 			isLmCheckbox;					//是否为插件自动生成的选择列
 
-		//根据配置使用默认的表格样式
-		if(Settings.useDefaultStyle){
-			table.addClass('grid-manager-default');
-		}
 		onlyThead = $('thead', table);
 		onlyThList = $('th', onlyThead);
 		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div><span class="text-dreamland"></span></div>`;
