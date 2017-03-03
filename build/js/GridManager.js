@@ -118,15 +118,17 @@
 
 	var _DOM2 = _interopRequireDefault(_DOM);
 
+	var _Hover = __webpack_require__(20);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-	 *  GridManager: 构造函数
-	 * */
 	function GridManager() {
 		// 版本号
-		this.version = '2.2.4';
-	}
+		this.version = '2.2.6';
+	} /*
+	   *  GridManager: 构造函数
+	   * */
+
 	GridManager.prototype = {
 		/*
 	  * [对外公开方法]
@@ -142,8 +144,6 @@
 				arg.gridManagerName = jToolObj.attr('grid-manager'); //存储gridManagerName值
 			}
 			// 参数
-			// Settings 域存在问题
-			// 考虑将Settings中的内容放到GridManager中,在原引用Settings的地方引用GridManager
 			_jTool2.default.extend(false, _Settings2.default, arg);
 			_this.updateSettings(jToolObj, _Settings2.default);
 			_jTool2.default.extend(true, this, arg);
@@ -212,6 +212,8 @@
 			if (_this.supportConfig) {
 				_this.bindConfigEvent(table);
 			}
+			//绑定table区域hover事件
+			_this.onTbodyHover(table);
 			//绑定表头置顶功能
 			_this.bindScrollFunction(table);
 			//绑定右键菜单事件
@@ -224,9 +226,12 @@
 	};
 	// GM导入功能: 配置项
 	_jTool2.default.extend(true, GridManager.prototype, _Settings2.default);
-	// GM导入功能: 核心
+	// GM导入功能: 基本
 	_jTool2.default.extend(GridManager.prototype, _Base2.default);
+	// GM导入功能: 核心
 	_jTool2.default.extend(GridManager.prototype, _Core2.default);
+	// GM导入功能: 鼠标
+	_jTool2.default.extend(GridManager.prototype, _Hover.Hover);
 	// GM导入功能: 选择
 	_jTool2.default.extend(GridManager.prototype, _Checkbox2.default);
 	// GM导入功能: 缓存
@@ -435,7 +440,7 @@
 				    //事件源同层级下的所有th
 				_nextTh = _allTh.eq(_th.index(_allTh) + 1),
 				    //事件源下一个可视th
-				_td = _Base2.default.getRowTd(_th); //存储与事件源同列的所有td
+				_td = _Base2.default.getColTd(_th); //存储与事件源同列的所有td
 				// 宽度调整触发回调事件
 				Settings.adjustBefore(event);
 
@@ -889,7 +894,7 @@
 	  * @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
 	  * $.th: jTool th
 	  * */
-		, getRowTd: function getRowTd(th) {
+		, getColTd: function getColTd(th) {
 			var tableWrap = th.closest('.table-wrap'),
 			    thIndex = th.index(),
 			    trList = (0, _jTool2.default)('tbody tr', tableWrap);
@@ -2823,7 +2828,7 @@
 			dragAction.unbind('mousedown');
 			dragAction.bind('mousedown', function (event) {
 				var Settings = _Cache2.default.getSettings(table);
-				_th = (0, _jTool2.default)(this).closest('th'), _prevTh = undefined, _nextTh = undefined, _prevTd = undefined, _nextTd = undefined, _tr = _th.parent(), _allTh = _tr.find('th[th-visible="visible"]'), _table = _tr.closest('table'), _tableDiv = _table.closest('.table-div'), _tableWrap = _table.closest('.table-wrap'), _td = _Base2.default.getRowTd(_th);
+				_th = (0, _jTool2.default)(this).closest('th'), _prevTh = undefined, _nextTh = undefined, _prevTd = undefined, _nextTd = undefined, _tr = _th.parent(), _allTh = _tr.find('th[th-visible="visible"]'), _table = _tr.closest('table'), _tableDiv = _table.closest('.table-div'), _tableWrap = _table.closest('.table-wrap'), _td = _Base2.default.getColTd(_th);
 				// 列拖拽触发回调事件
 				Settings.dragBefore(event);
 
@@ -2885,7 +2890,7 @@
 					});
 					//处理向左拖拽
 					if (_prevTh && _prevTh.length != 0 && _dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft) {
-						_prevTd = _Base2.default.getRowTd(_prevTh);
+						_prevTd = _Base2.default.getColTd(_prevTh);
 						_prevTh.before(_th);
 						_jTool2.default.each(_td, function (i, v) {
 							_prevTd.eq(i).before(v);
@@ -2894,7 +2899,7 @@
 					}
 					//处理向右拖拽
 					if (_nextTh && _nextTh.length != 0 && _dreamlandDIV.get(0).offsetLeft > _nextTh.get(0).offsetLeft - _dreamlandDIV.get(0).offsetWidth / 2) {
-						_nextTd = _Base2.default.getRowTd(_nextTh);
+						_nextTd = _Base2.default.getColTd(_nextTh);
 						_nextTh.after(_th);
 						_jTool2.default.each(_td, function (i, v) {
 							_nextTd.eq(i).after(v);
@@ -3119,6 +3124,57 @@
 	    * Settings: 配置项
 	    */
 	exports.default = Settings;
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.Hover = undefined;
+
+	var _jTool = __webpack_require__(1);
+
+	var _jTool2 = _interopRequireDefault(_jTool);
+
+	var _Base = __webpack_require__(5);
+
+	var _Base2 = _interopRequireDefault(_Base);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/**
+	 * Created by baukh on 17/3/3.
+	 * 事件类
+	 */
+	var Hover = exports.Hover = {
+		onTbodyHover: function onTbodyHover($table) {
+			var $td = null,
+			    $tr = null;
+			$table.on('mousemove', 'td', function (e) {
+				$td = (0, _jTool2.default)(this);
+				$tr = $td.parent();
+				// row col 并未发生变化
+				if ($td.attr('col-hover') === 'true' && $tr.attr('row-hover') === 'true') {
+					return;
+				}
+				// row 发生变化
+				if ($tr.attr('row-hover') !== 'true') {
+					(0, _jTool2.default)('tr[row-hover="true"]', $table).removeAttr('row-hover');
+					$tr.attr('row-hover', 'true');
+				}
+
+				// col 发生变化
+				if ($tr.attr('col-hover') !== 'true') {
+					(0, _jTool2.default)('td[col-hover="true"]', $table).removeAttr('col-hover');
+					_Base2.default.getColTd($td).attr('col-hover', 'true');
+				}
+			});
+		}
+	};
 
 /***/ }
 /******/ ]);

@@ -25,7 +25,7 @@ const Adjust = {
 				_table 			= _tr.closest('table'),			            //事件源所在的table
 				_allTh 			= _tr.find('th[th-visible="visible"]'),		//事件源同层级下的所有th
 				_nextTh			= _allTh.eq(_th.index(_allTh) + 1),				//事件源下一个可视th
-				_td 	    	= Base.getRowTd(_th);                           //存储与事件源同列的所有td
+				_td 	    	= Base.getColTd(_th);                           //存储与事件源同列的所有td
 			// 宽度调整触发回调事件
 			Settings.adjustBefore(event);
 

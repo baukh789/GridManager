@@ -44,7 +44,7 @@ const Base = {
 	 * @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
 	 * $.th: jTool th
 	 * */
-	,getRowTd: function(th) {
+	,getColTd: function(th) {
 		const tableWrap = th.closest('.table-wrap'),
 			    thIndex = th.index(),
 			     trList = $('tbody tr', tableWrap);

@@ -125,6 +125,9 @@ table[grid-manager].GridManager-ready{
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
+.table-wrap table[grid-manager] tr td[col-hover="true"]{
+	background-color:#e6eeee;
+}
 .table-wrap table[grid-manager] th[th-visible="none"]{
 	display:none;
 }
@@ -165,7 +168,7 @@ table.grid-manager-default tbody tr td{
 	vertical-align: top;
 	text-align: left;
 }
-table.grid-manager-default tbody tr:hover td{
+table.grid-manager-default tbody tr[row-hover="true"] td{
 	background-color: #e6eeee;
 	color:#000;
 }
@@ -499,7 +502,7 @@ table.grid-manager-default tbody tr:hover td{
 }
 .table-wrap table[grid-manager] td[gm-create="true"]{
 }
-.table-wrap table[grid-manager] tr:hover td[gm-create="true"]{
+.table-wrap table[grid-manager] tr[row-hover="true"] td[gm-create="true"]{
 	background-color:#e6eeee;
 }
 .table-wrap table[grid-manager] [gm-checkbox="true"] input[type=checkbox]{

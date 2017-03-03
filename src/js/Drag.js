@@ -40,7 +40,7 @@ const Drag = {
 			_table 			= _tr.closest('table'),
 			_tableDiv 		= _table.closest('.table-div'),
 			_tableWrap      = _table.closest('.table-wrap'),
-			_td 			= Base.getRowTd(_th);
+			_td 			= Base.getColTd(_th);
 			// 列拖拽触发回调事件
 			Settings.dragBefore(event);
 
@@ -114,7 +114,7 @@ const Drag = {
 				//处理向左拖拽
 				if(_prevTh && _prevTh.length != 0
 					&& _dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft){
-					_prevTd = Base.getRowTd(_prevTh);
+					_prevTd = Base.getColTd(_prevTh);
 					_prevTh.before(_th);
 					$.each(_td,function(i, v){
 						_prevTd.eq(i).before(v);
@@ -124,7 +124,7 @@ const Drag = {
 				//处理向右拖拽
 				if(_nextTh && _nextTh.length != 0
 					&& _dreamlandDIV.get(0).offsetLeft > _nextTh.get(0).offsetLeft - _dreamlandDIV.get(0).offsetWidth / 2){
-					_nextTd = Base.getRowTd(_nextTh);
+					_nextTd = Base.getColTd(_nextTh);
 					_nextTh.after(_th);
 					$.each(_td,function(i, v){
 						_nextTd.eq(i).after(v);
