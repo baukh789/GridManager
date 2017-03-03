@@ -4,7 +4,7 @@
 import $ from './jTool';
 let Settings = {
 	// 是否使用默认的table样式
-	useDefaultStyle: true,
+	// useDefaultStyle: true, 弃用参数
 
 	// 拖拽
 	supportDrag: true,  // 是否支持拖拽功能
@@ -35,7 +35,6 @@ let Settings = {
 	disableCache: false,
 
 	// 是否自动加载CSS文件
-	// autoLoadCss: false,
 	// 排序 sort
 	supportSorting		: false, 					//排序：是否支持排序功能
 	isCombSorting		: false,					//是否为组合排序[只有在支持排序的情况下生效

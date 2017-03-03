@@ -93,10 +93,6 @@ const DOM = {
 			isLmOrder,						//是否为插件自动生成的序号列
 			isLmCheckbox;					//是否为插件自动生成的选择列
 
-		//根据配置使用默认的表格样式
-		if(Settings.useDefaultStyle){
-			table.addClass('grid-manager-default');
-		}
 		onlyThead = $('thead', table);
 		onlyThList = $('th', onlyThead);
 		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div><span class="text-dreamland"></span></div>`;
@@ -119,14 +115,15 @@ const DOM = {
 			onlyTH = $(v2);
 			onlyTH.attr('th-visible','visible');
 			//是否为自动生成的序号列
-			if(Settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true'){
+			if(Settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
 				isLmOrder = true;
-			}else{
+			}
+			else{
 				isLmOrder = false;
 			}
 
 			//是否为自动生成的选择列
-			if(Settings.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true'){
+			if(Settings.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true') {
 				isLmCheckbox = true;
 			}else{
 				isLmCheckbox = false;

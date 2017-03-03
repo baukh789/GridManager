@@ -19,9 +19,10 @@ import Scroll from './Scroll';
 import Sort from './Sort';
 import Settings from './Settings';
 import DOM from './DOM';
+import { Hover } from './Hover';
 function GridManager() {
 	// 版本号
-	this.version= '2.2.4';
+	this.version= '2.2.6';
 }
 GridManager.prototype = {
 	/*
@@ -38,8 +39,6 @@ GridManager.prototype = {
 			arg.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
 		}
 		// 参数
-		// Settings 域存在问题
-// 考虑将Settings中的内容放到GridManager中,在原引用Settings的地方引用GridManager
 		jTool.extend(false, Settings, arg);
 		_this.updateSettings(jToolObj, Settings);
 		jTool.extend(true, this, arg);
@@ -108,6 +107,8 @@ GridManager.prototype = {
 		if(_this.supportConfig){
 			_this.bindConfigEvent(table);
 		}
+		//绑定table区域hover事件
+		_this.onTbodyHover(table);
 		//绑定表头置顶功能
 		_this.bindScrollFunction(table);
 		//绑定右键菜单事件
@@ -120,9 +121,12 @@ GridManager.prototype = {
 };
 // GM导入功能: 配置项
 jTool.extend(true, GridManager.prototype, Settings);
-// GM导入功能: 核心
+// GM导入功能: 基本
 jTool.extend(GridManager.prototype, Base);
+// GM导入功能: 核心
 jTool.extend(GridManager.prototype, Core);
+// GM导入功能: 鼠标
+jTool.extend(GridManager.prototype, Hover);
 // GM导入功能: 选择
 jTool.extend(GridManager.prototype, Checkbox);
 // GM导入功能: 缓存
