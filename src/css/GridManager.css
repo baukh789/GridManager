@@ -80,7 +80,6 @@ table[grid-manager].GridManager-ready{
 .table-wrap{
 	position: relative;
 	padding: 3px;
-	background-color: #efefef;
 }
 .table-div{
 	position:relative;
@@ -118,8 +117,8 @@ table[grid-manager].GridManager-ready{
 	table-layout:fixed;
 	word-wrap:break-word;
 	text-align: center;
-	margin:0px !important;
-	background-color: #dad9c7;
+	margin:0 !important;
+	background-color: #ddd;
 	font-size: 12px;
 	width: 100%;
 	border-collapse:separate;
@@ -129,8 +128,6 @@ table[grid-manager].GridManager-ready{
 }
 .table-wrap table[grid-manager] thead tr th{
 	background-color: #e6eeee;
-	border: 1px solid #fff;
-	font-size: 8pt;
 	text-align: center;
 }
 .table-wrap table[grid-manager] thead tr th:hover{
@@ -271,7 +268,7 @@ table[grid-manager].GridManager-ready{
 	width:16px;
 	height:16px;
 	position:absolute;
-	top:4px;
+	top:6px;
 	left:4px;
 	cursor:help;
 }
@@ -336,9 +333,10 @@ table[grid-manager].GridManager-ready{
 /*表头置顶*/
 .table-wrap .set-top{
 	position:absolute;
-	left:0px;
-	top:0px;
+	left:0;
+	top:0;
 	z-index:2;
+	background-color: #ddd;
 }
 .table-wrap .set-top .adjust-action{
 	display:none !important;
@@ -357,7 +355,7 @@ table[grid-manager].GridManager-ready{
 	width:100%;
 	height:100%;
 	position:relative;
-	padding:4px;
+	padding:6px 4px;
 	text-align:center;
 }
 /*宽度调整*/
@@ -394,7 +392,7 @@ table[grid-manager].GridManager-ready{
 	width:20px;
 	height:18px;
 	position:absolute;
-	top:4px;
+	top:6px;
 	right:5px;
 	cursor:default;
 	z-index:2;
@@ -480,8 +478,8 @@ table[grid-manager].GridManager-ready{
 	cursor:default;
 }
 .table-wrap table[grid-manager] th[gm-create="true"]{
-	background-color:#dad9c7;
-	opacity:0.9;
+	background-color:#e6eeee !important;
+	opacity:0.4;
 }
 .table-wrap table[grid-manager] tr td[gm-create="true"]{
 	background-color:#f8f8f8;
@@ -504,8 +502,8 @@ table[grid-manager].GridManager-ready{
 	width:100%;
 	height:100%;
 	position:absolute;
-	top:0px;
-	left:0px;
+	top:0;
+	left:0;
 	background:#000;
 	opacity:0.6;
 	z-index:9;
@@ -563,23 +561,23 @@ table[grid-manager].GridManager-ready{
 .hidden{
 	display:none;
 }
-
-
 /*
-	@baukh20150504:分页默认样式
+	@baukh20150504:分页样式
 */
 .table-wrap .page-toolbar{
 	width:100%;
 	position: relative;
-	padding-top:10px;
+	padding:5px 0;
+	background-color: #e8e8e8;
 }
 .table-wrap .page-toolbar .dataTables_info{
 	display:inline-block;
 	padding: 6px 5px;
+	vertical-align: middle;
 }
 .table-wrap .page-toolbar .change-size{
 	display:inline-block;
-	padding:5px 10px;
+	padding:2.5px 10px;
 	vertical-align: middle;
 }
 .table-wrap .page-toolbar .change-size select[name="pSizeArea"]{
@@ -588,7 +586,8 @@ table[grid-manager].GridManager-ready{
 }
 .table-wrap .page-toolbar .goto-page{
 	display:inline-block;
-	padding:5px 10px;
+	padding:2.5px 10px;
+	vertical-align: middle;
 }
 .table-wrap .page-toolbar .goto-page .gp-input{
 	width:50px;
@@ -620,10 +619,9 @@ table[grid-manager].GridManager-ready{
 	animation: rotationMedia 2s ease-in-out infinite;
 }
 .table-wrap .page-toolbar .ajax-page{
-	vertical-align:middle;
 	position: absolute;
 	right:0px;
-	bottom:0px;
+	bottom:5px;
 }
 .table-wrap .page-toolbar .ajax-page .pagination{
 	display: inline-block;
