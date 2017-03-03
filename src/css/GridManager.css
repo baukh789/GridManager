@@ -119,31 +119,6 @@ table[grid-manager].GridManager-ready{
 	word-wrap:break-word;
 	text-align: center;
 	margin:0px !important;
-}
-.table-wrap table[grid-manager] tr td{
-	white-space:nowrap;
-	overflow:hidden;
-	text-overflow:ellipsis;
-}
-.table-wrap table[grid-manager] tr td[col-hover="true"]{
-	background-color:#e6eeee;
-}
-.table-wrap table[grid-manager] th[th-visible="none"]{
-	display:none;
-}
-.table-wrap table[grid-manager] th[th-visible="visible"]{
-	display:table-cell;
-}
-.table-wrap table[grid-manager] th .th-text{
-	display:block;
-	width:100%;
-	height:100%;
-	white-space: nowrap;
-	text-overflow:ellipsis;
-	/*padding:0 20px;*/
-}
-/* 提供的默认table样式 */
-.table-wrap table[grid-manager]{
 	background-color: #dad9c7;
 	font-size: 12px;
 	width: 100%;
@@ -161,12 +136,32 @@ table[grid-manager].GridManager-ready{
 .table-wrap table[grid-manager] thead tr th:hover{
 	background-color: #8dbdd8;
 }
+.table-wrap table[grid-manager] th[th-visible="none"]{
+	display:none;
+}
+.table-wrap table[grid-manager] th[th-visible="visible"]{
+	display:table-cell;
+}
+.table-wrap table[grid-manager] th .th-text{
+	display:block;
+	width:100%;
+	height:100%;
+	white-space: nowrap;
+	text-overflow:ellipsis;
+	/*padding:0 20px;*/
+}
 .table-wrap table[grid-manager] tbody tr td{
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
 	background-color: #fff;
 	color: #3d3d3d;
 	padding: 4px;
 	vertical-align: top;
 	text-align: left;
+}
+.table-wrap table[grid-manager] tbody tr td[col-hover="true"]{
+	background-color:#e6eeee;
 }
 .table-wrap table[grid-manager] tbody tr[row-hover="true"] td{
 	background-color: #e6eeee;
@@ -200,13 +195,6 @@ table[grid-manager].GridManager-ready{
 }
 .table-wrap .config-area .config-action:hover i{
 	color:#09f;
-}
-.table-wrap .config-area:hover .config-action i{
-	/*
-    -webkit-animation: rotationMedia 1s ease-in-out infinite;
-       -moz-animation: rotationMedia 1s ease-in-out infinite;
-            animation: rotationMedia 1s ease-in-out infinite;
-            */
 }
 .table-wrap .config-area .config-list{
 	display:block;
@@ -312,11 +300,6 @@ table[grid-manager].GridManager-ready{
 	visibility:visible;
 	display:block !important;
 }
-/*
-.table-wrap table[grid-manager] th .remind-action:hover .ra-area{
-	display:block;
-}
-*/
 .table-wrap table[grid-manager] th .remind-action .ra-help{
 	display:block;
 	width:16px;
@@ -500,10 +483,8 @@ table[grid-manager].GridManager-ready{
 	background-color:#dad9c7;
 	opacity:0.9;
 }
-.table-wrap table[grid-manager] td[gm-create="true"]{
-}
-.table-wrap table[grid-manager] tr[row-hover="true"] td[gm-create="true"]{
-	background-color:#e6eeee;
+.table-wrap table[grid-manager] tr td[gm-create="true"]{
+	background-color:#f8f8f8;
 }
 .table-wrap table[grid-manager] [gm-checkbox="true"] input[type=checkbox]{
 	vertical-align:middle;
