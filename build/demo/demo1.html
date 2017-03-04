@@ -178,8 +178,10 @@
 		,ajax_success: function(data){
 			console.log('Event: ajax_success', data);
 		}
+	}, function(query){
+		// 渲染完成后的回调函数
+		console.log(query);
 	});
-
 	// 日期格式化,不是插件的代码,只用于处理时间格式化
 	Date.prototype.format = function(fmt){
 		var o = {

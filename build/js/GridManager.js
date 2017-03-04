@@ -46,6 +46,11 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      *  GridManager: 入口
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * */
+
+
 	var _jTool = __webpack_require__(1);
 
 	var _jTool2 = _interopRequireDefault(_jTool);
@@ -122,14 +127,15 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function GridManager() {
-		// 版本号
-		this.version = '2.2.6';
-	} /*
-	   *  GridManager: 构造函数
-	   * */
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	GridManager.prototype = {
+	var GridManager = function () {
+		function GridManager() {
+			_classCallCheck(this, GridManager);
+
+			this.version = '2.2.6';
+			this.extentGridManager();
+		}
 		/*
 	  * [对外公开方法]
 	  * @初始化方法
@@ -137,131 +143,183 @@
 	  * $.arg: 参数
 	  * $.callback:回调
 	  * */
-		init: function init(jToolObj, arg, callback) {
 
-			var _this = this;
-			if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
-				arg.gridManagerName = jToolObj.attr('grid-manager'); //存储gridManagerName值
+
+		_createClass(GridManager, [{
+			key: 'init',
+			value: function init(jToolObj, arg, callback) {
+
+				var _this = this;
+				if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
+					arg.gridManagerName = jToolObj.attr('grid-manager'); //存储gridManagerName值
+				}
+				// 配置参数
+				_jTool2.default.extend(false, _Settings2.default, arg);
+				_this.updateSettings(jToolObj, _Settings2.default);
+				_jTool2.default.extend(true, this, arg);
+
+				//通过版本较验 清理缓存
+				_this.cleanTableCacheForVersion(jToolObj, this.version);
+				if (_this.gridManagerName.trim() === '') {
+					_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+					return false;
+				}
+
+				// 验证当前表格是否已经渲染
+				if (jToolObj.hasClass('GridManager-ready') || jToolObj.hasClass('GridManager-loading')) {
+					_this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
+					return false;
+				}
+
+				//根据本地缓存配置每页显示条数
+				if (_this.supportAjaxPage) {
+					_this.configPageForCache(jToolObj);
+				}
+
+				//增加渲染中标注
+				jToolObj.addClass('GridManager-loading');
+
+				// 初始化表格
+				_this.initTable(jToolObj);
+
+				//如果初始获取缓存失败，在渲染完成后首先存储一次数据
+				if (typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined') {
+					window.setTimeout(function () {
+						_this.setToLocalStorage(jToolObj, true);
+						jToolObj.removeAttr('grid-manager-cache-error');
+					}, 1000);
+				}
+
+				//启用回调
+				typeof callback == 'function' ? callback(_this.query) : '';
+				return jToolObj;
 			}
-			// 参数
-			_jTool2.default.extend(false, _Settings2.default, arg);
-			_this.updateSettings(jToolObj, _Settings2.default);
-			_jTool2.default.extend(true, this, arg);
-			//通过版本较验 清理缓存
-			_this.cleanTableCacheForVersion(jToolObj, this.version);
-			if (_this.gridManagerName.trim() === '') {
-				_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
-				return false;
+			/*
+	   @初始化列表
+	   $.table: table[jTool object]
+	   */
+
+		}, {
+			key: 'initTable',
+			value: function initTable(table) {
+				var _this = this;
+				//渲染HTML，嵌入所需的事件源DOM
+				_DOM2.default.createDOM(table);
+
+				//获取本地缓存并对列表进行配置
+				if (!_this.disableCache) {
+					_this.configTheadForCache(table);
+					_this.supportAdjust ? _this.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
+				}
+
+				//绑定宽度调整事件
+				if (_this.supportAdjust) {
+					_this.bindAdjustEvent(table);
+				}
+
+				//绑定拖拽换位事件
+				if (_this.supportDrag) {
+					_this.bindDragEvent(table);
+				}
+
+				//绑定排序事件
+				if (_this.supportSorting) {
+					_this.bindSortingEvent(table);
+				}
+
+				//绑定表头提示事件
+				if (_this.supportRemind) {
+					_this.bindRemindEvent(table);
+				}
+
+				//绑定配置列表事件
+				if (_this.supportConfig) {
+					_this.bindConfigEvent(table);
+				}
+
+				//绑定table区域hover事件
+				_this.onTbodyHover(table);
+
+				//绑定表头置顶功能
+				_this.bindScrollFunction(table);
+
+				//绑定右键菜单事件
+				_this.bindRightMenuEvent(table);
+
+				//渲染tbodyDOM
+				_this.__refreshGrid(table);
+
+				//将GridManager实例化对象存放于jTool data
+				_this.setGridManagerToJTool.call(_this, table);
 			}
 
-			if (jToolObj.hasClass('GridManager-ready') || jToolObj.hasClass('GridManager-loading')) {
-				_this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
-				return false;
-			}
-			//根据本地缓存配置每页显示条数
-			if (_this.supportAjaxPage) {
-				_this.configPageForCache(jToolObj);
-			}
-			var query = _jTool2.default.extend({}, _this.query, _this.pageData);
-			//增加渲染中标注
-			jToolObj.addClass('GridManager-loading');
-			_this.initTable(jToolObj);
+			// 拼装GirdManager
 
-			//如果初始获取缓存失败，在渲染完成后首先存储一次数据
-			if (typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined') {
-				window.setTimeout(function () {
-					_this.setToLocalStorage(jToolObj, true);
-					jToolObj.removeAttr('grid-manager-cache-error');
-				}, 1000);
-			}
+		}, {
+			key: 'extentGridManager',
+			value: function extentGridManager() {
+				// GM导入功能: 配置项
+				_jTool2.default.extend(true, this, _Settings2.default);
 
-			//启用回调
-			typeof callback == 'function' ? callback(query) : '';
-			return jToolObj;
-		}
-		/*
-	  @初始化列表
-	  $.table: table[jTool object]
-	  */
-		, initTable: function initTable(table) {
-			var _this = this;
-			//渲染HTML，嵌入所需的事件源DOM
-			_DOM2.default.createDOM(table);
-			//获取本地缓存并对列表进行配置
-			if (!_this.disableCache) {
-				_this.configTheadForCache(table);
-				_this.supportAdjust ? _this.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
+				// GM导入功能: 基本
+				_jTool2.default.extend(this, _Base2.default);
+
+				// GM导入功能: 核心
+				_jTool2.default.extend(this, _Core2.default);
+
+				// GM导入功能: 鼠标
+				_jTool2.default.extend(this, _Hover.Hover);
+
+				// GM导入功能: 选择
+				_jTool2.default.extend(this, _Checkbox2.default);
+
+				// GM导入功能: 缓存
+				_jTool2.default.extend(this, _Cache2.default);
+
+				// GM导入功能: 宽度调整
+				_jTool2.default.extend(this, _Adjust2.default);
+
+				// GM导入功能: 分页
+				_jTool2.default.extend(this, _AjaxPage2.default);
+
+				// GM导入功能: 配置列显示隐藏
+				_jTool2.default.extend(this, _Config2.default);
+
+				// GM导入功能: 拖拽
+				_jTool2.default.extend(this, _Drag2.default);
+
+				// GM导入功能: 排序
+				_jTool2.default.extend(this, _Sort2.default);
+
+				// GM导入功能: 导出数据
+				_jTool2.default.extend(this, _Export2.default);
+
+				// GM导入功能: 国际化
+				_jTool2.default.extend(this, _I18n2.default);
+
+				// GM导入功能: 右键菜单
+				_jTool2.default.extend(this, _Menu2.default);
+
+				// GM导入功能: 序号
+				_jTool2.default.extend(this, _Order2.default);
+
+				// GM导入功能: 表头提示
+				_jTool2.default.extend(this, _Remind2.default);
+
+				// GM导入功能: 表头吸顶
+				_jTool2.default.extend(this, _Scroll2.default);
+
+				// GM导入功能: DOM操作
+				_jTool2.default.extend(this, _DOM2.default);
 			}
-			//绑定宽度调整事件
-			if (_this.supportAdjust) {
-				_this.bindAdjustEvent(table);
-			}
-			//绑定拖拽换位事件
-			if (_this.supportDrag) {
-				_this.bindDragEvent(table);
-			}
-			//绑定排序事件
-			if (_this.supportSorting) {
-				_this.bindSortingEvent(table);
-			}
-			//绑定表头提示事件
-			if (_this.supportRemind) {
-				_this.bindRemindEvent(table);
-			}
-			//绑定配置列表事件
-			if (_this.supportConfig) {
-				_this.bindConfigEvent(table);
-			}
-			//绑定table区域hover事件
-			_this.onTbodyHover(table);
-			//绑定表头置顶功能
-			_this.bindScrollFunction(table);
-			//绑定右键菜单事件
-			_this.bindRightMenuEvent(table);
-			//渲染tbodyDOM
-			_this.__refreshGrid(table);
-			//将GridManager实例化对象存放于jTool data
-			_this.setGridManagerToJTool.call(_this, table);
-		}
-	};
-	// GM导入功能: 配置项
-	_jTool2.default.extend(true, GridManager.prototype, _Settings2.default);
-	// GM导入功能: 基本
-	_jTool2.default.extend(GridManager.prototype, _Base2.default);
-	// GM导入功能: 核心
-	_jTool2.default.extend(GridManager.prototype, _Core2.default);
-	// GM导入功能: 鼠标
-	_jTool2.default.extend(GridManager.prototype, _Hover.Hover);
-	// GM导入功能: 选择
-	_jTool2.default.extend(GridManager.prototype, _Checkbox2.default);
-	// GM导入功能: 缓存
-	_jTool2.default.extend(GridManager.prototype, _Cache2.default);
-	// GM导入功能: 宽度调整
-	_jTool2.default.extend(GridManager.prototype, _Adjust2.default);
-	// GM导入功能: 分页
-	_jTool2.default.extend(GridManager.prototype, _AjaxPage2.default);
-	// GM导入功能: 配置列显示隐藏
-	_jTool2.default.extend(GridManager.prototype, _Config2.default);
-	// GM导入功能: 拖拽
-	_jTool2.default.extend(GridManager.prototype, _Drag2.default);
-	// GM导入功能: 排序
-	_jTool2.default.extend(GridManager.prototype, _Sort2.default);
-	// GM导入功能: 导出数据
-	_jTool2.default.extend(GridManager.prototype, _Export2.default);
-	// GM导入功能: 国际化
-	_jTool2.default.extend(GridManager.prototype, _I18n2.default);
-	// GM导入功能: 右键菜单
-	_jTool2.default.extend(GridManager.prototype, _Menu2.default);
-	// GM导入功能: 序号
-	_jTool2.default.extend(GridManager.prototype, _Order2.default);
-	// GM导入功能: 表头提示
-	_jTool2.default.extend(GridManager.prototype, _Remind2.default);
-	// GM导入功能: 表头吸顶
-	_jTool2.default.extend(GridManager.prototype, _Scroll2.default);
-	// GM导入功能: DOM操作
-	_jTool2.default.extend(GridManager.prototype, _DOM2.default);
+		}]);
+
+		return GridManager;
+	}();
 
 	// 对外公开方法列表
+
+
 	var publishList = ['init', //初始化
 	'setSort', //手动设置排序
 	'get', //通过jTool实例获取GridManager
@@ -277,8 +335,10 @@
 	'getRowData', //获取当前行渲染时使用的数据
 	'clear' //清除指定表的表格记忆数据
 	];
+	/*
+	*  捆绑至选择器对象
+	* */
 	(function ($) {
-		// 捆绑至选择器对象
 		Element.prototype.GM = Element.prototype.GridManager = function () {
 			var $table = $(this);
 			// 特殊情况处理：单组tr进行操作，如resetTd()方法
@@ -333,7 +393,9 @@
 		};
 	})(_jTool2.default);
 
-	// 兼容jquery
+	/*
+	* 兼容jquery
+	* */
 	(function () {
 		if (typeof jQuery !== 'undefined' && jQuery.fn.extend) {
 			jQuery.fn.extend({
