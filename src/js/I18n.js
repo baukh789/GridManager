@@ -55,11 +55,11 @@ const I18n = {
 		}
 		,'next-page': {
 			'zh-cn':'下一页',
-			'en-us':'next '
+			'en-us':'next'
 		}
 		,'last-page': {
 			'zh-cn':'尾页',
-			'en-us':'last '
+			'en-us':'last'
 		}
 		,'dataTablesInfo':{
 			'zh-cn':'此页显示 {0}-{1} 共{2}条',
@@ -67,19 +67,19 @@ const I18n = {
 		}
 		,'goto-first-text':{
 			'zh-cn':'跳转至',
-			'en-us':'goto '
+			'en-us':'goto'
 		}
 		,'goto-last-text':{
 			'zh-cn':'页',
-			'en-us':'page '
+			'en-us':'page'
 		}
 		,'refresh':{
 			'zh-cn':'重新加载',
-			'en-us':'Refresh '
+			'en-us':'Refresh'
 		}
 		,'save-as-excel':{
 			'zh-cn':'另存为Excel',
-			'en-us':'Save as Excel '
+			'en-us':'Save as Excel'
 		}
 		,'save-as-excel-for-checked':{
 			'zh-cn':'已选中项另存为Excel',
