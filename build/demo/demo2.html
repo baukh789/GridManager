@@ -85,17 +85,14 @@
 	<table></table>
 <script type="text/javascript">
 	var table = document.querySelector('table');
-	table.GM({
+	var TGM = table.GM({
 		supportRemind: true
 		,gridManagerName: 'test'
-//			,disableCache:true
 		,isCombSorting: true
 		,height: '300px'
 		,supportAjaxPage:true
 		,supportSorting: true
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-//		,ajax_url: 'http://127.0.0.1:1314/learnLinkManager/getLearnLinkList'
-//			,ajax_headers: {'header-test': 'baukh'}
 		,ajax_type: 'POST'
 		,query: {pluginId: 1}
 		,pageSize:30
@@ -174,8 +171,12 @@
 		,dragAfter: function (event) {
 			console.log('dragAfter', event);
 		}
+	}, function(query){
+		// 渲染完成后的回调函数
+		console.log(query);
 	});
 
+	console.log('GirdManger version => ', TGM.version)
 	// 日期格式化,不是插件的代码,只用于处理时间格式化
 	Date.prototype.format = function(fmt){
 		var o = {

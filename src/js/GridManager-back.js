@@ -1,5 +1,5 @@
 /*
- *  GridManager: 入口
+ *  GridManager: 构造函数
  * */
 import jTool from './jTool';
 import Adjust from './Adjust';
@@ -20,11 +20,11 @@ import Sort from './Sort';
 import Settings from './Settings';
 import DOM from './DOM';
 import { Hover } from './Hover';
-class GridManager {
-	constructor() {
-		this.version = '2.2.6';
-		this.extentGridManager();
-	}
+function GridManager() {
+	// 版本号
+	this.version= '2.2.6';
+}
+GridManager.prototype = {
 	/*
 	 * [对外公开方法]
 	 * @初始化方法
@@ -32,17 +32,16 @@ class GridManager {
 	 * $.arg: 参数
 	 * $.callback:回调
 	 * */
-	init(jToolObj, arg, callback) {
+	init: function(jToolObj, arg, callback) {
 
 		const _this = this;
 		if(typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === ''){
 			arg.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
 		}
-		// 配置参数
+		// 参数
 		jTool.extend(false, Settings, arg);
 		_this.updateSettings(jToolObj, Settings);
 		jTool.extend(true, this, arg);
-
 		//通过版本较验 清理缓存
 		_this.cleanTableCacheForVersion(jToolObj, this.version);
 		if(_this.gridManagerName.trim() === ''){
@@ -50,21 +49,17 @@ class GridManager {
 			return false;
 		}
 
-		// 验证当前表格是否已经渲染
 		if(jToolObj.hasClass('GridManager-ready') || jToolObj.hasClass('GridManager-loading')){
 			_this.outLog('渲染失败：可能该表格已经渲染或正在渲染' , 'error');
 			return false;
 		}
-
 		//根据本地缓存配置每页显示条数
 		if(_this.supportAjaxPage){
 			_this.configPageForCache(jToolObj);
 		}
-
+		const query = jTool.extend({}, _this.query, _this.pageData);
 		//增加渲染中标注
 		jToolObj.addClass('GridManager-loading');
-
-		// 初始化表格
 		_this.initTable(jToolObj);
 
 		//如果初始获取缓存失败，在渲染完成后首先存储一次数据
@@ -76,122 +71,90 @@ class GridManager {
 		}
 
 		//启用回调
-		typeof(callback) == 'function' ? callback(_this.query) :'';
+		typeof(callback) == 'function' ? callback(query) :'';
 		return jToolObj;
 	}
 	/*
 	 @初始化列表
 	 $.table: table[jTool object]
 	 */
-	initTable(table) {
+	,initTable: function(table) {
 		const _this = this;
 		//渲染HTML，嵌入所需的事件源DOM
 		DOM.createDOM(table);
-
 		//获取本地缓存并对列表进行配置
 		if(!_this.disableCache){
 			_this.configTheadForCache(table);
 			_this.supportAdjust ? _this.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
 		}
-
 		//绑定宽度调整事件
 		if(_this.supportAdjust){
 			_this.bindAdjustEvent(table);
 		}
-
 		//绑定拖拽换位事件
 		if(_this.supportDrag){
 			_this.bindDragEvent(table);
 		}
-
 		//绑定排序事件
 		if(_this.supportSorting){
 			_this.bindSortingEvent(table);
 		}
-
 		//绑定表头提示事件
 		if(_this.supportRemind){
 			_this.bindRemindEvent(table);
 		}
-
 		//绑定配置列表事件
 		if(_this.supportConfig){
 			_this.bindConfigEvent(table);
 		}
-
 		//绑定table区域hover事件
 		_this.onTbodyHover(table);
-
 		//绑定表头置顶功能
 		_this.bindScrollFunction(table);
-
 		//绑定右键菜单事件
 		_this.bindRightMenuEvent(table);
-
 		//渲染tbodyDOM
 		_this.__refreshGrid(table);
-
 		//将GridManager实例化对象存放于jTool data
 		_this.setGridManagerToJTool.call(_this, table);
 	}
-
-	// 拼装GirdManager
-	extentGridManager(){
-		// GM导入功能: 配置项
-		jTool.extend(true, this, Settings);
-
-		// GM导入功能: 基本
-		jTool.extend(this, Base);
-
-		// GM导入功能: 核心
-		jTool.extend(this, Core);
-
-		// GM导入功能: 鼠标
-		jTool.extend(this, Hover);
-
-		// GM导入功能: 选择
-		jTool.extend(this, Checkbox);
-
-		// GM导入功能: 缓存
-		jTool.extend(this, Cache);
-
-		// GM导入功能: 宽度调整
-		jTool.extend(this, Adjust);
-
-		// GM导入功能: 分页
-		jTool.extend(this, AjaxPage);
-
-		// GM导入功能: 配置列显示隐藏
-		jTool.extend(this, Config);
-
-		// GM导入功能: 拖拽
-		jTool.extend(this, Drag);
-
-		// GM导入功能: 排序
-		jTool.extend(this, Sort);
-
-		// GM导入功能: 导出数据
-		jTool.extend(this, Export);
-
-		// GM导入功能: 国际化
-		jTool.extend(this, I18n);
-
-		// GM导入功能: 右键菜单
-		jTool.extend(this, Menu);
-
-		// GM导入功能: 序号
-		jTool.extend(this, Order);
-
-		// GM导入功能: 表头提示
-		jTool.extend(this, Remind);
-
-		// GM导入功能: 表头吸顶
-		jTool.extend(this, Scroll);
-
-		// GM导入功能: DOM操作
-		jTool.extend(this, DOM);
-	}
-}
+};
+// GM导入功能: 配置项
+jTool.extend(true, GridManager.prototype, Settings);
+// GM导入功能: 基本
+jTool.extend(GridManager.prototype, Base);
+// GM导入功能: 核心
+jTool.extend(GridManager.prototype, Core);
+// GM导入功能: 鼠标
+jTool.extend(GridManager.prototype, Hover);
+// GM导入功能: 选择
+jTool.extend(GridManager.prototype, Checkbox);
+// GM导入功能: 缓存
+jTool.extend(GridManager.prototype, Cache);
+// GM导入功能: 宽度调整
+jTool.extend(GridManager.prototype, Adjust);
+// GM导入功能: 分页
+jTool.extend(GridManager.prototype, AjaxPage);
+// GM导入功能: 配置列显示隐藏
+jTool.extend(GridManager.prototype, Config);
+// GM导入功能: 拖拽
+jTool.extend(GridManager.prototype, Drag);
+// GM导入功能: 排序
+jTool.extend(GridManager.prototype, Sort);
+// GM导入功能: 导出数据
+jTool.extend(GridManager.prototype, Export);
+// GM导入功能: 国际化
+jTool.extend(GridManager.prototype, I18n);
+// GM导入功能: 右键菜单
+jTool.extend(GridManager.prototype, Menu);
+// GM导入功能: 序号
+jTool.extend(GridManager.prototype, Order);
+// GM导入功能: 表头提示
+jTool.extend(GridManager.prototype, Remind);
+// GM导入功能: 表头吸顶
+jTool.extend(GridManager.prototype, Scroll);
+// GM导入功能: DOM操作
+jTool.extend(GridManager.prototype, DOM);
 
 // 对外公开方法列表
 const publishList = [
@@ -210,10 +173,8 @@ const publishList = [
 	'getRowData',			//获取当前行渲染时使用的数据
 	'clear'					//清除指定表的表格记忆数据
 ];
-/*
-*  捆绑至选择器对象
-* */
 (function ($) {
+	// 捆绑至选择器对象
 	Element.prototype.GM = Element.prototype.GridManager = function () {
 		const $table = $(this);
 		// 特殊情况处理：单组tr进行操作，如resetTd()方法
@@ -268,9 +229,7 @@ const publishList = [
 	};
 })(jTool);
 
-/*
-* 兼容jquery
-* */
+// 兼容jquery
 (function(){
 	if(typeof(jQuery) !== 'undefined' && jQuery.fn.extend) {
 		jQuery.fn.extend({
