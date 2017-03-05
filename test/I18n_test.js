@@ -41,7 +41,7 @@ describe('I18n', function() {
 	});
 
 	it('验证I18N配置项: 已选中项另存为Excel', function() {
-		expect(JSON.stringify(I18n.textConfig['save-as-excel-for-checked'])).toBe('{"zh-cn":"已选中项另存为Excel","en-us":"Save as Excel of Checked"}');
+		expect(JSON.stringify(I18n.textConfig['save-as-excel-for-checked'])).toBe('{"zh-cn":"已选中项另存为Excel","en-us":"Save selected as Excel"}');
 	});
 
 	it('验证I18N配置项: 配置表', function() {

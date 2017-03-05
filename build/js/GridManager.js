@@ -83,11 +83,11 @@
 
 	var _Checkbox2 = _interopRequireDefault(_Checkbox);
 
-	var _Drag = __webpack_require__(17);
+	var _Drag = __webpack_require__(18);
 
 	var _Drag2 = _interopRequireDefault(_Drag);
 
-	var _Export = __webpack_require__(12);
+	var _Export = __webpack_require__(13);
 
 	var _Export2 = _interopRequireDefault(_Export);
 
@@ -95,27 +95,27 @@
 
 	var _I18n2 = _interopRequireDefault(_I18n);
 
-	var _Menu = __webpack_require__(16);
+	var _Menu = __webpack_require__(17);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
-	var _Order = __webpack_require__(13);
+	var _Order = __webpack_require__(14);
 
 	var _Order2 = _interopRequireDefault(_Order);
 
-	var _Remind = __webpack_require__(14);
+	var _Remind = __webpack_require__(15);
 
 	var _Remind2 = _interopRequireDefault(_Remind);
 
-	var _Scroll = __webpack_require__(18);
+	var _Scroll = __webpack_require__(19);
 
 	var _Scroll2 = _interopRequireDefault(_Scroll);
 
-	var _Sort = __webpack_require__(15);
+	var _Sort = __webpack_require__(16);
 
 	var _Sort2 = _interopRequireDefault(_Sort);
 
-	var _Settings = __webpack_require__(19);
+	var _Settings = __webpack_require__(12);
 
 	var _Settings2 = _interopRequireDefault(_Settings);
 
@@ -181,7 +181,6 @@
 
 				// 初始化表格
 				_this.initTable(jToolObj);
-
 				//如果初始获取缓存失败，在渲染完成后首先存储一次数据
 				if (typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined') {
 					window.setTimeout(function () {
@@ -1465,7 +1464,7 @@
 
 	var _AjaxPage2 = _interopRequireDefault(_AjaxPage);
 
-	var _Menu = __webpack_require__(16);
+	var _Menu = __webpack_require__(17);
 
 	var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -1687,19 +1686,19 @@
 
 	var _Base2 = _interopRequireDefault(_Base);
 
-	var _Export = __webpack_require__(12);
+	var _Export = __webpack_require__(13);
 
 	var _Export2 = _interopRequireDefault(_Export);
 
-	var _Order = __webpack_require__(13);
+	var _Order = __webpack_require__(14);
 
 	var _Order2 = _interopRequireDefault(_Order);
 
-	var _Remind = __webpack_require__(14);
+	var _Remind = __webpack_require__(15);
 
 	var _Remind2 = _interopRequireDefault(_Remind);
 
-	var _Sort = __webpack_require__(15);
+	var _Sort = __webpack_require__(16);
 
 	var _Sort2 = _interopRequireDefault(_Sort);
 
@@ -2215,11 +2214,17 @@
 
 	var _Base2 = _interopRequireDefault(_Base);
 
+	var _Settings = __webpack_require__(12);
+
+	var _Settings2 = _interopRequireDefault(_Settings);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var I18n = {
 		//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
-		i18n: 'zh-cn'
+		getLanguage: function getLanguage() {
+			return _Settings2.default.i18n;
+		}
 		/*
 	  * @获取与当前配置国际化匹配的文本
 	  *  $.key: 指向的文本索引
@@ -2238,7 +2243,7 @@
 			}
 			var _lg = '';
 			try {
-				_lg = _this.textConfig[key][_this.i18n] || '';
+				_lg = _this.textConfig[key][_this.getLanguage()] || '';
 				if (!intrusion || intrusion.length == 0) {
 					return _lg;
 				}
@@ -2247,7 +2252,7 @@
 				});
 				return _lg;
 			} catch (e) {
-				_Base2.default.outLog('未找到与' + key + '相匹配的' + _this.i18n + '语言', 'warn');
+				_Base2.default.outLog('未找到与' + key + '相匹配的' + _this.getLanguage() + '语言', 'warn');
 				return '';
 			}
 		}
@@ -2269,11 +2274,11 @@
 			},
 			'next-page': {
 				'zh-cn': '下一页',
-				'en-us': 'next '
+				'en-us': 'next'
 			},
 			'last-page': {
 				'zh-cn': '尾页',
-				'en-us': 'last '
+				'en-us': 'last'
 			},
 			'dataTablesInfo': {
 				'zh-cn': '此页显示 {0}-{1} 共{2}条',
@@ -2281,23 +2286,23 @@
 			},
 			'goto-first-text': {
 				'zh-cn': '跳转至',
-				'en-us': 'goto '
+				'en-us': 'goto'
 			},
 			'goto-last-text': {
 				'zh-cn': '页',
-				'en-us': 'page '
+				'en-us': 'page'
 			},
 			'refresh': {
 				'zh-cn': '重新加载',
-				'en-us': 'Refresh '
+				'en-us': 'Refresh'
 			},
 			'save-as-excel': {
 				'zh-cn': '另存为Excel',
-				'en-us': 'Save as Excel '
+				'en-us': 'Save as Excel'
 			},
 			'save-as-excel-for-checked': {
 				'zh-cn': '已选中项另存为Excel',
-				'en-us': 'Save as Excel of Checked'
+				'en-us': 'Save selected as Excel'
 			},
 			'setting-grid': {
 				'zh-cn': '配置表',
@@ -2314,6 +2319,103 @@
 
 /***/ },
 /* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _jTool = __webpack_require__(1);
+
+	var _jTool2 = _interopRequireDefault(_jTool);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Settings = {
+		// 是否使用默认的table样式
+		// useDefaultStyle: true, 弃用参数
+
+		// 拖拽
+		supportDrag: true, // 是否支持拖拽功能
+		dragBefore: _jTool2.default.noop, // 拖拽前事件
+		dragAfter: _jTool2.default.noop, // 拖拽后事件
+
+		// 宽度调整
+		supportAdjust: true, // 是否支持宽度调整功能
+		adjustBefore: _jTool2.default.noop, // 宽度调整前事件
+		adjustAfter: _jTool2.default.noop, // 宽度调整后事件
+
+		// 是否支持表头提示信息[需在地应的TH上增加属性remind]
+		supportRemind: false,
+
+		// 是否支持配置列表功能[操作列是否可见]
+		supportConfig: true,
+
+		// 宽度配置
+		width: '100%',
+
+		// 高度配置, 可配置的最小宽度为300px
+		height: '300px',
+
+		// 动画效果时长
+		animateTime: 300,
+
+		// 是否禁用本地缓存
+		disableCache: false,
+
+		// 是否自动加载CSS文件
+		// 排序 sort
+		supportSorting: false, //排序：是否支持排序功能
+		isCombSorting: false, //是否为组合排序[只有在支持排序的情况下生效
+		sortKey: 'sort_', //排序字段前缀, 示例: 列名='date', sortKey='sort_', 排序参数则为sort_date
+		sortData: {}, //存储排序数据[不对外公开参数]
+		sortUpText: 'ASC', //排序：升序标识[该标识将会传至数据接口]
+		sortDownText: 'DESC', //排序：降序标识[该标识将会传至数据接口]
+		sortingBefore: _jTool2.default.noop, //排序事件发生前
+		sortingAfter: _jTool2.default.noop, //排序事件发生后
+
+		// 分页 ajaxPag
+		supportAjaxPage: false, //是否支持配置列表ajxa分页
+		sizeData: [10, 20, 30, 50, 100], //用于配置列表每页展示条数选择框
+		pageSize: 20, //每页显示条数，如果使用缓存且存在缓存数据，那么该值将失效
+		pageData: {}, //存储分页数据[不对外公开参数]
+		query: {}, //其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
+		pagingBefore: _jTool2.default.noop, //分页事件发生前
+		pagingAfter: _jTool2.default.noop, //分页事件发生后
+
+		//序目录
+		supportAutoOrder: true, //是否支持自动序目录
+
+		//全选项
+		supportCheckbox: true, //是否支持选择与反选
+
+		//国际化
+		i18n: 'zh-cn', //选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
+
+		//用于支持通过数据渲染DOM
+		columnData: [], //表格列数据配置项
+		gridManagerName: '', //表格grid-manager所对应的值[可在html中配置]
+		ajax_url: '', //获取表格数据地址，配置该参数后，将会动态获取数据
+		ajax_type: 'GET', //ajax请求类型['GET', 'POST']默认GET
+		ajax_headers: {}, //ajax请求头信息
+		ajax_beforeSend: _jTool2.default.noop, //ajax请求之前,与jTool的beforeSend使用方法相同
+		ajax_success: _jTool2.default.noop, //ajax成功后,与jTool的success使用方法相同
+		ajax_complete: _jTool2.default.noop, //ajax完成后,与jTool的complete使用方法相同
+		ajax_error: _jTool2.default.noop, //ajax失败后,与jTool的error使用方法相同
+		ajax_data: undefined, //ajax静态数据,配置后ajax_url将无效
+		dataKey: 'data', //ajax请求返回的列表数据key键值,默认为data
+		totalsKey: 'totals', //ajax请求返回的数据总条数key键值,默认为totals
+		//数据导出
+		supportExport: true //支持导出表格数据
+	}; /**
+	    * Settings: 配置项
+	    */
+	exports.default = Settings;
+
+/***/ },
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2399,7 +2501,7 @@
 	exports.default = Export;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2434,7 +2536,7 @@
 	exports.default = Order;
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2484,7 +2586,7 @@
 	exports.default = Remind;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2632,7 +2734,7 @@
 	exports.default = Sort;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2653,7 +2755,7 @@
 
 	var _I18n2 = _interopRequireDefault(_I18n);
 
-	var _Export = __webpack_require__(12);
+	var _Export = __webpack_require__(13);
 
 	var _Export2 = _interopRequireDefault(_Export);
 
@@ -2830,7 +2932,7 @@
 	exports.default = Menu;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3002,7 +3104,7 @@
 	exports.default = Drag;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3084,103 +3186,6 @@
 	    * Scroll: 滚动轴
 	    * */
 	exports.default = Scroll;
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _jTool = __webpack_require__(1);
-
-	var _jTool2 = _interopRequireDefault(_jTool);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Settings = {
-		// 是否使用默认的table样式
-		// useDefaultStyle: true, 弃用参数
-
-		// 拖拽
-		supportDrag: true, // 是否支持拖拽功能
-		dragBefore: _jTool2.default.noop, // 拖拽前事件
-		dragAfter: _jTool2.default.noop, // 拖拽后事件
-
-		// 宽度调整
-		supportAdjust: true, // 是否支持宽度调整功能
-		adjustBefore: _jTool2.default.noop, // 宽度调整前事件
-		adjustAfter: _jTool2.default.noop, // 宽度调整后事件
-
-		// 是否支持表头提示信息[需在地应的TH上增加属性remind]
-		supportRemind: false,
-
-		// 是否支持配置列表功能[操作列是否可见]
-		supportConfig: true,
-
-		// 宽度配置
-		width: '100%',
-
-		// 高度配置, 可配置的最小宽度为300px
-		height: '300px',
-
-		// 动画效果时长
-		animateTime: 300,
-
-		// 是否禁用本地缓存
-		disableCache: false,
-
-		// 是否自动加载CSS文件
-		// 排序 sort
-		supportSorting: false, //排序：是否支持排序功能
-		isCombSorting: false, //是否为组合排序[只有在支持排序的情况下生效
-		sortKey: 'sort_', //排序字段前缀, 示例: 列名='date', sortKey='sort_', 排序参数则为sort_date
-		sortData: {}, //存储排序数据[不对外公开参数]
-		sortUpText: 'ASC', //排序：升序标识[该标识将会传至数据接口]
-		sortDownText: 'DESC', //排序：降序标识[该标识将会传至数据接口]
-		sortingBefore: _jTool2.default.noop, //排序事件发生前
-		sortingAfter: _jTool2.default.noop, //排序事件发生后
-
-		// 分页 ajaxPag
-		supportAjaxPage: false, //是否支持配置列表ajxa分页
-		sizeData: [10, 20, 30, 50, 100], //用于配置列表每页展示条数选择框
-		pageSize: 20, //每页显示条数，如果使用缓存且存在缓存数据，那么该值将失效
-		pageData: {}, //存储分页数据[不对外公开参数]
-		query: {}, //其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
-		pagingBefore: _jTool2.default.noop, //分页事件发生前
-		pagingAfter: _jTool2.default.noop, //分页事件发生后
-
-		//序目录
-		supportAutoOrder: true, //是否支持自动序目录
-
-		//全选项
-		supportCheckbox: true, //是否支持选择与反选
-
-		//国际化
-		i18n: 'zh-cn', //选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
-
-		//用于支持通过数据渲染DOM
-		columnData: [], //表格列数据配置项
-		gridManagerName: '', //表格grid-manager所对应的值[可在html中配置]
-		ajax_url: '', //获取表格数据地址，配置该参数后，将会动态获取数据
-		ajax_type: 'GET', //ajax请求类型['GET', 'POST']默认GET
-		ajax_headers: {}, //ajax请求头信息
-		ajax_beforeSend: _jTool2.default.noop, //ajax请求之前,与jTool的beforeSend使用方法相同
-		ajax_success: _jTool2.default.noop, //ajax成功后,与jTool的success使用方法相同
-		ajax_complete: _jTool2.default.noop, //ajax完成后,与jTool的complete使用方法相同
-		ajax_error: _jTool2.default.noop, //ajax失败后,与jTool的error使用方法相同
-		ajax_data: undefined, //ajax静态数据,配置后ajax_url将无效
-		dataKey: 'data', //ajax请求返回的列表数据key键值,默认为data
-		totalsKey: 'totals', //ajax请求返回的数据总条数key键值,默认为totals
-		//数据导出
-		supportExport: true //支持导出表格数据
-	}; /**
-	    * Settings: 配置项
-	    */
-	exports.default = Settings;
 
 /***/ },
 /* 20 */

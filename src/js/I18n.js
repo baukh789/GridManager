@@ -2,9 +2,12 @@
  * I18n: 国际化
  * */
 import Base from './Base';
+import Setting from './Settings';
 const I18n = {
 	//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
-	i18n : 'zh-cn'
+	getLanguage : (function(){
+		return Setting.i18n;
+	})
 	/*
 	 * @获取与当前配置国际化匹配的文本
 	 *  $.key: 指向的文本索引
@@ -24,7 +27,7 @@ const I18n = {
 		}
 		var _lg = '';
 		try{
-			_lg = _this.textConfig[key][_this.i18n] || '';
+			_lg = _this.textConfig[key][_this.getLanguage()] || '';
 			if(!intrusion || intrusion.length == 0){
 				return _lg;
 			}
@@ -33,7 +36,7 @@ const I18n = {
 			});
 			return _lg;
 		}catch (e){
-			Base.outLog('未找到与'+ key +'相匹配的'+ _this.i18n +'语言', 'warn');
+			Base.outLog('未找到与'+ key +'相匹配的'+ _this.getLanguage() +'语言', 'warn');
 			return '';
 		}
 	}
@@ -83,7 +86,7 @@ const I18n = {
 		}
 		,'save-as-excel-for-checked':{
 			'zh-cn':'已选中项另存为Excel',
-			'en-us':'Save as Excel of Checked'
+			'en-us':'Save selected as Excel'
 		}
 		,'setting-grid':{
 			'zh-cn':'配置表',
