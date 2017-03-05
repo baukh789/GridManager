@@ -5,7 +5,7 @@
 var I18n = require('../src/js/I18n').default;
 describe('I18n', function() {
 	it('验证默认语言', function() {
-		expect(I18n.i18n).toBe('zh-cn');
+		expect(I18n.getLanguage()).toBe('zh-cn');
 	});
 
 	it('验证I18N配置项: 序号', function() {
