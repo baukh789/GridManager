@@ -61,14 +61,12 @@
 		<span class="demo-ele" data-url="./demo1.html">静态数据渲染</span>
 		<span class="demo-ele" data-url="./demo3.html">jquery环境下渲染</span>
 		<span class="demo-ele" data-url="./react.html">React环境下渲染</span>
+		<span class="demo-ele" data-url="./angular.html">Angular环境下渲染</span>
 		<span class="demo-ele" data-url="./demo4.html">多表渲染</span>
 		<span class="demo-ele" data-url="./demo5.html">I18N</span>
 	</div>
-	<iframe id="demo-iframe">
-
-	</iframe>
-	<script>
-
+	<iframe id="demo-iframe"></iframe>
+	<script type="text/javascript">
 		[].forEach.call(document.querySelectorAll('.demo-ele'), function(v, i){
 			v.addEventListener('click', function () {
 				document.querySelector('#demo-iframe').src = this.getAttribute('data-url');
