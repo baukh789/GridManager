@@ -117,8 +117,7 @@ table[grid-manager].GridManager-ready{
 	table-layout:fixed;
 	word-wrap:break-word;
 	text-align: center;
-	margin:0 !important;
-	background-color: #ddd;
+	background-color: #dad9c7;
 	font-size: 12px;
 	width: 100%;
 	border-collapse:separate;
@@ -126,12 +125,10 @@ table[grid-manager].GridManager-ready{
 	font-size: 12px !important;
 	font-family: arial !important;
 }
-.table-wrap table[grid-manager] thead tr th{
-	background-color: #e6eeee;
-	text-align: center;
-}
-.table-wrap table[grid-manager] thead tr th:hover{
-	background-color: #8dbdd8;
+.table-wrap table[grid-manager] tr td{
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
 }
 .table-wrap table[grid-manager] th[th-visible="none"]{
 	display:none;
@@ -145,12 +142,15 @@ table[grid-manager].GridManager-ready{
 	height:100%;
 	white-space: nowrap;
 	text-overflow:ellipsis;
-	/*padding:0 20px;*/
+}
+.table-wrap table[grid-manager] thead tr th{
+	background-color: #e6eeee;
+	text-align: center;
+}
+.table-wrap table[grid-manager] thead tr th:hover{
+	background-color: #8dbdd8;
 }
 .table-wrap table[grid-manager] tbody tr td{
-	white-space:nowrap;
-	overflow:hidden;
-	text-overflow:ellipsis;
 	background-color: #fff;
 	color: #3d3d3d;
 	padding: 4px;
@@ -440,7 +440,7 @@ table[grid-manager].GridManager-ready{
 }
 .table-wrap table[grid-manager] .drag-ongoing{
 	cursor:all-scroll;
-	background:#000 !important;
+	background:#666 !important;
 	border-color:#ccc !important;
 	color:#fff !important;
 	opacity:0.5;
@@ -455,7 +455,7 @@ table[grid-manager].GridManager-ready{
 	display:none;
 	position:absolute;
 	border:1px solid #ccc;
-	padding:0px;
+	padding:0;
 	background:#fff;
 	cursor:all-scroll;
 	z-index:9;
@@ -463,10 +463,31 @@ table[grid-manager].GridManager-ready{
 .table-wrap .dreamland-div .dreamland-table{
 	table-layout:fixed;
 	width:100%;
-	margin:0px !important;
-	padding:0px !important;
+	margin:0 !important;
+	padding:0 !important;
 }
-.table-wrap .dreamland-div .dreamland-table td{
+.table-wrap .dreamland-div .dreamland-table{
+	background-color: #dad9c7;
+	font-size: 12px;
+	width: 100%;
+	border-collapse:separate;
+	border-spacing:1px;
+	font-size: 12px !important;
+	font-family: arial !important;
+}
+.table-wrap .dreamland-div .dreamland-table thead tr th{
+	background-color: #e6eeee;
+	text-align: center;
+}
+.table-wrap .dreamland-div .dreamland-table thead tr th:hover{
+	background-color: #8dbdd8;
+}
+.table-wrap .dreamland-div .dreamland-table tbody tr td{
+	background-color: #fff;
+	color: #3d3d3d;
+	padding: 4px;
+	vertical-align: top;
+	text-align: left;
 	white-space:nowrap;
 	overflow:hidden;
 	text-overflow:ellipsis;
