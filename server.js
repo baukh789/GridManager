@@ -1,50 +1,32 @@
-var http = require("http"),
-    url  = require("url"),
-    path = require("path"),
-    fs   = require("fs");
+var express = require('express');
+var app = express();
+var path = require('path');
+var url = require('url');
+var webpack = require('webpack');
+var config = require('./webpack-dev-config');
+var compiler = webpack(config);
 
-http.createServer(function (req, res) {
-    var pathname=__dirname + url.parse(req.url).pathname;
-    if (path.extname(pathname)=="") {
-        pathname+="/";
-    }
-    if (pathname.charAt(pathname.length-1)=="/"){
-        pathname+="index.html";
-    }
-    fs.exists(pathname,function(exists){
-        if(exists){
-            switch(path.extname(pathname)){
-                case ".html":
-                    res.writeHead(200, {"Content-Type": "text/html"});
-                    break;
-                case ".js":
-                    res.writeHead(200, {"Content-Type": "text/javascript"});
-                    break;
-                case ".css":
-                    res.writeHead(200, {"Content-Type": "text/css"});
-                    break;
-                case ".gif":
-                    res.writeHead(200, {"Content-Type": "image/gif"});
-                    break;
-                case ".jpg":
-                    res.writeHead(200, {"Content-Type": "image/jpeg"});
-                    break;
-                case ".png":
-                    res.writeHead(200, {"Content-Type": "image/png"});
-                    break;
-                default:
-                    res.writeHead(200, {"Content-Type": "application/octet-stream"});
-            }
+// 是否为开发模式; true: 使用src下的资源, false: 使用build下的资源
+var isDev = true;
+var target = 'build';
+if(isDev){
+	target = 'src';
+}
+app.use(require('webpack-dev-middleware')(compiler, {
+	noInfo: false,
+	stats: {
+		colors: true,
+		cached: false
+	},
+	publicPath: config.output.publicPath
+}));
 
-            fs.readFile(pathname,function (err,data){
-                res.end(data);
-            });
-        } else {
-            res.writeHead(404, {"Content-Type": "text/html"});
-            res.end("<h1>404 Not Found</h1>");
-        }
-    });
-
-}).listen(1987);
-
-console.log("Server running at http://127.0.0.1:1987/");
+// 配置资源路径
+app.use(express.static(target));
+app.listen(1987, function (err) {
+	if (err) {
+		console.log(err);
+		return;
+	}
+	console.log('started at http://localhost:1987');
+});
