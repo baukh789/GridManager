@@ -164,5 +164,5 @@ Using the mean of clear, method of calling : document.querySelector('table').GM(
 Tencent Group QQ number: 452781895
 
 ##participate in development
-[developer documentation](./develop-readme.md)
+[developer documentation](./DEVELOP-README.md)
 
