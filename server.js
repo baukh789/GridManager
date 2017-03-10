@@ -1,7 +1,5 @@
 var express = require('express');
 var app = express();
-var path = require('path');
-var url = require('url');
 var webpack = require('webpack');
 var config = require('./webpack-dev-config');
 var compiler = webpack(config);
@@ -12,6 +10,7 @@ var target = 'build';
 if(isDev){
 	target = 'src';
 }
+// 配置热启动
 app.use(require('webpack-dev-middleware')(compiler, {
 	noInfo: false,
 	stats: {
@@ -20,6 +19,11 @@ app.use(require('webpack-dev-middleware')(compiler, {
 	},
 	publicPath: config.output.publicPath
 }));
+
+// 配置空路径
+app.use(/\/$/, function (req, res) {
+	res.redirect('/demo/index.html');
+});
 
 // 配置资源路径
 app.use(express.static(target));
