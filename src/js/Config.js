@@ -49,19 +49,20 @@ const Config = {
 		//设置事件
 		$('.config-list li', tableWarp).unbind('click');
 		$('.config-list li', tableWarp).bind('click', function(){
-			var _only = $(this),		//单个的设置项
-				_thName 		= _only.attr('th-name'),							//单个设置项的thName
-				_checkbox 		= _only.find('input[type="checkbox"]'),			    //事件下的checkbox
-				_tableWarp  	= _only.closest('.table-wrap'), 					//所在的大容器
-				_tableDiv	  	= $('.table-div', _tableWarp), 						//所在的table-div
-				_table	 		= $('[grid-manager]', _tableWarp),				    //所对应的table
-				_th				= $('thead[grid-manager-thead] th[th-name="'+_thName +'"]', _table), 	//所对应的th
+			var _only 		= $(this),		//单个的设置项
+				_thName 	= _only.attr('th-name'),							//单个设置项的thName
+				_checkbox 	= _only.find('input[type="checkbox"]'),			    //事件下的checkbox
+				_tableWarp  = _only.closest('.table-wrap'), 					//所在的大容器
+				_tableDiv	= $('.table-div', _tableWarp), 						//所在的table-div
+				_table	 	= $('[grid-manager]', _tableWarp),				    //所对应的table
+				_th			= $('thead[grid-manager-thead] th[th-name="'+_thName +'"]', _table), 	//所对应的th
 				_checkedList;		//当前处于选中状态的展示项
 			if(_only.hasClass('no-click')){
 				return false;
 			}
 			_only.closest('.config-list').find('.no-click').removeClass('no-click');
 			var isVisible = !_checkbox.prop('checked');
+
 			//设置与当前td同列的td是否可见
 			_tableDiv.addClass('config-editing');
 			Base.setAreVisible(_th, isVisible, function(){
@@ -79,14 +80,20 @@ const Config = {
 			}
 
 			//重置镜像滚动条的宽度
-			// if(Settings.supportScroll){
-				$('.sa-inner', _tableWarp).width('100%');
-			// }
+			$('.sa-inner', _tableWarp).width('100%');
+
 			//重置当前可视th的宽度
 			var _visibleTh = $('thead th[th-visible="visible"]', _table);
 			$.each(_visibleTh, function(i, v){
-				v.style.width = 'auto';
+				// GM自动创建的列使终为50px
+				if(v.getAttribute('gm-create') === 'true'){
+					v.style.width = '50px';
+				}
+				else{
+					v.style.width = 'auto';
+				}
 			});
+
 			//当前th文本所占宽度大于设置的宽度
 			//需要在上一个each执行完后才可以获取到准确的值
 			$.each(_visibleTh, function(i, v){
