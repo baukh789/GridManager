@@ -8,26 +8,29 @@ const Scroll = {
 	 $.table: table [jTool object]
 	 */
 	bindScrollFunction: function(table){
-		var _tableDIV = table.closest('.table-div'),	//列表所在的DIV,该DIV的class标识为table-div
-			_tableWarp = _tableDIV.closest('.table-wrap');//列表所在的外围容器
+		const _tableDIV = table.closest('.table-div');
 		// 绑定resize事件: 对表头吸顶的列宽度进行修正
 		window.addEventListener('resize', function(){
-			var _setTopHead = $('.set-top', table); //吸顶元素
+			const _setTopHead = $('.set-top', table); // 吸顶元素
 			if(_setTopHead && _setTopHead.length === 1){
 				_setTopHead.remove();
-				_tableDIV.trigger('scroll');
+				table.closest('.table-div').trigger('scroll');
 			}
 		});
 		//绑定滚动条事件
 		_tableDIV.unbind('scroll');
 		_tableDIV.bind('scroll', function(e, _isWindowResize_){
-			var _scrollDOMTop = $(this).scrollTop();
-			_tableDIV 		= table.closest('.table-div');
-			_tableWarp 		= _tableDIV.closest('.table-wrap');
-			var _thead 		= $('thead[grid-manager-thead]', table);  //列表head
-			var _tbody 		= $('tbody', table); //列表body
-			var _setTopHead = $('.set-top', table); //吸顶元素
-			//当前列表数据为空
+			const _scrollDOMTop = $(this).scrollTop();
+			// 列表所在的DIV,该DIV的class标识为table-div
+			// 列表所在的外围容器
+			const _tableWarp = _tableDIV.closest('.table-wrap');
+			// 列表head
+			const _thead = $('thead[grid-manager-thead]', table);
+			// 列表body
+			const _tbody = $('tbody', table);
+			// 吸顶元素
+			let _setTopHead = $('.set-top', table);
+			// 当前列表数据为空
 			if($('tr', _tbody).length == 0){
 				return true;
 			}
@@ -58,7 +61,7 @@ const Scroll = {
 			else {
 				_thead.addClass('scrolling');
 				_setTopHead.css({
-					top		: _scrollDOMTop
+					top: _scrollDOMTop
 				});
 			}
 			return true;
