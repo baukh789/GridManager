@@ -1,23 +1,35 @@
 'use strict';
 var AjaxPage = require('../src/js/AjaxPage').default;
 var I18n = require('../src/js/I18n').default;
-describe('AjaxPage', function() {
-	var AjaxPageHtml = null;
-	beforeEach(function(){
-		AjaxPageHtml = '<div class="page-toolbar">'
-			+ '<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>'
-			+ '<div class="goto-page">'+ I18n.i18nText("goto-first-text")
-			+ '<input type="text" class="gp-input"/>'+ I18n.i18nText("goto-last-text")
-			+ '</div>'
-			+ '<div class="change-size"><select name="pSizeArea"></select></div>'
-			+ '<div class="dataTables_info"></div>'
-			+ '<div class="ajax-page"><ul class="pagination"></ul></div>'
-			+ '</div>';
+describe('AjaxPage: 验证方法是否存在', function() {
+	it('html', function() {
+		expect(AjaxPage.html).toBeDefined();
 	});
-	afterEach(function () {
-		AjaxPageHtml = null;
+	it('initAjaxPage', function(){
+		expect(AjaxPage.initAjaxPage).toBeDefined();
 	});
-	it('验证获取html', function() {
-		expect(AjaxPage.html()).toBe(AjaxPageHtml);
+	it('createPageDOM', function(){
+		expect(AjaxPage.createPageDOM).toBeDefined();
+	});
+	it('createPageSizeDOM', function(){
+		expect(AjaxPage.createPageSizeDOM).toBeDefined();
+	});
+	it('bindPageJumpEvent', function(){
+		expect(AjaxPage.bindPageJumpEvent).toBeDefined();
+	});
+	it('gotoPage', function(){
+		expect(AjaxPage.gotoPage).toBeDefined();
+	});
+	it('bindSetPageSizeEvent', function(){
+		expect(AjaxPage.bindSetPageSizeEvent).toBeDefined();
+	});
+	it('resetPSize', function(){
+		expect(AjaxPage.resetPSize).toBeDefined();
+	});
+	it('resetPageData', function(){
+		expect(AjaxPage.resetPageData).toBeDefined();
+	});
+	it('configPageForCache', function(){
+		expect(AjaxPage.configPageForCache).toBeDefined();
 	});
 });
