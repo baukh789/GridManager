@@ -7,10 +7,10 @@ import Core from './Core';
 import Cache from './Cache';
 const Sort = {
 	html: function () {
-		var html = '<div class="sorting-action">'
-			+ '<i class="sa-icon sa-up iconfont icon-sanjiao2"></i>'
-			+ '<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>'
-			+ '</div>';
+		const html = `<div class="sorting-action">
+						<i class="sa-icon sa-up iconfont icon-sanjiao2"></i>
+						<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>
+					</div>`;
 		return html;
 	}
 	/*
@@ -35,10 +35,10 @@ const Sort = {
 		if(typeof(refresh) === 'undefined'){
 			refresh = true;
 		}
-		var _th,
+		let _th,
 			_sortAction,
 			_sortType;
-		for(var s in sortJson){
+		for(let s in sortJson){
 			_th = $('[th-name="'+ s +'"]', table);
 			_sortType = sortJson[s];
 			_sortAction = $('.sorting-action', _th);
@@ -62,8 +62,9 @@ const Sort = {
 	 */
 	,bindSortingEvent: function(table){
 		let Settings = Cache.getSettings(table);
-		var _thList = $('th[sorting]', table),	//所有包含排序的列
-			_action,		//向上或向下事件源
+		// 所有包含排序的列
+		const _thList = $('th[sorting]', table);
+		let	_action,		//向上或向下事件源
 			_th,			//事件源所在的th
 			_table,			//事件源所在的table
 			_thName;		//th对应的名称
@@ -102,9 +103,9 @@ const Sort = {
 			}
 			//生成排序数据
 			Settings.sortData = {};
-			if(!Settings.isCombSorting){
+			if(!Settings.isCombSorting) {
 				Settings.sortData[_th.attr('th-name')] = _th.attr('sorting');
-			}else{
+			}else {
 				$.each($('th[th-name][sorting]', _table), function(i, v){
 					if(v.getAttribute('sorting') != ''){
 						Settings.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
@@ -113,7 +114,7 @@ const Sort = {
 			}
 			//调用事件、渲染tbody
 			Cache.updateSettings(table, Settings);
-			var query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
+			const query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 			Settings.sortingBefore(query);
 			Core.__refreshGrid(table, function(){
 				Settings.sortingAfter(query,  _th);
