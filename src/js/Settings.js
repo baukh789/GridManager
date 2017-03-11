@@ -3,9 +3,6 @@
  */
 import $ from './jTool';
 let Settings = {
-	// 是否使用默认的table样式
-	// useDefaultStyle: true, 弃用参数
-
 	// 拖拽
 	supportDrag: true,  // 是否支持拖拽功能
 	dragBefore: $.noop, // 拖拽前事件
@@ -34,7 +31,6 @@ let Settings = {
 	// 是否禁用本地缓存
 	disableCache: false,
 
-	// 是否自动加载CSS文件
 	// 排序 sort
 	supportSorting		: false, 					//排序：是否支持排序功能
 	isCombSorting		: false,					//是否为组合排序[只有在支持排序的情况下生效
@@ -58,7 +54,7 @@ let Settings = {
 	supportAutoOrder	: true,						//是否支持自动序目录
 
 	//全选项
-	supportCheckbox	: true,						//是否支持选择与反选
+	supportCheckbox		: true,						//是否支持选择与反选
 
 	//国际化
 	i18n	 			: 'zh-cn',					//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
