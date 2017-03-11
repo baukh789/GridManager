@@ -14,8 +14,8 @@ const Checkbox = {
 		//绑定选择事件
 		table.off('click','input[type="checkbox"]');
 		table.on('click','input[type="checkbox"]', function(){
-			let _thChecked	= true;		//存储th中的checkbox的选中状态
-			const 	_checkAction = $(this),	//全选键事件源
+			let 	_thChecked	= true;		//存储th中的checkbox的选中状态
+			const 	_checkAction= $(this),	//全选键事件源
 					_thCheckbox = $('thead th[gm-checkbox] input[type="checkbox"]', table),	//th中的选择框
 					_tdCheckbox = $('tbody td[gm-checkbox] input[type="checkbox"]', table);	//td中的选择框
 			//当前为全选事件源
