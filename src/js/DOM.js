@@ -290,7 +290,7 @@ const DOM = {
 		}
 		//依据配置对列表进行隐藏、显示
 		if(Settings.supportConfig){
-			Base.setAreVisible($('[th-visible="none"]'), false ,true);
+			Base.initVisible(_table);
 		}
 	}
 };

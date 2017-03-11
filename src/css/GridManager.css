@@ -130,10 +130,12 @@ table[grid-manager].GridManager-ready{
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
-.table-wrap table[grid-manager] th[th-visible="none"]{
+.table-wrap table[grid-manager] th[th-visible="none"],
+.table-wrap table[grid-manager] td[td-visible="none"]{
 	display:none;
 }
-.table-wrap table[grid-manager] th[th-visible="visible"]{
+.table-wrap table[grid-manager] th[th-visible="visible"],
+.table-wrap table[grid-manager] td[td-visible="visible"]{
 	display:table-cell;
 }
 .table-wrap table[grid-manager] th .th-text{

@@ -47,10 +47,9 @@ const Export = {
 			theadHTML += `<th>${v.getElementsByClassName('th-text')[0].textContent}</th>`;
 		});
 		$.each(trDOM, function(i, v){
-			tdDOM = $('td[gm-create="false"]', v);
+			tdDOM = $('td[gm-create="false"][td-visible="visible"]', v);
 			tbodyHTML += '<tr>';
 			$.each(tdDOM, function(i2, v2){
-
 				tbodyHTML += v2.outerHTML;
 			});
 			tbodyHTML += '</tr>';
