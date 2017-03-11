@@ -7,7 +7,12 @@ import Cache from './Cache';
 import Adjust from './Adjust';
 const Config = {
 	html: function () {
-		const html = '<div class="config-area"><span class="config-action"><i class="iconfont icon-31xingdongdian"></i></span><ul class="config-list"></ul></div>';
+		const html= `<div class="config-area">
+						<span class="config-action">
+							<i class="iconfont icon-31xingdongdian"></i>
+						</span>
+						<ul class="config-list"></ul>
+					</div>`;
 		return html;
 	}
 	/*
@@ -16,13 +21,18 @@ const Config = {
 	 */
 	,bindConfigEvent: function(table){
 		let Settings = Cache.getSettings(table);
-		//打开/关闭设置区域
+		// 打开/关闭设置区域
 		const tableWarp = $(table).closest('div.table-wrap');
+		// 打开/关闭设置事件源
 		const configAction = $('.config-action', tableWarp);
 		configAction.unbind('click');
 		configAction.bind('click', function(){
-			const _configAction = $(this),		//展示事件源
-				_configArea = _configAction.closest('.config-area');	//设置区域
+			// 展示事件源
+			const _configAction = $(this);
+
+			// 设置区域
+			const _configArea = _configAction.closest('.config-area');
+			
 			// 关闭
 			if(_configArea.css('display') === 'block'){
 				_configArea.hide();
