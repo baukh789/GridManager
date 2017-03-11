@@ -6,7 +6,7 @@ import Core from './Core';
 import Cache from './Cache';
 const Export = {
 	html: function () {
-		var html = '<a href="" download="" id="gm-export-action"></a>';
+		const html = '<a href="" download="" id="gm-export-action"></a>';
 		return html;
 	}
 	/*
@@ -18,19 +18,24 @@ const Export = {
 	 */
 	,exportGridToXls: function(table, fileName, onlyChecked){
 		let Settings = Cache.getSettings(table);
-		var _this = this;
-		var gmExportAction = $('#gm-export-action'); //createDOM内添加
+		const gmExportAction = $('#gm-export-action'); //createDOM内添加
 		if(gmExportAction.length === 0){
 			Core.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
 			return;
 		}
+		// type base64
+		const uri = 'data:application/vnd.ms-excel;base64,';
 
-		var uri = 'data:application/vnd.ms-excel;base64,',
-			theadHTML= '',	//存储导出的thead数据
-			tbodyHTML ='', //存储导出的tbody下的数据
-			tableDOM = $(table);	//当前要导出的table
-		var thDOM = $('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', tableDOM),
-			trDOM,
+		//存储导出的thead数据
+		let	theadHTML = '';
+		//存储导出的tbody下的数据
+		let	tbodyHTML = '';
+
+		//当前要导出的table
+		const tableDOM = $(table);
+		const thDOM = $('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', tableDOM);
+
+		let	trDOM,
 			tdDOM;
 		//验证：是否只导出已选中的表格
 		if(onlyChecked){
@@ -39,30 +44,32 @@ const Export = {
 			trDOM = $('tbody tr', tableDOM);
 		}
 		$.each(thDOM, function(i, v){
-			theadHTML += '<th>'
-				+ v.getElementsByClassName('th-text')[0].textContent
-				+ '</th>';
+			theadHTML += `<th>${v.getElementsByClassName('th-text')[0].textContent}</th>`;
 		});
 		$.each(trDOM, function(i, v){
 			tdDOM = $('td[gm-create="false"]', v);
 			tbodyHTML += '<tr>';
 			$.each(tdDOM, function(i2, v2){
-				tbodyHTML += v2.outerHTML
+
+				tbodyHTML += v2.outerHTML;
 			});
 			tbodyHTML += '</tr>';
 		});
 		// 拼接要导出html格式数据
-		var exportHTML  = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
-			+ '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
-			+ '<body><table>'
-			+ '<thead>'
-			+ theadHTML
-			+ '</thead>'
-			+ '<tbody>'
-			+ tbodyHTML
-			+ '</tbody>'
-			+ '</table></body>'
-			+ '</html>';
+		const exportHTML =`
+			<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+				<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
+				<body>
+					<table>
+						<thead>'
+							${theadHTML}
+						</thead>
+						<tbody>
+							${tbodyHTML}
+						</tbody>
+					</table>
+				</body>
+			</html>`;
 		gmExportAction.prop('href', uri + base64(exportHTML));
 		gmExportAction.prop('download', (fileName || Settings.gridManagerName) +'.xls');
 		gmExportAction.get(0).click();
