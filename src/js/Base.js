@@ -142,6 +142,7 @@ const Base = {
 		//文本镜象 用于处理实时获取文本长度
 		const tableWrap = th.closest('.table-wrap');
 		const textDreamland	= $('.text-dreamland', tableWrap);
+		
 		//将th文本嵌入文本镜象 用于获取文本实时宽度
 		textDreamland.text(thText.text());
 		textDreamland.css({
@@ -152,10 +153,10 @@ const Base = {
 		const thPaddingLeft = thWarp.css('padding-left'),
 			thPaddingRight = thWarp.css('padding-right');
 		const thWidth = textDreamland.width()
-			+ (thPaddingLeft ? thPaddingLeft : 0)
-			+ (thPaddingRight ? thPaddingRight : 0)
-			+ (remindAction.length == 1 ? 20 : 5)
-			+ (sortingAction.length == 1 ? 20 : 5);
+						+ (thPaddingLeft ? thPaddingLeft : 0)
+						+ (thPaddingRight ? thPaddingRight : 0)
+						+ (remindAction.length == 1 ? 20 : 5)
+						+ (sortingAction.length == 1 ? 20 : 5);
 		return thWidth;
 	}
 	,showLoading: function (dom ,cb) {
