@@ -79,7 +79,7 @@ table[grid-manager].GridManager-ready{
 /*table所在的DIV*/
 .table-wrap{
 	position: relative;
-	padding: 3px;
+	/*padding: 3px;*/
 }
 .table-div{
 	position:relative;

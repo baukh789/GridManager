@@ -93,7 +93,7 @@ const DOM = {
 
 		onlyThead = $('thead', table);
 		onlyThList = $('th', onlyThead);
-		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div><span class="text-dreamland"></span></div>`;
+		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height:calc(${Settings.height} - 40px)"></div><span class="text-dreamland"></span></div>`;
 		table.wrap(wrapHtml);
 		tableWarp = table.closest('.table-wrap');
 		//嵌入配置列表DOM
