@@ -4,17 +4,17 @@
 [![npm version](https://img.shields.io/npm/v/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 [![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 
-##API and DEMO
+## API and DEMO
 - [API](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
 - [DEMO](http://www.lovejavascript.com/node_modules/GridManager/demo/index.html)
 
-##Operation Instruction
+## Operation Instruction
 Please choose the right tag to download, don’t use the codes of the branch in the master.
 - Jquery is used before v 2.0
 - Native code is used from v2.1
 
-##Implementation Function 
-GridManager.js can make the tag of table into real cases. And after that ,these functions are accessed:
+## Implementation Function 
+### GridManager.js can make the tag of table into real cases. And after that ,these functions are accessed:
 - Width control: you can control the width of your grid easily
 - Position replacement: the position of the list of your grid can be changed
 - Set the list: hide or reveal the list can be choosed by setting your grid
@@ -27,22 +27,22 @@ GridManager.js can make the tag of table into real cases. And after that ,these 
 - Export: the visible data or the checked lists can be download
 - Context Menu: frequently used functions can be find in the context menu
 
-##Install Command
+## Install Command
 ```
 npm install GridManager
 ```
 
-##Way of Introduction
+## Way of Introduction
 ```
 <link rel="stylesheet" type="text/css" href="/node_modules/GridManager/css/GridManager.css"/>
 <script type="text/javascript" src="/node_modules/GridManager/js/GridManager.js"></script>
 ```
 
-##Browser Capabilities
+## Browser Capabilities
 - Firefox, Chrome,IE10+.
 - TIPS: why lower version browsers is unavailable ?For, grid is usually used for management system which will always ask their users to choose the right browsers, so lower version browsers did not be considered.
 
-##Method of Calling
+## Method of Calling
 ```html
     <table grid-manager="test"></table>
 ```
@@ -104,7 +104,7 @@ npm install GridManager
     });
 ```
     
-##Data Format
+## Data Format
 ```JSON
 {
     "data":[{
@@ -132,37 +132,37 @@ npm install GridManager
     "totals": 1682
    }
 ```
-##Q&A
-###1.How to set my grid if datas have been existed before rendering?
+## Q&A
+### 1.How to set my grid if datas have been existed before rendering?
 You can solve it by setting the ajax_data, datas will not be asked by ajax_url if the ajax_data is existed, and ajax_beforeSend、ajax_error、ajax_complete will lose efficacy, only ajax_success will be done.
 
-###2.How can I add a select term when asking for data?
+### 2.How can I add a select term when asking for data?
 You can do it by setting the query,which will always exist in the case, and it can be resetted by document.querySelector('table').GM('setQuery') ,when the selecting condition is changed.
 
-###3.How to check the data in the Gridmanager of the current case when developing?
+### 3.How to check the data in the Gridmanager of the current case when developing?
 You can achieve the total Gridmanager object by the way of document.querySelector('table').GM('get').
 Local storage information can be received by the way document.querySelector('table').GM('getLocalStorage')
 
-###4.What if there is a mistake in my case?
+### 4.What if there is a mistake in my case?
 Check the form of the DOM node, if it is <table grid-manager="test"></table>,check the key in the columnData to find if it is matched with the revert data.
 
-###5.How can I deal with the condition that the form of the revert data from back-end is different from the form of the plug-in board?
+### 5.How can I deal with the condition that the form of the revert data from back-end is different from the form of the plug-in board?
 Setting by the parameter [datakey:ajax Requesting the key of the grid data , default:data][totalskey:ajax Requesting the key of the grid data, default: totals]
 
-###6.Context can not be totally revealed in the th of the grid? 
+### 6.Context can not be totally revealed in the th of the grid? 
 Check the term width in the [columData],It is automatically controlled if the data of the term should be hold or raised. The case start its memory ,which will cause the term in operation.
 You can clear the local storage which including the name of the current grid manager, or clear all the local storage by localStorage.clear().
 
-###7.How to clear the width and the position of the list which are memorized?
+### 7.How to clear the width and the position of the list which are memorized?
 Using the mean of clear, method of calling : document.querySelector('table').GM('clear'); 
 
-##Version Information
+## Version Information
 [v2.2.x.md](/version/v2.2.x.md)
 [v2.1.x.md](/version/v2.1.x.md)
 
-##Contact me
+## Contact me
 Tencent Group QQ number: 452781895
 
-##participate in development
+## participate in development
 [developer documentation](./DEVELOP-README.md)
 
