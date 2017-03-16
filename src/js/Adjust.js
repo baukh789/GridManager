@@ -6,32 +6,45 @@ import Cache from './Cache';
 import Base from './Base';
 const Adjust = {
 	html: function () {
-		const html = '<span class="adjust-action"></span>';
-		return html;
+		return '<span class="adjust-action"></span>';
 	}
 	/*
 	 @绑定宽度调整事件
 	 $table: table [jTool object]
 	 */
 	,bindAdjustEvent: function($table){
-		const thList 	= $('thead th', $table);	//table下的TH
-		//监听鼠标调整列宽度
+		// table下的TH
+		const thList 	= $('thead th', $table);
+		// 监听鼠标调整列宽度
 		thList.off('mousedown', '.adjust-action');
 		thList.on('mousedown', '.adjust-action', function(event) {
 			const Settings = Cache.getSettings($table);
-			const _dragAction 	= $(this);
-			let _th 			= _dragAction.closest('th'),		        //事件源所在的th
-				_tr 			= _th.parent(),								//事件源所在的tr
-				_table 			= _tr.closest('table'),			            //事件源所在的table
-				_allTh 			= _tr.find('th[th-visible="visible"]'),		//事件源同层级下的所有th
-				_nextTh			= _allTh.eq(_th.index(_allTh) + 1),				//事件源下一个可视th
-				_td 	    	= Base.getColTd(_th);                           //存储与事件源同列的所有td
+			const _dragAction = $(this);
+			// 事件源所在的th
+			let _th = _dragAction.closest('th');
+
+			// 事件源所在的tr
+			let _tr = _th.parent();
+
+			// 事件源所在的table
+			let	_table = _tr.closest('table');
+
+			// 事件源同层级下的所有th
+			let	_allTh = _tr.find('th[th-visible="visible"]');
+
+			// 事件源下一个可视th
+			let	_nextTh = _allTh.eq(_th.index(_allTh) + 1);
+
+			// 存储与事件源同列的所有td
+			let	_td = Base.getColTd(_th);
+
 			// 宽度调整触发回调事件
 			Settings.adjustBefore(event);
 
 			//增加宽度调整中样式
 			_th.addClass('adjust-selected');
 			_td.addClass('adjust-selected');
+
 			//绑定鼠标拖动事件
 			let _thWidth,
 				_NextWidth;
@@ -65,14 +78,14 @@ const Adjust = {
 				_nextTh.width(_NextWidth);
 			});
 
-			//绑定鼠标放开、移出事件
+			// 绑定鼠标放开、移出事件
 			_table.unbind('mouseup mouseleave');
 			_table.bind('mouseup mouseleave', function(event) {
 				const Settings = Cache.getSettings($table);
 				_table.unbind('mousemove mouseleave');
 				//缓存列表宽度信息
 				Cache.setToLocalStorage(_table);
-				if(_th.hasClass('adjust-selected')) {  //其它操作也在table以该事件进行绑定,所以通过class进行区别
+				if(_th.hasClass('adjust-selected')) {  // 其它操作也在table以该事件进行绑定,所以通过class进行区别
 					// 宽度调整成功回调事件
 					Settings.adjustAfter(event);
 				}

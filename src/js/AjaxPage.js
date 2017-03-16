@@ -8,15 +8,17 @@ import Cache from './Cache';
 import I18n from './I18n';
 const AjaxPage = {
 	html: function () {
-		const html = '<div class="page-toolbar">'
-			+ '<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>'
-			+ '<div class="goto-page">'+ I18n.i18nText("goto-first-text")
-			+ '<input type="text" class="gp-input"/>'+ I18n.i18nText("goto-last-text")
-			+ '</div>'
-			+ '<div class="change-size"><select name="pSizeArea"></select></div>'
-			+ '<div class="dataTables_info"></div>'
-			+ '<div class="ajax-page"><ul class="pagination"></ul></div>'
-			+ '</div>';
+		const html= `<div class="page-toolbar">
+						<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>
+						<div class="goto-page">
+							${ I18n.i18nText("goto-first-text") }
+							<input type="text" class="gp-input"/>
+							${ I18n.i18nText("goto-last-text") }
+						</div>'
+						<div class="change-size"><select name="pSizeArea"></select></div>
+						<div class="dataTables_info"></div>
+						<div class="ajax-page"><ul class="pagination"></ul></div>
+					</div>`;
 		return html;
 	}
 	/**
@@ -59,45 +61,48 @@ const AjaxPage = {
 			firstClassName += ' disabled';
 			previousClassName += ' disabled';
 		}
-		tHtml += '<li c-page="1" class="'+ firstClassName +'">'
-			+  I18n.i18nText("first-page")
-			+  '</li>'
-			+  '<li c-page="'+(cPage-1)+'" class="'+ previousClassName +'">'
-			+  I18n.i18nText("previous-page")
-			+  '</li>';
-		let i 	 = 1,		//循环开始数
-			maxI = tPage;	//循环结束数
+		tHtml+= `<li c-page="1" class="'+ firstClassName +'">
+					${ I18n.i18nText("first-page") }
+				</li>
+				<li c-page="'+(cPage-1)+'" class="'+ previousClassName +'">
+					${ I18n.i18nText("previous-page") }
+				</li>`;
+		// 循环开始数
+		let i = 1;
+		// 循环结束数
+		let	maxI = tPage;
+
 		//配置first端省略符
 		if(cPage > 4){
-			tHtml += '<li c-page="1">'
-				+  '1'
-				+  '</li>'
-				+  '<li class="disabled">'
-				+	 '...'
-				+  '</li>';
+			tHtml+= `<li c-page="1">
+						1
+					</li>
+					<li class="disabled">
+						...
+					</li>`;
 			i = cPage - 2;
 		}
 		//配置last端省略符
 		if((tPage - cPage) > 4){
 			maxI = cPage + 2;
-			lHtml += '<li class="disabled">'
-				+	 '...'
-				+  '</li>'
-				+  '<li c-page="'+tPage+'">'
-				+  tPage
-				+  '</li>';
+			lHtml+= `<li class="disabled">
+						...
+					</li>
+					<li c-page="'+tPage+'">
+						${ tPage }
+					</li>`;
 		}
 		// 配置页码
 		for(i; i<= maxI;i++){
 			if(i == cPage){
-				tHtml += '<li class="active">'
-					+  cPage
-					+  '</li>';
+				tHtml+= `<li class="active">
+							${ cPage }
+						</li>`;
 				continue;
 			}
-			tHtml += '<li c-page="'+i+'">'
-				+  i
-				+  '</li>';
+			tHtml+= `<li c-page="${ i }">
+						${ i }
+					</li>`;
 		}
 		tHtml += lHtml;
 		//配置下一页与尾页
@@ -107,12 +112,12 @@ const AjaxPage = {
 			nextClassName += ' disabled';
 			lastClassName += ' disabled';
 		}
-		tHtml += '<li c-page="'+(cPage+1)+'" class="'+ nextClassName +'">'
-			+  I18n.i18nText("next-page")
-			+  '</li>'
-			+  '<li c-page="'+tPage+'" class="'+ lastClassName +'">'
-			+  I18n.i18nText("last-page")
-			+  '</li>';
+		tHtml+= `<li c-page="'${ cPage + 1 }+'" class="'+ nextClassName +'">
+					${ I18n.i18nText("next-page") }
+				</li>
+				<li c-page="${ tPage }" class="'+ lastClassName +'">
+					${ I18n.i18nText("last-page") }
+				</li>`;
 		pagination.html(tHtml);
 	}
 	/**
@@ -132,7 +137,9 @@ const AjaxPage = {
 
 		let _ajaxPageHtml = '';
 		$.each(_sizeData_, (i, v) => {
-			_ajaxPageHtml += '<option value="'+ v +'">' + v + '</option>';
+			_ajaxPageHtml+= `<option value="${ v }">
+								${ v }
+							</option>`;
 		});
 		pSizeArea.html(_ajaxPageHtml);
 	}
@@ -207,9 +214,11 @@ const AjaxPage = {
 		if(_cPage > Settings.pageData.tPage){
 			_cPage = Settings.pageData.tPage;
 		}
+		
 		//替换被更改的值
 		Settings.pageData.cPage = _cPage;
 		Settings.pageData.pSize = Settings.pageData.pSize || Settings.pageSize;
+
 		//调用事件、渲染DOM
 		const query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 		Settings.pagingBefore(query);
@@ -274,6 +283,7 @@ const AjaxPage = {
 		const tmpHtml = I18n.i18nText('dataTablesInfo', [fromNum, toNum, totalNum]);
 		//根据返回值修正单页条数显示值
 		pSizeArea.val(_pageData_.pSize || 10);
+
 		//修改单页条数文字信息
 		pSizeInfo.html(tmpHtml);
 		pSizeArea.show();

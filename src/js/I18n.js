@@ -14,18 +14,18 @@ const I18n = {
 	 *  v1,v2,v3:可为空，也存在一至3项，只存在一项时可为数组
 	 * */
 	,i18nText: function(key, v1, v2, v3){
-		var _this = this;
-		var intrusion = [];
+		const _this = this;
+		let intrusion = [];
 		//处理参数，实现多态化
 		if(arguments.length == 2 && typeof(arguments[1]) == 'object'){
 			intrusion = arguments[1];
 		}
 		else if(arguments.length > 1){
-			for(var i=1; i< arguments.length; i++){
+			for(let i=1; i< arguments.length; i++){
 				intrusion.push(arguments[i]);
 			}
 		}
-		var _lg = '';
+		let _lg = '';
 		try{
 			_lg = _this.textConfig[key][_this.getLanguage()] || '';
 			if(!intrusion || intrusion.length == 0){

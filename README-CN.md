@@ -4,17 +4,17 @@
 [![npm version](https://img.shields.io/npm/v/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 [![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 
-##文档及演示
+## 文档及演示
 - [文档](http://www.lovejavascript.com/#!plugIn/GridManager/index.html)
 - [演示](http://www.lovejavascript.com/node_modules/GridManager/demo/index.html)
 
-##使用需知
+## 使用需知
 下载时请选择对应的tag进行下载, 请不要直接使用master分支上的代码.
 - v2.0和之前版本为jquery版本
 - v2.1开始为原生js版本
 
-##实现功能
-GridManager.js可快速的对table标签进行实例化，实例化后将实现以下功能:
+## 实现功能
+### GridManager.js可快速的对table标签进行实例化，实例化后将实现以下功能:
 
 - 宽度调整: 表格的列宽度可进行拖拽式调整
 - 位置更换: 表格的列位置进行拖拽式调整
@@ -28,22 +28,22 @@ GridManager.js可快速的对table标签进行实例化，实例化后将实现�
 - 导出: 当前页数据下载,和仅针对已选中的表格下载
 - 右键菜单: 常用功能在菜单中可进行快捷操作
 
-##安装命令
+## 安装命令
 ```
 npm install GridManager
 ```
 
-##引入方式
+## 引入方式
 ```
 <link rel="stylesheet" type="text/css" href="/node_modules/GridManager/css/GridManager.css"/>
 <script type="text/javascript" src="/node_modules/GridManager/js/GridManager.js"></script>
 ```
 
-##浏览器兼容
--Firefox, Chrome,IE10+
--这里提一下为什么不支持低版本: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
+## 浏览器兼容
+- Firefox, Chrome,IE10+
+- 这里提一下为什么不支持低版本: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
 
-##调用方式
+## 调用方式
 ```html
     <table grid-manager="test"></table>
 ```
@@ -104,7 +104,7 @@ npm install GridManager
         ]
     });
 ```
-##数据格式
+## 数据格式
 ```JSON
    {
    	"data":[{
@@ -132,40 +132,40 @@ npm install GridManager
    	"totals": 1682
    }
 ```
-##常见问题解答
-###1.数据在渲染前就已经存在,如何配置?
+## 常见问题解答
+### 1.数据在渲染前就已经存在,如何配置?
     可以通过参数ajax_data进行配置,如果存在配置数据ajax_data,将不再通过ajax_url进行数据请求,且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行.
 
-###2.如何在数据请求中增加筛选条件?
+### 2.如何在数据请求中增加筛选条件?
     可以通过参数query进行配置,该参数会在GirdManager实例中一直存在,并且可以在筛选条件更改后通过document.querySelector('table').GM('setQuery')方法进行重置.
 
-###3.开发中想查看当前的GirdManager实例中的数据怎么实现?
+### 3.开发中想查看当前的GirdManager实例中的数据怎么实现?
     通过document.querySelector('table').GM('get')方法可以获得完整的GirdManager对象;
     通过document.querySelector('table').GM('getLocalStorage')可以获得本地存储信息.
 
-###4.实例化出错怎么办?
+### 4.实例化出错怎么办?
     查看DOM节点是否为<table grid-manager="test"></table>格式
     查看配置项columnData中key值是否与返回数据字段匹配.
 
-###5.后端语言返回的数据格式与插件格式不同怎么处理?
+### 5.后端语言返回的数据格式与插件格式不同怎么处理?
     可以通过参数[dataKey:ajax请求返回的列表数据key键值,默认为data][totalsKey:ajax请求返回的数据总条数key键值,默认为totals]进行配置.
 
-###6.表格th中的文本显示不全
+### 6.表格th中的文本显示不全
     查看配置项[columnData]中的width, 将该值提高或不进行设置由插件自动控制. 如果还为生效,那是由于当臆实例开始了记忆功能;
     解决方法为:将localStorage中包含与当前表格grid-manager名称对应的项清除,或使用localStorage.clear()将本地存储全部清除.
 
-###7.想清除当前记忆的宽度及列位置时怎么办?
+### 7.想清除当前记忆的宽度及列位置时怎么办?
     可使用clear方法,调用方式:document.querySelector('table').GM('clear');
 
-##版本信息
+## 版本信息
 [v2.2.x.md](/version/v2.2.x.md)
 [v2.1.x.md](/version/v2.1.x.md)
 
 
-##联系我
+## 联系我
 QQ群号: 452781895
 
-##参与开发
-[开发者帮助文档](./develop-readme.md)
+## 参与开发
+[开发者帮助文档](./DEVELOP-README.md)
 
 

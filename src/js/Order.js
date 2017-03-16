@@ -9,7 +9,7 @@ const Order = {
 	 $.table: table [jTool object]
 	 */
 	initDOM: function(table) {
-		var orderHtml = '<th th-name="gm_order" gm-order="true" gm-create="true">'+ I18n.i18nText('order-text') +'</th>';
+		const orderHtml = `<th th-name="gm_order" gm-order="true" gm-create="true">${ I18n.i18nText('order-text') }</th>`;
 		$('thead tr', table).prepend(orderHtml);
 	}
 };

@@ -60,6 +60,24 @@ const Base = {
 		return $(tdList);
 	}
 	/*
+	* @初始化列显示\隐藏
+	* */
+	,initVisible: function($table){
+		// 所有的th
+		const _thList = $('thead th', $table);
+
+		// tbody下的tr
+		const _trList = $('tbody tr', $table);
+		let	_td = null;
+		$.each(_thList, function(i, v){
+			v = $(v);
+			$.each(_trList, function(i2, v2){
+				_td = $('td', v2).eq(v.index());
+				_td.attr('td-visible', v.attr('th-visible'));
+			});
+		});
+	}
+	/*
 	 @设置列是否可见
 	 $._thList_	： 即将配置的列所对应的th[jTool object，可以是多个]
 	 $._visible_: 是否可见[Boolean]
@@ -88,9 +106,10 @@ const Base = {
 			});
 			//显示
 			if(_visible_){
-				_th.attr('th-visible','visible');
+				_th.attr('th-visible', 'visible');
 				$.each(_tdList, (i2, v2) => {
-					$(v2).show();
+					// $(v2).show();
+					v2.setAttribute('td-visible', 'visible');
 				});
 				_checkLi.addClass('checked-li');
 				_checkbox.prop('checked', true);
@@ -99,7 +118,8 @@ const Base = {
 			else{
 				_th.attr('th-visible','none');
 				$.each(_tdList, (i2, v2) => {
-					$(v2).hide();
+					// $(v2).hide();
+					v2.setAttribute('td-visible', 'none');
 				});
 				_checkLi.removeClass('checked-li');
 				_checkbox.prop('checked', false);
@@ -122,6 +142,7 @@ const Base = {
 		//文本镜象 用于处理实时获取文本长度
 		const tableWrap = th.closest('.table-wrap');
 		const textDreamland	= $('.text-dreamland', tableWrap);
+		
 		//将th文本嵌入文本镜象 用于获取文本实时宽度
 		textDreamland.text(thText.text());
 		textDreamland.css({
@@ -132,10 +153,10 @@ const Base = {
 		const thPaddingLeft = thWarp.css('padding-left'),
 			thPaddingRight = thWarp.css('padding-right');
 		const thWidth = textDreamland.width()
-			+ (thPaddingLeft ? thPaddingLeft : 0)
-			+ (thPaddingRight ? thPaddingRight : 0)
-			+ (remindAction.length == 1 ? 20 : 5)
-			+ (sortingAction.length == 1 ? 20 : 5);
+						+ (thPaddingLeft ? thPaddingLeft : 0)
+						+ (thPaddingRight ? thPaddingRight : 0)
+						+ (remindAction.length == 1 ? 20 : 5)
+						+ (sortingAction.length == 1 ? 20 : 5);
 		return thWidth;
 	}
 	,showLoading: function (dom ,cb) {

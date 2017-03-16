@@ -11,43 +11,56 @@ const Drag = {
 	 $.table: table [jTool object]
 	 */
 	bindDragEvent: function(table){
-		var thList = $('thead th', table),	//匹配页面下所有的TH
+		const thList = $('thead th', table),	//匹配页面下所有的TH
 			dragAction	= thList.find('.drag-action');
+
 		//指定拖拽换位事件源,配置拖拽样式
-		var _th,			//事件源th
-			_prevTh,		//事件源的上一个th
-			_nextTh,		//事件源的下一个th
-			_prevTd,		//事件源对应的上一组td
-			_nextTd,		//事件源对应的下一组td
-			_tr,			//事件源所在的tr
-			_allTh,			//事件源同层级下的所有可视th
-			_table,			//事件源所在的table
-			_tableDiv,		//事件源所在的DIV
-			_tableWrap,     //事件源所在的容器
-			_td,			//与事件源同列的所在td
-			_divPosition,	//所在DIV使用定位方式
-			_dreamlandDIV;	//临时展示被移动的列
 		dragAction.unbind('mousedown');
 		dragAction.bind('mousedown',function(event){
+			// 获取设置项
 			let Settings = Cache.getSettings(table);
-			_th 			= $(this).closest('th'),
-			_prevTh			= undefined,
-			_nextTh			= undefined,
-			_prevTd			= undefined,
-			_nextTd			= undefined,
-			_tr 			= _th.parent(),
-			_allTh 			= _tr.find('th[th-visible="visible"]'),
-			_table 			= _tr.closest('table'),
-			_tableDiv 		= _table.closest('.table-div'),
-			_tableWrap      = _table.closest('.table-wrap'),
-			_td 			= Base.getColTd(_th);
+
+			// 事件源th
+			let _th = $(this).closest('th');
+
+			// 事件源的上一个th
+			let _prevTh	= null;
+
+			//事件源的下一个th
+			let _nextTh	= null;
+
+			// 事件源对应的上一组td
+			let _prevTd	= null;
+
+			//事件源对应的下一组td
+			let	_nextTd	= null;
+
+			//事件源所在的tr
+			let _tr = _th.parent();
+
+			//事件源同层级下的所有可视th
+			let _allTh = _tr.find('th[th-visible="visible"]');
+
+			//事件源所在的table
+			const _table = _tr.closest('table');
+
+			//事件源所在的DIV
+			const _tableDiv = _table.closest('.table-div');
+
+			//事件源所在的容器
+			const _tableWrap  = _table.closest('.table-wrap');
+
+			//与事件源同列的所在td
+			const _td = Base.getColTd(_th);
+
 			// 列拖拽触发回调事件
 			Settings.dragBefore(event);
 
 			//禁用文字选中效果
 			$('body').addClass('no-select-text');
 			//父级DIV使用相对定位
-			_divPosition = _tableDiv.css('position');
+			//所在DIV使用定位方式
+			const _divPosition = _tableDiv.css('position');
 			if(_divPosition != 'relative' && _divPosition != 'absolute'){
 				_tableDiv.css('position','relative');
 			}
@@ -57,28 +70,30 @@ const Drag = {
 
 			//增加临时展示DOM
 			_tableWrap.append('<div class="dreamland-div"></div>');
-			_dreamlandDIV = $('.dreamland-div', _tableWrap);
-			_dreamlandDIV.get(0).innerHTML = '<table class="dreamland-table '+ _table.attr('class') +'"></table>';
-			var tmpHtml = '<thead>'
-						+ '<tr>'
-						+ '<th style="height:'+_th.get(0).offsetHeight+'px">'
-						+ _th.find('.drag-action').get(0).outerHTML
-						+ '</th>'
-						+ '</tr>'
-						+ '</thead>'
-						+ '<tbody>';
+			let _dreamlandDIV = $('.dreamland-div', _tableWrap);
+			_dreamlandDIV.get(0).innerHTML = `<table class="dreamland-table ${_table.attr('class')}"></table>`;
 			//tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
-			var _cloneTr,_cloneTd;
+			let _tbodyHtml='';
+			let _cloneTr, _cloneTd;
 			$.each(_td, function(i, v){
 				_cloneTd = v.cloneNode(true);
 				_cloneTd.style.height = v.offsetHeight + 'px';
 				_cloneTr = $(v).closest('tr').clone();
-				tmpHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
+				_tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
 			});
-			tmpHtml += '</tbody>';
+			let tmpHtml=   `<thead>
+								<tr>
+								<th style="height:${_th.height()}px">
+								${$('.drag-action', _th).get(0).outerHTML}
+								</th>
+								</tr>
+							</thead>
+							<tbody>
+								${_tbodyHtml}
+							</tbody>`;
 			$('.dreamland-table', _dreamlandDIV).html(tmpHtml);
 			//绑定拖拽滑动事件
-			var _thIndex = 0;  //存储移动时的th所处的位置
+			let _thIndex = 0;  //存储移动时的th所处的位置
 			$('body').unbind('mousemove');
 			$('body').bind('mousemove', function(e2){
 				_thIndex = _th.index(_allTh);

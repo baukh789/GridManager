@@ -20,7 +20,7 @@ const DOM = {
 	createDOM: function(table){
 		let Settings = Cache.getSettings(table);
 		table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', Settings.gridManagerName);
-		var theadHtml = '<thead grid-manager-thead>',
+		let theadHtml = '<thead grid-manager-thead>',
 			tbodyHtml = '<tbody></tbody>',
 			alignAttr = '', 				//文本对齐属性
 			widthHtml = '',					//宽度对应的html片段
@@ -67,35 +67,33 @@ const DOM = {
 		//存储原始th DOM
 		Cache.setOriginalThDOM(table);
 		//表头提醒HTML
-		var _remindHtml  = Remind.html();
+		const _remindHtml = Remind.html();
 		//配置列表HTML
-		var	_configHtml	 = Config.html();
+		const _configHtml = Config.html();
 		//宽度调整HTML
-		var	_adjustHtml	 = Adjust.html();
+		const _adjustHtml = Adjust.html();
 		//排序HTML
-		var	_sortingHtml = Sort.html();
+		const _sortingHtml = Sort.html();
 		//导出表格数据所需的事件源DOM
-		var exportActionHtml = Export.html();
+		const exportActionHtml = Export.html();
 		//AJAX分页HTML
-		if(Settings.supportAjaxPage){
-			var	_ajaxPageHtml= AjaxPage.html();
-		}
-		var	wrapHtml,                       //外围的html片段
-			tableWarp,						//单个table所在的DIV容器
-			onlyThead,						//单个table下的thead
-			onlyThList,						//单个table下的TH
-			onlyTH,							//单个TH
-			onlyThWarp,						//单个TH下的上层DIV
-			remindDOM,						//表头提醒DOM
-			adjustDOM,						//调整宽度DOM
-			sortingDom,						//排序DOM
-			sortType,						//排序类形
-			isLmOrder,						//是否为插件自动生成的序号列
-			isLmCheckbox;					//是否为插件自动生成的选择列
+		const _ajaxPageHtml= AjaxPage.html();
+		let	wrapHtml,   //外围的html片段
+			tableWarp,	//单个table所在的DIV容器
+			onlyThead,	//单个table下的thead
+			onlyThList,	//单个table下的TH
+			onlyTH,		//单个TH
+			onlyThWarp,	//单个TH下的上层DIV
+			remindDOM,	//表头提醒DOM
+			adjustDOM,	//调整宽度DOM
+			sortingDom,	//排序DOM
+			sortType,	//排序类形
+			isLmOrder,	//是否为插件自动生成的序号列
+			isLmCheckbox;//是否为插件自动生成的选择列
 
 		onlyThead = $('thead', table);
 		onlyThList = $('th', onlyThead);
-		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height: ${Settings.height}"></div><span class="text-dreamland"></span></div>`;
+		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height:calc(${Settings.height} - 40px)"></div><span class="text-dreamland"></span></div>`;
 		table.wrap(wrapHtml);
 		tableWarp = table.closest('.table-wrap');
 		//嵌入配置列表DOM
@@ -148,7 +146,7 @@ const DOM = {
 			}else{
 				onlyThWarp.html('<span class="th-text">'+ onlyTH.html() +'</span>');
 			}
-			var onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
+			let onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
 			//嵌入表头提醒事件源
 			//插件自动生成的排序与选择列不做事件绑定
 			if(Settings.supportRemind && onlyTH.attr('remind') != undefined && !isLmOrder && !isLmCheckbox){
@@ -193,7 +191,7 @@ const DOM = {
 			onlyTH.html(onlyThWarp);
 			//如果th上存在width属性，则表明配置项中存在该项配置；
 			//验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
-			var thWidthForConfig = onlyTH.attr('width');
+			let thWidthForConfig = onlyTH.attr('width');
 			// 宽度配置: GM自动创建为固定宽度
 			if(isLmOrder || isLmCheckbox){
 				onlyTH.width(50);
@@ -207,9 +205,9 @@ const DOM = {
 				}
 				// 当前列宽度未进行手动配置
 				else{
-					var _minWidth = Base.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
+					let _minWidth = Base.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
 					//重置width 防止auto现象
-					var _oldWidth = onlyTH.width();
+					let _oldWidth = onlyTH.width();
 					onlyTH.width(_oldWidth > _minWidth ? _oldWidth : _minWidth);
 				}
 			}
@@ -227,12 +225,14 @@ const DOM = {
 	 $.isSingleRow: 指定DOM节点是否为tr[布尔值]
 	 */
 	,resetTd: function(dom, isSingleRow){
+		let _table = null,
+			_tr = null;
 		if(isSingleRow){
-			var _tr = $(dom),
-				_table= _tr.closest('table');
+			_tr = $(dom);
+			_table= _tr.closest('table');
 		}else{
-			var _table = $(dom),
-				_tr	= _table.find('tbody tr');
+			_table = $(dom);
+			_tr	= _table.find('tbody tr');
 		}
 		if(!_tr || _tr.length == 0){
 			return false;
@@ -240,8 +240,8 @@ const DOM = {
 		let Settings = Cache.getSettings(_table);
 		//重置表格序号
 		if(Settings.supportAutoOrder){
-			var _pageData = Settings.pageData;
-			var onlyOrderTd = undefined,
+			let _pageData = Settings.pageData;
+			let onlyOrderTd = null,
 				_orderBaseNumber = 1,
 				_orderText;
 			//验证是否存在分页数据
@@ -260,7 +260,7 @@ const DOM = {
 		}
 		//重置表格选择 checkbox
 		if(Settings.supportCheckbox){
-			var onlyCheckTd = undefined;
+			let onlyCheckTd = null;
 			$.each(_tr, function(i, v){
 				onlyCheckTd = $('td[gm-checkbox="true"]', v);
 				if(onlyCheckTd.length == 0){
@@ -272,13 +272,13 @@ const DOM = {
 		}
 		//依据存储数据重置td顺序
 		if(Settings.supportDrag){
-			var _thCacheList = Cache.getOriginalThDOM(_table),
-				_td;
+			const _thCacheList = Cache.getOriginalThDOM(_table);
+			let	_td = null;
 			if(!_thCacheList || _thCacheList.length == 0 ){
 				Base.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
 				return false;
 			}
-			var _tdArray = [];
+			let _tdArray = [];
 			$.each(_tr, function(i, v){
 				_tdArray = [];
 				_td = $('td', v);
@@ -290,7 +290,7 @@ const DOM = {
 		}
 		//依据配置对列表进行隐藏、显示
 		if(Settings.supportConfig){
-			Base.setAreVisible($('[th-visible="none"]'), false ,true);
+			Base.initVisible(_table);
 		}
 	}
 };
