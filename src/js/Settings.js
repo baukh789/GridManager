@@ -2,7 +2,7 @@
  * Settings: 配置项
  */
 import $ from './jTool';
-let Settings = {
+const Settings = {
 	// 拖拽
 	supportDrag: true,  // 是否支持拖拽功能
 	dragBefore: $.noop, // 拖拽前事件
@@ -42,7 +42,7 @@ let Settings = {
 	sortingAfter		: $.noop,					//排序事件发生后
 
 	// 分页 ajaxPag
-	supportAjaxPage	: false,					//是否支持配置列表ajxa分页
+	supportAjaxPage		: false,					//是否支持配置列表ajxa分页
 	sizeData 			: [10,20,30,50,100], 		//用于配置列表每页展示条数选择框
 	pageSize			: 20,						//每页显示条数，如果使用缓存且存在缓存数据，那么该值将失效
 	pageData 			: {},						//存储分页数据[不对外公开参数]
@@ -75,4 +75,5 @@ let Settings = {
 	//数据导出
 	supportExport		: true						//支持导出表格数据
 };
+
 export default Settings;

@@ -39,8 +39,9 @@ class GridManager {
 			arg.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
 		}
 		// 配置参数
-		jTool.extend(false, Settings, arg);
-		_this.updateSettings(jToolObj, Settings);
+		var _settings = {};
+		jTool.extend(false, _settings, Settings, arg);
+		_this.updateSettings(jToolObj, _settings);
 		jTool.extend(true, this, arg);
 
 		//通过版本较验 清理缓存
