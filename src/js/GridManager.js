@@ -22,7 +22,7 @@ import DOM from './DOM';
 import { Hover } from './Hover';
 class GridManager {
 	constructor() {
-		this.version = '2.2.6';
+		this.version = '2.2.7';
 		this.extentGridManager();
 	}
 	/*
