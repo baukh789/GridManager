@@ -1199,7 +1199,7 @@
 				firstClassName += ' disabled';
 				previousClassName += ' disabled';
 			}
-			tHtml += '<li c-page="1" class="\'+ firstClassName +\'">\n\t\t\t\t\t' + _I18n2.default.i18nText("first-page") + '\n\t\t\t\t</li>\n\t\t\t\t<li c-page="\'+(cPage-1)+\'" class="\'+ previousClassName +\'">\n\t\t\t\t\t' + _I18n2.default.i18nText("previous-page") + '\n\t\t\t\t</li>';
+			tHtml += '<li c-page="1" class="' + firstClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText("first-page") + '\n\t\t\t\t</li>\n\t\t\t\t<li c-page="' + (cPage - 1) + '" class="' + previousClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText("previous-page") + '\n\t\t\t\t</li>';
 			// 循环开始数
 			var i = 1;
 			// 循环结束数
@@ -1231,7 +1231,7 @@
 				nextClassName += ' disabled';
 				lastClassName += ' disabled';
 			}
-			tHtml += '<li c-page="\'' + (cPage + 1) + '+\'" class="\'+ nextClassName +\'">\n\t\t\t\t\t' + _I18n2.default.i18nText("next-page") + '\n\t\t\t\t</li>\n\t\t\t\t<li c-page="' + tPage + '" class="\'+ lastClassName +\'">\n\t\t\t\t\t' + _I18n2.default.i18nText("last-page") + '\n\t\t\t\t</li>';
+			tHtml += '<li c-page="' + (cPage + 1) + '" class="' + nextClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText("next-page") + '\n\t\t\t\t</li>\n\t\t\t\t<li c-page="' + tPage + '" class="' + lastClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText("last-page") + '\n\t\t\t\t</li>';
 			pagination.html(tHtml);
 		}
 		/**
