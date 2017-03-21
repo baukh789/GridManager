@@ -79,6 +79,7 @@ table[grid-manager].GridManager-ready{
 /*table所在的DIV*/
 .table-wrap{
 	position: relative;
+	background-color: #f8f8f8;
 	/*padding: 3px;*/
 }
 .table-div{
