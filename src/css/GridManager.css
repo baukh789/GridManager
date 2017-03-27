@@ -143,6 +143,7 @@ table[grid-manager].GridManager-ready{
 	display:block;
 	width:100%;
 	height:100%;
+	overflow: hidden;
 	white-space: nowrap;
 	text-overflow:ellipsis;
 }
@@ -358,8 +359,11 @@ table[grid-manager].GridManager-ready{
 	width:100%;
 	height:100%;
 	position:relative;
-	padding:6px 4px;
+	padding:6px 24px;
 	text-align:center;
+}
+.table-wrap table[grid-manager] th[gm-create="true"] .th-wrap{
+	padding:6px 4px;
 }
 /*宽度调整*/
 .table-wrap table[grid-manager] th .adjust-action{

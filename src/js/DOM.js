@@ -26,7 +26,7 @@ const DOM = {
 			widthHtml = '',					//宽度对应的html片段
 			remindHtml = '',				//提醒对应的html片段
 			sortingHtml	= '';				//排序对应的html片段
-		//通过配置项[columnData]生成thead
+		// 通过配置项[columnData]生成thead
 		$.each(Settings.columnData, function(i, v){
 			// 表头提醒
 			if(Settings.supportRemind && typeof(v.remind) === 'string' && v.remind !== ''){
@@ -56,7 +56,7 @@ const DOM = {
 		});
 		theadHtml += '</thead>';
 		table.html(theadHtml + tbodyHtml);
-		//嵌入序号DOM
+		// 嵌入序号DOM
 		if(Settings.supportAutoOrder){
 			Order.initDOM(table);
 		}
@@ -64,19 +64,24 @@ const DOM = {
 		if(Settings.supportCheckbox){
 			Checkbox.initDOM(table);
 		}
-		//存储原始th DOM
+		// 存储原始th DOM
 		Cache.setOriginalThDOM(table);
-		//表头提醒HTML
+
+		// 表头提醒HTML
 		const _remindHtml = Remind.html();
-		//配置列表HTML
+
+		// 配置列表HTML
 		const _configHtml = Config.html();
-		//宽度调整HTML
+
+		// 宽度调整HTML
 		const _adjustHtml = Adjust.html();
-		//排序HTML
+
+		// 排序HTML
 		const _sortingHtml = Sort.html();
-		//导出表格数据所需的事件源DOM
+
+		// 导出表格数据所需的事件源DOM
 		const exportActionHtml = Export.html();
-		//AJAX分页HTML
+		// AJAX分页HTML
 		const _ajaxPageHtml= AjaxPage.html();
 		let	wrapHtml,   //外围的html片段
 			tableWarp,	//单个table所在的DIV容器
@@ -96,23 +101,23 @@ const DOM = {
 		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height:calc(${Settings.height} - 40px)"></div><span class="text-dreamland"></span></div>`;
 		table.wrap(wrapHtml);
 		tableWarp = table.closest('.table-wrap');
-		//嵌入配置列表DOM
+		// 嵌入配置列表DOM
 		if(Settings.supportConfig){
 			tableWarp.append(_configHtml);
 		}
-		//嵌入Ajax分页DOM
+		// 嵌入Ajax分页DOM
 		if(Settings.supportAjaxPage){
 			tableWarp.append(_ajaxPageHtml);
 			AjaxPage.initAjaxPage(table);
 		}
-		//嵌入导出表格数据事件源
+		// 嵌入导出表格数据事件源
 		if(Settings.supportExport){
 			tableWarp.append(exportActionHtml);
 		}
 		$.each(onlyThList, function(i2,v2){
 			onlyTH = $(v2);
 			onlyTH.attr('th-visible','visible');
-			//是否为自动生成的序号列
+			// 是否为自动生成的序号列
 			if(Settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
 				isLmOrder = true;
 			}
@@ -120,7 +125,7 @@ const DOM = {
 				isLmOrder = false;
 			}
 
-			//是否为自动生成的选择列
+			// 是否为自动生成的选择列
 			if(Settings.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true') {
 				isLmCheckbox = true;
 			}else{
@@ -139,16 +144,16 @@ const DOM = {
 						+ '</label>'
 						+ '</li>');
 			}
-			//嵌入拖拽事件源
-			//插件自动生成的排序与选择列不做事件绑定
+			// 嵌入拖拽事件源
+			// 插件自动生成的排序与选择列不做事件绑定
 			if(Settings.supportDrag && !isLmOrder && !isLmCheckbox){
 				onlyThWarp.html('<span class="th-text drag-action">'+onlyTH.html()+'</span>');
 			}else{
 				onlyThWarp.html('<span class="th-text">'+ onlyTH.html() +'</span>');
 			}
 			let onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
-			//嵌入表头提醒事件源
-			//插件自动生成的排序与选择列不做事件绑定
+			// 嵌入表头提醒事件源
+			// 插件自动生成的排序与选择列不做事件绑定
 			if(Settings.supportRemind && onlyTH.attr('remind') != undefined && !isLmOrder && !isLmCheckbox){
 				remindDOM = $(_remindHtml);
 				remindDOM.find('.ra-title').text(onlyTH.text());
@@ -158,12 +163,12 @@ const DOM = {
 				}
 				onlyThWarp.append(remindDOM);
 			}
-			//嵌入排序事件源
-			//插件自动生成的排序与选择列不做事件绑定
+			// 嵌入排序事件源
+			// 插件自动生成的排序与选择列不做事件绑定
 			sortType = onlyTH.attr('sorting');
 			if(Settings.supportSorting && sortType!= undefined && !isLmOrder && !isLmCheckbox){
 				sortingDom = $(_sortingHtml);
-				//依据 sortType 进行初始显示
+				// 依据 sortType 进行初始显示
 				switch(sortType){
 					case Settings.sortUpText:
 						sortingDom.addClass('sorting-up');
@@ -179,18 +184,18 @@ const DOM = {
 				}
 				onlyThWarp.append(sortingDom);
 			}
-			//嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
+			// 嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
 			if(Settings.supportAdjust && !isLmOrder && !isLmCheckbox){
 				adjustDOM = $(_adjustHtml);
-				//最后一列不支持调整宽度
+				// 最后一列不支持调整宽度
 				if(i2 == onlyThList.length - 1){
 					adjustDOM.hide();
 				}
 				onlyThWarp.append(adjustDOM);
 			}
 			onlyTH.html(onlyThWarp);
-			//如果th上存在width属性，则表明配置项中存在该项配置；
-			//验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
+			// 如果th上存在width属性，则表明配置项中存在该项配置；
+			// 验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
 			let thWidthForConfig = onlyTH.attr('width');
 			// 宽度配置: GM自动创建为固定宽度
 			if(isLmOrder || isLmCheckbox){
@@ -198,15 +203,15 @@ const DOM = {
 			}
 			// 宽度配置: 非GM自动创建的列
 			else {
+				let _minWidth = Base.getTextWidth(onlyTH); // 当前th文本所占宽度大于设置的宽度
 				// 当前列被手动配置了宽度
 				if(thWidthForConfig && thWidthForConfig !== ''){
-					onlyTH.width(thWidthForConfig);
+					onlyTH.width(thWidthForConfig > _minWidth ? thWidthForConfig : _minWidth);
 					onlyTH.removeAttr('width');
 				}
 				// 当前列宽度未进行手动配置
 				else{
-					let _minWidth = Base.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
-					//重置width 防止auto现象
+					// 重置width 防止auto现象
 					let _oldWidth = onlyTH.width();
 					onlyTH.width(_oldWidth > _minWidth ? _oldWidth : _minWidth);
 				}
