@@ -22,7 +22,7 @@ import DOM from './DOM';
 import { Hover } from './Hover';
 class GridManager {
 	constructor() {
-		this.version = '2.2.6';
+		this.version = '2.2.7';
 		this.extentGridManager();
 	}
 	/*
@@ -39,8 +39,9 @@ class GridManager {
 			arg.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
 		}
 		// 配置参数
-		jTool.extend(false, Settings, arg);
-		_this.updateSettings(jToolObj, Settings);
+		var _settings = {};
+		jTool.extend(false, _settings, Settings, arg);
+		_this.updateSettings(jToolObj, _settings);
 		jTool.extend(true, this, arg);
 
 		//通过版本较验 清理缓存

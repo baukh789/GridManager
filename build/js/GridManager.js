@@ -133,7 +133,7 @@
 		function GridManager() {
 			_classCallCheck(this, GridManager);
 
-			this.version = '2.2.6';
+			this.version = '2.2.7';
 			this.extentGridManager();
 		}
 		/*
@@ -154,8 +154,9 @@
 					arg.gridManagerName = jToolObj.attr('grid-manager'); //存储gridManagerName值
 				}
 				// 配置参数
-				_jTool2.default.extend(false, _Settings2.default, arg);
-				_this.updateSettings(jToolObj, _Settings2.default);
+				var _settings = {};
+				_jTool2.default.extend(false, _settings, _Settings2.default, arg);
+				_this.updateSettings(jToolObj, _settings);
 				_jTool2.default.extend(true, this, arg);
 
 				//通过版本较验 清理缓存
@@ -477,37 +478,45 @@
 
 	var Adjust = {
 		html: function html() {
-			var html = '<span class="adjust-action"></span>';
-			return html;
+			return '<span class="adjust-action"></span>';
 		}
 		/*
 	  @绑定宽度调整事件
 	  $table: table [jTool object]
 	  */
 		, bindAdjustEvent: function bindAdjustEvent($table) {
-			var thList = (0, _jTool2.default)('thead th', $table); //table下的TH
-			//监听鼠标调整列宽度
+			// table下的TH
+			var thList = (0, _jTool2.default)('thead th', $table);
+			// 监听鼠标调整列宽度
 			thList.off('mousedown', '.adjust-action');
 			thList.on('mousedown', '.adjust-action', function (event) {
 				var Settings = _Cache2.default.getSettings($table);
 				var _dragAction = (0, _jTool2.default)(this);
-				var _th = _dragAction.closest('th'),
-				    //事件源所在的th
-				_tr = _th.parent(),
-				    //事件源所在的tr
-				_table = _tr.closest('table'),
-				    //事件源所在的table
-				_allTh = _tr.find('th[th-visible="visible"]'),
-				    //事件源同层级下的所有th
-				_nextTh = _allTh.eq(_th.index(_allTh) + 1),
-				    //事件源下一个可视th
-				_td = _Base2.default.getColTd(_th); //存储与事件源同列的所有td
+				// 事件源所在的th
+				var _th = _dragAction.closest('th');
+
+				// 事件源所在的tr
+				var _tr = _th.parent();
+
+				// 事件源所在的table
+				var _table = _tr.closest('table');
+
+				// 事件源同层级下的所有th
+				var _allTh = _tr.find('th[th-visible="visible"]');
+
+				// 事件源下一个可视th
+				var _nextTh = _allTh.eq(_th.index(_allTh) + 1);
+
+				// 存储与事件源同列的所有td
+				var _td = _Base2.default.getColTd(_th);
+
 				// 宽度调整触发回调事件
 				Settings.adjustBefore(event);
 
 				//增加宽度调整中样式
 				_th.addClass('adjust-selected');
 				_td.addClass('adjust-selected');
+
 				//绑定鼠标拖动事件
 				var _thWidth = void 0,
 				    _NextWidth = void 0;
@@ -538,7 +547,7 @@
 					_nextTh.width(_NextWidth);
 				});
 
-				//绑定鼠标放开、移出事件
+				// 绑定鼠标放开、移出事件
 				_table.unbind('mouseup mouseleave');
 				_table.bind('mouseup mouseleave', function (event) {
 					var Settings = _Cache2.default.getSettings($table);
@@ -546,7 +555,7 @@
 					//缓存列表宽度信息
 					_Cache2.default.setToLocalStorage(_table);
 					if (_th.hasClass('adjust-selected')) {
-						//其它操作也在table以该事件进行绑定,所以通过class进行区别
+						// 其它操作也在table以该事件进行绑定,所以通过class进行区别
 						// 宽度调整成功回调事件
 						Settings.adjustAfter(event);
 					}
@@ -971,6 +980,24 @@
 			return (0, _jTool2.default)(tdList);
 		}
 		/*
+	 * @初始化列显示\隐藏
+	 * */
+		, initVisible: function initVisible($table) {
+			// 所有的th
+			var _thList = (0, _jTool2.default)('thead th', $table);
+
+			// tbody下的tr
+			var _trList = (0, _jTool2.default)('tbody tr', $table);
+			var _td = null;
+			_jTool2.default.each(_thList, function (i, v) {
+				v = (0, _jTool2.default)(v);
+				_jTool2.default.each(_trList, function (i2, v2) {
+					_td = (0, _jTool2.default)('td', v2).eq(v.index());
+					_td.attr('td-visible', v.attr('th-visible'));
+				});
+			});
+		}
+		/*
 	  @设置列是否可见
 	  $._thList_	： 即将配置的列所对应的th[jTool object，可以是多个]
 	  $._visible_: 是否可见[Boolean]
@@ -1007,7 +1034,8 @@
 				if (_visible_) {
 					_th.attr('th-visible', 'visible');
 					_jTool2.default.each(_tdList, function (i2, v2) {
-						(0, _jTool2.default)(v2).show();
+						// $(v2).show();
+						v2.setAttribute('td-visible', 'visible');
 					});
 					_checkLi.addClass('checked-li');
 					_checkbox.prop('checked', true);
@@ -1016,7 +1044,8 @@
 				else {
 						_th.attr('th-visible', 'none');
 						_jTool2.default.each(_tdList, function (i2, v2) {
-							(0, _jTool2.default)(v2).hide();
+							// $(v2).hide();
+							v2.setAttribute('td-visible', 'none');
 						});
 						_checkLi.removeClass('checked-li');
 						_checkbox.prop('checked', false);
@@ -1042,6 +1071,7 @@
 			//文本镜象 用于处理实时获取文本长度
 			var tableWrap = th.closest('.table-wrap');
 			var textDreamland = (0, _jTool2.default)('.text-dreamland', tableWrap);
+
 			//将th文本嵌入文本镜象 用于获取文本实时宽度
 			textDreamland.text(thText.text());
 			textDreamland.css({
@@ -1122,7 +1152,7 @@
 
 	var AjaxPage = {
 		html: function html() {
-			var html = '<div class="page-toolbar">' + '<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>' + '<div class="goto-page">' + _I18n2.default.i18nText("goto-first-text") + '<input type="text" class="gp-input"/>' + _I18n2.default.i18nText("goto-last-text") + '</div>' + '<div class="change-size"><select name="pSizeArea"></select></div>' + '<div class="dataTables_info"></div>' + '<div class="ajax-page"><ul class="pagination"></ul></div>' + '</div>';
+			var html = '<div class="page-toolbar">\n\t\t\t\t\t\t<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>\n\t\t\t\t\t\t<div class="goto-page">\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText("goto-first-text") + '\n\t\t\t\t\t\t\t<input type="text" class="gp-input"/>\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText("goto-last-text") + '\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class="change-size"><select name="pSizeArea"></select></div>\n\t\t\t\t\t\t<div class="dataTables_info"></div>\n\t\t\t\t\t\t<div class="ajax-page"><ul class="pagination"></ul></div>\n\t\t\t\t\t</div>';
 			return html;
 		}
 		/**
@@ -1169,27 +1199,29 @@
 				firstClassName += ' disabled';
 				previousClassName += ' disabled';
 			}
-			tHtml += '<li c-page="1" class="' + firstClassName + '">' + _I18n2.default.i18nText("first-page") + '</li>' + '<li c-page="' + (cPage - 1) + '" class="' + previousClassName + '">' + _I18n2.default.i18nText("previous-page") + '</li>';
-			var i = 1,
-			    //循环开始数
-			maxI = tPage; //循环结束数
+			tHtml += '<li c-page="1" class="' + firstClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText("first-page") + '\n\t\t\t\t</li>\n\t\t\t\t<li c-page="' + (cPage - 1) + '" class="' + previousClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText("previous-page") + '\n\t\t\t\t</li>';
+			// 循环开始数
+			var i = 1;
+			// 循环结束数
+			var maxI = tPage;
+
 			//配置first端省略符
 			if (cPage > 4) {
-				tHtml += '<li c-page="1">' + '1' + '</li>' + '<li class="disabled">' + '...' + '</li>';
+				tHtml += '<li c-page="1">\n\t\t\t\t\t\t1\n\t\t\t\t\t</li>\n\t\t\t\t\t<li class="disabled">\n\t\t\t\t\t\t...\n\t\t\t\t\t</li>';
 				i = cPage - 2;
 			}
 			//配置last端省略符
 			if (tPage - cPage > 4) {
 				maxI = cPage + 2;
-				lHtml += '<li class="disabled">' + '...' + '</li>' + '<li c-page="' + tPage + '">' + tPage + '</li>';
+				lHtml += '<li class="disabled">\n\t\t\t\t\t\t...\n\t\t\t\t\t</li>\n\t\t\t\t\t<li c-page="\'+tPage+\'">\n\t\t\t\t\t\t' + tPage + '\n\t\t\t\t\t</li>';
 			}
 			// 配置页码
 			for (i; i <= maxI; i++) {
 				if (i == cPage) {
-					tHtml += '<li class="active">' + cPage + '</li>';
+					tHtml += '<li class="active">\n\t\t\t\t\t\t\t' + cPage + '\n\t\t\t\t\t\t</li>';
 					continue;
 				}
-				tHtml += '<li c-page="' + i + '">' + i + '</li>';
+				tHtml += '<li c-page="' + i + '">\n\t\t\t\t\t\t' + i + '\n\t\t\t\t\t</li>';
 			}
 			tHtml += lHtml;
 			//配置下一页与尾页
@@ -1199,7 +1231,7 @@
 				nextClassName += ' disabled';
 				lastClassName += ' disabled';
 			}
-			tHtml += '<li c-page="' + (cPage + 1) + '" class="' + nextClassName + '">' + _I18n2.default.i18nText("next-page") + '</li>' + '<li c-page="' + tPage + '" class="' + lastClassName + '">' + _I18n2.default.i18nText("last-page") + '</li>';
+			tHtml += '<li c-page="' + (cPage + 1) + '" class="' + nextClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText("next-page") + '\n\t\t\t\t</li>\n\t\t\t\t<li c-page="' + tPage + '" class="' + lastClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText("last-page") + '\n\t\t\t\t</li>';
 			pagination.html(tHtml);
 		}
 		/**
@@ -1220,7 +1252,7 @@
 
 			var _ajaxPageHtml = '';
 			_jTool2.default.each(_sizeData_, function (i, v) {
-				_ajaxPageHtml += '<option value="' + v + '">' + v + '</option>';
+				_ajaxPageHtml += '<option value="' + v + '">\n\t\t\t\t\t\t\t\t' + v + '\n\t\t\t\t\t\t\t</option>';
 			});
 			pSizeArea.html(_ajaxPageHtml);
 		}
@@ -1298,9 +1330,11 @@
 			if (_cPage > Settings.pageData.tPage) {
 				_cPage = Settings.pageData.tPage;
 			}
+
 			//替换被更改的值
 			Settings.pageData.cPage = _cPage;
 			Settings.pageData.pSize = Settings.pageData.pSize || Settings.pageSize;
+
 			//调用事件、渲染DOM
 			var query = _jTool2.default.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 			Settings.pagingBefore(query);
@@ -1367,6 +1401,7 @@
 			var tmpHtml = _I18n2.default.i18nText('dataTablesInfo', [fromNum, toNum, totalNum]);
 			//根据返回值修正单页条数显示值
 			pSizeArea.val(_pageData_.pSize || 10);
+
 			//修改单页条数文字信息
 			pSizeInfo.html(tmpHtml);
 			pSizeArea.show();
@@ -1771,25 +1806,34 @@
 			//导出表格数据所需的事件源DOM
 			var exportActionHtml = _Export2.default.html();
 			//AJAX分页HTML
-			if (Settings.supportAjaxPage) {
-				var _ajaxPageHtml = _AjaxPage2.default.html();
-			}
-			var wrapHtml, //外围的html片段
-			tableWarp, //单个table所在的DIV容器
-			onlyThead, //单个table下的thead
-			onlyThList, //单个table下的TH
-			onlyTH, //单个TH
-			onlyThWarp, //单个TH下的上层DIV
-			remindDOM, //表头提醒DOM
-			adjustDOM, //调整宽度DOM
-			sortingDom, //排序DOM
-			sortType, //排序类形
-			isLmOrder, //是否为插件自动生成的序号列
-			isLmCheckbox; //是否为插件自动生成的选择列
+			var _ajaxPageHtml = _AjaxPage2.default.html();
+			var wrapHtml = void 0,
+			    //外围的html片段
+			tableWarp = void 0,
+			    //单个table所在的DIV容器
+			onlyThead = void 0,
+			    //单个table下的thead
+			onlyThList = void 0,
+			    //单个table下的TH
+			onlyTH = void 0,
+			    //单个TH
+			onlyThWarp = void 0,
+			    //单个TH下的上层DIV
+			remindDOM = void 0,
+			    //表头提醒DOM
+			adjustDOM = void 0,
+			    //调整宽度DOM
+			sortingDom = void 0,
+			    //排序DOM
+			sortType = void 0,
+			    //排序类形
+			isLmOrder = void 0,
+			    //是否为插件自动生成的序号列
+			isLmCheckbox = void 0; //是否为插件自动生成的选择列
 
 			onlyThead = (0, _jTool2.default)('thead', table);
 			onlyThList = (0, _jTool2.default)('th', onlyThead);
-			wrapHtml = '<div class="table-wrap"><div class="table-div" style="height: ' + Settings.height + '"></div><span class="text-dreamland"></span></div>';
+			wrapHtml = '<div class="table-wrap"><div class="table-div" style="height:calc(' + Settings.height + ' - 40px)"></div><span class="text-dreamland"></span></div>';
 			table.wrap(wrapHtml);
 			tableWarp = table.closest('.table-wrap');
 			//嵌入配置列表DOM
@@ -1913,12 +1957,14 @@
 	  $.isSingleRow: 指定DOM节点是否为tr[布尔值]
 	  */
 		, resetTd: function resetTd(dom, isSingleRow) {
+			var _table = null,
+			    _tr = null;
 			if (isSingleRow) {
-				var _tr = (0, _jTool2.default)(dom),
-				    _table = _tr.closest('table');
+				_tr = (0, _jTool2.default)(dom);
+				_table = _tr.closest('table');
 			} else {
-				var _table = (0, _jTool2.default)(dom),
-				    _tr = _table.find('tbody tr');
+				_table = (0, _jTool2.default)(dom);
+				_tr = _table.find('tbody tr');
 			}
 			if (!_tr || _tr.length == 0) {
 				return false;
@@ -1927,9 +1973,9 @@
 			//重置表格序号
 			if (Settings.supportAutoOrder) {
 				var _pageData = Settings.pageData;
-				var onlyOrderTd = undefined,
+				var onlyOrderTd = null,
 				    _orderBaseNumber = 1,
-				    _orderText;
+				    _orderText = void 0;
 				//验证是否存在分页数据
 				if (_pageData && _pageData['pSize'] && _pageData['cPage']) {
 					_orderBaseNumber = _pageData.pSize * (_pageData.cPage - 1) + 1;
@@ -1946,7 +1992,7 @@
 			}
 			//重置表格选择 checkbox
 			if (Settings.supportCheckbox) {
-				var onlyCheckTd = undefined;
+				var onlyCheckTd = null;
 				_jTool2.default.each(_tr, function (i, v) {
 					onlyCheckTd = (0, _jTool2.default)('td[gm-checkbox="true"]', v);
 					if (onlyCheckTd.length == 0) {
@@ -1958,8 +2004,8 @@
 			}
 			//依据存储数据重置td顺序
 			if (Settings.supportDrag) {
-				var _thCacheList = _Cache2.default.getOriginalThDOM(_table),
-				    _td;
+				var _thCacheList = _Cache2.default.getOriginalThDOM(_table);
+				var _td = null;
 				if (!_thCacheList || _thCacheList.length == 0) {
 					_Base2.default.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
 					return false;
@@ -1976,7 +2022,7 @@
 			}
 			//依据配置对列表进行隐藏、显示
 			if (Settings.supportConfig) {
-				_Base2.default.setAreVisible((0, _jTool2.default)('[th-visible="none"]'), false, true);
+				_Base2.default.initVisible(_table);
 			}
 		}
 	}; /*
@@ -2017,7 +2063,7 @@
 	 * */
 	var Config = {
 		html: function html() {
-			var html = '<div class="config-area"><span class="config-action"><i class="iconfont icon-31xingdongdian"></i></span><ul class="config-list"></ul></div>';
+			var html = '<div class="config-area">\n\t\t\t\t\t\t<span class="config-action">\n\t\t\t\t\t\t\t<i class="iconfont icon-31xingdongdian"></i>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<ul class="config-list"></ul>\n\t\t\t\t\t</div>';
 			return html;
 		}
 		/*
@@ -2026,37 +2072,32 @@
 	  */
 		, bindConfigEvent: function bindConfigEvent(table) {
 			var Settings = _Cache2.default.getSettings(table);
-			//打开/关闭设置区域
+			// 打开/关闭设置区域
 			var tableWarp = (0, _jTool2.default)(table).closest('div.table-wrap');
+			// 打开/关闭设置事件源
 			var configAction = (0, _jTool2.default)('.config-action', tableWarp);
 			configAction.unbind('click');
 			configAction.bind('click', function () {
-				var _configAction = (0, _jTool2.default)(this),
-				    //展示事件源
-				_configArea = _configAction.closest('.config-area'); //设置区域
-				//关闭
+				// 展示事件源
+				var _configAction = (0, _jTool2.default)(this);
+
+				// 设置区域
+				var _configArea = _configAction.closest('.config-area');
+
+				// 关闭
 				if (_configArea.css('display') === 'block') {
 					_configArea.hide();
 					return false;
 				}
-				//打开
+				// 打开
 				_configArea.show();
-				var _tableWarp = _configAction.closest('.table-wrap'),
-				    //当前事件源所在的div
-				_table = (0, _jTool2.default)('[grid-manager]', _tableWarp),
-				    //对应的table
-				_thList = (0, _jTool2.default)('thead th', _table),
-				    //所有的th
-				_trList = (0, _jTool2.default)('tbody tr', _table),
-				    //tbody下的tr
-				_td; //与单个th对应的td
-				_jTool2.default.each(_thList, function (i, v) {
-					v = (0, _jTool2.default)(v);
-					_jTool2.default.each(_trList, function (i2, v2) {
-						_td = (0, _jTool2.default)('td', v2).eq(v.index());
-						_td.css('display', v.css('display'));
-					});
-				});
+
+				// 当前事件源所在的div
+				var _tableWarp = _configAction.closest('.table-wrap');
+
+				// 对应的table
+				var _table = (0, _jTool2.default)('[grid-manager]', _tableWarp);
+
 				//验证当前是否只有一列处于显示状态 并根据结果进行设置是否可以取消显示
 				var checkedLi = (0, _jTool2.default)('.checked-li', _configArea);
 				checkedLi.length == 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
@@ -2064,33 +2105,43 @@
 			//设置事件
 			(0, _jTool2.default)('.config-list li', tableWarp).unbind('click');
 			(0, _jTool2.default)('.config-list li', tableWarp).bind('click', function () {
-				var _only = (0, _jTool2.default)(this),
-				    //单个的设置项
-				_thName = _only.attr('th-name'),
-				    //单个设置项的thName
-				_checkbox = _only.find('input[type="checkbox"]'),
-				    //事件下的checkbox
-				_tableWarp = _only.closest('.table-wrap'),
-				    //所在的大容器
-				_tableDiv = (0, _jTool2.default)('.table-div', _tableWarp),
-				    //所在的table-div
-				_table = (0, _jTool2.default)('[grid-manager]', _tableWarp),
-				    //所对应的table
-				_th = (0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _thName + '"]', _table),
-				    //所对应的th
-				_checkedList; //当前处于选中状态的展示项
+				//单个的设置项
+				var _only = (0, _jTool2.default)(this);
+
+				//单个设置项的thName
+				var _thName = _only.attr('th-name');
+
+				//事件下的checkbox
+				var _checkbox = _only.find('input[type="checkbox"]');
+
+				//所在的大容器
+				var _tableWarp = _only.closest('.table-wrap');
+
+				//所在的table-div
+				var _tableDiv = (0, _jTool2.default)('.table-div', _tableWarp);
+
+				//所对应的table
+				var _table = (0, _jTool2.default)('[grid-manager]', _tableWarp);
+
+				//所对应的th
+				var _th = (0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _thName + '"]', _table);
+
 				if (_only.hasClass('no-click')) {
 					return false;
 				}
 				_only.closest('.config-list').find('.no-click').removeClass('no-click');
 				var isVisible = !_checkbox.prop('checked');
+
 				//设置与当前td同列的td是否可见
 				_tableDiv.addClass('config-editing');
 				_Base2.default.setAreVisible(_th, isVisible, function () {
 					_tableDiv.removeClass('config-editing');
 				});
+
+				//当前处于选中状态的展示项
+				var _checkedList = (0, _jTool2.default)('.config-area input[type="checkbox"]:checked', _tableWarp);
+
 				//限制最少显示一列
-				_checkedList = (0, _jTool2.default)('.config-area input[type="checkbox"]:checked', _tableWarp);
 				if (_checkedList.length == 1) {
 					_checkedList.parent().addClass('no-click');
 				}
@@ -2101,14 +2152,19 @@
 				}
 
 				//重置镜像滚动条的宽度
-				// if(Settings.supportScroll){
 				(0, _jTool2.default)('.sa-inner', _tableWarp).width('100%');
-				// }
+
 				//重置当前可视th的宽度
 				var _visibleTh = (0, _jTool2.default)('thead th[th-visible="visible"]', _table);
 				_jTool2.default.each(_visibleTh, function (i, v) {
-					v.style.width = 'auto';
+					// GM自动创建的列使终为50px
+					if (v.getAttribute('gm-create') === 'true') {
+						v.style.width = '50px';
+					} else {
+						v.style.width = 'auto';
+					}
 				});
+
 				//当前th文本所占宽度大于设置的宽度
 				//需要在上一个each执行完后才可以获取到准确的值
 				_jTool2.default.each(_visibleTh, function (i, v) {
@@ -2155,17 +2211,21 @@
 	  $.table: table DOM
 	  */
 		initDOM: function initDOM(table) {
-			var checkboxHtml = '<th th-name="gm_checkbox" gm-checkbox="true" gm-create="true"><input type="checkbox"/><span style="display: none">' + _I18n2.default.i18nText('checkall-text') + '</span></th>';
+			var checkboxHtml = '<th th-name="gm_checkbox" gm-checkbox="true" gm-create="true">\n\t\t\t\t\t\t\t\t<input type="checkbox"/>\n\t\t\t\t\t\t\t\t<span style="display: none">\n\t\t\t\t\t\t\t\t\t' + _I18n2.default.i18nText('checkall-text') + '\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t</th>';
 			(0, _jTool2.default)('thead tr', table).prepend(checkboxHtml);
+
 			//绑定选择事件
 			table.off('click', 'input[type="checkbox"]');
 			table.on('click', 'input[type="checkbox"]', function () {
-				var _thChecked = true; //存储th中的checkbox的选中状态
-				var _checkAction = (0, _jTool2.default)(this),
-				    //全选键事件源
-				_thCheckbox = (0, _jTool2.default)('thead th[gm-checkbox] input[type="checkbox"]', table),
-				    //th中的选择框
-				_tdCheckbox = (0, _jTool2.default)('tbody td[gm-checkbox] input[type="checkbox"]', table); //td中的选择框
+				// 存储th中的checkbox的选中状态
+				var _thChecked = true;
+				// 全选键事件源
+				var _checkAction = (0, _jTool2.default)(this);
+				// th中的选择框
+				var _thCheckbox = (0, _jTool2.default)('thead th[gm-checkbox] input[type="checkbox"]', table);
+
+				// td中的选择框
+				var _tdCheckbox = (0, _jTool2.default)('tbody td[gm-checkbox] input[type="checkbox"]', table);
 				//当前为全选事件源
 				if (_checkAction.closest('th[th-name="gm_checkbox"]').length === 1) {
 					_jTool2.default.each(_tdCheckbox, function (i, v) {
@@ -2334,9 +2394,6 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Settings = {
-		// 是否使用默认的table样式
-		// useDefaultStyle: true, 弃用参数
-
 		// 拖拽
 		supportDrag: true, // 是否支持拖拽功能
 		dragBefore: _jTool2.default.noop, // 拖拽前事件
@@ -2365,7 +2422,6 @@
 		// 是否禁用本地缓存
 		disableCache: false,
 
-		// 是否自动加载CSS文件
 		// 排序 sort
 		supportSorting: false, //排序：是否支持排序功能
 		isCombSorting: false, //是否为组合排序[只有在支持排序的情况下生效
@@ -2452,22 +2508,25 @@
 	  */
 		, exportGridToXls: function exportGridToXls(table, fileName, onlyChecked) {
 			var Settings = _Cache2.default.getSettings(table);
-			var _this = this;
 			var gmExportAction = (0, _jTool2.default)('#gm-export-action'); //createDOM内添加
 			if (gmExportAction.length === 0) {
 				_Core2.default.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
 				return;
 			}
+			// type base64
+			var uri = 'data:application/vnd.ms-excel;base64,';
 
-			var uri = 'data:application/vnd.ms-excel;base64,',
-			    theadHTML = '',
-			    //存储导出的thead数据
-			tbodyHTML = '',
-			    //存储导出的tbody下的数据
-			tableDOM = (0, _jTool2.default)(table); //当前要导出的table
-			var thDOM = (0, _jTool2.default)('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', tableDOM),
-			    trDOM,
-			    tdDOM;
+			//存储导出的thead数据
+			var theadHTML = '';
+			//存储导出的tbody下的数据
+			var tbodyHTML = '';
+
+			//当前要导出的table
+			var tableDOM = (0, _jTool2.default)(table);
+			var thDOM = (0, _jTool2.default)('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', tableDOM);
+
+			var trDOM = void 0,
+			    tdDOM = void 0;
 			//验证：是否只导出已选中的表格
 			if (onlyChecked) {
 				trDOM = (0, _jTool2.default)('tbody tr[checked="true"]', tableDOM);
@@ -2478,7 +2537,7 @@
 				theadHTML += '<th>' + v.getElementsByClassName('th-text')[0].textContent + '</th>';
 			});
 			_jTool2.default.each(trDOM, function (i, v) {
-				tdDOM = (0, _jTool2.default)('td[gm-create="false"]', v);
+				tdDOM = (0, _jTool2.default)('td[gm-create="false"][td-visible="visible"]', v);
 				tbodyHTML += '<tr>';
 				_jTool2.default.each(tdDOM, function (i2, v2) {
 					tbodyHTML += v2.outerHTML;
@@ -2486,7 +2545,7 @@
 				tbodyHTML += '</tr>';
 			});
 			// 拼接要导出html格式数据
-			var exportHTML = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' + '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' + '<body><table>' + '<thead>' + theadHTML + '</thead>' + '<tbody>' + tbodyHTML + '</tbody>' + '</table></body>' + '</html>';
+			var exportHTML = '\n\t\t\t<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">\n\t\t\t\t<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>\n\t\t\t\t<body>\n\t\t\t\t\t<table>\n\t\t\t\t\t\t<thead>\'\n\t\t\t\t\t\t\t' + theadHTML + '\n\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t' + tbodyHTML + '\n\t\t\t\t\t\t</tbody>\n\t\t\t\t\t</table>\n\t\t\t\t</body>\n\t\t\t</html>';
 			gmExportAction.prop('href', uri + base64(exportHTML));
 			gmExportAction.prop('download', (fileName || Settings.gridManagerName) + '.xls');
 			gmExportAction.get(0).click();
@@ -2553,7 +2612,7 @@
 
 	var Remind = {
 		html: function html() {
-			var html = '<div class="remind-action">' + '<i class="ra-help iconfont icon-icon"></i>' + '<div class="ra-area">' + '<span class="ra-title"></span>' + '<span class="ra-con"></span>' + '</div>' + '</div>';
+			var html = '<div class="remind-action">\n\t\t\t\t\t\t<i class="ra-help iconfont icon-icon"></i>\n\t\t\t\t\t\t<div class="ra-area">\n\t\t\t\t\t\t\t<span class="ra-title"></span>\n\t\t\t\t\t\t\t<span class="ra-con"></span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>';
 			return html;
 		}
 		/*
@@ -2561,14 +2620,13 @@
 	 * $.table: table [jTool object]
 	 * */
 		, bindRemindEvent: function bindRemindEvent(table) {
-			var raArea, tableDiv, theLeft;
 			var remindAction = (0, _jTool2.default)('.remind-action', table);
 			remindAction.unbind('mouseenter');
 			remindAction.bind('mouseenter', function () {
-				raArea = (0, _jTool2.default)(this).find('.ra-area');
-				tableDiv = (0, _jTool2.default)(this).closest('.table-div');
+				var raArea = (0, _jTool2.default)(this).find('.ra-area');
+				var tableDiv = (0, _jTool2.default)(this).closest('.table-div');
 				raArea.show();
-				theLeft = tableDiv.get(0).offsetWidth - ((0, _jTool2.default)(this).offset().left - tableDiv.offset().left) > raArea.get(0).offsetWidth;
+				var theLeft = tableDiv.get(0).offsetWidth - ((0, _jTool2.default)(this).offset().left - tableDiv.offset().left) > raArea.get(0).offsetWidth;
 				raArea.css({
 					left: theLeft ? '0px' : 'auto',
 					right: theLeft ? 'auto' : '0px'
@@ -2576,7 +2634,7 @@
 			});
 			remindAction.unbind('mouseleave');
 			remindAction.bind('mouseleave', function () {
-				raArea = (0, _jTool2.default)(this).find('.ra-area');
+				var raArea = (0, _jTool2.default)(this).find('.ra-area');
 				raArea.hide();
 			});
 		}
@@ -2618,7 +2676,7 @@
 	* */
 	var Sort = {
 		html: function html() {
-			var html = '<div class="sorting-action">' + '<i class="sa-icon sa-up iconfont icon-sanjiao2"></i>' + '<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>' + '</div>';
+			var html = '<div class="sorting-action">\n\t\t\t\t\t\t<i class="sa-icon sa-up iconfont icon-sanjiao2"></i>\n\t\t\t\t\t\t<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>\n\t\t\t\t\t</div>';
 			return html;
 		}
 		/*
@@ -2643,7 +2701,9 @@
 			if (typeof refresh === 'undefined') {
 				refresh = true;
 			}
-			var _th, _sortAction, _sortType;
+			var _th = void 0,
+			    _sortAction = void 0,
+			    _sortType = void 0;
 			for (var s in sortJson) {
 				_th = (0, _jTool2.default)('[th-name="' + s + '"]', table);
 				_sortType = sortJson[s];
@@ -2667,15 +2727,15 @@
 	  */
 		, bindSortingEvent: function bindSortingEvent(table) {
 			var Settings = _Cache2.default.getSettings(table);
-			var _thList = (0, _jTool2.default)('th[sorting]', table),
-			    //所有包含排序的列
-			_action,
+			// 所有包含排序的列
+			var _thList = (0, _jTool2.default)('th[sorting]', table);
+			var _action = void 0,
 			    //向上或向下事件源
-			_th,
+			_th = void 0,
 			    //事件源所在的th
-			_table,
+			_table = void 0,
 			    //事件源所在的table
-			_thName; //th对应的名称
+			_thName = void 0; //th对应的名称
 
 			//绑定排序事件
 			(0, _jTool2.default)('.sorting-action', _thList).unbind('mouseup');
@@ -2801,16 +2861,16 @@
 			var menuHTML = '<div class="grid-menu" grid-master="' + Settings.gridManagerName + '">';
 			//分页类操作
 			if (Settings.supportAjaxPage) {
-				menuHTML += '<span grid-action="refresh-page" refresh-type="previous">' + _I18n2.default.i18nText("previous-page") + '<i class="iconfont icon-sanjiao2"></i></span>' + '<span grid-action="refresh-page" refresh-type="next">' + _I18n2.default.i18nText("next-page") + '<i class="iconfont icon-sanjiao1"></i></span>';
+				menuHTML += '<span grid-action="refresh-page" refresh-type="previous">\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText("previous-page") + '\n\t\t\t\t\t\t\t<i class="iconfont icon-sanjiao2"></i>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span grid-action="refresh-page" refresh-type="next">\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText("next-page") + '\n\t\t\t\t\t\t\t<i class="iconfont icon-sanjiao1"></i>\n\t\t\t\t\t\t</span>';
 			}
-			menuHTML += '<span grid-action="refresh-page" refresh-type="refresh">' + _I18n2.default.i18nText("refresh") + '<i class="iconfont icon-31shuaxin"></i></span>';
+			menuHTML += '<span grid-action="refresh-page" refresh-type="refresh">\n\t\t\t\t\t\t' + _I18n2.default.i18nText("refresh") + '\n\t\t\t\t\t\t<i class="iconfont icon-31shuaxin"></i>\n\t\t\t\t\t</span>';
 			//导出类
 			if (Settings.supportExport) {
-				menuHTML += '<span class="grid-line"></span>' + '<span grid-action="export-excel" only-checked="false">' + _I18n2.default.i18nText("save-as-excel") + '<i class="iconfont icon-baocun"></i></span>' + '<span grid-action="export-excel" only-checked="true">' + _I18n2.default.i18nText("save-as-excel-for-checked") + '<i class="iconfont icon-saveas24"></i></span>';
+				menuHTML += '<span class="grid-line"></span>\n\t\t\t\t\t\t<span grid-action="export-excel" only-checked="false">\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText("save-as-excel") + '\n\t\t\t\t\t\t\t<i class="iconfont icon-baocun"></i>\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span grid-action="export-excel" only-checked="true">\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText("save-as-excel-for-checked") + '\n\t\t\t\t\t\t\t<i class="iconfont icon-saveas24"></i>\n\t\t\t\t\t\t</span>';
 			}
 			//配置类
 			if (Settings.supportConfig) {
-				menuHTML += '<span class="grid-line"></span>' + '<span grid-action="setting-grid">' + _I18n2.default.i18nText("setting-grid") + '<i class="iconfont icon-shezhi"></i></span>';
+				menuHTML += '<span class="grid-line"></span>\n\t\t\t\t\t\t<span grid-action="setting-grid">\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText("setting-grid") + '\n\t\t\t\t\t\t\t<i class="iconfont icon-shezhi"></i>\n\t\t\t\t\t\t</span>';
 			}
 			menuHTML += '</div>';
 			var _body = (0, _jTool2.default)('body');
@@ -2971,31 +3031,54 @@
 			var thList = (0, _jTool2.default)('thead th', table),
 			    //匹配页面下所有的TH
 			dragAction = thList.find('.drag-action');
+
 			//指定拖拽换位事件源,配置拖拽样式
-			var _th, //事件源th
-			_prevTh, //事件源的上一个th
-			_nextTh, //事件源的下一个th
-			_prevTd, //事件源对应的上一组td
-			_nextTd, //事件源对应的下一组td
-			_tr, //事件源所在的tr
-			_allTh, //事件源同层级下的所有可视th
-			_table, //事件源所在的table
-			_tableDiv, //事件源所在的DIV
-			_tableWrap, //事件源所在的容器
-			_td, //与事件源同列的所在td
-			_divPosition, //所在DIV使用定位方式
-			_dreamlandDIV; //临时展示被移动的列
 			dragAction.unbind('mousedown');
 			dragAction.bind('mousedown', function (event) {
+				// 获取设置项
 				var Settings = _Cache2.default.getSettings(table);
-				_th = (0, _jTool2.default)(this).closest('th'), _prevTh = undefined, _nextTh = undefined, _prevTd = undefined, _nextTd = undefined, _tr = _th.parent(), _allTh = _tr.find('th[th-visible="visible"]'), _table = _tr.closest('table'), _tableDiv = _table.closest('.table-div'), _tableWrap = _table.closest('.table-wrap'), _td = _Base2.default.getColTd(_th);
+
+				// 事件源th
+				var _th = (0, _jTool2.default)(this).closest('th');
+
+				// 事件源的上一个th
+				var _prevTh = null;
+
+				//事件源的下一个th
+				var _nextTh = null;
+
+				// 事件源对应的上一组td
+				var _prevTd = null;
+
+				//事件源对应的下一组td
+				var _nextTd = null;
+
+				//事件源所在的tr
+				var _tr = _th.parent();
+
+				//事件源同层级下的所有可视th
+				var _allTh = _tr.find('th[th-visible="visible"]');
+
+				//事件源所在的table
+				var _table = _tr.closest('table');
+
+				//事件源所在的DIV
+				var _tableDiv = _table.closest('.table-div');
+
+				//事件源所在的容器
+				var _tableWrap = _table.closest('.table-wrap');
+
+				//与事件源同列的所在td
+				var _td = _Base2.default.getColTd(_th);
+
 				// 列拖拽触发回调事件
 				Settings.dragBefore(event);
 
 				//禁用文字选中效果
 				(0, _jTool2.default)('body').addClass('no-select-text');
 				//父级DIV使用相对定位
-				_divPosition = _tableDiv.css('position');
+				//所在DIV使用定位方式
+				var _divPosition = _tableDiv.css('position');
 				if (_divPosition != 'relative' && _divPosition != 'absolute') {
 					_tableDiv.css('position', 'relative');
 				}
@@ -3005,18 +3088,19 @@
 
 				//增加临时展示DOM
 				_tableWrap.append('<div class="dreamland-div"></div>');
-				_dreamlandDIV = (0, _jTool2.default)('.dreamland-div', _tableWrap);
+				var _dreamlandDIV = (0, _jTool2.default)('.dreamland-div', _tableWrap);
 				_dreamlandDIV.get(0).innerHTML = '<table class="dreamland-table ' + _table.attr('class') + '"></table>';
-				var tmpHtml = '<thead>' + '<tr>' + '<th style="height:' + _th.get(0).offsetHeight + 'px">' + _th.find('.drag-action').get(0).outerHTML + '</th>' + '</tr>' + '</thead>' + '<tbody>';
 				//tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
-				var _cloneTr, _cloneTd;
+				var _tbodyHtml = '';
+				var _cloneTr = void 0,
+				    _cloneTd = void 0;
 				_jTool2.default.each(_td, function (i, v) {
 					_cloneTd = v.cloneNode(true);
 					_cloneTd.style.height = v.offsetHeight + 'px';
 					_cloneTr = (0, _jTool2.default)(v).closest('tr').clone();
-					tmpHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
+					_tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
 				});
-				tmpHtml += '</tbody>';
+				var tmpHtml = '<thead>\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<th style="height:' + _th.height() + 'px">\n\t\t\t\t\t\t\t\t' + (0, _jTool2.default)('.drag-action', _th).get(0).outerHTML + '\n\t\t\t\t\t\t\t\t</th>\n\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t' + _tbodyHtml + '\n\t\t\t\t\t\t\t</tbody>';
 				(0, _jTool2.default)('.dreamland-table', _dreamlandDIV).html(tmpHtml);
 				//绑定拖拽滑动事件
 				var _thIndex = 0; //存储移动时的th所处的位置
@@ -3125,27 +3209,29 @@
 	  $.table: table [jTool object]
 	  */
 		bindScrollFunction: function bindScrollFunction(table) {
-			var _tableDIV = table.closest('.table-div'),
-			    //列表所在的DIV,该DIV的class标识为table-div
-			_tableWarp = _tableDIV.closest('.table-wrap'); //列表所在的外围容器
+			var _tableDIV = table.closest('.table-div');
 			// 绑定resize事件: 对表头吸顶的列宽度进行修正
 			window.addEventListener('resize', function () {
-				var _setTopHead = (0, _jTool2.default)('.set-top', table); //吸顶元素
+				var _setTopHead = (0, _jTool2.default)('.set-top', table); // 吸顶元素
 				if (_setTopHead && _setTopHead.length === 1) {
 					_setTopHead.remove();
-					_tableDIV.trigger('scroll');
+					table.closest('.table-div').trigger('scroll');
 				}
 			});
 			//绑定滚动条事件
 			_tableDIV.unbind('scroll');
 			_tableDIV.bind('scroll', function (e, _isWindowResize_) {
 				var _scrollDOMTop = (0, _jTool2.default)(this).scrollTop();
-				_tableDIV = table.closest('.table-div');
-				_tableWarp = _tableDIV.closest('.table-wrap');
-				var _thead = (0, _jTool2.default)('thead[grid-manager-thead]', table); //列表head
-				var _tbody = (0, _jTool2.default)('tbody', table); //列表body
-				var _setTopHead = (0, _jTool2.default)('.set-top', table); //吸顶元素
-				//当前列表数据为空
+				// 列表所在的DIV,该DIV的class标识为table-div
+				// 列表所在的外围容器
+				var _tableWarp = _tableDIV.closest('.table-wrap');
+				// 列表head
+				var _thead = (0, _jTool2.default)('thead[grid-manager-thead]', table);
+				// 列表body
+				var _tbody = (0, _jTool2.default)('tbody', table);
+				// 吸顶元素
+				var _setTopHead = (0, _jTool2.default)('.set-top', table);
+				// 当前列表数据为空
 				if ((0, _jTool2.default)('tr', _tbody).length == 0) {
 					return true;
 				}

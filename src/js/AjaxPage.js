@@ -14,7 +14,7 @@ const AjaxPage = {
 							${ I18n.i18nText("goto-first-text") }
 							<input type="text" class="gp-input"/>
 							${ I18n.i18nText("goto-last-text") }
-						</div>'
+						</div>
 						<div class="change-size"><select name="pSizeArea"></select></div>
 						<div class="dataTables_info"></div>
 						<div class="ajax-page"><ul class="pagination"></ul></div>
@@ -61,10 +61,10 @@ const AjaxPage = {
 			firstClassName += ' disabled';
 			previousClassName += ' disabled';
 		}
-		tHtml+= `<li c-page="1" class="'+ firstClassName +'">
+		tHtml+= `<li c-page="1" class="${ firstClassName }">
 					${ I18n.i18nText("first-page") }
 				</li>
-				<li c-page="'+(cPage-1)+'" class="'+ previousClassName +'">
+				<li c-page="${cPage-1}" class="${ previousClassName }">
 					${ I18n.i18nText("previous-page") }
 				</li>`;
 		// 循环开始数
@@ -112,10 +112,10 @@ const AjaxPage = {
 			nextClassName += ' disabled';
 			lastClassName += ' disabled';
 		}
-		tHtml+= `<li c-page="'${ cPage + 1 }+'" class="'+ nextClassName +'">
+		tHtml+= `<li c-page="${ cPage + 1 }" class="${ nextClassName }">
 					${ I18n.i18nText("next-page") }
 				</li>
-				<li c-page="${ tPage }" class="'+ lastClassName +'">
+				<li c-page="${ tPage }" class="${ lastClassName }">
 					${ I18n.i18nText("last-page") }
 				</li>`;
 		pagination.html(tHtml);
@@ -214,7 +214,7 @@ const AjaxPage = {
 		if(_cPage > Settings.pageData.tPage){
 			_cPage = Settings.pageData.tPage;
 		}
-		
+
 		//替换被更改的值
 		Settings.pageData.cPage = _cPage;
 		Settings.pageData.pSize = Settings.pageData.pSize || Settings.pageSize;

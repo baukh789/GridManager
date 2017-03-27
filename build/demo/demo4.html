@@ -42,10 +42,11 @@
 		,height: '300px'
 		,supportAjaxPage:true
 		,supportSorting: true
+		,supportCheckbox: false
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
 		,query: {pluginId: 1, ccname: 'baukh'}
-		,pageSize:20
+		,pageSize:10
 		,columnData: [{
 			key: 'name',
 			remind: 'the name',
@@ -78,8 +79,6 @@
 	document.querySelector('table[grid-manager="test2"]').GM({
 		supportRemind: true
 		,height: '400px'
-		,supportAjaxPage:true
-		,supportSorting: true
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
 		,query: {pluginId: 2, 'bbname': 'kouzi'}
