@@ -25,6 +25,9 @@ const Settings = {
 	// 高度配置, 可配置的最小宽度为300px
 	height: '300px',
 
+	// 文本对齐方式
+	textAlign: '',
+
 	// 动画效果时长
 	animateTime: 300,
 

@@ -101,6 +101,10 @@ const DOM = {
 		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height:calc(${Settings.height} - 40px)"></div><span class="text-dreamland"></span></div>`;
 		table.wrap(wrapHtml);
 		tableWarp = table.closest('.table-wrap');
+		// 配置文本对齐方式
+		if(Settings.textAlign){
+			tableWarp.attr('gm-text-align', Settings.textAlign);
+		}
 		// 嵌入配置列表DOM
 		if(Settings.supportConfig){
 			tableWarp.append(_configHtml);
