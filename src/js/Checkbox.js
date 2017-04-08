@@ -3,6 +3,7 @@
  * */
 import $ from './jTool';
 import I18n from './I18n';
+import Cache from './Cache';
 const Checkbox = {
 	/*
 	 @初始化选择与反选DOM
@@ -49,11 +50,19 @@ const Checkbox = {
 	}
 	/*
 	 [对外公开方法]
-	 @获取当前选中的行
+	 @获取当前选中的 tr
 	 $.table:当前操作的grid
 	 */
 	,getCheckedTr: function(table) {
 		return $('tbody tr[checked="true"]', table).DOMList || [];
+	}
+	/*
+	 [对外公开方法]
+	 @获取当前选中的 tr 渲染时的数据,  返回值类型为数组
+	 $.table:当前操作的grid
+	 */
+	,getCheckedData: function(table){
+		return Cache.getRowData(table, this.getCheckedTr(table))
 	}
 };
 export default Checkbox;

@@ -619,10 +619,21 @@
 	  * [对外公开方法]
 	  * @获取当前行渲染时使用的数据
 	  * $.table:当前操作的grid,由插件自动传入
-	  * $.tr: 将要获取数据所对应的tr[tr DOM]
+	  * $.tr: 将要获取数据所对应的tr[Element or NodeList]
 	  * */
 		, getRowData: function getRowData(table, tr) {
-			return this.cacheData[(0, _jTool2.default)(tr).attr('cache-key')];
+			// tr 为 Element 元素时, 返回数据对象; 为 NodeList 类型时, 返回数组
+			// Element 无length属性, NodeList 会有length属性.
+			// 所以这里通过 .length进行区别. 如果为NodeList 且 length == 0 时,采用与 Element同样的返回类型
+			if (!tr.length) {
+				return this.cacheData[tr.getAttribute('cache-key')];
+			}
+			var _this = this;
+			var rodData = [];
+			_jTool2.default.each(tr, function (i, v) {
+				rodData.push(_this.cacheData[v.getAttribute('cache-key')]);
+			});
+			return rodData;
 		}
 		/*
 	  * [对外公开方法]
@@ -1081,7 +1092,9 @@
 			});
 			var thPaddingLeft = thWarp.css('padding-left'),
 			    thPaddingRight = thWarp.css('padding-right');
-			var thWidth = textDreamland.width() + (thPaddingLeft ? thPaddingLeft : 0) + (thPaddingRight ? thPaddingRight : 0) + (remindAction.length == 1 ? 20 : 5) + (sortingAction.length == 1 ? 20 : 5);
+			var thWidth = textDreamland.width() + (thPaddingLeft ? thPaddingLeft : 0) + (thPaddingRight ? thPaddingRight : 0);
+			// + (remindAction.length == 1 ? 20 : 5)
+			// + (sortingAction.length == 1 ? 20 : 5);
 			return thWidth;
 		},
 		showLoading: function showLoading(dom, cb) {
@@ -1756,7 +1769,7 @@
 			remindHtml = '',
 			    //提醒对应的html片段
 			sortingHtml = ''; //排序对应的html片段
-			//通过配置项[columnData]生成thead
+			// 通过配置项[columnData]生成thead
 			_jTool2.default.each(Settings.columnData, function (i, v) {
 				// 表头提醒
 				if (Settings.supportRemind && typeof v.remind === 'string' && v.remind !== '') {
@@ -1785,7 +1798,7 @@
 			});
 			theadHtml += '</thead>';
 			table.html(theadHtml + tbodyHtml);
-			//嵌入序号DOM
+			// 嵌入序号DOM
 			if (Settings.supportAutoOrder) {
 				_Order2.default.initDOM(table);
 			}
@@ -1793,19 +1806,24 @@
 			if (Settings.supportCheckbox) {
 				_Checkbox2.default.initDOM(table);
 			}
-			//存储原始th DOM
+			// 存储原始th DOM
 			_Cache2.default.setOriginalThDOM(table);
-			//表头提醒HTML
+
+			// 表头提醒HTML
 			var _remindHtml = _Remind2.default.html();
-			//配置列表HTML
+
+			// 配置列表HTML
 			var _configHtml = _Config2.default.html();
-			//宽度调整HTML
+
+			// 宽度调整HTML
 			var _adjustHtml = _Adjust2.default.html();
-			//排序HTML
+
+			// 排序HTML
 			var _sortingHtml = _Sort2.default.html();
-			//导出表格数据所需的事件源DOM
+
+			// 导出表格数据所需的事件源DOM
 			var exportActionHtml = _Export2.default.html();
-			//AJAX分页HTML
+			// AJAX分页HTML
 			var _ajaxPageHtml = _AjaxPage2.default.html();
 			var wrapHtml = void 0,
 			    //外围的html片段
@@ -1836,30 +1854,34 @@
 			wrapHtml = '<div class="table-wrap"><div class="table-div" style="height:calc(' + Settings.height + ' - 40px)"></div><span class="text-dreamland"></span></div>';
 			table.wrap(wrapHtml);
 			tableWarp = table.closest('.table-wrap');
-			//嵌入配置列表DOM
+			// 配置文本对齐方式
+			if (Settings.textAlign) {
+				tableWarp.attr('gm-text-align', Settings.textAlign);
+			}
+			// 嵌入配置列表DOM
 			if (Settings.supportConfig) {
 				tableWarp.append(_configHtml);
 			}
-			//嵌入Ajax分页DOM
+			// 嵌入Ajax分页DOM
 			if (Settings.supportAjaxPage) {
 				tableWarp.append(_ajaxPageHtml);
 				_AjaxPage2.default.initAjaxPage(table);
 			}
-			//嵌入导出表格数据事件源
+			// 嵌入导出表格数据事件源
 			if (Settings.supportExport) {
 				tableWarp.append(exportActionHtml);
 			}
 			_jTool2.default.each(onlyThList, function (i2, v2) {
 				onlyTH = (0, _jTool2.default)(v2);
 				onlyTH.attr('th-visible', 'visible');
-				//是否为自动生成的序号列
+				// 是否为自动生成的序号列
 				if (Settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
 					isLmOrder = true;
 				} else {
 					isLmOrder = false;
 				}
 
-				//是否为自动生成的选择列
+				// 是否为自动生成的选择列
 				if (Settings.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true') {
 					isLmCheckbox = true;
 				} else {
@@ -1871,16 +1893,16 @@
 				if (Settings.supportConfig) {
 					(0, _jTool2.default)('.config-list', tableWarp).append('<li th-name="' + onlyTH.attr('th-name') + '" class="checked-li">' + '<input type="checkbox" checked="checked"/>' + '<label>' + '<span class="fake-checkbox"></span>' + onlyTH.text() + '</label>' + '</li>');
 				}
-				//嵌入拖拽事件源
-				//插件自动生成的排序与选择列不做事件绑定
+				// 嵌入拖拽事件源
+				// 插件自动生成的排序与选择列不做事件绑定
 				if (Settings.supportDrag && !isLmOrder && !isLmCheckbox) {
 					onlyThWarp.html('<span class="th-text drag-action">' + onlyTH.html() + '</span>');
 				} else {
 					onlyThWarp.html('<span class="th-text">' + onlyTH.html() + '</span>');
 				}
 				var onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
-				//嵌入表头提醒事件源
-				//插件自动生成的排序与选择列不做事件绑定
+				// 嵌入表头提醒事件源
+				// 插件自动生成的排序与选择列不做事件绑定
 				if (Settings.supportRemind && onlyTH.attr('remind') != undefined && !isLmOrder && !isLmCheckbox) {
 					remindDOM = (0, _jTool2.default)(_remindHtml);
 					remindDOM.find('.ra-title').text(onlyTH.text());
@@ -1890,12 +1912,12 @@
 					}
 					onlyThWarp.append(remindDOM);
 				}
-				//嵌入排序事件源
-				//插件自动生成的排序与选择列不做事件绑定
+				// 嵌入排序事件源
+				// 插件自动生成的排序与选择列不做事件绑定
 				sortType = onlyTH.attr('sorting');
 				if (Settings.supportSorting && sortType != undefined && !isLmOrder && !isLmCheckbox) {
 					sortingDom = (0, _jTool2.default)(_sortingHtml);
-					//依据 sortType 进行初始显示
+					// 依据 sortType 进行初始显示
 					switch (sortType) {
 						case Settings.sortUpText:
 							sortingDom.addClass('sorting-up');
@@ -1911,18 +1933,18 @@
 					}
 					onlyThWarp.append(sortingDom);
 				}
-				//嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
+				// 嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
 				if (Settings.supportAdjust && !isLmOrder && !isLmCheckbox) {
 					adjustDOM = (0, _jTool2.default)(_adjustHtml);
-					//最后一列不支持调整宽度
+					// 最后一列不支持调整宽度
 					if (i2 == onlyThList.length - 1) {
 						adjustDOM.hide();
 					}
 					onlyThWarp.append(adjustDOM);
 				}
 				onlyTH.html(onlyThWarp);
-				//如果th上存在width属性，则表明配置项中存在该项配置；
-				//验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
+				// 如果th上存在width属性，则表明配置项中存在该项配置；
+				// 验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
 				var thWidthForConfig = onlyTH.attr('width');
 				// 宽度配置: GM自动创建为固定宽度
 				if (isLmOrder || isLmCheckbox) {
@@ -1930,15 +1952,15 @@
 				}
 				// 宽度配置: 非GM自动创建的列
 				else {
+						var _minWidth = _Base2.default.getTextWidth(onlyTH); // 当前th文本所占宽度大于设置的宽度
 						// 当前列被手动配置了宽度
 						if (thWidthForConfig && thWidthForConfig !== '') {
-							onlyTH.width(thWidthForConfig);
+							onlyTH.width(thWidthForConfig > _minWidth ? thWidthForConfig : _minWidth);
 							onlyTH.removeAttr('width');
 						}
 						// 当前列宽度未进行手动配置
 						else {
-								var _minWidth = _Base2.default.getTextWidth(onlyTH); //当前th文本所占宽度大于设置的宽度
-								//重置width 防止auto现象
+								// 重置width 防止auto现象
 								var _oldWidth = onlyTH.width();
 								onlyTH.width(_oldWidth > _minWidth ? _oldWidth : _minWidth);
 							}
@@ -2200,11 +2222,12 @@
 
 	var _I18n2 = _interopRequireDefault(_I18n);
 
+	var _Cache = __webpack_require__(4);
+
+	var _Cache2 = _interopRequireDefault(_Cache);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	/*
-	 * Checkbox: 数据选择/全选/返选
-	 * */
 	var Checkbox = {
 		/*
 	  @初始化选择与反选DOM
@@ -2246,13 +2269,23 @@
 		}
 		/*
 	  [对外公开方法]
-	  @获取当前选中的行
+	  @获取当前选中的 tr
 	  $.table:当前操作的grid
 	  */
 		, getCheckedTr: function getCheckedTr(table) {
 			return (0, _jTool2.default)('tbody tr[checked="true"]', table).DOMList || [];
 		}
-	};
+		/*
+	  [对外公开方法]
+	  @获取当前选中的 tr 渲染时的数据
+	  $.table:当前操作的grid
+	  */
+		, getCheckedData: function getCheckedData(table) {
+			return _Cache2.default.getRowData(this.getCheckedTr(table));
+		}
+	}; /*
+	    * Checkbox: 数据选择/全选/返选
+	    * */
 	exports.default = Checkbox;
 
 /***/ },
@@ -2415,6 +2448,9 @@
 
 		// 高度配置, 可配置的最小宽度为300px
 		height: '300px',
+
+		// 文本对齐方式
+		textAlign: '',
 
 		// 动画效果时长
 		animateTime: 300,
@@ -3247,6 +3283,7 @@
 					});
 					// 防止window.resize事件后导致的吸顶宽度错误. 可以优化
 					_jTool2.default.each((0, _jTool2.default)('th', _thead), function (i, v) {
+						console.log(v.getAttribute('th-name'), (0, _jTool2.default)(v).width());
 						(0, _jTool2.default)('th', _setTopHead).eq(i).width((0, _jTool2.default)(v).width());
 					});
 				}

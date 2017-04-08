@@ -14,10 +14,21 @@ const Cache = {
 	 * [对外公开方法]
 	 * @获取当前行渲染时使用的数据
 	 * $.table:当前操作的grid,由插件自动传入
-	 * $.tr: 将要获取数据所对应的tr[tr DOM]
+	 * $.tr: 将要获取数据所对应的tr[Element or NodeList]
 	 * */
 	,getRowData: function(table, tr) {
-		return this.cacheData[$(tr).attr('cache-key')];
+		// tr 为 Element 元素时, 返回数据对象; 为 NodeList 类型时, 返回数组
+		// Element 无length属性, NodeList 会有length属性.
+		// 所以这里通过 .length进行区别. 如果为NodeList 且 length == 0 时,采用与 Element同样的返回类型
+		if(!tr.length){
+			return this.cacheData[tr.getAttribute('cache-key')];
+		}
+		const _this = this;
+		let rodData = [];
+		$.each(tr, function(i, v){
+			rodData.push(_this.cacheData[v.getAttribute('cache-key')])
+		});
+		return rodData;
 	}
 	/*
 	 * [对外公开方法]
