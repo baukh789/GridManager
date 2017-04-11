@@ -16,7 +16,7 @@ describe('Base: 验证方法总数', function() {
 	afterEach(function(){
 		getPropertyCount = null;
 	});
-	it('outLog', function() {
+	it('Function count', function() {
 		expect(getPropertyCount(Base)).toBe(9);
 	});
 });

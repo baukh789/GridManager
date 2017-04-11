@@ -18,8 +18,8 @@ const I18n = {
 		const _this = this;
 		let intrusion = [];
 		//处理参数，实现多态化
-		if(arguments.length == 2 && typeof(arguments[1]) == 'object'){
-			intrusion = arguments[1];
+		if(arguments.length == 3 && typeof(arguments[2]) == 'object'){
+			intrusion = arguments[2];
 		}
 		else if(arguments.length > 1){
 			for(let i=1; i< arguments.length; i++){

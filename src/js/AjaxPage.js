@@ -281,6 +281,7 @@ const AjaxPage = {
 			  toNum	    = _pageData_.cPage * _pageData_.pSize,	//到多少结束
 			  totalNum  = _pageData_.tSize;			//总共条数
 		const tmpHtml = I18n.i18nText($table, 'dataTablesInfo', [fromNum, toNum, totalNum]);
+		console.log(tmpHtml)
 		//根据返回值修正单页条数显示值
 		pSizeArea.val(_pageData_.pSize || 10);
 
