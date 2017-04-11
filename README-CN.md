@@ -157,11 +157,6 @@ npm install GridManager
 ### 7.想清除当前记忆的宽度及列位置时怎么办?
     可使用clear方法,调用方式:document.querySelector('table').GM('clear');
 
-## 版本信息
-[v2.2.x.md](/version/v2.2.x.md)
-[v2.1.x.md](/version/v2.1.x.md)
-
-
 ## 联系我
 QQ群号: 452781895
 

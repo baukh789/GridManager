@@ -156,10 +156,6 @@ You can clear the local storage which including the name of the current grid man
 ### 7.How to clear the width and the position of the list which are memorized?
 Using the mean of clear, method of calling : document.querySelector('table').GM('clear'); 
 
-## Version Information
-[v2.2.x.md](/version/v2.2.x.md)
-[v2.1.x.md](/version/v2.1.x.md)
-
 ## Contact me
 Tencent Group QQ number: 452781895
 
