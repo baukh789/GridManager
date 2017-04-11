@@ -79,6 +79,11 @@ const Core= {
 		Cache.updateSettings($table, Settings);
 
 		Base.showLoading(tableWrap);
+
+		// POST 请求方式 配置参数传递形式为 form data, 如果不配置将会使用request payload 形式
+		if(Settings.ajax_type.toUpperCase() === 'POST'){
+			Settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
+		}
 		//执行ajax
 		$.ajax({
 			url: Settings.ajax_url,
