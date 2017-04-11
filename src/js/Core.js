@@ -80,9 +80,12 @@ const Core= {
 
 		Base.showLoading(tableWrap);
 
-		// POST 请求方式 配置参数传递形式为 form data, 如果不配置将会使用request payload 形式
-		if(Settings.ajax_type.toUpperCase() === 'POST'){
-			Settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
+		// 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
+		// 说明|备注:
+		// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
+		// 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
+		if(Settings.ajax_type.toUpperCase() === 'POST' && !Settings.ajax_headers['Content-Type']){
+			// Settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
 		}
 		//执行ajax
 		$.ajax({
