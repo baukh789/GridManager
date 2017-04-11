@@ -82,7 +82,7 @@ const DOM = {
 		// 导出表格数据所需的事件源DOM
 		const exportActionHtml = Export.html();
 		// AJAX分页HTML
-		const _ajaxPageHtml= AjaxPage.html();
+		const _ajaxPageHtml= AjaxPage.html(table);
 		let	wrapHtml,   //外围的html片段
 			tableWarp,	//单个table所在的DIV容器
 			onlyThead,	//单个table下的thead

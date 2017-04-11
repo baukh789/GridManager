@@ -46,7 +46,6 @@ const Scroll = {
 				});
 				// 防止window.resize事件后导致的吸顶宽度错误. 可以优化
 				$.each($('th', _thead), function (i, v) {
-					console.log(v.getAttribute('th-name'), $(v).width());
 					$('th', _setTopHead).eq(i).width($(v).width());
 				});
 			}

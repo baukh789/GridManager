@@ -42,6 +42,9 @@ class GridManager {
 		var _settings = {};
 		jTool.extend(false, _settings, Settings, arg);
 		_this.updateSettings(jToolObj, _settings);
+
+		I18n.language = _settings.i18n;
+
 		jTool.extend(true, this, arg);
 
 		//通过版本较验 清理缓存

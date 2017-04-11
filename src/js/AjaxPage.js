@@ -7,13 +7,13 @@ import Core from './Core';
 import Cache from './Cache';
 import I18n from './I18n';
 const AjaxPage = {
-	html: function () {
+	html: function ($table) {
 		const html= `<div class="page-toolbar">
 						<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>
 						<div class="goto-page">
-							${ I18n.i18nText("goto-first-text") }
+							${ I18n.i18nText($table, "goto-first-text") }
 							<input type="text" class="gp-input"/>
-							${ I18n.i18nText("goto-last-text") }
+							${ I18n.i18nText($table, "goto-last-text") }
 						</div>
 						<div class="change-size"><select name="pSizeArea"></select></div>
 						<div class="dataTables_info"></div>
@@ -62,10 +62,10 @@ const AjaxPage = {
 			previousClassName += ' disabled';
 		}
 		tHtml+= `<li c-page="1" class="${ firstClassName }">
-					${ I18n.i18nText("first-page") }
+					${ I18n.i18nText($table, "first-page") }
 				</li>
 				<li c-page="${cPage-1}" class="${ previousClassName }">
-					${ I18n.i18nText("previous-page") }
+					${ I18n.i18nText($table, "previous-page") }
 				</li>`;
 		// 循环开始数
 		let i = 1;
@@ -113,10 +113,10 @@ const AjaxPage = {
 			lastClassName += ' disabled';
 		}
 		tHtml+= `<li c-page="${ cPage + 1 }" class="${ nextClassName }">
-					${ I18n.i18nText("next-page") }
+					${ I18n.i18nText($table, "next-page") }
 				</li>
 				<li c-page="${ tPage }" class="${ lastClassName }">
-					${ I18n.i18nText("last-page") }
+					${ I18n.i18nText($table, "last-page") }
 				</li>`;
 		pagination.html(tHtml);
 	}
@@ -280,7 +280,7 @@ const AjaxPage = {
 		const fromNum   = _pageData_.cPage == 1 ? 1 : (_pageData_.cPage-1) * _pageData_.pSize + 1,	//从多少开始
 			  toNum	    = _pageData_.cPage * _pageData_.pSize,	//到多少结束
 			  totalNum  = _pageData_.tSize;			//总共条数
-		const tmpHtml = I18n.i18nText('dataTablesInfo', [fromNum, toNum, totalNum]);
+		const tmpHtml = I18n.i18nText($table, 'dataTablesInfo', [fromNum, toNum, totalNum]);
 		//根据返回值修正单页条数显示值
 		pSizeArea.val(_pageData_.pSize || 10);
 

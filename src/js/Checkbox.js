@@ -7,29 +7,29 @@ import Cache from './Cache';
 const Checkbox = {
 	/*
 	 @初始化选择与反选DOM
-	 $.table: table DOM
+	 $table: table [jTool Object]
 	 */
-	initDOM: function(table) {
+	initDOM: function($table) {
 		let checkboxHtml = `<th th-name="gm_checkbox" gm-checkbox="true" gm-create="true">
 								<input type="checkbox"/>
 								<span style="display: none">
-									${ I18n.i18nText('checkall-text') }
+									${ I18n.i18nText($table, 'checkall-text') }
 								</span>
 							</th>`;
-		$('thead tr', table).prepend(checkboxHtml);
+		$('thead tr', $table).prepend(checkboxHtml);
 
 		//绑定选择事件
-		table.off('click','input[type="checkbox"]');
-		table.on('click','input[type="checkbox"]', function(){
+		$table.off('click','input[type="checkbox"]');
+		$table.on('click','input[type="checkbox"]', function(){
 			// 存储th中的checkbox的选中状态
 			let _thChecked= true;
 			// 全选键事件源
 			const _checkAction= $(this);
 			// th中的选择框
-			const _thCheckbox = $('thead th[gm-checkbox] input[type="checkbox"]', table);
+			const _thCheckbox = $('thead th[gm-checkbox] input[type="checkbox"]', $table);
 
 			// td中的选择框
-			const _tdCheckbox = $('tbody td[gm-checkbox] input[type="checkbox"]', table);
+			const _tdCheckbox = $('tbody td[gm-checkbox] input[type="checkbox"]', $table);
 			//当前为全选事件源
 			if(_checkAction.closest('th[th-name="gm_checkbox"]').length === 1){
 				$.each(_tdCheckbox, function(i, v){
@@ -51,18 +51,18 @@ const Checkbox = {
 	/*
 	 [对外公开方法]
 	 @获取当前选中的 tr
-	 $.table:当前操作的grid
+	 $table: table [jTool Object]
 	 */
-	,getCheckedTr: function(table) {
-		return $('tbody tr[checked="true"]', table).DOMList || [];
+	,getCheckedTr: function($table) {
+		return $('tbody tr[checked="true"]', $table).DOMList || [];
 	}
 	/*
 	 [对外公开方法]
 	 @获取当前选中的 tr 渲染时的数据,  返回值类型为数组
-	 $.table:当前操作的grid
+	 $table: table [jTool Object]
 	 */
-	,getCheckedData: function(table){
-		return Cache.getRowData(table, this.getCheckedTr(table))
+	,getCheckedData: function($table){
+		return Cache.getRowData($table, this.getCheckedTr(table))
 	}
 };
 export default Checkbox;
