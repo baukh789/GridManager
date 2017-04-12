@@ -79,4 +79,59 @@ const Settings = {
 	supportExport		: true						//支持导出表格数据
 };
 
-export default Settings;
+// 表格中使用到的国际化文本信息
+const TextSettings = function (){
+	this['order-text'] = {
+		'zh-cn':'序号',
+		'en-us':'order'
+	};
+	this['first-page'] = {
+		'zh-cn':'首页',
+		'en-us':'first'
+	};
+	this['previous-page'] = {
+		'zh-cn':'上一页',
+		'en-us':'previous'
+	};
+	this['next-page'] = {
+		'zh-cn':'下一页',
+		'en-us':'next'
+	};
+	this['last-page'] = {
+		'zh-cn':'尾页',
+		'en-us':'last'
+	};
+	this['dataTablesInfo'] = {
+		'zh-cn':'此页显示 {0}-{1} 共{2}条',
+		'en-us':'this page show {0}-{1} count {2}'
+	};
+	this['goto-first-text'] = {
+		'zh-cn':'跳转至',
+		'en-us':'goto'
+	};
+	this['goto-last-text'] = {
+		'zh-cn':'页',
+		'en-us':'page'
+	};
+	this['refresh'] = {
+		'zh-cn':'重新加载',
+		'en-us':'Refresh'
+	};
+	this['save-as-excel'] = {
+		'zh-cn':'另存为Excel',
+		'en-us':'Save as Excel'
+	};
+	this['save-as-excel-for-checked'] = {
+		'zh-cn':'已选中项另存为Excel',
+		'en-us':'Save selected as Excel'
+	};
+	this['setting-grid'] = {
+		'zh-cn':'配置表',
+		'en-us':'Setting Grid'
+	};
+	this['checkall-text'] = {
+		'zh-cn':'全选',
+		'en-us':'All'
+	};
+}
+export { Settings, TextSettings }

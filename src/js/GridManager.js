@@ -17,7 +17,7 @@ import Order from './Order';
 import Remind from './Remind';
 import Scroll from './Scroll';
 import Sort from './Sort';
-import Settings from './Settings';
+import { Settings, TextSettings } from './Settings';
 import DOM from './DOM';
 import { Hover } from './Hover';
 class GridManager {
@@ -39,12 +39,11 @@ class GridManager {
 			arg.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
 		}
 		// 配置参数
-		var _settings = {};
-		jTool.extend(false, _settings, Settings, arg);
+		var _settings = jTool.extend(true, {}, Settings);
+		console.log(arg.gridManagerName);
+		_settings.textConfig = new TextSettings();
+		jTool.extend(true, _settings, arg);
 		_this.updateSettings(jToolObj, _settings);
-
-		//  在这里将使用语言进行设定
-		I18n.language = _settings.i18n;
 
 		jTool.extend(true, this, _settings);
 

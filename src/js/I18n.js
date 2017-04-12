@@ -5,9 +5,13 @@ import Base from './Base';
 import Cache from './Cache';
 const I18n = {
 	//选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
-	getLanguage : (function($table){
+	getLanguage : function($table){
 		return Cache.getSettings($table).i18n;
-	})
+	}
+	// 指定[表格 键值 语言]获取对应文本
+	,getText: function($table, key, language){
+		return Cache.getSettings($table).textConfig[key][language] || '';
+	}
 	/*
 	 * @获取与当前配置国际化匹配的文本
 	 *  $table: table [jTool Object]
@@ -26,78 +30,20 @@ const I18n = {
 				intrusion.push(arguments[i]);
 			}
 		}
-		let _lg = '';
+		let _text = '';
 		try{
-			_lg = _this.textConfig[key][_this.getLanguage($table)] || '';
+			_text = _this.getText($table, key, _this.getLanguage($table));
 			if(!intrusion || intrusion.length == 0){
-				return _lg;
+				return _text;
 			}
-			_lg = _lg.replace(/{\d+}/g, function(word){
+			_text = _text.replace(/{\d+}/g, function(word){
 				return intrusion[word.match(/\d+/)];
 			});
-			return _lg;
+			return _text;
 		}catch (e){
 			Base.outLog('未找到与'+ key +'相匹配的'+ _this.getLanguage($table) +'语言', 'warn');
 			return '';
 		}
-	}
-	/*
-	 * 	@插件存在文本配置
-	 * */
-	,textConfig: {
-		'order-text': {
-			'zh-cn':'序号',
-			'en-us':'order'
-		}
-		,'first-page': {
-			'zh-cn':'首页',
-			'en-us':'first'
-		}
-		,'previous-page': {
-			'zh-cn':'上一页',
-			'en-us':'previous'
-		}
-		,'next-page': {
-			'zh-cn':'下一页',
-			'en-us':'next'
-		}
-		,'last-page': {
-			'zh-cn':'尾页',
-			'en-us':'last'
-		}
-		,'dataTablesInfo':{
-			'zh-cn':'此页显示 {0}-{1} 共{2}条',
-			'en-us':'this page show {0}-{1} count {2}'
-		}
-		,'goto-first-text':{
-			'zh-cn':'跳转至',
-			'en-us':'goto'
-		}
-		,'goto-last-text':{
-			'zh-cn':'页',
-			'en-us':'page'
-		}
-		,'refresh':{
-			'zh-cn':'重新加载',
-			'en-us':'Refresh'
-		}
-		,'save-as-excel':{
-			'zh-cn':'另存为Excel',
-			'en-us':'Save as Excel'
-		}
-		,'save-as-excel-for-checked':{
-			'zh-cn':'已选中项另存为Excel',
-			'en-us':'Save selected as Excel'
-		}
-		,'setting-grid':{
-			'zh-cn':'配置表',
-			'en-us':'Setting Grid'
-		}
-		,'checkall-text':{
-			'zh-cn':'全选',
-			'en-us':'All'
-		}
-
 	}
 };
 export default I18n;

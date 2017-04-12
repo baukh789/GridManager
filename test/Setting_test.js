@@ -2,7 +2,7 @@
  * Created by baukh on 17/3/12.
  */
 'use strict';
-var Settings = require('../src/js/Settings').default;
+import { Settings, textObject } from '../src/js/Settings';
 describe('Settings', function() {
 	it('test supportDrag initialize property', function() {
 		expect(Settings.supportDrag).toBe(true);

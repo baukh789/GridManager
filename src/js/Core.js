@@ -34,6 +34,7 @@ const Core= {
 	,__refreshGrid: function($table, callback){
 		const Settings = Cache.getSettings($table);
 		const tbodyDOM = $('tbody', $table),	//tbody dom
+			gmName = $table.attr('grid-manager'),
 			tableWrap = $table.closest('.table-wrap'),
 			refreshAction = $('.page-toolbar .refresh-action', tableWrap); //刷新按纽
 		//增加刷新中标识
@@ -85,7 +86,7 @@ const Core= {
 		// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
 		// 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
 		if(Settings.ajax_type.toUpperCase() === 'POST' && !Settings.ajax_headers['Content-Type']){
-			// Settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
+			Settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
 		}
 		//执行ajax
 		$.ajax({
@@ -141,7 +142,7 @@ const Core= {
 				tbodyDOM.html(tbodyTmpHTML);
 			}else {
 				$.each(_data, function(i, v){
-					Cache.setRowData(i, v);
+					Cache.setRowData(gmName, i, v);
 					tbodyTmpHTML += '<tr cache-key="'+ i +'">';
 					$.each(Settings.columnData, function(i2, v2){
 						key = v2.key;
