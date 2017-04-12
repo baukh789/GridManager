@@ -22,7 +22,7 @@ import DOM from './DOM';
 import { Hover } from './Hover';
 class GridManager {
 	constructor() {
-		this.version = '2.2.7';
+		this.version = '2.3.0';
 		this.extentGridManager();
 	}
 	/*
@@ -43,9 +43,10 @@ class GridManager {
 		jTool.extend(false, _settings, Settings, arg);
 		_this.updateSettings(jToolObj, _settings);
 
+		//  在这里将使用语言进行设定
 		I18n.language = _settings.i18n;
 
-		jTool.extend(true, this, arg);
+		jTool.extend(true, this, _settings);
 
 		//通过版本较验 清理缓存
 		_this.cleanTableCacheForVersion(jToolObj, this.version);
@@ -213,6 +214,10 @@ const publishList = [
 	'getRowData',			//获取当前行渲染时使用的数据
 	'getCheckedData',		//获取当前选中行渲染时使用的数据
 	'clear'					//清除指定表的表格记忆数据
+];
+// 对外公开但不建议使用 [即将删除 或 存在性能问题]
+const warnPublishList = [
+
 ];
 /*
 *  捆绑至选择器对象

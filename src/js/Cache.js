@@ -100,7 +100,12 @@ const Cache = {
 	* */
 	,cleanTableCacheForVersion: function(table, version) {
 		const cacheVersion = window.localStorage.getItem('GridManagerVersion');
-		if(!cacheVersion || cacheVersion !== version) {
+		// 当前为第一次渲染
+		if(!cacheVersion) {
+			window.localStorage.setItem('GridManagerVersion', version);
+		}
+		// 版本变更
+		if(cacheVersion && cacheVersion !== version) {
 			this.cleanTableCache(table, '版本已升级,原缓存被自动清除');
 			window.localStorage.setItem('GridManagerVersion', version);
 		}
