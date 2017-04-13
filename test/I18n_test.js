@@ -13,7 +13,7 @@ describe('I18n', function() {
 
 	// 注: 每个it 都会将 beforeEach 及 afterEach 中的内容执行一次
 	beforeEach(function(){
-		// 第一组设置为en-us
+		// 第一组设置为en-us, 且其中几项被重置
 		table_en = document.createElement('table');
 		table_en.setAttribute('grid-manager', 'test-i18n-en');
 		document.querySelector('body').appendChild(table_en);
@@ -21,6 +21,16 @@ describe('I18n', function() {
 		document.querySelector('table[grid-manager="test-i18n-en"]').GM({
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 			,disableCache: true
+			,textConfig: {
+				'order-text': {
+					'zh-cn':'序号被改动了',   // 由于当前设置为en-us; 所以zh-cn 中配置的文本不会生效
+					'en-us':'order'
+				},
+				'first-page': {
+					'zh-cn':'首页',
+					'en-us':'first page' // 将默认值 first 修改为 first page
+				}
+			}
 			,i18n: 'en-us'
 			,columnData: [
 				{
@@ -71,7 +81,7 @@ describe('I18n', function() {
 		expect( I18N.i18nText($table_cn, 'order-text') ).toBe('序号');
 
 		// 首页
-		expect( I18N.i18nText($table_en, 'first-page') ).toBe('first');
+		expect( I18N.i18nText($table_en, 'first-page') ).toBe('first page');
 		expect( I18N.i18nText($table_cn, 'first-page') ).toBe('首页');
 
 		// 上一页
