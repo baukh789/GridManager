@@ -1,7 +1,7 @@
 'use strict';
 import jTool from '../src/js/jTool';
-import Adjust from '../src/js/Adjust';
-describe('Adjust', function() {
+import Order from '../src/js/Order';
+describe('Order', function() {
 	let table = null;
 	let $table = null;
 
@@ -9,15 +9,12 @@ describe('Adjust', function() {
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
 
-		// 第一组设置为en-us, 且其中几项被重置
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', 'test-adjust');
 		document.querySelector('body').appendChild(table);
 		$table = jTool('table[grid-manager="test-adjust"]');
 		document.querySelector('table[grid-manager="test-adjust"]').GM({
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-			,disableCache: true
-			,i18n: 'en-us'
 			,columnData: [
 				{
 					key: 'name',
@@ -43,13 +40,13 @@ describe('Adjust', function() {
 		$table = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
 	});
-	it('验证获取html', function() {
-		expect(Adjust.html()).toBe('<span class="adjust-action"></span>');
-	});
 
-	it('验证方法[resetAdjust]返回值', function () {
-		expect(Adjust.resetAdjust()).toBe(false);
-		expect(Adjust.resetAdjust($table)).toBe(undefined);
+	it('验证自动生成列[序号,全选]宽度', function(){
+		let autoCreateCheckbox = jTool('th[th-name="gm_checkbox"]').width();
+		let autoCreateOrder = jTool('th[th-name="gm_order"]').width();
+		expect(autoCreateCheckbox).toBe(50);
+		expect(autoCreateOrder).toBe(50);
+		autoCreateCheckbox = null;
+		autoCreateOrder = null;
 	});
-
 });

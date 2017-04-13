@@ -102,6 +102,9 @@ const Adjust = {
 	 $.table: table[jTool Object]
 	 */
 	,resetAdjust: function($table){
+		if(!$table || $table.length == 0){
+			return false;
+		}
 		let _thList = $('thead [th-visible="visible"]', $table),
 			_adjustAction = $('.adjust-action', _thList);
 		if(!_adjustAction || _adjustAction.length == 0){

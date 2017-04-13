@@ -1,6 +1,5 @@
 'use strict';
-var AjaxPage = require('../src/js/AjaxPage').default;
-var I18n = require('../src/js/I18n').default;
+import AjaxPage from '../src/js/AjaxPage';
 describe('AjaxPage: 验证方法是否存在', function() {
 	it('html', function() {
 		expect(AjaxPage.html).toBeDefined();
