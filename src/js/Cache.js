@@ -35,7 +35,6 @@ const Cache = {
 		$.each(tr, function(i, v){
 			rodData.push(_this.cacheData[gmName][v.getAttribute('cache-key')])
 		});
-		console.log(rodData)
 		return rodData;
 	}
 	/*

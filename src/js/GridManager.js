@@ -40,7 +40,6 @@ class GridManager {
 		}
 		// 配置参数
 		var _settings = jTool.extend(true, {}, Settings);
-		console.log(arg.gridManagerName);
 		_settings.textConfig = new TextSettings();
 		jTool.extend(true, _settings, arg);
 		_this.updateSettings(jToolObj, _settings);
