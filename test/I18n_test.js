@@ -13,7 +13,7 @@ describe('I18n', function() {
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
-		
+
 		// 第一组设置为en-us, 且其中几项被重置
 		table_en = document.createElement('table');
 		table_en.setAttribute('grid-manager', 'test-i18n-en');
@@ -64,7 +64,6 @@ describe('I18n', function() {
 		});
 	});
 	afterAll(function () {
-		console.log('afterAll');
 		document.querySelector('body').innerHTML = '';
 		table_en = null;
 		table_cn = null;

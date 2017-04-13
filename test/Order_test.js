@@ -15,6 +15,7 @@ describe('Order', function() {
 		$table = jTool('table[grid-manager="test-adjust"]');
 		document.querySelector('table[grid-manager="test-adjust"]').GM({
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+			,disableCache: true
 			,columnData: [
 				{
 					key: 'name',

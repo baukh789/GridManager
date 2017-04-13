@@ -279,7 +279,7 @@ const Cache = {
 		_cache.th = _thCache;
 		//存储分页
 		if(Settings.supportAjaxPage){
-			_pageCache.pSize = $('select[name="pSizeArea"]', _table.closest('.table-wrap')).val();
+			_pageCache.pSize = parseInt($('select[name="pSizeArea"]', _table.closest('.table-wrap')).val());
 			_cache.page = _pageCache;
 		}
 		const _cacheString = JSON.stringify(_cache);

@@ -42,16 +42,25 @@ const AjaxPage = {
 		_this.bindSetPageSizeEvent($table);
 	}
 	/**
-	 * 生成分页DOM节点据
+	 * 生成页码DOM节点
 	 * @param $table [jTool object]
-	 * @param _pageData_  分页数据格式
+	 * @param pageData  分页数据格式
 	 */
-	,createPageDOM: function($table, _pageData_){
+	,createPaginationDOM: function($table, pageData){
 		const tableWarp = $table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 			pagination	= $('.pagination', pageToolbar);		//分页区域
-		let cPage = Number(_pageData_.cPage || 0),		//当前页
-			tPage = Number(_pageData_.tPage || 0),		//总页数
+		pagination.html( this.joinPagination($table, pageData) );
+	}
+	/*
+	* 拼接页码字符串
+	 * @param $table: [table jTool object]
+	 * @param cPage: 当前页码
+	 * @param pageData  分页数据格式
+	* */
+	,joinPagination: function($table, pageData){
+		let cPage = Number(pageData.cPage || 0),		//当前页
+			tPage = Number(pageData.tPage || 0),		//总页数
 			tHtml = '',					//临时存储分页HTML片段
 			lHtml = '';					//临时存储末尾页码THML片段
 		//配置首页
@@ -88,7 +97,7 @@ const AjaxPage = {
 			lHtml+= `<li class="disabled">
 						...
 					</li>
-					<li c-page="'+tPage+'">
+					<li c-page="${ tPage }">
 						${ tPage }
 					</li>`;
 		}
@@ -112,13 +121,13 @@ const AjaxPage = {
 			nextClassName += ' disabled';
 			lastClassName += ' disabled';
 		}
-		tHtml+= `<li c-page="${ cPage + 1 }" class="${ nextClassName }">
+		tHtml += `<li c-page="${ cPage + 1 }" class="${ nextClassName }">
 					${ I18n.i18nText($table, "next-page") }
 				</li>
 				<li c-page="${ tPage }" class="${ lastClassName }">
 					${ I18n.i18nText($table, "last-page") }
 				</li>`;
-		pagination.html(tHtml);
+		return tHtml;
 	}
 	/**
 	 * 生成每页显示条数选择框据
@@ -263,7 +272,7 @@ const AjaxPage = {
 	}
 
 	/**
-	 * 重置当前页显示条数据
+	 * 重置每页显示条数, 重置条数文字信息 [注: 这个方法只做显示更新, 不操作Cache 数据]
 	 * @param $table: [table jTool object]
 	 * @param _pageData_: 分页数据格式
 	 * @returns {boolean}
@@ -284,7 +293,7 @@ const AjaxPage = {
 		//根据返回值修正单页条数显示值
 		pSizeArea.val(_pageData_.pSize || 10);
 
-		//修改单页条数文字信息
+		//修改条数文字信息
 		pSizeInfo.html(tmpHtml);
 		pSizeArea.show();
 	}
@@ -300,25 +309,30 @@ const AjaxPage = {
 			return;
 		}
 		const _pageData = getPageData(totals);
-		//生成分页DOM节点
-		_this.createPageDOM($table, _pageData);
-		//重置当前页显示条数
+		// 生成页码DOM节点
+		_this.createPaginationDOM($table, _pageData);
+
+		// 重置当前页显示条数
 		_this.resetPSize($table, _pageData);
+
+		// 更新Cache
 		Cache.updateSettings($table, $.extend(true, Settings, {pageData: _pageData}));
-		const tableWarp 	= $table.closest('.table-wrap'),
-			  pageToolbar   = $('.page-toolbar', tableWarp);	//分页工具条
+
+		const tableWarp = $table.closest('.table-wrap');
+		//分页工具条
+		const pageToolbar = $('.page-toolbar', tableWarp);
 		pageToolbar.show();
 
-		//计算分页数据
+		// 计算分页数据
 		function getPageData(tSize){
 			const _pSize = Settings.pageData.pSize || Settings.pageSize,
 				  _tSize = tSize,
 				  _cPage = Settings.pageData.cPage || 1;
 			return {
-				tPage: Math.ceil(_tSize / _pSize),		//总页数
-				cPage: _cPage,							//当前页
-				pSize: _pSize,							//每页显示条数
-				tSize: _tSize							//总条路
+				tPage: Math.ceil(_tSize / _pSize),		// 总页数
+				cPage: _cPage,							// 当前页
+				pSize: _pSize,							// 每页显示条数
+				tSize: _tSize							// 总条路
 			}
 		}
 	}
@@ -328,10 +342,13 @@ const AjaxPage = {
 	 */
 	,configPageForCache: function($table){
 		const Settings = Cache.getSettings($table);
-		let _data  = Cache.getLocalStorage($table),		//本地缓存的数据
-			_cache = _data.cache,		//缓存对应
-			_pSize;			 //每页显示条数
-		//验证是否存在每页显示条数缓存数据
+		let _data = Cache.getLocalStorage($table);
+		// 缓存对应
+		let	_cache = _data.cache;
+		// 每页显示条数
+		let	_pSize = null;
+
+		// 验证是否存在每页显示条数缓存数据
 		if(!_cache || !_cache.page || !_cache.page.pSize){
 			_pSize = Settings.pageSize || 10.
 		}

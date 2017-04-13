@@ -670,28 +670,35 @@ table[grid-manager].GridManager-ready{
 }
 .table-wrap .page-toolbar .ajax-page{
 	position: absolute;
-	right:0px;
+	height: 30px;
+	right:0;
 	bottom:5px;
+}
+.table-wrap .page-toolbar .ajax-page:after{
+	clear: both;
 }
 .table-wrap .page-toolbar .ajax-page .pagination{
 	display: inline-block;
 }
 .pagination > li{
-	display: inline-block;
+	display: block;
+	min-width: 30px;
 	height:30px;
+	float: left;
 	padding: 5px 10px;
 	background-color: #fff;
 	border: 1px solid #ddd;
+	border-left: none;
 	color: #3276b1;
-	margin-left: -1px;
 	position: relative;
 	line-height: 18px;
+	text-align: center;
 	cursor: default;
 }
 .pagination > li:first-child{
 	border-bottom-left-radius: 2px;
 	border-top-left-radius: 2px;
-	margin-left: 0;
+	border-left: 1px solid #ddd;
 }
 .pagination li.disabled,
 .pagination li.disabled:focus, .pagination li.disabled:hover {
@@ -703,7 +710,6 @@ table[grid-manager].GridManager-ready{
 .pagination li.active,
 .pagination li.active:focus, .pagination li.active:hover {
 	background-color: #3276b1;
-	border-color: #3276b1;
 	color: #fff;
 	z-index: 2;
 }
@@ -719,7 +725,7 @@ table[grid-manager].GridManager-ready{
 	max-height: 200px;
 	position:absolute;
 	border:1px solid #ccc;
-	padding:5px 0px;
+	padding:5px 0;
 	background-color:#fff;
 	z-index:3;
 }
