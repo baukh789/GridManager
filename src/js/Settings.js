@@ -133,5 +133,5 @@ const TextSettings = function (){
 		'zh-cn':'全选',
 		'en-us':'All'
 	};
-}
+};
 export { Settings, TextSettings }

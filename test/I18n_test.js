@@ -65,7 +65,7 @@ describe('I18n', function() {
 		expect( I18N.getLanguage($table_cn) ).toBe('zh-cn');
 	});
 
-	it('验证文本内容', function() {
+	it('验证国际化文本内容', function() {
 		// 序号
 		expect( I18N.i18nText($table_en, 'order-text') ).toBe('order');
 		expect( I18N.i18nText($table_cn, 'order-text') ).toBe('序号');
