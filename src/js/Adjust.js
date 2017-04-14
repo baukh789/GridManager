@@ -83,8 +83,8 @@ const Adjust = {
 			_table.bind('mouseup mouseleave', function(event) {
 				const Settings = Cache.getSettings($table);
 				_table.unbind('mousemove mouseleave');
-				//缓存列表宽度信息
-				Cache.setToLocalStorage(_table);
+				// 存储用户记忆
+				Cache.saveUserMemory(_table);
 				if(_th.hasClass('adjust-selected')) {  // 其它操作也在table以该事件进行绑定,所以通过class进行区别
 					// 宽度调整成功回调事件
 					Settings.adjustAfter(event);

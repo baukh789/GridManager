@@ -126,7 +126,7 @@ const Config = {
 					$(v).width(_thWidth);
 				}
 			});
-			Cache.setToLocalStorage(_table);	//缓存信息
+			Cache.saveUserMemory(_table);	// 存储用户记忆
 		});
 	}
 };

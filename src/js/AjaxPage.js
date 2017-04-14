@@ -261,7 +261,7 @@ const AjaxPage = {
 				pSize : parseInt(_size.val())
 			};
 
-			Cache.setToLocalStorage(_table);
+			Cache.saveUserMemory(_table);
 			// 更新缓存
 			Cache.updateSettings($table, settings);
 			//调用事件、渲染tbody

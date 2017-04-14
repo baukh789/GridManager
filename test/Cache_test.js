@@ -163,7 +163,7 @@ describe('Cache.js', function() {
 
 	it('Cache.getLocalStorage($table)', function() {
 		expect(Cache.getLocalStorage($table)).toEqual({});
-		Cache.setToLocalStorage($table);
+		Cache.saveUserMemory($table);
 		expect(Cache.getLocalStorage($table).key).toBe('/context.html-test-cache');
 		expect(Cache.getLocalStorage($table).cache.th).toBeDefined();
 	});

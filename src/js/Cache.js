@@ -1,21 +1,26 @@
 /*
 * @Cache: 本地缓存
+* 缓存分为三部分:
+* 1.gridData: 渲染表格时所使用的json数据
+* 2.coreData: 核心缓存数据,
+* 3.userMemory: 用户记忆
 * */
 import $ from './jTool';
 import Base from './Base';
-const Cache = {
-	/*
-	* @存储渲染表格使用的数据
-	* 通过每个tr上的cache-key进行获取
-	* */
-	responseData: {}
+
+/*
+ * @渲染表格使用的json数据
+ * 通过每个tr上的cache-key进行获取
+ * */
+const GridData = function(){
+	this.responseData = {};
 	/*
 	 * [对外公开方法]
 	 * @获取当前行渲染时使用的数据
 	 * $table: 当前操作的grid,由插件自动传入
 	 * tr: 将要获取数据所对应的tr[Element or NodeList]
 	 * */
-	,getRowData: function($table, tr) {
+	this.getRowData = function($table, tr) {
 		// tr 为 Element 元素时, 返回数据对象; 为 NodeList 类型时, 返回数组
 		const gmName = $table.attr('grid-manager');
 		if(!gmName){
@@ -35,39 +40,159 @@ const Cache = {
 			rodData.push(_this.responseData[gmName][v.getAttribute('cache-key')])
 		});
 		return rodData;
-	}
+	};
 	/*
 	 * 存储行数据
 	 * */
-	,setRowData: function(gmName, key, value) {
+	this.setRowData = function(gmName, key, value) {
 		if(!this.responseData[gmName]){
 			this.responseData[gmName] = {};
 		}
 		this.responseData[gmName][key] = value;
-	}
+	};
+};
+/*
+* 用户记忆
+* */
+const UserMemory = function(){
 	/*
-	 * [对外公开方法]
-	 * @清除指定表的缓存数据
+	 * 删除用户记忆
 	 * $table: table [jTool Object]
-	 * return 成功或者失败的布尔值
 	 * */
-	,clear: function($table) {
+	this.delUserMemory = function($table) {
 		if(!$table || $table.length === 0) {
 			return false;
 		}
-		const _key = this.getLocalStorageKey($table);
+		const _key = this.getMemoryKey($table);
 		if (!_key) {
 			return false;
 		}
 		window.localStorage.removeItem(_key);
 		return true;
-	}
+	};
+	/*
+	 * 获取表格的用户记忆标识码
+	 * $table: table jTool
+	 * */
+	this.getMemoryKey = function($table) {
+		const settings = this.getSettings($table);
+		// 验证table是否有效
+		if(!$table || $table.length === 0) {
+			Base.outLog('getLocalStorage:无效的table', 'error');
+			return false;
+		}
+		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
+		const noCache = $table.attr('no-cache');
+		if(noCache && noCache== 'true') {
+			Base.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
+			return false;
+		}
+		if(!window.localStorage){
+			Base.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
+			return false;
+		}
+		return window.location.pathname +  window.location.hash + '-'+ settings.gridManagerName;
+	};
+	/*
+	 * @获取用户记忆
+	 * $table:table
+	 * 成功则返回本地存储数据,失败则返回空对象
+	 * */
+	this.getUserMemory = function($table) {
+		const _key = this.getMemoryKey($table);
+		if(!_key) {
+			return {};
+		}
+		const _localStorage = window.localStorage.getItem(_key);
+		//如无数据，增加属性标识：grid-manager-cache-error
+		if(!_localStorage){
+			$table.attr('grid-manager-cache-error','error');
+			return {};
+		}
+		const _data = {
+			key: _key,
+			cache: JSON.parse(_localStorage)
+		};
+		return _data;
+	};
+	/*
+	 * @存储用户记忆
+	 * $table:table [jTool object]
+	 * isInit: 是否为初始存储缓存[用于处理宽度在特定情况下发生异常]
+	 */
+	// TODO @baukh20170414: 参数isInit 已经废弃, 之后可以删除
+	this.saveUserMemory = function(table, isInit){
+		const Settings = Cache.getSettings(table);
+		const _this = this;
+		//当前为禁用缓存模式，直接跳出
+		if (Settings.disableCache) {
+			return false;
+		}
+		const _table = $(table);
+		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
+		const noCache = _table.attr('no-cache');
+		if(!_table || _table.length == 0){
+			Base.outLog('saveUserMemory:无效的table', 'error');
+			return false;
+		}
+		if(noCache && noCache== 'true'){
+			Base.outLog('缓存功能已被禁用：当前表缺失必要参数', 'info');
+			return false;
+		}
+		if(!window.localStorage) {
+			Base.outLog('当前浏览器不支持：localStorage，缓存功能失效。', 'error');
+			return false;
+		}
+		const thList = $('thead[grid-manager-thead] th', _table);
+		if(!thList || thList.length == 0){
+			Base.outLog('saveUserMemory:无效的thList,请检查是否正确配置table,thead,th', 'error');
+			return false;
+		}
+
+		let _cache   	= {},
+			_pageCache 	= {},
+			_thCache	= [],
+			_thData 	= {};
+
+		let $v;
+		$.each(thList, (i, v) => {
+			$v = $(v);
+			_thData = {};
+			_thData.th_name = $v.attr('th-name');
+			if(Settings.supportDrag){
+				_thData.th_index = $v.index();
+			}
+			if(Settings.supportAdjust){
+				//用于处理宽度在特定情况下发生异常
+				// isInit ? $v.css('width', $v.css('width')) : '';
+				_thData.th_width = $v.width();
+			}
+			if(Settings.supportConfig){
+				_thData.isShow = $('.config-area li[th-name="'+ _thData.th_name +'"]', _table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
+			}
+			_thCache.push(_thData);
+		});
+		_cache.th = _thCache;
+		//存储分页
+		if(Settings.supportAjaxPage){
+			_pageCache.pSize = parseInt($('select[name="pSizeArea"]', _table.closest('.table-wrap')).val());
+			_cache.page = _pageCache;
+		}
+		const _cacheString = JSON.stringify(_cache);
+		window.localStorage.setItem(_this.getMemoryKey(_table), _cacheString);
+		return _cacheString;
+	};
+};
+/*
+* 
+* */
+const Cache = {
 	/*
 	 [对外公开方法]
 	 @获取 GridManager 实例
 	 $table:table [jTool object]
 	 */
-	,get: function($table) {
+	get: function($table) {
 		return this.__getGridManager($table);
 	}
 	/*
@@ -76,11 +201,8 @@ const Cache = {
 	 * $table:table [jTool object]
 	 * */
 	,getSettings: function($table) {
-		// 这里返回的是clone 对象而非对象本身
+		// 这里返回的是clone对象 而非对象本身
 		return $.extend(true, {}, $table.data('settings'));
-	}
-	,cloneSettings: function(){
-
 	}
 	/*
 	* 更新配置项
@@ -114,31 +236,8 @@ const Cache = {
 	* */
 	,cleanTableCache: function(table, cleanText) {
 		const Settings = Cache.getSettings(table);
-		this.clear(table);
+		this.delUserMemory(table);
 		Base.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：'+ cleanText, 'info');
-	}
-	/*
-	 * 获取指定表格本地存储所使用的key
-	 * table: table jTool
-	 * */
-	,getLocalStorageKey: function(table) {
-		const Settings = Cache.getSettings(table);
-		// 验证table是否有效
-		if(!table || table.length === 0) {
-			Base.outLog('getLocalStorage:无效的table', 'error');
-			return false;
-		}
-		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-		const noCache = table.attr('no-cache');
-		if(noCache && noCache== 'true') {
-			Base.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
-			return false;
-		}
-		if(!window.localStorage){
-			Base.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
-			return false;
-		}
-		return window.location.pathname +  window.location.hash + '-'+ Settings.gridManagerName;
 	}
 	/*
 	* @根据本地缓存thead配置列表: 获取本地缓存, 存储原位置顺序, 根据本地缓存进行配置
@@ -208,134 +307,67 @@ const Cache = {
 		}
 	}
 	/*
-	 [对外公开方法]
-	 @获取指定表格的本地存储数据
-	 $.table:table
-	 成功则返回本地存储数据,失败则返回空对象
-	 */
-	,getLocalStorage: function($table) {
-		const _key = this.getLocalStorageKey($table);
-		if(!_key) {
-			return {};
-		}
-		const _localStorage = window.localStorage.getItem(_key);
-		//如无数据，增加属性标识：grid-manager-cache-error
-		if(!_localStorage){
-			$table.attr('grid-manager-cache-error','error');
-			return {};
-		}
-		const _data = {
-			key: _key,
-			cache: JSON.parse(_localStorage)
-		};
-		return _data;
+	* [对外公开方法]
+	* @获取指定表格的本地存储数据
+	* $table: table [jTool Object]
+	* 成功则返回本地存储数据,失败则返回空对象
+	* */
+	,getLocalStorage: function($table){
+		return this.getUserMemory($table);
 	}
 	/*
-	 @保存至本地缓存
-	 $table:table [jTool object]
-	 isInit: 是否为初始存储缓存[用于处理宽度在特定情况下发生异常]
-	 */
-	// TODO @baukh20170414: 参数isInit 已经废弃, 之后可以删除
-	,setToLocalStorage: function(table, isInit){
-		const Settings = Cache.getSettings(table);
-		const _this = this;
-		//当前为禁用缓存模式，直接跳出
-		if (Settings.disableCache) {
-			return false;
-		}
-		const _table = $(table);
-		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-		const noCache = _table.attr('no-cache');
-		if(!_table || _table.length == 0){
-			Base.outLog('setToLocalStorage:无效的table', 'error');
-			return false;
-		}
-		if(noCache && noCache== 'true'){
-			Base.outLog('缓存功能已被禁用：当前表缺失必要参数', 'info');
-			return false;
-		}
-		if(!window.localStorage) {
-			Base.outLog('当前浏览器不支持：localStorage，缓存功能失效。', 'error');
-			return false;
-		}
-		const thList = $('thead[grid-manager-thead] th', _table);
-		if(!thList || thList.length == 0){
-			Base.outLog('setToLocalStorage:无效的thList,请检查是否正确配置table,thead,th', 'error');
-			return false;
-		}
-
-		let _cache   	= {},
-			_pageCache 	= {},
-			_thCache	= [],
-			_thData 	= {};
-
-		let $v;
-		$.each(thList, (i, v) => {
-			$v = $(v);
-			_thData = {};
-			_thData.th_name = $v.attr('th-name');
-			if(Settings.supportDrag){
-				_thData.th_index = $v.index();
-			}
-			if(Settings.supportAdjust){
-				//用于处理宽度在特定情况下发生异常
-				// isInit ? $v.css('width', $v.css('width')) : '';
-				_thData.th_width = $v.width();
-			}
-			if(Settings.supportConfig){
-				_thData.isShow = $('.config-area li[th-name="'+ _thData.th_name +'"]', _table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
-			}
-			_thCache.push(_thData);
-		});
-		_cache.th = _thCache;
-		//存储分页
-		if(Settings.supportAjaxPage){
-			_pageCache.pSize = parseInt($('select[name="pSizeArea"]', _table.closest('.table-wrap')).val());
-			_cache.page = _pageCache;
-		}
-		const _cacheString = JSON.stringify(_cache);
-		window.localStorage.setItem(_this.getLocalStorageKey(_table), _cacheString);
-		return _cacheString;
+	 * [对外公开方法]
+	 * @清除表格记忆数据
+	 * $table: table [jTool Object]
+	 * return 成功或者失败的布尔值
+	 * */
+	,clear:function($table){
+		return this.delUserMemory($table);
 	}
 	/*
 	 @存储原Th DOM至table data
-	 $.table: table [jTool object]
+	 $table: table [jTool object]
 	 */
-	,setOriginalThDOM: function(table) {
+	,setOriginalThDOM: function($table) {
 		const _thList = [];
-		const _thDOM = $('thead[grid-manager-thead] th', table);
+		const _thDOM = $('thead[grid-manager-thead] th', $table);
 
 		$.each(_thDOM,  (i, v) => {
 			_thList.push(v.getAttribute('th-name'));
 		});
-		table.data('originalThList', _thList);
+		$table.data('originalThList', _thList);
 	}
 	/*
 	 @获取原Th DOM至table data
-	 $.table: table [jTool object]
+	 $table: table [jTool object]
 	 */
-	,getOriginalThDOM: function(table) {
+	,getOriginalThDOM: function($table) {
 		const _thArray = [];
-		const _thList = $(table).data('originalThList');
+		const _thList = $table.data('originalThList');
 
 		$.each(_thList, (i, v) => {
-			_thArray.push($('thead[grid-manager-thead] th[th-name="'+ v +'"]', table).get(0));
+			_thArray.push($('thead[grid-manager-thead] th[th-name="'+ v +'"]', $table).get(0));
 		});
 		return $(_thArray);
 	}
 	/*
-	 @存储对外实例
-	 $.table:当前被实例化的table
-	 */
+	* @存储对外实例
+	* $table:当前被实例化的table
+	* */
 	,setGridManagerToJTool: function($table) {
-		$table.data('gridManager', this);
+		$table.data('gridManager', this);  // 调用的地方需要使用call 更改 this指向
 	}
 	/*
 	 @获取gridManager
 	 $.table:table [jTool object]
 	 */
 	,__getGridManager: function($table) {
-		return $table.data('gridManager');
+		const settings = this.getSettings($table);
+		const gridManager = $table.data('gridManager');
+		// 会一并被修改 $table.data('gridManager') 指向的 Object
+		$.extend(gridManager, settings);
+		return gridManager;
 	}
 };
+$.extend(Cache, new UserMemory(), new GridData());
 export default Cache;

@@ -168,8 +168,8 @@ const Drag = {
 						Settings.dragAfter(event);
 					});
 				}
-				//缓存列表位置信息
-				Cache.setToLocalStorage(_table);
+				// 存储用户记忆
+				Cache.saveUserMemory(_table);
 
 				//重置调整宽度事件源
 				if(Settings.supportAdjust){
