@@ -2,7 +2,7 @@
 import jTool from '../src/js/jTool';
 import AjaxPage from '../src/js/AjaxPage';
 import Cache from '../src/js/Cache';
-describe('AjaxPage', function() {
+describe('AjaxPage.js', function() {
 	let table = null;
 	let $table = null;
 	let pagingBefore = null;

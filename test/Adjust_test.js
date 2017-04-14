@@ -1,7 +1,7 @@
 'use strict';
 import jTool from '../src/js/jTool';
 import Adjust from '../src/js/Adjust';
-describe('Adjust', function() {
+describe('Adjust.js', function() {
 	let table = null;
 	let $table = null;
 
@@ -9,7 +9,6 @@ describe('Adjust', function() {
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
 
-		// 第一组设置为en-us, 且其中几项被重置
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', 'test-adjust');
 		document.querySelector('body').appendChild(table);

@@ -25,10 +25,10 @@ const Base = {
 	/*
 	 [对外公开方法]
 	 @显示Th及对应的TD项
-	 table: table [jTool Object]
+	 $table: table [jTool Object]
 	 th: th
 	 */
-	,showTh: function(table, th){
+	,showTh: function($table, th){
 		this.setAreVisible($(th), true);
 	}
 	/*
@@ -42,15 +42,14 @@ const Base = {
 	}
 	/*
 	 * @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
-	 * $.th: jTool th
+	 * $th: jTool th
 	 * */
-	,getColTd: function(th) {
-		const tableWrap = th.closest('.table-wrap'),
-			    thIndex = th.index(),
+	,getColTd: function($th) {
+		const tableWrap = $th.closest('.table-wrap'),
+			    thIndex = $th.index(),
 			     trList = $('tbody tr', tableWrap);
-
-		let tdList = [],
-		    _td;
+		let tdList= [];
+		let _td = null;
 		$.each(trList, (i, v) => {
 			_td = $('td', v).get(thIndex);
 			if(_td){
@@ -130,17 +129,15 @@ const Base = {
 
 	/*
 	 @获取TH宽度
-	 $.element: th
+	 @th: th
 	 */
-	,getTextWidth: function(element){
-		const th 	= $(element);
-		const thWarp 		= $('.th-wrap', th),  			//th下的GridManager包裹容器
-			thText	 		= $('.th-text', th),			//文本所在容器
-			remindAction	= $('.remind-action', thWarp),	//提醒所在容器
-			sortingAction	= $('.sorting-action', thWarp);	//排序所在容器
+	,getTextWidth: function(th){
+		const $th = $(th);
+		const thWarp = $('.th-wrap', $th); // th下的GridManager包裹容器
+		const thText = $('.th-text', $th); // 文本所在容器
 
 		//文本镜象 用于处理实时获取文本长度
-		const tableWrap = th.closest('.table-wrap');
+		const tableWrap = $th.closest('.table-wrap');
 		const textDreamland	= $('.text-dreamland', tableWrap);
 
 		//将th文本嵌入文本镜象 用于获取文本实时宽度
@@ -155,10 +152,12 @@ const Base = {
 		const thWidth = textDreamland.width()
 						+ (thPaddingLeft ? thPaddingLeft : 0)
 						+ (thPaddingRight ? thPaddingRight : 0);
-						// + (remindAction.length == 1 ? 20 : 5)
-						// + (sortingAction.length == 1 ? 20 : 5);
 		return thWidth;
 	}
+	/*
+	* 显示加载中动画
+	* @dom
+	* */
 	,showLoading: function (dom ,cb) {
 		if (!dom || dom.length === 0) {
 			return;
@@ -179,6 +178,10 @@ const Base = {
 			typeof(cb) === 'function' ? cb() : '';
 		}, 100);
 	},
+	/*
+	 * 隐藏加载中动画
+	 * @dom
+	 * */
 	hideLoading: function (dom, cb) {
 		if (!dom || dom.length === 0) {
 			return;
