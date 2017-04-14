@@ -40,15 +40,14 @@ const Cache = {
 	/*
 	 * [对外公开方法]
 	 * @清除指定表的缓存数据
-	 * $.table:table
+	 * $table: table [jTool Object]
 	 * return 成功或者失败的布尔值
 	 * */
-	,clear: function(table) {
-		if(!table) {
+	,clear: function($table) {
+		if(!$table || $table.length === 0) {
 			return false;
 		}
-		const _table = $(table);
-		const _key = this.getLocalStorageKey(_table);
+		const _key = this.getLocalStorageKey($table);
 		if (!_key) {
 			return false;
 		}
@@ -57,45 +56,26 @@ const Cache = {
 	}
 	/*
 	 [对外公开方法]
-	 @获取指定表格的本地存储数据
-	 $.table:table
-	 成功则返回本地存储数据,失败则返回空对象
+	 @获取 GridManager 实例
+	 $table:table [jTool object]
 	 */
-	,getLocalStorage: function(table) {
-		const _table = $(table);
-		const _key = this.getLocalStorageKey(_table);
-
-		if(!_key) {
-			return {};
-		}
-
-		const _localStorage = window.localStorage.getItem(_key);
-		//如无数据，增加属性标识：grid-manager-cache-error
-		if(!_localStorage){
-			_table.attr('grid-manager-cache-error','error');
-			return {};
-		}
-
-		const _data = {
-			key: _key,
-			cache: JSON.parse(_localStorage)
-		};
-		return _data;
+	,get: function($table) {
+		return this.__getGridManager($table);
 	}
 	/*
-	 [对外公开方法]
-	 @通过jTool实例获取gridManager
-	 $.table:table [jTool object]
-	 */
-	,get: function(table) {
-		return this.__getGridManager(table);
+	 * 获取配置项
+	 * $table:table [jTool object]
+	 * */
+	,getSettings: function($table) {
+		return $.extend(true, {}, $table.data('settings'));
 	}
-	,updateSettings:  function(table, settings) {
+	/*
+	* 更新配置项
+	* $table:table [jTool object]
+	* */
+	,updateSettings:  function($table, settings) {
 		const data = $.extend(true, {}, settings);
-		table.data('settings', data);
-	}
-	,getSettings: function(table) {
-		return table.data('settings');
+		$table.data('settings', data);
 	}
 	,setRowData: function(gmName, key, value) {
 		if(!this.cacheData[gmName]){
@@ -221,10 +201,34 @@ const Cache = {
 		}
 	}
 	/*
-	 @保存至本地缓存
-	 $.table:table [jTool object]
-	 $.isInit: 是否为初始存储缓存[用于处理宽度在特定情况下发生异常]
+	 [对外公开方法]
+	 @获取指定表格的本地存储数据
+	 $.table:table
+	 成功则返回本地存储数据,失败则返回空对象
 	 */
+	,getLocalStorage: function($table) {
+		const _key = this.getLocalStorageKey($table);
+		if(!_key) {
+			return {};
+		}
+		const _localStorage = window.localStorage.getItem(_key);
+		//如无数据，增加属性标识：grid-manager-cache-error
+		if(!_localStorage){
+			$table.attr('grid-manager-cache-error','error');
+			return {};
+		}
+		const _data = {
+			key: _key,
+			cache: JSON.parse(_localStorage)
+		};
+		return _data;
+	}
+	/*
+	 @保存至本地缓存
+	 $table:table [jTool object]
+	 isInit: 是否为初始存储缓存[用于处理宽度在特定情况下发生异常]
+	 */
+	// TODO @baukh20170414: 参数isInit 已经废弃, 之后可以删除
 	,setToLocalStorage: function(table, isInit){
 		const Settings = Cache.getSettings(table);
 		const _this = this;
