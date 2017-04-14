@@ -18,8 +18,8 @@ const DOM = {
 	 $.table: table[jTool对象]
 	 */
 	createDOM: function(table){
-		let Settings = Cache.getSettings(table);
-		table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', Settings.gridManagerName);
+		let settings = Cache.getSettings(table);
+		table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', settings.gridManagerName);
 		let theadHtml = '<thead grid-manager-thead>',
 			tbodyHtml = '<tbody></tbody>',
 			alignAttr = '', 				//文本对齐属性
@@ -27,21 +27,23 @@ const DOM = {
 			remindHtml = '',				//提醒对应的html片段
 			sortingHtml	= '';				//排序对应的html片段
 		// 通过配置项[columnData]生成thead
-		$.each(Settings.columnData, function(i, v){
+		$.each(settings.columnData, function(i, v){
 			// 表头提醒
-			if(Settings.supportRemind && typeof(v.remind) === 'string' && v.remind !== ''){
+			if(settings.supportRemind && typeof(v.remind) === 'string' && v.remind !== ''){
 				remindHtml = 'remind="' + v.remind +'"';
 			}
 			// 排序
 			sortingHtml = '';
-			if(Settings.supportSorting && typeof(v.sorting) === 'string'){
-				if(v.sorting === Settings.sortDownText){
-					sortingHtml = 'sorting="' + Settings.sortDownText +'"';
-					Settings.sortData[v.key] = Settings.sortDownText
+			if(settings.supportSorting && typeof(v.sorting) === 'string'){
+				if(v.sorting === settings.sortDownText){
+					sortingHtml = 'sorting="' + settings.sortDownText +'"';
+					settings.sortData[v.key] = settings.sortDownText;
+					Cache.updateSettings(table, settings);
 				}
-				else if(v.sorting === Settings.sortUpText){
-					sortingHtml = 'sorting="' + Settings.sortUpText +'"';
-					Settings.sortData[v.key] = Settings.sortUpText
+				else if(v.sorting === settings.sortUpText){
+					sortingHtml = 'sorting="' + settings.sortUpText +'"';
+					settings.sortData[v.key] = settings.sortUpText;
+					Cache.updateSettings(table, settings);
 				}else {
 					sortingHtml = 'sorting=""';
 				}
@@ -57,11 +59,11 @@ const DOM = {
 		theadHtml += '</thead>';
 		table.html(theadHtml + tbodyHtml);
 		// 嵌入序号DOM
-		if(Settings.supportAutoOrder){
+		if(settings.supportAutoOrder){
 			Order.initDOM(table);
 		}
 		//嵌入选择返选DOM
-		if(Settings.supportCheckbox){
+		if(settings.supportCheckbox){
 			Checkbox.initDOM(table);
 		}
 		// 存储原始th DOM
@@ -98,31 +100,31 @@ const DOM = {
 
 		onlyThead = $('thead', table);
 		onlyThList = $('th', onlyThead);
-		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height:calc(${Settings.height} - 40px)"></div><span class="text-dreamland"></span></div>`;
+		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height:calc(${settings.height} - 40px)"></div><span class="text-dreamland"></span></div>`;
 		table.wrap(wrapHtml);
 		tableWarp = table.closest('.table-wrap');
 		// 配置文本对齐方式
-		if(Settings.textAlign){
-			tableWarp.attr('gm-text-align', Settings.textAlign);
+		if(settings.textAlign){
+			tableWarp.attr('gm-text-align', settings.textAlign);
 		}
 		// 嵌入配置列表DOM
-		if(Settings.supportConfig){
+		if(settings.supportConfig){
 			tableWarp.append(_configHtml);
 		}
 		// 嵌入Ajax分页DOM
-		if(Settings.supportAjaxPage){
+		if(settings.supportAjaxPage){
 			tableWarp.append(_ajaxPageHtml);
 			AjaxPage.initAjaxPage(table);
 		}
 		// 嵌入导出表格数据事件源
-		if(Settings.supportExport){
+		if(settings.supportExport){
 			tableWarp.append(exportActionHtml);
 		}
 		$.each(onlyThList, function(i2,v2){
 			onlyTH = $(v2);
 			onlyTH.attr('th-visible','visible');
 			// 是否为自动生成的序号列
-			if(Settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
+			if(settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
 				isLmOrder = true;
 			}
 			else{
@@ -130,7 +132,7 @@ const DOM = {
 			}
 
 			// 是否为自动生成的选择列
-			if(Settings.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true') {
+			if(settings.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true') {
 				isLmCheckbox = true;
 			}else{
 				isLmCheckbox = false;
@@ -138,7 +140,7 @@ const DOM = {
 
 			onlyThWarp = $('<div class="th-wrap"></div>');
 			//嵌入配置列表项
-			if(Settings.supportConfig){
+			if(settings.supportConfig){
 				$('.config-list', tableWarp)
 					.append('<li th-name="'+ onlyTH.attr('th-name') +'" class="checked-li">'
 						+ '<input type="checkbox" checked="checked"/>'
@@ -150,7 +152,7 @@ const DOM = {
 			}
 			// 嵌入拖拽事件源
 			// 插件自动生成的排序与选择列不做事件绑定
-			if(Settings.supportDrag && !isLmOrder && !isLmCheckbox){
+			if(settings.supportDrag && !isLmOrder && !isLmCheckbox){
 				onlyThWarp.html('<span class="th-text drag-action">'+onlyTH.html()+'</span>');
 			}else{
 				onlyThWarp.html('<span class="th-text">'+ onlyTH.html() +'</span>');
@@ -158,7 +160,7 @@ const DOM = {
 			let onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
 			// 嵌入表头提醒事件源
 			// 插件自动生成的排序与选择列不做事件绑定
-			if(Settings.supportRemind && onlyTH.attr('remind') != undefined && !isLmOrder && !isLmCheckbox){
+			if(settings.supportRemind && onlyTH.attr('remind') != undefined && !isLmOrder && !isLmCheckbox){
 				remindDOM = $(_remindHtml);
 				remindDOM.find('.ra-title').text(onlyTH.text());
 				remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
@@ -170,14 +172,14 @@ const DOM = {
 			// 嵌入排序事件源
 			// 插件自动生成的排序与选择列不做事件绑定
 			sortType = onlyTH.attr('sorting');
-			if(Settings.supportSorting && sortType!= undefined && !isLmOrder && !isLmCheckbox){
+			if(settings.supportSorting && sortType!= undefined && !isLmOrder && !isLmCheckbox){
 				sortingDom = $(_sortingHtml);
 				// 依据 sortType 进行初始显示
 				switch(sortType){
-					case Settings.sortUpText:
+					case settings.sortUpText:
 						sortingDom.addClass('sorting-up');
 						break;
-					case Settings.sortDownText:
+					case settings.sortDownText:
 						sortingDom.addClass('sorting-down');
 						break;
 					default :
@@ -189,7 +191,7 @@ const DOM = {
 				onlyThWarp.append(sortingDom);
 			}
 			// 嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
-			if(Settings.supportAdjust && !isLmOrder && !isLmCheckbox){
+			if(settings.supportAdjust && !isLmOrder && !isLmCheckbox){
 				adjustDOM = $(_adjustHtml);
 				// 最后一列不支持调整宽度
 				if(i2 == onlyThList.length - 1){

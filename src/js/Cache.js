@@ -38,6 +38,15 @@ const Cache = {
 		return rodData;
 	}
 	/*
+	 * 存储行数据
+	 * */
+	,setRowData: function(gmName, key, value) {
+		if(!this.cacheData[gmName]){
+			this.cacheData[gmName] = {};
+		}
+		this.cacheData[gmName][key] = value;
+	}
+	/*
 	 * [对外公开方法]
 	 * @清除指定表的缓存数据
 	 * $table: table [jTool Object]
@@ -63,11 +72,16 @@ const Cache = {
 		return this.__getGridManager($table);
 	}
 	/*
+	 [对外公开方法]
 	 * 获取配置项
 	 * $table:table [jTool object]
 	 * */
 	,getSettings: function($table) {
+		// 这里返回的是clone 对象而非对象本身
 		return $.extend(true, {}, $table.data('settings'));
+	}
+	,cloneSettings: function(){
+
 	}
 	/*
 	* 更新配置项
@@ -76,12 +90,6 @@ const Cache = {
 	,updateSettings:  function($table, settings) {
 		const data = $.extend(true, {}, settings);
 		$table.data('settings', data);
-	}
-	,setRowData: function(gmName, key, value) {
-		if(!this.cacheData[gmName]){
-			this.cacheData[gmName] = {};
-		}
-		this.cacheData[gmName][key] = value;
 	}
 	/*
 	*  @验证版本号清除列表缓存
@@ -320,15 +328,15 @@ const Cache = {
 	 @存储对外实例
 	 $.table:当前被实例化的table
 	 */
-	,setGridManagerToJTool: function(table) {
-		table.data('gridManager', this);
+	,setGridManagerToJTool: function($table) {
+		$table.data('gridManager', this);
 	}
 	/*
 	 @获取gridManager
 	 $.table:table [jTool object]
 	 */
-	,__getGridManager: function(table) {
-		return table.data('gridManager');
+	,__getGridManager: function($table) {
+		return $table.data('gridManager');
 	}
 };
 export default Cache;

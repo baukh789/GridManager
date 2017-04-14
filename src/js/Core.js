@@ -16,14 +16,15 @@ const Core= {
 	 $.callback: 回调函数
 	 */
 	refreshGrid: function($table, gotoFirstPage, callback){
-		const Settings = Cache.getSettings($table);
+		const settings = Cache.getSettings($table);
 		const _this = this;
 		if(typeof(gotoFirstPage) !== 'boolean'){
 			callback = gotoFirstPage;
 			gotoFirstPage = false;
 		}
 		if(gotoFirstPage){
-			Settings.pageData['cPage'] = 1;
+			settings.pageData['cPage'] = 1;
+			Cache.getSettings($table, settings);
 		}
 		_this.__refreshGrid($table, callback);
 	}

@@ -218,21 +218,22 @@ const AjaxPage = {
 	 * @param _cPage: 指定页
 	 */
 	,gotoPage: function ($table, _cPage) {
-		const Settings = Cache.getSettings($table);
+		const settings = Cache.getSettings($table);
 		//跳转的指定页大于总页数
-		if(_cPage > Settings.pageData.tPage){
-			_cPage = Settings.pageData.tPage;
+		if(_cPage > settings.pageData.tPage){
+			_cPage = settings.pageData.tPage;
 		}
-
 		//替换被更改的值
-		Settings.pageData.cPage = _cPage;
-		Settings.pageData.pSize = Settings.pageData.pSize || Settings.pageSize;
+		settings.pageData.cPage = _cPage;
+		settings.pageData.pSize = settings.pageData.pSize || settings.pageSize;
+		// 更新缓存
+		Cache.updateSettings($table, settings);
 
 		//调用事件、渲染DOM
-		const query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
-		Settings.pagingBefore(query);
+		const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
+		settings.pagingBefore(query);
 		Core.__refreshGrid($table, () => {
-			Settings.pagingAfter(query);
+			settings.pagingAfter(query);
 		});
 	}
 
@@ -254,18 +255,20 @@ const AjaxPage = {
 			const _size = $(this);
 			const _tableWarp  = _size.closest('.table-wrap'),
 				  _table	  = $('table[grid-manager]', _tableWarp);
-			const Settings = Cache.getSettings($table);
-			Settings.pageData = {
+			const settings = Cache.getSettings($table);
+			settings.pageData = {
 				cPage : 1,
 				pSize : parseInt(_size.val())
 			};
 
 			Cache.setToLocalStorage(_table);
+			// 更新缓存
+			Cache.updateSettings($table, settings);
 			//调用事件、渲染tbody
-			const query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
-			Settings.pagingBefore(query);
+			const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
+			settings.pagingBefore(query);
 			Core.__refreshGrid(_table, () => {
-				Settings.pagingAfter(query);
+				settings.pagingAfter(query);
 			});
 
 		});

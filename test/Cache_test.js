@@ -150,10 +150,14 @@ describe('Cache.js', function() {
 	it('Cache.getSettings($table)', function() {
 		let settings = Cache.getSettings($table);
 		expect(settings.disableCache).toBe(false);
+
 		settings.disableCache = true;
+		Cache.updateSettings($table, settings);
 		settings = Cache.getSettings($table);
 		expect(settings.disableCache).toBe(true);
+
 		settings.disableCache = false;
+		Cache.updateSettings($table, settings);
 	});
 
 
