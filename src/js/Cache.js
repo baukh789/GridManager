@@ -5,11 +5,10 @@ import $ from './jTool';
 import Base from './Base';
 const Cache = {
 	/*
-	* @缓存数据
-	* 用于存储当前渲染表格的数据
+	* @存储渲染表格使用的数据
 	* 通过每个tr上的cache-key进行获取
 	* */
-	cacheData: {}
+	responseData: {}
 	/*
 	 * [对外公开方法]
 	 * @获取当前行渲染时使用的数据
@@ -18,22 +17,22 @@ const Cache = {
 	 * */
 	,getRowData: function($table, tr) {
 		// tr 为 Element 元素时, 返回数据对象; 为 NodeList 类型时, 返回数组
-		// Element 无length属性, NodeList 会有length属性.
-		// 所以这里通过 .length进行区别. 如果为NodeList 且 length == 0 时,采用与 Element同样的返回类型
 		const gmName = $table.attr('grid-manager');
 		if(!gmName){
 			return;
 		}
-		if(!this.cacheData[gmName]){
-			this.cacheData[gmName] = {};
+		if(!this.responseData[gmName]){
+			return;
 		}
+		// Element 无length属性, NodeList 会有length属性.
+		// 所以这里通过 .length进行区别. 如果为NodeList 且 length == 0 时,采用与 Element同样的返回类型
 		if(!tr.length){
-			return this.cacheData[gmName][tr.getAttribute('cache-key')];
+			return this.responseData[gmName][tr.getAttribute('cache-key')];
 		}
 		const _this = this;
 		let rodData = [];
 		$.each(tr, function(i, v){
-			rodData.push(_this.cacheData[gmName][v.getAttribute('cache-key')])
+			rodData.push(_this.responseData[gmName][v.getAttribute('cache-key')])
 		});
 		return rodData;
 	}
@@ -41,10 +40,10 @@ const Cache = {
 	 * 存储行数据
 	 * */
 	,setRowData: function(gmName, key, value) {
-		if(!this.cacheData[gmName]){
-			this.cacheData[gmName] = {};
+		if(!this.responseData[gmName]){
+			this.responseData[gmName] = {};
 		}
-		this.cacheData[gmName][key] = value;
+		this.responseData[gmName][key] = value;
 	}
 	/*
 	 * [对外公开方法]

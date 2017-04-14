@@ -115,12 +115,12 @@ describe('Cache.js', function() {
 		$table = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
 	});
-	it('Cache.cacheData', function() {
-		expect(Cache.cacheData['test-cache']).toBeDefined();
-		expect(Cache.cacheData['test-cache'][0].name).toBe('baukh');
-		expect(Cache.cacheData['test-cache'][1].name).toBe('kouzi');
-		expect(Cache.cacheData['test-cache'][0].age).toBe('30');
-		expect(Cache.cacheData['test-cache'][1].age).toBe('28');
+	it('Cache.responseData', function() {
+		expect(Cache.responseData['test-cache']).toBeDefined();
+		expect(Cache.responseData['test-cache'][0].name).toBe('baukh');
+		expect(Cache.responseData['test-cache'][1].name).toBe('kouzi');
+		expect(Cache.responseData['test-cache'][0].age).toBe('30');
+		expect(Cache.responseData['test-cache'][1].age).toBe('28');
 	});
 
 	it('Cache.getRowData($table, tr)', function() {
