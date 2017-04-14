@@ -23,21 +23,17 @@ const Base = {
 		return msg;
 	}
 	/*
-	 [对外公开方法]
-	 @显示Th及对应的TD项
-	 $table: table [jTool Object]
-	 th: th
-	 */
-	,showTh: function($table, th){
+	* @显示Th及对应的TD项
+	* th: Element th
+	* */
+	,__showTh: function(th){
 		this.setAreVisible($(th), true);
 	}
 	/*
-	 [对外公开方法]
-	 @隐藏Th及对应的TD项
-	 table: table
-	 th:th
-	 */
-	,hideTh: function(table, th){
+	* @隐藏Th及对应的TD项
+	* th: Element th
+	* */
+	,__hideTh: function(th){
 		this.setAreVisible($(th), false);
 	}
 	/*

@@ -134,25 +134,25 @@ describe('Base.js', function() {
 		Element.prototype.GM = Element.prototype.GridManager = null;
 	});
 
-	it('Base.hideTh($table, th)', function(){
+	it('Base.__hideTh($table, th)', function(){
 		// 以下操作将自动生成列排除在外
 		let visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
 		expect(visibleTh.length).toBe(6);
 		let thList = jTool('th[gm-create="false"]', $table);
 
-		Base.hideTh($table, thList);
+		Base.__hideTh(thList);
 		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
 		expect(visibleTh.length).toBe(0);
 		thList = null;
 	});
 
-	it('Base.showTh($table, th)', function(){
+	it('Base.__showTh($table, th)', function(){
 		// 以下操作将自动生成列排除在外
 		let visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
 		expect(visibleTh.length).toBe(0);
 		let thList = jTool('th[gm-create="false"]', $table);
 
-		Base.showTh($table, thList);
+		Base.__showTh(thList);
 		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
 		expect(visibleTh.length).toBe(6);
 		thList = null;

@@ -123,28 +123,28 @@ describe('Cache.js', function() {
 		expect(Cache.responseData['test-cache'][1].age).toBe('28');
 	});
 
-	it('Cache.getRowData($table, tr)', function() {
+	it('Cache.__getRowData($table, tr)', function() {
 		let tr0 = jTool('tbody tr', $table).get(0);
 		let tr1 = jTool('tbody tr', $table).get(1);
 		let trList = document.querySelectorAll('table[grid-manager="test-cache"] tbody tr');
-		expect(Cache.getRowData($table, tr0).name).toBe('baukh');
-		expect(Cache.getRowData($table, tr1).name).toBe('kouzi');
-		expect(Cache.getRowData($table, tr0).age).toBe('30');
-		expect(Cache.getRowData($table, tr1).age).toBe('28');
-		expect(Cache.getRowData($table, trList)[0].info).toBe('野生前端程序');
-		expect(Cache.getRowData($table, trList)[1].info).toBe('产品经理');
+		expect(Cache.__getRowData($table, tr0).name).toBe('baukh');
+		expect(Cache.__getRowData($table, tr1).name).toBe('kouzi');
+		expect(Cache.__getRowData($table, tr0).age).toBe('30');
+		expect(Cache.__getRowData($table, tr1).age).toBe('28');
+		expect(Cache.__getRowData($table, trList)[0].info).toBe('野生前端程序');
+		expect(Cache.__getRowData($table, trList)[1].info).toBe('产品经理');
 		tr0 = null;
 		tr1 = null;
 		trList = null;
 	});
 
-	it('Cache.clear($table)', function() {
-		expect(Cache.clear()).toBe(false);
-		expect(Cache.clear($table)).toBe(true);
+	it('Cache.delUserMemory($table)', function() {
+		expect(Cache.delUserMemory()).toBe(false);
+		expect(Cache.delUserMemory($table)).toBe(true);
 	});
 
-	it('Cache.get($table)', function() {
-		expect(Cache.get($table).disableCache).toBe(false);
+	it('Cache.__getGridManager($table)', function() {
+		expect(Cache.__getGridManager($table).disableCache).toBe(false);
 	});
 
 	it('Cache.getSettings($table)', function() {
@@ -161,11 +161,11 @@ describe('Cache.js', function() {
 	});
 
 
-	it('Cache.getLocalStorage($table)', function() {
-		expect(Cache.getLocalStorage($table)).toEqual({});
+	it('Cache.getUserMemory($table)', function() {
+		expect(Cache.getUserMemory($table)).toEqual({});
 		Cache.saveUserMemory($table);
-		expect(Cache.getLocalStorage($table).key).toBe('/context.html-test-cache');
-		expect(Cache.getLocalStorage($table).cache.th).toBeDefined();
+		expect(Cache.getUserMemory($table).key).toBe('/context.html-test-cache');
+		expect(Cache.getUserMemory($table).cache.th).toBeDefined();
 	});
 
 

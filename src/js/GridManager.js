@@ -20,6 +20,7 @@ import Sort from './Sort';
 import { Settings, TextSettings } from './Settings';
 import DOM from './DOM';
 import { Hover } from './Hover';
+import PublishMethod from './PublishMethod';
 class GridManager {
 	constructor() {
 		this.version = '2.3.0';
@@ -192,6 +193,10 @@ class GridManager {
 
 		// GM导入功能: DOM操作
 		jTool.extend(this, DOM);
+
+		// GM导入功能: 公开方法
+		jTool.extend(this, PublishMethod);
+
 	}
 }
 
@@ -200,7 +205,6 @@ const publishList = [
 	'init',					//初始化
 	'setSort',				//手动设置排序
 	'get',					//通过jTool实例获取GridManager
-	'getSettings',			//获取配置参数
 	'showTh',				//显示Th及对应的TD项
 	'hideTh',				//隐藏Th及对应的TD项
 	'exportGridToXls',		//导出表格 .xls

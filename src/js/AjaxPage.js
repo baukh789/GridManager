@@ -345,7 +345,7 @@ const AjaxPage = {
 	 */
 	,configPageForCache: function($table){
 		const Settings = Cache.getSettings($table);
-		let _data = Cache.getLocalStorage($table);
+		let _data = Cache.getUserMemory($table);
 		// 缓存对应
 		let	_cache = _data.cache;
 		// 每页显示条数

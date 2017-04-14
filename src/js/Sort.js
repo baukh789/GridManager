@@ -14,7 +14,6 @@ const Sort = {
 		return html;
 	}
 	/*
-	 [对外公开方法]
 	 @手动设置排序
 	 $.table: table [jTool object]
 	 $.sortJson: 需要排序的json串
@@ -25,9 +24,9 @@ const Sort = {
 	 th-name:up/down 	//其中up/down 需要与参数 sortUpText、sortDownText值相同
 	 }
 	 */
-	,setSort: function(table, sortJson, callback, refresh){
-		let Settings = Cache.getSettings(table);
-		if(table.length == 0 || !sortJson || $.isEmptyObject(sortJson)){
+	,__setSort: function($table, sortJson, callback, refresh){
+		let Settings = Cache.getSettings($table);
+		if($table.length == 0 || !sortJson || $.isEmptyObject(sortJson)){
 			return false;
 		}
 		//默认执行完后进行刷新列表操作
@@ -38,7 +37,7 @@ const Sort = {
 			_sortAction,
 			_sortType;
 		for(let s in sortJson){
-			_th = $('[th-name="'+ s +'"]', table);
+			_th = $('[th-name="'+ s +'"]', $table);
 			_sortType = sortJson[s];
 			_sortAction = $('.sorting-action', _th);
 			if(_sortType == Settings.sortUpText){
@@ -52,8 +51,8 @@ const Sort = {
 				_sortAction.addClass('sorting-down');
 			}
 		}
-		refresh ? Core.__refreshGrid(table, callback) : (typeof(callback) === 'function' ? callback() : '');
-		return table;
+		refresh ? Core.__refreshGrid($table, callback) : (typeof(callback) === 'function' ? callback() : '');
+		return $table;
 	}
 	/*
 	 @绑定排序事件

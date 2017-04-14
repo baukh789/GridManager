@@ -62,7 +62,7 @@ const Checkbox = {
 	 $table: table [jTool Object]
 	 */
 	,getCheckedData: function($table){
-		return Cache.getRowData($table, this.getCheckedTr(table))
+		return Cache.__getRowData($table, this.getCheckedTr(table))
 	}
 };
 export default Checkbox;

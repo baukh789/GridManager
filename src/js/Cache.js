@@ -15,12 +15,11 @@ import Base from './Base';
 const GridData = function(){
 	this.responseData = {};
 	/*
-	 * [对外公开方法]
 	 * @获取当前行渲染时使用的数据
 	 * $table: 当前操作的grid,由插件自动传入
 	 * tr: 将要获取数据所对应的tr[Element or NodeList]
 	 * */
-	this.getRowData = function($table, tr) {
+	this.__getRowData = function($table, tr) {
 		// tr 为 Element 元素时, 返回数据对象; 为 NodeList 类型时, 返回数组
 		const gmName = $table.attr('grid-manager');
 		if(!gmName){
@@ -78,7 +77,7 @@ const UserMemory = function(){
 		const settings = this.getSettings($table);
 		// 验证table是否有效
 		if(!$table || $table.length === 0) {
-			Base.outLog('getLocalStorage:无效的table', 'error');
+			Base.outLog('getUserMemory:无效的table', 'error');
 			return false;
 		}
 		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
@@ -184,23 +183,14 @@ const UserMemory = function(){
 	};
 };
 /*
-* 
+*
 * */
 const Cache = {
 	/*
-	 [对外公开方法]
-	 @获取 GridManager 实例
-	 $table:table [jTool object]
-	 */
-	get: function($table) {
-		return this.__getGridManager($table);
-	}
-	/*
-	 [对外公开方法]
 	 * 获取配置项
 	 * $table:table [jTool object]
 	 * */
-	,getSettings: function($table) {
+	getSettings: function($table) {
 		// 这里返回的是clone对象 而非对象本身
 		return $.extend(true, {}, $table.data('settings'));
 	}
@@ -246,7 +236,7 @@ const Cache = {
 	,configTheadForCache: function(table) {
 		let Settings = Cache.getSettings(table);
 		const _this = this;
-		const _data = _this.getLocalStorage(table),		//本地缓存的数据
+		const _data = _this.getUserMemory(table),		//本地缓存的数据
 			_domArray = [];
 
 		//验证：当前table 没有缓存数据
@@ -305,24 +295,6 @@ const Cache = {
 				table.find('thead tr').html(_domArray);
 			}
 		}
-	}
-	/*
-	* [对外公开方法]
-	* @获取指定表格的本地存储数据
-	* $table: table [jTool Object]
-	* 成功则返回本地存储数据,失败则返回空对象
-	* */
-	,getLocalStorage: function($table){
-		return this.getUserMemory($table);
-	}
-	/*
-	 * [对外公开方法]
-	 * @清除表格记忆数据
-	 * $table: table [jTool Object]
-	 * return 成功或者失败的布尔值
-	 * */
-	,clear:function($table){
-		return this.delUserMemory($table);
 	}
 	/*
 	 @存储原Th DOM至table data
