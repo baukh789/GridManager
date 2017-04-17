@@ -9,30 +9,10 @@ import AjaxPage from './AjaxPage';
 import Menu from './Menu';
 const Core= {
 	/*
-	 [对外公开方法]
-	 @刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
-	 $.table:当前操作的grid,由插件自动传入
-	 $.gotoFirstPage:  是否刷新时跳转至第一页
-	 $.callback: 回调函数
-	 */
-	refreshGrid: function($table, gotoFirstPage, callback){
-		const settings = Cache.getSettings($table);
-		const _this = this;
-		if(typeof(gotoFirstPage) !== 'boolean'){
-			callback = gotoFirstPage;
-			gotoFirstPage = false;
-		}
-		if(gotoFirstPage){
-			settings.pageData['cPage'] = 1;
-			Cache.getSettings($table, settings);
-		}
-		_this.__refreshGrid($table, callback);
-	}
-	/*
 	 @刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	 $.callback: 回调函数
 	 */
-	,__refreshGrid: function($table, callback){
+	__refreshGrid: function($table, callback){
 		const Settings = Cache.getSettings($table);
 		const tbodyDOM = $('tbody', $table),	//tbody dom
 			gmName = $table.attr('grid-manager'),
@@ -164,29 +144,6 @@ const Core= {
 			}
 			typeof callback === 'function' ? callback() : '';
 		}
-	}
-	/**
-	 * [对外公开方法]
-	 * 配置query 该参数会在分页触发后返回至pagingAfter(query)方法
-	 * @param $table: table [jTool object]
-	 * @param query: 配置的数据
-	 */
-	,setQuery: function($table, query){
-		const settings = Cache.getSettings($table);
-		$.extend(settings, {query: query});
-		Cache.updateSettings($table, settings);
-	}
-	/**
-	 * [对外公开方法]
-	 * 配置ajaxData
-	 * @param $table: table [jTool object]
-	 * @param ajaxData: 配置的数据
-	 */
-	,setAjaxData: function ($table, ajaxData) {
-		const settings = Cache.getSettings($table);
-		$.extend(settings, {ajax_data: ajaxData});
-		Cache.updateSettings($table, settings);
-		this.__refreshGrid($table);
 	}
 
 };

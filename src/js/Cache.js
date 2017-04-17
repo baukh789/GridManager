@@ -1,9 +1,9 @@
 /*
 * @Cache: 本地缓存
 * 缓存分为三部分:
-* 1.gridData: 渲染表格时所使用的json数据
-* 2.coreData: 核心缓存数据,
-* 3.userMemory: 用户记忆
+* 1.gridData: 渲染表格时所使用的json数据 [存储在GM实例]
+* 2.coreData: 核心缓存数据 [存储在DOM上]
+* 3.userMemory: 用户记忆 [存储在localStorage]
 * */
 import $ from './jTool';
 import Base from './Base';
@@ -74,7 +74,7 @@ const UserMemory = function(){
 	 * $table: table jTool
 	 * */
 	this.getMemoryKey = function($table) {
-		const settings = this.getSettings($table);
+		const settings = Cache.getSettings($table);
 		// 验证table是否有效
 		if(!$table || $table.length === 0) {
 			Base.outLog('getUserMemory:无效的table', 'error');
@@ -225,7 +225,7 @@ const Cache = {
 	* $.cleanText: 清除缓存的原因
 	* */
 	,cleanTableCache: function(table, cleanText) {
-		const Settings = Cache.getSettings(table);
+		const Settings = this.getSettings(table);
 		this.delUserMemory(table);
 		Base.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：'+ cleanText, 'info');
 	}
@@ -234,7 +234,7 @@ const Cache = {
 	* $.table: table [jTool object]
 	* */
 	,configTheadForCache: function(table) {
-		let Settings = Cache.getSettings(table);
+		let Settings = this.getSettings(table);
 		const _this = this;
 		const _data = _this.getUserMemory(table),		//本地缓存的数据
 			_domArray = [];

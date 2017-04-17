@@ -48,21 +48,5 @@ const Checkbox = {
 			}
 		});
 	}
-	/*
-	 [对外公开方法]
-	 @获取当前选中的 tr
-	 $table: table [jTool Object]
-	 */
-	,getCheckedTr: function($table) {
-		return $('tbody tr[checked="true"]', $table).DOMList || [];
-	}
-	/*
-	 [对外公开方法]
-	 @获取当前选中的 tr 渲染时的数据,  返回值类型为数组
-	 $table: table [jTool Object]
-	 */
-	,getCheckedData: function($table){
-		return Cache.__getRowData($table, this.getCheckedTr(table))
-	}
 };
 export default Checkbox;

@@ -16,7 +16,7 @@ const Export = {
 	 $.fileName: 导出后的文件名
 	 $.onlyChecked: 是否只导出已选中的表格
 	 */
-	,exportGridToXls: function(table, fileName, onlyChecked){
+	,__exportGridToXls: function(table, fileName, onlyChecked){
 		let Settings = Cache.getSettings(table);
 		const gmExportAction = $('#gm-export-action'); //createDOM内添加
 		if(gmExportAction.length === 0){

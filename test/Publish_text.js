@@ -1,8 +1,9 @@
 /**
- * Created by baukh on 17/3/12.
+ * Created by baukh on 17/4/17.
  */
+
 'use strict';
-var Checkbox = require('../src/js/Checkbox').default;
+import Checkbox from '../src/js/Checkbox';
 describe('Checkbox', function() {
 	var table = null;
 	beforeEach(function(){
@@ -13,5 +14,8 @@ describe('Checkbox', function() {
 	afterEach(function () {
 		document.querySelector('body').removeChild(table);
 		table = null;
+	});
+	it('getCheckedTr', function() {
+		expect(Checkbox.getCheckedTr(table).length).toBe(0);
 	});
 });

@@ -120,8 +120,8 @@
 			}
 		}
 		]
-		,ajax_success: function () {
-			console.log(document.querySelector('table[grid-manager="test2"]').GM('getSettings'))
+		,ajax_success: function (data) {
+			console.log(document.querySelector('table[grid-manager="test2"]').GM('get'))
 			console.log('test2 ajax_success');
 		}
 	});

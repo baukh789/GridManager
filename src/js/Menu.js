@@ -160,7 +160,7 @@ const Menu = {
 			if(this.getAttribute('only-checked') === 'true'){
 				onlyChecked = true;
 			}
-			Export.exportGridToXls(_table, undefined, onlyChecked);
+			Export.__exportGridToXls(_table, undefined, onlyChecked);
 			_body.off('mousedown.gridMenu');
 			_gridMenu.hide();
 		});
