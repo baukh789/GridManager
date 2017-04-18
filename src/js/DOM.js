@@ -64,7 +64,7 @@ const DOM = {
 		}
 		//嵌入选择返选DOM
 		if(settings.supportCheckbox){
-			Checkbox.initDOM(table);
+			Checkbox.initCheckbox(table);
 		}
 		// 存储原始th DOM
 		Cache.setOriginalThDOM(table);
