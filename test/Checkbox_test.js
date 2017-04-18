@@ -4,83 +4,21 @@
 'use strict';
 import jTool from '../src/js/jTool';
 import Checkbox from '../src/js/Checkbox';
+import testData from '../src/data/testData';
 describe('Checkbox', function() {
 
 	let table = null;
 	let $table = null;
-	let ajaxData = null;
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
-
-		// 使用静态数据进行渲染
-		ajaxData = {
-			"data":[
-				{
-					"name": "baukh",
-					"age": "30",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "kouzi",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "产品经理",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				}
-			],
-			"totals": 8
-		};
 
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', 'test-cache');
 		document.querySelector('body').appendChild(table);
 		$table = jTool('table[grid-manager="test-cache"]');
 		document.querySelector('table[grid-manager="test-cache"]').GM({
-			ajax_data: ajaxData
+			ajax_data: testData
 			,columnData: [
 				{
 					key: 'name',

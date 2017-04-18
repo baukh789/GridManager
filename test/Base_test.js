@@ -1,6 +1,7 @@
 'use strict';
 import jTool from '../src/js/jTool';
 import Base from '../src/js/Base';
+import testData from '../src/data/testData';
 describe('Base: 验证方法总数', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {
@@ -29,74 +30,12 @@ describe('Base.js', function() {
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
 
-		// 使用静态数据进行渲染
-		ajaxData = {
-			"data":[
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				},
-				{
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序",
-					"operation": "修改"
-				}
-			],
-			"totals": 8
-		};
-
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', 'test-base');
 		document.querySelector('body').appendChild(table);
 		$table = jTool('table[grid-manager="test-base"]');
 		document.querySelector('table[grid-manager="test-base"]').GM({
-			ajax_data: ajaxData
+			ajax_data: testData
 			,disableCache: true
 			,i18n: 'en-us'
 			,columnData: [
