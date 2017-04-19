@@ -18,7 +18,6 @@ import Remind from './Remind';
 import Scroll from './Scroll';
 import Sort from './Sort';
 import { Settings, TextSettings } from './Settings';
-import DOM from './DOM';
 import { Hover } from './Hover';
 import {PublishMethod, publishList} from './Publish';
 class GridManager {
@@ -89,7 +88,7 @@ class GridManager {
 	initTable(table) {
 		const _this = this;
 		//渲染HTML，嵌入所需的事件源DOM
-		DOM.createDOM(table);
+		Core.createDOM(table);
 
 		//获取本地缓存并对列表进行配置
 		if(!_this.disableCache){
@@ -190,9 +189,6 @@ class GridManager {
 
 		// GM导入功能: 表头吸顶
 		jTool.extend(this, Scroll);
-
-		// GM导入功能: DOM操作
-		jTool.extend(this, DOM);
 
 		// GM导入功能: 公开方法
 		jTool.extend(this, PublishMethod);
