@@ -63,13 +63,12 @@ describe('Config', function() {
 		expect(Config.html().replace(/\s/g, '')).toBe(html.replace(/\s/g, ''));
 	});
 
-	it('测试Config事件', function(){
+	it('测试展示隐藏配置区域事件', function(){
 		jasmine.clock().install();
 		jasmine.clock().tick(1000);
 		let tableWarp = $table.closest('div.table-wrap');
 		let configAction = jTool('.config-action', tableWarp);
 		let configArea = configAction.closest('.config-area');
-		// TODO 可以写个相关的博文: 如何测试包含css的karma配置. 跳入karma.conf.js -> module -> loaders
 		expect(configArea.css('display')).toBe('none');
 		configAction.trigger('click');
 		expect(configArea.css('display')).toBe('block');
@@ -78,5 +77,23 @@ describe('Config', function() {
 		tableWarp = null;
 		configAction = null;
 		configArea = null;
+	});
+
+	it('测试展示隐藏第一列事件', function(){
+		let tableWarp = $table.closest('div.table-wrap');
+		let firstTh = $table.find('th').eq(0);
+		// 未进行操作时,默认为显示.(由于是table类标签,使用的display = table-cell)
+		expect(firstTh.css('display')).toBe('table-cell');
+
+		// 触发针对第一列的配置事件, 成功后第一列将隐藏
+		jTool('.config-list li', tableWarp).trigger('click');
+		expect(firstTh.css('display')).toBe('none');
+
+		// 再次触发针对第一列的配置事件, 成功后第一列将显示
+		jTool('.config-list li', tableWarp).trigger('click');
+		expect(firstTh.css('display')).toBe('table-cell');
+
+		tableWarp = null;
+		firstTh = null;
 	});
 });
