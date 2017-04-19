@@ -16,13 +16,13 @@ const Config = {
 		return html;
 	}
 	/*
-	 @绑定配置列表事件[隐藏展示列]
-	 $.table: table [jTool object]
-	 */
-	,bindConfigEvent: function(table){
-		let Settings = Cache.getSettings(table);
-		// 打开/关闭设置区域
-		const tableWarp = $(table).closest('div.table-wrap');
+	* 绑定配置列表事件[隐藏展示列]
+	* $table: table [jTool object]
+	* */
+	,bindConfigEvent: function($table){
+		let Settings = Cache.getSettings($table);
+		// GM容器
+		const tableWarp = $table.closest('div.table-wrap');
 		// 打开/关闭设置事件源
 		const configAction = $('.config-action', tableWarp);
 		configAction.unbind('click');
@@ -32,7 +32,7 @@ const Config = {
 
 			// 设置区域
 			const _configArea = _configAction.closest('.config-area');
-			
+
 			// 关闭
 			if(_configArea.css('display') === 'block'){
 				_configArea.hide();
@@ -55,7 +55,7 @@ const Config = {
 		$('.config-list li', tableWarp).unbind('click');
 		$('.config-list li', tableWarp).bind('click', function(){
 			//单个的设置项
-			const _only 	= $(this);
+			const _only = $(this);
 
 			//单个设置项的thName
 			const _thName = _only.attr('th-name');
@@ -106,7 +106,7 @@ const Config = {
 			//重置当前可视th的宽度
 			const _visibleTh = $('thead th[th-visible="visible"]', _table);
 			$.each(_visibleTh, function(i, v){
-				// GM自动创建的列使终为50px
+				// 特殊处理: GM自动创建的列使终为50px
 				if(v.getAttribute('gm-create') === 'true'){
 					v.style.width = '50px';
 				}
