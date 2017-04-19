@@ -1,5 +1,8 @@
 /*
 * Core: 核心方法
+* 1.刷新
+* 2.渲染GM DOM
+* 3.重置tbody
 * */
 import $ from './jTool';
 import Menu from './Menu';
@@ -19,7 +22,7 @@ const Core= {
 	 $.callback: 回调函数
 	 */
 	__refreshGrid: function($table, callback){
-		const Settings = Cache.getSettings($table);
+		const settings = Cache.getSettings($table);
 		const tbodyDOM = $('tbody', $table),	//tbody dom
 			gmName = $table.attr('grid-manager'),
 			tableWrap = $table.closest('.table-wrap'),
@@ -31,30 +34,30 @@ const Core= {
 		 如果存在配置数据ajax_data,将不再通过ajax_rul进行数据请求
 		 且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
 		 */
-		if(Settings.ajax_data){
-			driveDomForSuccessAfter(Settings.ajax_data);
-			Settings.ajax_success(Settings.ajax_data);
+		if(settings.ajax_data){
+			driveDomForSuccessAfter(settings.ajax_data);
+			settings.ajax_success(settings.ajax_data);
 			removeRefreshingClass();
 			typeof callback === 'function' ? callback() : '';
 			return;
 		}
-		if(typeof(Settings.ajax_url) != 'string' || Settings.ajax_url === ''){
-			Settings.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
+		if(typeof(settings.ajax_url) != 'string' || settings.ajax_url === ''){
+			settings.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
 			removeRefreshingClass();
 			typeof callback === 'function' ? callback() : '';
 			return;
 		}
-		let pram = $.extend(true, {}, Settings.query);
+		let pram = $.extend(true, {}, settings.query);
 		//合并分页信息至请求参
-		if(Settings.supportAjaxPage){
-			$.extend(pram, Settings.pageData);
+		if(settings.supportAjaxPage){
+			$.extend(pram, settings.pageData);
 		}
 		//合并排序信息至请求参
-		if(Settings.supportSorting){
-			$.each(Settings.sortData, function (key, value) {
+		if(settings.supportSorting){
+			$.each(settings.sortData, function (key, value) {
 				pram['sort_'+ key] = value;  // 增加sort_前缀,防止与搜索时的条件重叠
 			});
-			// $.extend(pram, Settings.sortData);
+			// $.extend(pram, settings.sortData);
 		}
 		//当前页小于1时, 修正为1
 		if(pram.cPage < 1){
@@ -63,8 +66,8 @@ const Core= {
 		}else if(pram.cPage > pram.tPage){
 			pram.cPage = pram.tPage
 		}
-		// Settings.query = pram;
-		Cache.updateSettings($table, Settings);
+		// settings.query = pram;
+		Cache.updateSettings($table, settings);
 
 		Base.showLoading(tableWrap);
 
@@ -72,28 +75,28 @@ const Core= {
 		// 说明|备注:
 		// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
 		// 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
-		if(Settings.ajax_type.toUpperCase() === 'POST' && !Settings.ajax_headers['Content-Type']){
-			Settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
+		if(settings.ajax_type.toUpperCase() === 'POST' && !settings.ajax_headers['Content-Type']){
+			settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
 		}
 		//执行ajax
 		$.ajax({
-			url: Settings.ajax_url,
-			type: Settings.ajax_type,
+			url: settings.ajax_url,
+			type: settings.ajax_type,
 			data: pram,
-			headers: Settings.ajax_headers,
+			headers: settings.ajax_headers,
 			cache: true,
 			beforeSend: function(XMLHttpRequest){
-				Settings.ajax_beforeSend(XMLHttpRequest);
+				settings.ajax_beforeSend(XMLHttpRequest);
 			},
 			success: function(response){
 				driveDomForSuccessAfter(response);
-				Settings.ajax_success(response);
+				settings.ajax_success(response);
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown){
-				Settings.ajax_error(XMLHttpRequest, textStatus, errorThrown);
+				settings.ajax_error(XMLHttpRequest, textStatus, errorThrown);
 			},
 			complete: function(XMLHttpRequest, textStatus){
-				Settings.ajax_complete(XMLHttpRequest, textStatus);
+				settings.ajax_complete(XMLHttpRequest, textStatus);
 				removeRefreshingClass();
 				Base.hideLoading(tableWrap);
 			}
@@ -113,7 +116,7 @@ const Core= {
 
 			let tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
 			let parseRes = typeof(response) === 'string' ? JSON.parse(response) : response;
-			let _data = parseRes[Settings.dataKey];
+			let _data = parseRes[settings.dataKey];
 			let key,	//数据索引
 				alignAttr, //文本对齐属性
 				template,//数据模板
@@ -122,7 +125,7 @@ const Core= {
 			if(!_data ||_data.length === 0){
 				tbodyTmpHTML = '<tr emptyTemplate>'
 					+ '<td colspan="'+$('th[th-visible="visible"]', $table).length+'">'
-					+ (Settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>')
+					+ (settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>')
 					+ '</td>'
 					+ '</tr>';
 				parseRes.totals = 0;
@@ -131,7 +134,7 @@ const Core= {
 				$.each(_data, function(i, v){
 					Cache.setRowData(gmName, i, v);
 					tbodyTmpHTML += '<tr cache-key="'+ i +'">';
-					$.each(Settings.columnData, function(i2, v2){
+					$.each(settings.columnData, function(i2, v2){
 						key = v2.key;
 						template = v2.template;
 						templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];
@@ -144,8 +147,8 @@ const Core= {
 				Core.resetTd($table, false);
 			}
 			//渲染分页
-			if(Settings.supportAjaxPage){
-				AjaxPage.resetPageData($table, parseRes[Settings.totalsKey]);
+			if(settings.supportAjaxPage){
+				AjaxPage.resetPageData($table, parseRes[settings.totalsKey]);
 				Menu.checkMenuPageAction($table);
 			}
 			typeof callback === 'function' ? callback() : '';
@@ -153,11 +156,11 @@ const Core= {
 	}
 	/*
 	* 渲染HTML，根据配置嵌入所需的事件源DOM
-	* table: table[jTool对象]
+	* $table: table[jTool对象]
 	* */
-	,createDOM: function(table){
-		let settings = Cache.getSettings(table);
-		table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', settings.gridManagerName);
+	,createDOM: function($table){
+		let settings = Cache.getSettings($table);
+		$table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', settings.gridManagerName);
 		let theadHtml = '<thead grid-manager-thead>',
 			tbodyHtml = '<tbody></tbody>',
 			alignAttr = '', 				//文本对齐属性
@@ -176,12 +179,12 @@ const Core= {
 				if(v.sorting === settings.sortDownText){
 					sortingHtml = 'sorting="' + settings.sortDownText +'"';
 					settings.sortData[v.key] = settings.sortDownText;
-					Cache.updateSettings(table, settings);
+					Cache.updateSettings($table, settings);
 				}
 				else if(v.sorting === settings.sortUpText){
 					sortingHtml = 'sorting="' + settings.sortUpText +'"';
 					settings.sortData[v.key] = settings.sortUpText;
-					Cache.updateSettings(table, settings);
+					Cache.updateSettings($table, settings);
 				}else {
 					sortingHtml = 'sorting=""';
 				}
@@ -195,17 +198,17 @@ const Core= {
 			theadHtml += '<th gm-create="false" th-name="'+ v.key +'" '+remindHtml+' '+sortingHtml+' '+widthHtml+' '+alignAttr+'>'+ v.text +'</th>';
 		});
 		theadHtml += '</thead>';
-		table.html(theadHtml + tbodyHtml);
+		$table.html(theadHtml + tbodyHtml);
 		// 嵌入序号DOM
 		if(settings.supportAutoOrder){
-			Order.initDOM(table);
+			Order.initDOM($table);
 		}
 		//嵌入选择返选DOM
 		if(settings.supportCheckbox){
-			Checkbox.initCheckbox(table);
+			Checkbox.initCheckbox($table);
 		}
 		// 存储原始th DOM
-		Cache.setOriginalThDOM(table);
+		Cache.setOriginalThDOM($table);
 
 		// 表头提醒HTML
 		const _remindHtml = Remind.html();
@@ -222,7 +225,7 @@ const Core= {
 		// 导出表格数据所需的事件源DOM
 		const exportActionHtml = Export.html();
 		// AJAX分页HTML
-		const _ajaxPageHtml= AjaxPage.html(table);
+		const _ajaxPageHtml= AjaxPage.html($table);
 		let	wrapHtml,   //外围的html片段
 			tableWarp,	//单个table所在的DIV容器
 			onlyThead,	//单个table下的thead
@@ -236,11 +239,11 @@ const Core= {
 			isLmOrder,	//是否为插件自动生成的序号列
 			isLmCheckbox;//是否为插件自动生成的选择列
 
-		onlyThead = $('thead', table);
+		onlyThead = $('thead', $table);
 		onlyThList = $('th', onlyThead);
 		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height:calc(${settings.height} - 40px)"></div><span class="text-dreamland"></span></div>`;
-		table.wrap(wrapHtml);
-		tableWarp = table.closest('.table-wrap');
+		$table.wrap(wrapHtml);
+		tableWarp = $table.closest('.table-wrap');
 		// 配置文本对齐方式
 		if(settings.textAlign){
 			tableWarp.attr('gm-text-align', settings.textAlign);
@@ -252,7 +255,7 @@ const Core= {
 		// 嵌入Ajax分页DOM
 		if(settings.supportAjaxPage){
 			tableWarp.append(_ajaxPageHtml);
-			AjaxPage.initAjaxPage(table);
+			AjaxPage.initAjaxPage($table);
 		}
 		// 嵌入导出表格数据事件源
 		if(settings.supportExport){
@@ -362,12 +365,12 @@ const Core= {
 			}
 		});
 		//删除渲染中标识、增加渲染完成标识
-		table.removeClass('GridManager-loading');
-		table.addClass('GridManager-ready');
+		$table.removeClass('GridManager-loading');
+		$table.addClass('GridManager-ready');
 	}
 	/*
 	* 重置列表, 处理局部刷新、分页事件之后的td排序
-	* table: table [jTool object]
+	* dom: table 或者 tr
 	* isSingleRow: 指定DOM节点是否为tr[布尔值]
 	* */
 	,resetTd: function(dom, isSingleRow){
@@ -383,10 +386,10 @@ const Core= {
 		if(!_tr || _tr.length == 0){
 			return false;
 		}
-		let Settings = Cache.getSettings(_table);
+		let settings = Cache.getSettings(_table);
 		//重置表格序号
-		if(Settings.supportAutoOrder){
-			let _pageData = Settings.pageData;
+		if(settings.supportAutoOrder){
+			let _pageData = settings.pageData;
 			let onlyOrderTd = null,
 				_orderBaseNumber = 1,
 				_orderText;
@@ -405,7 +408,7 @@ const Core= {
 			});
 		}
 		//重置表格选择 checkbox
-		if(Settings.supportCheckbox){
+		if(settings.supportCheckbox){
 			let onlyCheckTd = null;
 			$.each(_tr, function(i, v){
 				onlyCheckTd = $('td[gm-checkbox="true"]', v);
@@ -417,7 +420,7 @@ const Core= {
 			});
 		}
 		//依据存储数据重置td顺序
-		if(Settings.supportDrag){
+		if(settings.supportDrag){
 			const _thCacheList = Cache.getOriginalThDOM(_table);
 			let	_td = null;
 			if(!_thCacheList || _thCacheList.length == 0 ){
@@ -435,7 +438,7 @@ const Core= {
 			});
 		}
 		//依据配置对列表进行隐藏、显示
-		if(Settings.supportConfig){
+		if(settings.supportConfig){
 			Base.initVisible(_table);
 		}
 	}

@@ -6,8 +6,7 @@ import jTool from '../src/js/jTool';
 import Core from '../src/js/Core';
 import testData from '../src/data/testData';
 import '../src/css/GridManager.css';
-describe('Config', function() {
-
+describe('Core', function() {
 	let table = null;
 	let $table = null;
 	beforeAll(function(){
@@ -53,5 +52,24 @@ describe('Config', function() {
 		table = null;
 		$table = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
+	});
+
+	it('Core.__refreshGrid($table, callback)', function(){
+		let callback = jasmine.createSpy('callback');
+		let callback2 = jasmine.createSpy('callback');
+		Core.__refreshGrid($table, callback);
+		expect(callback).toHaveBeenCalled();
+
+		callback = null;
+	});
+
+	// TODO 暂时没想到怎么测这个方法
+	it('Core.createDOM($table)', function(){
+
+	});
+
+	it('Core.resetTd(dom, isSingleRow)', function(){
+		Core.resetTd($table, false);
+		Core.resetTd($table.find('tbody tr:first-child'), true);
 	});
 });
