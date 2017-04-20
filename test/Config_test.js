@@ -95,4 +95,10 @@ describe('Config', function() {
 		tableWarp = null;
 		firstTh = null;
 	});
+
+	// TODO 此时获取不到对应节点  pagination.length = 0
+	// it('Core.reset(dom, isSingleRow)', function(){
+	// 	var pagination = $table.closest('.table-wrap').find('.page-toolbar');
+	// 	expect(jTool('li.active', pagination).text()).toBe('1');
+	// });
 });
