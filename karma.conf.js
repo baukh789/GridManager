@@ -18,7 +18,7 @@ module.exports = function (config) {
 		reporters: ['progress', 'coverage'],
 		preprocessors: {
 			// 'src/**/*.js': ['webpack', 'coverage'],
-			'test/**/*.js': ['webpack']
+			'test/**/*.js': ['webpack', 'coverage']
 		},
 		// optionally, configure the reporter
 		coverageReporter: {
