@@ -4,6 +4,7 @@ module.exports = function (config) {
 		basePath: '',
 		frameworks: ['jasmine'],
 		files: [
+			// 'src/**/*.js',
 			'test/**/*_test.js'
 		],
 		exclude: ['karma.conf.js'],
@@ -16,8 +17,8 @@ module.exports = function (config) {
 		captureTimeout: 60000,
 		reporters: ['progress', 'coverage'],
 		preprocessors: {
-			'test/**/*.js': ['webpack'],
-			'src/**/*.js': ['webpack', 'coverage']
+			// 'src/**/*.js': ['webpack', 'coverage'],
+			'test/**/*.js': ['webpack']
 		},
 		// optionally, configure the reporter
 		coverageReporter: {
