@@ -4,7 +4,7 @@ module.exports = function (config) {
 		basePath: '',
 		frameworks: ['jasmine'],
 		files: [
-			'test/*_test.js'
+			'test/**/*_test.js'
 		],
 		exclude: ['karma.conf.js'],
 		port: 9876,
@@ -14,9 +14,19 @@ module.exports = function (config) {
 		autoWatch: true,
 		browsers: ['PhantomJS'],
 		captureTimeout: 60000,
-		reporters: ['progress'],
+		reporters: ['progress', 'coverage'],
 		preprocessors: {
-			'test/*_test.js': ['webpack']
+			'test/**/*.js': ['webpack'],
+			'src/**/*.js': ['webpack', 'coverage']
+		},
+		// optionally, configure the reporter
+		coverageReporter: {
+			reporters: [
+				// generates ./coverage/lcov.info
+				{type:'lcovonly', subdir: '.'},
+				// generates ./coverage/coverage-final.json
+				{type:'json', subdir: '.'}
+			]
 		},
 		webpack: {
 			devtool: 'eval',
