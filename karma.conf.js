@@ -15,7 +15,8 @@ module.exports = function (config) {
 		captureTimeout: 60000,
 		reporters: ['progress', 'coverage'],
 		preprocessors: {
-			'test/*_test.js': ['webpack']
+			'test/*_test.js': ['webpack'],
+			'src/**/*.js': ['webpack', 'coverage']
 		},
 		webpack: {
 			devtool: 'eval',
