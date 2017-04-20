@@ -2,9 +2,10 @@ var path = require('path');
 module.exports = function (config) {
 	config.set({
 		basePath: '',
-		customContextFile: 'test/test.html',
 		frameworks: ['jasmine'],
-		files: ['test/*_test.js'],
+		files: [
+			'test/*_test.js'
+		],
 		exclude: ['karma.conf.js'],
 		port: 9876,
 		colors: true,
@@ -13,10 +14,9 @@ module.exports = function (config) {
 		autoWatch: true,
 		browsers: ['PhantomJS'],
 		captureTimeout: 60000,
-		reporters: ['progress', 'coverage'],
+		reporters: ['progress'],
 		preprocessors: {
-			'test/*_test.js': ['webpack'],
-			'src/**/*.js': ['webpack', 'coverage']
+			'test/*_test.js': ['webpack']
 		},
 		webpack: {
 			devtool: 'eval',
@@ -74,19 +74,6 @@ module.exports = function (config) {
 				]
 			}
 
-		},
-		// optionally, configure the reporter
-		coverageReporter: {
-			reporters: [
-				// generates ./coverage/lcov.info
-				{
-					type: 'lcovonly', subdir: '.'
-				},
-				// generates ./coverage/coverage-final.json
-				{
-					type: 'json', subdir: '.'
-				}
-			]
 		},
 		concurrency: Infinity
 	});
