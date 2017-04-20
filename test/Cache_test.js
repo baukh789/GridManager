@@ -6,7 +6,6 @@ describe('Cache.js', function() {
 
 	let table = null;
 	let $table = null;
-	let ajaxData = null;
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
@@ -62,7 +61,7 @@ describe('Cache.js', function() {
 		expect(Cache.responseData['test-cache'][1].age).toBe('28');
 	});
 
-	it('Cache.__getRowData($table, tr)', function() {
+	it('Cache.__getRowData($table, target)', function() {
 		let tr0 = jTool('tbody tr', $table).get(0);
 		let tr1 = jTool('tbody tr', $table).get(1);
 		let trList = document.querySelectorAll('table[grid-manager="test-cache"] tbody tr');

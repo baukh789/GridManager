@@ -17,10 +17,9 @@ const GridData = function(){
 	/*
 	 * @获取当前行渲染时使用的数据
 	 * $table: 当前操作的grid,由插件自动传入
-	 * tr: 将要获取数据所对应的tr[Element or NodeList]
+	 * target: 将要获取数据所对应的tr[Element or NodeList]
 	 * */
-	this.__getRowData = function($table, tr) {
-		// tr 为 Element 元素时, 返回数据对象; 为 NodeList 类型时, 返回数组
+	this.__getRowData = function($table, target) {
 		const gmName = $table.attr('grid-manager');
 		if(!gmName){
 			return;
@@ -28,17 +27,19 @@ const GridData = function(){
 		if(!this.responseData[gmName]){
 			return;
 		}
-		// Element 无length属性, NodeList 会有length属性.
-		// 所以这里通过 .length进行区别. 如果为NodeList 且 length == 0 时,采用与 Element同样的返回类型
-		if(!tr.length){
-			return this.responseData[gmName][tr.getAttribute('cache-key')];
+		// target type = Element 元素时, 返回单条数据对象;
+		if($.type(target) === 'element'){
+			return this.responseData[gmName][target.getAttribute('cache-key')];
 		}
-		const _this = this;
-		let rodData = [];
-		$.each(tr, function(i, v){
-			rodData.push(_this.responseData[gmName][v.getAttribute('cache-key')])
-		});
-		return rodData;
+		// target type =  NodeList 类型时, 返回数组
+		else if($.type(target) === 'nodeList'){
+			const _this = this;
+			let rodData = [];
+			$.each(target, function(i, v){
+				rodData.push(_this.responseData[gmName][v.getAttribute('cache-key')])
+			});
+			return rodData;
+		}
 	};
 	/*
 	 * 存储行数据
@@ -241,7 +242,6 @@ const Cache = {
 
 		//验证：当前table 没有缓存数据
 		if(!_data || $.isEmptyObject(_data)) {
-			Base.outLog('configTheadForCache:当前table没有缓存数据', 'info');
 			return;
 		}
 		// 列表的缓存数据

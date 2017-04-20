@@ -19,7 +19,7 @@ import Scroll from './Scroll';
 import Sort from './Sort';
 import { Settings, TextSettings } from './Settings';
 import { Hover } from './Hover';
-import {PublishMethod, publishList} from './Publish';
+import {PublishMethod, publishMethodArray} from './Publish';
 class GridManager {
 	constructor() {
 		this.version = '2.3.0';
@@ -233,7 +233,7 @@ class GridManager {
 			condition = arguments[3];
 		}
 
-		if(publishList.indexOf(name) === -1){
+		if(publishMethodArray.indexOf(name) === -1){
 			throw new Error('GridManager Error:方法调用错误，请确定方法名['+ name +']是否正确');
 			return false;
 		}

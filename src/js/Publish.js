@@ -11,62 +11,66 @@ import Export from './Export';
 import Core from './Core';
 const PublishMethod= {
 	/*
-	* @获取 GridManager 实例
-	* */
+	 * 通过jTool实例获取GridManager
+	 * @param $table: table [jTool Object]
+	 * */
 	get: function($table) {
-		return this.__getGridManager($table);
+		return Cache.__getGridManager($table);
 	}
 	/*
-	 * @获取指定表格的本地存储数据
+	 * 获取指定表格的本地存储数据
 	 * 成功则返回本地存储数据,失败则返回空对象
+	 * @param $table: table [jTool Object]
 	 * */
 	,getLocalStorage: function($table){
 		return Cache.getUserMemory($table);
 	}
 	/*
-	 * @清除指定表的表格记忆数据
+	 * 清除指定表的表格记忆数据
+	 * @param $table: table [jTool Object]
 	 * return 成功或者失败的布尔值
 	 * */
 	,clear:function($table){
 		return Cache.delUserMemory($table);
 	}
 	/*
-	* @获取当前行渲染时使用的数据
-	* tr: 将要获取数据所对应的tr[Element or NodeList]
-	* */
-	,getRowData: function ($table, tr) {
-		return Cache.__getRowData($table, tr);
+	 * @获取当前行渲染时使用的数据
+	 * @param $table: table [jTool Object]
+	 * @param target: 将要获取数据所对应的tr[Element or NodeList]
+	 * */
+	,getRowData: function ($table, target) {
+		return Cache.__getRowData($table, target);
 	}
 	/*
-	* @配置排序
-	* sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
-	* refresh: 是否执行完成后对表格进行自动刷新[boolean]
+	* 手动设置排序
+	* @param sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
+	* @param callback: 回调函数[function]
+	* @param refresh: 是否执行完成后对表格进行自动刷新[boolean]
 	* */
 	,setSort: function($table, sortJson, callback, refresh){
-		return Sort.__setSort($table, sortJson, callback, refresh)
+		Sort.__setSort($table, sortJson, callback, refresh)
 	}
 	/*
-	 [对外公开方法]
-	 @显示Th及对应的TD项
-	 $table: table [jTool Object]
-	 th: th
-	 */
+	* 显示Th及对应的TD项
+	* @param $table: table [jTool Object]
+	* @param th: th
+	* */
 	,showTh: function($table, th){
 		Base.__showTh(th);
 	}
 	/*
-	 @隐藏Th及对应的TD项
-	 table: table
-	 th:th
-	 */
+	* 隐藏Th及对应的TD项
+	* @param $table: table [jTool Object]
+	* @param th:th
+	* */
 	,hideTh: function($table, th){
 		Base.__hideTh(th);
 	}
 	/*
-	* @导出表格 .xls
-	* $table:当前操作的grid,由插件自动传入
-	* fileName: 导出后的文件名
-	* onlyChecked: 是否只导出已选中的表格
+	* 导出表格 .xls
+	* @param $table:当前操作的grid,由插件自动传入
+	* @param fileName: 导出后的文件名
+	* @param onlyChecked: 是否只导出已选中的表格
 	* */
 	,exportGridToXls: function($table, fileName, onlyChecked){
 		Export.__exportGridToXls($table, fileName, onlyChecked);
@@ -111,24 +115,25 @@ const PublishMethod= {
 		Core.__refreshGrid($table, callback);
 	}
 	/*
-	 @获取当前选中的 tr
-	 $table: table [jTool Object]
-	 */
+	* 获取当前选中的行
+	* @param $table: table [jTool Object]
+	* */
 	,getCheckedTr: function($table) {
 		return $('tbody tr[checked="true"]', $table).DOMList || [];
 	}
 	/*
-	 @获取当前选中的 tr 渲染时的数据,  返回值类型为数组
-	 $table: table [jTool Object]
-	 */
+	* 获取当前选中行渲染时使用的数据
+	* @param $table: table [jTool Object]
+	* */
 	,getCheckedData: function($table){
-		return Cache.__getRowData($table, this.getCheckedTr(table))
+		return Cache.__getRowData($table, this.getCheckedTr($table))
 	}
 };
 
 /*
-	'init',					//初始化
-	'setSort',				//手动设置排序
+	//对外公开方法展示
+	'init',					// 初始化方法
+	'setSort',				// 手动设置排序
 	'get',					//通过jTool实例获取GridManager
 	'showTh',				//显示Th及对应的TD项
 	'hideTh',				//隐藏Th及对应的TD项
@@ -143,10 +148,8 @@ const PublishMethod= {
 	'clear'					//清除指定表的表格记忆数据
 */
 // 对外公开方法列表
-const publishList = [
-	'init'
-];
+const publishMethodArray = ['init'];
 for(let key in PublishMethod){
-	publishList.push(key);
+	publishMethodArray.push(key);
 }
-export {PublishMethod, publishList};
+export {PublishMethod, publishMethodArray};

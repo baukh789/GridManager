@@ -18,17 +18,20 @@ const Sort = {
 	 $.table: table [jTool object]
 	 $.sortJson: 需要排序的json串
 	 $.callback: 回调函数
-	 $.refresh: 是否执行完成后对表格进行自动刷新[boolean]
+	 $.refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
 	 ex: sortJson
 	 sortJson = {
 	 th-name:up/down 	//其中up/down 需要与参数 sortUpText、sortDownText值相同
 	 }
 	 */
 	,__setSort: function($table, sortJson, callback, refresh){
-		let Settings = Cache.getSettings($table);
+		let settings = Cache.getSettings($table);
 		if($table.length == 0 || !sortJson || $.isEmptyObject(sortJson)){
 			return false;
 		}
+		$.extend(settings.sortData, sortJson);
+		Cache.updateSettings($table, settings);
+
 		//默认执行完后进行刷新列表操作
 		if(typeof(refresh) === 'undefined'){
 			refresh = true;
@@ -40,19 +43,18 @@ const Sort = {
 			_th = $('[th-name="'+ s +'"]', $table);
 			_sortType = sortJson[s];
 			_sortAction = $('.sorting-action', _th);
-			if(_sortType == Settings.sortUpText){
-				_th.attr('sorting', Settings.sortUpText);
+			if(_sortType === settings.sortUpText){
+				_th.attr('sorting', settings.sortUpText);
 				_sortAction.removeClass('sorting-down');
 				_sortAction.addClass('sorting-up');
 			}
-			else if(_sortType == Settings.sortDownText){
-				_th.attr('sorting', Settings.sortDownText);
+			else if(_sortType === settings.sortDownText){
+				_th.attr('sorting', settings.sortDownText);
 				_sortAction.removeClass('sorting-up');
 				_sortAction.addClass('sorting-down');
 			}
 		}
 		refresh ? Core.__refreshGrid($table, callback) : (typeof(callback) === 'function' ? callback() : '');
-		return $table;
 	}
 	/*
 	 @绑定排序事件
