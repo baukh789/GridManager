@@ -15,8 +15,7 @@ module.exports = function (config) {
 		captureTimeout: 60000,
 		reporters: ['progress', 'coverage'],
 		preprocessors: {
-			'test/*_test.js': ['webpack'],
-			'src/**/*.js': ['webpack', 'coverage']
+			'test/*_test.js': ['webpack', 'coverage']
 		},
 		webpack: {
 			devtool: 'eval',
@@ -79,9 +78,19 @@ module.exports = function (config) {
 		coverageReporter: {
 			reporters: [
 				// generates ./coverage/lcov.info
-				{type: 'lcovonly', subdir: '.'},
+				{
+					type: 'lcovonly', subdir: '.'
+				},
 				// generates ./coverage/coverage-final.json
-				{type: 'json', subdir: '.'}
+				{
+					type: 'json', subdir: '.'
+				},
+				{
+					// 这就是Codecov支持的文件类型
+					type: 'cobertura',
+					subdir: '.',
+					dir: 'test/coverage'
+				}
 			]
 		},
 		concurrency: Infinity
