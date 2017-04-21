@@ -10,18 +10,17 @@ const Export = {
 		return html;
 	}
 	/*
-	 [对外公开方法]
-	 @导出表格 .xls
-	 $.table:当前操作的grid,由插件自动传入
-	 $.fileName: 导出后的文件名
-	 $.onlyChecked: 是否只导出已选中的表格
-	 */
-	,__exportGridToXls: function(table, fileName, onlyChecked){
-		let Settings = Cache.getSettings(table);
+	 * 导出表格 .xls
+	 * @param $table:当前操作的grid,由插件自动传入
+	 * @param fileName: 导出后的文件名
+	 * @param onlyChecked: 是否只导出已选中的表格
+	 * */
+	,__exportGridToXls: function($table, fileName, onlyChecked){
+		let Settings = Cache.getSettings($table);
 		const gmExportAction = $('#gm-export-action'); //createDOM内添加
 		if(gmExportAction.length === 0){
 			Core.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
-			return;
+			return false;
 		}
 		// type base64
 		const uri = 'data:application/vnd.ms-excel;base64,';
@@ -31,17 +30,15 @@ const Export = {
 		//存储导出的tbody下的数据
 		let	tbodyHTML = '';
 
-		//当前要导出的table
-		const tableDOM = $(table);
-		const thDOM = $('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', tableDOM);
+		const thDOM = $('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', $table);
 
 		let	trDOM,
 			tdDOM;
 		//验证：是否只导出已选中的表格
 		if(onlyChecked){
-			trDOM = $('tbody tr[checked="true"]', tableDOM);
+			trDOM = $('tbody tr[checked="true"]', $table);
 		}else{
-			trDOM = $('tbody tr', tableDOM);
+			trDOM = $('tbody tr', $table);
 		}
 		$.each(thDOM, function(i, v){
 			theadHTML += `<th>${v.getElementsByClassName('th-text')[0].textContent}</th>`;
@@ -76,6 +73,9 @@ const Export = {
 		function base64(s) {
 			return window.btoa(unescape(encodeURIComponent(s)))
 		}
+
+		// 成功后返回true
+		return true;
 	}
 };
 export default Export;

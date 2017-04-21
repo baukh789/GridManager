@@ -23,20 +23,6 @@ const Base = {
 		return msg;
 	}
 	/*
-	* @显示Th及对应的TD项
-	* th: Element th
-	* */
-	,__showTh: function(th){
-		this.setAreVisible($(th), true);
-	}
-	/*
-	* @隐藏Th及对应的TD项
-	* th: Element th
-	* */
-	,__hideTh: function(th){
-		this.setAreVisible($(th), false);
-	}
-	/*
 	 * @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
 	 * $th: jTool th
 	 * */

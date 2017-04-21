@@ -56,7 +56,6 @@ describe('Core', function() {
 
 	it('Core.__refreshGrid($table, callback)', function(){
 		let callback = jasmine.createSpy('callback');
-		let callback2 = jasmine.createSpy('callback');
 		Core.__refreshGrid($table, callback);
 		expect(callback).toHaveBeenCalled();
 

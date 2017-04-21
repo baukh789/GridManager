@@ -146,5 +146,6 @@ describe('AjaxPage.js', function() {
 		expect(pageData.pSize).toBe(10);
 		expect(pageData.tPage).toBe(90);
 		expect(pageData.tSize).toBe(900);
+
 	});
 });

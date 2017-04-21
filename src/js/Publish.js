@@ -45,7 +45,7 @@ const PublishMethod= {
 	* 手动设置排序
 	* @param sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
 	* @param callback: 回调函数[function]
-	* @param refresh: 是否执行完成后对表格进行自动刷新[boolean]
+	* @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
 	* */
 	,setSort: function($table, sortJson, callback, refresh){
 		Sort.__setSort($table, sortJson, callback, refresh)
@@ -53,18 +53,18 @@ const PublishMethod= {
 	/*
 	* 显示Th及对应的TD项
 	* @param $table: table [jTool Object]
-	* @param th: th
+	* @param target: th[Element or NodeList]
 	* */
-	,showTh: function($table, th){
-		Base.__showTh(th);
+	,showTh: function($table, target){
+		Base.setAreVisible($(target), true);
 	}
 	/*
 	* 隐藏Th及对应的TD项
-	* @param $table: table [jTool Object]
-	* @param th:th
+	 * @param $table: table [jTool Object]
+	 * @param target: th[Element or NodeList]
 	* */
-	,hideTh: function($table, th){
-		Base.__hideTh(th);
+	,hideTh: function($table, target){
+		Base.setAreVisible($(target), false);
 	}
 	/*
 	* 导出表格 .xls
@@ -73,20 +73,27 @@ const PublishMethod= {
 	* @param onlyChecked: 是否只导出已选中的表格
 	* */
 	,exportGridToXls: function($table, fileName, onlyChecked){
-		Export.__exportGridToXls($table, fileName, onlyChecked);
+		return Export.__exportGridToXls($table, fileName, onlyChecked);
 	}
 	/**
-	 * 配置query 该参数会在分页触发后返回至pagingAfter(query)方法
+	 * 设置查询条件
 	 * @param $table: table [jTool object]
-	 * @param query: 配置的数据
+	 * @param query: 配置的数据 [Object]
+	 * @param callback: 回调函数
+	 * 注意事项:
+	 * - query的key值如果与分页及排序等字段冲突, query中的值将会被忽略.
+	 * - setQuery() 会立即触发刷新操作
+	 * - 在此配置的query在分页事件触发时, 会以参数形式传递至pagingAfter(query)事件内
+	 * - setQuery对query字段执行的操作是修改而不是合并, 每次执行setQuery都会将之前配置的query值覆盖
 	 */
-	,setQuery: function($table, query){
+	,setQuery: function($table, query, callback){
 		const settings = Cache.getSettings($table);
 		$.extend(settings, {query: query});
 		Cache.updateSettings($table, settings);
+		Core.__refreshGrid($table, callback);
 	}
 	/**
-	 * 配置ajaxData
+	 * 配置静态数ajaxData
 	 * @param $table: table [jTool object]
 	 * @param ajaxData: 配置的数据
 	 */
@@ -117,9 +124,10 @@ const PublishMethod= {
 	/*
 	* 获取当前选中的行
 	* @param $table: table [jTool Object]
+	* return 当前选中的行 [NodeList]
 	* */
 	,getCheckedTr: function($table) {
-		return $('tbody tr[checked="true"]', $table).DOMList || [];
+		return $table.get(0).querySelectorAll('tbody tr[checked="true"]');
 	}
 	/*
 	* 获取当前选中行渲染时使用的数据

@@ -19,7 +19,7 @@ describe('Base: 验证方法总数', function() {
 		getPropertyCount = null;
 	});
 	it('Function count', function() {
-		expect(getPropertyCount(Base)).toBe(9);
+		expect(getPropertyCount(Base)).toBe(7);
 	});
 });
 describe('Base.js', function() {
@@ -71,30 +71,6 @@ describe('Base.js', function() {
 		table = null;
 		$table = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
-	});
-
-	it('Base.__hideTh($table, th)', function(){
-		// 以下操作将自动生成列排除在外
-		let visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
-		expect(visibleTh.length).toBe(6);
-		let thList = jTool('th[gm-create="false"]', $table);
-
-		Base.__hideTh(thList);
-		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
-		expect(visibleTh.length).toBe(0);
-		thList = null;
-	});
-
-	it('Base.__showTh($table, th)', function(){
-		// 以下操作将自动生成列排除在外
-		let visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
-		expect(visibleTh.length).toBe(0);
-		let thList = jTool('th[gm-create="false"]', $table);
-
-		Base.__showTh(thList);
-		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
-		expect(visibleTh.length).toBe(6);
-		thList = null;
 	});
 
 	it('Base.getColTd($th)', function(){

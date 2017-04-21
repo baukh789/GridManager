@@ -1,12 +1,15 @@
 /**
  * Created by baukh on 17/4/17.
+ * 注意: 公开方法在实际调用时 与 测试时方法不同, document.querySelector('table').GM('get');
  */
 
 'use strict';
 import jTool from '../src/js/jTool';
 import {PublishMethod, publishMethodArray} from '../src/js/Publish';
 import Cache from '../src/js/Cache';
+import Export from '../src/js/Export';
 import testData from '../src/data/testData';
+import testData2 from '../src/data/testData2';
 describe('Publish.js', function() {
 	let table = null;
 	let $table = null;
@@ -20,6 +23,8 @@ describe('Publish.js', function() {
 		$table = jTool('table[grid-manager="test-publish"]');
 		document.querySelector('table[grid-manager="test-publish"]').GM({
 			ajax_data: testData
+			,query: {name: 'baukh'}
+			,supportAjaxPage: true
 			,columnData: [
 				{
 					key: 'name',
@@ -80,7 +85,8 @@ describe('Publish.js', function() {
 	});
 
 	it('PublishMethod.get($table)', function(){
-		let gm = PublishMethod.get($table);
+		let gm = null;
+		gm = PublishMethod.get($table);
 		expect(gm).toBeDefined();
 		expect(gm['supportDrag']).toBe(true);
 		expect(gm['sortData']).toEqual({});
@@ -92,7 +98,8 @@ describe('Publish.js', function() {
 	});
 
 	it('PublishMethod.getLocalStorage($table)', function(){
-		let userMemory = PublishMethod.getLocalStorage($table);
+		let userMemory = null;
+		userMemory = PublishMethod.getLocalStorage($table);
 		expect(userMemory).toEqual({});
 		Cache.saveUserMemory($table);
 		userMemory = PublishMethod.getLocalStorage($table);
@@ -103,17 +110,21 @@ describe('Publish.js', function() {
 	});
 
 	it('PublishMethod.clear($table)', function(){
+		let userMemory = null;
 		PublishMethod.clear($table);
-		let userMemory = PublishMethod.getLocalStorage($table);
+		userMemory = PublishMethod.getLocalStorage($table);
 		expect(userMemory).toEqual({});
 
 		userMemory = null;
 	});
 
 	it('PublishMethod.getRowData($table, target)', function(){
-		let tr = table.querySelector('tbody tr:first-child');
-		let trList = table.querySelectorAll('tbody tr');
+		let tr = null;
+		let trList = null;
 		let rowData = null;
+		tr = table.querySelector('tbody tr:first-child');
+		trList = table.querySelectorAll('tbody tr');
+
 		// Element 返回Object形式数据
 		rowData = PublishMethod.getRowData($table, tr);
 		expect(rowData.createDate).toBe('2015-03-12');
@@ -127,9 +138,12 @@ describe('Publish.js', function() {
 	});
 
 	it('PublishMethod.setSort($table, sortJson, callback, refresh)', function(){
-		let settings = Cache.getSettings($table);
-		let sortJson = {name:'DESC', createDate:'ASC'};
-		let callback = jasmine.createSpy('callback');
+		let settings = null;
+		let sortJson = null;
+		let callback = null;
+		settings = Cache.getSettings($table);
+		sortJson = {name:'DESC', createDate:'ASC'};
+		callback = jasmine.createSpy('callback');
 		expect(settings.sortData).toEqual({});
 		PublishMethod.setSort($table, sortJson, callback, false);
 
@@ -142,6 +156,138 @@ describe('Publish.js', function() {
 		settings = null;
 		sortJson = null;
 		callback = null;
+	});
+
+	it('PublishMethod.hideTh($table, th)', function(){
+		let visibleTh = null;
+		let th = null;
+		let thList = null;
+		// 以下操作将自动生成列排除在外
+		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
+		expect(visibleTh.length).toBe(6);
+
+		// 隐藏一列
+		th = jTool('th[th-name="name"]', $table);
+		PublishMethod.hideTh($table, th);
+		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
+		expect(visibleTh.length).toBe(5);
+
+		// 隐藏全部
+		thList = jTool('th[gm-create="false"]', $table);
+		PublishMethod.hideTh($table, thList);
+		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
+		expect(visibleTh.length).toBe(0);
+
+		visibleTh = null;
+		th = null;
+		thList = null;
+	});
+
+	it('PublishMethod.showTh($table, th)', function(){
+		let visibleTh = null;
+		let th = null;
+		let thList = null;
+		// 以下操作将自动生成列排除在外
+		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
+		expect(visibleTh.length).toBe(0);
+
+		// 显示一列
+		th = jTool('th[th-name="name"]', $table);
+		PublishMethod.showTh($table, th);
+		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
+		expect(visibleTh.length).toBe(1);
+
+		// 显示全部
+		thList = jTool('th[gm-create="false"]', $table);
+		PublishMethod.showTh($table, thList);
+		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
+		expect(visibleTh.length).toBe(6);
+
+		visibleTh = null;
+		th = null;
+		thList = null;
+	});
+
+	it('PublishMethod.exportGridToXls($table, fileName, onlyChecked)', function(){
+		expect(PublishMethod.exportGridToXls($table, 'test', true)).toBe(Export.__exportGridToXls($table, 'test', true));
+	});
+
+	it('PublishMethod.setQuery($table, query)', function(){
+		let query = null;
+		let settings = null;
+
+		// 未执行setQuery时, 使用init时配置的query
+		settings = Cache.getSettings($table);
+		expect(settings.query).toEqual({name: 'baukh'});
+
+		query = {
+			testKey: 'love javascript'
+		};
+		PublishMethod.setQuery($table, query);
+		settings = Cache.getSettings($table);
+		expect(settings.query).toEqual({testKey: 'love javascript'});
+
+		query = {
+			testName: 'baukh'
+		};
+
+		PublishMethod.setQuery($table, query);
+		settings = Cache.getSettings($table);
+		expect(settings.query).toEqual({testName: 'baukh'});
+
+		query = null;
+		settings = null;
+	});
+
+	it('PublishMethod.setAjaxData($table, ajaxData)', function(){
+		let settings = null;
+		settings = Cache.getSettings($table);
+		expect(settings.pageData.tSize).toBe(8);
+
+		PublishMethod.setAjaxData($table, testData2);
+		settings = Cache.getSettings($table);
+		expect(settings.pageData.tSize).toBe(5);
+
+		settings = null;
+	});
+
+	it('PublishMethod.refreshGrid($table, callback)', function(){
+		let callback = null;
+		callback = jasmine.createSpy('callback');
+		PublishMethod.refreshGrid($table, callback);
+		expect(callback).toHaveBeenCalled();
+
+		callback = null;
+	});
+
+	it('PublishMethod.getCheckedTr($table)', function(){
+		let checkedList = null;
+		let checkboxList = null;
+		checkedList = PublishMethod.getCheckedTr($table);
+		expect(jTool.type(checkedList)).toBe('nodeList');
+		expect(checkedList.length).toBe(0);
+
+		checkboxList = jTool('tr td[gm-checkbox="true"] input', $table);
+		checkboxList.eq(0).trigger('click');
+		checkedList = PublishMethod.getCheckedTr($table);
+		expect(checkedList.length).toBe(1);
+
+		checkboxList.eq(1).trigger('click');
+		checkedList = PublishMethod.getCheckedTr($table);
+		expect(checkedList.length).toBe(2);
+
+		checkedList = null;
+		checkboxList = null;
+	});
+
+	it('PublishMethod.getCheckedData($table)', function () {
+		let checkedData = null;
+		checkedData = PublishMethod.getCheckedData($table);
+		expect(checkedData.length).toBe(2);
+		expect(checkedData[0].name).toBe('baukh');
+		expect(checkedData[1].name).toBe('kouzi');
+
+		checkedData = null;
 	});
 
 });

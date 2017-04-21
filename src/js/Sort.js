@@ -14,19 +14,17 @@ const Sort = {
 		return html;
 	}
 	/*
-	 @手动设置排序
-	 $.table: table [jTool object]
-	 $.sortJson: 需要排序的json串
-	 $.callback: 回调函数
-	 $.refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
-	 ex: sortJson
-	 sortJson = {
-	 th-name:up/down 	//其中up/down 需要与参数 sortUpText、sortDownText值相同
-	 }
-	 */
+	 * 手动设置排序
+	 * @param sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
+	 * @param callback: 回调函数[function]
+	 * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
+	 *
+	 * 排序json串示例:
+	 * sortJson => {name: 'ASC}
+	 * */
 	,__setSort: function($table, sortJson, callback, refresh){
 		let settings = Cache.getSettings($table);
-		if($table.length == 0 || !sortJson || $.isEmptyObject(sortJson)){
+		if(!sortJson || $.type(sortJson) !== 'object' || $.isEmptyObject(sortJson)){
 			return false;
 		}
 		$.extend(settings.sortData, sortJson);

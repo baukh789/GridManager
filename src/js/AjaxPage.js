@@ -306,7 +306,7 @@ const AjaxPage = {
 	 * @param totals: 总条数
 	 */
 	,resetPageData: function($table, totals){
-		const Settings = Cache.getSettings($table);
+		const settings = Cache.getSettings($table);
 		const _this = this;
 		if(isNaN(parseInt(totals, 10))){
 			return;
@@ -319,7 +319,7 @@ const AjaxPage = {
 		_this.resetPSize($table, _pageData);
 
 		// 更新Cache
-		Cache.updateSettings($table, $.extend(true, Settings, {pageData: _pageData}));
+		Cache.updateSettings($table, $.extend(true, settings, {pageData: _pageData}));
 
 		const tableWarp = $table.closest('.table-wrap');
 		//分页工具条
@@ -328,9 +328,9 @@ const AjaxPage = {
 
 		// 计算分页数据
 		function getPageData(tSize){
-			const _pSize = Settings.pageData.pSize || Settings.pageSize,
+			const _pSize = settings.pageData.pSize || settings.pageSize,
 				  _tSize = tSize,
-				  _cPage = Settings.pageData.cPage || 1;
+				  _cPage = settings.pageData.cPage || 1;
 			return {
 				tPage: Math.ceil(_tSize / _pSize),		// 总页数
 				cPage: _cPage,							// 当前页
@@ -344,7 +344,7 @@ const AjaxPage = {
 	 * @param $table: [table jTool object]
 	 */
 	,configPageForCache: function($table){
-		const Settings = Cache.getSettings($table);
+		const settings = Cache.getSettings($table);
 		let _data = Cache.getUserMemory($table);
 		// 缓存对应
 		let	_cache = _data.cache;
@@ -353,7 +353,7 @@ const AjaxPage = {
 
 		// 验证是否存在每页显示条数缓存数据
 		if(!_cache || !_cache.page || !_cache.page.pSize){
-			_pSize = Settings.pageSize || 10.
+			_pSize = settings.pageSize || 10.
 		}
 		else{
 			_pSize = _cache.page.pSize;
@@ -362,8 +362,8 @@ const AjaxPage = {
 			pSize : _pSize,
 			cPage : 1
 		};
-		$.extend(Settings, {pageData: pageData});
-		Cache.updateSettings($table, Settings);
+		$.extend(settings, {pageData: pageData});
+		Cache.updateSettings($table, settings);
 	}
 };
 export default AjaxPage;
