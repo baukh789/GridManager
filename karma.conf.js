@@ -4,7 +4,6 @@ module.exports = function (config) {
 		basePath: '',
 		frameworks: ['jasmine'],
 		files: [
-			'/src/js/*.js',
 			'test/*_test.js'
 		],
 		exclude: ['karma.conf.js'],
@@ -17,7 +16,6 @@ module.exports = function (config) {
 		captureTimeout: 60000,
 		reporters: ['progress', 'coverage'],
 		preprocessors: {
-			'src/**/*.js': ['webpack', 'coverage'],
 			'test/*_test.js': ['webpack']
 		},
 		// optionally, configure the reporter
@@ -30,16 +28,6 @@ module.exports = function (config) {
 			]
 		},
 		webpack: {
-			devtool: 'eval',
-			output: {
-				pathinfo: true
-			},
-			eslint: {
-				configFile: '.eslintrc',
-				emitWarning: true,
-				emitError: true,
-				formatter: require('eslint-friendly-formatter')
-			},
 			module: {
 				loaders:[
 					{
@@ -78,7 +66,13 @@ module.exports = function (config) {
 						exclude: /(node_modules|bower_components)/,
 						include: [path.join(__dirname, 'src')]
 					}
-				]
+				],
+				postLoaders: [{
+					test: /\.js$/,
+					loader: 'istanbul-instrumenter',
+					exclude: /node_modules|_spec\.js$/,
+					include: [path.join(__dirname, './src')]
+				}]
 			}
 
 		},
