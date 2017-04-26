@@ -354,7 +354,7 @@
 						condition = arguments[3];
 					}
 
-			if (_Publish.publishList.indexOf(name) === -1) {
+			if (_Publish.publishMethodArray.indexOf(name) === -1) {
 				throw new Error('GridManager Error:方法调用错误，请确定方法名[' + name + ']是否正确');
 				return false;
 			}
@@ -606,10 +606,9 @@
 		/*
 	  * @获取当前行渲染时使用的数据
 	  * $table: 当前操作的grid,由插件自动传入
-	  * tr: 将要获取数据所对应的tr[Element or NodeList]
+	  * target: 将要获取数据所对应的tr[Element or NodeList]
 	  * */
-		this.__getRowData = function ($table, tr) {
-			// tr 为 Element 元素时, 返回数据对象; 为 NodeList 类型时, 返回数组
+		this.__getRowData = function ($table, target) {
 			var gmName = $table.attr('grid-manager');
 			if (!gmName) {
 				return;
@@ -617,17 +616,19 @@
 			if (!this.responseData[gmName]) {
 				return;
 			}
-			// Element 无length属性, NodeList 会有length属性.
-			// 所以这里通过 .length进行区别. 如果为NodeList 且 length == 0 时,采用与 Element同样的返回类型
-			if (!tr.length) {
-				return this.responseData[gmName][tr.getAttribute('cache-key')];
+			// target type = Element 元素时, 返回单条数据对象;
+			if (_jTool2.default.type(target) === 'element') {
+				return this.responseData[gmName][target.getAttribute('cache-key')];
 			}
-			var _this = this;
-			var rodData = [];
-			_jTool2.default.each(tr, function (i, v) {
-				rodData.push(_this.responseData[gmName][v.getAttribute('cache-key')]);
-			});
-			return rodData;
+			// target type =  NodeList 类型时, 返回数组
+			else if (_jTool2.default.type(target) === 'nodeList') {
+					var _this = this;
+					var rodData = [];
+					_jTool2.default.each(target, function (i, v) {
+						rodData.push(_this.responseData[gmName][v.getAttribute('cache-key')]);
+					});
+					return rodData;
+				}
 		};
 		/*
 	  * 存储行数据
@@ -831,7 +832,6 @@
 
 			//验证：当前table 没有缓存数据
 			if (!_data || _jTool2.default.isEmptyObject(_data)) {
-				_Base2.default.outLog('configTheadForCache:当前table没有缓存数据', 'info');
 				return;
 			}
 			// 列表的缓存数据
@@ -966,20 +966,6 @@
 				console.error('GridManager Error: ', msg);
 			}
 			return msg;
-		}
-		/*
-	 * @显示Th及对应的TD项
-	 * th: Element th
-	 * */
-		, __showTh: function __showTh(th) {
-			this.setAreVisible((0, _jTool2.default)(th), true);
-		}
-		/*
-	 * @隐藏Th及对应的TD项
-	 * th: Element th
-	 * */
-		, __hideTh: function __hideTh(th) {
-			this.setAreVisible((0, _jTool2.default)(th), false);
 		}
 		/*
 	  * @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
@@ -1447,7 +1433,7 @@
 	  * @param totals: 总条数
 	  */
 		, resetPageData: function resetPageData($table, totals) {
-			var Settings = _Cache2.default.getSettings($table);
+			var settings = _Cache2.default.getSettings($table);
 			var _this = this;
 			if (isNaN(parseInt(totals, 10))) {
 				return;
@@ -1460,7 +1446,7 @@
 			_this.resetPSize($table, _pageData);
 
 			// 更新Cache
-			_Cache2.default.updateSettings($table, _jTool2.default.extend(true, Settings, { pageData: _pageData }));
+			_Cache2.default.updateSettings($table, _jTool2.default.extend(true, settings, { pageData: _pageData }));
 
 			var tableWarp = $table.closest('.table-wrap');
 			//分页工具条
@@ -1469,9 +1455,9 @@
 
 			// 计算分页数据
 			function getPageData(tSize) {
-				var _pSize = Settings.pageData.pSize || Settings.pageSize,
+				var _pSize = settings.pageData.pSize || settings.pageSize,
 				    _tSize = tSize,
-				    _cPage = Settings.pageData.cPage || 1;
+				    _cPage = settings.pageData.cPage || 1;
 				return {
 					tPage: Math.ceil(_tSize / _pSize), // 总页数
 					cPage: _cPage, // 当前页
@@ -1485,7 +1471,7 @@
 	  * @param $table: [table jTool object]
 	  */
 		, configPageForCache: function configPageForCache($table) {
-			var Settings = _Cache2.default.getSettings($table);
+			var settings = _Cache2.default.getSettings($table);
 			var _data = _Cache2.default.getUserMemory($table);
 			// 缓存对应
 			var _cache = _data.cache;
@@ -1494,7 +1480,7 @@
 
 			// 验证是否存在每页显示条数缓存数据
 			if (!_cache || !_cache.page || !_cache.page.pSize) {
-				_pSize = Settings.pageSize || 10.;
+				_pSize = settings.pageSize || 10.;
 			} else {
 				_pSize = _cache.page.pSize;
 			}
@@ -1502,8 +1488,8 @@
 				pSize: _pSize,
 				cPage: 1
 			};
-			_jTool2.default.extend(Settings, { pageData: pageData });
-			_Cache2.default.updateSettings($table, Settings);
+			_jTool2.default.extend(settings, { pageData: pageData });
+			_Cache2.default.updateSettings($table, settings);
 		}
 	}; /*
 	    * AjaxPage: 分页
@@ -1572,6 +1558,9 @@
 
 	/*
 	* Core: 核心方法
+	* 1.刷新
+	* 2.渲染GM DOM
+	* 3.重置tbody
 	* */
 	var Core = {
 		/*
@@ -1579,7 +1568,7 @@
 	  $.callback: 回调函数
 	  */
 		__refreshGrid: function __refreshGrid($table, callback) {
-			var Settings = _Cache2.default.getSettings($table);
+			var settings = _Cache2.default.getSettings($table);
 			var tbodyDOM = (0, _jTool2.default)('tbody', $table),
 			    //tbody dom
 			gmName = $table.attr('grid-manager'),
@@ -1592,30 +1581,30 @@
 	   如果存在配置数据ajax_data,将不再通过ajax_rul进行数据请求
 	   且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
 	   */
-			if (Settings.ajax_data) {
-				driveDomForSuccessAfter(Settings.ajax_data);
-				Settings.ajax_success(Settings.ajax_data);
+			if (settings.ajax_data) {
+				driveDomForSuccessAfter(settings.ajax_data);
+				settings.ajax_success(settings.ajax_data);
 				removeRefreshingClass();
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
-			if (typeof Settings.ajax_url != 'string' || Settings.ajax_url === '') {
-				Settings.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
+			if (typeof settings.ajax_url != 'string' || settings.ajax_url === '') {
+				settings.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
 				removeRefreshingClass();
 				typeof callback === 'function' ? callback() : '';
 				return;
 			}
-			var pram = _jTool2.default.extend(true, {}, Settings.query);
+			var pram = _jTool2.default.extend(true, {}, settings.query);
 			//合并分页信息至请求参
-			if (Settings.supportAjaxPage) {
-				_jTool2.default.extend(pram, Settings.pageData);
+			if (settings.supportAjaxPage) {
+				_jTool2.default.extend(pram, settings.pageData);
 			}
 			//合并排序信息至请求参
-			if (Settings.supportSorting) {
-				_jTool2.default.each(Settings.sortData, function (key, value) {
+			if (settings.supportSorting) {
+				_jTool2.default.each(settings.sortData, function (key, value) {
 					pram['sort_' + key] = value; // 增加sort_前缀,防止与搜索时的条件重叠
 				});
-				// $.extend(pram, Settings.sortData);
+				// $.extend(pram, settings.sortData);
 			}
 			//当前页小于1时, 修正为1
 			if (pram.cPage < 1) {
@@ -1624,8 +1613,8 @@
 			} else if (pram.cPage > pram.tPage) {
 				pram.cPage = pram.tPage;
 			}
-			// Settings.query = pram;
-			_Cache2.default.updateSettings($table, Settings);
+			// settings.query = pram;
+			_Cache2.default.updateSettings($table, settings);
 
 			_Base2.default.showLoading(tableWrap);
 
@@ -1633,28 +1622,28 @@
 			// 说明|备注:
 			// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
 			// 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
-			if (Settings.ajax_type.toUpperCase() === 'POST' && !Settings.ajax_headers['Content-Type']) {
-				Settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
+			if (settings.ajax_type.toUpperCase() === 'POST' && !settings.ajax_headers['Content-Type']) {
+				settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
 			}
 			//执行ajax
 			_jTool2.default.ajax({
-				url: Settings.ajax_url,
-				type: Settings.ajax_type,
+				url: settings.ajax_url,
+				type: settings.ajax_type,
 				data: pram,
-				headers: Settings.ajax_headers,
+				headers: settings.ajax_headers,
 				cache: true,
 				beforeSend: function beforeSend(XMLHttpRequest) {
-					Settings.ajax_beforeSend(XMLHttpRequest);
+					settings.ajax_beforeSend(XMLHttpRequest);
 				},
 				success: function success(response) {
 					driveDomForSuccessAfter(response);
-					Settings.ajax_success(response);
+					settings.ajax_success(response);
 				},
 				error: function error(XMLHttpRequest, textStatus, errorThrown) {
-					Settings.ajax_error(XMLHttpRequest, textStatus, errorThrown);
+					settings.ajax_error(XMLHttpRequest, textStatus, errorThrown);
 				},
 				complete: function complete(XMLHttpRequest, textStatus) {
-					Settings.ajax_complete(XMLHttpRequest, textStatus);
+					settings.ajax_complete(XMLHttpRequest, textStatus);
 					removeRefreshingClass();
 					_Base2.default.hideLoading(tableWrap);
 				}
@@ -1674,7 +1663,7 @@
 
 				var tbodyTmpHTML = ''; //用于拼接tbody的HTML结构
 				var parseRes = typeof response === 'string' ? JSON.parse(response) : response;
-				var _data = parseRes[Settings.dataKey];
+				var _data = parseRes[settings.dataKey];
 				var key = void 0,
 				    //数据索引
 				alignAttr = void 0,
@@ -1684,14 +1673,14 @@
 				templateHTML = void 0; //数据模板导出的html
 				//数据为空时
 				if (!_data || _data.length === 0) {
-					tbodyTmpHTML = '<tr emptyTemplate>' + '<td colspan="' + (0, _jTool2.default)('th[th-visible="visible"]', $table).length + '">' + (Settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>') + '</td>' + '</tr>';
+					tbodyTmpHTML = '<tr emptyTemplate>' + '<td colspan="' + (0, _jTool2.default)('th[th-visible="visible"]', $table).length + '">' + (settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>') + '</td>' + '</tr>';
 					parseRes.totals = 0;
 					tbodyDOM.html(tbodyTmpHTML);
 				} else {
 					_jTool2.default.each(_data, function (i, v) {
 						_Cache2.default.setRowData(gmName, i, v);
 						tbodyTmpHTML += '<tr cache-key="' + i + '">';
-						_jTool2.default.each(Settings.columnData, function (i2, v2) {
+						_jTool2.default.each(settings.columnData, function (i2, v2) {
 							key = v2.key;
 							template = v2.template;
 							templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];
@@ -1704,8 +1693,8 @@
 					Core.resetTd($table, false);
 				}
 				//渲染分页
-				if (Settings.supportAjaxPage) {
-					_AjaxPage2.default.resetPageData($table, parseRes[Settings.totalsKey]);
+				if (settings.supportAjaxPage) {
+					_AjaxPage2.default.resetPageData($table, parseRes[settings.totalsKey]);
 					_Menu2.default.checkMenuPageAction($table);
 				}
 				typeof callback === 'function' ? callback() : '';
@@ -1713,11 +1702,11 @@
 		}
 		/*
 	 * 渲染HTML，根据配置嵌入所需的事件源DOM
-	 * table: table[jTool对象]
+	 * $table: table[jTool对象]
 	 * */
-		, createDOM: function createDOM(table) {
-			var settings = _Cache2.default.getSettings(table);
-			table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', settings.gridManagerName);
+		, createDOM: function createDOM($table) {
+			var settings = _Cache2.default.getSettings($table);
+			$table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', settings.gridManagerName);
 			var theadHtml = '<thead grid-manager-thead>',
 			    tbodyHtml = '<tbody></tbody>',
 			    alignAttr = '',
@@ -1739,11 +1728,11 @@
 					if (v.sorting === settings.sortDownText) {
 						sortingHtml = 'sorting="' + settings.sortDownText + '"';
 						settings.sortData[v.key] = settings.sortDownText;
-						_Cache2.default.updateSettings(table, settings);
+						_Cache2.default.updateSettings($table, settings);
 					} else if (v.sorting === settings.sortUpText) {
 						sortingHtml = 'sorting="' + settings.sortUpText + '"';
 						settings.sortData[v.key] = settings.sortUpText;
-						_Cache2.default.updateSettings(table, settings);
+						_Cache2.default.updateSettings($table, settings);
 					} else {
 						sortingHtml = 'sorting=""';
 					}
@@ -1757,17 +1746,17 @@
 				theadHtml += '<th gm-create="false" th-name="' + v.key + '" ' + remindHtml + ' ' + sortingHtml + ' ' + widthHtml + ' ' + alignAttr + '>' + v.text + '</th>';
 			});
 			theadHtml += '</thead>';
-			table.html(theadHtml + tbodyHtml);
+			$table.html(theadHtml + tbodyHtml);
 			// 嵌入序号DOM
 			if (settings.supportAutoOrder) {
-				_Order2.default.initDOM(table);
+				_Order2.default.initDOM($table);
 			}
 			//嵌入选择返选DOM
 			if (settings.supportCheckbox) {
-				_Checkbox2.default.initCheckbox(table);
+				_Checkbox2.default.initCheckbox($table);
 			}
 			// 存储原始th DOM
-			_Cache2.default.setOriginalThDOM(table);
+			_Cache2.default.setOriginalThDOM($table);
 
 			// 表头提醒HTML
 			var _remindHtml = _Remind2.default.html();
@@ -1784,7 +1773,7 @@
 			// 导出表格数据所需的事件源DOM
 			var exportActionHtml = _Export2.default.html();
 			// AJAX分页HTML
-			var _ajaxPageHtml = _AjaxPage2.default.html(table);
+			var _ajaxPageHtml = _AjaxPage2.default.html($table);
 			var wrapHtml = void 0,
 			    //外围的html片段
 			tableWarp = void 0,
@@ -1809,11 +1798,11 @@
 			    //是否为插件自动生成的序号列
 			isLmCheckbox = void 0; //是否为插件自动生成的选择列
 
-			onlyThead = (0, _jTool2.default)('thead', table);
+			onlyThead = (0, _jTool2.default)('thead', $table);
 			onlyThList = (0, _jTool2.default)('th', onlyThead);
 			wrapHtml = '<div class="table-wrap"><div class="table-div" style="height:calc(' + settings.height + ' - 40px)"></div><span class="text-dreamland"></span></div>';
-			table.wrap(wrapHtml);
-			tableWarp = table.closest('.table-wrap');
+			$table.wrap(wrapHtml);
+			tableWarp = $table.closest('.table-wrap');
 			// 配置文本对齐方式
 			if (settings.textAlign) {
 				tableWarp.attr('gm-text-align', settings.textAlign);
@@ -1825,7 +1814,7 @@
 			// 嵌入Ajax分页DOM
 			if (settings.supportAjaxPage) {
 				tableWarp.append(_ajaxPageHtml);
-				_AjaxPage2.default.initAjaxPage(table);
+				_AjaxPage2.default.initAjaxPage($table);
 			}
 			// 嵌入导出表格数据事件源
 			if (settings.supportExport) {
@@ -1927,12 +1916,12 @@
 					}
 			});
 			//删除渲染中标识、增加渲染完成标识
-			table.removeClass('GridManager-loading');
-			table.addClass('GridManager-ready');
+			$table.removeClass('GridManager-loading');
+			$table.addClass('GridManager-ready');
 		}
 		/*
 	 * 重置列表, 处理局部刷新、分页事件之后的td排序
-	 * table: table [jTool object]
+	 * dom: table 或者 tr
 	 * isSingleRow: 指定DOM节点是否为tr[布尔值]
 	 * */
 		, resetTd: function resetTd(dom, isSingleRow) {
@@ -1948,10 +1937,10 @@
 			if (!_tr || _tr.length == 0) {
 				return false;
 			}
-			var Settings = _Cache2.default.getSettings(_table);
+			var settings = _Cache2.default.getSettings(_table);
 			//重置表格序号
-			if (Settings.supportAutoOrder) {
-				var _pageData = Settings.pageData;
+			if (settings.supportAutoOrder) {
+				var _pageData = settings.pageData;
 				var onlyOrderTd = null,
 				    _orderBaseNumber = 1,
 				    _orderText = void 0;
@@ -1970,7 +1959,7 @@
 				});
 			}
 			//重置表格选择 checkbox
-			if (Settings.supportCheckbox) {
+			if (settings.supportCheckbox) {
 				var onlyCheckTd = null;
 				_jTool2.default.each(_tr, function (i, v) {
 					onlyCheckTd = (0, _jTool2.default)('td[gm-checkbox="true"]', v);
@@ -1982,7 +1971,7 @@
 				});
 			}
 			//依据存储数据重置td顺序
-			if (Settings.supportDrag) {
+			if (settings.supportDrag) {
 				var _thCacheList = _Cache2.default.getOriginalThDOM(_table);
 				var _td = null;
 				if (!_thCacheList || _thCacheList.length == 0) {
@@ -2000,7 +1989,7 @@
 				});
 			}
 			//依据配置对列表进行隐藏、显示
-			if (Settings.supportConfig) {
+			if (settings.supportConfig) {
 				_Base2.default.initVisible(_table);
 			}
 		}
@@ -2304,18 +2293,17 @@
 			return html;
 		}
 		/*
-	  [对外公开方法]
-	  @导出表格 .xls
-	  $.table:当前操作的grid,由插件自动传入
-	  $.fileName: 导出后的文件名
-	  $.onlyChecked: 是否只导出已选中的表格
-	  */
-		, __exportGridToXls: function __exportGridToXls(table, fileName, onlyChecked) {
-			var Settings = _Cache2.default.getSettings(table);
+	  * 导出表格 .xls
+	  * @param $table:当前操作的grid,由插件自动传入
+	  * @param fileName: 导出后的文件名
+	  * @param onlyChecked: 是否只导出已选中的表格
+	  * */
+		, __exportGridToXls: function __exportGridToXls($table, fileName, onlyChecked) {
+			var Settings = _Cache2.default.getSettings($table);
 			var gmExportAction = (0, _jTool2.default)('#gm-export-action'); //createDOM内添加
 			if (gmExportAction.length === 0) {
 				_Core2.default.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
-				return;
+				return false;
 			}
 			// type base64
 			var uri = 'data:application/vnd.ms-excel;base64,';
@@ -2325,17 +2313,15 @@
 			//存储导出的tbody下的数据
 			var tbodyHTML = '';
 
-			//当前要导出的table
-			var tableDOM = (0, _jTool2.default)(table);
-			var thDOM = (0, _jTool2.default)('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', tableDOM);
+			var thDOM = (0, _jTool2.default)('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', $table);
 
 			var trDOM = void 0,
 			    tdDOM = void 0;
 			//验证：是否只导出已选中的表格
 			if (onlyChecked) {
-				trDOM = (0, _jTool2.default)('tbody tr[checked="true"]', tableDOM);
+				trDOM = (0, _jTool2.default)('tbody tr[checked="true"]', $table);
 			} else {
-				trDOM = (0, _jTool2.default)('tbody tr', tableDOM);
+				trDOM = (0, _jTool2.default)('tbody tr', $table);
 			}
 			_jTool2.default.each(thDOM, function (i, v) {
 				theadHTML += '<th>' + v.getElementsByClassName('th-text')[0].textContent + '</th>';
@@ -2357,6 +2343,9 @@
 			function base64(s) {
 				return window.btoa(unescape(encodeURIComponent(s)));
 			}
+
+			// 成功后返回true
+			return true;
 		}
 	}; /*
 	    * Export: 数据导出
@@ -2716,21 +2705,22 @@
 			return html;
 		}
 		/*
-	  @手动设置排序
-	  $.table: table [jTool object]
-	  $.sortJson: 需要排序的json串
-	  $.callback: 回调函数
-	  $.refresh: 是否执行完成后对表格进行自动刷新[boolean]
-	  ex: sortJson
-	  sortJson = {
-	  th-name:up/down 	//其中up/down 需要与参数 sortUpText、sortDownText值相同
-	  }
-	  */
+	  * 手动设置排序
+	  * @param sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
+	  * @param callback: 回调函数[function]
+	  * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
+	  *
+	  * 排序json串示例:
+	  * sortJson => {name: 'ASC}
+	  * */
 		, __setSort: function __setSort($table, sortJson, callback, refresh) {
-			var Settings = _Cache2.default.getSettings($table);
-			if ($table.length == 0 || !sortJson || _jTool2.default.isEmptyObject(sortJson)) {
+			var settings = _Cache2.default.getSettings($table);
+			if (!sortJson || _jTool2.default.type(sortJson) !== 'object' || _jTool2.default.isEmptyObject(sortJson)) {
 				return false;
 			}
+			_jTool2.default.extend(settings.sortData, sortJson);
+			_Cache2.default.updateSettings($table, settings);
+
 			//默认执行完后进行刷新列表操作
 			if (typeof refresh === 'undefined') {
 				refresh = true;
@@ -2742,18 +2732,17 @@
 				_th = (0, _jTool2.default)('[th-name="' + s + '"]', $table);
 				_sortType = sortJson[s];
 				_sortAction = (0, _jTool2.default)('.sorting-action', _th);
-				if (_sortType == Settings.sortUpText) {
-					_th.attr('sorting', Settings.sortUpText);
+				if (_sortType === settings.sortUpText) {
+					_th.attr('sorting', settings.sortUpText);
 					_sortAction.removeClass('sorting-down');
 					_sortAction.addClass('sorting-up');
-				} else if (_sortType == Settings.sortDownText) {
-					_th.attr('sorting', Settings.sortDownText);
+				} else if (_sortType === settings.sortDownText) {
+					_th.attr('sorting', settings.sortDownText);
 					_sortAction.removeClass('sorting-up');
 					_sortAction.addClass('sorting-down');
 				}
 			}
 			refresh ? _Core2.default.__refreshGrid($table, callback) : typeof callback === 'function' ? callback() : '';
-			return $table;
 		}
 		/*
 	  @绑定排序事件
@@ -2858,167 +2847,179 @@
 	/*
 	 * Drag: 拖拽
 	 * */
+	var bindMouseupEvent = function bindMouseupEvent($table) {};
 	var Drag = {
-		/*
-	  @绑定拖拽换位事件
-	  $.table: table [jTool object]
-	  */
-		bindDragEvent: function bindDragEvent(table) {
-			var thList = (0, _jTool2.default)('thead th', table),
-			    //匹配页面下所有的TH
-			dragAction = thList.find('.drag-action');
-
-			//指定拖拽换位事件源,配置拖拽样式
+		/**
+	  * 绑定拖拽换位事件
+	  * @param $table [jTool Object]
+	     */
+		bindDragEvent: function bindDragEvent($table) {
+			var dragAction = (0, _jTool2.default)('thead th .drag-action', $table);
+			var DragArea = $table.closest('body');
+			// 指定拖拽换位事件源,配置拖拽样式
 			dragAction.unbind('mousedown');
 			dragAction.bind('mousedown', function (event) {
-				// 获取设置项
-				var Settings = _Cache2.default.getSettings(table);
-
 				// 事件源th
 				var _th = (0, _jTool2.default)(this).closest('th');
-
-				// 事件源的上一个th
-				var _prevTh = null;
-
-				//事件源的下一个th
-				var _nextTh = null;
-
-				// 事件源对应的上一组td
-				var _prevTd = null;
-
-				//事件源对应的下一组td
-				var _nextTd = null;
-
-				//事件源所在的tr
+				// 事件源所在的tr
 				var _tr = _th.parent();
-
-				//事件源同层级下的所有可视th
-				var _allTh = _tr.find('th[th-visible="visible"]');
-
-				//事件源所在的table
+				// 事件源同层级下的所有可视th
+				var allTh = _tr.find('th[th-visible="visible"]');
+				// 事件源所在的table
 				var _table = _tr.closest('table');
-
-				//事件源所在的DIV
-				var _tableDiv = _table.closest('.table-div');
-
-				//事件源所在的容器
-				var _tableWrap = _table.closest('.table-wrap');
-
-				//与事件源同列的所在td
+				// 事件源所在的DIV
+				var tableDiv = _table.closest('.table-div');
+				// 与事件源同列的所在td
 				var _td = _Base2.default.getColTd(_th);
 
-				// 列拖拽触发回调事件
-				Settings.dragBefore(event);
+				// 获取设置项
+				var settings = _Cache2.default.getSettings(_table);
 
-				//禁用文字选中效果
-				(0, _jTool2.default)('body').addClass('no-select-text');
-				//父级DIV使用相对定位
-				//所在DIV使用定位方式
-				var _divPosition = _tableDiv.css('position');
+				// 列拖拽触发回调事件
+				settings.dragBefore(event);
+
+				// 禁用文字选中效果
+				DragArea.addClass('no-select-text');
+				// 父级DIV使用相对定位
+				// 所在DIV使用定位方式
+				var _divPosition = tableDiv.css('position');
 				if (_divPosition != 'relative' && _divPosition != 'absolute') {
-					_tableDiv.css('position', 'relative');
+					tableDiv.css('position', 'relative');
 				}
-				//增加拖拽中样式
+				// 增加拖拽中样式
 				_th.addClass('drag-ongoing opacityChange');
 				_td.addClass('drag-ongoing opacityChange');
 
-				//增加临时展示DOM
-				_tableWrap.append('<div class="dreamland-div"></div>');
-				var _dreamlandDIV = (0, _jTool2.default)('.dreamland-div', _tableWrap);
-				_dreamlandDIV.get(0).innerHTML = '<table class="dreamland-table ' + _table.attr('class') + '"></table>';
-				//tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
-				var _tbodyHtml = '';
-				var _cloneTr = void 0,
-				    _cloneTd = void 0;
-				_jTool2.default.each(_td, function (i, v) {
-					_cloneTd = v.cloneNode(true);
-					_cloneTd.style.height = v.offsetHeight + 'px';
-					_cloneTr = (0, _jTool2.default)(v).closest('tr').clone();
-					_tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
-				});
-				var tmpHtml = '<thead>\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<th style="height:' + _th.height() + 'px">\n\t\t\t\t\t\t\t\t' + (0, _jTool2.default)('.drag-action', _th).get(0).outerHTML + '\n\t\t\t\t\t\t\t\t</th>\n\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t' + _tbodyHtml + '\n\t\t\t\t\t\t\t</tbody>';
-				(0, _jTool2.default)('.dreamland-table', _dreamlandDIV).html(tmpHtml);
-				//绑定拖拽滑动事件
-				var _thIndex = 0; //存储移动时的th所处的位置
-				(0, _jTool2.default)('body').unbind('mousemove');
-				(0, _jTool2.default)('body').bind('mousemove', function (e2) {
-					_thIndex = _th.index(_allTh);
-					_prevTh = undefined;
-					//当前移动的非第一列
-					if (_thIndex > 0) {
-						_prevTh = _allTh.eq(_thIndex - 1);
-					}
-					_nextTh = undefined;
-					//当前移动的非最后一列
-					if (_thIndex < _allTh.length) {
-						_nextTh = _allTh.eq(_thIndex + 1);
-					}
-					//插件自动创建的项,不允许移动
-					if (_prevTh && _prevTh.length !== 0 && _prevTh.attr('gm-create') === 'true') {
-						_prevTh = undefined;
-					} else if (_nextTh && _nextTh.length !== 0 && _nextTh.attr('gm-create') === 'true') {
-						_nextTh = undefined;
-					}
-					_dreamlandDIV.show();
-					_dreamlandDIV.css({
-						width: _th.get(0).offsetWidth,
-						height: _table.get(0).offsetHeight,
-						left: e2.clientX - _tableDiv.offset().left
-						//  + $('html').get(0).scrollLeft
-						+ _tableDiv.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft) - _th.get(0).offsetWidth / 2 + 'px',
-						top: e2.clientY - _tableDiv.offset().top + _tableDiv.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop) - _dreamlandDIV.find('th').get(0).offsetHeight / 2
-					});
-					//处理向左拖拽
-					if (_prevTh && _prevTh.length != 0 && _dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft) {
-						_prevTd = _Base2.default.getColTd(_prevTh);
-						_prevTh.before(_th);
-						_jTool2.default.each(_td, function (i, v) {
-							_prevTd.eq(i).before(v);
-						});
-						_allTh = _tr.find('th'); //重置TH对象数据
-					}
-					//处理向右拖拽
-					if (_nextTh && _nextTh.length != 0 && _dreamlandDIV.get(0).offsetLeft > _nextTh.get(0).offsetLeft - _dreamlandDIV.get(0).offsetWidth / 2) {
-						_nextTd = _Base2.default.getColTd(_nextTh);
-						_nextTh.after(_th);
-						_jTool2.default.each(_td, function (i, v) {
-							_nextTd.eq(i).after(v);
-						});
-						_allTh = _tr.find('th'); //重置TH对象数据
-					}
-				});
-				//绑定拖拽停止事件
-				(0, _jTool2.default)('body').unbind('mouseup');
-				(0, _jTool2.default)('body').bind('mouseup', function (event) {
-					var Settings = _Cache2.default.getSettings(table);
-					(0, _jTool2.default)('body').unbind('mousemove');
-					//清除临时展示被移动的列
-					_dreamlandDIV = (0, _jTool2.default)('.dreamland-div');
-					if (_dreamlandDIV.length != 0) {
-						_dreamlandDIV.animate({
-							top: _table.get(0).offsetTop + 'px',
-							left: _th.get(0).offsetLeft - _tableDiv.get(0).scrollLeft + 'px'
-						}, Settings.animateTime, function () {
-							_tableDiv.css('position', _divPosition);
-							_th.removeClass('drag-ongoing');
-							_td.removeClass('drag-ongoing');
-							_dreamlandDIV.remove();
+				// 生成拖拽镜象
+				var dreamlandDIV = Drag.createDreamland($table, _th, _td);
 
-							// 列拖拽成功回调事件
-							Settings.dragAfter(event);
-						});
-					}
-					// 存储用户记忆
-					_Cache2.default.saveUserMemory(_table);
+				// 绑定拖拽滑动事件
+				var _thIndex = 0; // 存储移动时的th所处的位置
+				DragArea.unbind('mousemove');
+				DragArea.bind('mousemove', function (event) {
+					Drag.startDrag($table, event, dreamlandDIV, tableDiv, allTh, _tr, _th, _td, _thIndex);
+				});
 
-					//重置调整宽度事件源
-					if (Settings.supportAdjust) {
-						_Adjust2.default.resetAdjust(_table);
-					}
-					//开启文字选中效果
-					(0, _jTool2.default)('body').removeClass('no-select-text');
+				// 绑定拖拽停止事件
+				DragArea.unbind('mouseup');
+				DragArea.bind('mouseup', function (event) {
+					Drag.stopDrag($table, event, _th, _td, DragArea);
 				});
 			});
+		}
+		/**
+	  * 生成拖拽镜象
+	  * @param $table
+	  * @param $th
+	  * @param $td
+	  * @returns {*|HTMLElement|jTool}
+	     */
+		, createDreamland: function createDreamland($table, $th, $td) {
+			var tableWrap = $table.closest('.table-wrap');
+			tableWrap.append('<div class="dreamland-div"></div>');
+			var dreamlandDIV = (0, _jTool2.default)('.dreamland-div', tableWrap);
+			dreamlandDIV.get(0).innerHTML = '<table class="dreamland-table ' + $table.attr('class') + '"></table>';
+			// tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
+			var _tbodyHtml = '';
+			var _cloneTr = void 0,
+			    _cloneTd = void 0;
+			_jTool2.default.each($td, function (i, v) {
+				_cloneTd = v.cloneNode(true);
+				_cloneTd.style.height = v.offsetHeight + 'px';
+				_cloneTr = (0, _jTool2.default)(v).closest('tr').clone();
+				_tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
+			});
+			var tmpHtml = '<thead>\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<th style="height:' + $th.height() + 'px">\n\t\t\t\t\t\t\t\t' + (0, _jTool2.default)('.drag-action', $th).get(0).outerHTML + '\n\t\t\t\t\t\t\t\t</th>\n\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t' + _tbodyHtml + '\n\t\t\t\t\t\t\t</tbody>';
+			(0, _jTool2.default)('.dreamland-table', dreamlandDIV).html(tmpHtml);
+			return dreamlandDIV;
+		},
+		startDrag: function startDrag($table, event, dreamlandDIV, tableDiv, allTh, _tr, _th, _td, _thIndex) {
+			_thIndex = _th.index(allTh);
+			var _prevTh = null; // 事件源的上一个th
+			var _nextTh = null; // 事件源的下一个th
+
+			// 当前移动的非第一列
+			if (_thIndex > 0) {
+				_prevTh = allTh.eq(_thIndex - 1);
+			}
+			// 当前移动的非最后一列
+			if (_thIndex < allTh.length) {
+				_nextTh = allTh.eq(_thIndex + 1);
+			}
+			// 插件自动创建的项,不允许移动
+			if (_prevTh && _prevTh.length !== 0 && _prevTh.attr('gm-create') === 'true') {
+				_prevTh = null;
+			} else if (_nextTh && _nextTh.length !== 0 && _nextTh.attr('gm-create') === 'true') {
+				_nextTh = null;
+			}
+
+			// 移动境象
+			dreamlandDIV.show();
+			dreamlandDIV.css({
+				width: _th.get(0).offsetWidth,
+				height: $table.get(0).offsetHeight,
+				left: event.clientX - tableDiv.offset().left + tableDiv.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft) - _th.get(0).offsetWidth / 2 + 'px',
+				top: event.clientY - tableDiv.offset().top + tableDiv.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop) - dreamlandDIV.find('th').get(0).offsetHeight / 2
+			});
+
+			// 处理向左拖拽
+			if (_prevTh && _prevTh.length != 0 && dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft) {
+				var _prevTd = _Base2.default.getColTd(_prevTh); // 事件源对应的上一组td
+				_prevTh.before(_th);
+				_jTool2.default.each(_td, function (i, v) {
+					_prevTd.eq(i).before(v);
+				});
+				allTh = _tr.find('th'); // 重置TH对象数据
+			}
+
+			// 处理向右拖拽
+			if (_nextTh && _nextTh.length != 0 && dreamlandDIV.get(0).offsetLeft > _nextTh.get(0).offsetLeft - dreamlandDIV.get(0).offsetWidth / 2) {
+				var _nextTd = _Base2.default.getColTd(_nextTh); // 事件源对应的下一组td
+				_nextTh.after(_th);
+				_jTool2.default.each(_td, function (i, v) {
+					_nextTd.eq(i).after(v);
+				});
+				allTh = _tr.find('th'); // 重置TH对象数据
+			}
+		}
+		/**
+	  * 停止拖拽
+	  * @param $table
+	  * @param event
+	  * @param $th
+	  * @param $td
+	  * @param $DragArea: 拖拽范围
+	     * @param divPosition: 所在DIV使用定位方式
+	     */
+		, stopDrag: function stopDrag($table, event, $th, $td, $DragArea, divPosition) {
+			$DragArea.unbind('mousemove');
+			var settings = _Cache2.default.getSettings($table);
+			// 清除所有拖拽镜象
+			var dreamlandDIV = (0, _jTool2.default)('.dreamland-div');
+			var tableDiv = $table.closest('.table-div');
+			if (dreamlandDIV.length != 0) {
+				dreamlandDIV.animate({
+					top: $table.get(0).offsetTop + 'px',
+					left: $th.get(0).offsetLeft - tableDiv.get(0).scrollLeft + 'px'
+				}, settings.animateTime, function () {
+					tableDiv.css('position', divPosition);
+					$th.removeClass('drag-ongoing');
+					$td.removeClass('drag-ongoing');
+					dreamlandDIV.remove();
+
+					// 列拖拽成功回调事件
+					settings.dragAfter(event);
+				});
+			}
+			// 存储用户记忆
+			_Cache2.default.saveUserMemory($table);
+
+			// 重置调整宽度事件源
+			if (settings.supportAdjust) {
+				_Adjust2.default.resetAdjust($table);
+			}
+			// 开启文字选中效果
+			$DragArea.removeClass('no-select-text');
 		}
 	};
 	exports.default = Drag;
@@ -3324,7 +3325,7 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	exports.publishList = exports.PublishMethod = undefined;
+	exports.publishMethodArray = exports.PublishMethod = undefined;
 
 	var _jTool = __webpack_require__(1);
 
@@ -3359,78 +3360,89 @@
 	 */
 	var PublishMethod = {
 		/*
-	 * @获取 GridManager 实例
-	 * */
+	  * 通过jTool实例获取GridManager
+	  * @param $table: table [jTool Object]
+	  * */
 		get: function get($table) {
-			return this.__getGridManager($table);
+			return _Cache2.default.__getGridManager($table);
 		}
 		/*
-	  * @获取指定表格的本地存储数据
+	  * 获取指定表格的本地存储数据
 	  * 成功则返回本地存储数据,失败则返回空对象
+	  * @param $table: table [jTool Object]
 	  * */
 		, getLocalStorage: function getLocalStorage($table) {
 			return _Cache2.default.getUserMemory($table);
 		}
 		/*
-	  * @清除指定表的表格记忆数据
+	  * 清除指定表的表格记忆数据
+	  * @param $table: table [jTool Object]
 	  * return 成功或者失败的布尔值
 	  * */
 		, clear: function clear($table) {
 			return _Cache2.default.delUserMemory($table);
 		}
 		/*
-	 * @获取当前行渲染时使用的数据
-	 * tr: 将要获取数据所对应的tr[Element or NodeList]
-	 * */
-		, getRowData: function getRowData($table, tr) {
-			return _Cache2.default.__getRowData($table, tr);
+	  * @获取当前行渲染时使用的数据
+	  * @param $table: table [jTool Object]
+	  * @param target: 将要获取数据所对应的tr[Element or NodeList]
+	  * */
+		, getRowData: function getRowData($table, target) {
+			return _Cache2.default.__getRowData($table, target);
 		}
 		/*
-	 * @配置排序
-	 * sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
-	 * refresh: 是否执行完成后对表格进行自动刷新[boolean]
+	 * 手动设置排序
+	 * @param sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
+	 * @param callback: 回调函数[function]
+	 * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
 	 * */
 		, setSort: function setSort($table, sortJson, callback, refresh) {
-			return _Sort2.default.__setSort($table, sortJson, callback, refresh);
+			_Sort2.default.__setSort($table, sortJson, callback, refresh);
 		}
 		/*
-	  [对外公开方法]
-	  @显示Th及对应的TD项
-	  $table: table [jTool Object]
-	  th: th
-	  */
-		, showTh: function showTh($table, th) {
-			_Base2.default.__showTh(th);
+	 * 显示Th及对应的TD项
+	 * @param $table: table [jTool Object]
+	 * @param target: th[Element or NodeList]
+	 * */
+		, showTh: function showTh($table, target) {
+			_Base2.default.setAreVisible((0, _jTool2.default)(target), true);
 		}
 		/*
-	  @隐藏Th及对应的TD项
-	  table: table
-	  th:th
-	  */
-		, hideTh: function hideTh($table, th) {
-			_Base2.default.__hideTh(th);
+	 * 隐藏Th及对应的TD项
+	  * @param $table: table [jTool Object]
+	  * @param target: th[Element or NodeList]
+	 * */
+		, hideTh: function hideTh($table, target) {
+			_Base2.default.setAreVisible((0, _jTool2.default)(target), false);
 		}
 		/*
-	 * @导出表格 .xls
-	 * $table:当前操作的grid,由插件自动传入
-	 * fileName: 导出后的文件名
-	 * onlyChecked: 是否只导出已选中的表格
+	 * 导出表格 .xls
+	 * @param $table:当前操作的grid,由插件自动传入
+	 * @param fileName: 导出后的文件名
+	 * @param onlyChecked: 是否只导出已选中的表格
 	 * */
 		, exportGridToXls: function exportGridToXls($table, fileName, onlyChecked) {
-			_Export2.default.__exportGridToXls($table, fileName, onlyChecked);
+			return _Export2.default.__exportGridToXls($table, fileName, onlyChecked);
 		}
 		/**
-	  * 配置query 该参数会在分页触发后返回至pagingAfter(query)方法
+	  * 设置查询条件
 	  * @param $table: table [jTool object]
-	  * @param query: 配置的数据
+	  * @param query: 配置的数据 [Object]
+	  * @param callback: 回调函数
+	  * 注意事项:
+	  * - query的key值如果与分页及排序等字段冲突, query中的值将会被忽略.
+	  * - setQuery() 会立即触发刷新操作
+	  * - 在此配置的query在分页事件触发时, 会以参数形式传递至pagingAfter(query)事件内
+	  * - setQuery对query字段执行的操作是修改而不是合并, 每次执行setQuery都会将之前配置的query值覆盖
 	  */
-		, setQuery: function setQuery($table, query) {
+		, setQuery: function setQuery($table, query, callback) {
 			var settings = _Cache2.default.getSettings($table);
 			_jTool2.default.extend(settings, { query: query });
 			_Cache2.default.updateSettings($table, settings);
+			_Core2.default.__refreshGrid($table, callback);
 		}
 		/**
-	  * 配置ajaxData
+	  * 配置静态数ajaxData
 	  * @param $table: table [jTool object]
 	  * @param ajaxData: 配置的数据
 	  */
@@ -3459,24 +3471,26 @@
 			_Core2.default.__refreshGrid($table, callback);
 		}
 		/*
-	  @获取当前选中的 tr
-	  $table: table [jTool Object]
-	  */
+	 * 获取当前选中的行
+	 * @param $table: table [jTool Object]
+	 * return 当前选中的行 [NodeList]
+	 * */
 		, getCheckedTr: function getCheckedTr($table) {
-			return (0, _jTool2.default)('tbody tr[checked="true"]', $table).DOMList || [];
+			return $table.get(0).querySelectorAll('tbody tr[checked="true"]');
 		}
 		/*
-	  @获取当前选中的 tr 渲染时的数据,  返回值类型为数组
-	  $table: table [jTool Object]
-	  */
+	 * 获取当前选中行渲染时使用的数据
+	 * @param $table: table [jTool Object]
+	 * */
 		, getCheckedData: function getCheckedData($table) {
-			return _Cache2.default.__getRowData($table, this.getCheckedTr(table));
+			return _Cache2.default.__getRowData($table, this.getCheckedTr($table));
 		}
 	};
 
 	/*
-		'init',					//初始化
-		'setSort',				//手动设置排序
+		//对外公开方法展示
+		'init',					// 初始化方法
+		'setSort',				// 手动设置排序
 		'get',					//通过jTool实例获取GridManager
 		'showTh',				//显示Th及对应的TD项
 		'hideTh',				//隐藏Th及对应的TD项
@@ -3491,12 +3505,12 @@
 		'clear'					//清除指定表的表格记忆数据
 	*/
 	// 对外公开方法列表
-	var publishList = ['init'];
+	var publishMethodArray = ['init'];
 	for (var key in PublishMethod) {
-		publishList.push(key);
+		publishMethodArray.push(key);
 	}
 	exports.PublishMethod = PublishMethod;
-	exports.publishList = publishList;
+	exports.publishMethodArray = publishMethodArray;
 
 /***/ }
 /******/ ]);
