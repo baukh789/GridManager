@@ -2847,179 +2847,167 @@
 	/*
 	 * Drag: 拖拽
 	 * */
-	var bindMouseupEvent = function bindMouseupEvent($table) {};
 	var Drag = {
-		/**
-	  * 绑定拖拽换位事件
-	  * @param $table [jTool Object]
-	     */
-		bindDragEvent: function bindDragEvent($table) {
-			var dragAction = (0, _jTool2.default)('thead th .drag-action', $table);
-			var DragArea = $table.closest('body');
-			// 指定拖拽换位事件源,配置拖拽样式
+		/*
+	  @绑定拖拽换位事件
+	  $.table: table [jTool object]
+	  */
+		bindDragEvent: function bindDragEvent(table) {
+			var thList = (0, _jTool2.default)('thead th', table),
+			    //匹配页面下所有的TH
+			dragAction = thList.find('.drag-action');
+
+			//指定拖拽换位事件源,配置拖拽样式
 			dragAction.unbind('mousedown');
 			dragAction.bind('mousedown', function (event) {
+				// 获取设置项
+				var Settings = _Cache2.default.getSettings(table);
+
 				// 事件源th
 				var _th = (0, _jTool2.default)(this).closest('th');
-				// 事件源所在的tr
+
+				// 事件源的上一个th
+				var _prevTh = null;
+
+				//事件源的下一个th
+				var _nextTh = null;
+
+				// 事件源对应的上一组td
+				var _prevTd = null;
+
+				//事件源对应的下一组td
+				var _nextTd = null;
+
+				//事件源所在的tr
 				var _tr = _th.parent();
-				// 事件源同层级下的所有可视th
-				var allTh = _tr.find('th[th-visible="visible"]');
-				// 事件源所在的table
+
+				//事件源同层级下的所有可视th
+				var _allTh = _tr.find('th[th-visible="visible"]');
+
+				//事件源所在的table
 				var _table = _tr.closest('table');
-				// 事件源所在的DIV
-				var tableDiv = _table.closest('.table-div');
-				// 与事件源同列的所在td
+
+				//事件源所在的DIV
+				var _tableDiv = _table.closest('.table-div');
+
+				//事件源所在的容器
+				var _tableWrap = _table.closest('.table-wrap');
+
+				//与事件源同列的所在td
 				var _td = _Base2.default.getColTd(_th);
 
-				// 获取设置项
-				var settings = _Cache2.default.getSettings(_table);
-
 				// 列拖拽触发回调事件
-				settings.dragBefore(event);
+				Settings.dragBefore(event);
 
-				// 禁用文字选中效果
-				DragArea.addClass('no-select-text');
-				// 父级DIV使用相对定位
-				// 所在DIV使用定位方式
-				var _divPosition = tableDiv.css('position');
+				//禁用文字选中效果
+				(0, _jTool2.default)('body').addClass('no-select-text');
+				//父级DIV使用相对定位
+				//所在DIV使用定位方式
+				var _divPosition = _tableDiv.css('position');
 				if (_divPosition != 'relative' && _divPosition != 'absolute') {
-					tableDiv.css('position', 'relative');
+					_tableDiv.css('position', 'relative');
 				}
-				// 增加拖拽中样式
+				//增加拖拽中样式
 				_th.addClass('drag-ongoing opacityChange');
 				_td.addClass('drag-ongoing opacityChange');
 
-				// 生成拖拽镜象
-				var dreamlandDIV = Drag.createDreamland($table, _th, _td);
-
-				// 绑定拖拽滑动事件
-				var _thIndex = 0; // 存储移动时的th所处的位置
-				DragArea.unbind('mousemove');
-				DragArea.bind('mousemove', function (event) {
-					Drag.startDrag($table, event, dreamlandDIV, tableDiv, allTh, _tr, _th, _td, _thIndex);
-				});
-
-				// 绑定拖拽停止事件
-				DragArea.unbind('mouseup');
-				DragArea.bind('mouseup', function (event) {
-					Drag.stopDrag($table, event, _th, _td, DragArea);
-				});
-			});
-		}
-		/**
-	  * 生成拖拽镜象
-	  * @param $table
-	  * @param $th
-	  * @param $td
-	  * @returns {*|HTMLElement|jTool}
-	     */
-		, createDreamland: function createDreamland($table, $th, $td) {
-			var tableWrap = $table.closest('.table-wrap');
-			tableWrap.append('<div class="dreamland-div"></div>');
-			var dreamlandDIV = (0, _jTool2.default)('.dreamland-div', tableWrap);
-			dreamlandDIV.get(0).innerHTML = '<table class="dreamland-table ' + $table.attr('class') + '"></table>';
-			// tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
-			var _tbodyHtml = '';
-			var _cloneTr = void 0,
-			    _cloneTd = void 0;
-			_jTool2.default.each($td, function (i, v) {
-				_cloneTd = v.cloneNode(true);
-				_cloneTd.style.height = v.offsetHeight + 'px';
-				_cloneTr = (0, _jTool2.default)(v).closest('tr').clone();
-				_tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
-			});
-			var tmpHtml = '<thead>\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<th style="height:' + $th.height() + 'px">\n\t\t\t\t\t\t\t\t' + (0, _jTool2.default)('.drag-action', $th).get(0).outerHTML + '\n\t\t\t\t\t\t\t\t</th>\n\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t' + _tbodyHtml + '\n\t\t\t\t\t\t\t</tbody>';
-			(0, _jTool2.default)('.dreamland-table', dreamlandDIV).html(tmpHtml);
-			return dreamlandDIV;
-		},
-		startDrag: function startDrag($table, event, dreamlandDIV, tableDiv, allTh, _tr, _th, _td, _thIndex) {
-			_thIndex = _th.index(allTh);
-			var _prevTh = null; // 事件源的上一个th
-			var _nextTh = null; // 事件源的下一个th
-
-			// 当前移动的非第一列
-			if (_thIndex > 0) {
-				_prevTh = allTh.eq(_thIndex - 1);
-			}
-			// 当前移动的非最后一列
-			if (_thIndex < allTh.length) {
-				_nextTh = allTh.eq(_thIndex + 1);
-			}
-			// 插件自动创建的项,不允许移动
-			if (_prevTh && _prevTh.length !== 0 && _prevTh.attr('gm-create') === 'true') {
-				_prevTh = null;
-			} else if (_nextTh && _nextTh.length !== 0 && _nextTh.attr('gm-create') === 'true') {
-				_nextTh = null;
-			}
-
-			// 移动境象
-			dreamlandDIV.show();
-			dreamlandDIV.css({
-				width: _th.get(0).offsetWidth,
-				height: $table.get(0).offsetHeight,
-				left: event.clientX - tableDiv.offset().left + tableDiv.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft) - _th.get(0).offsetWidth / 2 + 'px',
-				top: event.clientY - tableDiv.offset().top + tableDiv.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop) - dreamlandDIV.find('th').get(0).offsetHeight / 2
-			});
-
-			// 处理向左拖拽
-			if (_prevTh && _prevTh.length != 0 && dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft) {
-				var _prevTd = _Base2.default.getColTd(_prevTh); // 事件源对应的上一组td
-				_prevTh.before(_th);
+				//增加临时展示DOM
+				_tableWrap.append('<div class="dreamland-div"></div>');
+				var _dreamlandDIV = (0, _jTool2.default)('.dreamland-div', _tableWrap);
+				_dreamlandDIV.get(0).innerHTML = '<table class="dreamland-table ' + _table.attr('class') + '"></table>';
+				//tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
+				var _tbodyHtml = '';
+				var _cloneTr = void 0,
+				    _cloneTd = void 0;
 				_jTool2.default.each(_td, function (i, v) {
-					_prevTd.eq(i).before(v);
+					_cloneTd = v.cloneNode(true);
+					_cloneTd.style.height = v.offsetHeight + 'px';
+					_cloneTr = (0, _jTool2.default)(v).closest('tr').clone();
+					_tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
 				});
-				allTh = _tr.find('th'); // 重置TH对象数据
-			}
-
-			// 处理向右拖拽
-			if (_nextTh && _nextTh.length != 0 && dreamlandDIV.get(0).offsetLeft > _nextTh.get(0).offsetLeft - dreamlandDIV.get(0).offsetWidth / 2) {
-				var _nextTd = _Base2.default.getColTd(_nextTh); // 事件源对应的下一组td
-				_nextTh.after(_th);
-				_jTool2.default.each(_td, function (i, v) {
-					_nextTd.eq(i).after(v);
+				var tmpHtml = '<thead>\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<th style="height:' + _th.height() + 'px">\n\t\t\t\t\t\t\t\t' + (0, _jTool2.default)('.drag-action', _th).get(0).outerHTML + '\n\t\t\t\t\t\t\t\t</th>\n\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t' + _tbodyHtml + '\n\t\t\t\t\t\t\t</tbody>';
+				(0, _jTool2.default)('.dreamland-table', _dreamlandDIV).html(tmpHtml);
+				//绑定拖拽滑动事件
+				var _thIndex = 0; //存储移动时的th所处的位置
+				(0, _jTool2.default)('body').unbind('mousemove');
+				(0, _jTool2.default)('body').bind('mousemove', function (e2) {
+					_thIndex = _th.index(_allTh);
+					_prevTh = undefined;
+					//当前移动的非第一列
+					if (_thIndex > 0) {
+						_prevTh = _allTh.eq(_thIndex - 1);
+					}
+					_nextTh = undefined;
+					//当前移动的非最后一列
+					if (_thIndex < _allTh.length) {
+						_nextTh = _allTh.eq(_thIndex + 1);
+					}
+					//插件自动创建的项,不允许移动
+					if (_prevTh && _prevTh.length !== 0 && _prevTh.attr('gm-create') === 'true') {
+						_prevTh = undefined;
+					} else if (_nextTh && _nextTh.length !== 0 && _nextTh.attr('gm-create') === 'true') {
+						_nextTh = undefined;
+					}
+					_dreamlandDIV.show();
+					_dreamlandDIV.css({
+						width: _th.get(0).offsetWidth,
+						height: _table.get(0).offsetHeight,
+						left: e2.clientX - _tableDiv.offset().left
+						//  + $('html').get(0).scrollLeft
+						+ _tableDiv.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft) - _th.get(0).offsetWidth / 2 + 'px',
+						top: e2.clientY - _tableDiv.offset().top + _tableDiv.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop) - _dreamlandDIV.find('th').get(0).offsetHeight / 2
+					});
+					//处理向左拖拽
+					if (_prevTh && _prevTh.length != 0 && _dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft) {
+						_prevTd = _Base2.default.getColTd(_prevTh);
+						_prevTh.before(_th);
+						_jTool2.default.each(_td, function (i, v) {
+							_prevTd.eq(i).before(v);
+						});
+						_allTh = _tr.find('th'); //重置TH对象数据
+					}
+					//处理向右拖拽
+					if (_nextTh && _nextTh.length != 0 && _dreamlandDIV.get(0).offsetLeft > _nextTh.get(0).offsetLeft - _dreamlandDIV.get(0).offsetWidth / 2) {
+						_nextTd = _Base2.default.getColTd(_nextTh);
+						_nextTh.after(_th);
+						_jTool2.default.each(_td, function (i, v) {
+							_nextTd.eq(i).after(v);
+						});
+						_allTh = _tr.find('th'); //重置TH对象数据
+					}
 				});
-				allTh = _tr.find('th'); // 重置TH对象数据
-			}
-		}
-		/**
-	  * 停止拖拽
-	  * @param $table
-	  * @param event
-	  * @param $th
-	  * @param $td
-	  * @param $DragArea: 拖拽范围
-	     * @param divPosition: 所在DIV使用定位方式
-	     */
-		, stopDrag: function stopDrag($table, event, $th, $td, $DragArea, divPosition) {
-			$DragArea.unbind('mousemove');
-			var settings = _Cache2.default.getSettings($table);
-			// 清除所有拖拽镜象
-			var dreamlandDIV = (0, _jTool2.default)('.dreamland-div');
-			var tableDiv = $table.closest('.table-div');
-			if (dreamlandDIV.length != 0) {
-				dreamlandDIV.animate({
-					top: $table.get(0).offsetTop + 'px',
-					left: $th.get(0).offsetLeft - tableDiv.get(0).scrollLeft + 'px'
-				}, settings.animateTime, function () {
-					tableDiv.css('position', divPosition);
-					$th.removeClass('drag-ongoing');
-					$td.removeClass('drag-ongoing');
-					dreamlandDIV.remove();
+				//绑定拖拽停止事件
+				(0, _jTool2.default)('body').unbind('mouseup');
+				(0, _jTool2.default)('body').bind('mouseup', function (event) {
+					var Settings = _Cache2.default.getSettings(table);
+					(0, _jTool2.default)('body').unbind('mousemove');
+					//清除临时展示被移动的列
+					_dreamlandDIV = (0, _jTool2.default)('.dreamland-div');
+					if (_dreamlandDIV.length != 0) {
+						_dreamlandDIV.animate({
+							top: _table.get(0).offsetTop + 'px',
+							left: _th.get(0).offsetLeft - _tableDiv.get(0).scrollLeft + 'px'
+						}, Settings.animateTime, function () {
+							_tableDiv.css('position', _divPosition);
+							_th.removeClass('drag-ongoing');
+							_td.removeClass('drag-ongoing');
+							_dreamlandDIV.remove();
 
-					// 列拖拽成功回调事件
-					settings.dragAfter(event);
+							// 列拖拽成功回调事件
+							Settings.dragAfter(event);
+						});
+					}
+					// 存储用户记忆
+					_Cache2.default.saveUserMemory(_table);
+
+					//重置调整宽度事件源
+					if (Settings.supportAdjust) {
+						_Adjust2.default.resetAdjust(_table);
+					}
+					//开启文字选中效果
+					(0, _jTool2.default)('body').removeClass('no-select-text');
 				});
-			}
-			// 存储用户记忆
-			_Cache2.default.saveUserMemory($table);
-
-			// 重置调整宽度事件源
-			if (settings.supportAdjust) {
-				_Adjust2.default.resetAdjust($table);
-			}
-			// 开启文字选中效果
-			$DragArea.removeClass('no-select-text');
+			});
 		}
 	};
 	exports.default = Drag;

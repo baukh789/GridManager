@@ -42,6 +42,9 @@
 .icon-icon:before { content: "\e609"; }
 
 /*基础样式*/
+html{
+	height: auto !important;
+}
 .table-wrap *, .grid-menu *{
 	box-sizing:border-box !important;
 	font-size:12px;
