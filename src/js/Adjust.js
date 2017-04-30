@@ -16,9 +16,8 @@ const Adjust = {
 		// table下的TH
 		const thList 	= $('thead th', $table);
 		// 监听鼠标调整列宽度
-		thList.off('mousedown', '.adjust-action');
-		thList.on('mousedown', '.adjust-action', function(event) {
-			const Settings = Cache.getSettings($table);
+		$table.off('mousedown', '.adjust-action');
+		$table.on('mousedown', '.adjust-action', function(event) {
 			const _dragAction = $(this);
 			// 事件源所在的th
 			let _th = _dragAction.closest('th');
@@ -28,6 +27,9 @@ const Adjust = {
 
 			// 事件源所在的table
 			let	_table = _tr.closest('table');
+
+			// 当前存储属性
+			const settings = Cache.getSettings(_table);
 
 			// 事件源同层级下的所有th
 			let	_allTh = _tr.find('th[th-visible="visible"]');
@@ -39,7 +41,7 @@ const Adjust = {
 			let	_td = Base.getColTd(_th);
 
 			// 宽度调整触发回调事件
-			Settings.adjustBefore(event);
+			settings.adjustBefore(event);
 
 			//增加宽度调整中样式
 			_th.addClass('adjust-selected');
@@ -53,15 +55,17 @@ const Adjust = {
 			_table.unbind('mousemove');
 			_table.bind('mousemove', function(event) {
 				_thWidth = event.clientX -
-					_th.offset().left -
-					_th.css('padding-left') -
-					_th.css('padding-right');
+							_th.offset().left -
+							_th.css('padding-left') -
+							_th.css('padding-right');
 				_thWidth = Math.ceil(_thWidth);
 				_NextWidth = _nextTh.width() + _th.width() - _thWidth;
 				_NextWidth = Math.ceil(_NextWidth);
-				//限定最小值
+				// 限定最小值
+				// TODO @baukh20170430: 由原来限定最小值调整为达到最小值后不再执行后续操作
 				if(_thWidth < _thMinWidth){
-					_thWidth = _thMinWidth;
+					// _thWidth = _thMinWidth;
+					return;
 				}
 				if(_NextWidth < _NextThMinWidth){
 					_NextWidth = _NextThMinWidth;
@@ -76,18 +80,25 @@ const Adjust = {
 				}
 				_th.width(_thWidth);
 				_nextTh.width(_NextWidth);
+
+				// 当前宽度调整的事件原为表头置顶的thead th
+				// 修改与置顶thead 对应的 thead
+				if(_th.closest('.set-top').length === 1){
+					$('thead[grid-manager-thead] th[th-name="'+ _th.attr('th-name') +'"]', _table).width(_thWidth);
+					$('thead[grid-manager-thead] th[th-name="'+ _nextTh.attr('th-name') +'"]', _table).width(_NextWidth);
+				}
 			});
 
 			// 绑定鼠标放开、移出事件
 			_table.unbind('mouseup mouseleave');
 			_table.bind('mouseup mouseleave', function(event) {
-				const Settings = Cache.getSettings($table);
+				const settings = Cache.getSettings($table);
 				_table.unbind('mousemove mouseleave');
 				// 存储用户记忆
 				Cache.saveUserMemory(_table);
 				if(_th.hasClass('adjust-selected')) {  // 其它操作也在table以该事件进行绑定,所以通过class进行区别
 					// 宽度调整成功回调事件
-					Settings.adjustAfter(event);
+					settings.adjustAfter(event);
 				}
 				_th.removeClass('adjust-selected');
 				_td.removeClass('adjust-selected');

@@ -337,20 +337,20 @@ table[grid-manager].GridManager-ready{
 }
 /*表头置顶*/
 .table-wrap .set-top{
-	position:absolute;
+	position:fixed;
 	left:0;
 	top:0;
 	z-index:2;
 	background-color: #ddd;
 }
 .table-wrap .set-top .adjust-action{
-	display:none !important;
+	/*display:none !important;*/
 }
 .table-wrap .set-top .sorting-action{
-	display:none;
+	/*display:none;*/
 }
 .table-wrap .set-top .drag-action{
-	cursor:default !important;
+	/*cursor:default !important;*/
 }
 .table-wrap table[grid-manager] thead.scrolling{
 	visibility:hidden;

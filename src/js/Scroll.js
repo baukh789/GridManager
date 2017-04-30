@@ -43,6 +43,7 @@ const Scroll = {
 				_setTopHead.css({
 					width : _thead.width()
 					,left: table.css('border-left-width') + 'px'
+					,top: _tableWarp.offset().top
 				});
 				// 防止window.resize事件后导致的吸顶宽度错误. 可以优化
 				$.each($('th', _thead), function (i, v) {
@@ -52,6 +53,7 @@ const Scroll = {
 			if(_setTopHead.length === 0){
 				return;
 			}
+
 			// 删除表头置顶
 			if(_scrollDOMTop === 0){
 				_thead.removeClass('scrolling');
@@ -60,9 +62,9 @@ const Scroll = {
 			// 显示表头置顶
 			else {
 				_thead.addClass('scrolling');
-				_setTopHead.css({
-					top: _scrollDOMTop
-				});
+				// _setTopHead.css({
+				// 	top: _scrollDOMTop
+				// });
 			}
 			return true;
 		});
