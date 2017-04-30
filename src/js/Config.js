@@ -104,7 +104,7 @@ const Config = {
 			$('.sa-inner', _tableWarp).width('100%');
 
 			//重置当前可视th的宽度
-			const _visibleTh = $('thead th[th-visible="visible"]', _table);
+			const _visibleTh = $('thead[grid-manager-thead] th[th-visible="visible"]', _table);
 			$.each(_visibleTh, function(i, v){
 				// 特殊处理: GM自动创建的列使终为50px
 				if(v.getAttribute('gm-create') === 'true'){
@@ -114,7 +114,6 @@ const Config = {
 					v.style.width = 'auto';
 				}
 			});
-
 			//当前th文本所占宽度大于设置的宽度
 			//需要在上一个each执行完后才可以获取到准确的值
 			$.each(_visibleTh, function(i, v){
@@ -127,6 +126,13 @@ const Config = {
 				}
 			});
 			Cache.saveUserMemory(_table);	// 存储用户记忆
+
+			// 处理置顶表头
+			const topThead = $('thead.set-top', _table);
+			if(topThead.length === 1){
+				topThead.remove();
+				_tableDiv.trigger('scroll');
+			}
 		});
 	}
 };

@@ -68,6 +68,7 @@ const Adjust = {
 					// _thWidth = _thMinWidth;
 					return;
 				}
+				// TODO 这里需要确认,当向后调整至最小时,该如何操作?
 				if(_NextWidth < _NextThMinWidth){
 					_NextWidth = _NextThMinWidth;
 				}
