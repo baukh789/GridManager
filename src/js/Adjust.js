@@ -54,6 +54,7 @@ const Adjust = {
 				_NextThMinWidth = Base.getTextWidth(_nextTh);
 			_table.unbind('mousemove');
 			_table.bind('mousemove', function(event) {
+				_table.addClass('no-select-text');
 				_thWidth = event.clientX -
 							_th.offset().left -
 							_th.css('padding-left') -
@@ -102,6 +103,7 @@ const Adjust = {
 				}
 				_th.removeClass('adjust-selected');
 				_td.removeClass('adjust-selected');
+				_table.removeClass('no-select-text');
 			});
 			return false;
 		});

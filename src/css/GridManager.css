@@ -86,7 +86,7 @@ table[grid-manager].GridManager-ready{
 	/*padding: 3px;*/
 }
 .table-div{
-	position:relative;
+	/*position:relative;*/
 	overflow: auto;
 }
 .table-div::-webkit-scrollbar-track {
@@ -337,7 +337,7 @@ table[grid-manager].GridManager-ready{
 }
 /*表头置顶*/
 .table-wrap .set-top{
-	position:fixed;
+	position:absolute;
 	left:0;
 	top:0;
 	z-index:2;
