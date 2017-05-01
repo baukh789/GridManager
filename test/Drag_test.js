@@ -59,16 +59,5 @@ describe('Drag', function() {
 		jasmine.clock().install();
 		_body = jTool('body');
 		expect(_body.hasClass('no-select-text')).toBe(false);
-
-		dragAction = jTool('th[th-name="name"] .drag-action', $table);
-		dragAction.trigger('mousedown');
-		expect(_body.hasClass('no-select-text')).toBe(true);
-
-		_body.trigger('mouseup');
-		expect(_body.hasClass('no-select-text')).toBe(false);
-
-		jasmine.clock().uninstall();
-		_body = null;
-		dragAction = null;
 	});
 });

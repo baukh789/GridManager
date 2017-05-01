@@ -86,7 +86,6 @@ table[grid-manager].GridManager-ready{
 	/*padding: 3px;*/
 }
 .table-div{
-	/*position:relative;*/
 	overflow: auto;
 }
 .table-div::-webkit-scrollbar-track {

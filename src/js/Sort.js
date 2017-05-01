@@ -115,6 +115,12 @@ const Sort = {
 
 		});
 	}
+	/**
+	 * 更新排序样式
+	 * @param sortAction
+	 * @param th
+	 * @param settings
+     */
 	,updateSortStyle: function (sortAction, th, settings) {
 		// 排序操作：升序
 		if(sortAction.hasClass('sorting-down')){
