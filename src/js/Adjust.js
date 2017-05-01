@@ -13,8 +13,6 @@ const Adjust = {
 	 $table: table [jTool object]
 	 */
 	,bindAdjustEvent: function($table){
-		// table下的TH
-		const thList 	= $('thead th', $table);
 		// 监听鼠标调整列宽度
 		$table.off('mousedown', '.adjust-action');
 		$table.on('mousedown', '.adjust-action', function(event) {
@@ -88,6 +86,7 @@ const Adjust = {
 				if(_th.closest('.set-top').length === 1){
 					$('thead[grid-manager-thead] th[th-name="'+ _th.attr('th-name') +'"]', _table).width(_thWidth);
 					$('thead[grid-manager-thead] th[th-name="'+ _nextTh.attr('th-name') +'"]', _table).width(_NextWidth);
+					$('thead[grid-manager-mock-thead]', _table).width($('thead[grid-manager-thead]', _table).width());
 				}
 			});
 
