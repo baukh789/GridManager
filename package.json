@@ -30,7 +30,7 @@
     "express": "^4.15.2",
     "file-loader": "^0.11.1",
     "istanbul-instrumenter-loader": "^1.2.0",
-    "jTool": "^1.2.16",
+    "jTool": "^1.2.17",
     "jasmine-ajax": "^3.2.0",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.22",

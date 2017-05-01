@@ -54,22 +54,23 @@ const Sort = {
 		}
 		refresh ? Core.__refreshGrid($table, callback) : (typeof(callback) === 'function' ? callback() : '');
 	}
-	/*
-	 @绑定排序事件
-	 $.table: table [jTool object]
-	 */
-	,bindSortingEvent: function(table){
-		let Settings = Cache.getSettings(table);
+	/**
+	 * 绑定排序事件
+	 * @param $table
+     */
+	,bindSortingEvent: function($table){
+		let Settings = Cache.getSettings($table);
 		// 所有包含排序的列
-		const _thList = $('th[sorting]', table);
+		const _thList = $('th[sorting]', $table);
 		let	_action,		//向上或向下事件源
 			_th,			//事件源所在的th
 			_table,			//事件源所在的table
 			_thName;		//th对应的名称
-
 		//绑定排序事件
-		$('.sorting-action', _thList).unbind('mouseup');
-		$('.sorting-action', _thList).bind('mouseup', function(){
+		// $('.sorting-action', _thList).unbind('mouseup');
+		// $('.sorting-action', _thList).bind('mouseup', function(){
+		$table.off('mouseup', '.sorting-action');
+		$table.on('mouseup', '.sorting-action', function(){
 			_action = $(this);
 			_th 	= _action.closest('th');
 			_table 	= _th.closest('table');
@@ -111,10 +112,10 @@ const Sort = {
 				});
 			}
 			//调用事件、渲染tbody
-			Cache.updateSettings(table, Settings);
+			Cache.updateSettings($table, Settings);
 			const query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 			Settings.sortingBefore(query);
-			Core.__refreshGrid(table, function(){
+			Core.__refreshGrid($table, function(){
 				Settings.sortingAfter(query,  _th);
 			});
 

@@ -470,9 +470,8 @@
 			// table下的TH
 			var thList = (0, _jTool2.default)('thead th', $table);
 			// 监听鼠标调整列宽度
-			thList.off('mousedown', '.adjust-action');
-			thList.on('mousedown', '.adjust-action', function (event) {
-				var Settings = _Cache2.default.getSettings($table);
+			$table.off('mousedown', '.adjust-action');
+			$table.on('mousedown', '.adjust-action', function (event) {
 				var _dragAction = (0, _jTool2.default)(this);
 				// 事件源所在的th
 				var _th = _dragAction.closest('th');
@@ -482,6 +481,9 @@
 
 				// 事件源所在的table
 				var _table = _tr.closest('table');
+
+				// 当前存储属性
+				var settings = _Cache2.default.getSettings(_table);
 
 				// 事件源同层级下的所有th
 				var _allTh = _tr.find('th[th-visible="visible"]');
@@ -493,7 +495,7 @@
 				var _td = _Base2.default.getColTd(_th);
 
 				// 宽度调整触发回调事件
-				Settings.adjustBefore(event);
+				settings.adjustBefore(event);
 
 				//增加宽度调整中样式
 				_th.addClass('adjust-selected');
@@ -506,14 +508,18 @@
 				    _NextThMinWidth = _Base2.default.getTextWidth(_nextTh);
 				_table.unbind('mousemove');
 				_table.bind('mousemove', function (event) {
+					_table.addClass('no-select-text');
 					_thWidth = event.clientX - _th.offset().left - _th.css('padding-left') - _th.css('padding-right');
 					_thWidth = Math.ceil(_thWidth);
 					_NextWidth = _nextTh.width() + _th.width() - _thWidth;
 					_NextWidth = Math.ceil(_NextWidth);
-					//限定最小值
+					// 限定最小值
+					// TODO @baukh20170430: 由原来限定最小值调整为达到最小值后不再执行后续操作
 					if (_thWidth < _thMinWidth) {
-						_thWidth = _thMinWidth;
+						// _thWidth = _thMinWidth;
+						return;
 					}
+					// TODO 这里需要确认,当向后调整至最小时,该如何操作?
 					if (_NextWidth < _NextThMinWidth) {
 						_NextWidth = _NextThMinWidth;
 					}
@@ -527,22 +533,30 @@
 					}
 					_th.width(_thWidth);
 					_nextTh.width(_NextWidth);
+
+					// 当前宽度调整的事件原为表头置顶的thead th
+					// 修改与置顶thead 对应的 thead
+					if (_th.closest('.set-top').length === 1) {
+						(0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _th.attr('th-name') + '"]', _table).width(_thWidth);
+						(0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _nextTh.attr('th-name') + '"]', _table).width(_NextWidth);
+					}
 				});
 
 				// 绑定鼠标放开、移出事件
 				_table.unbind('mouseup mouseleave');
 				_table.bind('mouseup mouseleave', function (event) {
-					var Settings = _Cache2.default.getSettings($table);
+					var settings = _Cache2.default.getSettings($table);
 					_table.unbind('mousemove mouseleave');
 					// 存储用户记忆
 					_Cache2.default.saveUserMemory(_table);
 					if (_th.hasClass('adjust-selected')) {
 						// 其它操作也在table以该事件进行绑定,所以通过class进行区别
 						// 宽度调整成功回调事件
-						Settings.adjustAfter(event);
+						settings.adjustAfter(event);
 					}
 					_th.removeClass('adjust-selected');
 					_td.removeClass('adjust-selected');
+					_table.removeClass('no-select-text');
 				});
 				return false;
 			});
@@ -2477,7 +2491,7 @@
 				(0, _jTool2.default)('.sa-inner', _tableWarp).width('100%');
 
 				//重置当前可视th的宽度
-				var _visibleTh = (0, _jTool2.default)('thead th[th-visible="visible"]', _table);
+				var _visibleTh = (0, _jTool2.default)('thead[grid-manager-thead] th[th-visible="visible"]', _table);
 				_jTool2.default.each(_visibleTh, function (i, v) {
 					// 特殊处理: GM自动创建的列使终为50px
 					if (v.getAttribute('gm-create') === 'true') {
@@ -2486,7 +2500,6 @@
 						v.style.width = 'auto';
 					}
 				});
-
 				//当前th文本所占宽度大于设置的宽度
 				//需要在上一个each执行完后才可以获取到准确的值
 				_jTool2.default.each(_visibleTh, function (i, v) {
@@ -2499,6 +2512,13 @@
 					}
 				});
 				_Cache2.default.saveUserMemory(_table); // 存储用户记忆
+
+				// 处理置顶表头
+				var topThead = (0, _jTool2.default)('thead.set-top', _table);
+				if (topThead.length === 1) {
+					topThead.remove();
+					_tableDiv.trigger('scroll');
+				}
 			});
 		}
 	};
@@ -2744,14 +2764,14 @@
 			}
 			refresh ? _Core2.default.__refreshGrid($table, callback) : typeof callback === 'function' ? callback() : '';
 		}
-		/*
-	  @绑定排序事件
-	  $.table: table [jTool object]
-	  */
-		, bindSortingEvent: function bindSortingEvent(table) {
-			var Settings = _Cache2.default.getSettings(table);
+		/**
+	  * 绑定排序事件
+	  * @param $table
+	     */
+		, bindSortingEvent: function bindSortingEvent($table) {
+			var Settings = _Cache2.default.getSettings($table);
 			// 所有包含排序的列
-			var _thList = (0, _jTool2.default)('th[sorting]', table);
+			var _thList = (0, _jTool2.default)('th[sorting]', $table);
 			var _action = void 0,
 			    //向上或向下事件源
 			_th = void 0,
@@ -2759,10 +2779,13 @@
 			_table = void 0,
 			    //事件源所在的table
 			_thName = void 0; //th对应的名称
-
 			//绑定排序事件
-			(0, _jTool2.default)('.sorting-action', _thList).unbind('mouseup');
-			(0, _jTool2.default)('.sorting-action', _thList).bind('mouseup', function () {
+			$table.on('mousedown', 'th', function (event) {
+				console.log(2123123);
+			});
+			$table.off('mouseup', '.remind-action');
+			$table.on('mouseup', '.sorting-action', function () {
+				console.log(123);
 				_action = (0, _jTool2.default)(this);
 				_th = _action.closest('th');
 				_table = _th.closest('table');
@@ -2805,10 +2828,10 @@
 					});
 				}
 				//调用事件、渲染tbody
-				_Cache2.default.updateSettings(table, Settings);
+				_Cache2.default.updateSettings($table, Settings);
 				var query = _jTool2.default.extend({}, Settings.query, Settings.sortData, Settings.pageData);
 				Settings.sortingBefore(query);
-				_Core2.default.__refreshGrid(table, function () {
+				_Core2.default.__refreshGrid($table, function () {
 					Settings.sortingAfter(query, _th);
 				});
 			});
@@ -3034,7 +3057,7 @@
 	  $.table: table [jTool object]
 	  */
 		bindScrollFunction: function bindScrollFunction(table) {
-			var _tableDIV = table.closest('.table-div');
+			var tableDIV = table.closest('.table-div');
 			// 绑定resize事件: 对表头吸顶的列宽度进行修正
 			window.addEventListener('resize', function () {
 				var _setTopHead = (0, _jTool2.default)('.set-top', table); // 吸顶元素
@@ -3044,12 +3067,9 @@
 				}
 			});
 			//绑定滚动条事件
-			_tableDIV.unbind('scroll');
-			_tableDIV.bind('scroll', function (e, _isWindowResize_) {
+			tableDIV.unbind('scroll');
+			tableDIV.bind('scroll', function (e, _isWindowResize_) {
 				var _scrollDOMTop = (0, _jTool2.default)(this).scrollTop();
-				// 列表所在的DIV,该DIV的class标识为table-div
-				// 列表所在的外围容器
-				var _tableWarp = _tableDIV.closest('.table-wrap');
 				// 列表head
 				var _thead = (0, _jTool2.default)('thead[grid-manager-thead]', table);
 				// 列表body
@@ -3068,7 +3088,7 @@
 					_setTopHead.removeClass('scrolling');
 					_setTopHead.css({
 						width: _thead.width(),
-						left: table.css('border-left-width') + 'px'
+						left: -table.closest('.table-div').scrollLeft() + 'px'
 					});
 					// 防止window.resize事件后导致的吸顶宽度错误. 可以优化
 					_jTool2.default.each((0, _jTool2.default)('th', _thead), function (i, v) {
@@ -3078,6 +3098,7 @@
 				if (_setTopHead.length === 0) {
 					return;
 				}
+
 				// 删除表头置顶
 				if (_scrollDOMTop === 0) {
 					_thead.removeClass('scrolling');
@@ -3087,7 +3108,7 @@
 				else {
 						_thead.addClass('scrolling');
 						_setTopHead.css({
-							top: _scrollDOMTop
+							left: -table.closest('.table-div').scrollLeft() + 'px'
 						});
 					}
 				return true;

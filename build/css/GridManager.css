@@ -86,7 +86,7 @@ table[grid-manager].GridManager-ready{
 	/*padding: 3px;*/
 }
 .table-div{
-	position:relative;
+	/*position:relative;*/
 	overflow: auto;
 }
 .table-div::-webkit-scrollbar-track {
@@ -344,13 +344,13 @@ table[grid-manager].GridManager-ready{
 	background-color: #ddd;
 }
 .table-wrap .set-top .adjust-action{
-	display:none !important;
+	/*display:none !important;*/
 }
 .table-wrap .set-top .sorting-action{
-	display:none;
+	/*display:none;*/
 }
 .table-wrap .set-top .drag-action{
-	cursor:default !important;
+	/*cursor:default !important;*/
 }
 .table-wrap table[grid-manager] thead.scrolling{
 	visibility:hidden;

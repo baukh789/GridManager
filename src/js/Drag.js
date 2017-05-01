@@ -152,6 +152,7 @@ const Drag = {
 			$('body').bind('mouseup',function(event){
 				let Settings = Cache.getSettings(table);
 				$('body').unbind('mousemove');
+				$('body').unbind('mouseup');
 				//清除临时展示被移动的列
 				_dreamlandDIV = $('.dreamland-div');
 				if(_dreamlandDIV.length != 0){
