@@ -36,6 +36,7 @@ const Scroll = {
 				_setTopHead.length == 0 ? table.append(_thead.clone(true).addClass('set-top')) : '';
 				_setTopHead = $('.set-top', table);
 				_setTopHead.removeAttr('grid-manager-thead');
+				_setTopHead.attr('grid-manager-mock-thead', '');
 				_setTopHead.removeClass('scrolling');
 				_setTopHead.css({
 					width : _thead.width()
