@@ -173,5 +173,20 @@ const Base = {
 			typeof(cb) === 'function' ? cb() : '';
 		}, 500);
 	}
+	/**
+	 * 更新当前用户交互状态, 用于优化置顶状态下进行[拖拽, 宽度调整]操作时,页面出现滚动的问题
+	 * @param $table
+	 * @param interactive: 如果不存在,将删除属性[user-interactive]
+     */
+	,updateInteractive: function ($table, interactive) {
+		// 事件源所在的容器
+		let	tableWrap = $table.closest('.table-wrap');
+		if($.type(interactive) === 'undefined'){
+			tableWrap.removeAttr('user-interactive');
+		}
+		else{
+			tableWrap.attr('user-interactive', interactive);
+		}
+	}
 };
 export default Base;

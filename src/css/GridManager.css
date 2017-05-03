@@ -85,6 +85,13 @@ table[grid-manager].GridManager-ready{
 	background-color: #f8f8f8;
 	/*padding: 3px;*/
 }
+/*用户交互*/
+.table-wrap[user-interactive="Adjust"] .table-div{
+	overflow: hidden;
+}
+.table-wrap[user-interactive="Drag"] .table-div{
+	overflow: hidden;
+}
 .table-div{
 	overflow: auto;
 }

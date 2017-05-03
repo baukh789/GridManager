@@ -45,6 +45,9 @@ const Adjust = {
 			_th.addClass('adjust-selected');
 			_td.addClass('adjust-selected');
 
+			// 更新界面交互标识
+			Base.updateInteractive(_table, 'Adjust');
+
 			//绑定鼠标拖动事件
 			let _thWidth,
 				_NextWidth;
@@ -104,6 +107,8 @@ const Adjust = {
 				_th.removeClass('adjust-selected');
 				_td.removeClass('adjust-selected');
 				_table.removeClass('no-select-text');
+				// 更新界面交互标识
+				Base.updateInteractive(_table);
 			});
 			return false;
 		});

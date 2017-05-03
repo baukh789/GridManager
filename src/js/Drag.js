@@ -52,12 +52,10 @@ const Drag = {
 
 			//禁用文字选中效果
 			$body.addClass('no-select-text');
-			//父级DIV使用相对定位
-			//所在DIV使用定位方式
-			// const _divPosition = tableDiv.css('position');
-			// if(_divPosition != 'relative' && _divPosition != 'absolute'){
-			// 	tableDiv.css('position','relative');
-			// }
+
+			// 更新界面交互标识
+			Base.updateInteractive(_table, 'Drag');
+
 			//增加拖拽中样式
 			_th.addClass('drag-ongoing opacityChange');
 			colTd.addClass('drag-ongoing opacityChange');
@@ -160,9 +158,23 @@ const Drag = {
 				}
 				//开启文字选中效果
 				$body.removeClass('no-select-text');
+				
+				// 更新界面交互标识
+				Base.updateInteractive(_table);
 			});
 		});
 	}
+	/**
+	 * 拖拽触发后更新DOM
+	 * @param _table
+	 * @param prevTh
+	 * @param nextTh
+	 * @param _th
+	 * @param colTd
+	 * @param dreamlandDIV
+	 * @param tableDiv
+     * @param haveMockThead
+     */
 	,updateDrag: function(_table, prevTh, nextTh, _th, colTd, dreamlandDIV, tableDiv, haveMockThead){
 		// 事件源对应的上一组td
 		let prevTd	= null;
