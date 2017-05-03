@@ -19,7 +19,7 @@ describe('Base: 验证方法总数', function() {
 		getPropertyCount = null;
 	});
 	it('Function count', function() {
-		expect(getPropertyCount(Base)).toBe(7);
+		expect(getPropertyCount(Base)).toBe(8);
 	});
 });
 describe('Base.js', function() {
@@ -112,6 +112,20 @@ describe('Base.js', function() {
 		jasmine.clock().uninstall();
 		tableWrap = null;
 		callbackFN = null;
+	});
+
+	it('Base.updateInteractive($table, interactive)', function(){
+		let	tableWrap = $table.closest('.table-wrap');
+		expect(tableWrap.attr('user-interactive') === 'undefined');
+		Base.updateInteractive($table, 'Drag');
+		expect(tableWrap.attr('user-interactive') === 'Drag');
+
+		Base.updateInteractive($table, 'Adjust');
+		expect(tableWrap.attr('user-interactive') === 'Adjust');
+
+		Base.updateInteractive($table);
+		expect(tableWrap.attr('user-interactive') === 'undefined');
+		tableWrap = null;
 	});
 
 
