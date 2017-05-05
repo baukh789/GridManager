@@ -129,7 +129,7 @@
 		function GridManager() {
 			_classCallCheck(this, GridManager);
 
-			this.version = '2.3.0';
+			this.version = '2.3.2';
 			this.extentGridManager();
 		}
 		/*
@@ -432,7 +432,7 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var require;var require;!function t(e,n,o){function i(s,u){if(!n[s]){if(!e[s]){var a="function"==typeof require&&require;if(!u&&a)return require(s,!0);if(r)return r(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var l=n[s]={exports:{}};e[s][0].call(l.exports,function(t){var n=e[s][1][t];return i(n?n:t)},l,l.exports,t,e,n,o)}return n[s].exports}for(var r="function"==typeof require&&require,s=0;s<o.length;s++)i(o[s]);return i}({1:[function(t,e){var n=t("./utilities"),o=t("../src/Css"),i={show:function(){return n.each(this.DOMList,function(t,e){var n="",o=["SPAN","A","FONT","I"];if(-1!==e.nodeName.indexOf(o))return e.style.display="inline-block",this;switch(e.nodeName){case"TABLE":n="table";break;case"THEAD":n="table-header-group";break;case"TBODY":n="table-row-group";break;case"TR":n="table-row";break;case"TH":n="table-cell";break;case"TD":n="table-cell";break;default:n="block"}e.style.display=n}),this},hide:function(){return n.each(this.DOMList,function(t,e){e.style.display="none"}),this},animate:function(t,e,i){var r=this,s="",u="",a=r.DOMList[0];if(t){"undefined"===n.type(i)&&"function"===n.type(e)&&(i=e,e=0),"undefined"===n.type(i)&&(i=n.noop),"undefined"===n.type(e)&&(e=0),n.each(t,function(t,e){t=n.toHyphen(t),s+=t+":"+n.getStyle(a,t)+";",u+=t+":"+e+";"});var c="@keyframes jToolAnimate {from {"+s+"}to {"+u+"}}",l=document.createElement("style");l.className="jTool-animate-style",l.type="text/css",document.head.appendChild(l),l.textContent=l.textContent+c,a.style.animation="jToolAnimate "+e/1e3+"s ease-in-out forwards",window.setTimeout(function(){o.css.call(r,t),a.style.animation="",l.remove(),i()},e)}}};e.exports=i},{"../src/Css":3,"./utilities":13}],2:[function(t,e){var n=t("./utilities"),o={addClass:function(t){return this.changeClass(t,"add")},removeClass:function(t){return this.changeClass(t,"remove")},toggleClass:function(t){return this.changeClass(t,"toggle")},hasClass:function(t){return[].some.call(this.DOMList,function(e){return e.classList.contains(t)})},parseClassName:function(t){return t.indexOf(" ")?t.split(" "):[t]},changeClass:function(t,e){var o=this.parseClassName(t);return n.each(this.DOMList,function(t,i){n.each(o,function(t,n){i.classList[e](n)})}),this}};e.exports=o},{"./utilities":13}],3:[function(t,e){var n=t("./utilities"),o={css:function(t,e){function o(t,e){"number"===n.type(e)&&(e=e.toString()),-1!==r.indexOf(t)&&-1===e.indexOf("px")&&(e+="px"),n.each(i.DOMList,function(n,o){o.style[t]=e})}var i=this,r=["width","height","min-width","max-width","min-height","min-height","top","left","right","bottom","padding-top","padding-right","padding-bottom","padding-left","margin-top","margin-right","margin-bottom","margin-left","border-width","border-top-width","border-left-width","border-right-width","border-bottom-width"];if("string"===n.type(t)&&!e&&0!==e)return-1!==r.indexOf(t)?parseInt(n.getStyle(this.DOMList[0],t),10):n.getStyle(this.DOMList[0],t);if("object"===n.type(t)){var s=t;for(var u in s)o(u,s[u])}else o(t,e);return this},width:function(t){return this.css("width",t)},height:function(t){return this.css("height",t)}};e.exports=o},{"./utilities":13}],4:[function(t,e){var n=t("./utilities"),o={dataKey:"jTool"+n.version,data:function(t,e){var o=this,i={};if("undefined"==typeof t&&"undefined"==typeof e)return o.DOMList[0][o.dataKey];if("undefined"!=typeof e){var r=n.type(e);return("string"===r||"number"===r)&&o.attr(t,e),n.each(o.DOMList,function(n,r){i=r[o.dataKey]||{},i[t]=e,r[o.dataKey]=i}),this}return i=o.DOMList[0][o.dataKey]||{},this.transformValue(i[t]||o.attr(t))},removeData:function(t){var e,o=this;"undefined"!=typeof t&&(n.each(o.DOMList,function(n,i){e=i[o.dataKey]||{},delete e[t]}),o.removeAttr(t))},attr:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o.setAttribute(t,e)}),this):this.transformValue(this.DOMList[0].getAttribute(t))},removeAttr:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){n.removeAttribute(t)})},prop:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o[t]=e}),this):this.transformValue(this.DOMList[0][t])},removeProp:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){delete n[t]})},val:function(t){return this.prop("value",t)||""},transformValue:function(t){return"null"===n.type(t)&&(t=void 0),t}};e.exports=o},{"./utilities":13}],5:[function(t,e){var n=t("./utilities"),o=t("./Sizzle"),i={append:function(t){return this.html(t,"append")},prepend:function(t){return this.html(t,"prepend")},before:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;return n.insertBefore(t,e),this},after:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;n.lastChild==e?n.appendChild(t):n.insertBefore(t,e.nextSibling)},text:function(t){return"undefined"!=typeof t?(n.each(this.DOMList,function(e,n){n.textContent=t}),this):this.DOMList[0].textContent},html:function(t,e){if("undefined"==typeof t&&"undefined"==typeof e)return this.DOMList[0].innerHTML;var o=this,i=n.type(t);t.jTool?t=t.DOMList:"string"===i?t=n.createDOM(t||""):"element"===i&&(t=[t]);var r;return n.each(o.DOMList,function(o,i){e?"prepend"===e&&(r=i.firstChild):i.innerHTML="",n.each(t,function(t,e){e=e.cloneNode(!0),e.nodeType||(e=document.createTextNode(e)),r?i.insertBefore(e,r):i.appendChild(e),i.normalize()})}),this},wrap:function(t){var e;return n.each(this.DOMList,function(n,i){e=i.parentNode;var r=new o(t,i.ownerDocument).get(0);e.insertBefore(r,i),r.querySelector(":empty").appendChild(i)}),this},closest:function(t){function e(){return n&&0!==i.length&&1===n.nodeType?void(-1===[].indexOf.call(i,n)&&(n=n.parentNode,e())):void(n=null)}var n=this.DOMList[0].parentNode;if("undefined"==typeof t)return new o(n);var i=document.querySelectorAll(t);return e(),new o(n)},parent:function(){return this.closest()},clone:function(t){return new o(this.DOMList[0].cloneNode(t||!1))},remove:function(){n.each(this.DOMList,function(t,e){e.remove()})}};e.exports=i},{"./Sizzle":9,"./utilities":13}],6:[function(t,e){var n=t("./Sizzle"),o={get:function(t){return this.DOMList[t]},eq:function(t){return new n(this.DOMList[t])},find:function(t){return new n(t,this)},index:function(t){var e=this.DOMList[0];return t?t.jTool&&(t=t.DOMList):t=e.parentNode.childNodes,t?[].indexOf.call(t,e):-1}};e.exports=o},{"./Sizzle":9}],7:[function(t,e){var n=t("./utilities"),o={on:function(t,e,n,o){return this.addEvent(this.getEventObject(t,e,n,o))},off:function(t,e){return this.removeEvent(this.getEventObject(t,e))},bind:function(t,e,n){return this.on(t,void 0,e,n)},unbind:function(t){return this.removeEvent(this.getEventObject(t))},trigger:function(t){return n.each(this.DOMList,function(e,o){try{if(o.jToolEvent&&o.jToolEvent[t].length>0){var i=new Event(t);o.dispatchEvent(i)}else o[t]()}catch(r){n.error("事件:["+t+"]未能正确执行, 请确定方法已经绑定成功")}}),this},getEventObject:function(t,e,o,i){if("function"==typeof e&&(i=o||!1,o=e,e=void 0),!t)return n.error("事件绑定失败,原因: 参数中缺失事件类型"),this;if(e&&"element"===n.type(this.DOMList[0])||(e=""),""!==e){var r=o;o=function(t){-1!==[].indexOf.call(this.querySelectorAll(e),t.target)&&r.apply(t.target,arguments)}}var s,u,a=t.split(" "),c=[];return n.each(a,function(t,r){return""===r.trim()?!0:(s=r.split("."),u={eventName:r+e,type:s[0],querySelector:e,callback:o||n.noop,useCapture:i||!1,nameScope:s[1]||void 0},void c.push(u))}),c},addEvent:function(t){var e=this;return n.each(t,function(t,o){n.each(e.DOMList,function(t,e){e.jToolEvent=e.jToolEvent||{},e.jToolEvent[o.eventName]=e.jToolEvent[o.eventName]||[],e.jToolEvent[o.eventName].push(o),e.addEventListener(o.type,o.callback,o.useCapture)})}),e},removeEvent:function(t){var e,o=this;return n.each(t,function(t,i){n.each(o.DOMList,function(t,o){o.jToolEvent&&(e=o.jToolEvent[i.eventName],e&&(n.each(e,function(t,e){o.removeEventListener(e.type,e.callback)}),o.jToolEvent[i.eventName]=void 0))})}),o}};e.exports=o},{"./utilities":13}],8:[function(t,e){var n=t("./utilities"),o={offset:function(){function t(i,r){if(1===i.nodeType){if(e=n.getStyle(i,"position"),"undefined"==typeof r&&"static"===e)return void t(i.parentNode);o.top=i.offsetTop+o.top-i.scrollTop,o.left=i.offsetLeft+o.left-i.scrollLeft,"fixed"!==e&&t(i.parentNode)}}var e,o={top:0,left:0};return t(this.DOMList[0],!0),o},scrollTop:function(t){return this.scrollFN(t,"top")},scrollLeft:function(t){return this.scrollFN(t,"left")},scrollFN:function(t,e){var n=this.DOMList[0];return t||0===t?(this.setScrollFN(n,e,t),this):this.getScrollFN(n,e)},getScrollFN:function(t,e){return n.isWindow(t)?"top"===e?t.pageYOffset:t.pageXOffset:9===t.nodeType?"top"===e?t.body.scrollTop:t.body.scrollLeft:1===t.nodeType?"top"===e?t.scrollTop:t.scrollLeft:void 0},setScrollFN:function(t,e,o){return n.isWindow(t)?"top"===e?t.document.body.scrollTop=o:t.document.body.scrollLeft=o:9===t.nodeType?"top"===e?t.body.scrollTop=o:t.body.scrollLeft=o:1===t.nodeType?"top"===e?t.scrollTop=o:t.scrollLeft=o:void 0}};e.exports=o},{"./utilities":13}],9:[function(t,e){var n=t("./utilities"),o=function(t,e){var o;return t?n.isWindow(t)?(o=[t],e=void 0):t===document?(o=[document],e=void 0):t instanceof HTMLElement?(o=[t],e=void 0):t instanceof NodeList||t instanceof Array?(o=t,e=void 0):t.jTool?(o=t.DOMList,e=void 0):/<.+>/.test(t)?(o=n.createDOM(t),e=void 0):(e?e="string"==typeof e?document.querySelectorAll(e):e instanceof HTMLElement?[e]:e instanceof NodeList?e:e.jTool?e.DOMList:void 0:o=document.querySelectorAll(t),e&&(o=[],n.each(e,function(e,i){n.each(i.querySelectorAll(t),function(t,e){e&&o.push(e)})}))):t=null,o&&0!==o.length||(o=void 0),this.jTool=!0,this.DOMList=o,this.length=this.DOMList?this.DOMList.length:0,this.querySelector=t,this};e.exports=o},{"./utilities":13}],10:[function(t,e){function n(t){var e={url:null,type:"GET",data:null,headers:{},async:!0,beforeSend:s.noop,complete:s.noop,success:s.noop,error:s.noop};if(t=r(e,t),!t.url)return void s.error("jTool ajax: url不能为空");var n=new XMLHttpRequest,o="";"object"===s.type(t.data)?s.each(t.data,function(t,e){""!==o&&(o+="&"),o+=t+"="+e}):o=t.data,"GET"===t.type&&o&&(t.url=t.url+(-1===t.url.indexOf("?")?"?":"&")+o,o=null),n.open(t.type,t.url,t.async);for(var i in t.headers)n.setRequestHeader(i,t.headers[i]);t.beforeSend(n),n.onload=function(){t.complete(n,n.status)},n.onreadystatechange=function(){4===n.readyState&&(n.status>=200&&n.status<300||304===n.status?t.success(n.response,n.status):t.error(n,n.status,n.statusText))},n.send(o)}function o(t,e,o){n({url:t,type:"POST",data:e,success:o})}function i(t,e,o){n({url:t,type:"GET",data:e,success:o})}var r=t("./extend"),s=t("./utilities");e.exports={ajax:n,post:o,get:i}},{"./extend":11,"./utilities":13}],11:[function(t,e){function n(){function t(e,i){for(var r in e)e.hasOwnProperty(r)&&(n&&"object"===o.type(e[r])?("object"!==o.type(i[r])&&(i[r]={}),t(e[r],i[r])):i[r]=e[r])}if(0===arguments.length)return{};var e,n=!1,i=1,r=arguments[0];for(1===arguments.length&&"object"==typeof arguments[0]?(r=this,i=0):2===arguments.length&&"boolean"==typeof arguments[0]?(n=arguments[0],r=this,i=1):arguments.length>2&&"boolean"==typeof arguments[0]&&(n=arguments[0],r=arguments[1]||{},i=2);i<arguments.length;i++)e=arguments[i]||{},t(e,r);return r}var o=t("./utilities");e.exports=n},{"./utilities":13}],12:[function(t,e){var n=t("./Sizzle"),o=t("./extend"),i=t("./utilities"),r=t("./ajax"),s=t("./Event"),u=t("./Css"),a=t("./Class"),c=t("./Document"),l=t("./Offset"),d=t("./Element"),f=t("./Animate"),p=t("./Data"),h=function(t,e){return new n(t,e)};n.prototype=h.prototype={},h.extend=h.prototype.extend=o,h.extend(i),h.extend(r),h.prototype.extend(s),h.prototype.extend(u),h.prototype.extend(a),h.prototype.extend(c),h.prototype.extend(l),h.prototype.extend(d),h.prototype.extend(f),h.prototype.extend(p),"undefined"!=typeof window.$&&(window._$=$),window.jTool=window.$=h,e.exports=h},{"./Animate":1,"./Class":2,"./Css":3,"./Data":4,"./Document":5,"./Element":6,"./Event":7,"./Offset":8,"./Sizzle":9,"./ajax":10,"./extend":11,"./utilities":13}],13:[function(t,e){function n(){return-1==navigator.userAgent.indexOf("Chrome")?!1:!0}function o(t){return null!==t&&t===t.window}function i(t){return Array.isArray(t)}function r(t){return v[m.call(t)]||(t instanceof Element?"element":"")}function s(){}function u(t,e){t&&t.jTool&&(t=t.DOMList);var n=r(t);if("array"===n||"nodeList"===n||"arguments"===n)[].every.call(t,function(t,n){o(t)?s():t.jTool?t=t.get(0):s();return e.call(t,n,t)===!1?!1:!0});else if("object"===n)for(var i in t)if(e.call(t[i],i,t[i])===!1)break}function a(t){return t.trim()}function c(t){throw new Error("[jTool Error: "+t+"]")}function l(t){var e=!0;for(var n in t)t.hasOwnProperty(n)&&(e=!1);return e}function d(t,e){return e?window.getComputedStyle(t)[e]:window.getComputedStyle(t)}function f(t){var e=["px","vem","em","%"],n="";return"number"==typeof t?n:(u(e,function(e,o){return-1!==t.indexOf(o)?(n=o,!1):void 0}),n)}function p(t){return t.replace(/-\w/g,function(t){return t.split("-")[1].toUpperCase()})}function h(t){return t.replace(/([A-Z])/g,"-$1").toLowerCase()}function y(t){var e=document.querySelector("#jTool-create-dom");if(!e||0===e.length){var n=document.createElement("table");n.id="jTool-create-dom",n.style.display="none",document.body.appendChild(n),e=document.querySelector("#jTool-create-dom")}e.innerHTML=t||"";var o=e.childNodes;return 1!=o.length||/<tbody|<TBODY/.test(t)||"TBODY"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<thead|<THEAD/.test(t)||"THEAD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<tr|<TR/.test(t)||"TR"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<td|<TD/.test(t)||"TD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<th|<TH/.test(t)||"TH"!==o[0].nodeName||(o=o[0].childNodes),e.remove(),o}var m=Object.prototype.toString,v={"[object String]":"string","[object Boolean]":"boolean","[object Undefined]":"undefined","[object Number]":"number","[object Object]":"object","[object Error]":"error","[object Function]":"function","[object Date]":"date","[object Array]":"array","[object RegExp]":"regexp","[object Null]":"null","[object NodeList]":"nodeList","[object Arguments]":"arguments","[object Window]":"window","[object HTMLDocument]":"document"};e.exports={isWindow:o,isChrome:n,isArray:i,noop:s,type:r,toHyphen:h,toHump:p,getStyleUnit:f,getStyle:d,isEmptyObject:l,trim:a,error:c,each:u,createDOM:y,version:"1.2.16"}},{}]},{},[12]);
+	var require;var require;!function t(e,n,o){function i(s,u){if(!n[s]){if(!e[s]){var a="function"==typeof require&&require;if(!u&&a)return require(s,!0);if(r)return r(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var l=n[s]={exports:{}};e[s][0].call(l.exports,function(t){var n=e[s][1][t];return i(n?n:t)},l,l.exports,t,e,n,o)}return n[s].exports}for(var r="function"==typeof require&&require,s=0;s<o.length;s++)i(o[s]);return i}({1:[function(t,e){var n=t("./utilities"),o=t("../src/Css"),i={show:function(){return n.each(this.DOMList,function(t,e){var n="",o=["SPAN","A","FONT","I"];if(-1!==e.nodeName.indexOf(o))return e.style.display="inline-block",this;switch(e.nodeName){case"TABLE":n="table";break;case"THEAD":n="table-header-group";break;case"TBODY":n="table-row-group";break;case"TR":n="table-row";break;case"TH":n="table-cell";break;case"TD":n="table-cell";break;default:n="block"}e.style.display=n}),this},hide:function(){return n.each(this.DOMList,function(t,e){e.style.display="none"}),this},animate:function(t,e,i){var r=this,s="",u="",a=r.DOMList[0];if(t){"undefined"===n.type(i)&&"function"===n.type(e)&&(i=e,e=0),"undefined"===n.type(i)&&(i=n.noop),"undefined"===n.type(e)&&(e=0),n.each(t,function(t,e){t=n.toHyphen(t),s+=t+":"+n.getStyle(a,t)+";",u+=t+":"+e+";"});var c="@keyframes jToolAnimate {from {"+s+"}to {"+u+"}}",l=document.createElement("style");l.className="jTool-animate-style",l.type="text/css",document.head.appendChild(l),l.textContent=l.textContent+c,a.style.animation="jToolAnimate "+e/1e3+"s ease-in-out forwards",window.setTimeout(function(){o.css.call(r,t),a.style.animation="",l.remove(),i()},e)}}};e.exports=i},{"../src/Css":3,"./utilities":13}],2:[function(t,e){var n=t("./utilities"),o={addClass:function(t){return this.changeClass(t,"add")},removeClass:function(t){return this.changeClass(t,"remove")},toggleClass:function(t){return this.changeClass(t,"toggle")},hasClass:function(t){return[].some.call(this.DOMList,function(e){return e.classList.contains(t)})},parseClassName:function(t){return t.indexOf(" ")?t.split(" "):[t]},changeClass:function(t,e){var o=this.parseClassName(t);return n.each(this.DOMList,function(t,i){n.each(o,function(t,n){i.classList[e](n)})}),this}};e.exports=o},{"./utilities":13}],3:[function(t,e){var n=t("./utilities"),o={css:function(t,e){function o(t,e){"number"===n.type(e)&&(e=e.toString()),-1!==r.indexOf(t)&&-1===e.indexOf("px")&&(e+="px"),n.each(i.DOMList,function(n,o){o.style[t]=e})}var i=this,r=["width","height","min-width","max-width","min-height","min-height","top","left","right","bottom","padding-top","padding-right","padding-bottom","padding-left","margin-top","margin-right","margin-bottom","margin-left","border-width","border-top-width","border-left-width","border-right-width","border-bottom-width"];if("string"===n.type(t)&&!e&&0!==e)return-1!==r.indexOf(t)?parseInt(n.getStyle(this.DOMList[0],t),10):n.getStyle(this.DOMList[0],t);if("object"===n.type(t)){var s=t;for(var u in s)o(u,s[u])}else o(t,e);return this},width:function(t){return this.css("width",t)},height:function(t){return this.css("height",t)}};e.exports=o},{"./utilities":13}],4:[function(t,e){var n=t("./utilities"),o={dataKey:"jTool"+n.version,data:function(t,e){var o=this,i={};if("undefined"==typeof t&&"undefined"==typeof e)return o.DOMList[0][o.dataKey];if("undefined"!=typeof e){var r=n.type(e);return("string"===r||"number"===r)&&o.attr(t,e),n.each(o.DOMList,function(n,r){i=r[o.dataKey]||{},i[t]=e,r[o.dataKey]=i}),this}return i=o.DOMList[0][o.dataKey]||{},this.transformValue(i[t]||o.attr(t))},removeData:function(t){var e,o=this;"undefined"!=typeof t&&(n.each(o.DOMList,function(n,i){e=i[o.dataKey]||{},delete e[t]}),o.removeAttr(t))},attr:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o.setAttribute(t,e)}),this):this.transformValue(this.DOMList[0].getAttribute(t))},removeAttr:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){n.removeAttribute(t)})},prop:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o[t]=e}),this):this.transformValue(this.DOMList[0][t])},removeProp:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){delete n[t]})},val:function(t){return this.prop("value",t)||""},transformValue:function(t){return"null"===n.type(t)&&(t=void 0),t}};e.exports=o},{"./utilities":13}],5:[function(t,e){var n=t("./utilities"),o=t("./Sizzle"),i={append:function(t){return this.html(t,"append")},prepend:function(t){return this.html(t,"prepend")},before:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;return n.insertBefore(t,e),this},after:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;n.lastChild==e?n.appendChild(t):n.insertBefore(t,e.nextSibling)},text:function(t){return"undefined"!=typeof t?(n.each(this.DOMList,function(e,n){n.textContent=t}),this):this.DOMList[0].textContent},html:function(t,e){if("undefined"==typeof t&&"undefined"==typeof e)return this.DOMList[0].innerHTML;var o=this,i=n.type(t);t.jTool?t=t.DOMList:"string"===i?t=n.createDOM(t||""):"element"===i&&(t=[t]);var r;return n.each(o.DOMList,function(o,i){e?"prepend"===e&&(r=i.firstChild):i.innerHTML="",n.each(t,function(t,e){e=e.cloneNode(!0),e.nodeType||(e=document.createTextNode(e)),r?i.insertBefore(e,r):i.appendChild(e),i.normalize()})}),this},wrap:function(t){var e;return n.each(this.DOMList,function(n,i){e=i.parentNode;var r=new o(t,i.ownerDocument).get(0);e.insertBefore(r,i),r.querySelector(":empty").appendChild(i)}),this},closest:function(t){function e(){return n&&0!==i.length&&1===n.nodeType?void(-1===[].indexOf.call(i,n)&&(n=n.parentNode,e())):void(n=null)}var n=this.DOMList[0].parentNode;if("undefined"==typeof t)return new o(n);var i=document.querySelectorAll(t);return e(),new o(n)},parent:function(){return this.closest()},clone:function(t){return new o(this.DOMList[0].cloneNode(t||!1))},remove:function(){n.each(this.DOMList,function(t,e){e.remove()})}};e.exports=i},{"./Sizzle":9,"./utilities":13}],6:[function(t,e){var n=t("./Sizzle"),o={get:function(t){return this.DOMList[t]},eq:function(t){return new n(this.DOMList[t])},find:function(t){return new n(t,this)},index:function(t){var e=this.DOMList[0];return t?t.jTool&&(t=t.DOMList):t=e.parentNode.childNodes,t?[].indexOf.call(t,e):-1}};e.exports=o},{"./Sizzle":9}],7:[function(t,e){var n=t("./utilities"),o={on:function(t,e,n,o){return this.addEvent(this.getEventObject(t,e,n,o))},off:function(t,e){return this.removeEvent(this.getEventObject(t,e))},bind:function(t,e,n){return this.on(t,void 0,e,n)},unbind:function(t){return this.removeEvent(this.getEventObject(t))},trigger:function(t){return n.each(this.DOMList,function(e,o){try{if(o.jToolEvent&&o.jToolEvent[t].length>0){var i=new Event(t);o.dispatchEvent(i)}else"click"!==t?console.warn("预绑定的事件只有click事件可以通过trigger进行调用"):"click"===t&&o[t]()}catch(r){n.error("事件:["+t+"]未能正确执行, 请确定方法已经绑定成功")}}),this},getEventObject:function(t,e,o,i){if("function"==typeof e&&(i=o||!1,o=e,e=void 0),!t)return n.error("事件绑定失败,原因: 参数中缺失事件类型"),this;if(e&&"element"===n.type(this.DOMList[0])||(e=""),""!==e){var r=o;o=function(t){for(var n=t.target;n!==this;){if(-1!==[].indexOf.call(this.querySelectorAll(e),n)){r.apply(n,arguments);break}n=n.parentNode}}}var s,u,a=t.split(" "),c=[];return n.each(a,function(t,r){return""===r.trim()?!0:(s=r.split("."),u={eventName:r+e,type:s[0],querySelector:e,callback:o||n.noop,useCapture:i||!1,nameScope:s[1]||void 0},void c.push(u))}),c},addEvent:function(t){var e=this;return n.each(t,function(t,o){n.each(e.DOMList,function(t,e){e.jToolEvent=e.jToolEvent||{},e.jToolEvent[o.eventName]=e.jToolEvent[o.eventName]||[],e.jToolEvent[o.eventName].push(o),e.addEventListener(o.type,o.callback,o.useCapture)})}),e},removeEvent:function(t){var e,o=this;return n.each(t,function(t,i){n.each(o.DOMList,function(t,o){o.jToolEvent&&(e=o.jToolEvent[i.eventName],e&&(n.each(e,function(t,e){o.removeEventListener(e.type,e.callback)}),o.jToolEvent[i.eventName]=void 0))})}),o}};e.exports=o},{"./utilities":13}],8:[function(t,e){var n=t("./utilities"),o={offset:function(){function t(i,r){if(1===i.nodeType){if(e=n.getStyle(i,"position"),"undefined"==typeof r&&"static"===e)return void t(i.parentNode);o.top=i.offsetTop+o.top-i.scrollTop,o.left=i.offsetLeft+o.left-i.scrollLeft,"fixed"!==e&&t(i.parentNode)}}var e,o={top:0,left:0};return t(this.DOMList[0],!0),o},scrollTop:function(t){return this.scrollFN(t,"top")},scrollLeft:function(t){return this.scrollFN(t,"left")},scrollFN:function(t,e){var n=this.DOMList[0];return t||0===t?(this.setScrollFN(n,e,t),this):this.getScrollFN(n,e)},getScrollFN:function(t,e){return n.isWindow(t)?"top"===e?t.pageYOffset:t.pageXOffset:9===t.nodeType?"top"===e?t.body.scrollTop:t.body.scrollLeft:1===t.nodeType?"top"===e?t.scrollTop:t.scrollLeft:void 0},setScrollFN:function(t,e,o){return n.isWindow(t)?"top"===e?t.document.body.scrollTop=o:t.document.body.scrollLeft=o:9===t.nodeType?"top"===e?t.body.scrollTop=o:t.body.scrollLeft=o:1===t.nodeType?"top"===e?t.scrollTop=o:t.scrollLeft=o:void 0}};e.exports=o},{"./utilities":13}],9:[function(t,e){var n=t("./utilities"),o=function(t,e){var o;return t?n.isWindow(t)?(o=[t],e=void 0):t===document?(o=[document],e=void 0):t instanceof HTMLElement?(o=[t],e=void 0):t instanceof NodeList||t instanceof Array?(o=t,e=void 0):t.jTool?(o=t.DOMList,e=void 0):/<.+>/.test(t)?(o=n.createDOM(t),e=void 0):(e?e="string"==typeof e?document.querySelectorAll(e):e instanceof HTMLElement?[e]:e instanceof NodeList?e:e.jTool?e.DOMList:void 0:o=document.querySelectorAll(t),e&&(o=[],n.each(e,function(e,i){n.each(i.querySelectorAll(t),function(t,e){e&&o.push(e)})}))):t=null,o&&0!==o.length||(o=void 0),this.jTool=!0,this.DOMList=o,this.length=this.DOMList?this.DOMList.length:0,this.querySelector=t,this};e.exports=o},{"./utilities":13}],10:[function(t,e){function n(t){var e={url:null,type:"GET",data:null,headers:{},async:!0,beforeSend:s.noop,complete:s.noop,success:s.noop,error:s.noop};if(t=r(e,t),!t.url)return void s.error("jTool ajax: url不能为空");var n=new XMLHttpRequest,o="";"object"===s.type(t.data)?s.each(t.data,function(t,e){""!==o&&(o+="&"),o+=t+"="+e}):o=t.data,"GET"===t.type&&o&&(t.url=t.url+(-1===t.url.indexOf("?")?"?":"&")+o,o=null),n.open(t.type,t.url,t.async);for(var i in t.headers)n.setRequestHeader(i,t.headers[i]);t.beforeSend(n),n.onload=function(){t.complete(n,n.status)},n.onreadystatechange=function(){4===n.readyState&&(n.status>=200&&n.status<300||304===n.status?t.success(n.response,n.status):t.error(n,n.status,n.statusText))},n.send(o)}function o(t,e,o){n({url:t,type:"POST",data:e,success:o})}function i(t,e,o){n({url:t,type:"GET",data:e,success:o})}var r=t("./extend"),s=t("./utilities");e.exports={ajax:n,post:o,get:i}},{"./extend":11,"./utilities":13}],11:[function(t,e){function n(){function t(e,i){for(var r in e)e.hasOwnProperty(r)&&(n&&"object"===o.type(e[r])?("object"!==o.type(i[r])&&(i[r]={}),t(e[r],i[r])):i[r]=e[r])}if(0===arguments.length)return{};var e,n=!1,i=1,r=arguments[0];for(1===arguments.length&&"object"==typeof arguments[0]?(r=this,i=0):2===arguments.length&&"boolean"==typeof arguments[0]?(n=arguments[0],r=this,i=1):arguments.length>2&&"boolean"==typeof arguments[0]&&(n=arguments[0],r=arguments[1]||{},i=2);i<arguments.length;i++)e=arguments[i]||{},t(e,r);return r}var o=t("./utilities");e.exports=n},{"./utilities":13}],12:[function(t,e){var n=t("./Sizzle"),o=t("./extend"),i=t("./utilities"),r=t("./ajax"),s=t("./Event"),u=t("./Css"),a=t("./Class"),c=t("./Document"),l=t("./Offset"),f=t("./Element"),d=t("./Animate"),p=t("./Data"),h=function(t,e){return new n(t,e)};n.prototype=h.prototype={},h.extend=h.prototype.extend=o,h.extend(i),h.extend(r),h.prototype.extend(s),h.prototype.extend(u),h.prototype.extend(a),h.prototype.extend(c),h.prototype.extend(l),h.prototype.extend(f),h.prototype.extend(d),h.prototype.extend(p),"undefined"!=typeof window.$&&(window._$=$),window.jTool=window.$=h,e.exports=h},{"./Animate":1,"./Class":2,"./Css":3,"./Data":4,"./Document":5,"./Element":6,"./Event":7,"./Offset":8,"./Sizzle":9,"./ajax":10,"./extend":11,"./utilities":13}],13:[function(t,e){function n(){return-1==navigator.userAgent.indexOf("Chrome")?!1:!0}function o(t){return null!==t&&t===t.window}function i(t){return Array.isArray(t)}function r(t){return v[m.call(t)]||(t instanceof Element?"element":"")}function s(){}function u(t,e){t&&t.jTool&&(t=t.DOMList);var n=r(t);if("array"===n||"nodeList"===n||"arguments"===n)[].every.call(t,function(t,n){o(t)?s():t.jTool?t=t.get(0):s();return e.call(t,n,t)===!1?!1:!0});else if("object"===n)for(var i in t)if(e.call(t[i],i,t[i])===!1)break}function a(t){return t.trim()}function c(t){throw new Error("[jTool Error: "+t+"]")}function l(t){var e=!0;for(var n in t)t.hasOwnProperty(n)&&(e=!1);return e}function f(t,e){return e?window.getComputedStyle(t)[e]:window.getComputedStyle(t)}function d(t){var e=["px","vem","em","%"],n="";return"number"==typeof t?n:(u(e,function(e,o){return-1!==t.indexOf(o)?(n=o,!1):void 0}),n)}function p(t){return t.replace(/-\w/g,function(t){return t.split("-")[1].toUpperCase()})}function h(t){return t.replace(/([A-Z])/g,"-$1").toLowerCase()}function y(t){var e=document.querySelector("#jTool-create-dom");if(!e||0===e.length){var n=document.createElement("table");n.id="jTool-create-dom",n.style.display="none",document.body.appendChild(n),e=document.querySelector("#jTool-create-dom")}e.innerHTML=t||"";var o=e.childNodes;return 1!=o.length||/<tbody|<TBODY/.test(t)||"TBODY"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<thead|<THEAD/.test(t)||"THEAD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<tr|<TR/.test(t)||"TR"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<td|<TD/.test(t)||"TD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<th|<TH/.test(t)||"TH"!==o[0].nodeName||(o=o[0].childNodes),e.remove(),o}var m=Object.prototype.toString,v={"[object String]":"string","[object Boolean]":"boolean","[object Undefined]":"undefined","[object Number]":"number","[object Object]":"object","[object Error]":"error","[object Function]":"function","[object Date]":"date","[object Array]":"array","[object RegExp]":"regexp","[object Null]":"null","[object NodeList]":"nodeList","[object Arguments]":"arguments","[object Window]":"window","[object HTMLDocument]":"document"};e.exports={isWindow:o,isChrome:n,isArray:i,noop:s,type:r,toHyphen:h,toHump:p,getStyleUnit:d,getStyle:f,isEmptyObject:l,trim:a,error:c,each:u,createDOM:y,version:"1.2.16"}},{}]},{},[12]);
 
 /***/ },
 /* 3 */
@@ -467,8 +467,6 @@
 	  $table: table [jTool object]
 	  */
 		, bindAdjustEvent: function bindAdjustEvent($table) {
-			// table下的TH
-			var thList = (0, _jTool2.default)('thead th', $table);
 			// 监听鼠标调整列宽度
 			$table.off('mousedown', '.adjust-action');
 			$table.on('mousedown', '.adjust-action', function (event) {
@@ -500,6 +498,9 @@
 				//增加宽度调整中样式
 				_th.addClass('adjust-selected');
 				_td.addClass('adjust-selected');
+
+				// 更新界面交互标识
+				_Base2.default.updateInteractive(_table, 'Adjust');
 
 				//绑定鼠标拖动事件
 				var _thWidth = void 0,
@@ -539,6 +540,7 @@
 					if (_th.closest('.set-top').length === 1) {
 						(0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _th.attr('th-name') + '"]', _table).width(_thWidth);
 						(0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _nextTh.attr('th-name') + '"]', _table).width(_NextWidth);
+						(0, _jTool2.default)('thead[grid-manager-mock-thead]', _table).width((0, _jTool2.default)('thead[grid-manager-thead]', _table).width());
 					}
 				});
 
@@ -557,6 +559,8 @@
 					_th.removeClass('adjust-selected');
 					_td.removeClass('adjust-selected');
 					_table.removeClass('no-select-text');
+					// 更新界面交互标识
+					_Base2.default.updateInteractive(_table);
 				});
 				return false;
 			});
@@ -1135,6 +1139,21 @@
 				(0, _jTool2.default)('.load-area', dom).remove();
 				typeof cb === 'function' ? cb() : '';
 			}, 500);
+		}
+		/**
+	  * 更新当前用户交互状态, 用于优化置顶状态下进行[拖拽, 宽度调整]操作时,页面出现滚动的问题
+	  * @param $table
+	  * @param interactive: 如果不存在于interactiveList内, 将删除属性[user-interactive]
+	     */
+		, updateInteractive: function updateInteractive($table, interactive) {
+			var interactiveList = ['Adjust', 'Drag'];
+			// 事件源所在的容器
+			var tableWrap = $table.closest('.table-wrap');
+			if (!interactive || interactiveList.indexOf(interactive) === -1) {
+				tableWrap.removeAttr('user-interactive');
+			} else {
+				tableWrap.attr('user-interactive', interactive);
+			}
 		}
 	}; /*
 	    * Base: 基础方法
@@ -2769,72 +2788,84 @@
 	  * @param $table
 	     */
 		, bindSortingEvent: function bindSortingEvent($table) {
-			var Settings = _Cache2.default.getSettings($table);
-			// 所有包含排序的列
-			var _thList = (0, _jTool2.default)('th[sorting]', $table);
-			var _action = void 0,
+			var _this = this;
+			var settings = _Cache2.default.getSettings($table);
+			var action = void 0,
 			    //向上或向下事件源
-			_th = void 0,
+			th = void 0,
 			    //事件源所在的th
-			_table = void 0,
+			table = void 0,
 			    //事件源所在的table
-			_thName = void 0; //th对应的名称
+			thName = void 0; //th对应的名称
 			//绑定排序事件
-			$table.on('mousedown', 'th', function (event) {
-				console.log(2123123);
-			});
-			$table.off('mouseup', '.remind-action');
+			$table.off('mouseup', '.sorting-action');
 			$table.on('mouseup', '.sorting-action', function () {
-				console.log(123);
-				_action = (0, _jTool2.default)(this);
-				_th = _action.closest('th');
-				_table = _th.closest('table');
-				_thName = _th.attr('th-name');
-				if (!_thName || _jTool2.default.trim(_thName) == '') {
+				action = (0, _jTool2.default)(this);
+				th = action.closest('th');
+				table = th.closest('table');
+				thName = th.attr('th-name');
+				if (!thName || _jTool2.default.trim(thName) == '') {
 					_Base2.default.outLog('排序必要的参数丢失', 'error');
 					return false;
 				}
-				//根据组合排序配置项判定：是否清除原排序及排序样式
-				if (!Settings.isCombSorting) {
-					_jTool2.default.each((0, _jTool2.default)('.sorting-action', _table), function (i, v) {
-						if (v != _action.get(0)) {
-							//_action.get(0) 当前事件源的DOM
+				// 根据组合排序配置项判定：是否清除原排序及排序样式
+				if (!settings.isCombSorting) {
+					_jTool2.default.each((0, _jTool2.default)('.sorting-action', table), function (i, v) {
+						if (v != action.get(0)) {
+							//action.get(0) 当前事件源的DOM
 							(0, _jTool2.default)(v).removeClass('sorting-up sorting-down');
 							(0, _jTool2.default)(v).closest('th').attr('sorting', '');
 						}
 					});
 				}
-				//排序操作：升序
-				if (_action.hasClass('sorting-down')) {
-					_action.addClass('sorting-up');
-					_action.removeClass('sorting-down');
-					_th.attr('sorting', Settings.sortUpText);
+				// 更新排序样式
+				_this.updateSortStyle(action, th, settings);
+				// 当前触发项为置顶表头时, 同步更新至原样式
+				if (th.closest('thead[grid-manager-mock-thead]').length === 1) {
+					var _th = (0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + thName + '"]', table);
+					var _action = (0, _jTool2.default)('.sorting-action', _th);
+					_this.updateSortStyle(_action, _th, settings);
 				}
-				//排序操作：降序
-				else {
-						_action.addClass('sorting-down');
-						_action.removeClass('sorting-up');
-						_th.attr('sorting', Settings.sortDownText);
-					}
-				//生成排序数据
-				Settings.sortData = {};
-				if (!Settings.isCombSorting) {
-					Settings.sortData[_th.attr('th-name')] = _th.attr('sorting');
+				// 拼装排序数据: 单列排序
+				settings.sortData = {};
+				if (!settings.isCombSorting) {
+					settings.sortData[th.attr('th-name')] = th.attr('sorting');
+					// 拼装排序数据: 组合排序
 				} else {
-					_jTool2.default.each((0, _jTool2.default)('th[th-name][sorting]', _table), function (i, v) {
+					_jTool2.default.each((0, _jTool2.default)('thead[grid-manager-thead] th[th-name][sorting]', table), function (i, v) {
 						if (v.getAttribute('sorting') != '') {
-							Settings.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
+							settings.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
 						}
 					});
 				}
 				//调用事件、渲染tbody
-				_Cache2.default.updateSettings($table, Settings);
-				var query = _jTool2.default.extend({}, Settings.query, Settings.sortData, Settings.pageData);
-				Settings.sortingBefore(query);
+				_Cache2.default.updateSettings($table, settings);
+				var query = _jTool2.default.extend({}, settings.query, settings.sortData, settings.pageData);
+				settings.sortingBefore(query);
 				_Core2.default.__refreshGrid($table, function () {
-					Settings.sortingAfter(query, _th);
+					settings.sortingAfter(query, th);
 				});
 			});
+		}
+		/**
+	  * 更新排序样式
+	  * @param sortAction
+	  * @param th
+	  * @param settings
+	     */
+		, updateSortStyle: function updateSortStyle(sortAction, th, settings) {
+			// 排序操作：升序
+			if (sortAction.hasClass('sorting-down')) {
+				sortAction.addClass('sorting-up');
+				sortAction.removeClass('sorting-down');
+				th.attr('sorting', settings.sortUpText);
+			}
+			// 排序操作：降序
+			else {
+					sortAction.addClass('sorting-down');
+					sortAction.removeClass('sorting-up');
+					th.attr('sorting', settings.sortDownText);
+				}
 		}
 	};
 	exports.default = Sort;
@@ -2871,35 +2902,27 @@
 	 * Drag: 拖拽
 	 * */
 	var Drag = {
-		/*
-	  @绑定拖拽换位事件
-	  $.table: table [jTool object]
-	  */
-		bindDragEvent: function bindDragEvent(table) {
-			var thList = (0, _jTool2.default)('thead th', table),
-			    //匹配页面下所有的TH
-			dragAction = thList.find('.drag-action');
-
+		/**
+	  * 绑定拖拽换位事件
+	  * @param $table
+	     */
+		bindDragEvent: function bindDragEvent($table) {
+			var _this = this;
 			//指定拖拽换位事件源,配置拖拽样式
-			dragAction.unbind('mousedown');
-			dragAction.bind('mousedown', function (event) {
+			$table.off('mousedown', '.drag-action');
+			$table.on('mousedown', '.drag-action', function (event) {
+				var $body = (0, _jTool2.default)('body');
 				// 获取设置项
-				var Settings = _Cache2.default.getSettings(table);
+				var settings = _Cache2.default.getSettings($table);
 
 				// 事件源th
 				var _th = (0, _jTool2.default)(this).closest('th');
 
 				// 事件源的上一个th
-				var _prevTh = null;
+				var prevTh = null;
 
 				//事件源的下一个th
-				var _nextTh = null;
-
-				// 事件源对应的上一组td
-				var _prevTd = null;
-
-				//事件源对应的下一组td
-				var _nextTd = null;
+				var nextTh = null;
 
 				//事件源所在的tr
 				var _tr = _th.parent();
@@ -2911,126 +2934,159 @@
 				var _table = _tr.closest('table');
 
 				//事件源所在的DIV
-				var _tableDiv = _table.closest('.table-div');
+				var tableDiv = _table.closest('.table-div');
 
 				//事件源所在的容器
 				var _tableWrap = _table.closest('.table-wrap');
 
-				//与事件源同列的所在td
-				var _td = _Base2.default.getColTd(_th);
+				//与事件源同列的所有td
+				var colTd = _Base2.default.getColTd(_th);
 
 				// 列拖拽触发回调事件
-				Settings.dragBefore(event);
+				settings.dragBefore(event);
 
 				//禁用文字选中效果
-				(0, _jTool2.default)('body').addClass('no-select-text');
-				//父级DIV使用相对定位
-				//所在DIV使用定位方式
-				var _divPosition = _tableDiv.css('position');
-				if (_divPosition != 'relative' && _divPosition != 'absolute') {
-					_tableDiv.css('position', 'relative');
-				}
+				$body.addClass('no-select-text');
+
+				// 更新界面交互标识
+				_Base2.default.updateInteractive(_table, 'Drag');
+
 				//增加拖拽中样式
 				_th.addClass('drag-ongoing opacityChange');
-				_td.addClass('drag-ongoing opacityChange');
+				colTd.addClass('drag-ongoing opacityChange');
 
 				//增加临时展示DOM
 				_tableWrap.append('<div class="dreamland-div"></div>');
-				var _dreamlandDIV = (0, _jTool2.default)('.dreamland-div', _tableWrap);
-				_dreamlandDIV.get(0).innerHTML = '<table class="dreamland-table ' + _table.attr('class') + '"></table>';
+				var dreamlandDIV = (0, _jTool2.default)('.dreamland-div', _tableWrap);
+				dreamlandDIV.get(0).innerHTML = '<table class="dreamland-table ' + _table.attr('class') + '"></table>';
 				//tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
 				var _tbodyHtml = '';
 				var _cloneTr = void 0,
 				    _cloneTd = void 0;
-				_jTool2.default.each(_td, function (i, v) {
+				_jTool2.default.each(colTd, function (i, v) {
 					_cloneTd = v.cloneNode(true);
 					_cloneTd.style.height = v.offsetHeight + 'px';
 					_cloneTr = (0, _jTool2.default)(v).closest('tr').clone();
 					_tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
 				});
 				var tmpHtml = '<thead>\n\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<th style="height:' + _th.height() + 'px">\n\t\t\t\t\t\t\t\t' + (0, _jTool2.default)('.drag-action', _th).get(0).outerHTML + '\n\t\t\t\t\t\t\t\t</th>\n\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t' + _tbodyHtml + '\n\t\t\t\t\t\t\t</tbody>';
-				(0, _jTool2.default)('.dreamland-table', _dreamlandDIV).html(tmpHtml);
+				(0, _jTool2.default)('.dreamland-table', dreamlandDIV).html(tmpHtml);
 				//绑定拖拽滑动事件
 				var _thIndex = 0; //存储移动时的th所处的位置
-				(0, _jTool2.default)('body').unbind('mousemove');
-				(0, _jTool2.default)('body').bind('mousemove', function (e2) {
+				$body.unbind('mousemove');
+				$body.bind('mousemove', function (e2) {
 					_thIndex = _th.index(_allTh);
-					_prevTh = undefined;
+					prevTh = undefined;
 					//当前移动的非第一列
 					if (_thIndex > 0) {
-						_prevTh = _allTh.eq(_thIndex - 1);
+						prevTh = _allTh.eq(_thIndex - 1);
 					}
-					_nextTh = undefined;
+					nextTh = undefined;
 					//当前移动的非最后一列
 					if (_thIndex < _allTh.length) {
-						_nextTh = _allTh.eq(_thIndex + 1);
+						nextTh = _allTh.eq(_thIndex + 1);
 					}
 					//插件自动创建的项,不允许移动
-					if (_prevTh && _prevTh.length !== 0 && _prevTh.attr('gm-create') === 'true') {
-						_prevTh = undefined;
-					} else if (_nextTh && _nextTh.length !== 0 && _nextTh.attr('gm-create') === 'true') {
-						_nextTh = undefined;
+					if (prevTh && prevTh.length !== 0 && prevTh.attr('gm-create') === 'true') {
+						prevTh = undefined;
+					} else if (nextTh && nextTh.length !== 0 && nextTh.attr('gm-create') === 'true') {
+						nextTh = undefined;
 					}
-					_dreamlandDIV.show();
-					_dreamlandDIV.css({
+					dreamlandDIV.show();
+					dreamlandDIV.css({
 						width: _th.get(0).offsetWidth,
 						height: _table.get(0).offsetHeight,
-						left: e2.clientX - _tableDiv.offset().left
-						//  + $('html').get(0).scrollLeft
-						+ _tableDiv.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft) - _th.get(0).offsetWidth / 2 + 'px',
-						top: e2.clientY - _tableDiv.offset().top + _tableDiv.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop) - _dreamlandDIV.find('th').get(0).offsetHeight / 2
+						left: e2.clientX - _tableWrap.offset().left + (document.body.scrollLeft || document.documentElement.scrollLeft) - _th.get(0).offsetWidth / 2 + 'px',
+						top: e2.clientY - _tableWrap.offset().top + (document.body.scrollTop || document.documentElement.scrollTop) - dreamlandDIV.find('th').get(0).offsetHeight / 2
 					});
-					//处理向左拖拽
-					if (_prevTh && _prevTh.length != 0 && _dreamlandDIV.get(0).offsetLeft < _prevTh.get(0).offsetLeft) {
-						_prevTd = _Base2.default.getColTd(_prevTh);
-						_prevTh.before(_th);
-						_jTool2.default.each(_td, function (i, v) {
-							_prevTd.eq(i).before(v);
-						});
-						_allTh = _tr.find('th'); //重置TH对象数据
+					// 当前触发项为置顶表头时, 同步更新至原样式
+					var haveMockThead = false; // 当前是否包含置顶表头
+					if (_th.closest('thead[grid-manager-mock-thead]').length === 1) {
+						haveMockThead = true;
 					}
-					//处理向右拖拽
-					if (_nextTh && _nextTh.length != 0 && _dreamlandDIV.get(0).offsetLeft > _nextTh.get(0).offsetLeft - _dreamlandDIV.get(0).offsetWidth / 2) {
-						_nextTd = _Base2.default.getColTd(_nextTh);
-						_nextTh.after(_th);
-						_jTool2.default.each(_td, function (i, v) {
-							_nextTd.eq(i).after(v);
-						});
-						_allTh = _tr.find('th'); //重置TH对象数据
-					}
+					_this.updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV, tableDiv, haveMockThead);
+					_allTh = _tr.find('th'); //重置TH对象数据
 				});
 				//绑定拖拽停止事件
-				(0, _jTool2.default)('body').unbind('mouseup');
-				(0, _jTool2.default)('body').bind('mouseup', function (event) {
-					var Settings = _Cache2.default.getSettings(table);
-					(0, _jTool2.default)('body').unbind('mousemove');
+				$body.unbind('mouseup');
+				$body.bind('mouseup', function (event) {
+					var settings = _Cache2.default.getSettings($table);
+					$body.unbind('mousemove');
+					$body.unbind('mouseup');
 					//清除临时展示被移动的列
-					_dreamlandDIV = (0, _jTool2.default)('.dreamland-div');
-					if (_dreamlandDIV.length != 0) {
-						_dreamlandDIV.animate({
+					dreamlandDIV = (0, _jTool2.default)('.dreamland-div');
+					if (dreamlandDIV.length != 0) {
+						dreamlandDIV.animate({
 							top: _table.get(0).offsetTop + 'px',
-							left: _th.get(0).offsetLeft - _tableDiv.get(0).scrollLeft + 'px'
-						}, Settings.animateTime, function () {
-							_tableDiv.css('position', _divPosition);
+							left: _th.get(0).offsetLeft - tableDiv.get(0).scrollLeft + 'px'
+						}, settings.animateTime, function () {
+							// tableDiv.css('position',_divPosition);
 							_th.removeClass('drag-ongoing');
-							_td.removeClass('drag-ongoing');
-							_dreamlandDIV.remove();
+							colTd.removeClass('drag-ongoing');
+							dreamlandDIV.remove();
 
 							// 列拖拽成功回调事件
-							Settings.dragAfter(event);
+							settings.dragAfter(event);
 						});
 					}
 					// 存储用户记忆
 					_Cache2.default.saveUserMemory(_table);
 
 					//重置调整宽度事件源
-					if (Settings.supportAdjust) {
+					if (settings.supportAdjust) {
 						_Adjust2.default.resetAdjust(_table);
 					}
 					//开启文字选中效果
-					(0, _jTool2.default)('body').removeClass('no-select-text');
+					$body.removeClass('no-select-text');
+
+					// 更新界面交互标识
+					_Base2.default.updateInteractive(_table);
 				});
 			});
+		}
+		/**
+	  * 拖拽触发后更新DOM
+	  * @param _table
+	  * @param prevTh
+	  * @param nextTh
+	  * @param _th
+	  * @param colTd
+	  * @param dreamlandDIV
+	  * @param tableDiv
+	     * @param haveMockThead
+	     */
+		, updateDrag: function updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV, tableDiv, haveMockThead) {
+			// 事件源对应的上一组td
+			var prevTd = null;
+			//事件源对应的下一组td
+			var nextTd = null;
+			// 处理向左拖拽
+			// 向左拖拽时, 如果显示的表头为置顶表头时, 不将tableDiv.get(0).scrollLeft 的值做为计算的项
+			if (prevTh && prevTh.length != 0 && dreamlandDIV.get(0).offsetLeft < prevTh.offset().left - (haveMockThead ? 0 : tableDiv.get(0).scrollLeft)) {
+				prevTd = _Base2.default.getColTd(prevTh);
+				prevTh.before(_th);
+				_jTool2.default.each(colTd, function (i, v) {
+					prevTd.eq(i).before(v);
+				});
+				if (haveMockThead) {
+					var _prevTh = (0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + prevTh.attr('th-name') + '"]', _table);
+					var __th = (0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _th.attr('th-name') + '"]', _table);
+					_prevTh.before(__th);
+				}
+			}
+			//处理向右拖拽
+			if (nextTh && nextTh.length != 0 && dreamlandDIV.get(0).offsetLeft + dreamlandDIV.get(0).offsetWidth > nextTh.get(0).offsetLeft - tableDiv.get(0).scrollLeft) {
+				nextTd = _Base2.default.getColTd(nextTh);
+				nextTh.after(_th);
+				_jTool2.default.each(colTd, function (i, v) {
+					nextTd.eq(i).after(v);
+				});
+				if (haveMockThead) {
+					var _nextTh = (0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + nextTh.attr('th-name') + '"]', _table);
+					var _th2 = (0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _th.attr('th-name') + '"]', _table);
+					_nextTh.after(_th2);
+				}
+			}
 		}
 	};
 	exports.default = Drag;
@@ -3085,6 +3141,7 @@
 					_setTopHead.length == 0 ? table.append(_thead.clone(true).addClass('set-top')) : '';
 					_setTopHead = (0, _jTool2.default)('.set-top', table);
 					_setTopHead.removeAttr('grid-manager-thead');
+					_setTopHead.attr('grid-manager-mock-thead', '');
 					_setTopHead.removeClass('scrolling');
 					_setTopHead.css({
 						width: _thead.width(),
