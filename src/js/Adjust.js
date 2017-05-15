@@ -26,6 +26,10 @@ const Adjust = {
 			// 事件源所在的table
 			let	_table = _tr.closest('table');
 
+			// 事件源所在的DIV
+
+			const tableDiv = _table.closest('.table-div');
+
 			// 当前存储属性
 			const settings = Cache.getSettings(_table);
 
@@ -56,10 +60,9 @@ const Adjust = {
 			_table.unbind('mousemove');
 			_table.bind('mousemove', function(event) {
 				_table.addClass('no-select-text');
-				_thWidth = event.clientX -
-							_th.offset().left -
-							_th.css('padding-left') -
-							_th.css('padding-right');
+				_thWidth = event.clientX
+					     - _th.offset().left
+						 + tableDiv.scrollLeft();
 				_thWidth = Math.ceil(_thWidth);
 				_NextWidth = _nextTh.width() + _th.width() - _thWidth;
 				_NextWidth = Math.ceil(_NextWidth);
