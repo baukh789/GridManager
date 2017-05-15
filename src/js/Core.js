@@ -239,7 +239,7 @@ const Core= {
 			isLmOrder,	//是否为插件自动生成的序号列
 			isLmCheckbox;//是否为插件自动生成的选择列
 
-		onlyThead = $('thead', $table);
+		onlyThead = $('thead[grid-manager-thead]', $table);
 		onlyThList = $('th', onlyThead);
 		wrapHtml = `<div class="table-wrap"><div class="table-div" style="height:calc(${settings.height} - 40px)"></div><span class="text-dreamland"></span></div>`;
 		$table.wrap(wrapHtml);
@@ -261,7 +261,10 @@ const Core= {
 		if(settings.supportExport){
 			tableWarp.append(exportActionHtml);
 		}
-		$.each(onlyThList, function(i2,v2){
+		const configList = $('.config-list', tableWarp);
+		let onlyWidth;
+		onlyThWarp = $('<div class="th-wrap"></div>');
+		$.each(onlyThList, function(i2, v2){
 			onlyTH = $(v2);
 			onlyTH.attr('th-visible','visible');
 			// 是否为自动生成的序号列
@@ -271,18 +274,16 @@ const Core= {
 			else{
 				isLmOrder = false;
 			}
-
 			// 是否为自动生成的选择列
-			if(settings.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true') {
+			if (settings.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true') {
 				isLmCheckbox = true;
 			}else{
 				isLmCheckbox = false;
 			}
 
-			onlyThWarp = $('<div class="th-wrap"></div>');
 			//嵌入配置列表项
 			if(settings.supportConfig){
-				$('.config-list', tableWarp)
+				configList
 					.append('<li th-name="'+ onlyTH.attr('th-name') +'" class="checked-li">'
 						+ '<input type="checkbox" checked="checked"/>'
 						+ '<label>'
@@ -335,35 +336,27 @@ const Core= {
 			if(settings.supportAdjust && !isLmOrder && !isLmCheckbox){
 				adjustDOM = $(_adjustHtml);
 				// 最后一列不支持调整宽度
-				if(i2 == onlyThList.length - 1){
+				if(i2 === onlyThList.length - 1){
 					adjustDOM.hide();
 				}
 				onlyThWarp.append(adjustDOM);
 			}
 			onlyTH.html(onlyThWarp);
-			// 如果th上存在width属性，则表明配置项中存在该项配置；
-			// 验证当前列是否存在宽度配置，如果存在，则直接使用配置项中的宽度，如果不存在则使用getTextWidth方法进行计算
-			let thWidthForConfig = onlyTH.attr('width');
 			// 宽度配置: GM自动创建为固定宽度
 			if(isLmOrder || isLmCheckbox){
-				onlyTH.width(50);
+				onlyWidth = 50;
 			}
 			// 宽度配置: 非GM自动创建的列
 			else {
 				let _minWidth = Base.getTextWidth(onlyTH); // 当前th文本所占宽度大于设置的宽度
-				// 当前列被手动配置了宽度
-				if(thWidthForConfig && thWidthForConfig !== ''){
-					onlyTH.width(thWidthForConfig > _minWidth ? thWidthForConfig : _minWidth);
-					onlyTH.removeAttr('width');
-				}
-				// 当前列宽度未进行手动配置
-				else{
-					// 重置width 防止auto现象
-					let _oldWidth = onlyTH.width();
-					onlyTH.width(_oldWidth > _minWidth ? _oldWidth : _minWidth);
-				}
+				let _oldWidth = onlyTH.width();
+				onlyWidth = _oldWidth > _minWidth ? _oldWidth : _minWidth;
 			}
+			// 清除width属性, 使用style.width进行宽度控制
+			onlyTH.removeAttr('width');
+			onlyTH.width(onlyWidth);
 		});
+
 		//删除渲染中标识、增加渲染完成标识
 		$table.removeClass('GridManager-loading');
 		$table.addClass('GridManager-ready');
