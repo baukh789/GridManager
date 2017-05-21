@@ -113,12 +113,14 @@ const Drag = {
 					left	: e2.clientX
 							- _tableWrap.offset().left
 							+(document.body.scrollLeft || document.documentElement.scrollLeft)
-							- _th.get(0).offsetWidth / 2 + 'px',
+							- _th.get(0).offsetWidth / 2,
 					top		: e2.clientY
 							- _tableWrap.offset().top
-							+(document.body.scrollTop || document.documentElement.scrollTop)
+						// TODO 放项目中没事,放到主页中会出现问题. 而不要这行的话,在主页是OK的,在项目出存在问题. 还需要处理下拖拽闪烁问题
+							// +(document.body.scrollTop || document.documentElement.scrollTop)
 							- dreamlandDIV.find('th').get(0).offsetHeight / 2
 				});
+				console.log('clientY==', e2.clientY, 'offset ==', _tableWrap.offset().top, 'scrlltop==', document.body.scrollTop, 'offsetHeight===', dreamlandDIV.find('th').get(0).offsetHeight);
 				// 当前触发项为置顶表头时, 同步更新至原样式
 				let haveMockThead = false;  // 当前是否包含置顶表头
 				if (_th.closest('thead[grid-manager-mock-thead]').length === 1) {
@@ -158,7 +160,7 @@ const Drag = {
 				}
 				//开启文字选中效果
 				$body.removeClass('no-select-text');
-				
+
 				// 更新界面交互标识
 				Base.updateInteractive(_table);
 			});
