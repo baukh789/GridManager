@@ -12,10 +12,10 @@ describe('Config', function() {
 		require('../src/js/GridManager').default;
 
 		table = document.createElement('table');
-		table.setAttribute('grid-manager', 'test-cache');
+		table.setAttribute('grid-manager', 'test-config');
 		document.querySelector('body').appendChild(table);
-		$table = jTool('table[grid-manager="test-cache"]');
-		document.querySelector('table[grid-manager="test-cache"]').GM({
+		$table = jTool('table[grid-manager="test-config"]');
+		document.querySelector('table[grid-manager="test-config"]').GM({
 			ajax_data: testData
 			,columnData: [
 				{
@@ -81,15 +81,16 @@ describe('Config', function() {
 	it('测试展示隐藏第一列事件', function(){
 		let tableWarp = $table.closest('div.table-wrap');
 		let firstTh = $table.find('th').eq(0);
+		let firstConfig = jTool('.config-list li[th-name='+ firstTh.attr('th-name') +']', tableWarp);
 		// 未进行操作时,默认为显示.(由于是table类标签,使用的display = table-cell)
 		expect(firstTh.css('display')).toBe('table-cell');
 
 		// 触发针对第一列的配置事件, 成功后第一列将隐藏
-		jTool('.config-list li', tableWarp).trigger('click');
+		firstConfig.trigger('click');
 		expect(firstTh.css('display')).toBe('none');
 
 		// 再次触发针对第一列的配置事件, 成功后第一列将显示
-		jTool('.config-list li', tableWarp).trigger('click');
+		firstConfig.trigger('click');
 		expect(firstTh.css('display')).toBe('table-cell');
 
 		tableWarp = null;

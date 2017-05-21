@@ -41,15 +41,9 @@ const Config = {
 			// 打开
 			_configArea.show();
 
-			// 当前事件源所在的div
-			const _tableWarp = _configAction.closest('.table-wrap');
-
-			// 对应的table
-			const _table = $('[grid-manager]', _tableWarp);
-
 			//验证当前是否只有一列处于显示状态 并根据结果进行设置是否可以取消显示
 			const checkedLi = $('.checked-li', _configArea);
-			checkedLi.length == 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
+			checkedLi.length === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
 		});
 		//设置事件
 		$('.config-list li', tableWarp).unbind('click');
@@ -75,6 +69,7 @@ const Config = {
 			//所对应的th
 			const _th = $('thead[grid-manager-thead] th[th-name="'+_thName +'"]', _table);
 
+			// 最后一项显示列不允许隐藏
 			if(_only.hasClass('no-click')){
 				return false;
 			}
