@@ -61,5 +61,8 @@
     "build:dev": "webpack --config webpack-config.js",
     "build:minified:js": "uglifyjs build/js/GridManager.js -mc > build/js/GridManager.min.js",
     "build:minified:css": "uglifycss build/css/GridManager.css > build/css/GridManager.min.css"
+  },
+  "dependencies": {
+    "jTool": "^1.2.18"
   }
 }

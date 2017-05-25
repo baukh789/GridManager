@@ -112,12 +112,11 @@ const Drag = {
 					height	: _table.get(0).offsetHeight,
 					left	: e2.clientX
 							- _tableWrap.offset().left
-							+(document.body.scrollLeft || document.documentElement.scrollLeft)
+							+ window.pageXOffset
 							- _th.get(0).offsetWidth / 2,
 					top		: e2.clientY
 							- _tableWrap.offset().top
-						// TODO 放项目中没事,放到主页中会出现问题. 而不要这行的话,在主页是OK的,在项目出存在问题. 还需要处理下拖拽闪烁问题
-							// +(document.body.scrollTop || document.documentElement.scrollTop)
+							+ window.pageYOffset
 							- dreamlandDIV.find('th').get(0).offsetHeight / 2
 				});
 				console.log('clientY==', e2.clientY, 'offset ==', _tableWrap.offset().top, 'scrlltop==', document.body.scrollTop, 'offsetHeight===', dreamlandDIV.find('th').get(0).offsetHeight);
