@@ -119,7 +119,6 @@ const Drag = {
 							+ window.pageYOffset
 							- dreamlandDIV.find('th').get(0).offsetHeight / 2
 				});
-				console.log('clientY==', e2.clientY, 'offset ==', _tableWrap.offset().top, 'scrlltop==', document.body.scrollTop, 'offsetHeight===', dreamlandDIV.find('th').get(0).offsetHeight);
 				// 当前触发项为置顶表头时, 同步更新至原样式
 				let haveMockThead = false;  // 当前是否包含置顶表头
 				if (_th.closest('thead[grid-manager-mock-thead]').length === 1) {
