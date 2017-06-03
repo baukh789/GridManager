@@ -183,7 +183,7 @@ const Drag = {
 		// 处理向左拖拽
 		// 向左拖拽时, 如果显示的表头为置顶表头时, 不将tableDiv.get(0).scrollLeft 的值做为计算的项
 		if(prevTh && prevTh.length != 0
-			&& dreamlandDIV.get(0).offsetLeft < prevTh.offset().left - (haveMockThead ? 0 : tableDiv.get(0).scrollLeft)){
+			&& dreamlandDIV.offset().left < prevTh.offset().left - (haveMockThead ? 0 : tableDiv.get(0).scrollLeft)){
 			prevTd = Base.getColTd(prevTh);
 			prevTh.before(_th);
 			$.each(colTd,function(i, v){
@@ -196,8 +196,8 @@ const Drag = {
 			}
 		}
 		//处理向右拖拽
-		if(nextTh && nextTh.length != 0
-			&& dreamlandDIV.get(0).offsetLeft + dreamlandDIV.get(0).offsetWidth > nextTh.get(0).offsetLeft - tableDiv.get(0).scrollLeft){
+		else if(nextTh && nextTh.length != 0
+			&& dreamlandDIV.offset().left + dreamlandDIV.get(0).offsetWidth > nextTh.offset().left - tableDiv.get(0).scrollLeft){
 			nextTd = Base.getColTd(nextTh);
 			nextTh.after(_th);
 			$.each(colTd,function(i, v){

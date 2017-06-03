@@ -217,7 +217,10 @@ const Cache = {
 		// 版本变更
 		if(cacheVersion && cacheVersion !== version) {
 			this.cleanTableCache(table, '版本已升级,原缓存被自动清除');
-			window.localStorage.setItem('GridManagerVersion', version);
+			// 异步执行, 防止同页面有多个表格时,清理完第一个即对版本验证关键字段的修改. [如果该字段被修改, 那么同页面后续的表格将不再被清理]
+			setTimeout(function(){
+				window.localStorage.setItem('GridManagerVersion', version);
+			});
 		}
 	}
 	/*
