@@ -50,8 +50,8 @@ html{
 	font-size:12px;
 	color:#000;
 	line-height: 18px;
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 }
 .table-wrap fieldset, .table-wrap img {
 	border-style: none;
@@ -83,6 +83,7 @@ table[grid-manager].GridManager-ready{
 .table-wrap{
 	position: relative;
 	background-color: #f8f8f8;
+	overflow: visible;
 	/*padding: 3px;*/
 }
 /*用户交互*/
