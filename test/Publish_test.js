@@ -100,7 +100,7 @@ describe('Publish.js', function() {
 	it('PublishMethod.getLocalStorage($table)', function(){
 		let userMemory = null;
 		userMemory = PublishMethod.getLocalStorage($table);
-		expect(userMemory).toEqual({});
+		expect(userMemory.key).toEqual('/context.html-test-publish');
 		Cache.saveUserMemory($table);
 		userMemory = PublishMethod.getLocalStorage($table);
 		expect(userMemory.key).toBeDefined();
@@ -113,8 +113,7 @@ describe('Publish.js', function() {
 		let userMemory = null;
 		PublishMethod.clear($table);
 		userMemory = PublishMethod.getLocalStorage($table);
-		expect(userMemory).toEqual({});
-
+		expect(userMemory.cache).toEqual({});
 		userMemory = null;
 	});
 

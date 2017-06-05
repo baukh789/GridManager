@@ -33,7 +33,6 @@ class GridManager {
 	 * $.callback:回调
 	 * */
 	init(jToolObj, arg, callback) {
-
 		const _this = this;
 		if(typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === ''){
 			arg.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值

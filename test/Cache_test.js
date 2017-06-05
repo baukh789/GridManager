@@ -77,8 +77,8 @@ describe('Cache.js', function() {
 	});
 
 	it('Cache.delUserMemory($table)', function() {
-		expect(Cache.delUserMemory()).toBe(false);
-		expect(Cache.delUserMemory($table)).toBe(true);
+		expect(Cache.delUserMemory()).toBe(true);
+		expect(Cache.delUserMemory($table)).toBe(false);
 	});
 
 	it('Cache.__getGridManager($table)', function() {
