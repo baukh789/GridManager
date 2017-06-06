@@ -129,7 +129,7 @@
 		function GridManager() {
 			_classCallCheck(this, GridManager);
 
-			this.version = '2.3.4';
+			this.version = '2.3.6';
 			this.extentGridManager();
 		}
 		/*
@@ -144,7 +144,6 @@
 		_createClass(GridManager, [{
 			key: 'init',
 			value: function init(jToolObj, arg, callback) {
-
 				var _this = this;
 				if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
 					arg.gridManagerName = jToolObj.attr('grid-manager'); //存储gridManagerName值
@@ -665,20 +664,28 @@
 	/*
 	* 用户记忆
 	* */
+	// TODO 需要处理项: 将所有的记忆信息放至一个字段, 不再使用一个表一个字段.
 	var UserMemory = function UserMemory() {
 		/*
 	  * 删除用户记忆
 	  * $table: table [jTool Object]
 	  * */
 		this.delUserMemory = function ($table) {
+			// 如果未指定删除的table, 则全部清除
 			if (!$table || $table.length === 0) {
+				window.localStorage.removeItem('GridManagerMemory');
+				return true;
+			}
+			var GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
+			if (!GridManagerMemory) {
 				return false;
 			}
+			GridManagerMemory = JSON.parse(GridManagerMemory);
+			// 指定删除的table, 则定点清除
 			var _key = this.getMemoryKey($table);
-			if (!_key) {
-				return false;
-			}
-			window.localStorage.removeItem(_key);
+			delete GridManagerMemory[_key];
+			// 清除后, 重新存储
+			window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
 			return true;
 		};
 		/*
@@ -714,15 +721,16 @@
 			if (!_key) {
 				return {};
 			}
-			var _localStorage = window.localStorage.getItem(_key);
+			var GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
 			//如无数据，增加属性标识：grid-manager-cache-error
-			if (!_localStorage) {
+			if (!GridManagerMemory || GridManagerMemory === '{}') {
 				$table.attr('grid-manager-cache-error', 'error');
 				return {};
 			}
+			GridManagerMemory = JSON.parse(GridManagerMemory);
 			var _data = {
 				key: _key,
-				cache: JSON.parse(_localStorage)
+				cache: JSON.parse(GridManagerMemory[_key] || '{}')
 			};
 			return _data;
 		};
@@ -790,7 +798,14 @@
 				_cache.page = _pageCache;
 			}
 			var _cacheString = JSON.stringify(_cache);
-			window.localStorage.setItem(_this.getMemoryKey(_table), _cacheString);
+			var GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
+			if (!GridManagerMemory) {
+				GridManagerMemory = {};
+			} else {
+				GridManagerMemory = JSON.parse(GridManagerMemory);
+			}
+			GridManagerMemory[_this.getMemoryKey(_table)] = _cacheString;
+			window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
 			return _cacheString;
 		};
 	};
@@ -816,33 +831,37 @@
 		}
 		/*
 	 *  @验证版本号清除列表缓存
-	 *  $.table: jTool table
-	 *  $.version: 版本号
+	 *  $table: jTool table
+	 *  version: 版本号
 	 * */
-		, cleanTableCacheForVersion: function cleanTableCacheForVersion(table, version) {
+		, cleanTableCacheForVersion: function cleanTableCacheForVersion($table, version) {
 			var cacheVersion = window.localStorage.getItem('GridManagerVersion');
 			// 当前为第一次渲染
 			if (!cacheVersion) {
 				window.localStorage.setItem('GridManagerVersion', version);
 			}
-			// 版本变更
+			// 版本变更, 清除所有的用户记忆
 			if (cacheVersion && cacheVersion !== version) {
-				this.cleanTableCache(table, '版本已升级,原缓存被自动清除');
-				// 异步执行, 防止同页面有多个表格时,清理完第一个即对版本验证关键字段的修改. [如果该字段被修改, 那么同页面后续的表格将不再被清理]
-				setTimeout(function () {
-					window.localStorage.setItem('GridManagerVersion', version);
-				});
+				this.cleanTableCache(null, '版本已升级,原全部缓存被自动清除');
+				window.localStorage.setItem('GridManagerVersion', version);
 			}
 		}
 		/*
 	 * @清除列表缓存
-	 * $.table: table [jTool object]
-	 * $.cleanText: 清除缓存的原因
+	 * $table: table [jTool object]
+	 * cleanText: 清除缓存的原因
 	 * */
-		, cleanTableCache: function cleanTableCache(table, cleanText) {
-			var Settings = this.getSettings(table);
-			this.delUserMemory(table);
-			_Base2.default.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：' + cleanText, 'info');
+		, cleanTableCache: function cleanTableCache($table, cleanText) {
+			// 不指定table, 清除全部
+			if ($table === null) {
+				this.delUserMemory();
+				_Base2.default.outLog('清除缓存成功,清除原因：' + cleanText, 'info');
+				// 指定table, 定点清除
+			} else {
+				var Settings = this.getSettings($table);
+				this.delUserMemory($table);
+				_Base2.default.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：' + cleanText, 'info');
+			}
 		}
 		/*
 	 * @根据本地缓存thead配置列表: 获取本地缓存, 存储原位置顺序, 根据本地缓存进行配置
@@ -854,9 +873,8 @@
 			var _data = _this.getUserMemory(table),
 			    //本地缓存的数据
 			_domArray = [];
-
 			//验证：当前table 没有缓存数据
-			if (!_data || _jTool2.default.isEmptyObject(_data)) {
+			if (!_data || _jTool2.default.isEmptyObject(_data) || !_data.cache || _jTool2.default.isEmptyObject(_data.cache)) {
 				return;
 			}
 			// 列表的缓存数据
