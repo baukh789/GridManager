@@ -142,18 +142,18 @@ const PublishMethod= {
 	//对外公开方法展示
 	'init',					// 初始化方法
 	'setSort',				// 手动设置排序
-	'get',					//通过jTool实例获取GridManager
-	'showTh',				//显示Th及对应的TD项
-	'hideTh',				//隐藏Th及对应的TD项
-	'exportGridToXls',		//导出表格 .xls
-	'getLocalStorage',		//获取指定表格的本地存储数据
-	'setQuery',				//配置query 该参数会在分页触发后返回至pagingAfter(query)方法
-	'setAjaxData',          //用于再次配置ajax_data数据, 配置后会根据配置的数据即刻刷新表格
-	'refreshGrid',			//刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
-	'getCheckedTr',			//获取当前选中的行
-	'getRowData',			//获取当前行渲染时使用的数据
-	'getCheckedData',		//获取当前选中行渲染时使用的数据
-	'clear'					//清除指定表的表格记忆数据
+	'get',					// 通过jTool实例获取GridManager
+	'showTh',				// 显示Th及对应的TD项
+	'hideTh',				// 隐藏Th及对应的TD项
+	'exportGridToXls',		// 导出表格 .xls
+	'getLocalStorage',		// 获取指定表格的本地存储数据
+	'setQuery',				// 配置query 该参数会在分页触发后返回至pagingAfter(query)方法
+	'setAjaxData',          // 用于再次配置ajax_data数据, 配置后会根据配置的数据即刻刷新表格
+	'refreshGrid',			// 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
+	'getCheckedTr',			// 获取当前选中的行
+	'getRowData',			// 获取当前行渲染时使用的数据
+	'getCheckedData',		// 获取当前选中行渲染时使用的数据
+	'clear'					// 清除指定表的表格记忆数据
 */
 // 对外公开方法列表
 const publishMethodArray = ['init'];
