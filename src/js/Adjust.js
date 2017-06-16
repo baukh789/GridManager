@@ -61,8 +61,7 @@ const Adjust = {
 			_table.bind('mousemove', function(event) {
 				_table.addClass('no-select-text');
 				_thWidth = event.clientX
-					     - _th.offset().left
-						 + tableDiv.scrollLeft();
+					     - _th.offset().left;
 				_thWidth = Math.ceil(_thWidth);
 				_NextWidth = _nextTh.width() + _th.width() - _thWidth;
 				_NextWidth = Math.ceil(_NextWidth);

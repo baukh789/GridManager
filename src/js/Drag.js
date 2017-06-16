@@ -112,11 +112,9 @@ const Drag = {
 					height	: _table.get(0).offsetHeight,
 					left	: e2.clientX
 							- _tableWrap.offset().left
-							+ window.pageXOffset
 							- _th.get(0).offsetWidth / 2,
 					top		: e2.clientY
 							- _tableWrap.offset().top
-							+ window.pageYOffset
 							- dreamlandDIV.find('th').get(0).offsetHeight / 2
 				});
 				// 当前触发项为置顶表头时, 同步更新至原样式
@@ -181,9 +179,8 @@ const Drag = {
 		//事件源对应的下一组td
 		let	nextTd	= null;
 		// 处理向左拖拽
-		// 向左拖拽时, 如果显示的表头为置顶表头时, 不将tableDiv.get(0).scrollLeft 的值做为计算的项
 		if(prevTh && prevTh.length != 0
-			&& dreamlandDIV.offset().left < prevTh.offset().left - (haveMockThead ? 0 : tableDiv.get(0).scrollLeft)){
+			&& dreamlandDIV.offset().left < prevTh.offset().left){
 			prevTd = Base.getColTd(prevTh);
 			prevTh.before(_th);
 			$.each(colTd,function(i, v){
@@ -197,7 +194,7 @@ const Drag = {
 		}
 		//处理向右拖拽
 		else if(nextTh && nextTh.length != 0
-			&& dreamlandDIV.offset().left + dreamlandDIV.get(0).offsetWidth > nextTh.offset().left - tableDiv.get(0).scrollLeft){
+			&& dreamlandDIV.offset().left + dreamlandDIV.width() > nextTh.offset().left){
 			nextTd = Base.getColTd(nextTh);
 			nextTh.after(_th);
 			$.each(colTd,function(i, v){
