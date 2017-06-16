@@ -129,7 +129,7 @@
 		function GridManager() {
 			_classCallCheck(this, GridManager);
 
-			this.version = '2.3.8';
+			this.version = '2.3.9';
 			this.extentGridManager();
 		}
 		/*
@@ -3009,8 +3009,8 @@
 					dreamlandDIV.css({
 						width: _th.get(0).offsetWidth,
 						height: _table.get(0).offsetHeight,
-						left: e2.clientX - _tableWrap.offset().left - _th.get(0).offsetWidth / 2,
-						top: e2.clientY - _tableWrap.offset().top - dreamlandDIV.find('th').get(0).offsetHeight / 2
+						left: e2.clientX - _tableWrap.offset().left + window.pageXOffset - _th.get(0).offsetWidth / 2,
+						top: e2.clientY - _tableWrap.offset().top + window.pageYOffset - dreamlandDIV.find('th').get(0).offsetHeight / 2
 					});
 					// 当前触发项为置顶表头时, 同步更新至原样式
 					var haveMockThead = false; // 当前是否包含置顶表头
