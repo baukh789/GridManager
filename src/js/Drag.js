@@ -112,9 +112,11 @@ const Drag = {
 					height	: _table.get(0).offsetHeight,
 					left	: e2.clientX
 							- _tableWrap.offset().left
+							+ window.pageXOffset
 							- _th.get(0).offsetWidth / 2,
 					top		: e2.clientY
 							- _tableWrap.offset().top
+							+ window.pageYOffset
 							- dreamlandDIV.find('th').get(0).offsetHeight / 2
 				});
 				// 当前触发项为置顶表头时, 同步更新至原样式

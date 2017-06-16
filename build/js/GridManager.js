@@ -129,7 +129,7 @@
 		function GridManager() {
 			_classCallCheck(this, GridManager);
 
-			this.version = '2.3.6';
+			this.version = '2.3.8';
 			this.extentGridManager();
 		}
 		/*
@@ -513,7 +513,7 @@
 				_table.unbind('mousemove');
 				_table.bind('mousemove', function (event) {
 					_table.addClass('no-select-text');
-					_thWidth = event.clientX - _th.offset().left + tableDiv.scrollLeft();
+					_thWidth = event.clientX - _th.offset().left;
 					_thWidth = Math.ceil(_thWidth);
 					_NextWidth = _nextTh.width() + _th.width() - _thWidth;
 					_NextWidth = Math.ceil(_NextWidth);
@@ -3009,8 +3009,8 @@
 					dreamlandDIV.css({
 						width: _th.get(0).offsetWidth,
 						height: _table.get(0).offsetHeight,
-						left: e2.clientX - _tableWrap.offset().left + window.pageXOffset - _th.get(0).offsetWidth / 2,
-						top: e2.clientY - _tableWrap.offset().top + window.pageYOffset - dreamlandDIV.find('th').get(0).offsetHeight / 2
+						left: e2.clientX - _tableWrap.offset().left - _th.get(0).offsetWidth / 2,
+						top: e2.clientY - _tableWrap.offset().top - dreamlandDIV.find('th').get(0).offsetHeight / 2
 					});
 					// 当前触发项为置顶表头时, 同步更新至原样式
 					var haveMockThead = false; // 当前是否包含置顶表头
@@ -3074,8 +3074,7 @@
 			//事件源对应的下一组td
 			var nextTd = null;
 			// 处理向左拖拽
-			// 向左拖拽时, 如果显示的表头为置顶表头时, 不将tableDiv.get(0).scrollLeft 的值做为计算的项
-			if (prevTh && prevTh.length != 0 && dreamlandDIV.offset().left < prevTh.offset().left - (haveMockThead ? 0 : tableDiv.get(0).scrollLeft)) {
+			if (prevTh && prevTh.length != 0 && dreamlandDIV.offset().left < prevTh.offset().left) {
 				prevTd = _Base2.default.getColTd(prevTh);
 				prevTh.before(_th);
 				_jTool2.default.each(colTd, function (i, v) {
@@ -3088,7 +3087,7 @@
 				}
 			}
 			//处理向右拖拽
-			else if (nextTh && nextTh.length != 0 && dreamlandDIV.offset().left + dreamlandDIV.get(0).offsetWidth > nextTh.offset().left - tableDiv.get(0).scrollLeft) {
+			else if (nextTh && nextTh.length != 0 && dreamlandDIV.offset().left + dreamlandDIV.width() > nextTh.offset().left) {
 					nextTd = _Base2.default.getColTd(nextTh);
 					nextTh.after(_th);
 					_jTool2.default.each(colTd, function (i, v) {
@@ -3570,18 +3569,18 @@
 		//对外公开方法展示
 		'init',					// 初始化方法
 		'setSort',				// 手动设置排序
-		'get',					//通过jTool实例获取GridManager
-		'showTh',				//显示Th及对应的TD项
-		'hideTh',				//隐藏Th及对应的TD项
-		'exportGridToXls',		//导出表格 .xls
-		'getLocalStorage',		//获取指定表格的本地存储数据
-		'setQuery',				//配置query 该参数会在分页触发后返回至pagingAfter(query)方法
-		'setAjaxData',          //用于再次配置ajax_data数据, 配置后会根据配置的数据即刻刷新表格
-		'refreshGrid',			//刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
-		'getCheckedTr',			//获取当前选中的行
-		'getRowData',			//获取当前行渲染时使用的数据
-		'getCheckedData',		//获取当前选中行渲染时使用的数据
-		'clear'					//清除指定表的表格记忆数据
+		'get',					// 通过jTool实例获取GridManager
+		'showTh',				// 显示Th及对应的TD项
+		'hideTh',				// 隐藏Th及对应的TD项
+		'exportGridToXls',		// 导出表格 .xls
+		'getLocalStorage',		// 获取指定表格的本地存储数据
+		'setQuery',				// 配置query 该参数会在分页触发后返回至pagingAfter(query)方法
+		'setAjaxData',          // 用于再次配置ajax_data数据, 配置后会根据配置的数据即刻刷新表格
+		'refreshGrid',			// 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
+		'getCheckedTr',			// 获取当前选中的行
+		'getRowData',			// 获取当前行渲染时使用的数据
+		'getCheckedData',		// 获取当前选中行渲染时使用的数据
+		'clear'					// 清除指定表的表格记忆数据
 	*/
 	// 对外公开方法列表
 	var publishMethodArray = ['init'];

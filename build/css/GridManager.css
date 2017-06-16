@@ -83,7 +83,7 @@ table[grid-manager].GridManager-ready{
 .table-wrap{
 	position: relative;
 	background-color: #f8f8f8;
-	overflow: visible;
+	overflow: hidden;
 	/*padding: 3px;*/
 }
 /*用户交互*/
