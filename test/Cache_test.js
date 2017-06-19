@@ -83,10 +83,10 @@ describe('Cache.js', function() {
 		expect(Cache.delUserMemory($table)).toBe(false);
 	});
 
-	// it('Cache.__getGridManager($table)', function() {
-	// 	expect(Cache.__getGridManager($table).disableCache).toBe(false);
-	// });
-    //
+	it('Cache.__getGridManager($table)', function() {
+		expect(Cache.__getGridManager($table).disableCache).toBe(false);
+	});
+
 	// it('Cache.getSettings($table)', function() {
 	// 	let settings = Cache.getSettings($table);
 	// 	expect(settings.disableCache).toBe(false);
