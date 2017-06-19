@@ -6,15 +6,16 @@ describe('Cache.js', function() {
 
 	let table = null;
 	let $table = null;
+	let gmName = 'test-cache';
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
 
 		table = document.createElement('table');
-		table.setAttribute('grid-manager', 'test-cache');
+		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
-		$table = jTool('table[grid-manager="test-cache"]');
-		document.querySelector('table[grid-manager="test-cache"]').GM({
+		$table = jTool('table[grid-manager="'+ gmName +'"]');
+		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
 			ajax_data: testData
 			,disableCache: false
 			,query:{tool: 'jasmine'}
@@ -48,13 +49,11 @@ describe('Cache.js', function() {
 		});
 	});
 	afterAll(function () {
-		document.querySelector('body').innerHTML = '';
 		table = null;
 		$table = null;
+		gmName = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
-		document.querySelector('.table-wrap').forEach(item => {
-			document.querySelector('body').removeChild(item);
-		});
+		document.body.innerHTML = '';
 	});
 	it('Cache.responseData', function() {
 		expect(Cache.responseData['test-cache']).toBeDefined();
@@ -67,7 +66,7 @@ describe('Cache.js', function() {
 	it('Cache.__getRowData($table, target)', function() {
 		let tr0 = jTool('tbody tr', $table).get(0);
 		let tr1 = jTool('tbody tr', $table).get(1);
-		let trList = document.querySelectorAll('table[grid-manager="test-cache"] tbody tr');
+		let trList = document.querySelectorAll('table[grid-manager="'+ gmName +'"] tbody tr');
 		expect(Cache.__getRowData($table, tr0).name).toBe('baukh');
 		expect(Cache.__getRowData($table, tr1).name).toBe('kouzi');
 		expect(Cache.__getRowData($table, tr0).age).toBe('30');

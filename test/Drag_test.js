@@ -8,15 +8,16 @@ import '../src/css/GridManager.css';
 describe('Drag', function() {
 	let table = null;
 	let $table = null;
+	let gmName = 'test-drag';
 	beforeAll(function () {
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
 
 		table = document.createElement('table');
-		table.setAttribute('grid-manager', 'test-cache');
+		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
-		$table = jTool('table[grid-manager="test-cache"]');
-		document.querySelector('table[grid-manager="test-cache"]').GM({
+		$table = jTool('table[grid-manager="'+ gmName +'"]');
+		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
 			ajax_data: testData
 			, columnData: [
 				{
@@ -47,13 +48,11 @@ describe('Drag', function() {
 		});
 	});
 	afterAll(function () {
-		document.querySelector('body').innerHTML = '';
 		table = null;
 		$table = null;
+		gmName = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
-		document.querySelector('.table-wrap').forEach(item => {
-			document.querySelector('body').removeChild(item);
-		});
+		document.body.innerHTML = '';
 	});
 
 	it('禁用文字选择效果', function(){

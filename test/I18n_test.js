@@ -9,17 +9,18 @@ describe('I18n', function() {
 	let $table_en = null;
 	let table_cn = null;
 	let $table_cn = null;
-
+	let gmName = 'test-i18n-en';
+	let gmName2 = 'test-i18n-cn';
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
 
 		// 第一组设置为en-us, 且其中几项被重置
 		table_en = document.createElement('table');
-		table_en.setAttribute('grid-manager', 'test-i18n-en');
+		table_en.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table_en);
-		$table_en = jTool('table[grid-manager="test-i18n-en"]');
-		document.querySelector('table[grid-manager="test-i18n-en"]').GM({
+		$table_en = jTool('table[grid-manager="'+ gmName +'"]');
+		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 			,disableCache: true
 			,textConfig: {
@@ -46,10 +47,10 @@ describe('I18n', function() {
 
 		//第二组使用默认的zh-cn
 		table_cn = document.createElement('table');
-		table_cn.setAttribute('grid-manager', 'test-i18n-cn');
+		table_cn.setAttribute('grid-manager', gmName2);
 		document.querySelector('body').appendChild(table_cn);
-		$table_cn = jTool('table[grid-manager="test-i18n-cn"]');
-		document.querySelector('table[grid-manager="test-i18n-cn"]').GM({
+		$table_cn = jTool('table[grid-manager="'+ gmName2 +'"]');
+		document.querySelector('table[grid-manager="'+ gmName2 +'"]').GM({
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 			,disableCache: true
 			,columnData: [
@@ -64,15 +65,14 @@ describe('I18n', function() {
 		});
 	});
 	afterAll(function () {
-		document.querySelector('body').innerHTML = '';
 		table_en = null;
 		table_cn = null;
 		$table_en = null;
 		$table_cn = null;
+		gmName = null;
+		gmName2 = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
-		document.querySelector('.table-wrap').forEach(item => {
-			document.querySelector('body').removeChild(item);
-		});
+		document.body.innerHTML = '';
 	});
 
 	it('验证使用语言', function() {

@@ -13,15 +13,16 @@ import testData2 from '../src/data/testData2';
 describe('Publish.js', function() {
 	let table = null;
 	let $table = null;
+	let gmName = 'test-publish';
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
 
 		table = document.createElement('table');
-		table.setAttribute('grid-manager', 'test-publish');
+		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
-		$table = jTool('table[grid-manager="test-publish"]');
-		document.querySelector('table[grid-manager="test-publish"]').GM({
+		$table = jTool('table[grid-manager="'+ gmName +'"]');
+		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
 			ajax_data: testData
 			,query: {name: 'baukh'}
 			,supportAjaxPage: true
@@ -54,13 +55,11 @@ describe('Publish.js', function() {
 		});
 	});
 	afterAll(function () {
-		document.querySelector('body').innerHTML = '';
 		table = null;
 		$table = null;
+		gmName = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
-		document.querySelector('.table-wrap').forEach(item => {
-			document.querySelector('body').removeChild(item);
-		});
+		document.body.innerHTML = '';
 	});
 
 	it('核对对外公开方法总数 及 方法名匹配', function(){

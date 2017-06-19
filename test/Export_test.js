@@ -9,10 +9,10 @@ import '../src/css/GridManager.css';
 describe('Export', function() {
 	let table = null;
 	let $table = null;
+	let gmName = 'test-export';
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
-		const gmName = 'test-export';
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
@@ -48,13 +48,11 @@ describe('Export', function() {
 		});
 	});
 	afterAll(function () {
-		document.querySelector('body').innerHTML = '';
 		table = null;
 		$table = null;
+		gmName = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
-		document.querySelector('.table-wrap').forEach(item => {
-			document.querySelector('body').removeChild(item);
-		});
+		document.body.innerHTML = '';
 	});
 
 	it('Export.html()', function(){

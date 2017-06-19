@@ -5,6 +5,7 @@ import Cache from '../src/js/Cache';
 describe('AjaxPage.js', function() {
 	let table = null;
 	let $table = null;
+	let gmName = 'test-ajaxPage';
 	let pagingBefore = null;
 	let pagingAfter = null;
 	beforeAll(function(){
@@ -15,10 +16,10 @@ describe('AjaxPage.js', function() {
 		pagingAfter = jasmine.createSpy('pagingAfter');
 		// 第一组设置为en-us, 且其中几项被重置
 		table = document.createElement('table');
-		table.setAttribute('grid-manager', 'test-ajaxPage');
+		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
-		$table = jTool('table[grid-manager="test-ajaxPage"]');
-		document.querySelector('table[grid-manager="test-ajaxPage"]').GM({
+		$table = jTool('table[grid-manager="'+ gmName +'"]');
+		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 			,supportAjaxPage:true
 			,disableCache: true
@@ -47,15 +48,13 @@ describe('AjaxPage.js', function() {
 		});
 	});
 	afterAll(function () {
-		document.querySelector('body').innerHTML = '';
 		table = null;
 		$table = null;
+		gmName = null;
 		pagingBefore = null;
 		pagingAfter = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
-		document.querySelector('.table-wrap').forEach(item => {
-			document.querySelector('body').removeChild(item);
-		});
+		document.body.innerHTML = '';
 	});
 
 	it('分页事件[pagingBefore]', function(){

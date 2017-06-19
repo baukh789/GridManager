@@ -4,16 +4,16 @@ import Adjust from '../src/js/Adjust';
 describe('Adjust.js', function() {
 	let table = null;
 	let $table = null;
-
+	let gmName = 'test-adjust';
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
 
 		table = document.createElement('table');
-		table.setAttribute('grid-manager', 'test-adjust');
+		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
-		$table = jTool('table[grid-manager="test-adjust"]');
-		document.querySelector('table[grid-manager="test-adjust"]').GM({
+		$table = jTool('table[grid-manager="'+ gmName +'"]');
+		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 			,disableCache: true
 			,i18n: 'en-us'
@@ -37,13 +37,11 @@ describe('Adjust.js', function() {
 		});
 	});
 	afterAll(function () {
-		document.querySelector('body').innerHTML = '';
 		table = null;
 		$table = null;
+		gmName = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
-		document.querySelector('.table-wrap').forEach(item => {
-			document.querySelector('body').removeChild(item);
-		});
+		document.body.innerHTML = '';
 	});
 	it('验证获取html', function() {
 		expect(Adjust.html()).toBe('<span class="adjust-action"></span>');
