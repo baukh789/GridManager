@@ -107,6 +107,9 @@ const UserMemory = function(){
 	 * 成功则返回本地存储数据,失败则返回空对象
 	 * */
 	this.getUserMemory = function($table) {
+		if(!$table || $table.length === 0){
+			return {};
+		}
 		const _key = this.getMemoryKey($table);
 		if(!_key) {
 			return {};
@@ -209,6 +212,9 @@ const Cache = {
 	 * $table:table [jTool object]
 	 * */
 	getSettings: function($table) {
+		if(!$table || $table.length === 0){
+			return {};
+		}
 		// 这里返回的是clone对象 而非对象本身
 		return $.extend(true, {}, $table.data('settings'));
 	}
@@ -357,6 +363,9 @@ const Cache = {
 	 $.table:table [jTool object]
 	 */
 	,__getGridManager: function($table) {
+		if(!$table || $table.length === 0){
+			return {};
+		}
 		const settings = this.getSettings($table);
 		const gridManager = $table.data('gridManager');
 		// 会一并被修改 $table.data('gridManager') 指向的 Object
