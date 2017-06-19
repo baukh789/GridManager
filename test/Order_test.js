@@ -40,6 +40,9 @@ describe('Order', function() {
 		table = null;
 		$table = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
+		document.querySelector('.table-wrap').forEach(item => {
+			document.querySelector('body').removeChild(item);
+		});
 	});
 
 	it('验证自动生成列[序号,全选]宽度', function(){

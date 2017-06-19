@@ -41,6 +41,9 @@ describe('Adjust.js', function() {
 		table = null;
 		$table = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
+		document.querySelector('.table-wrap').forEach(item => {
+			document.querySelector('body').removeChild(item);
+		});
 	});
 	it('验证获取html', function() {
 		expect(Adjust.html()).toBe('<span class="adjust-action"></span>');

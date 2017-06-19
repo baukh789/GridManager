@@ -52,7 +52,9 @@ describe('Export', function() {
 		table = null;
 		$table = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
-		document.querySelector('body').removeChild(document.querySelector('.table-wrap'));
+		document.querySelector('.table-wrap').forEach(item => {
+			document.querySelector('body').removeChild(item);
+		});
 	});
 
 	it('Export.html()', function(){

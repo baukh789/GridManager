@@ -53,6 +53,9 @@ describe('AjaxPage.js', function() {
 		pagingBefore = null;
 		pagingAfter = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
+		document.querySelector('.table-wrap').forEach(item => {
+			document.querySelector('body').removeChild(item);
+		});
 	});
 
 	it('分页事件[pagingBefore]', function(){

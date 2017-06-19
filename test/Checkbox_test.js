@@ -52,6 +52,9 @@ describe('Checkbox', function() {
 		table = null;
 		$table = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
+		document.querySelector('.table-wrap').forEach(item => {
+			document.querySelector('body').removeChild(item);
+		});
 	});
 
 	it('Checkbox.html($table)', function(){

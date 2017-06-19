@@ -70,6 +70,9 @@ describe('I18n', function() {
 		$table_en = null;
 		$table_cn = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
+		document.querySelector('.table-wrap').forEach(item => {
+			document.querySelector('body').removeChild(item);
+		});
 	});
 
 	it('验证使用语言', function() {

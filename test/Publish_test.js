@@ -58,6 +58,9 @@ describe('Publish.js', function() {
 		table = null;
 		$table = null;
 		Element.prototype.GM = Element.prototype.GridManager = null;
+		document.querySelector('.table-wrap').forEach(item => {
+			document.querySelector('body').removeChild(item);
+		});
 	});
 
 	it('核对对外公开方法总数 及 方法名匹配', function(){
