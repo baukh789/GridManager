@@ -56,7 +56,6 @@ describe('Cache.js', function() {
 		document.body.innerHTML = '';
 	});
 	it('Cache.responseData', function() {
-		console.log(1);
 		expect(Cache.responseData['test-cache']).toBeDefined();
 		expect(Cache.responseData['test-cache'][0].name).toBe('baukh');
 		expect(Cache.responseData['test-cache'][1].name).toBe('kouzi');
@@ -65,7 +64,6 @@ describe('Cache.js', function() {
 	});
 
 	it('Cache.__getRowData($table, target)', function() {
-		console.log(2);
 		let tr0 = jTool('tbody tr', $table).get(0);
 		let tr1 = jTool('tbody tr', $table).get(1);
 		let trList = document.querySelectorAll('table[grid-manager="'+ gmName +'"] tbody tr');
@@ -78,40 +76,6 @@ describe('Cache.js', function() {
 		tr0 = null;
 		tr1 = null;
 		trList = null;
-	});
-
-	it('Cache.delUserMemory($table)', function() {
-		console.log(3);
-		expect(Cache.delUserMemory()).toBe(true);
-		expect(Cache.delUserMemory($table)).toBe(false);
-	});
-
-	it('Cache.__getGridManager($table)', function() {
-		console.log(4);
-		expect(Cache.__getGridManager($table).disableCache).toBe(false);
-	});
-
-	it('Cache.getSettings($table)', function() {
-		console.log(5);
-		let settings = Cache.getSettings($table);
-		expect(settings.disableCache).toBe(false);
-
-		settings.disableCache = true;
-		Cache.updateSettings($table, settings);
-		settings = Cache.getSettings($table);
-		expect(settings.disableCache).toBe(true);
-
-		settings.disableCache = false;
-		Cache.updateSettings($table, settings);
-	});
-
-
-	it('Cache.getUserMemory($table)', function() {
-		console.log(6);
-		expect(Cache.getUserMemory($table)).toEqual({});
-		Cache.saveUserMemory($table);
-		expect(Cache.getUserMemory($table).key).toBe('/context.html-test-cache');
-		expect(Cache.getUserMemory($table).cache.th).toBeDefined();
 	});
 
 
