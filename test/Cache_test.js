@@ -14,8 +14,8 @@ describe('Cache.js', function() {
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
-		$table = jTool('table[grid-manager="'+ gmName +'"]');
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		$table = jTool(table);
+		table.GM({
 			ajax_data: testData
 			,disableCache: false
 			,query:{tool: 'jasmine'}
@@ -56,11 +56,11 @@ describe('Cache.js', function() {
 		document.body.innerHTML = '';
 	});
 	it('Cache.responseData', function() {
-		expect(Cache.responseData['test-cache']).toBeDefined();
-		expect(Cache.responseData['test-cache'][0].name).toBe('baukh');
-		expect(Cache.responseData['test-cache'][1].name).toBe('kouzi');
-		expect(Cache.responseData['test-cache'][0].age).toBe('30');
-		expect(Cache.responseData['test-cache'][1].age).toBe('28');
+		expect(Cache.responseData[gmName]).toBeDefined();
+		expect(Cache.responseData[gmName][0].name).toBe('baukh');
+		expect(Cache.responseData[gmName][1].name).toBe('kouzi');
+		expect(Cache.responseData[gmName][0].age).toBe('30');
+		expect(Cache.responseData[gmName][1].age).toBe('28');
 	});
 
 	it('Cache.__getRowData($table, target)', function() {
@@ -84,30 +84,30 @@ describe('Cache.js', function() {
 	});
 
 	// TODO 本地没有问题, 但是CI上会报错. 原因可能是在CI上$table为空
-	// it('Cache.__getGridManager($table)', function() {
-	// 	expect(Cache.__getGridManager($table).disableCache).toBe(false);
-	// });
+	it('Cache.__getGridManager($table)', function() {
+		expect(Cache.__getGridManager($table).disableCache).toBe(false);
+	});
 
-	// it('Cache.getSettings($table)', function() {
-	// 	let settings = Cache.getSettings($table);
-	// 	expect(settings.disableCache).toBe(false);
-    //
-	// 	settings.disableCache = true;
-	// 	Cache.updateSettings($table, settings);
-	// 	settings = Cache.getSettings($table);
-	// 	expect(settings.disableCache).toBe(true);
-    //
-	// 	settings.disableCache = false;
-	// 	Cache.updateSettings($table, settings);
-	// });
-    //
-    //
-	// it('Cache.getUserMemory($table)', function() {
-	// 	expect(Cache.getUserMemory($table)).toEqual({});
-	// 	Cache.saveUserMemory($table);
-	// 	expect(Cache.getUserMemory($table).key).toBe('/context.html-test-cache');
-	// 	expect(Cache.getUserMemory($table).cache.th).toBeDefined();
-	// });
+	it('Cache.getSettings($table)', function() {
+		let settings = Cache.getSettings($table);
+		expect(settings.disableCache).toBe(false);
+
+		settings.disableCache = true;
+		Cache.updateSettings($table, settings);
+		settings = Cache.getSettings($table);
+		expect(settings.disableCache).toBe(true);
+
+		settings.disableCache = false;
+		Cache.updateSettings($table, settings);
+	});
+
+
+	it('Cache.getUserMemory($table)', function() {
+		expect(Cache.getUserMemory($table)).toEqual({});
+		Cache.saveUserMemory($table);
+		expect(Cache.getUserMemory($table).key).toBe('/context.html-test-cache');
+		expect(Cache.getUserMemory($table).cache.th).toBeDefined();
+	});
 
 
 });
