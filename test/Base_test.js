@@ -26,7 +26,6 @@ describe('Base.js', function() {
 	let table = null;
 	let $table = null;
 	let gmName = 'test-base';
-	let ajaxData = null;
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
