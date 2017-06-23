@@ -11,17 +11,15 @@ import Export from '../src/js/Export';
 import testData from '../src/data/testData';
 import testData2 from '../src/data/testData2';
 describe('Publish.js', function() {
-	let table = null;
-	let $table = null;
 	let gmName = 'test-publish';
+	let table = document.createElement('table');
+	table.setAttribute('grid-manager', gmName);
+	let $table = jTool(table);
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
 		require('../src/js/GridManager').default;
 
-		table = document.createElement('table');
-		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
-		$table = jTool('table[grid-manager="'+ gmName +'"]');
 		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
 			ajax_data: testData
 			,query: {name: 'baukh'}
