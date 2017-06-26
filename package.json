@@ -48,7 +48,7 @@
     "uglifyjs": "^2.4.10",
     "url-loader": "^0.5.8",
     "watchify": "^3.7.0",
-    "webpack": "^1.13.0",
+    "webpack": "^1.15.0",
     "webpack-dev-middleware": "^1.10.1"
   },
   "scripts": {
