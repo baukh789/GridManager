@@ -40,7 +40,7 @@
     "karma-jasmine-ajax": "^0.1.13",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-webpack": "^1.8.1",
-    "phantomjs-prebuilt": "^2.1.7",
+    "phantomjs-prebuilt": "^2.1.13",
     "sinon": "^1.17.2",
     "style-loader": "^0.16.1",
     "transfer-webpack-plugin": "^0.1.4",
