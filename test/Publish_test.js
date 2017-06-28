@@ -110,6 +110,8 @@ describe('Publish.js', function() {
 	});
 
 	it('PublishMethod.clear($table)', function(){
+		expect($table.attr('grid-manager')).toBe('test-publish');
+
 		let userMemory = null;
 		PublishMethod.clear($table);
 		userMemory = PublishMethod.getLocalStorage($table);
