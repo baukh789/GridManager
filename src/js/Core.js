@@ -59,8 +59,8 @@ const Core= {
 			});
 			// $.extend(pram, settings.sortData);
 		}
-		//当前页小于1时, 修正为1
-		if(pram.cPage < 1){
+		//当前页不存在,或者小于1时, 修正为1
+		if(!pram.cPage || pram.cPage < 1){
 			pram.cPage = 1;
 			//当前页大于总页数时, 修正为总页数
 		}else if(pram.cPage > pram.tPage){
