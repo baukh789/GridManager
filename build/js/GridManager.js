@@ -3542,7 +3542,7 @@
 		/*
 	 * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	 * @param $table:当前操作的grid,由插件自动传入
-	 * @param gotoFirstPage:  是否刷新时跳转至第一页
+	 * @param gotoFirstPage:  是否刷新时跳转至第一页[boolean类型, 默认false]
 	 * @param callback: 回调函数
 	 * */
 		, refreshGrid: function refreshGrid($table, gotoFirstPage, callback) {
@@ -3553,7 +3553,7 @@
 			}
 			if (gotoFirstPage) {
 				settings.pageData['cPage'] = 1;
-				_Cache2.default.getSettings($table, settings);
+				_Cache2.default.updateSettings($table, settings);
 			}
 			_Core2.default.__refreshGrid($table, callback);
 		}
