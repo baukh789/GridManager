@@ -105,6 +105,21 @@
 				text: '名称',
 				sorting: ''
 			},{
+				key: 'type',
+				remind: 'the type',
+				text: '分类',
+				template: function(type, rowObject){
+					return `
+						<select>
+							<option value="1" ${type === 1 ? 'selected="selected"' : ''}>前端框架、插件</option>
+							<option value="2" ${type === 2 ? 'selected="selected"' : ''}>javaScript相关链接</option>
+							<option value="3" ${type === 3 ? 'selected="selected"' : ''}>css相关链接</option>
+							<option value="4" ${type === 4 ? 'selected="selected"' : ''}>html相关链接</option>
+							<option value="4" ${type === 5 ? 'selected="selected"' : ''}>工具类相关链接</option>
+							<option value="4" ${type === 6 ? 'selected="selected"' : ''}>其它链接</option>
+						</select>`;
+				}
+			},{
 				key: 'info',
 				remind: 'the info',
 				text: '使用说明'
@@ -136,8 +151,7 @@
 				width: '10%',
 				text: '操作',
 				template: function(action, rowObject){
-					return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+					return '<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">删除</span>';
 				}
 			}
 		]
@@ -178,7 +192,17 @@
 		console.log('渲染完成后的回调函数:', query);
 	});
 
-	console.log('GirdManger version => ', TGM.version)
+	// 删除功能
+	function delectRowData(node){
+		// 获取到当前的tr node
+		var tr = node.parentNode.parentNode;
+		// 获取到当前渲染tr 所使用的数据
+		var rowData = document.querySelector('table').GM('getRowData', tr);
+		// 执行删除操作
+		if(window.confirm('确认要删除['+rowData.name+']?')){
+			window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
+		}
+	}
 	// 日期格式化,不是插件的代码,只用于处理时间格式化
 	Date.prototype.format = function(fmt){
 		var o = {

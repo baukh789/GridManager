@@ -105,6 +105,19 @@
 				text: '名称',
 				sorting: ''
 			},{
+				key: 'type',
+				remind: 'the type',
+				text: '分类',
+				template: function(type, rowObject){
+					const tmpHtml = `
+						<select>
+							<option value="1" selected="${type === 1}">个人博客</option>
+							<option value="2" selected="${type === 2}">论坛</option>
+							<option value="3" selected="${type === 3}">资源</option>
+							<option value="4" selected="${type === 4}">其它链接</option>
+						</select>`;
+				}
+			},{
 				key: 'info',
 				remind: 'the info',
 				text: '使用说明'
