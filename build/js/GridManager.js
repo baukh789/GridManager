@@ -129,7 +129,7 @@
 		function GridManager() {
 			_classCallCheck(this, GridManager);
 
-			this.version = '2.3.11';
+			this.version = '2.3.12';
 			this.extentGridManager();
 		}
 		/*
