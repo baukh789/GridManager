@@ -5,3 +5,4 @@ npm-debug.log
 .DS_Store
 js/.DS_Store
 /coverage
+build/GridManager.zip

@@ -94,7 +94,7 @@
 		,supportSorting: true
 		,disableCache: false
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-		,ajax_type: 'get'
+		,ajax_type: 'POST'
 		,query: {pluginId: 1}
 //		,textAlign: 'center'
 		,pageSize:30
@@ -235,7 +235,9 @@
 			url: document.querySelector('[name="url"]').value,
 			cPage: 1
 		};
-		table.GM('setQuery', _query);
+		table.GM('setQuery', _query, function(){
+			console.log('setQuery执行成功');
+		});
 	});
 
 	// 绑定重置
