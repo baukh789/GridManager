@@ -80,15 +80,23 @@ const PublishMethod= {
 	 * @param $table: table [jTool object]
 	 * @param query: 配置的数据 [Object]
 	 * @param callback: 回调函数
+	 * @param isGotoFirstPage: 是否返回第一页[Boolean default=true]
 	 * 注意事项:
 	 * - query的key值如果与分页及排序等字段冲突, query中的值将会被忽略.
 	 * - setQuery() 会立即触发刷新操作
 	 * - 在此配置的query在分页事件触发时, 会以参数形式传递至pagingAfter(query)事件内
 	 * - setQuery对query字段执行的操作是修改而不是合并, 每次执行setQuery都会将之前配置的query值覆盖
 	 */
-	,setQuery: function($table, query, callback){
+	,setQuery: function($table, query, isGotoFirstPage, callback){
 		const settings = Cache.getSettings($table);
+		if(typeof(isGotoFirstPage) !== 'boolean'){
+			callback = isGotoFirstPage;
+			isGotoFirstPage = true;
+		}
 		$.extend(settings, {query: query});
+		if(isGotoFirstPage){
+			settings.pageData.cPage = 1;
+		}
 		Cache.updateSettings($table, settings);
 		Core.__refreshGrid($table, callback);
 	}
@@ -106,16 +114,16 @@ const PublishMethod= {
 	/*
 	* 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	* @param $table:当前操作的grid,由插件自动传入
-	* @param gotoFirstPage:  是否刷新时跳转至第一页[boolean类型, 默认false]
+	* @param isGotoFirstPage:  是否刷新时跳转至第一页[boolean类型, 默认false]
 	* @param callback: 回调函数
 	* */
-	,refreshGrid: function($table, gotoFirstPage, callback){
+	,refreshGrid: function($table, isGotoFirstPage, callback){
 		const settings = Cache.getSettings($table);
-		if(typeof(gotoFirstPage) !== 'boolean'){
-			callback = gotoFirstPage;
-			gotoFirstPage = false;
+		if(typeof(isGotoFirstPage) !== 'boolean'){
+			callback = isGotoFirstPage;
+			isGotoFirstPage = false;
 		}
-		if(gotoFirstPage){
+		if(isGotoFirstPage){
 			settings.pageData['cPage'] = 1;
 			Cache.updateSettings($table, settings);
 		}

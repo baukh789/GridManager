@@ -235,7 +235,9 @@
 			url: document.querySelector('[name="url"]').value,
 			cPage: 1
 		};
-		table.GM('setQuery', _query);
+		table.GM('setQuery', _query, function(){
+			console.log('setQuery执行成功');
+		});
 	});
 
 	// 绑定重置

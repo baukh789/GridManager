@@ -1,5 +1,5 @@
 {
-  "name": "gridmanager",
+  "name": "GridManager",
   "version": "2.3.12",
   "description": "表格管理插件",
   "author": "拭目以待",
@@ -63,6 +63,6 @@
     "build:minified:css": "uglifycss build/css/GridManager.css > build/css/GridManager.min.css"
   },
   "dependencies": {
-    "jTool": "^1.2.18"
+    "jTool": "^1.2.19"
   }
 }
