@@ -8,7 +8,8 @@ export const Hover = {
 	onTbodyHover: function ($table) {
 		let $td = null,
 			$tr = null;
-		$table.on('mousemove', 'td', function (e) {
+		$table.off('mousemove', 'td');
+		$table.on('mousemove', 'td', function () {
 			$td = $(this);
 			$tr = $td.parent();
 			// row col 并未发生变化

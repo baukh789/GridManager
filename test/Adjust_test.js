@@ -43,6 +43,7 @@ describe('Adjust.js', function() {
 		Element.prototype.GM = Element.prototype.GridManager = null;
 		document.body.innerHTML = '';
 	});
+
 	it('验证获取html', function() {
 		expect(Adjust.html()).toBe('<span class="adjust-action"></span>');
 	});
