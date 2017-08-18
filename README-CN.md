@@ -30,7 +30,7 @@
 - 右键菜单: 常用功能在菜单中可进行快捷操作
 
 ## 安装命令
-```shell
+```bash
 npm install GridManager
 ```
 
@@ -50,7 +50,7 @@ npm install GridManager
 ```
 
 ```javascript
-	document.querySelector('table[grid-manager="test"]').GM({
+document.querySelector('table[grid-manager="test"]').GM({
         supportRemind: true
         ,i18n:'zh-cn'
         ,textConfig:{
