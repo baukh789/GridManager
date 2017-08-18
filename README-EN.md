@@ -134,27 +134,29 @@ npm install GridManager
    }
 ```
 ## Q&A
-### 1.How to set my grid if datas have been existed before rendering?
+### It doesn't work when configured by myself althought there is the method or the property in API?
+You can find the version of the Gridmanager by the way of `document.querySelector('table').GM('get').version `.If it is different from  the main station version ,please try again after downloading the newer one.
+### How to set my grid if datas have been existed before rendering?
 You can solve it by setting the ajax_data, datas will not be asked by ajax_url if the ajax_data is existed, and ajax_beforeSend、ajax_error、ajax_complete will lose efficacy, only ajax_success will be done.
 
-### 2.How can I add a select term when asking for data?
+### How can I add a select term when asking for data?
 You can do it by setting the query,which will always exist in the case, and it can be resetted by document.querySelector('table').GM('setQuery') ,when the selecting condition is changed.
 
-### 3.How to check the data in the Gridmanager of the current case when developing?
+### How to check the data in the Gridmanager of the current case when developing?
 You can achieve the total Gridmanager object by the way of document.querySelector('table').GM('get').
 Local storage information can be received by the way document.querySelector('table').GM('getLocalStorage')
 
-### 4.What if there is a mistake in my case?
+### What if there is a mistake in my case?
 Check the form of the DOM node, if it is <table grid-manager="test"></table>,check the key in the columnData to find if it is matched with the revert data.
 
-### 5.How can I deal with the condition that the form of the revert data from back-end is different from the form of the plug-in board?
+### How can I deal with the condition that the form of the revert data from back-end is different from the form of the plug-in board?
 Setting by the parameter [datakey:ajax Requesting the key of the grid data , default:data][totalskey:ajax Requesting the key of the grid data, default: totals]
 
-### 6.Context can not be totally revealed in the th of the grid? 
+### Context can not be totally revealed in the th of the grid? 
 Check the term width in the [columData],It is automatically controlled if the data of the term should be hold or raised. The case start its memory ,which will cause the term in operation.
 You can clear the local storage which including the name of the current grid manager, or clear all the local storage by localStorage.clear().
 
-### 7.How to clear the width and the position of the list which are memorized?
+### How to clear the width and the position of the list which are memorized?
 Using the mean of clear, method of calling : document.querySelector('table').GM('clear'); 
 
 ## participate in development
