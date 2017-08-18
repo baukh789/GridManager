@@ -134,28 +134,35 @@ npm install GridManager
    }
 ```
 ## 常见问题解答
-### 1.数据在渲染前就已经存在,如何配置?
-    可以通过参数ajax_data进行配置,如果存在配置数据ajax_data,将不再通过ajax_url进行数据请求,且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行.
+### API上存在的属性或方法，自已配置后却不生效?
+    可以通过 document.querySelector('table').GM('get').version 查看 GridManager 版本号。
+    如版本号与主站版本存在差异，请重新下载新版本进行尝试。
+    
+### 数据在渲染前就已经存在,如何配置?
+    可以通过参数ajax_data进行配置,如果存在配置数据ajax_data,将不再通过ajax_url进行数据请求。
+    且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行。
 
-### 2.如何在数据请求中增加筛选条件?
-    可以通过参数query进行配置,该参数会在GirdManager实例中一直存在,并且可以在筛选条件更改后通过document.querySelector('table').GM('setQuery')方法进行重置.
+### 如何在数据请求中增加筛选条件?
+    可以通过参数query进行配置,该参数会在GirdManager实例中一直存在。
+    并且可以在筛选条件更改后通过document.querySelector('table').GM('setQuery')方法进行重置。
 
-### 3.开发中想查看当前的GirdManager实例中的数据怎么实现?
-    通过document.querySelector('table').GM('get')方法可以获得完整的GirdManager对象;
-    通过document.querySelector('table').GM('getLocalStorage')可以获得本地存储信息.
+### 开发中想查看当前的GirdManager实例中的数据怎么实现?
+    通过document.querySelector('table').GM('get')方法可以获得完整的GirdManager对象。
+    通过document.querySelector('table').GM('getLocalStorage')可以获得本地存储信息。
 
-### 4.实例化出错怎么办?
-    查看DOM节点是否为<table grid-manager="test"></table>格式
-    查看配置项columnData中key值是否与返回数据字段匹配.
+### 实例化出错怎么办?
+    查看DOM节点是否为<table grid-manager="test"></table>格式。
+    查看配置项columnData中key值是否与返回数据字段匹配。
 
-### 5.后端语言返回的数据格式与插件格式不同怎么处理?
-    可以通过参数[dataKey:ajax请求返回的列表数据key键值,默认为data][totalsKey:ajax请求返回的数据总条数key键值,默认为totals]进行配置.
+### 后端语言返回的数据格式与插件格式不同怎么处理?
+    可以通过参数[dataKey:ajax请求返回的列表数据key键值。
+    默认为data][totalsKey:ajax请求返回的数据总条数key键值,默认为totals]进行配置。
 
-### 6.表格th中的文本显示不全
-    查看配置项[columnData]中的width, 将该值提高或不进行设置由插件自动控制. 如果还为生效,那是由于当臆实例开始了记忆功能;
-    解决方法为:将localStorage中包含与当前表格grid-manager名称对应的项清除,或使用localStorage.clear()将本地存储全部清除.
+### 表格th中的文本显示不全
+    查看配置项[columnData]中的width, 将该值提高或不进行设置由插件自动控制;如果还为生效,那是由于当臆实例开始了记忆功能;
+    解决方法为:将localStorage中包含与当前表格grid-manager名称对应的项清除,或使用localStorage.clear()将本地存储全部清除。
 
-### 7.想清除当前记忆的宽度及列位置时怎么办?
+### 想清除当前记忆的宽度及列位置时怎么办?
     可使用clear方法,调用方式:document.querySelector('table').GM('clear');
 
 ## 参与开发
