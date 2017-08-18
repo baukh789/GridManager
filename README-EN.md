@@ -157,7 +157,7 @@ Check the term  `width` in the  `[columData]`,It is automatically controlled if 
 You can clear the local storage which including the name of the current `grid manager`, or clear all the local storage by `localStorage.clear()`.
 
 ### How to clear the width and the position of the list which are memorized?
-Using the mean of clear, method of calling : `document.querySelector('table').GM('clear'); `
+Using the mean of clear,  calling method : `document.querySelector('table').GM('clear'); `
 
 ## participate in development
 [developer documentation](./DEVELOP-README.md)
