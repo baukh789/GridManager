@@ -34,7 +34,7 @@ npm install GridManager
 ```
 
 ## Way of Introduction
-```
+```html
 <link rel="stylesheet" type="text/css" href="/node_modules/GridManager/css/GridManager.css"/>
 <script type="text/javascript" src="/node_modules/GridManager/js/GridManager.js"></script>
 ```
@@ -135,29 +135,29 @@ npm install GridManager
 ```
 ## Q&A
 ### It doesn't work when configured by myself althought there is the method or the property in API?
-You can find the version of the Gridmanager by the way of `document.querySelector('table').GM('get').version `.If it is different from  the main station version ,please try again after downloading the newer one.
+You can find the version of the Gridmanager by the way of  `document.querySelector('table').GM('get').version ` .If it is different from  the main station version ,please try again after downloading the newer one.
 ### How to set my grid if datas have been existed before rendering?
-You can solve it by setting the ajax_data, datas will not be asked by ajax_url if the ajax_data is existed, and ajax_beforeSend、ajax_error、ajax_complete will lose efficacy, only ajax_success will be done.
+You can solve it by setting the `ajax_data`, datas will not be asked by `ajax_url` if the ajax_data is existed, and `ajax_beforeSend、ajax_error、ajax_complete` will lose efficacy, only `ajax_success` will be done.
 
 ### How can I add a select term when asking for data?
-You can do it by setting the query,which will always exist in the case, and it can be resetted by document.querySelector('table').GM('setQuery') ,when the selecting condition is changed.
+You can do it by setting the query,which will always exist in the case, and it can be resetted by `document.querySelector('table').GM('setQuery')` ,when the selecting condition is changed.
 
 ### How to check the data in the Gridmanager of the current case when developing?
-You can achieve the total Gridmanager object by the way of document.querySelector('table').GM('get').
-Local storage information can be received by the way document.querySelector('table').GM('getLocalStorage')
+You can achieve the total Gridmanager object by the way of `document.querySelector('table').GM('get')`.
+Local storage information can be received by the way `document.querySelector('table').GM('getLocalStorage')`
 
 ### What if there is a mistake in my case?
-Check the form of the DOM node, if it is <table grid-manager="test"></table>,check the key in the columnData to find if it is matched with the revert data.
+Check the form of the DOM node, if it is `<table grid-manager="test"></table>` ,check the key in the columnData to find if it is matched with the revert data.
 
 ### How can I deal with the condition that the form of the revert data from back-end is different from the form of the plug-in board?
-Setting by the parameter [datakey:ajax Requesting the key of the grid data , default:data][totalskey:ajax Requesting the key of the grid data, default: totals]
+Setting by the parameter `[datakey:ajax Requesting the key of the grid data , default:data]` `[totalskey:ajax Requesting the key of the grid data, default: totals]`
 
 ### Context can not be totally revealed in the th of the grid? 
-Check the term width in the [columData],It is automatically controlled if the data of the term should be hold or raised. The case start its memory ,which will cause the term in operation.
-You can clear the local storage which including the name of the current grid manager, or clear all the local storage by localStorage.clear().
+Check the term  `width` in the  `[columData]`,It is automatically controlled if the data of the term should be hold or raised. The case start its memory ,which will cause the term in operation.
+You can clear the local storage which including the name of the current grid manager, or clear all the local storage by `localStorage.clear()`.
 
 ### How to clear the width and the position of the list which are memorized?
-Using the mean of clear, method of calling : document.querySelector('table').GM('clear'); 
+Using the mean of clear, method of calling : `document.querySelector('table').GM('clear'); `
 
 ## participate in development
 [developer documentation](./DEVELOP-README.md)
