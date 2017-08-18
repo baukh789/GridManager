@@ -50,7 +50,7 @@ npm install GridManager
 ```
 
 ```javascript
-document.querySelector('table[grid-manager="test"]').GM({
+   document.querySelector('table[grid-manager="test"]').GM({
         supportRemind: true
         ,i18n:'zh-cn'
         ,textConfig:{
