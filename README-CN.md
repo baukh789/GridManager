@@ -162,7 +162,7 @@ npm install GridManager
     解决方法为:将 `localStorage` 中包含与当前表格 `grid-manager` 名称对应的项清除,或使用 `localStorage.clear()` 将本地存储全部清除。
 
 ### 想清除当前记忆的宽度及列位置时怎么办?
-    可使用 `clear` 方法,调用方式: `document.querySelector('table').GM('clear');`
+可使用 `clear` 方法,调用方式: `document.querySelector('table').GM('clear');`
 
 ## 参与开发
 [开发者帮助文档](./DEVELOP-README.md)
