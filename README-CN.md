@@ -161,8 +161,8 @@ npm install GridManager
     查看配置项 `[columnData]` 中的 `width`, 将该值提高或不进行设置由插件自动控制;如果还为生效,那是由于当臆实例开始了记忆功能;
     解决方法为:将 `localStorage` 中包含与当前表格 `grid-manager` 名称对应的项清除,或使用 `localStorage.clear()` 将本地存储全部清除。
 
-### 想清除当前记忆的宽度及列位置时怎么办?
     可使用 `clear` 方法,调用方式: `document.querySelector('table').GM('clear');`
+### 想清除当前记忆的宽度及列位置时怎么办?
 
 ## 参与开发
 [开发者帮助文档](./DEVELOP-README.md)
