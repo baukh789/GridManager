@@ -30,7 +30,7 @@
 - 右键菜单: 常用功能在菜单中可进行快捷操作
 
 ## 安装命令
-```bash
+```
 npm install GridManager
 ```
 
