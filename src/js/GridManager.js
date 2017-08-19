@@ -22,7 +22,7 @@ import { Hover } from './Hover';
 import {PublishMethod, publishMethodArray} from './Publish';
 class GridManager {
 	constructor() {
-		this.version = '2.3.13';
+		this.version = '2.3.14';
 		this.extentGridManager();
 	}
 	/*

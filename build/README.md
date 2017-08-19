@@ -18,4 +18,5 @@
 - [v2.2.x.md](/version/v2.2.x.md)
 - [v2.1.x.md](/version/v2.1.x.md)
 
-
+## License
+- [License](/LICENSE)
