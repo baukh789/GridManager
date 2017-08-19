@@ -78,6 +78,9 @@ const Core= {
 		if(settings.ajax_type.toUpperCase() === 'POST' && !settings.ajax_headers['Content-Type']){
 			settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
 		}
+		// 请求前处理程序, 可以通过该方法修改全部的请求参数
+		settings.requestHandler(pram);
+
 		//执行ajax
 		$.ajax({
 			url: settings.ajax_url,
@@ -101,12 +104,14 @@ const Core= {
 				Base.hideLoading(tableWrap);
 			}
 		});
+
 		//移除刷新中样式
 		function removeRefreshingClass(){
 			window.setTimeout(() => {
 				refreshAction.removeClass('refreshing');
 			}, 2000);
 		}
+
 		//执行ajax成功后重新渲染DOM
 		function driveDomForSuccessAfter(response) {
 			if(!response){
@@ -116,6 +121,10 @@ const Core= {
 
 			let tbodyTmpHTML = '';	//用于拼接tbody的HTML结构
 			let parseRes = typeof(response) === 'string' ? JSON.parse(response) : response;
+
+			// 执行请求后执行程序, 通过该程序可以修改返回值格式
+			settings.responseHandler(parseRes);
+
 			let _data = parseRes[settings.dataKey];
 			let key,	//数据索引
 				alignAttr, //文本对齐属性

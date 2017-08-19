@@ -165,6 +165,14 @@ describe('Settings', function() {
 		expect(Settings.ajax_data).toBeUndefined();
 	});
 
+	it('验证属性[requestHandler]初始值', function() {
+		expect(typeof Settings.requestHandler).toBe('function');
+	});
+
+	it('验证属性[responseHandler]初始值', function() {
+		expect(typeof Settings.responseHandler).toBe('function');
+	});
+
 	it('验证属性[dataKey]初始值', function() {
 		expect(Settings.dataKey).toBe('data');
 	});

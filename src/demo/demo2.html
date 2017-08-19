@@ -96,8 +96,17 @@
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
 		,query: {pluginId: 1}
+		,dataKey: 'list'  // TODO 这里是用来测试responseHandler 是否生效; 数据本身返回为data, 而在这里我把数据名模拟为list, 再通过responseHandler去更改
 //		,textAlign: 'center'
 		,pageSize:30
+		// 可以通过该方法修改全部的请求参数
+		,requestHandler: function(request){
+			request.newParams = '这个参数是通过 requestHandler 函数新增的';
+		}
+		// 可以通过该方法修改返回的数据
+		,responseHandler: function(response){
+			response.list = response.data;
+		}
 		,columnData: [{
 				key: 'name',
 				remind: 'the name',

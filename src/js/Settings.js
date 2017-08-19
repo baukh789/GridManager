@@ -73,6 +73,8 @@ const Settings = {
 	ajax_complete		: $.noop,					//ajax完成后,与jTool的complete使用方法相同
 	ajax_error			: $.noop,					//ajax失败后,与jTool的error使用方法相同
 	ajax_data			: undefined,				//ajax静态数据,配置后ajax_url将无效
+	requestHandler		: $.noop,					// 请求前处理程序, 可以通过该方法修改全部的请求参数 @v2.3.14
+	responseHandler		: $.noop,					// 执行请求后执行程序, 通过该程序可以修改返回值格式. 仅有成功后该函数才会执行 @v2.3.14
 	dataKey				: 'data',					//ajax请求返回的列表数据key键值,默认为data
 	totalsKey			: 'totals',					//ajax请求返回的数据总条数key键值,默认为totals
 	//数据导出
