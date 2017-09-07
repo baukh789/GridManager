@@ -43,7 +43,7 @@ npm test
 这是由于在国内加载时,有些依赖包无法加载导致的. 将以下包移除掉再进行install, 这两个包都是用于npm run test, 如果需要, 进行单独安装
 - karma-phantomjs-launcher  安装需要翻墙
 ```
-	install karma-phantomjs-launcher
+	npm install karma-phantomjs-launcher
 ```
 - phantomjs-prebuilt 该工具作者曾公布的解决方案 (https://stackoverflow.com/questions/40992231/failed-at-the-phantomjs-prebuilt2-1-13-install-script-node-install-js),但我发现并不是很理想.
 ```

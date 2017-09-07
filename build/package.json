@@ -1,5 +1,5 @@
 {
-  "name": "gridmanager",
+  "name": "GridManager",
   "version": "2.3.14",
   "description": "表格管理插件",
   "author": "拭目以待",
@@ -30,7 +30,6 @@
     "express": "^4.15.2",
     "file-loader": "^0.11.1",
     "istanbul-instrumenter-loader": "^1.2.0",
-    "jTool": "^1.2.17",
     "jasmine-ajax": "^3.2.0",
     "jasmine-core": "^2.6.4",
     "karma": "^0.13.22",
