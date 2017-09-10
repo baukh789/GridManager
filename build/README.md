@@ -20,3 +20,6 @@
 
 ## License
 - [License](/LICENSE)
+
+## Participate In Development
+- [Developer Documentation](./DEVELOP-README.md)

@@ -1,6 +1,7 @@
 /*
  *  GridManager: 入口
  * */
+import '../css/GridManager.scss';
 import jTool from './jTool';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
@@ -22,7 +23,7 @@ import { Hover } from './Hover';
 import {PublishMethod, publishMethodArray} from './Publish';
 class GridManager {
 	constructor() {
-		this.version = '2.3.14';
+		this.version = '2.3.15';
 		this.extentGridManager();
 	}
 	/*
