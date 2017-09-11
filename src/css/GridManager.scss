@@ -3,529 +3,559 @@
 html{
 	height: auto !important;
 }
-.table-wrap *, .grid-menu *{
-	box-sizing:border-box !important;
-	font-size:12px;
-	color:#000;
-	line-height: 18px;
-	margin: 0;
-	padding: 0;
+/* 基本样式, 默认样式清除 */
+.table-wrap, .grid-menu{
+	* {
+		box-sizing: border-box !important;
+		font-size: 12px;
+		color: #000;
+		line-height: 18px;
+		margin: 0;
+		padding: 0;
+	}
+	fieldset, img{
+		border-style: none;
+		border-color: inherit;
+		border-width: medium;
+	}
+	ul, li{
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+	.clear{
+		clear: both;
+	}
 }
-.table-wrap fieldset, .table-wrap img {
-	border-style: none;
-	border-color: inherit;
-	border-width: medium;
-}
-.table-wrap ul, .table-wrap li, .grid-menu ul, .grid-menu li {
-	list-style-type: none;
-	margin: 0px;
-	padding: 0px;
-}
-.table-wrap .clear{
-	clear: both;
-}
-/*禁用文字选中*/
+
+/* 禁用文字选中 */
 .no-select-text{
-	user-select:none;
-	-moz-user-select:none;
-	-webkit-user-select:none;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
-/*table配置中样式*/
+/* table配置中样式 */
 table[grid-manager]{
-	visibility:hidden;
+	visibility: hidden;
+	&.GridManager-ready{
+		visibility: visible;
+	}
 }
-table[grid-manager].GridManager-ready{
-	visibility:visible;
-}
-/*table所在的DIV*/
+/* table所在的DIV */
 .table-wrap{
 	position: relative;
 	background-color: #f8f8f8;
 	overflow: hidden;
-	/*padding: 3px;*/
-}
-/*用户交互*/
-.table-wrap[user-interactive="Adjust"] .table-div{
-	overflow: hidden;
-}
-.table-wrap[user-interactive="Drag"] .table-div{
-	overflow: hidden;
-}
-.table-div{
-	overflow: auto;
-}
-.table-div::-webkit-scrollbar-track {
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	background-color: #fafafa;
-}
-.table-div::-webkit-scrollbar-track-piece {
-	display: none;
-}
-.table-div::-webkit-scrollbar {
-	background: transparent;
-	width: 10px;
-	height: 10px;
-}
-.table-div::-webkit-scrollbar-thumb{
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	background-color: #e1e1e1;
-	width: 6px;
-	height: 6px;
-	border: 2px solid transparent;
-	background-clip: content-box;
-}
-.table-div.config-editing{  /*用于配置列表功能*/
-	overflow-x: hidden;
-}
-/*table*/
-.table-wrap table[grid-manager]{
-	table-layout:fixed;
-	word-wrap:break-word;
-	text-align: center;
-	background-color: #dad9c7;
-	font-size: 12px;
-	width: 100%;
-	border-collapse:separate;
-	border-spacing:1px;
-	font-size: 12px !important;
-	font-family: arial !important;
-}
-.table-wrap table[grid-manager] tr td{
-	white-space:nowrap;
-	overflow:hidden;
-	text-overflow:ellipsis;
-}
-.table-wrap table[grid-manager] th[th-visible="none"],
-.table-wrap table[grid-manager] td[td-visible="none"]{
-	display:none;
-}
-.table-wrap table[grid-manager] th[th-visible="visible"],
-.table-wrap table[grid-manager] td[td-visible="visible"]{
-	display:table-cell;
-}
-.table-wrap table[grid-manager] th .th-text{
-	display:block;
-	width:100%;
-	height:100%;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow:ellipsis;
-}
-.table-wrap table[grid-manager] thead tr th{
-	background-color: #e6eeee;
-}
-.table-wrap table[grid-manager] thead tr th:hover{
-	background-color: #8dbdd8;
-}
-.table-wrap table[grid-manager] tbody tr td{
-	background-color: #fff;
-	color: #3d3d3d;
-	padding: 4px;
-	vertical-align: top;
-}
-.table-wrap table[grid-manager] tbody tr td[col-hover="true"]{
-	background-color:#e6eeee;
-}
-.table-wrap table[grid-manager] tbody tr[row-hover="true"] td{
-	background-color: #e6eeee;
-	color:#000;
-}
-/*列表设置显示隐藏*/
-.table-wrap .config-area{
-	display:none;
-	max-width:100%;
-	position:absolute;
-	top:0px;
-	right:0px;
-	cursor:pointer;
-	z-index:3;
-}
-.table-wrap .config-area .config-action{
-	display:block;
-	width:20px;
-	height:20px;
-	position:absolute;
-	right:5px;
-	top:9px;
-	overflow:hidden;
-	vertical-align:middle;
-	text-align:center;
-	z-index:2;
-}
-.table-wrap .config-area .config-action i{
-	display:inline-block;
-	font-size:18px;
-}
-.table-wrap .config-area .config-action:hover i{
-	color:#09f;
-}
-.table-wrap .config-area .config-list{
-	display:block;
-	width:100%;
-	padding:2px 30px 0px 2px;
-	list-style-type:none;
-	font-size:12px;
-	background:#f8f8f8;
-	border:1px solid #ddd;
-	border-radius:3px;
-	margin:0px;
-}
-.table-wrap .config-area .config-list >li{
-	display:inline-block;
-	padding:4px 10px;
-	line-height:20px;
-	background-color:#e8e8e8;
-	margin-right:2px;
-	margin-bottom:2px;
-}
-.table-wrap .config-area .config-list >li >label{
-	margin:0px;
-}
-.table-wrap .config-area .config-list li.no-click{
-	cursor:not-allowed;
-}
-.table-wrap .config-area .config-list li.no-click *{
-	cursor:not-allowed;
-}
-.table-wrap .config-area .config-list li input[type="checkbox"]{
-	display:none;
-}
-.table-wrap .config-area .config-list li label{
-	cursor:pointer;
-	color:#666;
-	font-weight:500;
-}
-.table-wrap .config-area .config-list li:hover label{
-	color:#09f;
-}
-.table-wrap .config-area .config-list li.no-click:hover label{
-	color:#666;
-}
-.table-wrap .config-area .config-list li .fake-checkbox{
-	display:inline-block;
-	width:14px;
-	height:14px;
-	position:relative;
-	border:1px solid #999;
-	border-radius:50%;
-	box-shadow:0 0 1px 1px #e8e8e8;
-	vertical-align:middle;
-	margin-right:5px;
-}
-.table-wrap .config-area .config-list li .fake-checkbox:after{
-	display:block;
-	width:8px;
-	height:8px;
-	position:absolute;
-	top:2px;
-	left:2px;
-	content:"";
-	background:#e8e8e8;
-	border-radius:50%;
-}
-.table-wrap .config-area .config-list li:hover .fake-checkbox{
-	border-color:#09f;
-}
-.table-wrap .config-area .config-list li.checked-li .fake-checkbox:after{
-	background:#09f;
-}
-/*表头提醒*/
-.table-wrap table[grid-manager] th .remind-action{
-	width:16px;
-	height:16px;
-	position:absolute;
-	top:6px;
-	left:4px;
-	cursor:help;
-}
-.table-wrap table[grid-manager] th .remind-action .ra-area{
-	display:none;
-	min-width:150px;
-	max-width:300px;
-	position:absolute;
-	top:80%;
-	left:80%;
-	padding:12px;
-	border:3px solid #000;
-	z-index:9999;
-	border-radius:5px;
-	box-shadow: 3px 3px 10px 0px #222;
-	background-color:#000;
-	opacity:0.8;
-	line-height: 14px;
-	color:#fff;
-}
-.table-wrap table[grid-manager] .set-top th .remind-action .ra-area{
-	visibility:hidden;
-	display:none;
-}
-.table-wrap table[grid-manager] .set-top th .remind-action:hover .ra-area{
-	visibility:visible;
-	display:block !important;
-}
-.table-wrap table[grid-manager] th .remind-action .ra-help{
-	display:block;
-	width:16px;
-	height:16px;
-	font-size:12px;
-	line-height: 18px;
-	color:#666;
-}
-.table-wrap table[grid-manager] th .remind-action:hover .ra-help{
-	color:#2b669a;
-}
-.table-wrap table[grid-manager] th .remind-action .ra-area .ra-title{
-	display:block;
-	text-align:left;
-	white-space:nowrap;
-	overflow:hidden;
-	text-overflow:ellipsis;
-	margin-bottom:4px;
-	font-weight:600;
-	font-size: 1.1em;
-	color:#FF6;
-}
-.table-wrap table[grid-manager] th .remind-action .ra-area .ra-con{
-	display:block;
-	font-weight:500;
-	text-align:left;
-	font-size: 0.9em;
-	color: #fff;
-}
-/*导出excel*/
-#gm-export-action{
-	display:none;
-}
-/*表头置顶*/
-.table-wrap .set-top{
-	position:absolute;
-	left:0;
-	top:0;
-	z-index:2;
-	background-color: #ddd;
-}
-.table-wrap .set-top .adjust-action{
-	/*display:none !important;*/
-}
-.table-wrap .set-top .sorting-action{
-	/*display:none;*/
-}
-.table-wrap .set-top .drag-action{
-	/*cursor:default !important;*/
-}
-.table-wrap table[grid-manager] thead.scrolling{
-	visibility:hidden;
-}
-/*th内的上级DIV*/
-.table-wrap table[grid-manager] th .th-wrap{
-	width:100%;
-	height:100%;
-	position:relative;
-	padding:6px;
-}
-.table-wrap table[grid-manager] th[remind] .th-wrap{
-	padding-left:24px;
-}
-.table-wrap table[grid-manager] th[sorting] .th-wrap{
-	padding-right:24px;
-}
-.table-wrap table[grid-manager] th[gm-create="true"] .th-wrap{
-	padding:6px 4px;
-}
-/*宽度调整*/
-.table-wrap table[grid-manager] th .adjust-action{
-	display:block;
-	width:6px;
-	height:100%;
-	position:absolute;
-	top:0;
-	right:-4px;
-	cursor:col-resize;
-	z-index:2;
-}
-.table-wrap table[grid-manager] .adjust-selected{
-	border-right-width: 2px;
-	border-right-style: dashed;
-	border-right-color: #ccc;
-}
-.table-wrap table[grid-manager] .adjust-selected .drag-action{
-	cursor:col-resize;
-}
-/*文本镜像：用于实时获取th的文本宽度*/
-.table-wrap .text-dreamland{
-	position:absolute;
-	top:0px;
-	left:0px;
-	white-space: nowrap;
-	visibility: hidden;
-	z-index:-1;
-}
-/*排序*/
-.table-wrap table[grid-manager] .sorting-action{
-	display:block;
-	width:20px;
-	height:18px;
-	position:absolute;
-	top:6px;
-	right:5px;
-	cursor:default;
-	z-index:2;
-	color:#444;
-}
-.table-wrap table[grid-manager] .sorting-action:hover{
-	color:#000;
-}
-.table-wrap table[grid-manager] .sorting-action.sortion-up{
-	content:"\f102";
-}
-.table-wrap table[grid-manager] .sorting-action.sortion-down{
-	content:"\f103";
-}
-.table-wrap table[grid-manager] .sorting-action .sa-icon{
-	display:block;
-	height:10px;
-	font-size:12px;
-	line-height:10px;
-	position:absolute;
-}
-.table-wrap table[grid-manager] .sorting-action .sa-up{
-	top:0px;
-	right:0px;
-}
-.table-wrap table[grid-manager] .sorting-action .sa-down{
-	bottom:0px;
-	right:0px;
-}
-.table-wrap table[grid-manager] .sorting-action.sorting-up .sa-up{
-	opacity:1;
-}
-.table-wrap table[grid-manager] .sorting-action.sorting-up .sa-down{
-	opacity:0.1;
-}
-.table-wrap table[grid-manager] .sorting-action.sorting-down .sa-up{
-	opacity:0.1;
-}
-.table-wrap table[grid-manager] .sorting-action.sorting-down .sa-down{
-	opacity:1;
-}
-/*拖拽换位*/
-.table-wrap table[grid-manager] th .drag-action{
-	cursor:all-scroll;
-}
-.table-wrap table[grid-manager] .drag-ongoing{
-	cursor:all-scroll;
-	background:#666 !important;
-	border-color:#ccc !important;
-	color:#fff !important;
-	opacity:0.5;
-}
-.table-wrap table[grid-manager] .drag-ongoing.opacityChange{
-	opacity:1;
-	-webkit-animation: opacityChange 1s ease-in-out infinite;
-	-moz-animation: opacityChange 1s ease-in-out infinite;
-	animation: opacityChange 1s ease-in-out infinite;
-}
-.table-wrap .dreamland-div{
-	display:none;
-	position:absolute;
-	border:1px solid #ccc;
-	padding:0;
-	background:#fff;
-	cursor:all-scroll;
-	z-index:9;
-}
-.table-wrap .dreamland-div .dreamland-table{
-	table-layout:fixed;
-	width:100%;
-	margin:0 !important;
-	padding:0 !important;
-}
-.table-wrap .dreamland-div .dreamland-table{
-	background-color: #dad9c7;
-	font-size: 12px;
-	width: 100%;
-	border-collapse:separate;
-	border-spacing:1px;
-	font-size: 12px !important;
-	font-family: arial !important;
-}
-.table-wrap .dreamland-div .dreamland-table thead tr th{
-	background-color: #e6eeee;
-	text-align: center;
-}
-.table-wrap .dreamland-div .dreamland-table thead tr th:hover{
-	background-color: #8dbdd8;
-}
-.table-wrap .dreamland-div .dreamland-table tbody tr td{
-	background-color: #fff;
-	color: #3d3d3d;
-	padding: 4px;
-	vertical-align: top;
-	text-align: left;
-	white-space:nowrap;
-	overflow:hidden;
-	text-overflow:ellipsis;
-}
-/*由插件生成的序号、全选样式*/
-.table-wrap table[grid-manager] [gm-create="true"]{
-	width:50px;
-	text-align:center;
-	cursor:default;
-}
-.table-wrap table[grid-manager] th[gm-create="true"]{
-	background-color:#e6eeee !important;
-	opacity:0.4;
-}
-.table-wrap table[grid-manager] tr td[gm-create="true"]{
-	background-color:#f8f8f8;
-}
-.table-wrap table[grid-manager] [gm-checkbox="true"] input[type=checkbox]{
-	vertical-align:middle;
-}
-/*文本对齐*/
-.table-wrap th{
-	text-align: center;
-}
-.table-wrap td{
-	text-align: left;
-}
-.table-wrap[gm-text-align="left"] th,
-.table-wrap[gm-text-align="left"] td{
-	text-align: left;
-}
-.table-wrap[gm-text-align="right"] th,
-.table-wrap[gm-text-align="right"] td{
-	text-align: right;
-}
-.table-wrap[gm-text-align="center"] th,
-.table-wrap[gm-text-align="center"] td{
-	text-align: center;
-}
-/*空模板样式*/
-.table-wrap table[grid-manager] .gm-emptyTemplate{
-	width: 100%;
-	height: 100px;
-	line-height: 100px;
-	text-align: center;
-	font-size:24px;
-	color:#ddd;
-	background-color: #f8f8f8;
-}
-/*遮罩*/
-.table-wrap .mask-element{
-	width:100%;
-	height:100%;
-	position:absolute;
-	top:0;
-	left:0;
-	background:#000;
-	opacity:0.6;
-	z-index:9;
-}
+	.table-div{
+		overflow: auto;
+		/* 自定义滚动条样式 */
+		&::-webkit-scrollbar-track {
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+			background-color: #fafafa;
+		}
+		&::-webkit-scrollbar-track-piece {
+			display: none;
+		}
+		&::-webkit-scrollbar {
+			background: transparent;
+			width: 10px;
+			height: 10px;
+		}
+		&::-webkit-scrollbar-thumb{
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+			background-color: #e1e1e1;
+			width: 6px;
+			height: 6px;
+			border: 2px solid transparent;
+			background-clip: content-box;
+		}
+		/* 配置列表功能 */
+		.config-editing{
+			overflow-x: hidden;
+		}
+		/* table */
+		table[grid-manager]{
+			table-layout: fixed;
+			word-wrap: break-word;
+			text-align: center;
+			background-color: #dad9c7;
+			font-size: 12px;
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 1px;
+			font-size: 12px!important;
+			font-family: arial!important;
+			th{
+				text-align: center;
+			}
+			td{
+				text-align: left;
+			}
+			th, td{
+				&[th-visible="none"]{
+					display: none;
+				}
+				&[th-visible="visible"]{
+
+					display: table-cell;
+				}
+				/* 宽度调整选中 */
+				&.adjust-selected{
+					border-right-width: 2px;
+					border-right-style: dashed;
+					border-right-color: #ccc;
+					&.drag-action{
+						cursor: col-resize;
+					}
+				}
+				/* 拖拽换位中 */
+				&.drag-ongoing{
+					cursor: all-scroll;
+					background: #666 !important;
+					border-color: #ccc !important;
+					color: #fff !important;
+					opacity: 0.5;
+					&.opacityChange{
+						opacity: 1;
+						-webkit-animation: opacityChange 1s ease-in-out infinite;
+						-moz-animation: opacityChange 1s ease-in-out infinite;
+						animation: opacityChange 1s ease-in-out infinite;
+					}
+				}
+				/* 文本对齐 */
+				&[align]{
+					&[align="left"]{
+						text-align: left;
+					}
+					&[align="center"]{
+						text-align: center;
+					}
+					&[align="right"]{
+						text-align: right;
+					}
+				}
+				/* 由插件自动生成的序号 与 全选 */
+				&[gm-create="true"]{
+					width: 50px;
+					text-align: center;
+					cursor: default;
+					&[gm-checkbox="true"] input[type=checkbox]{
+						vertical-align: middle;
+					}
+				}
+			}
+			thead{
+				tr{
+					th{
+						background-color: #e6eeee;
+						&:hover{
+							background-color: #8dbdd8;
+						}
+						&[th-visible="none"]{
+							display: none;
+						}
+						&[th-visible="visible"]{
+
+							display: table-cell;
+						}
+						&[remind] .th-wrap{
+							padding-left: 24px;
+						}
+						&[sorting] .th-wrap{
+							padding-right: 24px;
+						}
+						&[gm-create="true"] .th-wrap{
+							padding: 6px 4px;
+						}
+						&[gm-create="true"]{
+							background-color: #e6eeee !important;
+							opacity: 0.4;
+						}
+						.th-wrap{
+							width: 100%;
+							height: 100%;
+							position: relative;
+							padding: 6px;
+							.th-text{
+								display: block;
+								width: 100%;
+								height: 100%;
+								overflow: hidden;
+								white-space: nowrap;
+								text-overflow: ellipsis;
+							}
+							/* 宽度调整事件源 */
+							.adjust-action{
+								 display: block;
+								 width: 6px;
+								 height: 100%;
+								 position: absolute;
+								 top: 0;
+								 right: -4px;
+								 cursor: col-resize;
+								 z-index: 2;
+							 }
+							/* 表头提醒 */
+							.remind-action{
+								width: 16px;
+								height: 16px;
+								position: absolute;
+								top: 6px;
+								left: 4px;
+								cursor: help;
+								.ra-area{
+									display: none;
+									min-width: 150px;
+									max-width: 300px;
+									position: absolute;
+									top: 80%;
+									left: 80%;
+									padding: 12px;
+									border: 3px solid #000;
+									z-index: 9999;
+									border-radius: 5px;
+									box-shadow: 3px 3px 10px 0 #222;
+									background-color: #000;
+									opacity: 0.8;
+									line-height: 14px;
+									color: #fff;
+									.ra-title{
+										display: block;
+										text-align: left;
+										white-space: nowrap;
+										overflow: hidden;
+										text-overflow: ellipsis;
+										margin-bottom: 4px;
+										font-weight: 600;
+										font-size: 1.1em;
+										color: #FF6;
+									}
+									.ra-con{
+										display: block;
+										font-weight: 500;
+										text-align: left;
+										font-size: 0.9em;
+										color: #fff;
+									}
+								}
+								.ra-help{
+									display: block;
+									width: 16px;
+									height: 16px;
+									font-size: 12px;
+									line-height: 18px;
+									color: #666;
+								}
+								&:hover{
+									.ra-help{
+										color: #2b669a;
+									}
+								}
+							}
+							/* 排序 */
+							.sorting-action{
+								display: block;
+								width: 20px;
+								height: 18px;
+								position: absolute;
+								top: 6px;
+								right: 5px;
+								cursor: default;
+								z-index: 2;
+								color: #444;
+								&:hover{
+									color: #000;
+								}
+								&.sorting-up{
+									.sa-up{
+										opacity: 1;
+									}
+									.sa-down{
+										opacity: 0.1;
+									}
+								}
+								&.sorting-down{
+									.sa-up{
+										opacity: 0.1;
+									}
+									.sa-down{
+										opacity: 1;
+									}
+								}
+								.sa-icon{
+									display: block;
+									height: 10px;
+									position: absolute;
+									font-size: 12px;
+									line-height: 10px;
+								}
+								.sa-up{
+									top: 0;
+									right: 0;
+								}
+								.sa-down{
+									bottom: 0;
+									right: 0;
+								}
+							}
+							/* 拖拽换位 */
+							.drag-action{
+								cursor: all-scroll;
+							}
+						}
+					}
+				}
+				&.scrolling{
+					visibility: hidden;
+				}
+				/* 表头置顶 */
+				&.set-top{
+					position: absolute;
+					left: 0;
+					top: 0;
+					z-index: 2;
+					background-color: #ddd;
+					tr{
+						th{
+							/* 表头提醒 */
+							.remind-action{
+								.ra-area{
+									visibility: hidden;
+									display: none;
+								}
+								&:hover .ra-area{
+									visibility: visible;
+									display: block !important;
+								}
+							}
+						}
+					}
+				}
+			}
+			tbody{
+				tr{
+					td{
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						background-color: #fff;
+						color: #3d3d3d;
+						padding: 4px;
+						vertical-align: top;
+						&[td-visible="none"]{
+							display: none;
+						}
+						&[td-visible="visible"]{
+
+							display: table-cell;
+						}
+						&[col-hover="true"]{
+							background-color: #e6eeee;
+						}
+						&td[gm-create="true"]{
+							background-color: #f8f8f8;
+						}
+						/* 空模板样式 */
+						.gm-emptyTemplate{
+							width: 100%;
+							height: 100px;
+							line-height: 100px;
+							text-align: center;
+							font-size: 24px;
+							color: #ddd;
+							background-color: #f8f8f8;
+						}
+					}
+					&[row-hover="true"] td{
+						background-color: #e6eeee;
+						color: #000;
+					}
+				}
+			}
+		}
+	}
+	&[user-interactive="Adjust"] .table-div{
+		overflow: hidden;
+	}
+	&[user-interactive="Drag"] .table-div{
+		overflow: hidden;
+	}
+
+	/* 列表设置显示隐藏 */
+	.config-area{
+		display: none;
+		max-width: 100%;
+		position: absolute;
+		top: 0;
+		right: 0;
+		cursor: pointer;
+		z-index: 3;
+		.config-action{
+			display: block;
+			width: 20px;
+			height: 20px;
+			position: absolute;
+			right: 5px;
+			top: 9px;
+			overflow: hidden;
+			vertical-align: middle;
+			text-align: center;
+			z-index: 2;
+			i{
+				display: inline-block;
+				font-size: 18px;
+			}
+			&:hover i{
+				color: #09f;
+			}
+		}
+		.config-list{
+			display: block;
+			width: 100%;
+			padding: 2px 30px 0 2px;
+			list-style-type: none;
+			font-size: 12px;
+			background: #f8f8f8;
+			border: 1px solid #ddd;
+			border-radius: 3px;
+			margin: 0;
+			>li{
+				display: inline-block;
+				padding: 4px 10px;
+				line-height: 20px;
+				background-color: #e8e8e8;
+				margin-right: 2px;
+				margin-bottom: 2px;
+				>label{
+					margin: 0;
+					cursor: pointer;
+					color: #666;
+					font-weight: 500;
+				}
+				&:hover{
+					>label{
+						color: #09f;
+					}
+					.fake-checkbox{
+						border-color: #09f;
+					}
+				}
+				&.no-click{
+					cursor: not-allowed;
+					*{
+						cursor: not-allowed;
+					}
+					&:hover{
+						>label{
+							color:#666;
+						}
+					}
+				}
+				input[type="checkbox"]{
+					display: none;
+				}
+				.fake-checkbox{
+					display: inline-block;
+					width: 14px;
+					height: 14px;
+					position: relative;
+					border: 1px solid #999;
+					border-radius: 50%;
+					box-shadow: 0 0 1px 1px #e8e8e8;
+					vertical-align: middle;
+					margin-right: 5px;
+					&:after{
+						display: block;
+						width: 8px;
+						height: 8px;
+						position: absolute;
+						top: 2px;
+						left: 2px;
+						content: "";
+						background: #e8e8e8;
+						border-radius: 50%;
+					}
+				}
+				&.checked-li .fake-checkbox:after{
+					background: #09f;
+				}
+			}
+		}
+	}
+
+	/* 导出excel */
+	#gm-export-action{
+		display: none;
+	}
+
+	/* 文本镜像：用于实时获取th的文本宽度 */
+	.text-dreamland{
+		position: absolute;
+		top: 0;
+		left: 0;
+		white-space: nowrap;
+		visibility: hidden;
+		z-index: -1;
+	}
+
+	/* 拖拽换位镜象 */
+	.dreamland-div{
+		display: none;
+		position: absolute;
+		border: 1px solid #ccc;
+		padding: 0;
+		background: #fff;
+		cursor: all-scroll;
+		z-index: 9;
+		.dreamland-table{
+			table-layout: fixed;
+			width: 100%;
+			margin: 0 !important;
+			padding: 0 !important;
+			background-color: #dad9c7;
+			border-collapse: separate;
+			border-spacing: 1px;
+			font-size: 12px !important;
+			font-family: arial !important;
+			tr{
+				th{
+					background-color: #e6eeee;
+					text-align: center;
+					&:hover{
+						background-color: #8dbdd8;
+					}
+				}
+				td{
+					background-color: #fff;
+					color: #3d3d3d;
+					padding: 4px;
+					vertical-align: top;
+					text-align: left;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+			}
+		}
+	}
+
+	/*遮罩*/
+	.mask-element{
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: #000;
+		opacity: 0.6;
+		z-index: 9;
+	}
+}
+
 /*闪烁动画特效*/
 @-webkit-keyframes opacityChange{
 	0%{

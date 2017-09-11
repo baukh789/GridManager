@@ -26,7 +26,7 @@ const Settings = {
 	height: '300px',
 
 	// 文本对齐方式
-	textAlign: '',
+	// textAlign: '',       // v2.3.15弃用
 
 	// 动画效果时长
 	animateTime: 300,
