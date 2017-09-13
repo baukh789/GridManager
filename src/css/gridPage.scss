@@ -1,0 +1,105 @@
+/* 表格分页 */
+.table-wrap{
+	.page-toolbar{
+		width: 100%;
+		position: relative;
+		padding: 5px 0;
+		background-color: #e8e8e8;
+		.dataTables_info{
+			display: inline-block;
+			padding: 6px 5px;
+			vertical-align: middle;
+		}
+		.change-size{
+			display: inline-block;
+			padding: 2.5px 10px;
+			vertical-align: middle;
+			select[name="pSizeArea"]{
+				height: 25px;
+				padding: 4px;
+			}
+		}
+		.goto-page{
+			display: inline-block;
+			padding: 2.5px 10px;
+			vertical-align: middle;
+			.gp-input{
+				width: 50px;
+				height: 25px;
+				border: 1px solid #ccc;
+				padding: 0 5px;
+				margin: 0 5px;
+			}
+		}
+		.refresh-action{
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			padding: 8px 6px 6px 8px;
+			vertical-align: middle;
+			&:hover{
+				color: #3276b1;
+			}
+			i{
+				cursor: pointer;
+				line-height: 15px;
+				font-size: 16px;
+				color: #4078c0;
+				font-weight: 600;
+			}
+			&.refreshing{
+				-webkit-animation: rotationMedia 2s ease-in-out infinite;
+				-moz-animation: rotationMedia 2s ease-in-out infinite;
+				animation: rotationMedia 2s ease-in-out infinite;
+			}
+		}
+		.ajax-page{
+			position: absolute;
+			height: 30px;
+			right: 0;
+			bottom: 5px;
+			:after{
+				clear: both;
+			}
+			.pagination{
+				display: inline-block;
+				> li{
+					display: block;
+					min-width: 30px;
+					height: 30px;
+					float: left;
+					padding: 5px 10px;
+					background-color: #fff;
+					border: 1px solid #ddd;
+					border-left: none;
+					color: #3276b1;
+					position: relative;
+					line-height: 18px;
+					text-align: center;
+					cursor: default;
+					&:first-child{
+						border-bottom-left-radius: 2px;
+						border-top-left-radius: 2px;
+						border-left: 1px solid #ddd;
+					}
+					&.disabled, &.disabled:focus, .disabled:hover{
+						background-color: #fff;
+						border-color: #ddd;
+						color: #999;
+						cursor: not-allowed;
+					}
+					&.active, &.active:focus, &.active:hover{
+						background-color: #3276b1;
+						color: #fff;
+						z-index: 2;
+					}
+					&:focus, &:hover{
+						background-color: #eee;
+						border-color: #ddd;
+						color: #214e75;
+					}
+				}
+			}
+		}
+	}
+}

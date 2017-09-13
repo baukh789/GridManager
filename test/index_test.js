@@ -3,6 +3,7 @@
  */
 import jTool from '../src/js/jTool';
 import testData from '../src/data/testData';
+import '../build/css/GridManager.css';
 
 describe('GridManager.js', function() {
 	let table = null;
@@ -10,7 +11,8 @@ describe('GridManager.js', function() {
 	let gmName = 'test-gridmanager';
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/GridManager').default;
+		require('../src/js/index').default;
+
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);

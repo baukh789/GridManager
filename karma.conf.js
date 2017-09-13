@@ -1,20 +1,51 @@
-var path = require('path');
+const path = require('path');
 module.exports = function (config) {
 	config.set({
+		// 将用于解决所有的模式基本路径（例如，文件，排除）
 		basePath: '',
+
+		// 框架使用
+		// 可用的框架：https://npmjs.org/browse/keyword/karma-adapter
 		frameworks: ['jasmine'],
+
+		// 需要测试的文件列表
 		files: [
+			'test/index_test.js',
 			'test/*_test.js'
 		],
+		// 排除在外的文件列表
 		exclude: ['karma.conf.js'],
+
+		// 使用端口
 		port: 9876,
+
+		// 是否在输出日志中使用颜色
 		colors: true,
+
+		// Continuous Integration mode
+		// if true, Karma captures browsers, runs the tests and exits
 		singleRun: true,
+
+
+		// level of logging
+		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
 		logLevel: config.LOG_INFO,
+
+		// enable / disable watching file and executing tests whenever any file changes
 		autoWatch: true,
+
+		// start these browsers
+		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
 		browsers: ['PhantomJS'],
+
 		captureTimeout: 60000,
+
+		// test results reporter to use
+		// possible values: 'dots', 'progress'
+		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
 		reporters: ['progress', 'coverage'],
+
+		// 预处理
 		preprocessors: {
 			'test/*_test.js': ['webpack']
 		},
@@ -27,55 +58,56 @@ module.exports = function (config) {
 				{type:'json', subdir: '.'}
 			]
 		},
+
+		// webpack config
 		webpack: {
+			//入口文件配置
+			entry: {
+				js: 'test/index_test.js'
+			},
+			resolve:{
+				extensions: [".js"] //当requrie的模块找不到时,添加这些后缀
+			},
 			module: {
-				loaders:[
+				rules: [
+					// {
+					// 	test: /\.js$/,
+					// 	loader: 'istanbul-instrumenter-loader',
+					// 	enforce: 'pre',
+					// 	exclude: /node_modules|_spec\.js$/,
+					// 	include: [path.join(__dirname, './src')]
+					// },
 					{
 						test: /\.js?$/,
-						loaders: ['babel?{"presets":["es2015"]}'],
+						use: ['babel-loader?{"presets":["es2015"]}'],
 						exclude: /(node_modules|bower_components)/,
 						include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')]
 					},
 					{
-						test:/\.css$/,
-						loader:'style-loader!css-loader',
-						exclude: /(node_modules|bower_components)/,
-						include: [path.join(__dirname, 'src/css')]
+						test:/.css$/,
+						loader:'style-loader!css-loader'
 					},
 					{
 						test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-						loader: 'url?limit=15000&mimetype=application/font-woff&prefix=fonts',
-						exclude: /(node_modules|bower_components)/,
-						include: [path.join(__dirname, 'src')]
+						use: 'url-loader?limit=15000&mimetype=application/font-woff&prefix=fonts'
 					},
 					{
 						test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-						loader: 'url?limit=15000&mimetype=application/octet-stream&prefix=fonts',
-						exclude: /(node_modules|bower_components)/,
-						include: [path.join(__dirname, 'src')]
+						use: 'url-loader?limit=15000&mimetype=application/octet-stream&prefix=fonts'
 					},
 					{
 						test: /\.eot(\?#\w+)?$/,
-						loader: 'url?limit=15000&mimetype=application/vnd.ms-fontobject&prefix=fonts',
-						exclude: /(node_modules|bower_components)/,
-						include: [path.join(__dirname, 'src')]
+						use: 'url-loader?limit=15000&mimetype=application/vnd.ms-fontobject&prefix=fonts'
 					},
 					{
 						test: /\.svg(#\w+)?$/,
-						loader: 'url?limit=15000&mimetype=image/svg+xml&prefix=fonts',
-						exclude: /(node_modules|bower_components)/,
-						include: [path.join(__dirname, 'src')]
+						use: 'url-loader?limit=15000&mimetype=image/svg+xml&prefix=fonts'
 					}
-				],
-				postLoaders: [{
-					test: /\.js$/,
-					loader: 'istanbul-instrumenter',
-					exclude: /node_modules|_spec\.js$/,
-					include: [path.join(__dirname, './src')]
-				}]
+				]
 			}
 
 		},
+		webpackMiddleware: {noInfo: false}, // no webpack output
 		concurrency: Infinity
 	});
 };

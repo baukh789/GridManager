@@ -9,7 +9,7 @@ describe('Order', function() {
 
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/GridManager').default;
+		require('../src/js/index').default;
 
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', gmName);

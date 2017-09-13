@@ -5,14 +5,13 @@
 import jTool from '../src/js/jTool';
 import Core from '../src/js/Core';
 import testData from '../src/data/testData';
-import '../src/css/GridManager.css';
 describe('Core', function() {
 	let table = null;
 	let $table = null;
 	let gmName = 'test-core';
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/GridManager').default;
+		require('../src/js/index').default;
 
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', gmName);

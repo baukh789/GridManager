@@ -13,7 +13,7 @@ describe('I18n', function() {
 	let gmName2 = 'test-i18n-cn';
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/GridManager').default;
+		require('../src/js/index').default;
 
 		// 第一组设置为en-us, 且其中几项被重置
 		table_en = document.createElement('table');

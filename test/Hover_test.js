@@ -11,7 +11,7 @@ describe('Hover.js', function() {
 	let $table = jTool(table);
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/GridManager').default;
+		require('../src/js/index').default;
 
 		document.querySelector('body').appendChild(table);
 		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
@@ -53,7 +53,7 @@ describe('Hover.js', function() {
 		Element.prototype.GM = Element.prototype.GridManager = null;
 		document.body.innerHTML = '';
 	});
-	
+
 	it('验证Hover.onTbodyHover($table)方法中的事件是否绑定成功', function(){
 		expect(table.jToolEvent.mousemovetd.length).toBe(1);
 	});

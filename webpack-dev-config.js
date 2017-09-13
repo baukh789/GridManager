@@ -5,7 +5,7 @@ const config = {
 	context: path.join(__dirname, "src/"),
 	//入口文件配置
 	entry: {
-		js: './js/GridManager.js'
+		js: './js/index.js'
 	},
 	resolve:{
 		extensions: [".js"] //当requrie的模块找不到时,添加这些后缀

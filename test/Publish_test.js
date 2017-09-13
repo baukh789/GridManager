@@ -17,7 +17,7 @@ describe('Publish.js', function() {
 	let $table = jTool(table);
 	beforeAll(function(){
 		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/GridManager').default;
+		require('../src/js/index').default;
 
 		document.querySelector('body').appendChild(table);
 		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({

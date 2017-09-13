@@ -1007,9 +1007,9 @@ var Core = {
 		$table.wrap(wrapHtml);
 		tableWarp = $table.closest('.table-wrap');
 		// 配置文本对齐方式
-		if (settings.textAlign) {
-			tableWarp.attr('gm-text-align', settings.textAlign);
-		}
+		// if(settings.textAlign){
+		// 	tableWarp.attr('gm-text-align', settings.textAlign);
+		// }
 		// 嵌入配置列表DOM
 		if (settings.supportConfig) {
 			tableWarp.append(_configHtml);
@@ -3172,7 +3172,7 @@ var Settings = {
 	height: '300px',
 
 	// 文本对齐方式
-	textAlign: '',
+	// textAlign: '',       // v2.3.15弃用
 
 	// 动画效果时长
 	animateTime: 300,
