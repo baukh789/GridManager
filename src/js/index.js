@@ -61,7 +61,7 @@ class GridManager {
 
 		//根据本地缓存配置每页显示条数
 		if(_this.supportAjaxPage){
-			_this.configPageForCache(jToolObj);
+			AjaxPage.configPageForCache(jToolObj);
 		}
 
 		//增加渲染中标注
@@ -161,7 +161,7 @@ class GridManager {
 		// jTool.extend(this, Adjust);
 
 		// GM导入功能: 分页
-		jTool.extend(this, AjaxPage);
+		// jTool.extend(this, AjaxPage);
 
 		// GM导入功能: 配置列显示隐藏
 		jTool.extend(this, Config);
