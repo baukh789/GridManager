@@ -20,12 +20,12 @@ const AjaxPage = {
 						<div class="ajax-page"><ul class="pagination"></ul></div>
 					</div>`;
 		return html;
-	}
+	},
 	/**
 	 * 初始化分页
 	 * @param $table：[jTool object]
 	 */
-	,initAjaxPage: function($table){
+	initAjaxPage: function($table){
 		const Settings = Cache.getSettings($table);
 		const _this = this;
 		let tableWarp 	= $table.closest('.table-wrap'),
@@ -40,25 +40,25 @@ const AjaxPage = {
 
 		//绑定设置显示条数切换事件
 		_this.bindSetPageSizeEvent($table);
-	}
+	},
 	/**
 	 * 生成页码DOM节点
 	 * @param $table [jTool object]
 	 * @param pageData  分页数据格式
 	 */
-	,createPaginationDOM: function($table, pageData){
+	createPaginationDOM: function($table, pageData){
 		const tableWarp = $table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 			pagination	= $('.pagination', pageToolbar);		//分页区域
 		pagination.html( this.joinPagination($table, pageData) );
-	}
+	},
 	/*
 	* 拼接页码字符串
 	 * @param $table: [table jTool object]
 	 * @param cPage: 当前页码
 	 * @param pageData  分页数据格式
 	* */
-	,joinPagination: function($table, pageData){
+	joinPagination: function($table, pageData){
 		let cPage = Number(pageData.cPage || 0),		//当前页
 			tPage = Number(pageData.tPage || 0),		//总页数
 			tHtml = '',					//临时存储分页HTML片段
@@ -128,13 +128,13 @@ const AjaxPage = {
 					${ I18n.i18nText($table, "last-page") }
 				</li>`;
 		return tHtml;
-	}
+	},
 	/**
 	 * 生成每页显示条数选择框据
 	 * @param $table: [table jTool object]
 	 * @param _sizeData: _选择框自定义条数
 	 */
-	,createPageSizeDOM: function($table, _sizeData_){
+	createPageSizeDOM: function($table, _sizeData_){
 		const tableWarp	= $table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),				//分页工具条
 			pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);	//分页区域
@@ -151,12 +151,12 @@ const AjaxPage = {
 							</option>`;
 		});
 		pSizeArea.html(_ajaxPageHtml);
-	}
+	},
 	/**
 	 * 绑定页面跳转事件
 	 * @param $table: [table jTool object]
 	 */
-	,bindPageJumpEvent:function($table){
+	bindPageJumpEvent:function($table){
 		const _this = this;
 		const tableWarp	= $table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),		//分页工具条
@@ -210,14 +210,14 @@ const AjaxPage = {
 			_this.gotoPage($table, _inputValue);
 			_input.val('');
 		});
-	}
+	},
 
 	/**
 	 * 跳转至指定页
 	 * @param $table: [table jTool object]
 	 * @param _cPage: 指定页
 	 */
-	,gotoPage: function ($table, _cPage) {
+	gotoPage: function ($table, _cPage) {
 		const settings = Cache.getSettings($table);
 		//跳转的指定页大于总页数
 		if(_cPage > settings.pageData.tPage){
@@ -235,14 +235,14 @@ const AjaxPage = {
 		Core.__refreshGrid($table, () => {
 			settings.pagingAfter(query);
 		});
-	}
+	},
 
 	/**
 	 * 绑定设置当前页显示数事件
 	 * @param $table: [table jTool object]
 	 * @returns {boolean}
 	 */
-	,bindSetPageSizeEvent: function($table){
+	bindSetPageSizeEvent: function($table){
 		const tableWarp = $table.closest('.table-wrap'),
 			pageToolbar = $('.page-toolbar', tableWarp),	//分页工具条
 			sizeArea	= $('select[name=pSizeArea]', pageToolbar);	//切换条数区域
@@ -272,7 +272,7 @@ const AjaxPage = {
 			});
 
 		});
-	}
+	},
 
 	/**
 	 * 重置每页显示条数, 重置条数文字信息 [注: 这个方法只做显示更新, 不操作Cache 数据]
@@ -280,7 +280,7 @@ const AjaxPage = {
 	 * @param _pageData_: 分页数据格式
 	 * @returns {boolean}
 	 */
-	,resetPSize: function($table, _pageData_){
+	resetPSize: function($table, _pageData_){
 		const tableWarp = $table.closest('.table-wrap'),
 			toolBar   = $('.page-toolbar', tableWarp),
 			pSizeArea = $('select[name="pSizeArea"]', toolBar),
@@ -299,13 +299,13 @@ const AjaxPage = {
 		//修改条数文字信息
 		pSizeInfo.html(tmpHtml);
 		pSizeArea.show();
-	}
+	},
 	/**
 	 * 重置分页数据
 	 * @param $table: [table jTool object]
 	 * @param totals: 总条数
 	 */
-	,resetPageData: function($table, totals){
+	resetPageData: function($table, totals){
 		const settings = Cache.getSettings($table);
 		const _this = this;
 		if(isNaN(parseInt(totals, 10))){
@@ -338,12 +338,12 @@ const AjaxPage = {
 				tSize: _tSize							// 总条路
 			}
 		}
-	}
+	},
 	/**
 	 * 根据本地缓存配置分页数据
 	 * @param $table: [table jTool object]
 	 */
-	,configPageForCache: function($table){
+	configPageForCache: function($table){
 		const settings = Cache.getSettings($table);
 		let _data = Cache.getUserMemory($table);
 		// 缓存对应

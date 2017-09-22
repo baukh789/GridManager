@@ -16,23 +16,23 @@ const Checkbox = {
 								</span>
 							</th>`;
 		return checkboxHtml;
-	}
+	},
 	/*
 	 * 初始化选择与反选DOM
 	 * table: table [jTool Object]
 	 * */
-	,initCheckbox: function($table) {
+	initCheckbox: function($table) {
 		// 插入选择DOM
 		$('thead tr', $table).prepend( this.html($table) );
 
 		// 绑定选择框事件
 		this.bindCheckboxEvent($table);
-	}
+	},
 	/*
 	* 绑定选择框事件
 	* table: table [jTool Object]
 	* */
-	,bindCheckboxEvent: function($table){
+	bindCheckboxEvent: function($table){
 		$table.off('click','input[type="checkbox"]');
 		$table.on('click','input[type="checkbox"]', function(){
 			// 存储th中的checkbox的选中状态

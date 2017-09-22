@@ -93,12 +93,12 @@ class GridManager {
 		//获取本地缓存并对列表进行配置
 		if(!_this.disableCache){
 			_this.configTheadForCache(table);
-			_this.supportAdjust ? _this.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
+			_this.supportAdjust ? Adjust.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
 		}
 
 		//绑定宽度调整事件
 		if(_this.supportAdjust){
-			_this.bindAdjustEvent(table);
+			Adjust.bindAdjustEvent(table);
 		}
 
 		//绑定拖拽换位事件
@@ -158,7 +158,7 @@ class GridManager {
 		jTool.extend(this, Cache);
 
 		// GM导入功能: 宽度调整
-		jTool.extend(this, Adjust);
+		// jTool.extend(this, Adjust);
 
 		// GM导入功能: 分页
 		jTool.extend(this, AjaxPage);

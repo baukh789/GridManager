@@ -21,12 +21,12 @@ const Base = {
 			console.error('GridManager Error: ', msg);
 		}
 		return msg;
-	}
+	},
 	/*
 	 * @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
 	 * $th: jTool th
 	 * */
-	,getColTd: function($th) {
+	getColTd: function($th) {
 		const tableWrap = $th.closest('.table-wrap'),
 			    thIndex = $th.index(),
 			     trList = $('tbody tr', tableWrap);
@@ -39,11 +39,11 @@ const Base = {
 			}
 		});
 		return $(tdList);
-	}
+	},
 	/*
 	* @初始化列显示\隐藏
 	* */
-	,initVisible: function($table){
+	initVisible: function($table){
 		// 所有的th
 		const _thList = $('thead th', $table);
 
@@ -57,14 +57,14 @@ const Base = {
 				_td.attr('td-visible', v.attr('th-visible'));
 			});
 		});
-	}
+	},
 	/*
 	 @设置列是否可见
 	 $._thList_	： 即将配置的列所对应的th[jTool object，可以是多个]
 	 $._visible_: 是否可见[Boolean]
 	 $.cb		: 回调函数
 	 */
-	,setAreVisible: function(_thList_, _visible_ ,cb){
+	setAreVisible: function(_thList_, _visible_ ,cb){
 		let _table,			//当前所在的table
 			_tableWarp, 	//当前所在的容器
 			_th,			//当前操作的th
@@ -107,13 +107,13 @@ const Base = {
 			}
 			typeof(cb) == 'function' ? cb() : '';
 		});
-	}
+	},
 
 	/*
 	 @获取TH宽度
 	 @th: th
 	 */
-	,getTextWidth: function(th){
+	getTextWidth: function(th){
 		const $th = $(th);
 		const thWarp = $('.th-wrap', $th); // th下的GridManager包裹容器
 		const thText = $('.th-text', $th); // 文本所在容器
@@ -135,12 +135,12 @@ const Base = {
 						+ (thPaddingLeft ? thPaddingLeft : 0)
 						+ (thPaddingRight ? thPaddingRight : 0);
 		return thWidth;
-	}
+	},
 	/*
 	* 显示加载中动画
 	* @dom
 	* */
-	,showLoading: function (dom ,cb) {
+	showLoading: function (dom ,cb) {
 		if (!dom || dom.length === 0) {
 			return;
 		}
@@ -172,13 +172,13 @@ const Base = {
 			$('.load-area', dom).remove();
 			typeof(cb) === 'function' ? cb() : '';
 		}, 500);
-	}
+	},
 	/**
 	 * 更新当前用户交互状态, 用于优化置顶状态下进行[拖拽, 宽度调整]操作时,页面出现滚动的问题
 	 * @param $table
 	 * @param interactive: 如果不存在于interactiveList内, 将删除属性[user-interactive]
      */
-	,updateInteractive: function ($table, interactive) {
+	updateInteractive: function ($table, interactive) {
 		const interactiveList = ['Adjust', 'Drag'];
 		// 事件源所在的容器
 		let	tableWrap = $table.closest('.table-wrap');

@@ -12,7 +12,7 @@ const Sort = {
 						<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>
 					</div>`;
 		return html;
-	}
+	},
 	/*
 	 * 手动设置排序
 	 * @param sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
@@ -22,7 +22,7 @@ const Sort = {
 	 * 排序json串示例:
 	 * sortJson => {name: 'ASC}
 	 * */
-	,__setSort: function($table, sortJson, callback, refresh){
+	__setSort: function($table, sortJson, callback, refresh){
 		let settings = Cache.getSettings($table);
 		if(!sortJson || $.type(sortJson) !== 'object' || $.isEmptyObject(sortJson)){
 			return false;
@@ -53,12 +53,12 @@ const Sort = {
 			}
 		}
 		refresh ? Core.__refreshGrid($table, callback) : (typeof(callback) === 'function' ? callback() : '');
-	}
+	},
 	/**
 	 * 绑定排序事件
 	 * @param $table
      */
-	,bindSortingEvent: function($table){
+	bindSortingEvent: function($table){
 		const _this = this;
 		let settings = Cache.getSettings($table);
 		let	action,		//向上或向下事件源
@@ -114,14 +114,14 @@ const Sort = {
 			});
 
 		});
-	}
+	},
 	/**
 	 * 更新排序样式
 	 * @param sortAction
 	 * @param th
 	 * @param settings
      */
-	,updateSortStyle: function (sortAction, th, settings) {
+	updateSortStyle: function (sortAction, th, settings) {
 		// 排序操作：升序
 		if(sortAction.hasClass('sorting-down')){
 			sortAction.addClass('sorting-up');
