@@ -133,6 +133,7 @@ class GridManager {
 		//渲染tbodyDOM
 		_this.__refreshGrid(table);
 
+		// TODO Eslint整改时, 不再将各个模块拼装至GirdManager, 所以验证是否已经实例化的方式需要调整
 		//将GridManager实例化对象存放于jTool data
 		_this.setGridManagerToJTool.call(_this, table);
 	}
@@ -143,7 +144,7 @@ class GridManager {
 		jTool.extend(true, this, Settings);
 
 		// GM导入功能: 基本
-		jTool.extend(this, Base);
+		// jTool.extend(this, Base);
 
 		// GM导入功能: 核心
 		jTool.extend(this, Core);

@@ -2,26 +2,6 @@
 import jTool from '../src/js/jTool';
 import Base from '../src/js/Base';
 import testData from '../src/data/testData';
-describe('Base: 验证方法总数', function() {
-	var getPropertyCount = null;
-	beforeEach(function() {
-		getPropertyCount = function(o){
-			var n, count = 0;
-			for(n in o){
-				if(o.hasOwnProperty(n)){
-					count++;
-				}
-			}
-			return count;
-		}
-	});
-	afterEach(function(){
-		getPropertyCount = null;
-	});
-	it('Function count', function() {
-		expect(getPropertyCount(Base)).toBe(8);
-	});
-});
 describe('Base.js', function() {
 	let table = null;
 	let $table = null;
