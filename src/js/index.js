@@ -5,7 +5,7 @@ import '../css/index.scss';
 import jTool from './jTool';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
-import Base from './Base';
+// import Base from './Base';
 import Cache from './Cache';
 import Core from './Core';
 import Config from './Config';
@@ -42,12 +42,12 @@ class GridManager {
 		var _settings = jTool.extend(true, {}, Settings);
 		_settings.textConfig = new TextSettings();
 		jTool.extend(true, _settings, arg);
-		_this.updateSettings(jToolObj, _settings);
+		Cache.updateSettings(jToolObj, _settings);
 
 		jTool.extend(true, this, _settings);
 
 		//通过版本较验 清理缓存
-		_this.cleanTableCacheForVersion(jToolObj, this.version);
+		Cache.cleanTableCacheForVersion(jToolObj, this.version);
 		if(_this.gridManagerName.trim() === ''){
 			_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 			return false;
@@ -72,7 +72,7 @@ class GridManager {
 		//如果初始获取缓存失败，在渲染完成后首先存储一次数据
 		if(typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined'){
 			window.setTimeout(() => {
-				_this.saveUserMemory(jToolObj, true);
+				_this.saveUserMemory(jToolObj);
 				jToolObj.removeAttr('grid-manager-cache-error');
 			},1000);
 		}
@@ -92,7 +92,7 @@ class GridManager {
 
 		//获取本地缓存并对列表进行配置
 		if(!_this.disableCache){
-			_this.configTheadForCache(table);
+			Cache.configTheadForCache(table);
 			_this.supportAdjust ? Adjust.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
 		}
 
@@ -135,7 +135,7 @@ class GridManager {
 
 		// TODO Eslint整改时, 不再将各个模块拼装至GirdManager, 所以验证是否已经实例化的方式需要调整
 		//将GridManager实例化对象存放于jTool data
-		_this.setGridManagerToJTool.call(_this, table);
+		Cache.setGridManagerToJTool.call(_this, table);
 	}
 
 	// 拼装GirdManager
@@ -156,7 +156,7 @@ class GridManager {
 		jTool.extend(this, Checkbox);
 
 		// GM导入功能: 缓存
-		jTool.extend(this, Cache);
+		// jTool.extend(this, Cache);
 
 		// GM导入功能: 宽度调整
 		// jTool.extend(this, Adjust);

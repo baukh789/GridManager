@@ -95,203 +95,434 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * @Cache: 本地缓存
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * 缓存分为三部分:
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * 1.GridData: 渲染表格时所使用的json数据 [存储在GM实例]
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * 2.Cache: 核心缓存数据 [存储在DOM上]
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * 3.UserMemory: 用户记忆 [存储在localStorage]
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     * */
+
+
 var _jTool = __webpack_require__(0);
 
 var _jTool2 = _interopRequireDefault(_jTool);
 
+var _Base = __webpack_require__(2);
+
+var _Base2 = _interopRequireDefault(_Base);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Base = {
-	/*
-  @输出日志
-  type: 输出分类[info,warn,error]
-  */
-	outLog: function outLog(msg, type) {
-		if (!type) {
-			console.log('GridManager:', msg);
-		} else if (type === 'info') {
-			console.info('GridManager Info: ', msg);
-		} else if (type === 'warn') {
-			console.warn('GridManager Warn: ', msg);
-		} else if (type === 'error') {
-			console.error('GridManager Error: ', msg);
-		}
-		return msg;
-	}
-	/*
-  * @获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
-  * $th: jTool th
-  * */
-	, getColTd: function getColTd($th) {
-		var tableWrap = $th.closest('.table-wrap'),
-		    thIndex = $th.index(),
-		    trList = (0, _jTool2.default)('tbody tr', tableWrap);
-		var tdList = [];
-		var _td = null;
-		_jTool2.default.each(trList, function (i, v) {
-			_td = (0, _jTool2.default)('td', v).get(thIndex);
-			if (_td) {
-				tdList.push(_td);
-			}
-		});
-		return (0, _jTool2.default)(tdList);
-	}
-	/*
- * @初始化列显示\隐藏
- * */
-	, initVisible: function initVisible($table) {
-		// 所有的th
-		var _thList = (0, _jTool2.default)('thead th', $table);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-		// tbody下的tr
-		var _trList = (0, _jTool2.default)('tbody tr', $table);
-		var _td = null;
-		_jTool2.default.each(_thList, function (i, v) {
-			v = (0, _jTool2.default)(v);
-			_jTool2.default.each(_trList, function (i2, v2) {
-				_td = (0, _jTool2.default)('td', v2).eq(v.index());
-				_td.attr('td-visible', v.attr('th-visible'));
-			});
-		});
-	}
-	/*
-  @设置列是否可见
-  $._thList_	： 即将配置的列所对应的th[jTool object，可以是多个]
-  $._visible_: 是否可见[Boolean]
-  $.cb		: 回调函数
-  */
-	, setAreVisible: function setAreVisible(_thList_, _visible_, cb) {
-		var _table = void 0,
-		    //当前所在的table
-		_tableWarp = void 0,
-		    //当前所在的容器
-		_th = void 0,
-		    //当前操作的th
-		_trList = void 0,
-		    //当前tbody下所有的tr
-		_tdList = [],
-		    //所对应的td
-		_checkLi = void 0,
-		    //所对应的显示隐藏所在的li
-		_checkbox = void 0; //所对应的显示隐藏事件
-		_jTool2.default.each(_thList_, function (i, v) {
-			_th = (0, _jTool2.default)(v);
-			_table = _th.closest('table');
-			_tableWarp = _table.closest('.table-wrap');
-			_trList = (0, _jTool2.default)('tbody tr', _table);
-			_checkLi = (0, _jTool2.default)('.config-area li[th-name="' + _th.attr('th-name') + '"]', _tableWarp);
-			_checkbox = _checkLi.find('input[type="checkbox"]');
-			if (_checkbox.length == 0) {
-				return;
-			}
-			_jTool2.default.each(_trList, function (i2, v2) {
-				_tdList.push((0, _jTool2.default)(v2).find('td').get(_th.index()));
-			});
-			//显示
-			if (_visible_) {
-				_th.attr('th-visible', 'visible');
-				_jTool2.default.each(_tdList, function (i2, v2) {
-					// $(v2).show();
-					v2.setAttribute('td-visible', 'visible');
-				});
-				_checkLi.addClass('checked-li');
-				_checkbox.prop('checked', true);
-			}
-			//隐藏
-			else {
-					_th.attr('th-visible', 'none');
-					_jTool2.default.each(_tdList, function (i2, v2) {
-						// $(v2).hide();
-						v2.setAttribute('td-visible', 'none');
-					});
-					_checkLi.removeClass('checked-li');
-					_checkbox.prop('checked', false);
-				}
-			typeof cb == 'function' ? cb() : '';
-		});
+var Cache = function () {
+	function Cache() {
+		_classCallCheck(this, Cache);
+
+		this.initCoreMethod();
+		this.initGridData();
+		this.initUserMemory();
 	}
 
-	/*
-  @获取TH宽度
-  @th: th
-  */
-	, getTextWidth: function getTextWidth(th) {
-		var $th = (0, _jTool2.default)(th);
-		var thWarp = (0, _jTool2.default)('.th-wrap', $th); // th下的GridManager包裹容器
-		var thText = (0, _jTool2.default)('.th-text', $th); // 文本所在容器
-
-		//文本镜象 用于处理实时获取文本长度
-		var tableWrap = $th.closest('.table-wrap');
-		var textDreamland = (0, _jTool2.default)('.text-dreamland', tableWrap);
-
-		//将th文本嵌入文本镜象 用于获取文本实时宽度
-		textDreamland.text(thText.text());
-		textDreamland.css({
-			fontSize: thText.css('font-size'),
-			fontWeight: thText.css('font-weight'),
-			fontFamily: thText.css('font-family')
-		});
-		var thPaddingLeft = thWarp.css('padding-left'),
-		    thPaddingRight = thWarp.css('padding-right');
-		var thWidth = textDreamland.width() + (thPaddingLeft ? thPaddingLeft : 0) + (thPaddingRight ? thPaddingRight : 0);
-		return thWidth;
-	}
-	/*
- * 显示加载中动画
- * @dom
- * */
-	, showLoading: function showLoading(dom, cb) {
-		if (!dom || dom.length === 0) {
-			return;
-		}
-		var loading = dom.find('.load-area');
-		if (loading.length > 0) {
-			loading.remove();
-		}
-		var loadingDom = (0, _jTool2.default)('<div class="load-area loading"><div class="loadInner kernel"></div></div>');
-		dom.append(loadingDom);
-
-		//进行loading图标居中显示
-		var loadInner = dom.find('.load-area').find('.loadInner');
-		var domHeight = dom.height(),
-		    loadInnerHeight = loadInner.height();
-		loadInner.css('margin-top', (domHeight - loadInnerHeight) / 2);
-		window.setTimeout(function () {
-			typeof cb === 'function' ? cb() : '';
-		}, 100);
-	},
-	/*
-  * 隐藏加载中动画
-  * @dom
-  * */
-	hideLoading: function hideLoading(dom, cb) {
-		if (!dom || dom.length === 0) {
-			return;
-		}
-		window.setTimeout(function () {
-			(0, _jTool2.default)('.load-area', dom).remove();
-			typeof cb === 'function' ? cb() : '';
-		}, 500);
-	}
 	/**
-  * 更新当前用户交互状态, 用于优化置顶状态下进行[拖拽, 宽度调整]操作时,页面出现滚动的问题
-  * @param $table
-  * @param interactive: 如果不存在于interactiveList内, 将删除属性[user-interactive]
-     */
-	, updateInteractive: function updateInteractive($table, interactive) {
-		var interactiveList = ['Adjust', 'Drag'];
-		// 事件源所在的容器
-		var tableWrap = $table.closest('.table-wrap');
-		if (!interactive || interactiveList.indexOf(interactive) === -1) {
-			tableWrap.removeAttr('user-interactive');
-		} else {
-			tableWrap.attr('user-interactive', interactive);
-		}
-	}
-}; /*
-    * Base: 基础方法
+  * 渲染表格使用的json数据 通过每个tr上的cache-key进行获取
+  */
+
+
+	_createClass(Cache, [{
+		key: 'initGridData',
+		value: function initGridData() {
+			this.responseData = {};
+			/*
+    * @获取当前行渲染时使用的数据
+    * $table: 当前操作的grid,由插件自动传入
+    * target: 将要获取数据所对应的tr[Element or NodeList]
     * */
-exports.default = Base;
+			this.__getRowData = function ($table, target) {
+				var gmName = $table.attr('grid-manager');
+				if (!gmName) {
+					return;
+				}
+				if (!this.responseData[gmName]) {
+					return;
+				}
+				// target type = Element 元素时, 返回单条数据对象;
+				if (_jTool2.default.type(target) === 'element') {
+					return this.responseData[gmName][target.getAttribute('cache-key')];
+				}
+				// target type =  NodeList 类型时, 返回数组
+				else if (_jTool2.default.type(target) === 'nodeList') {
+						var _this = this;
+						var rodData = [];
+						_jTool2.default.each(target, function (i, v) {
+							rodData.push(_this.responseData[gmName][v.getAttribute('cache-key')]);
+						});
+						return rodData;
+					}
+			};
+			/*
+    * 存储行数据
+    * */
+			this.setRowData = function (gmName, key, value) {
+				if (!this.responseData[gmName]) {
+					this.responseData[gmName] = {};
+				}
+				this.responseData[gmName][key] = value;
+			};
+		}
+		// TODO 需要处理项: 将所有的记忆信息放至一个字段, 不再使用一个表一个字段.
+		/**
+   * 用户记忆
+   */
+
+	}, {
+		key: 'initUserMemory',
+		value: function initUserMemory() {
+			var _this2 = this;
+
+			/*
+    * 删除用户记忆
+    * $table: table [jTool Object]
+    * */
+			this.delUserMemory = function ($table) {
+				// 如果未指定删除的table, 则全部清除
+				if (!$table || $table.length === 0) {
+					window.localStorage.removeItem('GridManagerMemory');
+					return true;
+				}
+				var GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
+				if (!GridManagerMemory) {
+					return false;
+				}
+				GridManagerMemory = JSON.parse(GridManagerMemory);
+				// 指定删除的table, 则定点清除
+				var _key = this.getMemoryKey($table);
+				delete GridManagerMemory[_key];
+				// 清除后, 重新存储
+				window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
+				return true;
+			};
+			/*
+    * 获取表格的用户记忆标识码
+    * $table: table jTool
+    * */
+			this.getMemoryKey = function ($table) {
+				var settings = _this2.getSettings($table);
+				// 验证table是否有效
+				if (!$table || $table.length === 0) {
+					_Base2.default.outLog('getUserMemory:无效的table', 'error');
+					return false;
+				}
+				//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
+				var noCache = $table.attr('no-cache');
+				if (noCache && noCache == 'true') {
+					_Base2.default.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
+					return false;
+				}
+				if (!window.localStorage) {
+					_Base2.default.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
+					return false;
+				}
+				return window.location.pathname + window.location.hash + '-' + settings.gridManagerName;
+			};
+			/*
+    * @获取用户记忆
+    * $table:table
+    * 成功则返回本地存储数据,失败则返回空对象
+    * */
+			this.getUserMemory = function ($table) {
+				if (!$table || $table.length === 0) {
+					return {};
+				}
+				var _key = this.getMemoryKey($table);
+				if (!_key) {
+					return {};
+				}
+				var GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
+				//如无数据，增加属性标识：grid-manager-cache-error
+				if (!GridManagerMemory || GridManagerMemory === '{}') {
+					$table.attr('grid-manager-cache-error', 'error');
+					return {};
+				}
+				GridManagerMemory = JSON.parse(GridManagerMemory);
+				var _data = {
+					key: _key,
+					cache: JSON.parse(GridManagerMemory[_key] || '{}')
+				};
+				return _data;
+			};
+			/*
+    * @存储用户记忆
+    * $table:table [jTool object]
+    * isInit: 是否为初始存储缓存[用于处理宽度在特定情况下发生异常]
+    */
+			// TODO @baukh20170414: 参数isInit 已经废弃, 之后可以删除
+			this.saveUserMemory = function (table, isInit) {
+				var Settings = _this2.getSettings(table);
+				var _this = _this2;
+				//当前为禁用缓存模式，直接跳出
+				if (Settings.disableCache) {
+					return false;
+				}
+				var _table = (0, _jTool2.default)(table);
+				//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
+				var noCache = _table.attr('no-cache');
+				if (!_table || _table.length == 0) {
+					_Base2.default.outLog('saveUserMemory:无效的table', 'error');
+					return false;
+				}
+				if (noCache && noCache == 'true') {
+					_Base2.default.outLog('缓存功能已被禁用：当前表缺失必要参数', 'info');
+					return false;
+				}
+				if (!window.localStorage) {
+					_Base2.default.outLog('当前浏览器不支持：localStorage，缓存功能失效。', 'error');
+					return false;
+				}
+				var thList = (0, _jTool2.default)('thead[grid-manager-thead] th', _table);
+				if (!thList || thList.length == 0) {
+					_Base2.default.outLog('saveUserMemory:无效的thList,请检查是否正确配置table,thead,th', 'error');
+					return false;
+				}
+
+				var _cache = {},
+				    _pageCache = {},
+				    _thCache = [],
+				    _thData = {};
+
+				var $v = void 0;
+				_jTool2.default.each(thList, function (i, v) {
+					$v = (0, _jTool2.default)(v);
+					_thData = {};
+					_thData.th_name = $v.attr('th-name');
+					if (Settings.supportDrag) {
+						_thData.th_index = $v.index();
+					}
+					if (Settings.supportAdjust) {
+						//用于处理宽度在特定情况下发生异常
+						// isInit ? $v.css('width', $v.css('width')) : '';
+						_thData.th_width = $v.width();
+					}
+					if (Settings.supportConfig) {
+						_thData.isShow = (0, _jTool2.default)('.config-area li[th-name="' + _thData.th_name + '"]', _table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
+					}
+					_thCache.push(_thData);
+				});
+				_cache.th = _thCache;
+				//存储分页
+				if (Settings.supportAjaxPage) {
+					_pageCache.pSize = parseInt((0, _jTool2.default)('select[name="pSizeArea"]', _table.closest('.table-wrap')).val());
+					_cache.page = _pageCache;
+				}
+				var _cacheString = JSON.stringify(_cache);
+				var GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
+				if (!GridManagerMemory) {
+					GridManagerMemory = {};
+				} else {
+					GridManagerMemory = JSON.parse(GridManagerMemory);
+				}
+				GridManagerMemory[_this.getMemoryKey(_table)] = _cacheString;
+				window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
+				return _cacheString;
+			};
+		}
+		/**
+   * 核心方法
+   */
+
+	}, {
+		key: 'initCoreMethod',
+		value: function initCoreMethod() {
+			var _this3 = this;
+
+			/**
+    * 获取配置项
+    * @param $table
+    * @returns {*}
+    */
+			this.getSettings = function ($table) {
+				if (!$table || $table.length === 0) {
+					return {};
+				}
+				// 这里返回的是clone对象 而非对象本身
+				return _jTool2.default.extend(true, {}, $table.data('settings'));
+			};
+
+			/**
+    * 更新配置项
+    * @param $table
+    * @param settings
+    */
+			this.updateSettings = function ($table, settings) {
+				var data = _jTool2.default.extend(true, {}, settings);
+				$table.data('settings', data);
+			};
+
+			/**
+    * 验证版本号清除列表缓存
+    * @param $table
+    * @param version 版本号
+    */
+			this.cleanTableCacheForVersion = function ($table, version) {
+				var cacheVersion = window.localStorage.getItem('GridManagerVersion');
+				// 当前为第一次渲染
+				if (!cacheVersion) {
+					window.localStorage.setItem('GridManagerVersion', version);
+				}
+				// 版本变更, 清除所有的用户记忆
+				if (cacheVersion && cacheVersion !== version) {
+					_this3.cleanTableCache(null, '版本已升级,原全部缓存被自动清除');
+					window.localStorage.setItem('GridManagerVersion', version);
+				}
+			};
+
+			/**
+    * 清除列表缓存
+    * @param $table
+    * @param cleanText
+    */
+			this.cleanTableCache = function ($table, cleanText) {
+				// 不指定table, 清除全部
+				if ($table === null) {
+					_this3.delUserMemory();
+					_Base2.default.outLog('清除缓存成功,清除原因：' + cleanText, 'info');
+					// 指定table, 定点清除
+				} else {
+					var Settings = _this3.getSettings($table);
+					_this3.delUserMemory($table);
+					_Base2.default.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：' + cleanText, 'info');
+				}
+			};
+
+			/**
+    * 根据本地缓存thead配置列表: 获取本地缓存, 存储原位置顺序, 根据本地缓存进行配置
+    * @param $table
+    */
+			this.configTheadForCache = function ($table) {
+				var Settings = _this3.getSettings($table);
+				var _this = _this3;
+				var _data = _this.getUserMemory($table),
+				    //本地缓存的数据
+				_domArray = [];
+				//验证：当前$table 没有缓存数据
+				if (!_data || _jTool2.default.isEmptyObject(_data) || !_data.cache || _jTool2.default.isEmptyObject(_data.cache)) {
+					return;
+				}
+				// 列表的缓存数据
+				var _cache = _data.cache;
+				// th相关 缓存
+				var _thCache = _cache.th;
+				//验证：缓存数据与当前列表项是否匹配
+				var _thNameTmpList = [];
+				var _dataAvailable = true;
+				// 单一的th
+				var _th = void 0;
+				// th的缓存json
+				var _thJson = void 0;
+				//验证：缓存数据与当前列表是否匹配
+				if (!_thCache || _thCache.length != (0, _jTool2.default)('thead th', $table).length) {
+					_this.cleanTableCache($table, '缓存数据与当前列表不匹配');
+					return;
+				}
+				_jTool2.default.each(_thCache, function (i2, v2) {
+					_thJson = v2;
+					_th = (0, _jTool2.default)('th[th-name=' + _thJson.th_name + ']', $table);
+					if (_th.length == 0 || _thNameTmpList.indexOf(_thJson.th_name) != -1) {
+						_this.cleanTableCache($table, '缓存数据与当前列表不匹配');
+						_dataAvailable = false;
+						return false;
+					}
+					_thNameTmpList.push(_thJson.th_name);
+				});
+				//数据可用，进行列的配置
+				if (_dataAvailable) {
+					_jTool2.default.each(_thCache, function (i2, v2) {
+						_thJson = v2;
+						_th = (0, _jTool2.default)('th[th-name=' + _thJson.th_name + ']', $table);
+						//配置列的宽度
+						if (Settings.supportAdjust && _th.attr('gm-create') !== 'true') {
+							_th.css('width', _thJson.th_width);
+						}
+						//配置列排序数据
+						if (Settings.supportDrag && typeof _thJson.th_index !== 'undefined') {
+							_domArray[_thJson.th_index] = _th;
+						} else {
+							_domArray[i2] = _th;
+						}
+						//配置列的可见
+						if (Settings.supportConfig) {
+							_Base2.default.setAreVisible(_th, typeof _thJson.isShow == 'undefined' ? true : _thJson.isShow, true);
+						}
+					});
+					//配置列的顺序
+					if (Settings.supportDrag) {
+						$table.find('thead tr').html(_domArray);
+					}
+				}
+			};
+
+			/**
+    * 存储原Th DOM至table data
+    * @param $table
+    */
+			this.setOriginalThDOM = function ($table) {
+				var _thList = [];
+				var _thDOM = (0, _jTool2.default)('thead[grid-manager-thead] th', $table);
+
+				_jTool2.default.each(_thDOM, function (i, v) {
+					_thList.push(v.getAttribute('th-name'));
+				});
+				$table.data('originalThList', _thList);
+			};
+
+			/**
+    * 获取原Th DOM至table data
+    * @param $table
+    * @returns {*|HTMLElement|jQuery}
+    */
+			this.getOriginalThDOM = function ($table) {
+				var _thArray = [];
+				var _thList = $table.data('originalThList');
+
+				_jTool2.default.each(_thList, function (i, v) {
+					_thArray.push((0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + v + '"]', $table).get(0));
+				});
+				return (0, _jTool2.default)(_thArray);
+			};
+
+			/**
+    * 存储对外实例
+    * @param $table
+    */
+			this.setGridManagerToJTool = function ($table) {
+				// 调用的地方需要使用call 更改 this指向
+				$table.data('gridManager', _this3);
+			};
+
+			/**
+    * 获取gridManager
+    * @param $table
+    * @returns {*}
+    * @private
+    */
+			this.__getGridManager = function ($table) {
+				if (!$table || $table.length === 0) {
+					return {};
+				}
+				var settings = _this3.getSettings($table);
+				var gridManager = $table.data('gridManager');
+				// 会一并被修改 $table.data('gridManager') 指向的 Object
+				_jTool2.default.extend(gridManager, settings);
+				return gridManager;
+			};
+		}
+	}]);
+
+	return Cache;
+}();
+
+exports.default = new Cache();
 
 /***/ }),
 /* 2 */
@@ -304,390 +535,263 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Base: 基础方法
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * */
+
+
 var _jTool = __webpack_require__(0);
 
 var _jTool2 = _interopRequireDefault(_jTool);
 
-var _Base = __webpack_require__(1);
-
-var _Base2 = _interopRequireDefault(_Base);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
- * @渲染表格使用的json数据
- * 通过每个tr上的cache-key进行获取
- * */
-/*
-* @Cache: 本地缓存
-* 缓存分为三部分:
-* 1.gridData: 渲染表格时所使用的json数据 [存储在GM实例]
-* 2.coreData: 核心缓存数据 [存储在DOM上]
-* 3.userMemory: 用户记忆 [存储在localStorage]
-* */
-var GridData = function GridData() {
-	this.responseData = {};
-	/*
-  * @获取当前行渲染时使用的数据
-  * $table: 当前操作的grid,由插件自动传入
-  * target: 将要获取数据所对应的tr[Element or NodeList]
-  * */
-	this.__getRowData = function ($table, target) {
-		var gmName = $table.attr('grid-manager');
-		if (!gmName) {
-			return;
-		}
-		if (!this.responseData[gmName]) {
-			return;
-		}
-		// target type = Element 元素时, 返回单条数据对象;
-		if (_jTool2.default.type(target) === 'element') {
-			return this.responseData[gmName][target.getAttribute('cache-key')];
-		}
-		// target type =  NodeList 类型时, 返回数组
-		else if (_jTool2.default.type(target) === 'nodeList') {
-				var _this = this;
-				var rodData = [];
-				_jTool2.default.each(target, function (i, v) {
-					rodData.push(_this.responseData[gmName][v.getAttribute('cache-key')]);
-				});
-				return rodData;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Base = function () {
+	function Base() {
+		_classCallCheck(this, Base);
+	}
+
+	_createClass(Base, [{
+		key: 'outLog',
+
+		/**
+   * 输出日志
+   * @param msg 输出文本
+   * @param type 输出分类[info,warn,error]
+   * @returns {*}
+      */
+		value: function outLog(msg, type) {
+			if (!type) {
+				console.log('GridManager:', msg);
+			} else if (type === 'info') {
+				console.info('GridManager Info: ', msg);
+			} else if (type === 'warn') {
+				console.warn('GridManager Warn: ', msg);
+			} else if (type === 'error') {
+				console.error('GridManager Error: ', msg);
 			}
-	};
-	/*
-  * 存储行数据
-  * */
-	this.setRowData = function (gmName, key, value) {
-		if (!this.responseData[gmName]) {
-			this.responseData[gmName] = {};
-		}
-		this.responseData[gmName][key] = value;
-	};
-};
-/*
-* 用户记忆
-* */
-// TODO 需要处理项: 将所有的记忆信息放至一个字段, 不再使用一个表一个字段.
-var UserMemory = function UserMemory() {
-	/*
-  * 删除用户记忆
-  * $table: table [jTool Object]
-  * */
-	this.delUserMemory = function ($table) {
-		// 如果未指定删除的table, 则全部清除
-		if (!$table || $table.length === 0) {
-			window.localStorage.removeItem('GridManagerMemory');
-			return true;
-		}
-		var GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
-		if (!GridManagerMemory) {
-			return false;
-		}
-		GridManagerMemory = JSON.parse(GridManagerMemory);
-		// 指定删除的table, 则定点清除
-		var _key = this.getMemoryKey($table);
-		delete GridManagerMemory[_key];
-		// 清除后, 重新存储
-		window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
-		return true;
-	};
-	/*
-  * 获取表格的用户记忆标识码
-  * $table: table jTool
-  * */
-	this.getMemoryKey = function ($table) {
-		var settings = Cache.getSettings($table);
-		// 验证table是否有效
-		if (!$table || $table.length === 0) {
-			_Base2.default.outLog('getUserMemory:无效的table', 'error');
-			return false;
-		}
-		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-		var noCache = $table.attr('no-cache');
-		if (noCache && noCache == 'true') {
-			_Base2.default.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
-			return false;
-		}
-		if (!window.localStorage) {
-			_Base2.default.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
-			return false;
-		}
-		return window.location.pathname + window.location.hash + '-' + settings.gridManagerName;
-	};
-	/*
-  * @获取用户记忆
-  * $table:table
-  * 成功则返回本地存储数据,失败则返回空对象
-  * */
-	this.getUserMemory = function ($table) {
-		if (!$table || $table.length === 0) {
-			return {};
-		}
-		var _key = this.getMemoryKey($table);
-		if (!_key) {
-			return {};
-		}
-		var GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
-		//如无数据，增加属性标识：grid-manager-cache-error
-		if (!GridManagerMemory || GridManagerMemory === '{}') {
-			$table.attr('grid-manager-cache-error', 'error');
-			return {};
-		}
-		GridManagerMemory = JSON.parse(GridManagerMemory);
-		var _data = {
-			key: _key,
-			cache: JSON.parse(GridManagerMemory[_key] || '{}')
-		};
-		return _data;
-	};
-	/*
-  * @存储用户记忆
-  * $table:table [jTool object]
-  * isInit: 是否为初始存储缓存[用于处理宽度在特定情况下发生异常]
-  */
-	// TODO @baukh20170414: 参数isInit 已经废弃, 之后可以删除
-	this.saveUserMemory = function (table, isInit) {
-		var Settings = Cache.getSettings(table);
-		var _this = this;
-		//当前为禁用缓存模式，直接跳出
-		if (Settings.disableCache) {
-			return false;
-		}
-		var _table = (0, _jTool2.default)(table);
-		//当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-		var noCache = _table.attr('no-cache');
-		if (!_table || _table.length == 0) {
-			_Base2.default.outLog('saveUserMemory:无效的table', 'error');
-			return false;
-		}
-		if (noCache && noCache == 'true') {
-			_Base2.default.outLog('缓存功能已被禁用：当前表缺失必要参数', 'info');
-			return false;
-		}
-		if (!window.localStorage) {
-			_Base2.default.outLog('当前浏览器不支持：localStorage，缓存功能失效。', 'error');
-			return false;
-		}
-		var thList = (0, _jTool2.default)('thead[grid-manager-thead] th', _table);
-		if (!thList || thList.length == 0) {
-			_Base2.default.outLog('saveUserMemory:无效的thList,请检查是否正确配置table,thead,th', 'error');
-			return false;
+			return msg;
 		}
 
-		var _cache = {},
-		    _pageCache = {},
-		    _thCache = [],
-		    _thData = {};
+		/**
+   * 获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
+   * @param $th
+   * @returns {*|HTMLElement|jQuery}
+      */
 
-		var $v = void 0;
-		_jTool2.default.each(thList, function (i, v) {
-			$v = (0, _jTool2.default)(v);
-			_thData = {};
-			_thData.th_name = $v.attr('th-name');
-			if (Settings.supportDrag) {
-				_thData.th_index = $v.index();
-			}
-			if (Settings.supportAdjust) {
-				//用于处理宽度在特定情况下发生异常
-				// isInit ? $v.css('width', $v.css('width')) : '';
-				_thData.th_width = $v.width();
-			}
-			if (Settings.supportConfig) {
-				_thData.isShow = (0, _jTool2.default)('.config-area li[th-name="' + _thData.th_name + '"]', _table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
-			}
-			_thCache.push(_thData);
-		});
-		_cache.th = _thCache;
-		//存储分页
-		if (Settings.supportAjaxPage) {
-			_pageCache.pSize = parseInt((0, _jTool2.default)('select[name="pSizeArea"]', _table.closest('.table-wrap')).val());
-			_cache.page = _pageCache;
-		}
-		var _cacheString = JSON.stringify(_cache);
-		var GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
-		if (!GridManagerMemory) {
-			GridManagerMemory = {};
-		} else {
-			GridManagerMemory = JSON.parse(GridManagerMemory);
-		}
-		GridManagerMemory[_this.getMemoryKey(_table)] = _cacheString;
-		window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
-		return _cacheString;
-	};
-};
-/*
-*
-* */
-var Cache = {
-	/*
-  * 获取配置项
-  * $table:table [jTool object]
-  * */
-	getSettings: function getSettings($table) {
-		if (!$table || $table.length === 0) {
-			return {};
-		}
-		// 这里返回的是clone对象 而非对象本身
-		return _jTool2.default.extend(true, {}, $table.data('settings'));
-	}
-	/*
- * 更新配置项
- * $table:table [jTool object]
- * */
-	, updateSettings: function updateSettings($table, settings) {
-		var data = _jTool2.default.extend(true, {}, settings);
-		$table.data('settings', data);
-	}
-	/*
- *  @验证版本号清除列表缓存
- *  $table: jTool table
- *  version: 版本号
- * */
-	, cleanTableCacheForVersion: function cleanTableCacheForVersion($table, version) {
-		var cacheVersion = window.localStorage.getItem('GridManagerVersion');
-		// 当前为第一次渲染
-		if (!cacheVersion) {
-			window.localStorage.setItem('GridManagerVersion', version);
-		}
-		// 版本变更, 清除所有的用户记忆
-		if (cacheVersion && cacheVersion !== version) {
-			this.cleanTableCache(null, '版本已升级,原全部缓存被自动清除');
-			window.localStorage.setItem('GridManagerVersion', version);
-		}
-	}
-	/*
- * @清除列表缓存
- * $table: table [jTool object]
- * cleanText: 清除缓存的原因
- * */
-	, cleanTableCache: function cleanTableCache($table, cleanText) {
-		// 不指定table, 清除全部
-		if ($table === null) {
-			this.delUserMemory();
-			_Base2.default.outLog('清除缓存成功,清除原因：' + cleanText, 'info');
-			// 指定table, 定点清除
-		} else {
-			var Settings = this.getSettings($table);
-			this.delUserMemory($table);
-			_Base2.default.outLog(Settings.gridManagerName + '清除缓存成功,清除原因：' + cleanText, 'info');
-		}
-	}
-	/*
- * @根据本地缓存thead配置列表: 获取本地缓存, 存储原位置顺序, 根据本地缓存进行配置
- * $.table: table [jTool object]
- * */
-	, configTheadForCache: function configTheadForCache(table) {
-		var Settings = this.getSettings(table);
-		var _this = this;
-		var _data = _this.getUserMemory(table),
-		    //本地缓存的数据
-		_domArray = [];
-		//验证：当前table 没有缓存数据
-		if (!_data || _jTool2.default.isEmptyObject(_data) || !_data.cache || _jTool2.default.isEmptyObject(_data.cache)) {
-			return;
-		}
-		// 列表的缓存数据
-		var _cache = _data.cache;
-		// th相关 缓存
-		var _thCache = _cache.th;
-		//验证：缓存数据与当前列表项是否匹配
-		var _thNameTmpList = [];
-		var _dataAvailable = true;
-		// 单一的th
-		var _th = void 0;
-		// th的缓存json
-		var _thJson = void 0;
-		//验证：缓存数据与当前列表是否匹配
-		if (!_thCache || _thCache.length != (0, _jTool2.default)('thead th', table).length) {
-			_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
-			return;
-		}
-		_jTool2.default.each(_thCache, function (i2, v2) {
-			_thJson = v2;
-			_th = (0, _jTool2.default)('th[th-name=' + _thJson.th_name + ']', table);
-			if (_th.length == 0 || _thNameTmpList.indexOf(_thJson.th_name) != -1) {
-				_this.cleanTableCache(table, '缓存数据与当前列表不匹配');
-				_dataAvailable = false;
-				return false;
-			}
-			_thNameTmpList.push(_thJson.th_name);
-		});
-		//数据可用，进行列的配置
-		if (_dataAvailable) {
-			_jTool2.default.each(_thCache, function (i2, v2) {
-				_thJson = v2;
-				_th = (0, _jTool2.default)('th[th-name=' + _thJson.th_name + ']', table);
-				//配置列的宽度
-				if (Settings.supportAdjust && _th.attr('gm-create') !== 'true') {
-					_th.css('width', _thJson.th_width);
-				}
-				//配置列排序数据
-				if (Settings.supportDrag && typeof _thJson.th_index !== 'undefined') {
-					_domArray[_thJson.th_index] = _th;
-				} else {
-					_domArray[i2] = _th;
-				}
-				//配置列的可见
-				if (Settings.supportConfig) {
-					_Base2.default.setAreVisible(_th, typeof _thJson.isShow == 'undefined' ? true : _thJson.isShow, true);
+	}, {
+		key: 'getColTd',
+		value: function getColTd($th) {
+			var tableWrap = $th.closest('.table-wrap');
+			var thIndex = $th.index();
+			var trList = (0, _jTool2.default)('tbody tr', tableWrap);
+			var tdList = [];
+			var _td = null;
+			_jTool2.default.each(trList, function (i, v) {
+				_td = (0, _jTool2.default)('td', v).get(thIndex);
+				if (_td) {
+					tdList.push(_td);
 				}
 			});
-			//配置列的顺序
-			if (Settings.supportDrag) {
-				table.find('thead tr').html(_domArray);
+			return (0, _jTool2.default)(tdList);
+		}
+
+		/**
+   * 初始化列显示|隐藏
+   * @param $table
+      */
+
+	}, {
+		key: 'initVisible',
+		value: function initVisible($table) {
+			// 所有的th
+			var _thList = (0, _jTool2.default)('thead th', $table);
+
+			// tbody下的tr
+			var _trList = (0, _jTool2.default)('tbody tr', $table);
+			var _td = null;
+			_jTool2.default.each(_thList, function (i, v) {
+				v = (0, _jTool2.default)(v);
+				_jTool2.default.each(_trList, function (i2, v2) {
+					_td = (0, _jTool2.default)('td', v2).eq(v.index());
+					_td.attr('td-visible', v.attr('th-visible'));
+				});
+			});
+		}
+
+		/**
+   * 设置列是否可见
+   * @param $thList 即将配置的列所对应的th[jTool object，可以是多个]
+   * @param isVisible 是否可见
+      * @param cb
+      */
+
+	}, {
+		key: 'setAreVisible',
+		value: function setAreVisible($thList, isVisible, cb) {
+			// 当前所在的table
+			var _table = null;
+
+			// 当前所在的容器
+			var _tableWarp = void 0;
+
+			// 当前操作的th
+			var _th = null;
+
+			// 当前tbody下所有的tr
+			var _trList = null;
+
+			// 所对应的td
+			var _tdList = [];
+
+			// 所对应的显示隐藏所在的li
+			var _checkLi = null;
+
+			// 所对应的显示隐藏事件
+			var _checkbox = null;
+			_jTool2.default.each($thList, function (i, v) {
+				_th = (0, _jTool2.default)(v);
+				_table = _th.closest('table');
+				_tableWarp = _table.closest('.table-wrap');
+				_trList = (0, _jTool2.default)('tbody tr', _table);
+				_checkLi = (0, _jTool2.default)('.config-area li[th-name="' + _th.attr('th-name') + '"]', _tableWarp);
+				_checkbox = _checkLi.find('input[type="checkbox"]');
+				if (_checkbox.length === 0) {
+					return;
+				}
+				_jTool2.default.each(_trList, function (i2, v2) {
+					_tdList.push((0, _jTool2.default)(v2).find('td').get(_th.index()));
+				});
+				// 显示
+				if (isVisible) {
+					_th.attr('th-visible', 'visible');
+					_jTool2.default.each(_tdList, function (i2, v2) {
+						// $(v2).show();
+						v2.setAttribute('td-visible', 'visible');
+					});
+					_checkLi.addClass('checked-li');
+					_checkbox.prop('checked', true);
+				} else {
+					// 隐藏
+					_th.attr('th-visible', 'none');
+					_jTool2.default.each(_tdList, function (i2, v2) {
+						// $(v2).hide();
+						v2.setAttribute('td-visible', 'none');
+					});
+					_checkLi.removeClass('checked-li');
+					_checkbox.prop('checked', false);
+				}
+				typeof cb === 'function' ? cb() : '';
+			});
+		}
+
+		/**
+   * 获取TH宽度
+   * @param th
+   * @returns {*}
+      */
+
+	}, {
+		key: 'getTextWidth',
+		value: function getTextWidth(th) {
+			var $th = (0, _jTool2.default)(th);
+
+			// th下的GridManager包裹容器
+			var thWarp = (0, _jTool2.default)('.th-wrap', $th);
+
+			// 文本所在容器
+			var thText = (0, _jTool2.default)('.th-text', $th);
+
+			// 文本镜象 用于处理实时获取文本长度
+			var tableWrap = $th.closest('.table-wrap');
+			var textDreamland = (0, _jTool2.default)('.text-dreamland', tableWrap);
+
+			// 将th文本嵌入文本镜象 用于获取文本实时宽度
+			textDreamland.text(thText.text());
+			textDreamland.css({
+				fontSize: thText.css('font-size'),
+				fontWeight: thText.css('font-weight'),
+				fontFamily: thText.css('font-family')
+			});
+			var thPaddingLeft = thWarp.css('padding-left');
+			var thPaddingRight = thWarp.css('padding-right');
+			var thWidth = textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0);
+			return thWidth;
+		}
+
+		/**
+   * 显示加载中动画
+   * @param dom 加载动画的容器
+   * @param cb 回调函数
+      */
+
+	}, {
+		key: 'showLoading',
+		value: function showLoading(dom, cb) {
+			if (!dom || dom.length === 0) {
+				return;
+			}
+			var loading = dom.find('.load-area');
+			if (loading.length > 0) {
+				loading.remove();
+			}
+			var loadingDom = (0, _jTool2.default)('<div class="load-area loading"><div class="loadInner kernel"></div></div>');
+			dom.append(loadingDom);
+
+			// 进行loading图标居中显示
+			var loadInner = dom.find('.load-area').find('.loadInner');
+			var domHeight = dom.height();
+			var loadInnerHeight = loadInner.height();
+			loadInner.css('margin-top', (domHeight - loadInnerHeight) / 2);
+			window.setTimeout(function () {
+				typeof cb === 'function' ? cb() : '';
+			}, 100);
+		}
+
+		/**
+   * 隐藏加载中动画
+   * @param dom
+   * @param cb
+      */
+
+	}, {
+		key: 'hideLoading',
+		value: function hideLoading(dom, cb) {
+			if (!dom || dom.length === 0) {
+				return;
+			}
+			window.setTimeout(function () {
+				(0, _jTool2.default)('.load-area', dom).remove();
+				typeof cb === 'function' ? cb() : '';
+			}, 500);
+		}
+
+		/**
+   * 更新当前用户交互状态, 用于优化置顶状态下进行[拖拽, 宽度调整]操作时,页面出现滚动的问题
+   * @param $table
+   * @param interactive: 如果不存在于interactiveList内, 将删除属性[user-interactive]
+   */
+
+	}, {
+		key: 'updateInteractive',
+		value: function updateInteractive($table, interactive) {
+			var interactiveList = ['Adjust', 'Drag'];
+			// 事件源所在的容器
+			var tableWrap = $table.closest('.table-wrap');
+			if (!interactive || interactiveList.indexOf(interactive) === -1) {
+				tableWrap.removeAttr('user-interactive');
+			} else {
+				tableWrap.attr('user-interactive', interactive);
 			}
 		}
-	}
-	/*
-  @存储原Th DOM至table data
-  $table: table [jTool object]
-  */
-	, setOriginalThDOM: function setOriginalThDOM($table) {
-		var _thList = [];
-		var _thDOM = (0, _jTool2.default)('thead[grid-manager-thead] th', $table);
+	}]);
 
-		_jTool2.default.each(_thDOM, function (i, v) {
-			_thList.push(v.getAttribute('th-name'));
-		});
-		$table.data('originalThList', _thList);
-	}
-	/*
-  @获取原Th DOM至table data
-  $table: table [jTool object]
-  */
-	, getOriginalThDOM: function getOriginalThDOM($table) {
-		var _thArray = [];
-		var _thList = $table.data('originalThList');
+	return Base;
+}();
 
-		_jTool2.default.each(_thList, function (i, v) {
-			_thArray.push((0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + v + '"]', $table).get(0));
-		});
-		return (0, _jTool2.default)(_thArray);
-	}
-	/*
- * @存储对外实例
- * $table:当前被实例化的table
- * */
-	, setGridManagerToJTool: function setGridManagerToJTool($table) {
-		$table.data('gridManager', this); // 调用的地方需要使用call 更改 this指向
-	}
-	/*
-  @获取gridManager
-  $.table:table [jTool object]
-  */
-	, __getGridManager: function __getGridManager($table) {
-		if (!$table || $table.length === 0) {
-			return {};
-		}
-		var settings = this.getSettings($table);
-		var gridManager = $table.data('gridManager');
-		// 会一并被修改 $table.data('gridManager') 指向的 Object
-		_jTool2.default.extend(gridManager, settings);
-		return gridManager;
-	}
-};
-_jTool2.default.extend(Cache, new UserMemory(), new GridData());
-exports.default = Cache;
+exports.default = new Base();
 
 /***/ }),
 /* 3 */
@@ -716,7 +820,7 @@ var _AjaxPage = __webpack_require__(7);
 
 var _AjaxPage2 = _interopRequireDefault(_AjaxPage);
 
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
@@ -728,7 +832,7 @@ var _Checkbox = __webpack_require__(9);
 
 var _Checkbox2 = _interopRequireDefault(_Checkbox);
 
-var _Base = __webpack_require__(1);
+var _Base = __webpack_require__(2);
 
 var _Base2 = _interopRequireDefault(_Base);
 
@@ -1208,11 +1312,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                                                                                                                                                                                                                                                                                * */
 
 
-var _Base = __webpack_require__(1);
+var _Base = __webpack_require__(2);
 
 var _Base2 = _interopRequireDefault(_Base);
 
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
@@ -1273,153 +1377,175 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Adjust: 宽度调整
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * */
+
+
 var _jTool = __webpack_require__(0);
 
 var _jTool2 = _interopRequireDefault(_jTool);
 
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
-var _Base = __webpack_require__(1);
+var _Base = __webpack_require__(2);
 
 var _Base2 = _interopRequireDefault(_Base);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Adjust = {
-	html: function html() {
-		return '<span class="adjust-action"></span>';
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Adjust = function () {
+	function Adjust() {
+		_classCallCheck(this, Adjust);
 	}
-	/*
-  @绑定宽度调整事件
-  $table: table [jTool object]
-  */
-	, bindAdjustEvent: function bindAdjustEvent($table) {
-		// 监听鼠标调整列宽度
-		$table.off('mousedown', '.adjust-action');
-		$table.on('mousedown', '.adjust-action', function (event) {
-			var _dragAction = (0, _jTool2.default)(this);
-			// 事件源所在的th
-			var _th = _dragAction.closest('th');
 
-			// 事件源所在的tr
-			var _tr = _th.parent();
+	/**
+  * 返回宽度调整HTML
+  * @returns {string}
+     */
 
-			// 事件源所在的table
-			var _table = _tr.closest('table');
 
-			// 事件源所在的DIV
+	_createClass(Adjust, [{
+		key: 'html',
+		value: function html() {
+			return '<span class="adjust-action"></span>';
+		}
 
-			var tableDiv = _table.closest('.table-div');
+		/**
+   * 绑定宽度调整事件
+   * @param: table [jTool object]
+   */
 
-			// 当前存储属性
-			var settings = _Cache2.default.getSettings(_table);
+	}, {
+		key: 'bindAdjustEvent',
+		value: function bindAdjustEvent($table) {
+			// 监听鼠标调整列宽度
+			$table.off('mousedown', '.adjust-action');
+			$table.on('mousedown', '.adjust-action', function (event) {
+				var _dragAction = (0, _jTool2.default)(this);
+				// 事件源所在的th
+				var _th = _dragAction.closest('th');
 
-			// 事件源同层级下的所有th
-			var _allTh = _tr.find('th[th-visible="visible"]');
+				// 事件源所在的tr
+				var _tr = _th.parent();
 
-			// 事件源下一个可视th
-			var _nextTh = _allTh.eq(_th.index(_allTh) + 1);
+				// 事件源所在的table
+				var _table = _tr.closest('table');
 
-			// 存储与事件源同列的所有td
-			var _td = _Base2.default.getColTd(_th);
+				// 当前存储属性
+				var settings = _Cache2.default.getSettings(_table);
 
-			// 宽度调整触发回调事件
-			settings.adjustBefore(event);
+				// 事件源同层级下的所有th
+				var _allTh = _tr.find('th[th-visible="visible"]');
 
-			//增加宽度调整中样式
-			_th.addClass('adjust-selected');
-			_td.addClass('adjust-selected');
+				// 事件源下一个可视th
+				var _nextTh = _allTh.eq(_th.index(_allTh) + 1);
 
-			// 更新界面交互标识
-			_Base2.default.updateInteractive(_table, 'Adjust');
+				// 存储与事件源同列的所有td
+				var _td = _Base2.default.getColTd(_th);
 
-			//绑定鼠标拖动事件
-			var _thWidth = void 0,
-			    _NextWidth = void 0;
-			var _thMinWidth = _Base2.default.getTextWidth(_th),
-			    _NextThMinWidth = _Base2.default.getTextWidth(_nextTh);
-			_table.unbind('mousemove');
-			_table.bind('mousemove', function (event) {
-				_table.addClass('no-select-text');
-				_thWidth = event.clientX - _th.offset().left;
-				_thWidth = Math.ceil(_thWidth);
-				_NextWidth = _nextTh.width() + _th.width() - _thWidth;
-				_NextWidth = Math.ceil(_NextWidth);
-				// 限定最小值
-				// TODO @baukh20170430: 由原来限定最小值调整为达到最小值后不再执行后续操作
-				if (_thWidth < _thMinWidth) {
-					// _thWidth = _thMinWidth;
-					return;
-				}
-				// TODO 这里需要确认,当向后调整至最小时,该如何操作?
-				if (_NextWidth < _NextThMinWidth) {
-					_NextWidth = _NextThMinWidth;
-				}
-				// 验证是否更改
-				if (_thWidth === _th.width()) {
-					return;
-				}
-				// 验证宽度是否匹配
-				if (_thWidth + _NextWidth < _th.width() + _nextTh.width()) {
-					_NextWidth = _th.width() + _nextTh.width() - _thWidth;
-				}
-				_th.width(_thWidth);
-				_nextTh.width(_NextWidth);
+				// 宽度调整触发回调事件
+				settings.adjustBefore(event);
 
-				// 当前宽度调整的事件原为表头置顶的thead th
-				// 修改与置顶thead 对应的 thead
-				if (_th.closest('.set-top').length === 1) {
-					(0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _th.attr('th-name') + '"]', _table).width(_thWidth);
-					(0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _nextTh.attr('th-name') + '"]', _table).width(_NextWidth);
-					(0, _jTool2.default)('thead[grid-manager-mock-thead]', _table).width((0, _jTool2.default)('thead[grid-manager-thead]', _table).width());
-				}
-			});
+				// 增加宽度调整中样式
+				_th.addClass('adjust-selected');
+				_td.addClass('adjust-selected');
 
-			// 绑定鼠标放开、移出事件
-			_table.unbind('mouseup mouseleave');
-			_table.bind('mouseup mouseleave', function (event) {
-				var settings = _Cache2.default.getSettings($table);
-				_table.unbind('mousemove mouseleave');
-				// 存储用户记忆
-				_Cache2.default.saveUserMemory(_table);
-				if (_th.hasClass('adjust-selected')) {
-					// 其它操作也在table以该事件进行绑定,所以通过class进行区别
-					// 宽度调整成功回调事件
-					settings.adjustAfter(event);
-				}
-				_th.removeClass('adjust-selected');
-				_td.removeClass('adjust-selected');
-				_table.removeClass('no-select-text');
 				// 更新界面交互标识
-				_Base2.default.updateInteractive(_table);
+				_Base2.default.updateInteractive(_table, 'Adjust');
+
+				// 绑定鼠标拖动事件
+				var _thWidth = null;
+				var _NextWidth = null;
+				var _thMinWidth = _Base2.default.getTextWidth(_th);
+				var _NextThMinWidth = _Base2.default.getTextWidth(_nextTh);
+				_table.unbind('mousemove');
+				_table.bind('mousemove', function (event) {
+					_table.addClass('no-select-text');
+					_thWidth = event.clientX - _th.offset().left;
+					_thWidth = Math.ceil(_thWidth);
+					_NextWidth = _nextTh.width() + _th.width() - _thWidth;
+					_NextWidth = Math.ceil(_NextWidth);
+					// 达到最小值后不再执行后续操作
+					if (_thWidth < _thMinWidth) {
+						return;
+					}
+					if (_NextWidth < _NextThMinWidth) {
+						_NextWidth = _NextThMinWidth;
+					}
+					// 验证是否更改
+					if (_thWidth === _th.width()) {
+						return;
+					}
+					// 验证宽度是否匹配
+					if (_thWidth + _NextWidth < _th.width() + _nextTh.width()) {
+						_NextWidth = _th.width() + _nextTh.width() - _thWidth;
+					}
+					_th.width(_thWidth);
+					_nextTh.width(_NextWidth);
+
+					// 当前宽度调整的事件原为表头置顶的thead th
+					// 修改与置顶thead 对应的 thead
+					if (_th.closest('.set-top').length === 1) {
+						(0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _th.attr('th-name') + '"]', _table).width(_thWidth);
+						(0, _jTool2.default)('thead[grid-manager-thead] th[th-name="' + _nextTh.attr('th-name') + '"]', _table).width(_NextWidth);
+						(0, _jTool2.default)('thead[grid-manager-mock-thead]', _table).width((0, _jTool2.default)('thead[grid-manager-thead]', _table).width());
+					}
+				});
+
+				// 绑定鼠标放开、移出事件
+				_table.unbind('mouseup mouseleave');
+				_table.bind('mouseup mouseleave', function (event) {
+					var settings = _Cache2.default.getSettings($table);
+					_table.unbind('mousemove mouseleave');
+					// 存储用户记忆
+					_Cache2.default.saveUserMemory(_table);
+					if (_th.hasClass('adjust-selected')) {
+						// 其它操作也在table以该事件进行绑定,所以通过class进行区别
+						// 宽度调整成功回调事件
+						settings.adjustAfter(event);
+					}
+					_th.removeClass('adjust-selected');
+					_td.removeClass('adjust-selected');
+					_table.removeClass('no-select-text');
+					// 更新界面交互标识
+					_Base2.default.updateInteractive(_table);
+				});
+				return false;
 			});
-			return false;
-		});
-		return this;
-	}
-	/*
-  @通过缓存配置成功后, 重置宽度调整事件源dom
-  用于禁用最后一列调整宽度事件
-  $.table: table[jTool Object]
-  */
-	, resetAdjust: function resetAdjust($table) {
-		if (!$table || $table.length == 0) {
-			return false;
+			return this;
 		}
-		var _thList = (0, _jTool2.default)('thead [th-visible="visible"]', $table),
-		    _adjustAction = (0, _jTool2.default)('.adjust-action', _thList);
-		if (!_adjustAction || _adjustAction.length == 0) {
-			return false;
+
+		/**
+   * 通过缓存配置成功后, 重置宽度调整事件源dom 用于禁用最后一列调整宽度事件
+   * @param $table
+   * @returns {boolean}
+      */
+
+	}, {
+		key: 'resetAdjust',
+		value: function resetAdjust($table) {
+			if (!$table || $table.length === 0) {
+				return false;
+			}
+			var _thList = (0, _jTool2.default)('thead [th-visible="visible"]', $table);
+			var _adjustAction = (0, _jTool2.default)('.adjust-action', _thList);
+			if (!_adjustAction || _adjustAction.length === 0) {
+				return false;
+			}
+			_adjustAction.show();
+			_adjustAction.eq(_adjustAction.length - 1).hide();
 		}
-		_adjustAction.show();
-		_adjustAction.eq(_adjustAction.length - 1).hide();
-	}
-}; /*
-    * Adjust: 宽度调整
-    * */
-exports.default = Adjust;
+	}]);
+
+	return Adjust;
+}();
+
+exports.default = new Adjust();
 
 /***/ }),
 /* 6 */
@@ -1440,7 +1566,7 @@ var _Core = __webpack_require__(3);
 
 var _Core2 = _interopRequireDefault(_Core);
 
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
@@ -1522,11 +1648,16 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * AjaxPage: 分页
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * */
+
+
 var _jTool = __webpack_require__(0);
 
 var _jTool2 = _interopRequireDefault(_jTool);
 
-var _Base = __webpack_require__(1);
+var _Base = __webpack_require__(2);
 
 var _Base2 = _interopRequireDefault(_Base);
 
@@ -1534,7 +1665,7 @@ var _Core = __webpack_require__(3);
 
 var _Core2 = _interopRequireDefault(_Core);
 
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
@@ -1544,342 +1675,442 @@ var _I18n2 = _interopRequireDefault(_I18n);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var AjaxPage = {
-	html: function html($table) {
-		var html = '<div class="page-toolbar">\n\t\t\t\t\t\t<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>\n\t\t\t\t\t\t<div class="goto-page">\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText($table, "goto-first-text") + '\n\t\t\t\t\t\t\t<input type="text" class="gp-input"/>\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText($table, "goto-last-text") + '\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class="change-size"><select name="pSizeArea"></select></div>\n\t\t\t\t\t\t<div class="dataTables_info"></div>\n\t\t\t\t\t\t<div class="ajax-page"><ul class="pagination"></ul></div>\n\t\t\t\t\t</div>';
-		return html;
-	}
-	/**
-  * 初始化分页
-  * @param $table：[jTool object]
-  */
-	, initAjaxPage: function initAjaxPage($table) {
-		var Settings = _Cache2.default.getSettings($table);
-		var _this = this;
-		var tableWarp = $table.closest('.table-wrap'),
-		    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp); //分页工具条
-		var sizeData = Settings.sizeData;
-		pageToolbar.hide();
-		//生成每页显示条数选择框
-		_this.createPageSizeDOM($table, sizeData);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-		//绑定页面跳转事件
-		_this.bindPageJumpEvent($table);
-
-		//绑定设置显示条数切换事件
-		_this.bindSetPageSizeEvent($table);
+var AjaxPage = function () {
+	function AjaxPage() {
+		_classCallCheck(this, AjaxPage);
 	}
-	/**
-  * 生成页码DOM节点
-  * @param $table [jTool object]
-  * @param pageData  分页数据格式
-  */
-	, createPaginationDOM: function createPaginationDOM($table, pageData) {
-		var tableWarp = $table.closest('.table-wrap'),
-		    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
-		    //分页工具条
-		pagination = (0, _jTool2.default)('.pagination', pageToolbar); //分页区域
-		pagination.html(this.joinPagination($table, pageData));
-	}
-	/*
- * 拼接页码字符串
-  * @param $table: [table jTool object]
-  * @param cPage: 当前页码
-  * @param pageData  分页数据格式
- * */
-	, joinPagination: function joinPagination($table, pageData) {
-		var cPage = Number(pageData.cPage || 0),
-		    //当前页
-		tPage = Number(pageData.tPage || 0),
-		    //总页数
-		tHtml = '',
-		    //临时存储分页HTML片段
-		lHtml = ''; //临时存储末尾页码THML片段
-		//配置首页
-		var firstClassName = 'first-page',
-		    previousClassName = 'previous-page';
-		if (cPage == 1) {
-			firstClassName += ' disabled';
-			previousClassName += ' disabled';
-		}
-		tHtml += '<li c-page="1" class="' + firstClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText($table, "first-page") + '\n\t\t\t\t</li>\n\t\t\t\t<li c-page="' + (cPage - 1) + '" class="' + previousClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText($table, "previous-page") + '\n\t\t\t\t</li>';
-		// 循环开始数
-		var i = 1;
-		// 循环结束数
-		var maxI = tPage;
 
-		//配置first端省略符
-		if (cPage > 4) {
-			tHtml += '<li c-page="1">\n\t\t\t\t\t\t1\n\t\t\t\t\t</li>\n\t\t\t\t\t<li class="disabled">\n\t\t\t\t\t\t...\n\t\t\t\t\t</li>';
-			i = cPage - 2;
+	_createClass(AjaxPage, [{
+		key: 'html',
+
+		/**
+   * 分页所需HTML
+   * @param $table
+   * @returns {string}
+      */
+		value: function html($table) {
+			var html = '<div class="page-toolbar">\n\t\t\t\t\t\t<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>\n\t\t\t\t\t\t<div class="goto-page">\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText($table, 'goto-first-text') + '\n\t\t\t\t\t\t\t<input type="text" class="gp-input"/>\n\t\t\t\t\t\t\t' + _I18n2.default.i18nText($table, 'goto-last-text') + '\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class="change-size"><select name="pSizeArea"></select></div>\n\t\t\t\t\t\t<div class="dataTables_info"></div>\n\t\t\t\t\t\t<div class="ajax-page"><ul class="pagination"></ul></div>\n\t\t\t\t\t</div>';
+			return html;
 		}
-		//配置last端省略符
-		if (tPage - cPage > 4) {
-			maxI = cPage + 2;
-			lHtml += '<li class="disabled">\n\t\t\t\t\t\t...\n\t\t\t\t\t</li>\n\t\t\t\t\t<li c-page="' + tPage + '">\n\t\t\t\t\t\t' + tPage + '\n\t\t\t\t\t</li>';
+
+		/**
+   * 初始化分页
+   * @param $table
+      */
+
+	}, {
+		key: 'initAjaxPage',
+		value: function initAjaxPage($table) {
+			var Settings = _Cache2.default.getSettings($table);
+			var _this = this;
+			var tableWarp = $table.closest('.table-wrap');
+
+			// 分页工具条
+			var pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp);
+			var sizeData = Settings.sizeData;
+			pageToolbar.hide();
+
+			// 生成每页显示条数选择框
+			_this.createPageSizeDOM($table, sizeData);
+
+			// 绑定页面跳转事件
+			_this.bindPageJumpEvent($table);
+
+			// 绑定设置显示条数切换事件
+			_this.bindSetPageSizeEvent($table);
 		}
-		// 配置页码
-		for (i; i <= maxI; i++) {
-			if (i == cPage) {
-				tHtml += '<li class="active">\n\t\t\t\t\t\t\t' + cPage + '\n\t\t\t\t\t\t</li>';
-				continue;
+
+		/**
+   * 生成页码DOM节点
+   * @param $table
+   * @param pageData 分页数据格式
+      */
+
+	}, {
+		key: 'createPaginationDOM',
+		value: function createPaginationDOM($table, pageData) {
+			var tableWarp = $table.closest('.table-wrap');
+
+			// 分页工具条
+			var pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp);
+
+			// 分页区域
+			var pagination = (0, _jTool2.default)('.pagination', pageToolbar);
+
+			pagination.html(this.joinPagination($table, pageData));
+		}
+
+		/**
+   * 拼接页码字符串
+   * @param $table
+   * @param pageData 分页数据格式
+      */
+
+	}, {
+		key: 'joinPagination',
+		value: function joinPagination($table, pageData) {
+			// 当前页
+			var cPage = Number(pageData.cPage || 0);
+
+			// 总页数
+			var tPage = Number(pageData.tPage || 0);
+
+			// 临时存储分页HTML片段
+			var tHtml = '';
+
+			// 临时存储末尾页码THML片段
+			var lHtml = '';
+
+			// 配置首页
+			var firstClassName = 'first-page';
+			var previousClassName = 'previous-page';
+
+			if (cPage === 1) {
+				firstClassName += ' disabled';
+				previousClassName += ' disabled';
 			}
-			tHtml += '<li c-page="' + i + '">\n\t\t\t\t\t\t' + i + '\n\t\t\t\t\t</li>';
-		}
-		tHtml += lHtml;
-		//配置下一页与尾页
-		var nextClassName = 'next-page',
-		    lastClassName = 'last-page';
-		if (cPage >= tPage) {
-			nextClassName += ' disabled';
-			lastClassName += ' disabled';
-		}
-		tHtml += '<li c-page="' + (cPage + 1) + '" class="' + nextClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText($table, "next-page") + '\n\t\t\t\t</li>\n\t\t\t\t<li c-page="' + tPage + '" class="' + lastClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText($table, "last-page") + '\n\t\t\t\t</li>';
-		return tHtml;
-	}
-	/**
-  * 生成每页显示条数选择框据
-  * @param $table: [table jTool object]
-  * @param _sizeData: _选择框自定义条数
-  */
-	, createPageSizeDOM: function createPageSizeDOM($table, _sizeData_) {
-		var tableWarp = $table.closest('.table-wrap'),
-		    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
-		    //分页工具条
-		pSizeArea = (0, _jTool2.default)('select[name="pSizeArea"]', pageToolbar); //分页区域
-		//error
-		if (!_sizeData_ || _sizeData_.length === 0) {
-			_Base2.default.outLog('渲染失败：参数[sizeData]配置错误', 'error');
-			return;
+			tHtml += '<li c-page="1" class="' + firstClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText($table, 'first-page') + '\n\t\t\t\t</li>\n\t\t\t\t<li c-page="' + (cPage - 1) + '" class="' + previousClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText($table, 'previous-page') + '\n\t\t\t\t</li>';
+			// 循环开始数
+			var i = 1;
+
+			// 循环结束数
+			var maxI = tPage;
+
+			// 配置first端省略符
+			if (cPage > 4) {
+				tHtml += '<li c-page="1">\n\t\t\t\t\t\t1\n\t\t\t\t\t</li>\n\t\t\t\t\t<li class="disabled">\n\t\t\t\t\t\t...\n\t\t\t\t\t</li>';
+				i = cPage - 2;
+			}
+			// 配置last端省略符
+			if (tPage - cPage > 4) {
+				maxI = cPage + 2;
+				lHtml += '<li class="disabled">\n\t\t\t\t\t\t...\n\t\t\t\t\t</li>\n\t\t\t\t\t<li c-page="' + tPage + '">\n\t\t\t\t\t\t' + tPage + '\n\t\t\t\t\t</li>';
+			}
+			// 配置页码
+			for (i; i <= maxI; i++) {
+				if (i === cPage) {
+					tHtml += '<li class="active">\n\t\t\t\t\t\t\t' + cPage + '\n\t\t\t\t\t\t</li>';
+					continue;
+				}
+				tHtml += '<li c-page="' + i + '">\n\t\t\t\t\t\t' + i + '\n\t\t\t\t\t</li>';
+			}
+			tHtml += lHtml;
+
+			// 配置下一页与尾页
+			var nextClassName = 'next-page';
+			var lastClassName = 'last-page';
+			if (cPage >= tPage) {
+				nextClassName += ' disabled';
+				lastClassName += ' disabled';
+			}
+			tHtml += '<li c-page="' + (cPage + 1) + '" class="' + nextClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText($table, 'next-page') + '\n\t\t\t\t</li>\n\t\t\t\t<li c-page="' + tPage + '" class="' + lastClassName + '">\n\t\t\t\t\t' + _I18n2.default.i18nText($table, 'last-page') + '\n\t\t\t\t</li>';
+			return tHtml;
 		}
 
-		var _ajaxPageHtml = '';
-		_jTool2.default.each(_sizeData_, function (i, v) {
-			_ajaxPageHtml += '<option value="' + v + '">\n\t\t\t\t\t\t\t\t' + v + '\n\t\t\t\t\t\t\t</option>';
-		});
-		pSizeArea.html(_ajaxPageHtml);
-	}
-	/**
-  * 绑定页面跳转事件
-  * @param $table: [table jTool object]
-  */
-	, bindPageJumpEvent: function bindPageJumpEvent($table) {
-		var _this = this;
-		var tableWarp = $table.closest('.table-wrap'),
-		    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
-		    //分页工具条
-		pagination = (0, _jTool2.default)('.pagination', pageToolbar),
-		    //分页区域
-		gp_input = (0, _jTool2.default)('.gp-input', pageToolbar),
-		    //快捷跳转
-		refreshAction = (0, _jTool2.default)('.refresh-action', pageToolbar); //快捷跳转
-		//绑定分页点击事件
-		pageToolbar.off('click', 'li');
-		pageToolbar.on('click', 'li', function () {
-			var pageAction = (0, _jTool2.default)(this);
-			var cPage = pageAction.attr('c-page'); //分页页码
-			if (!cPage || !Number(cPage) || pageAction.hasClass('disabled')) {
-				_Base2.default.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
-				return false;
-			}
-			cPage = parseInt(cPage);
-			_this.gotoPage($table, cPage);
-		});
-		//绑定快捷跳转事件
-		gp_input.unbind('keyup');
-		gp_input.bind('keyup', function (e) {
-			if (e.which !== 13) {
+		/**
+   * 生成每页显示条数选择框据
+   * @param $table
+   * @param _sizeData_ 选择框自定义条数
+      */
+
+	}, {
+		key: 'createPageSizeDOM',
+		value: function createPageSizeDOM($table, _sizeData_) {
+			var tableWarp = $table.closest('.table-wrap');
+
+			// 分页工具条
+			var pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp);
+
+			// 分页区域
+			var pSizeArea = (0, _jTool2.default)('select[name="pSizeArea"]', pageToolbar);
+
+			// error
+			if (!_sizeData_ || _sizeData_.length === 0) {
+				_Base2.default.outLog('渲染失败：参数[sizeData]配置错误', 'error');
 				return;
 			}
-			var _inputValue = parseInt(this.value, 10);
-			if (!_inputValue) {
-				this.focus();
-				return;
-			}
-			_this.gotoPage($table, _inputValue);
-			this.value = '';
-		});
-		//绑定刷新界面事件
-		refreshAction.unbind('click');
-		refreshAction.bind('click', function () {
-			var _tableWarp = (0, _jTool2.default)(this).closest('.table-wrap'),
-			    _table = (0, _jTool2.default)('table[grid-manager]', _tableWarp),
-			    _input = (0, _jTool2.default)('.page-toolbar .gp-input', _tableWarp),
-			    _value = _input.val();
-			//跳转输入框为空时: 刷新当前页
-			if (_value.trim() === '') {
-				_Core2.default.__refreshGrid(_table);
-				return;
-			}
-			//跳转输入框不为空时: 验证输入值是否有效,如果有效跳转至指定页,如果无效对输入框进行聚焦
-			var _inputValue = parseInt(_input.val(), 10);
-			if (!_inputValue) {
-				_input.focus();
-				return;
-			}
-			_this.gotoPage($table, _inputValue);
-			_input.val('');
-		});
-	}
 
-	/**
-  * 跳转至指定页
-  * @param $table: [table jTool object]
-  * @param _cPage: 指定页
-  */
-	, gotoPage: function gotoPage($table, _cPage) {
-		var settings = _Cache2.default.getSettings($table);
-		//跳转的指定页大于总页数
-		if (_cPage > settings.pageData.tPage) {
-			_cPage = settings.pageData.tPage;
+			var _ajaxPageHtml = '';
+			_jTool2.default.each(_sizeData_, function (i, v) {
+				_ajaxPageHtml += '<option value="' + v + '">\n\t\t\t\t\t\t\t\t' + v + '\n\t\t\t\t\t\t\t</option>';
+			});
+			pSizeArea.html(_ajaxPageHtml);
 		}
-		//替换被更改的值
-		settings.pageData.cPage = _cPage;
-		settings.pageData.pSize = settings.pageData.pSize || settings.pageSize;
-		// 更新缓存
-		_Cache2.default.updateSettings($table, settings);
 
-		//调用事件、渲染DOM
-		var query = _jTool2.default.extend({}, settings.query, settings.sortData, settings.pageData);
-		settings.pagingBefore(query);
-		_Core2.default.__refreshGrid($table, function () {
-			settings.pagingAfter(query);
-		});
-	}
+		/**
+   * 绑定页面跳转事件
+   * @param $table
+      */
 
-	/**
-  * 绑定设置当前页显示数事件
-  * @param $table: [table jTool object]
-  * @returns {boolean}
-  */
-	, bindSetPageSizeEvent: function bindSetPageSizeEvent($table) {
-		var tableWarp = $table.closest('.table-wrap'),
-		    pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp),
-		    //分页工具条
-		sizeArea = (0, _jTool2.default)('select[name=pSizeArea]', pageToolbar); //切换条数区域
-		if (!sizeArea || sizeArea.length == 0) {
-			_Base2.default.outLog('未找到单页显示数切换区域，停止该事件绑定', 'info');
-			return false;
+	}, {
+		key: 'bindPageJumpEvent',
+		value: function bindPageJumpEvent($table) {
+			var _this = this;
+			var tableWarp = $table.closest('.table-wrap');
+
+			// 分页工具条
+			var pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp);
+
+			// 分页区域
+			// const pagination = $('.pagination', pageToolbar);
+
+			// 快捷跳转
+			var gp_input = (0, _jTool2.default)('.gp-input', pageToolbar);
+
+			// 快捷跳转
+			var refreshAction = (0, _jTool2.default)('.refresh-action', pageToolbar);
+
+			// 绑定分页点击事件
+			pageToolbar.off('click', 'li');
+			pageToolbar.on('click', 'li', function () {
+				var pageAction = (0, _jTool2.default)(this);
+
+				// 分页页码
+				var cPage = pageAction.attr('c-page');
+				if (!cPage || !Number(cPage) || pageAction.hasClass('disabled')) {
+					_Base2.default.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
+					return false;
+				}
+				cPage = window.parseInt(cPage);
+				_this.gotoPage($table, cPage);
+			});
+			// 绑定快捷跳转事件
+			gp_input.unbind('keyup');
+			gp_input.bind('keyup', function (e) {
+				if (e.which !== 13) {
+					return;
+				}
+				var _inputValue = parseInt(this.value, 10);
+				if (!_inputValue) {
+					this.focus();
+					return;
+				}
+				_this.gotoPage($table, _inputValue);
+				this.value = '';
+			});
+			// 绑定刷新界面事件
+			refreshAction.unbind('click');
+			refreshAction.bind('click', function () {
+				var _tableWarp = (0, _jTool2.default)(this).closest('.table-wrap');
+				var _table = (0, _jTool2.default)('table[grid-manager]', _tableWarp);
+				var _input = (0, _jTool2.default)('.page-toolbar .gp-input', _tableWarp);
+				var _value = _input.val();
+
+				// 跳转输入框为空时: 刷新当前页
+				if (_value.trim() === '') {
+					_Core2.default.__refreshGrid(_table);
+					return;
+				}
+
+				// 跳转输入框不为空时: 验证输入值是否有效,如果有效跳转至指定页,如果无效对输入框进行聚焦
+				var _inputValue = parseInt(_input.val(), 10);
+				if (!_inputValue) {
+					_input.focus();
+					return;
+				}
+				_this.gotoPage($table, _inputValue);
+				_input.val('');
+			});
 		}
-		sizeArea.unbind('change');
-		sizeArea.bind('change', function () {
-			var _size = (0, _jTool2.default)(this);
-			var _tableWarp = _size.closest('.table-wrap'),
-			    _table = (0, _jTool2.default)('table[grid-manager]', _tableWarp);
+
+		/**
+   * 跳转至指定页
+   * @param $table
+   * @param _cPage 指定页
+      */
+
+	}, {
+		key: 'gotoPage',
+		value: function gotoPage($table, _cPage) {
 			var settings = _Cache2.default.getSettings($table);
-			settings.pageData = {
-				cPage: 1,
-				pSize: parseInt(_size.val())
-			};
 
-			_Cache2.default.saveUserMemory(_table);
+			// 跳转的指定页大于总页数
+			if (_cPage > settings.pageData.tPage) {
+				_cPage = settings.pageData.tPage;
+			}
+
+			// 替换被更改的值
+			settings.pageData.cPage = _cPage;
+			settings.pageData.pSize = settings.pageData.pSize || settings.pageSize;
+
 			// 更新缓存
 			_Cache2.default.updateSettings($table, settings);
-			//调用事件、渲染tbody
+
+			// 调用事件、渲染DOM
 			var query = _jTool2.default.extend({}, settings.query, settings.sortData, settings.pageData);
 			settings.pagingBefore(query);
-			_Core2.default.__refreshGrid(_table, function () {
+			_Core2.default.__refreshGrid($table, function () {
 				settings.pagingAfter(query);
 			});
-		});
-	}
-
-	/**
-  * 重置每页显示条数, 重置条数文字信息 [注: 这个方法只做显示更新, 不操作Cache 数据]
-  * @param $table: [table jTool object]
-  * @param _pageData_: 分页数据格式
-  * @returns {boolean}
-  */
-	, resetPSize: function resetPSize($table, _pageData_) {
-		var tableWarp = $table.closest('.table-wrap'),
-		    toolBar = (0, _jTool2.default)('.page-toolbar', tableWarp),
-		    pSizeArea = (0, _jTool2.default)('select[name="pSizeArea"]', toolBar),
-		    pSizeInfo = (0, _jTool2.default)('.dataTables_info', toolBar);
-		if (!pSizeArea || pSizeArea.length == 0) {
-			_Base2.default.outLog('未找到条数切换区域，停止该事件绑定', 'info');
-			return false;
 		}
-		var fromNum = _pageData_.cPage == 1 ? 1 : (_pageData_.cPage - 1) * _pageData_.pSize + 1,
-		    //从多少开始
-		toNum = _pageData_.cPage * _pageData_.pSize,
-		    //到多少结束
-		totalNum = _pageData_.tSize; //总共条数
-		var tmpHtml = _I18n2.default.i18nText($table, 'dataTablesInfo', [fromNum, toNum, totalNum]);
-		//根据返回值修正单页条数显示值
-		pSizeArea.val(_pageData_.pSize || 10);
 
-		//修改条数文字信息
-		pSizeInfo.html(tmpHtml);
-		pSizeArea.show();
-	}
-	/**
-  * 重置分页数据
-  * @param $table: [table jTool object]
-  * @param totals: 总条数
-  */
-	, resetPageData: function resetPageData($table, totals) {
-		var settings = _Cache2.default.getSettings($table);
-		var _this = this;
-		if (isNaN(parseInt(totals, 10))) {
-			return;
+		/**
+   * 绑定设置当前页显示数事件
+   * @param $table
+      */
+
+	}, {
+		key: 'bindSetPageSizeEvent',
+		value: function bindSetPageSizeEvent($table) {
+			var tableWarp = $table.closest('.table-wrap');
+
+			// 分页工具条
+			var pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp);
+
+			// 切换条数区域
+			var sizeArea = (0, _jTool2.default)('select[name=pSizeArea]', pageToolbar);
+
+			if (!sizeArea || sizeArea.length === 0) {
+				_Base2.default.outLog('未找到单页显示数切换区域，停止该事件绑定', 'info');
+				return false;
+			}
+			sizeArea.unbind('change');
+			sizeArea.bind('change', function () {
+				var _size = (0, _jTool2.default)(this);
+				var _tableWarp = _size.closest('.table-wrap');
+				var _table = (0, _jTool2.default)('table[grid-manager]', _tableWarp);
+				var settings = _Cache2.default.getSettings($table);
+				settings.pageData = {
+					cPage: 1,
+					pSize: window.parseInt(_size.val())
+				};
+
+				_Cache2.default.saveUserMemory(_table);
+
+				// 更新缓存
+				_Cache2.default.updateSettings($table, settings);
+
+				// 调用事件、渲染tbody
+				var query = _jTool2.default.extend({}, settings.query, settings.sortData, settings.pageData);
+				settings.pagingBefore(query);
+				_Core2.default.__refreshGrid(_table, function () {
+					settings.pagingAfter(query);
+				});
+			});
 		}
-		var _pageData = getPageData(totals);
-		// 生成页码DOM节点
-		_this.createPaginationDOM($table, _pageData);
 
-		// 重置当前页显示条数
-		_this.resetPSize($table, _pageData);
+		/**
+   * 重置每页显示条数, 重置条数文字信息 [注: 这个方法只做显示更新, 不操作Cache 数据]
+   * @param $table
+   * @param _pageData_ 分页数据格式
+   * @returns {boolean}
+      */
 
-		// 更新Cache
-		_Cache2.default.updateSettings($table, _jTool2.default.extend(true, settings, { pageData: _pageData }));
+	}, {
+		key: 'resetPSize',
+		value: function resetPSize($table, _pageData_) {
+			var tableWarp = $table.closest('.table-wrap');
+			var toolBar = (0, _jTool2.default)('.page-toolbar', tableWarp);
+			var pSizeArea = (0, _jTool2.default)('select[name="pSizeArea"]', toolBar);
+			var pSizeInfo = (0, _jTool2.default)('.dataTables_info', toolBar);
+			if (!pSizeArea || pSizeArea.length === 0) {
+				_Base2.default.outLog('未找到条数切换区域，停止该事件绑定', 'info');
+				return false;
+			}
 
-		var tableWarp = $table.closest('.table-wrap');
-		//分页工具条
-		var pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp);
-		pageToolbar.show();
+			// 从多少开始
+			var fromNum = _pageData_.cPage === 1 ? 1 : (_pageData_.cPage - 1) * _pageData_.pSize + 1;
 
-		// 计算分页数据
-		function getPageData(tSize) {
-			var _pSize = settings.pageData.pSize || settings.pageSize,
-			    _tSize = tSize,
-			    _cPage = settings.pageData.cPage || 1;
-			return {
-				tPage: Math.ceil(_tSize / _pSize), // 总页数
-				cPage: _cPage, // 当前页
-				pSize: _pSize, // 每页显示条数
-				tSize: _tSize // 总条路
+			// 到多少结束
+			var toNum = _pageData_.cPage * _pageData_.pSize;
+
+			// 总共条数
+			var totalNum = _pageData_.tSize;
+
+			var tmpHtml = _I18n2.default.i18nText($table, 'dataTablesInfo', [fromNum, toNum, totalNum]);
+
+			// 根据返回值修正单页条数显示值
+			pSizeArea.val(_pageData_.pSize || 10);
+
+			// 修改条数文字信息
+			pSizeInfo.html(tmpHtml);
+			pSizeArea.show();
+			return true;
+		}
+
+		/**
+   * 重置分页数据
+   * @param $table
+   * @param totals 总条数
+      */
+
+	}, {
+		key: 'resetPageData',
+		value: function resetPageData($table, totals) {
+			var settings = _Cache2.default.getSettings($table);
+			var _this = this;
+			if (isNaN(parseInt(totals, 10))) {
+				return;
+			}
+			var _pageData = getPageData(totals);
+
+			// 生成页码DOM节点
+			_this.createPaginationDOM($table, _pageData);
+
+			// 重置当前页显示条数
+			_this.resetPSize($table, _pageData);
+
+			// 更新Cache
+			_Cache2.default.updateSettings($table, _jTool2.default.extend(true, settings, { pageData: _pageData }));
+
+			var tableWarp = $table.closest('.table-wrap');
+
+			// 分页工具条
+			var pageToolbar = (0, _jTool2.default)('.page-toolbar', tableWarp);
+			pageToolbar.show();
+
+			// 计算分页数据
+			function getPageData(tSize) {
+				var _pSize = settings.pageData.pSize || settings.pageSize;
+				var _tSize = tSize;
+				var _cPage = settings.pageData.cPage || 1;
+				return {
+					tPage: Math.ceil(_tSize / _pSize), // 总页数
+					cPage: _cPage, // 当前页
+					pSize: _pSize, // 每页显示条数
+					tSize: _tSize // 总条路
+				};
+			}
+		}
+
+		/**
+   * 根据本地缓存配置分页数据
+   * @param $table
+      */
+
+	}, {
+		key: 'configPageForCache',
+		value: function configPageForCache($table) {
+			var settings = _Cache2.default.getSettings($table);
+			var _data = _Cache2.default.getUserMemory($table);
+
+			// 缓存对应
+			var _cache = _data.cache;
+
+			// 每页显示条数
+			var _pSize = null;
+
+			// 验证是否存在每页显示条数缓存数据
+			if (!_cache || !_cache.page || !_cache.page.pSize) {
+				_pSize = settings.pageSize || 10;
+			} else {
+				_pSize = _cache.page.pSize;
+			}
+			var pageData = {
+				pSize: _pSize,
+				cPage: 1
 			};
+			_jTool2.default.extend(settings, { pageData: pageData });
+			_Cache2.default.updateSettings($table, settings);
 		}
-	}
-	/**
-  * 根据本地缓存配置分页数据
-  * @param $table: [table jTool object]
-  */
-	, configPageForCache: function configPageForCache($table) {
-		var settings = _Cache2.default.getSettings($table);
-		var _data = _Cache2.default.getUserMemory($table);
-		// 缓存对应
-		var _cache = _data.cache;
-		// 每页显示条数
-		var _pSize = null;
+	}]);
 
-		// 验证是否存在每页显示条数缓存数据
-		if (!_cache || !_cache.page || !_cache.page.pSize) {
-			_pSize = settings.pageSize || 10.;
-		} else {
-			_pSize = _cache.page.pSize;
-		}
-		var pageData = {
-			pSize: _pSize,
-			cPage: 1
-		};
-		_jTool2.default.extend(settings, { pageData: pageData });
-		_Cache2.default.updateSettings($table, settings);
-	}
-}; /*
-    * AjaxPage: 分页
-    * */
-exports.default = AjaxPage;
+	return AjaxPage;
+}();
+
+exports.default = new AjaxPage();
 
 /***/ }),
 /* 8 */
@@ -1896,7 +2127,7 @@ var _jTool = __webpack_require__(0);
 
 var _jTool2 = _interopRequireDefault(_jTool);
 
-var _Base = __webpack_require__(1);
+var _Base = __webpack_require__(2);
 
 var _Base2 = _interopRequireDefault(_Base);
 
@@ -1904,7 +2135,7 @@ var _Core = __webpack_require__(3);
 
 var _Core2 = _interopRequireDefault(_Core);
 
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
@@ -1917,7 +2148,7 @@ var Sort = {
 	html: function html() {
 		var html = '<div class="sorting-action">\n\t\t\t\t\t\t<i class="sa-icon sa-up iconfont icon-sanjiao2"></i>\n\t\t\t\t\t\t<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>\n\t\t\t\t\t</div>';
 		return html;
-	}
+	},
 	/*
   * 手动设置排序
   * @param sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
@@ -1927,7 +2158,7 @@ var Sort = {
   * 排序json串示例:
   * sortJson => {name: 'ASC}
   * */
-	, __setSort: function __setSort($table, sortJson, callback, refresh) {
+	__setSort: function __setSort($table, sortJson, callback, refresh) {
 		var settings = _Cache2.default.getSettings($table);
 		if (!sortJson || _jTool2.default.type(sortJson) !== 'object' || _jTool2.default.isEmptyObject(sortJson)) {
 			return false;
@@ -1957,12 +2188,12 @@ var Sort = {
 			}
 		}
 		refresh ? _Core2.default.__refreshGrid($table, callback) : typeof callback === 'function' ? callback() : '';
-	}
+	},
 	/**
   * 绑定排序事件
   * @param $table
      */
-	, bindSortingEvent: function bindSortingEvent($table) {
+	bindSortingEvent: function bindSortingEvent($table) {
 		var _this = this;
 		var settings = _Cache2.default.getSettings($table);
 		var action = void 0,
@@ -2021,14 +2252,14 @@ var Sort = {
 				settings.sortingAfter(query, th);
 			});
 		});
-	}
+	},
 	/**
   * 更新排序样式
   * @param sortAction
   * @param th
   * @param settings
      */
-	, updateSortStyle: function updateSortStyle(sortAction, th, settings) {
+	updateSortStyle: function updateSortStyle(sortAction, th, settings) {
 		// 排序操作：升序
 		if (sortAction.hasClass('sorting-down')) {
 			sortAction.addClass('sorting-up');
@@ -2077,23 +2308,23 @@ var Checkbox = {
 	html: function html($table) {
 		var checkboxHtml = '<th th-name="gm_checkbox" gm-checkbox="true" gm-create="true">\n\t\t\t\t\t\t\t\t<input type="checkbox"/>\n\t\t\t\t\t\t\t\t<span style="display: none">\n\t\t\t\t\t\t\t\t\t' + _I18n2.default.i18nText($table, 'checkall-text') + '\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t</th>';
 		return checkboxHtml;
-	}
+	},
 	/*
   * 初始化选择与反选DOM
   * table: table [jTool Object]
   * */
-	, initCheckbox: function initCheckbox($table) {
+	initCheckbox: function initCheckbox($table) {
 		// 插入选择DOM
 		(0, _jTool2.default)('thead tr', $table).prepend(this.html($table));
 
 		// 绑定选择框事件
 		this.bindCheckboxEvent($table);
-	}
+	},
 	/*
  * 绑定选择框事件
  * table: table [jTool Object]
  * */
-	, bindCheckboxEvent: function bindCheckboxEvent($table) {
+	bindCheckboxEvent: function bindCheckboxEvent($table) {
 		$table.off('click', 'input[type="checkbox"]');
 		$table.on('click', 'input[type="checkbox"]', function () {
 			// 存储th中的checkbox的选中状态
@@ -2141,11 +2372,11 @@ var _jTool = __webpack_require__(0);
 
 var _jTool2 = _interopRequireDefault(_jTool);
 
-var _Base = __webpack_require__(1);
+var _Base = __webpack_require__(2);
 
 var _Base2 = _interopRequireDefault(_Base);
 
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
@@ -2295,7 +2526,7 @@ var _jTool = __webpack_require__(0);
 
 var _jTool2 = _interopRequireDefault(_jTool);
 
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
@@ -2580,7 +2811,7 @@ var _jTool = __webpack_require__(0);
 
 var _jTool2 = _interopRequireDefault(_jTool);
 
-var _Base = __webpack_require__(1);
+var _Base = __webpack_require__(2);
 
 var _Base2 = _interopRequireDefault(_Base);
 
@@ -2588,7 +2819,7 @@ var _Adjust = __webpack_require__(5);
 
 var _Adjust2 = _interopRequireDefault(_Adjust);
 
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
@@ -2802,7 +3033,7 @@ var _jTool = __webpack_require__(0);
 
 var _jTool2 = _interopRequireDefault(_jTool);
 
-var _Base = __webpack_require__(1);
+var _Base = __webpack_require__(2);
 
 var _Base2 = _interopRequireDefault(_Base);
 
@@ -2855,11 +3086,11 @@ var _jTool = __webpack_require__(0);
 
 var _jTool2 = _interopRequireDefault(_jTool);
 
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
-var _Base = __webpack_require__(1);
+var _Base = __webpack_require__(2);
 
 var _Base2 = _interopRequireDefault(_Base);
 
@@ -3305,6 +3536,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *  GridManager: 入口
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * */
 
+// import Base from './Base';
+
 
 __webpack_require__(19);
 
@@ -3320,11 +3553,7 @@ var _AjaxPage = __webpack_require__(7);
 
 var _AjaxPage2 = _interopRequireDefault(_AjaxPage);
 
-var _Base = __webpack_require__(1);
-
-var _Base2 = _interopRequireDefault(_Base);
-
-var _Cache = __webpack_require__(2);
+var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
@@ -3409,12 +3638,12 @@ var GridManager = function () {
 			var _settings = _jTool2.default.extend(true, {}, _Settings.Settings);
 			_settings.textConfig = new _Settings.TextSettings();
 			_jTool2.default.extend(true, _settings, arg);
-			_this.updateSettings(jToolObj, _settings);
+			_Cache2.default.updateSettings(jToolObj, _settings);
 
 			_jTool2.default.extend(true, this, _settings);
 
 			//通过版本较验 清理缓存
-			_this.cleanTableCacheForVersion(jToolObj, this.version);
+			_Cache2.default.cleanTableCacheForVersion(jToolObj, this.version);
 			if (_this.gridManagerName.trim() === '') {
 				_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 				return false;
@@ -3428,7 +3657,7 @@ var GridManager = function () {
 
 			//根据本地缓存配置每页显示条数
 			if (_this.supportAjaxPage) {
-				_this.configPageForCache(jToolObj);
+				_AjaxPage2.default.configPageForCache(jToolObj);
 			}
 
 			//增加渲染中标注
@@ -3462,13 +3691,13 @@ var GridManager = function () {
 
 			//获取本地缓存并对列表进行配置
 			if (!_this.disableCache) {
-				_this.configTheadForCache(table);
-				_this.supportAdjust ? _this.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
+				_Cache2.default.configTheadForCache(table);
+				_this.supportAdjust ? _Adjust2.default.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
 			}
 
 			//绑定宽度调整事件
 			if (_this.supportAdjust) {
-				_this.bindAdjustEvent(table);
+				_Adjust2.default.bindAdjustEvent(table);
 			}
 
 			//绑定拖拽换位事件
@@ -3503,8 +3732,9 @@ var GridManager = function () {
 			//渲染tbodyDOM
 			_this.__refreshGrid(table);
 
+			// TODO Eslint整改时, 不再将各个模块拼装至GirdManager, 所以验证是否已经实例化的方式需要调整
 			//将GridManager实例化对象存放于jTool data
-			_this.setGridManagerToJTool.call(_this, table);
+			_Cache2.default.setGridManagerToJTool.call(_this, table);
 		}
 
 		// 拼装GirdManager
@@ -3516,7 +3746,7 @@ var GridManager = function () {
 			_jTool2.default.extend(true, this, _Settings.Settings);
 
 			// GM导入功能: 基本
-			_jTool2.default.extend(this, _Base2.default);
+			// jTool.extend(this, Base);
 
 			// GM导入功能: 核心
 			_jTool2.default.extend(this, _Core2.default);
@@ -3528,13 +3758,13 @@ var GridManager = function () {
 			_jTool2.default.extend(this, _Checkbox2.default);
 
 			// GM导入功能: 缓存
-			_jTool2.default.extend(this, _Cache2.default);
+			// jTool.extend(this, Cache);
 
 			// GM导入功能: 宽度调整
-			_jTool2.default.extend(this, _Adjust2.default);
+			// jTool.extend(this, Adjust);
 
 			// GM导入功能: 分页
-			_jTool2.default.extend(this, _AjaxPage2.default);
+			// jTool.extend(this, AjaxPage);
 
 			// GM导入功能: 配置列显示隐藏
 			_jTool2.default.extend(this, _Config2.default);
@@ -3675,3 +3905,4 @@ var require;var require;!function t(e,n,o){function i(s,u){if(!n[s]){if(!e[s]){v
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=GridManager.js.map
