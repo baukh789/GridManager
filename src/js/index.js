@@ -87,10 +87,10 @@ class GridManager {
 	 */
 	initTable(table) {
 		const _this = this;
-		//渲染HTML，嵌入所需的事件源DOM
+		// 渲染HTML，嵌入所需的事件源DOM
 		Core.createDOM(table);
 
-		//获取本地缓存并对列表进行配置
+		// 获取本地缓存并对列表进行配置
 		if(!_this.disableCache){
 			Cache.configTheadForCache(table);
 			_this.supportAdjust ? Adjust.resetAdjust(table) : ''; // 通过缓存配置成功后, 重置宽度调整事件源dom
@@ -101,40 +101,40 @@ class GridManager {
 			Adjust.bindAdjustEvent(table);
 		}
 
-		//绑定拖拽换位事件
+		// 绑定拖拽换位事件
 		if(_this.supportDrag){
 			_this.bindDragEvent(table);
 		}
 
-		//绑定排序事件
+		// 绑定排序事件
 		if(_this.supportSorting){
 			_this.bindSortingEvent(table);
 		}
 
-		//绑定表头提示事件
+		// 绑定表头提示事件
 		if(_this.supportRemind){
 			_this.bindRemindEvent(table);
 		}
 
-		//绑定配置列表事件
+		// 绑定配置列表事件
 		if(_this.supportConfig){
 			_this.bindConfigEvent(table);
 		}
 
-		//绑定table区域hover事件
+		// 绑定table区域hover事件
 		_this.onTbodyHover(table);
 
-		//绑定表头置顶功能
+		// 绑定表头置顶功能
 		_this.bindScrollFunction(table);
 
-		//绑定右键菜单事件
+		// 绑定右键菜单事件
 		_this.bindRightMenuEvent(table);
 
-		//渲染tbodyDOM
+		// 渲染tbodyDOM
 		_this.__refreshGrid(table);
 
 		// TODO Eslint整改时, 不再将各个模块拼装至GirdManager, 所以验证是否已经实例化的方式需要调整
-		//将GridManager实例化对象存放于jTool data
+		// 将GridManager实例化对象存放于jTool data
 		Cache.setGridManagerToJTool.call(_this, table);
 	}
 
@@ -153,7 +153,7 @@ class GridManager {
 		jTool.extend(this, Hover);
 
 		// GM导入功能: 选择
-		jTool.extend(this, Checkbox);
+		// jTool.extend(this, Checkbox);
 
 		// GM导入功能: 缓存
 		// jTool.extend(this, Cache);
