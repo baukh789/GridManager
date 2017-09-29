@@ -55,6 +55,7 @@ describe('Core', function() {
 		document.body.innerHTML = '';
 	});
 
+	// 刷新成功后, 回调函数执行
 	it('Core.__refreshGrid($table, callback)', function(){
 		let callback = jasmine.createSpy('callback');
 		Core.__refreshGrid($table, callback);
@@ -62,6 +63,13 @@ describe('Core', function() {
 
 		callback = null;
 	});
+
+	it('Core.removeRefreshingClass($tableWrap)', function(){
+	});
+
+	it('Core.driveDomForSuccessAfter($table, settings, response, callback)', function(){
+	});
+
 
 	// TODO 暂时没想到怎么测这个方法
 	it('Core.createDOM($table)', function(){
