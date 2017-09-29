@@ -102,7 +102,7 @@ class GridManager {
 
 		// 绑定拖拽换位事件
 		if(_this.supportDrag){
-			_this.bindDragEvent(table);
+			Drag.bindDragEvent(table);
 		}
 
 		// 绑定排序事件
