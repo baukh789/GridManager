@@ -9,7 +9,7 @@ import AjaxPage from './AjaxPage';
 import Cache from './Cache';
 import Core from './Core';
 import Config from './Config';
-import Checkbox from './Checkbox';
+// import Checkbox from './Checkbox';
 import Drag from './Drag';
 import Export from './Export';
 import I18n from './I18n';
@@ -118,7 +118,7 @@ class GridManager {
 
 		// 绑定配置列表事件
 		if(_this.supportConfig){
-			_this.bindConfigEvent(table);
+			Config.bindConfigEvent(table);
 		}
 
 		// 绑定table区域hover事件
@@ -165,7 +165,7 @@ class GridManager {
 		// jTool.extend(this, AjaxPage);
 
 		// GM导入功能: 配置列显示隐藏
-		jTool.extend(this, Config);
+		// jTool.extend(this, Config);
 
 		// GM导入功能: 拖拽
 		jTool.extend(this, Drag);
