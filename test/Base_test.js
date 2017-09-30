@@ -20,7 +20,7 @@ describe('Base: 验证原型方法总数', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(9);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(10);
 	});
 });
 describe('Base.js', function() {
@@ -130,5 +130,8 @@ describe('Base.js', function() {
 		tableWrap = null;
 	});
 
+	it('Base.updateScrollStatus($table)', function(){
+		expect(Base.updateScrollStatus($table)).toBe('hidden');
+	});
 
 });

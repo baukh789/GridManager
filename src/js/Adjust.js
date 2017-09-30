@@ -5,10 +5,6 @@ import $ from './jTool';
 import Cache from './Cache';
 import Base from './Base';
 class Adjust {
-	constructor() {
-
-	}
-
 	/**
 	 * 返回宽度调整HTML
 	 * @returns {string}
@@ -101,17 +97,24 @@ class Adjust {
 			_table.bind('mouseup mouseleave', function (event) {
 				const settings = Cache.getSettings($table);
 				_table.unbind('mousemove mouseleave');
+
 				// 存储用户记忆
 				Cache.saveUserMemory(_table);
-				if (_th.hasClass('adjust-selected')) {  // 其它操作也在table以该事件进行绑定,所以通过class进行区别
+
+				// 其它操作也在table以该事件进行绑定,所以通过class进行区别
+				if (_th.hasClass('adjust-selected')) {
 					// 宽度调整成功回调事件
 					settings.adjustAfter(event);
 				}
 				_th.removeClass('adjust-selected');
 				_td.removeClass('adjust-selected');
 				_table.removeClass('no-select-text');
+
 				// 更新界面交互标识
 				Base.updateInteractive(_table);
+
+				// 更新滚动轴状态
+				Base.updateScrollStatus($table);
 			});
 			return false;
 		});
@@ -134,6 +137,9 @@ class Adjust {
 		}
 		_adjustAction.show();
 		_adjustAction.eq(_adjustAction.length - 1).hide();
+
+		// 更新滚动轴状态
+		Base.updateScrollStatus($table);
 	}
 }
 export default new Adjust();

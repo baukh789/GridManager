@@ -212,5 +212,21 @@ class Base {
 			tableWrap.attr('user-interactive', interactive);
 		}
 	}
+
+	/**
+	 * 更新滚动轴显示状态
+	 * @param $table
+	 */
+	updateScrollStatus($table) {
+		const $tableDiv = $table.closest('.table-div');
+		// 宽度: table === tableDiv 隐藏横向滚动轴. 反之 显示
+		if ($table.width() === $tableDiv.width()) {
+			$tableDiv.css('overflow-x', 'hidden');
+			return 'hidden';
+		} else {
+			$tableDiv.css('overflow-x', 'auto');
+			return 'auto';
+		}
+	}
 }
 export default new Base();

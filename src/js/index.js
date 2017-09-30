@@ -72,7 +72,7 @@ class GridManager {
 		//如果初始获取缓存失败，在渲染完成后首先存储一次数据
 		if(typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined'){
 			window.setTimeout(() => {
-				_this.saveUserMemory(jToolObj);
+				Cache.saveUserMemory(jToolObj);
 				jToolObj.removeAttr('grid-manager-cache-error');
 			},1000);
 		}
