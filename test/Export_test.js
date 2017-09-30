@@ -65,4 +65,23 @@ describe('Export', function() {
 		expect(Export.__exportGridToXls($table, 'exportName')).toBe(true);
 	});
 
+	it('Export.createExportHTML(theadHTML, tbodyHTML)', function(){
+		const theadHTML = '<tr><th>th1</th><th>th1</th></tr>';
+		const tbodyHTML = '<tr><td>td1</td><td>td2</td></tr>';
+		const exportHTML = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+								<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
+								<body>
+									<table>
+										<thead>
+											${theadHTML}
+										</thead>
+										<tbody>
+											${tbodyHTML}
+										</tbody>
+									</table>
+								</body>
+							</html>`;
+		expect(Export.createExportHTML(theadHTML, tbodyHTML).replace(/\s/g, '')).toBe(exportHTML.replace(/\s/g, ''));
+	});
+
 });

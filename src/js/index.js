@@ -11,7 +11,7 @@ import Core from './Core';
 import Config from './Config';
 // import Checkbox from './Checkbox';
 import Drag from './Drag';
-import Export from './Export';
+// import Export from './Export';
 import I18n from './I18n';
 import Menu from './Menu';
 import Order from './Order';
@@ -146,7 +146,7 @@ class GridManager {
 		// jTool.extend(this, Base);
 
 		// GM导入功能: 核心
-		jTool.extend(this, Core);
+		// jTool.extend(this, Core);
 
 		// GM导入功能: 鼠标
 		jTool.extend(this, Hover);
@@ -167,13 +167,13 @@ class GridManager {
 		// jTool.extend(this, Config);
 
 		// GM导入功能: 拖拽
-		jTool.extend(this, Drag);
+		// jTool.extend(this, Drag);
 
 		// GM导入功能: 排序
 		jTool.extend(this, Sort);
 
 		// GM导入功能: 导出数据
-		jTool.extend(this, Export);
+		// jTool.extend(this, Export);
 
 		// GM导入功能: 国际化
 		jTool.extend(this, I18n);
