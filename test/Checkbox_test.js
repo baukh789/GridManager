@@ -78,4 +78,10 @@ describe('Checkbox', function() {
 
 		cList = null;
 	});
+	
+	it('验证自动生成列[checkout]宽度', function(){
+		let autoCreateCheckbox = jTool('th[th-name="gm_checkbox"]').width();
+		expect(autoCreateCheckbox).toBe(50);
+		autoCreateCheckbox = null;
+	});
 });

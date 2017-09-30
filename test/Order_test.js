@@ -45,12 +45,13 @@ describe('Order', function() {
 		document.body.innerHTML = '';
 	});
 
-	it('验证自动生成列[序号,全选]宽度', function(){
-		let autoCreateCheckbox = jTool('th[th-name="gm_checkbox"]').width();
+	it('Order.initDOM($table)', function(){
+		expect(Order.initDOM($table)).toBe(true);
+	});
+
+	it('验证自动生成列[序号]宽度', function(){
 		let autoCreateOrder = jTool('th[th-name="gm_order"]').width();
-		expect(autoCreateCheckbox).toBe(50);
 		expect(autoCreateOrder).toBe(50);
-		autoCreateCheckbox = null;
 		autoCreateOrder = null;
 	});
 });
