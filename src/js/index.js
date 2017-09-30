@@ -12,7 +12,7 @@ import Config from './Config';
 // import Checkbox from './Checkbox';
 import Drag from './Drag';
 // import Export from './Export';
-import I18n from './I18n';
+// import I18n from './I18n';
 import Menu from './Menu';
 import Order from './Order';
 import Remind from './Remind';
@@ -134,7 +134,7 @@ class GridManager {
 
 		// TODO Eslint整改时, 不再将各个模块拼装至GirdManager, 所以验证是否已经实例化的方式需要调整
 		// 将GridManager实例化对象存放于jTool data
-		Cache.setGridManagerToJTool.call(_this, table);
+		Cache.setGridManagerToJTool(table, _this);
 	}
 
 	// 拼装GirdManager
@@ -176,7 +176,7 @@ class GridManager {
 		// jTool.extend(this, Export);
 
 		// GM导入功能: 国际化
-		jTool.extend(this, I18n);
+		// jTool.extend(this, I18n);
 
 		// GM导入功能: 右键菜单
 		jTool.extend(this, Menu);
@@ -247,6 +247,7 @@ class GridManager {
 		// 当前为其它方法
 		else if(name != 'init'){
 			gmObj = $table.data('gridManager');
+			console.log(gmObj);
 			const gmData = gmObj[name]($table, settings, callback, condition);
 			//如果方法存在返回值则返回，如果没有返回dom, 用于链式操作
 			return typeof(gmData) === 'undefined' ? this : gmData;

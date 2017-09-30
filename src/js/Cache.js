@@ -394,9 +394,9 @@ class Cache {
 		 * 存储对外实例
 		 * @param $table
 		 */
-		this.setGridManagerToJTool = $table => {
+		this.setGridManagerToJTool = ($table, GM) => {
 			// 调用的地方需要使用call 更改 this指向
-			$table.data('gridManager', this);
+			$table.data('gridManager', GM);
 		};
 
 		/**
