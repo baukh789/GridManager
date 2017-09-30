@@ -127,7 +127,7 @@ class GridManager {
 		_this.bindScrollFunction(table);
 
 		// 绑定右键菜单事件
-		_this.bindRightMenuEvent(table);
+		Menu.bindRightMenuEvent(table);
 
 		// 渲染tbodyDOM
 		Core.__refreshGrid(table);
@@ -179,7 +179,7 @@ class GridManager {
 		// jTool.extend(this, I18n);
 
 		// GM导入功能: 右键菜单
-		jTool.extend(this, Menu);
+		// jTool.extend(this, Menu);
 
 		// GM导入功能: 序号
 		jTool.extend(this, Order);

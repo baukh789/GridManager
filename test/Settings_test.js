@@ -260,9 +260,9 @@ describe('TextSettings', function() {
 		expect(TS['save-as-excel-for-checked']['en-us']).toBe('Save selected as Excel');
 	});
 
-	it('验证国际化文本[setting-grid]初始值', function(){
-		expect(TS['setting-grid']['zh-cn']).toBe('配置表');
-		expect(TS['setting-grid']['en-us']).toBe('Setting Grid');
+	it('验证国际化文本[config-grid]初始值', function(){
+		expect(TS['config-grid']['zh-cn']).toBe('配置表');
+		expect(TS['config-grid']['en-us']).toBe('Setting Grid');
 	});
 
 	it('验证国际化文本[checkall-text]初始值', function(){

@@ -136,8 +136,8 @@ describe('I18n', function() {
 	});
 
 	it('验证国际化文本内容[配置表]', function() {
-		expect( I18N.i18nText($table_en, 'setting-grid') ).toBe('Setting Grid');
-		expect( I18N.i18nText($table_cn, 'setting-grid') ).toBe('配置表');
+		expect( I18N.i18nText($table_en, 'config-grid') ).toBe('Setting Grid');
+		expect( I18N.i18nText($table_cn, 'config-grid') ).toBe('配置表');
 	});
 
 	it('验证国际化文本内容[全选]', function() {

@@ -77,6 +77,7 @@ const Settings = {
 	responseHandler		: $.noop,					// 执行请求后执行程序, 通过该程序可以修改返回值格式. 仅有成功后该函数才会执行 @v2.3.14
 	dataKey				: 'data',					//ajax请求返回的列表数据key键值,默认为data
 	totalsKey			: 'totals',					//ajax请求返回的数据总条数key键值,默认为totals
+	
 	//数据导出
 	supportExport		: true						//支持导出表格数据
 };
@@ -127,7 +128,7 @@ const TextSettings = function (){
 		'zh-cn':'已选中项另存为Excel',
 		'en-us':'Save selected as Excel'
 	};
-	this['setting-grid'] = {
+	this['config-grid'] = {
 		'zh-cn':'配置表',
 		'en-us':'Setting Grid'
 	};
