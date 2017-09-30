@@ -19,7 +19,7 @@ import Remind from './Remind';
 import Scroll from './Scroll';
 import Sort from './Sort';
 import { Settings, TextSettings } from './Settings';
-import { Hover } from './Hover';
+import Hover from './Hover';
 import {PublishMethod, publishMethodArray} from './Publish';
 class GridManager {
 	constructor() {
@@ -121,7 +121,7 @@ class GridManager {
 		}
 
 		// 绑定table区域hover事件
-		_this.onTbodyHover(table);
+		Hover.onTbodyHover(table);
 
 		// 绑定表头置顶功能
 		_this.bindScrollFunction(table);
@@ -149,7 +149,7 @@ class GridManager {
 		// jTool.extend(this, Core);
 
 		// GM导入功能: 鼠标
-		jTool.extend(this, Hover);
+		// jTool.extend(this, Hover);
 
 		// GM导入功能: 选择
 		// jTool.extend(this, Checkbox);
