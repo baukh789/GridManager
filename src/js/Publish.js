@@ -180,7 +180,7 @@ class PublishMethodClass {
 // 对外公开方法列表
 const PublishMethod = new PublishMethodClass();
 const publishMethodArray = ['init'];
-for(let key in PublishMethod){
+for (let key in PublishMethod) {
 	publishMethodArray.push(key);
 }
 export {PublishMethod, publishMethodArray};
