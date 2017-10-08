@@ -107,7 +107,7 @@ class GridManager {
 
 		// 绑定排序事件
 		if(_this.supportSorting){
-			_this.bindSortingEvent(table);
+			Sort.bindSortingEvent(table);
 		}
 
 		// 绑定表头提示事件
@@ -170,7 +170,7 @@ class GridManager {
 		// jTool.extend(this, Drag);
 
 		// GM导入功能: 排序
-		jTool.extend(this, Sort);
+		// jTool.extend(this, Sort);
 
 		// GM导入功能: 导出数据
 		// jTool.extend(this, Export);
