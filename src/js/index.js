@@ -112,7 +112,7 @@ class GridManager {
 
 		// 绑定表头提示事件
 		if(_this.supportRemind){
-			_this.bindRemindEvent(table);
+			Remind.bindRemindEvent(table);
 		}
 
 		// 绑定配置列表事件
