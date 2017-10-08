@@ -124,7 +124,7 @@ class GridManager {
 		Hover.onTbodyHover(table);
 
 		// 绑定表头置顶功能
-		_this.bindScrollFunction(table);
+		Scroll.bindScrollFunction(table);
 
 		// 绑定右键菜单事件
 		Menu.bindRightMenuEvent(table);
