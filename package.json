@@ -57,7 +57,7 @@
   "scripts": {
     "report-coverage": "codecov",
     "start": "node server",
-    "lint": "eslint src/js/Order.js",
+    "lint": "eslint src/js/Publish.js",
     "test": "karma start",
     "build": "npm run build:dev && npm run build:minified:js && npm run build:minified:css && npm run copy",
     "copy": "cp package.json build/package.json && cp README.md build/README.md && cp README-CN.md build/README-CN.md && cp README-EN.md build/README-EN.md",

@@ -20,7 +20,7 @@ import Scroll from './Scroll';
 import Sort from './Sort';
 import { Settings, TextSettings } from './Settings';
 import Hover from './Hover';
-import {PublishMethod, publishMethodArray} from './Publish';
+import { publishMethodArray } from './Publish';
 class GridManager {
 	constructor() {
 		this.version = '2.3.15';
@@ -191,7 +191,7 @@ class GridManager {
 		jTool.extend(this, Scroll);
 
 		// GM导入功能: 公开方法
-		jTool.extend(this, PublishMethod);
+		// jTool.extend(this, PublishMethod);
 
 	}
 }
