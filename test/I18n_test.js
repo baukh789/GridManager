@@ -23,9 +23,10 @@ describe('I18n', function() {
 		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 			,disableCache: true
+			,i18n: 'en-us'
 			,textConfig: {
 				'order-text': {
-					'zh-cn':'序号被改动了',   // 由于当前设置为en-us; 所以zh-cn 中配置的文本不会生效
+					'zh-cn':'序号被改动了',   // 由于当前设置为en-us; 所以更改后并不会在表格中显示出来
 					'en-us':'order'
 				},
 				'first-page': {
@@ -33,7 +34,6 @@ describe('I18n', function() {
 					'en-us':'first page' // 将默认值 first 修改为 first page
 				}
 			}
-			,i18n: 'en-us'
 			,columnData: [
 				{
 					key: 'name',

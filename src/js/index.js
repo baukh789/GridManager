@@ -39,7 +39,7 @@ class GridManager {
 			arg.gridManagerName = jToolObj.attr('grid-manager');	//存储gridManagerName值
 		}
 		// 配置参数
-		var _settings = jTool.extend(true, {}, Settings);
+		var _settings = new Settings();
 		_settings.textConfig = new TextSettings();
 		jTool.extend(true, _settings, arg);
 		Cache.updateSettings(jToolObj, _settings);
@@ -140,7 +140,7 @@ class GridManager {
 	// 拼装GirdManager
 	extentGridManager(){
 		// GM导入功能: 配置项
-		jTool.extend(true, this, Settings);
+		// jTool.extend(true, this, Settings);
 
 		// GM导入功能: 基本
 		// jTool.extend(this, Base);
