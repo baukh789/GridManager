@@ -1,8 +1,7 @@
 /*
 * Sort: 排序
 * */
-import $ from './jTool';
-import Base from './Base';
+import { $, Base } from './Base';
 import Core from './Core';
 import Cache from './Cache';
 class Sort {

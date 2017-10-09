@@ -1,5 +1,5 @@
 'use strict';
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import Cache from '../src/js/Cache';
 import testData from '../src/data/testData';
 describe('Cache.js', function() {

@@ -1,9 +1,8 @@
 /*
  * Adjust: 宽度调整
  * */
-import $ from './jTool';
+import { $, Base } from './Base';
 import Cache from './Cache';
-import Base from './Base';
 class Adjust {
 	/**
 	 * 返回宽度调整HTML

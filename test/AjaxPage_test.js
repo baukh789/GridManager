@@ -1,5 +1,5 @@
 'use strict';
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import AjaxPage from '../src/js/AjaxPage';
 import Cache from '../src/js/Cache';
 describe('AjaxPage.js', function() {

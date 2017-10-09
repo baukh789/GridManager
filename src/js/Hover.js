@@ -2,8 +2,7 @@
  * Created by baukh on 17/3/3.
  * 鼠标hover 高亮
  */
-import $ from './jTool';
-import Base from './Base';
+import { $, Base } from './Base';
 class Hover {
 	onTbodyHover($table) {
 		let $td = null;

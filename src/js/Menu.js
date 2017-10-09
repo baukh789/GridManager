@@ -1,7 +1,7 @@
 /*
  * GridManager: 右键菜单
  * */
-import $ from './jTool';
+import { $ } from './Base';
 import Cache from './Cache';
 import I18n from './I18n';
 import Export from './Export';

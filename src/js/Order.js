@@ -1,7 +1,7 @@
 /*
  * Order: 序号
  * */
-import $ from './jTool';
+import { $ } from './Base';
 import I18n from './I18n';
 class Order {
 	/**

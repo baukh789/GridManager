@@ -1,5 +1,5 @@
 'use strict';
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import Config from '../src/js/Config';
 import testData from '../src/data/testData';
 describe('Config', function() {

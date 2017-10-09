@@ -2,7 +2,7 @@
  * Created by baukh on 17/4/19.
  */
 'use strict';
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import Core from '../src/js/Core';
 import testData from '../src/data/testData';
 describe('Core', function() {

@@ -1,8 +1,7 @@
 /*
  * AjaxPage: 分页
  * */
-import $ from './jTool';
-import Base from './Base';
+import { $, Base } from './Base';
 import Core from './Core';
 import Cache from './Cache';
 import I18n from './I18n';

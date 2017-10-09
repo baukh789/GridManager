@@ -1,7 +1,7 @@
 /*
  * Scroll: 滚动轴
  * */
-import $ from './jTool';
+import { $ } from './Base';
 class Scroll {
 	/**
 	 * 绑定表格滚动轴功能

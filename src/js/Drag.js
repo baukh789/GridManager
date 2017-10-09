@@ -1,8 +1,7 @@
 /*
  * Drag: 拖拽
  * */
-import $ from './jTool';
-import Base from './Base';
+import { $, Base } from './Base';
 import Adjust from './Adjust';
 import Cache from './Cache';
 class Drag {

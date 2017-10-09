@@ -1,7 +1,7 @@
 /**
  * Created by baukh on 17/9/30.
  */
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import Menu from '../src/js/Menu';
 import testData from '../src/data/testData';
 describe('Menu.js', function() {

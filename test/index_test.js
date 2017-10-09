@@ -1,7 +1,7 @@
 /**
  * Created by baukh on 17/6/20.
  */
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import testData from '../src/data/testData';
 import '../build/css/GridManager.css';
 

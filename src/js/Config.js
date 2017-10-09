@@ -1,8 +1,7 @@
 /*
  * Config: th配置
  * */
-import $ from './jTool';
-import Base from './Base';
+import { $, Base } from './Base';
 import Cache from './Cache';
 import Adjust from './Adjust';
 class Config {

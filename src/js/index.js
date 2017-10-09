@@ -2,7 +2,7 @@
  *  GridManager: 入口
  * */
 import '../css/index.scss';
-import jTool from './jTool';
+import { jTool } from './Base';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
 // import Base from './Base';

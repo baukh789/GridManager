@@ -1,8 +1,10 @@
 /*
  * Base: 基础方法
  * */
-import $ from './jTool';
-class Base {
+import {} from '../../node_modules/jTool/jTool.min';
+const $ = window.jTool;
+const jTool = window.jTool;
+class BaseClass {
 	/**
 	 * 输出日志
 	 * @param msg 输出文本
@@ -229,4 +231,5 @@ class Base {
 		}
 	}
 }
-export default new Base();
+const Base = new BaseClass();
+export {jTool, $, Base};

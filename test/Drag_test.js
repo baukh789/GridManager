@@ -2,7 +2,7 @@
  * Created by baukh on 17/4/21.
  */
 
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import testData from '../src/data/testData';
 describe('Drag', function() {
 	let table = null;

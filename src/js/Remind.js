@@ -1,7 +1,7 @@
 /*
  * Remind: 表头提醒
  * */
-import $ from './jTool';
+import { $ } from './Base';
 class Remind {
 	/**
 	 * 获取表头提醒所需HTML

@@ -1,5 +1,5 @@
 'use strict';
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import Order from '../src/js/Order';
 import testData from '../src/data/testData';
 describe('Order', function() {

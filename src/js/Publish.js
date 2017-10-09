@@ -3,9 +3,8 @@
  * 公开方法
  * 参数中的$table, 将由组件自动添加
  */
-import $ from './jTool';
+import { $, Base } from './Base';
 import Cache from './Cache';
-import Base from './Base';
 import Sort from './Sort';
 import Export from './Export';
 import Core from './Core';

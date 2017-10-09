@@ -2,8 +2,8 @@
  * Created by baukh on 17/3/5.
  */
 'use strict';
-var I18N = require('../src/js/I18n').default;
-var jTool = require('../src/js/jTool').default;
+import { jTool } from '../src/js/Base';
+import I18N from '../src/js/I18n';
 describe('I18n', function() {
 	let table_en = null;
 	let $table_en = null;

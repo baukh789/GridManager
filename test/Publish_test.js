@@ -4,7 +4,7 @@
  */
 
 'use strict';
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import {PublishMethod, publishMethodArray} from '../src/js/Publish';
 import Cache from '../src/js/Cache';
 import Export from '../src/js/Export';

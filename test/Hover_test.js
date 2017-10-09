@@ -2,7 +2,7 @@
  * Created by baukh on 17/8/16.
  */
 
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import testData from '../src/data/testData';
 describe('Hover.js', function() {
 	let gmName = 'test-hover';

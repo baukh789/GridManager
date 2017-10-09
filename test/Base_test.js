@@ -1,6 +1,5 @@
 'use strict';
-import jTool from '../src/js/jTool';
-import Base from '../src/js/Base';
+import { jTool, Base } from '../src/js/Base';
 import testData from '../src/data/testData';
 describe('Base: 验证原型方法总数', function() {
 	var getPropertyCount = null;

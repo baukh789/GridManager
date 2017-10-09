@@ -4,14 +4,13 @@
 * 2.渲染GM DOM
 * 3.重置tbody
 * */
-import $ from './jTool';
+import { $, Base } from './Base';
 import Menu from './Menu';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
 import Cache from './Cache';
 import Config from './Config';
 import Checkbox from './Checkbox';
-import Base from './Base';
 import Export from './Export';
 import Order from './Order';
 import Remind from './Remind';

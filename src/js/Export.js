@@ -1,7 +1,7 @@
 /*
  * Export: 数据导出
  * */
-import $ from './jTool';
+import { $ } from './Base';
 import Core from './Core';
 import Cache from './Cache';
 class Export {

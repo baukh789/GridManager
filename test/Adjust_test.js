@@ -1,5 +1,5 @@
 'use strict';
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import Adjust from '../src/js/Adjust';
 describe('Adjust.js', function() {
 	let table = null;

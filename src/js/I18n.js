@@ -1,7 +1,7 @@
 /*
  * I18n: 国际化
  * */
-import Base from './Base';
+import { Base } from './Base';
 import Cache from './Cache';
 class I18n {
 	/**

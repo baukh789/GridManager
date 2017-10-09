@@ -5,8 +5,7 @@
 * 2.Cache: 核心缓存数据 [存储在DOM上]
 * 3.UserMemory: 用户记忆 [存储在localStorage]
 * */
-import $ from './jTool';
-import Base from './Base';
+import { $, Base } from './Base';
 class Cache {
 	constructor() {
 		this.initCoreMethod();

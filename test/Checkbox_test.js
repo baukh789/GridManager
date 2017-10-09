@@ -2,7 +2,7 @@
  * Created by baukh on 17/3/12.
  */
 'use strict';
-import jTool from '../src/js/jTool';
+import { jTool } from '../src/js/Base';
 import Checkbox from '../src/js/Checkbox';
 import testData from '../src/data/testData';
 describe('Checkbox', function() {
@@ -78,7 +78,7 @@ describe('Checkbox', function() {
 
 		cList = null;
 	});
-	
+
 	it('验证自动生成列[checkout]宽度', function(){
 		let autoCreateCheckbox = jTool('th[th-name="gm_checkbox"]').width();
 		expect(autoCreateCheckbox).toBe(50);
