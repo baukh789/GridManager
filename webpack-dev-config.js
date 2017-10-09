@@ -22,13 +22,13 @@ const config = {
 	],
 	module: {
 		rules: [
-			// {
-			// 	test: /\.js$/,
-			// 	loader: 'eslint-loader',
-			// 	enforce: 'pre',
-			// 	exclude: /(node_modules|bower_components)/,
-			// 	include: path.resolve(__dirname, "src/js")
-			// },
+			{
+				test: /\.js$/,
+				loader: 'eslint-loader',
+				enforce: 'pre',
+				exclude: /(node_modules|bower_components)/,
+				include: path.resolve(__dirname, "src/js")
+			},
 			{
 				test: /\.js?$/,
 				loaders: ['babel-loader?{"presets":["es2015"]}'],
