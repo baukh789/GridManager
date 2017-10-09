@@ -87,7 +87,6 @@ class Menu {
 		const menuDOM = $(`.grid-menu[grid-master="${Settings.gridManagerName}"]`);
 		tableWarp.unbind('contextmenu');
 		tableWarp.bind('contextmenu', function (e) {
-			console.log('contextmenu    contextmenu');
 			e.preventDefault();
 			e.stopPropagation();
 

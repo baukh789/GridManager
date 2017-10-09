@@ -4,9 +4,6 @@ const TransferWebpackPlugin = require('transfer-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const buildPath = path.join(__dirname, "build");
 const config = {
-	// map
-	// devtool : 'source-map',  // TODO  http://www.css88.com/doc/webpack2/configuration/devtool/
-
 	// 入口文件所在的上下文
 	context: path.join(__dirname, "src/"),
 

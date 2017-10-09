@@ -2840,7 +2840,6 @@ var Menu = function () {
 			var menuDOM = (0, _jTool2.default)('.grid-menu[grid-master="' + Settings.gridManagerName + '"]');
 			tableWarp.unbind('contextmenu');
 			tableWarp.bind('contextmenu', function (e) {
-				console.log('contextmenu    contextmenu');
 				e.preventDefault();
 				e.stopPropagation();
 
