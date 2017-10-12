@@ -9,7 +9,7 @@ class Config {
 	 * 表格配置区域HTML
 	 * @returns {string}
      */
-	html() {
+	get html() {
 		const html = `<div class="config-area">
 						<span class="config-action">
 							<i class="iconfont icon-31xingdongdian"></i>

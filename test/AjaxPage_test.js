@@ -71,7 +71,7 @@ describe('AjaxPage.js', function() {
 		// expect(pagingAfter).toHaveBeenCalledWith({cPage: 1, pSize: 10});
 	// });
 
-	it('AjaxPage.html($table)', function(){
+	it('AjaxPage.createHtml($table)', function(){
 		let ajaxPageHtml= `<div class="page-toolbar">
 						<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>
 						<div class="goto-page">
@@ -83,7 +83,7 @@ describe('AjaxPage.js', function() {
 						<div class="dataTables_info"></div>
 						<div class="ajax-page"><ul class="pagination"></ul></div>
 					</div>`;
-		expect(AjaxPage.html($table).replace(/\s/g, '')).toBe(ajaxPageHtml.replace(/\s/g, ''));
+		expect(AjaxPage.createHtml($table).replace(/\s/g, '')).toBe(ajaxPageHtml.replace(/\s/g, ''));
 		ajaxPageHtml = null;
 	});
 

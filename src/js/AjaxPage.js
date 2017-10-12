@@ -11,7 +11,7 @@ class AjaxPage {
 	 * @param $table
 	 * @returns {string}
      */
-	html($table) {
+	createHtml($table) {
 		const html = `<div class="page-toolbar">
 						<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>
 						<div class="goto-page">

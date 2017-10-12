@@ -5,16 +5,11 @@ import '../css/index.scss';
 import { jTool } from './Base';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
-// import Base from './Base';
 import Cache from './Cache';
 import Core from './Core';
 import Config from './Config';
-// import Checkbox from './Checkbox';
 import Drag from './Drag';
-// import Export from './Export';
-// import I18n from './I18n';
 import Menu from './Menu';
-// import Order from './Order';
 import Remind from './Remind';
 import Scroll from './Scroll';
 import Sort from './Sort';
@@ -24,15 +19,15 @@ import { PublishMethod, publishMethodArray } from './Publish';
 class GridManager {
 	constructor() {
 		this.version = '2.3.15';
-		// this.extentGridManager();
 	}
-	/*
+
+	/**
 	 * [对外公开方法]
-	 * @初始化方法
-	 * $.jToolObj: table [jTool object]
-	 * $.arg: 参数
-	 * $.callback:回调
-	 * */
+	 * @param jToolObj: table [jTool object]
+	 * @param arg: 参数
+	 * @param callback: 回调
+     * @returns {*}
+     */
 	init(jToolObj, arg, callback) {
 		const _this = this;
 		if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {

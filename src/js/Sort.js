@@ -9,7 +9,7 @@ class Sort {
 	 * 获取排序所需HTML
 	 * @returns {string}
      */
-	html() {
+	get html() {
 		const html = `<div class="sorting-action">
 						<i class="sa-icon sa-up iconfont icon-sanjiao2"></i>
 						<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>

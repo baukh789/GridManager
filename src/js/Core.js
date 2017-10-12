@@ -265,22 +265,22 @@ class Core {
 		Cache.setOriginalThDOM($table);
 
 		// 表头提醒HTML
-		const _remindHtml = Remind.html();
+		const _remindHtml = Remind.html;
 
 		// 配置列表HTML
-		const _configHtml = Config.html();
+		const _configHtml = Config.html;
 
 		// 宽度调整HTML
-		const _adjustHtml = Adjust.html();
+		const _adjustHtml = Adjust.html;
 
 		// 排序HTML
-		const _sortingHtml = Sort.html();
+		const _sortingHtml = Sort.html;
 
 		// 导出表格数据所需的事件源DOM
-		const exportActionHtml = Export.html();
+		const exportActionHtml = Export.html;
 
 		// AJAX分页HTML
-		const _ajaxPageHtml = AjaxPage.html($table);
+		const _ajaxPageHtml = AjaxPage.createHtml($table);
 
 		// 外围的html片段
 		let	wrapHtml = null;

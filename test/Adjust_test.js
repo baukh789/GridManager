@@ -45,7 +45,7 @@ describe('Adjust.js', function() {
 	});
 
 	it('验证获取html', function() {
-		expect(Adjust.html()).toBe('<span class="adjust-action"></span>');
+		expect(Adjust.html).toBe('<span class="adjust-action"></span>');
 	});
 
 	it('验证方法[resetAdjust]返回值', function () {

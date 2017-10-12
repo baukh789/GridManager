@@ -7,7 +7,7 @@ class Remind {
 	 * 获取表头提醒所需HTML
 	 * @returns {string}
      */
-	html() {
+	get html() {
 		const html = `<div class="remind-action">
 						<i class="ra-help iconfont icon-icon"></i>
 						<div class="ra-area">

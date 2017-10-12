@@ -9,7 +9,7 @@ class Export {
 	 * 导出所需的HTML
 	 * @returns {string}
      */
-	html() {
+	get html() {
 		const html = '<a href="" download="" id="gm-export-action"></a>';
 		return html;
 	}

@@ -53,14 +53,15 @@ describe('Config', function() {
 		document.body.innerHTML = '';
 	});
 
-	it('Config.html()', function() {
+	it('Config.html', function() {
 		let html= `<div class="config-area">
 					<span class="config-action">
 						<i class="iconfont icon-31xingdongdian"></i>
 					</span>
 					<ul class="config-list"></ul>
 				</div>`;
-		expect(Config.html().replace(/\s/g, '')).toBe(html.replace(/\s/g, ''));
+		expect(Config.html.replace(/\s/g, '')).toBe(html.replace(/\s/g, ''));
+		html = null;
 	});
 
 	it('测试展示隐藏配置区域事件', function(){

@@ -5,10 +5,10 @@ import { $, Base } from './Base';
 import Cache from './Cache';
 class Adjust {
 	/**
-	 * 返回宽度调整HTML
+	 * 宽度调整HTML
 	 * @returns {string}
      */
-	html() {
+	get html() {
 		return '<span class="adjust-action"></span>';
 	}
 

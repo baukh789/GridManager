@@ -55,9 +55,9 @@ describe('Export', function() {
 		document.body.innerHTML = '';
 	});
 
-	it('Export.html()', function(){
+	it('Export.html', function(){
 		let html = '<a href="" download="" id="gm-export-action"></a>';
-		expect(Export.html()).toBe(html);
+		expect(Export.html).toBe(html);
 		html = null;
 	});
 
@@ -66,9 +66,9 @@ describe('Export', function() {
 	});
 
 	it('Export.createExportHTML(theadHTML, tbodyHTML)', function(){
-		const theadHTML = '<tr><th>th1</th><th>th1</th></tr>';
-		const tbodyHTML = '<tr><td>td1</td><td>td2</td></tr>';
-		const exportHTML = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+		let theadHTML = '<tr><th>th1</th><th>th1</th></tr>';
+		let tbodyHTML = '<tr><td>td1</td><td>td2</td></tr>';
+		let exportHTML = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
 								<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
 								<body>
 									<table>
@@ -82,6 +82,9 @@ describe('Export', function() {
 								</body>
 							</html>`;
 		expect(Export.createExportHTML(theadHTML, tbodyHTML).replace(/\s/g, '')).toBe(exportHTML.replace(/\s/g, ''));
+		theadHTML = null;
+		tbodyHTML = null;
+		exportHTML = null;
 	});
 
 });
