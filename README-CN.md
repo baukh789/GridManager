@@ -159,4 +159,7 @@ npm install GridManager
 ### 想清除当前记忆的宽度及列位置时怎么办?
 可使用 `clear` 方法,调用方式: `document.querySelector('table').GM('clear');`
 
+### 某一例配置的宽度为100px, 而生成的宽度却不是100px，并且出现了横向滚动条?
+这上因为该列的文本实际所占宽度超出了100px, GridManager 会自动对宽度进行调整； 以达到th文本在初始展示时的完整性。
+
 
