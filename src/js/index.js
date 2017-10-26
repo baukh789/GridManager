@@ -2,7 +2,7 @@
  *  GridManager: 入口
  * */
 import '../css/index.scss';
-import { jTool } from './Base';
+import { jTool, Base } from './Base';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
 import Cache from './Cache';
@@ -18,9 +18,42 @@ import Hover from './Hover';
 import { PublishMethod, publishMethodArray } from './Publish';
 class GridManager {
 	constructor() {
-		this.version = '2.3.15';
 	}
 
+	/**
+	 * 静态方法
+	 * 获取Table 对应 GridManager的实例
+	 * @param table
+	 * @returns {*}
+     */
+	static
+	get(table) {
+		return PublishMethod.get(jTool(table));
+	}
+
+	/**
+	 * 静态方法
+	 * 获取GridManager 版本号
+	 * @returns {string}
+     */
+	static
+	get version() {
+		return '2.3.15';
+	}
+
+	static
+	getLocalStorage() {
+
+	}
+
+	/**
+	 * 获取版本号
+	 * TODO 考虑下 是否有必要再保留, 因为静态方法中已经存在对应的方法
+	 * @returns {string}
+     */
+	get version() {
+		return '2.3.15';
+	}
 	/**
 	 * [对外公开方法]
 	 * @param jToolObj: table [jTool object]
@@ -32,7 +65,7 @@ class GridManager {
 		const _this = this;
 		if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
 			// 存储gridManagerName值
-			arg.gridManagerName = jToolObj.attr('grid-manager');
+			arg.gridManagerName = Base.getKey(jToolObj);
 		}
 
 		// 配置参数
@@ -140,7 +173,7 @@ class GridManager {
 /*
 *  捆绑至选择器对象
 * */
-(function ($) {
+($ => {
 	Element.prototype.GM = Element.prototype.GridManager = function () {
 		const $table = $(this);
 
@@ -203,10 +236,17 @@ class GridManager {
 	};
 })(jTool);
 
+/**
+ * 将GridManager 对象映射至window
+ */
+(() => {
+	window.GridManager = window.GM = GridManager;
+})();
+
 /*
 * 兼容jquery
 * */
-(function () {
+(() => {
 	if (typeof (window.jQuery) !== 'undefined' && window.jQuery.fn.extend) {
 		window.jQuery.fn.extend({
 			GM: function () {

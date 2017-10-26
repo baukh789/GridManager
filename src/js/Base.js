@@ -25,6 +25,15 @@ class BaseClass {
 	}
 
 	/**
+	 * 获取表的GM 唯一标识
+	 * @param $table
+	 * @returns {*|string}
+     */
+	getKey($table) {
+		return $table.attr('grid-manager') || '';
+	}
+
+	/**
 	 * 获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
 	 * @param $th
 	 * @returns {*|HTMLElement|jQuery}

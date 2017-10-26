@@ -6,18 +6,17 @@
 * 3.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { $, Base } from './Base';
+import map from './Map';
 class Cache {
 	constructor() {
 		this.initCoreMethod();
 		this.initGridData();
 		this.initUserMemory();
 	}
-
 	/**
 	 * 渲染表格使用的json数据 通过每个tr上的cache-key进行获取
 	 */
 	initGridData() {
-		this.responseData = {};
 		/**
 		 * 获取当前行渲染时使用的数据
 		 * @param $table 当前操作的grid,由插件自动传入
@@ -25,25 +24,24 @@ class Cache {
 		 * @returns {*}
          * @private
          */
-		this.__getRowData = function ($table, target) {
-			const gmName = $table.attr('grid-manager');
-			if (!gmName) {
-				return;
-			}
-			if (!this.responseData[gmName]) {
+		this.__getRowData = ($table, target) => {
+			const gmName = Base.getKey($table);
+			if (!map.responseData[gmName]) {
 				return;
 			}
 			// target type = Element 元素时, 返回单条数据对象;
 			if ($.type(target) === 'element') {
-				return this.responseData[gmName][target.getAttribute('cache-key')];
+				return map.responseData[gmName][target.getAttribute('cache-key')];
 			} else if ($.type(target) === 'nodeList') {
 				// target type =  NodeList 类型时, 返回数组
-				const _this = this;
 				let rodData = [];
 				$.each(target, function (i, v) {
-					rodData.push(_this.responseData[gmName][v.getAttribute('cache-key')]);
+					rodData.push(map.responseData[gmName][v.getAttribute('cache-key')]);
 				});
 				return rodData;
+			} else {
+				// 不为Element NodeList时, 返回空对象
+				return {};
 			}
 		};
 
@@ -53,11 +51,19 @@ class Cache {
 		 * @param key
          * @param value
          */
-		this.setRowData = function (gmName, key, value) {
-			if (!this.responseData[gmName]) {
-				this.responseData[gmName] = {};
+		this.setRowData = (gmName, key, value) => {
+			if (!map.responseData[gmName]) {
+				map.responseData[gmName] = {};
 			}
-			this.responseData[gmName][key] = value;
+			map.responseData[gmName][key] = value;
+		};
+
+		/**
+		 * 获取完整的渲染时使用的数据
+		 * @param $table
+         */
+		this.getTableData = $table => {
+			return map.responseData[Base.getKey($table)] || {};
 		};
 	}
 
@@ -234,7 +240,8 @@ class Cache {
 				return {};
 			}
 			// 这里返回的是clone对象 而非对象本身
-			return $.extend(true, {}, $table.data('settings'));
+			// return $.extend(true, {}, $table.data('settings'));
+			return $.extend(true, {}, map.settings[Base.getKey($table)] || {});
 		};
 
 		/**
@@ -243,8 +250,9 @@ class Cache {
 		 * @param settings
 		 */
 		this.updateSettings = ($table, settings) => {
-			const data = $.extend(true, {}, settings);
-			$table.data('settings', data);
+			// const data = $.extend(true, {}, settings);
+			// $table.data('settings', data);
+			map.settings[Base.getKey($table)] = $.extend(true, {}, settings);
 		};
 
 		/**
@@ -371,6 +379,7 @@ class Cache {
 			$.each(_thDOM, (i, v) => {
 				_thList.push(v.getAttribute('th-name'));
 			});
+			map.originalTh[Base.getKey($table)] = _thList;
 			$table.data('originalThList', _thList);
 		};
 
@@ -381,8 +390,7 @@ class Cache {
 		 */
 		this.getOriginalThDOM = $table => {
 			const _thArray = [];
-			const _thList = $table.data('originalThList');
-
+			const _thList = map.originalTh[Base.getKey($table)];
 			$.each(_thList, (i, v) => {
 				_thArray.push($(`thead[grid-manager-thead] th[th-name="${v}"]`, $table).get(0));
 			});
@@ -395,7 +403,8 @@ class Cache {
 		 */
 		this.setGridManagerToJTool = ($table, GM) => {
 			// 调用的地方需要使用call 更改 this指向
-			$table.data('gridManager', GM);
+			// $table.data('gridManager', GM);
+			map.gridManager[Base.getKey($table)] = GM;
 		};
 
 		/**
@@ -409,7 +418,8 @@ class Cache {
 				return {};
 			}
 			const settings = this.getSettings($table);
-			const gridManager = $table.data('gridManager');
+			// const gridManager = $table.data('gridManager');
+			const gridManager = map.gridManager[Base.getKey($table)] || {};
 
 			// 会一并被修改 $table.data('gridManager') 指向的 Object
 			$.extend(gridManager, settings);

@@ -135,7 +135,7 @@ class Core {
 	driveDomForSuccessAfter($table, settings, response, callback) {
 		// tbody dom
 		const tbodyDOM = $('tbody', $table);
-		const gmName = $table.attr('grid-manager');
+		const gmName = Base.getKey($table);
 
 		if (!response) {
 			Base.outLog('请求数据失败！请查看配置参数[ajax_url或ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');

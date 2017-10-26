@@ -55,13 +55,7 @@ describe('Cache.js', function() {
 		Element.prototype.GM = Element.prototype.GridManager = null;
 		document.body.innerHTML = '';
 	});
-	it('Cache.responseData', function() {
-		expect(Cache.responseData[gmName]).toBeDefined();
-		expect(Cache.responseData[gmName][0].name).toBe('baukh');
-		expect(Cache.responseData[gmName][1].name).toBe('kouzi');
-		expect(Cache.responseData[gmName][0].age).toBe('30');
-		expect(Cache.responseData[gmName][1].age).toBe('28');
-	});
+	
 
 	it('Cache.__getRowData($table, target)', function() {
 		let tr0 = jTool('tbody tr', $table).get(0);
