@@ -335,8 +335,7 @@ export default class GridManager {
 		// 渲染tbodyDOM
 		Core.__refreshGrid(table);
 
-		// TODO Eslint整改时, 不再将各个模块拼装至GirdManager, 所以验证是否已经实例化的方式需要调整
-		// 将GridManager实例化对象存放于jTool data
+		// 存储GM实例
 		Cache.__setGridManager(table, _this);
 	}
 }

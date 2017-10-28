@@ -203,7 +203,6 @@ class Core {
      */
 	createDOM($table) {
 		let settings = Cache.getSettings($table);
-		// TODO table或者tablewarp 需要使用 父节点的绝对值宽度 或者 通过父节点的宽度来对th进行分配
 		$table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', settings.gridManagerName);
 		let theadHtml = '<thead grid-manager-thead>';
 		let	tbodyHtml = '<tbody></tbody>';
