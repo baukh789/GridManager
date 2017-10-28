@@ -199,6 +199,7 @@ class Menu {
 	 * @returns {boolean}
      */
 	isDisabled(dom, events) {
+		console.log(events);
 		if ($(dom).hasClass('disabled')) {
 			events.stopPropagation();
 			events.preventDefault();

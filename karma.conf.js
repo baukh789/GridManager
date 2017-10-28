@@ -10,8 +10,8 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-			// 'test/*_test.js'
-			'test/GridManager_test.js'
+			'test/*_test.js'
+			// 'test/Config_test.js'
 		],
 		// 排除在外的文件列表
 		exclude: ['karma.conf.js'],
@@ -63,7 +63,7 @@ module.exports = function (config) {
 		webpack: {
 			//入口文件配置
 			entry: {
-				js: 'test/index_test.js'
+				js: 'test/index.js'
 			},
 			resolve:{
 				extensions: [".js"] //当requrie的模块找不到时,添加这些后缀

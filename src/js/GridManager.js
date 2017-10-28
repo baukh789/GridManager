@@ -222,7 +222,6 @@ export default class GridManager {
 	 */
 	init(table, arg, callback) {
 		const $table = jTool(table);
-		const _this = this;
 		if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
 			// 存储gridManagerName值
 			arg.gridManagerName = Base.getKey($table);
@@ -238,19 +237,19 @@ export default class GridManager {
 
 		// 通过版本较验 清理缓存
 		Cache.cleanTableCacheForVersion();
-		if (_this.gridManagerName.trim() === '') {
-			_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+		if (this.gridManagerName.trim() === '') {
+			this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 			return false;
 		}
 
 		// 验证当前表格是否已经渲染
 		if ($table.hasClass('GridManager-ready') || $table.hasClass('GridManager-loading')) {
-			_this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
+			this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
 			return false;
 		}
 
 		// 根据本地缓存配置每页显示条数
-		if (_this.supportAjaxPage) {
+		if (this.supportAjaxPage) {
 			AjaxPage.configPageForCache($table);
 		}
 
@@ -258,7 +257,7 @@ export default class GridManager {
 		$table.addClass('GridManager-loading');
 
 		// 初始化表格
-		_this.initTable($table);
+		this.initTable($table);
 		// 如果初始获取缓存失败，在渲染完成后首先存储一次数据
 		if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
 			window.setTimeout(() => {
@@ -267,7 +266,7 @@ export default class GridManager {
 			}, 1000);
 		}
 		// 启用回调
-		typeof (callback) === 'function' ? callback(_this.query) : '';
+		typeof (callback) === 'function' ? callback(this.query) : '';
 		return $table;
 	}
 
@@ -276,39 +275,38 @@ export default class GridManager {
 	 $.table: table[jTool object]
 	 */
 	initTable(table) {
-		const _this = this;
 		// 渲染HTML，嵌入所需的事件源DOM
 		Core.createDOM(table);
 
 		// 获取本地缓存并对列表进行配置
-		if (!_this.disableCache) {
+		if (!this.disableCache) {
 			Cache.configTheadForCache(table);
 			// 通过缓存配置成功后, 重置宽度调整事件源dom
-			_this.supportAdjust ? Adjust.resetAdjust(table) : '';
+			this.supportAdjust ? Adjust.resetAdjust(table) : '';
 		}
 
 		// 绑定宽度调整事件
-		if (_this.supportAdjust) {
+		if (this.supportAdjust) {
 			Adjust.bindAdjustEvent(table);
 		}
 
 		// 绑定拖拽换位事件
-		if (_this.supportDrag) {
+		if (this.supportDrag) {
 			Drag.bindDragEvent(table);
 		}
 
 		// 绑定排序事件
-		if (_this.supportSorting) {
+		if (this.supportSorting) {
 			Sort.bindSortingEvent(table);
 		}
 
 		// 绑定表头提示事件
-		if (_this.supportRemind) {
+		if (this.supportRemind) {
 			Remind.bindRemindEvent(table);
 		}
 
 		// 绑定配置列表事件
-		if (_this.supportConfig) {
+		if (this.supportConfig) {
 			Config.bindConfigEvent(table);
 		}
 
@@ -325,6 +323,6 @@ export default class GridManager {
 		Core.__refreshGrid(table);
 
 		// 存储GM实例
-		Cache.__setGridManager(table, _this);
+		Cache.__setGridManager(table, this);
 	}
 }
