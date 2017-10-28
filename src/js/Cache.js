@@ -386,7 +386,7 @@ class Cache {
 		/**
 		 * 获取原Th DOM至table data
 		 * @param $table
-		 * @returns {*|HTMLElement|jQuery}
+		 * @returns {*|HTMLElement|jTool}
 		 */
 		this.getOriginalThDOM = $table => {
 			const _thArray = [];
@@ -398,17 +398,15 @@ class Cache {
 		};
 
 		/**
-		 * 存储对外实例
+		 * 存储GM实例
 		 * @param $table
 		 */
-		this.setGridManagerToJTool = ($table, GM) => {
-			// 调用的地方需要使用call 更改 this指向
-			// $table.data('gridManager', GM);
+		this.__setGridManager = ($table, GM) => {
 			map.gridManager[Base.getKey($table)] = GM;
 		};
 
 		/**
-		 * 获取gridManager
+		 * 获取GM实例
 		 * @param $table
 		 * @returns {*}
 		 * @private
@@ -418,10 +416,8 @@ class Cache {
 				return {};
 			}
 			const settings = this.getSettings($table);
-			// const gridManager = $table.data('gridManager');
 			const gridManager = map.gridManager[Base.getKey($table)] || {};
 
-			// 会一并被修改 $table.data('gridManager') 指向的 Object
 			$.extend(gridManager, settings);
 			return gridManager;
 		};

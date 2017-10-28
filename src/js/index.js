@@ -1,182 +1,14 @@
 /*
  *  GridManager: 入口
  * */
-import '../css/index.scss';
-import { jTool, Base } from './Base';
-import Adjust from './Adjust';
-import AjaxPage from './AjaxPage';
-import Cache from './Cache';
-import Core from './Core';
-import Config from './Config';
-import Drag from './Drag';
-import Menu from './Menu';
-import Remind from './Remind';
-import Scroll from './Scroll';
-import Sort from './Sort';
-import { Settings, TextSettings } from './Settings';
-import Hover from './Hover';
+import { jTool } from './Base';
+import GridManager from './GridManager';
 import { PublishMethod, publishMethodArray } from './Publish';
-class GridManager {
-	constructor() {
-	}
-
-	/**
-	 * 静态方法
-	 * 获取Table 对应 GridManager的实例
-	 * @param table
-	 * @returns {*}
-     */
-	static
-	get(table) {
-		return PublishMethod.get(jTool(table));
-	}
-
-	/**
-	 * 静态方法
-	 * 获取GridManager 版本号
-	 * @returns {string}
-     */
-	static
-	get version() {
-		return '2.3.15';
-	}
-
-	static
-	getLocalStorage() {
-
-	}
-
-	/**
-	 * 获取版本号
-	 * TODO 考虑下 是否有必要再保留, 因为静态方法中已经存在对应的方法
-	 * @returns {string}
-     */
-	get version() {
-		return '2.3.15';
-	}
-	/**
-	 * [对外公开方法]
-	 * @param jToolObj: table [jTool object]
-	 * @param arg: 参数
-	 * @param callback: 回调
-     * @returns {*}
-     */
-	init(jToolObj, arg, callback) {
-		const _this = this;
-		if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
-			// 存储gridManagerName值
-			arg.gridManagerName = Base.getKey(jToolObj);
-		}
-
-		// 配置参数
-		var _settings = new Settings();
-		_settings.textConfig = new TextSettings();
-		jTool.extend(true, _settings, arg);
-		Cache.updateSettings(jToolObj, _settings);
-
-		jTool.extend(true, this, _settings);
-
-		// 通过版本较验 清理缓存
-		Cache.cleanTableCacheForVersion(jToolObj, this.version);
-		if (_this.gridManagerName.trim() === '') {
-			_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
-			return false;
-		}
-
-		// 验证当前表格是否已经渲染
-		if (jToolObj.hasClass('GridManager-ready') || jToolObj.hasClass('GridManager-loading')) {
-			_this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
-			return false;
-		}
-
-		// 根据本地缓存配置每页显示条数
-		if (_this.supportAjaxPage) {
-			AjaxPage.configPageForCache(jToolObj);
-		}
-
-		// 增加渲染中标注
-		jToolObj.addClass('GridManager-loading');
-
-		// 初始化表格
-		_this.initTable(jToolObj);
-		// 如果初始获取缓存失败，在渲染完成后首先存储一次数据
-		if (typeof jToolObj.attr('grid-manager-cache-error') !== 'undefined') {
-			window.setTimeout(() => {
-				Cache.saveUserMemory(jToolObj);
-				jToolObj.removeAttr('grid-manager-cache-error');
-			}, 1000);
-		}
-		// 启用回调
-		typeof (callback) === 'function' ? callback(_this.query) : '';
-		return jToolObj;
-	}
-
-	/*
-	 @初始化列表
-	 $.table: table[jTool object]
-	 */
-	initTable(table) {
-		const _this = this;
-		// 渲染HTML，嵌入所需的事件源DOM
-		Core.createDOM(table);
-
-		// 获取本地缓存并对列表进行配置
-		if (!_this.disableCache) {
-			Cache.configTheadForCache(table);
-			// 通过缓存配置成功后, 重置宽度调整事件源dom
-			_this.supportAdjust ? Adjust.resetAdjust(table) : '';
-		}
-
-		// 绑定宽度调整事件
-		if (_this.supportAdjust) {
-			Adjust.bindAdjustEvent(table);
-		}
-
-		// 绑定拖拽换位事件
-		if (_this.supportDrag) {
-			Drag.bindDragEvent(table);
-		}
-
-		// 绑定排序事件
-		if (_this.supportSorting) {
-			Sort.bindSortingEvent(table);
-		}
-
-		// 绑定表头提示事件
-		if (_this.supportRemind) {
-			Remind.bindRemindEvent(table);
-		}
-
-		// 绑定配置列表事件
-		if (_this.supportConfig) {
-			Config.bindConfigEvent(table);
-		}
-
-		// 绑定table区域hover事件
-		Hover.onTbodyHover(table);
-
-		// 绑定表头置顶功能
-		Scroll.bindScrollFunction(table);
-
-		// 绑定右键菜单事件
-		Menu.bindRightMenuEvent(table);
-
-		// 渲染tbodyDOM
-		Core.__refreshGrid(table);
-
-		// TODO Eslint整改时, 不再将各个模块拼装至GirdManager, 所以验证是否已经实例化的方式需要调整
-		// 将GridManager实例化对象存放于jTool data
-		Cache.setGridManagerToJTool(table, _this);
-	}
-}
-
 /*
 *  捆绑至选择器对象
 * */
-($ => {
+(jTool => {
 	Element.prototype.GM = Element.prototype.GridManager = function () {
-		const $table = $(this);
-
 		// 特殊情况处理：单组tr进行操作，如resetTd()方法
 		if (this.nodeName === 'TR') {
 			return;
@@ -199,7 +31,7 @@ class GridManager {
 			name	 = 'init';
 			settings = {};
 			callback = undefined;
-		} else if ($.type(arguments[0]) !== 'string') {
+		} else if (jTool.type(arguments[0]) !== 'string') {
 			// ex: document.querySelector('table').GridManager({settings}, callback)
 			name	 = 'init';
 			settings = arguments[0];
@@ -222,13 +54,13 @@ class GridManager {
 		// 当前为初始化方法
 		if (name === 'init') {
 			const _GM = new GridManager();
-			_GM.init($table, settings, callback);
+			_GM.init(this, settings, callback);
 			return _GM;
 			// 当前为其它方法
 		} else if (name !== 'init') {
 			// gmObj = $table.data('gridManager');
 			// console.log(gmObj);
-			const gmData = PublishMethod[name]($table, settings, callback, condition);
+			const gmData = PublishMethod[name](this, settings, callback, condition);
 
 			// 如果方法存在返回值则返回，如果没有返回dom, 用于链式操作
 			return typeof (gmData) === 'undefined' ? this : gmData;
@@ -273,9 +105,4 @@ class GridManager {
 			}
 		});
 	}
-})();
-
-// 恢复jTool占用的$变量
-(function () {
-	window.$ = window._$ || undefined;
 })();

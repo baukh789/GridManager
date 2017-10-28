@@ -261,29 +261,29 @@ describe('Publish.js', function() {
 		callback = null;
 	});
 
-	it('PublishMethod.getCheckedTr($table)', function(){
+	it('PublishMethod.getCheckedTr(table)', function(){
 		let checkedList = null;
 		let checkboxList = null;
-		checkedList = PublishMethod.getCheckedTr($table);
+		checkedList = PublishMethod.getCheckedTr(table);
 		expect(jTool.type(checkedList)).toBe('nodeList');
 		expect(checkedList.length).toBe(0);
 
-		checkboxList = jTool('tr td[gm-checkbox="true"] input', $table);
+		checkboxList = jTool('tr td[gm-checkbox="true"] input', table);
 		checkboxList.eq(0).trigger('click');
-		checkedList = PublishMethod.getCheckedTr($table);
+		checkedList = PublishMethod.getCheckedTr(table);
 		expect(checkedList.length).toBe(1);
 
 		checkboxList.eq(1).trigger('click');
-		checkedList = PublishMethod.getCheckedTr($table);
+		checkedList = PublishMethod.getCheckedTr(table);
 		expect(checkedList.length).toBe(2);
 
 		checkedList = null;
 		checkboxList = null;
 	});
 
-	it('PublishMethod.getCheckedData($table)', function () {
+	it('PublishMethod.getCheckedData(table)', function () {
 		let checkedData = null;
-		checkedData = PublishMethod.getCheckedData($table);
+		checkedData = PublishMethod.getCheckedData(table);
 		expect(checkedData.length).toBe(2);
 		expect(checkedData[0].name).toBe('baukh');
 		expect(checkedData[1].name).toBe('kouzi');
