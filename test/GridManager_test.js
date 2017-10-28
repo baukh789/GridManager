@@ -61,7 +61,7 @@ describe('GridManager.js', function() {
 				}
 			]
 		};
-		GridManager.init(table, arg, callbackFN);
+		new GridManager().init(table, arg, callbackFN);
 		expect(callbackFN).toHaveBeenCalled();
 
 		arg = null;

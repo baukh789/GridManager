@@ -10,8 +10,8 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-			'test/*_test.js'
-			// 'test/Core_test.js'
+			// 'test/*_test.js'
+			'test/GridManager_test.js'
 		],
 		// 排除在外的文件列表
 		exclude: ['karma.conf.js'],

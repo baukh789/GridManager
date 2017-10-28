@@ -209,7 +209,7 @@
 			info: document.querySelector('[name="info"]').value,
 			url: document.querySelector('[name="url"]').value
 		};
-		table.GM('setQuery', _query).GM('refreshGrid', function () {
+		table.GM('setQuery', _query, function () {
 			console.log('搜索成功...');
 		});
 	});

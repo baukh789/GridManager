@@ -15,9 +15,21 @@ import Menu from './Menu';
 import Remind from './Remind';
 import Scroll from './Scroll';
 import Sort from './Sort';
+import store from './Store';
 import { Settings, TextSettings } from './Settings';
 import Hover from './Hover';
 export default class GridManager {
+	/**
+	 * @静态方法
+	 * 版本号
+	 * GridManager.version || GM.version
+	 * @returns {string}
+	 */
+	static
+	get version() {
+		return store.version;
+	}
+
 	/**
 	 * @静态方法
 	 * 获取Table 对应 GridManager的实例
@@ -27,9 +39,6 @@ export default class GridManager {
 	static
 	get(table) {
 		return Cache.__getGridManager(jTool(table));
-	}
-
-	constructor() {
 	}
 
 	/**
@@ -205,26 +214,6 @@ export default class GridManager {
 	};
 
 	/**
-	 * @静态方法
-	 * 版本号
-	 * GridManager.version || GM.version
-	 * @returns {string}
-	 */
-	static
-	get version() {
-		return '2.3.14';
-	}
-
-	/**
-	 * 版本号
-	 * GridManager.prototype.version: document.querySelector('table').GM('get').version
-	 * @returns {string}
-	 */
-	get version() {
-		return GridManager.version;
-	}
-
-	/**
 	 * [对外公开方法]
 	 * @param table
 	 * @param arg: 参数
@@ -248,7 +237,7 @@ export default class GridManager {
 		jTool.extend(true, this, _settings);
 
 		// 通过版本较验 清理缓存
-		Cache.cleanTableCacheForVersion($table, this.version);
+		Cache.cleanTableCacheForVersion();
 		if (_this.gridManagerName.trim() === '') {
 			_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 			return false;

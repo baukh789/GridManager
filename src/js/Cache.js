@@ -6,7 +6,7 @@
 * 3.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { $, Base } from './Base';
-import map from './Map';
+import store from './Store';
 class Cache {
 	constructor() {
 		this.initCoreMethod();
@@ -26,17 +26,17 @@ class Cache {
          */
 		this.__getRowData = ($table, target) => {
 			const gmName = Base.getKey($table);
-			if (!map.responseData[gmName]) {
+			if (!store.responseData[gmName]) {
 				return;
 			}
 			// target type = Element 元素时, 返回单条数据对象;
 			if ($.type(target) === 'element') {
-				return map.responseData[gmName][target.getAttribute('cache-key')];
+				return store.responseData[gmName][target.getAttribute('cache-key')];
 			} else if ($.type(target) === 'nodeList') {
 				// target type =  NodeList 类型时, 返回数组
 				let rodData = [];
 				$.each(target, function (i, v) {
-					rodData.push(map.responseData[gmName][v.getAttribute('cache-key')]);
+					rodData.push(store.responseData[gmName][v.getAttribute('cache-key')]);
 				});
 				return rodData;
 			} else {
@@ -52,10 +52,10 @@ class Cache {
          * @param value
          */
 		this.setRowData = (gmName, key, value) => {
-			if (!map.responseData[gmName]) {
-				map.responseData[gmName] = {};
+			if (!store.responseData[gmName]) {
+				store.responseData[gmName] = {};
 			}
-			map.responseData[gmName][key] = value;
+			store.responseData[gmName][key] = value;
 		};
 
 		/**
@@ -63,7 +63,7 @@ class Cache {
 		 * @param $table
          */
 		this.getTableData = $table => {
-			return map.responseData[Base.getKey($table)] || {};
+			return store.responseData[Base.getKey($table)] || {};
 		};
 	}
 
@@ -241,7 +241,7 @@ class Cache {
 			}
 			// 这里返回的是clone对象 而非对象本身
 			// return $.extend(true, {}, $table.data('settings'));
-			return $.extend(true, {}, map.settings[Base.getKey($table)] || {});
+			return $.extend(true, {}, store.settings[Base.getKey($table)] || {});
 		};
 
 		/**
@@ -252,7 +252,7 @@ class Cache {
 		this.updateSettings = ($table, settings) => {
 			// const data = $.extend(true, {}, settings);
 			// $table.data('settings', data);
-			map.settings[Base.getKey($table)] = $.extend(true, {}, settings);
+			store.settings[Base.getKey($table)] = $.extend(true, {}, settings);
 		};
 
 		/**
@@ -260,16 +260,16 @@ class Cache {
 		 * @param $table
 		 * @param version 版本号
 		 */
-		this.cleanTableCacheForVersion = ($table, version) => {
+		this.cleanTableCacheForVersion = () => {
 			const cacheVersion = window.localStorage.getItem('GridManagerVersion');
 			// 当前为第一次渲染
 			if (!cacheVersion) {
-				window.localStorage.setItem('GridManagerVersion', version);
+				window.localStorage.setItem('GridManagerVersion', store.version);
 			}
 			// 版本变更, 清除所有的用户记忆
-			if (cacheVersion && cacheVersion !== version) {
+			if (cacheVersion && cacheVersion !== store.version) {
 				this.cleanTableCache(null, '版本已升级,原全部缓存被自动清除');
-				window.localStorage.setItem('GridManagerVersion', version);
+				window.localStorage.setItem('GridManagerVersion', store.version);
 			}
 		};
 
@@ -379,7 +379,7 @@ class Cache {
 			$.each(_thDOM, (i, v) => {
 				_thList.push(v.getAttribute('th-name'));
 			});
-			map.originalTh[Base.getKey($table)] = _thList;
+			store.originalTh[Base.getKey($table)] = _thList;
 			$table.data('originalThList', _thList);
 		};
 
@@ -390,7 +390,7 @@ class Cache {
 		 */
 		this.getOriginalThDOM = $table => {
 			const _thArray = [];
-			const _thList = map.originalTh[Base.getKey($table)];
+			const _thList = store.originalTh[Base.getKey($table)];
 			$.each(_thList, (i, v) => {
 				_thArray.push($(`thead[grid-manager-thead] th[th-name="${v}"]`, $table).get(0));
 			});
@@ -402,7 +402,7 @@ class Cache {
 		 * @param $table
 		 */
 		this.__setGridManager = ($table, GM) => {
-			map.gridManager[Base.getKey($table)] = GM;
+			store.gridManager[Base.getKey($table)] = GM;
 		};
 
 		/**
@@ -416,7 +416,7 @@ class Cache {
 				return {};
 			}
 			const settings = this.getSettings($table);
-			const gridManager = map.gridManager[Base.getKey($table)] || {};
+			const gridManager = store.gridManager[Base.getKey($table)] || {};
 
 			$.extend(gridManager, settings);
 			return gridManager;
