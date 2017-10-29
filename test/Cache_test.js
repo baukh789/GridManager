@@ -8,8 +8,6 @@ describe('Cache.js', function() {
 	let $table = null;
 	let gmName = 'test-cache';
 	beforeAll(function(){
-		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/index').default;
 
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', gmName);
@@ -52,10 +50,9 @@ describe('Cache.js', function() {
 		table = null;
 		$table = null;
 		gmName = null;
-		Element.prototype.GM = Element.prototype.GridManager = null;
 		document.body.innerHTML = '';
 	});
-	
+
 
 	it('Cache.__getRowData($table, target)', function() {
 		let tr0 = jTool('tbody tr', $table).get(0);

@@ -27,8 +27,6 @@ describe('Base.js', function() {
 	let $table = null;
 	let gmName = 'test-base';
 	beforeAll(function(){
-		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/index').default;
 
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', gmName);
@@ -70,7 +68,6 @@ describe('Base.js', function() {
 		table = null;
 		$table = null;
 		gmName = null;
-		Element.prototype.GM = Element.prototype.GridManager = null;
 		document.body.innerHTML = '';
 	});
 

@@ -16,9 +16,6 @@ describe('Publish.js', function() {
 	table.setAttribute('grid-manager', gmName);
 	let $table = jTool(table);
 	beforeAll(function(){
-		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/index').default;
-
 		document.querySelector('body').appendChild(table);
 		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
 			ajax_data: testData
@@ -56,7 +53,6 @@ describe('Publish.js', function() {
 		table = null;
 		$table = null;
 		gmName = null;
-		Element.prototype.GM = Element.prototype.GridManager = null;
 		document.body.innerHTML = '';
 	});
 

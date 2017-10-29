@@ -12,9 +12,6 @@ describe('I18n', function() {
 	let gmName = 'test-i18n-en';
 	let gmName2 = 'test-i18n-cn';
 	beforeAll(function(){
-		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/index').default;
-
 		// 第一组设置为en-us, 且其中几项被重置
 		table_en = document.createElement('table');
 		table_en.setAttribute('grid-manager', gmName);
@@ -71,7 +68,6 @@ describe('I18n', function() {
 		$table_cn = null;
 		gmName = null;
 		gmName2 = null;
-		Element.prototype.GM = Element.prototype.GridManager = null;
 		document.body.innerHTML = '';
 	});
 

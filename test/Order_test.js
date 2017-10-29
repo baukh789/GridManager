@@ -8,9 +8,6 @@ describe('Order', function() {
 	let gmName = 'test-order';
 
 	beforeAll(function(){
-		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/index').default;
-
 		table = document.createElement('table');
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
@@ -41,7 +38,6 @@ describe('Order', function() {
 		table = null;
 		$table = null;
 		gmName = null;
-		Element.prototype.GM = Element.prototype.GridManager = null;
 		document.body.innerHTML = '';
 	});
 

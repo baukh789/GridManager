@@ -9,8 +9,6 @@ describe('AjaxPage.js', function() {
 	let pagingBefore = null;
 	let pagingAfter = null;
 	beforeAll(function(){
-		// 引入组件, 实例化 Element.prototype.GM
-		require('../src/js/index').default;
 
 		pagingBefore = jasmine.createSpy('pagingBefore');
 		pagingAfter = jasmine.createSpy('pagingAfter');
@@ -53,7 +51,6 @@ describe('AjaxPage.js', function() {
 		gmName = null;
 		pagingBefore = null;
 		pagingAfter = null;
-		Element.prototype.GM = Element.prototype.GridManager = null;
 		document.body.innerHTML = '';
 	});
 
