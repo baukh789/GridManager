@@ -9,7 +9,6 @@ describe('AjaxPage.js', function() {
 	let pagingBefore = null;
 	let pagingAfter = null;
 	beforeAll(function(){
-
 		pagingBefore = jasmine.createSpy('pagingBefore');
 		pagingAfter = jasmine.createSpy('pagingAfter');
 		// 第一组设置为en-us, 且其中几项被重置
