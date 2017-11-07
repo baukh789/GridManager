@@ -44,6 +44,18 @@ describe('Adjust.js', function() {
 		expect(Adjust.html).toBe('<span class="adjust-action"></span>');
 	});
 
+	it('bindAdjustEvent', function() {
+		expect(Adjust.bindAdjustEvent).toBeDefined();
+	});
+
+	it('runMoveEvent', function() {
+		expect(Adjust.runMoveEvent).toBeDefined();
+	});
+
+	it('runStopEvent', function() {
+		expect(Adjust.runStopEvent).toBeDefined();
+	});
+
 	it('验证方法[resetAdjust]返回值', function () {
 		expect(Adjust.resetAdjust()).toBe(false);
 		expect(Adjust.resetAdjust($table)).toBe(undefined);
