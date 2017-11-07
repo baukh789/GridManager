@@ -210,8 +210,8 @@ class Core {
 		// 文本对齐属性
 		let	alignAttr = '';
 
-		// 宽度对应的html片段
-		let	widthHtml = '';
+		// 宽度信息
+		let	widthInfo = '';
 
 		// 提醒对应的html片段
 		let	remindHtml = '';
@@ -241,13 +241,13 @@ class Core {
 					sortingHtml = 'sorting=""';
 				}
 			}
-			if (v.width) {
-				widthHtml = `width="${v.width}"`;
-			} else {
-				widthHtml = '';
-			}
+
+			// 宽度文本
+			widthInfo = v.width ? `width="${v.width}"` : '';
+
+			// 文本对齐
 			alignAttr = v.align ? `align="${v.align}"` : '';
-			theadHtml += `<th gm-create="false" th-name="${v.key}" ${remindHtml} ${sortingHtml} ${widthHtml} ${alignAttr}>${v.text}</th>`;
+			theadHtml += `<th gm-create="false" th-name="${v.key}" ${remindHtml} ${sortingHtml} ${widthInfo} ${alignAttr}>${v.text}</th>`;
 		});
 		theadHtml += '</thead>';
 		$table.html(theadHtml + tbodyHtml);
@@ -263,87 +263,53 @@ class Core {
 		// 存储原始th DOM
 		Cache.setOriginalThDOM($table);
 
-		// 表头提醒HTML
-		const _remindHtml = Remind.html;
-
-		// 配置列表HTML
-		const _configHtml = Config.html;
-
-		// 宽度调整HTML
-		const _adjustHtml = Adjust.html;
-
-		// 排序HTML
-		const _sortingHtml = Sort.html;
-
-		// 导出表格数据所需的事件源DOM
-		const exportActionHtml = Export.html;
-
-		// AJAX分页HTML
-		const _ajaxPageHtml = AjaxPage.createHtml($table);
-
-		// 外围的html片段
-		let	wrapHtml = null;
-
-		// 单个table所在的DIV容器
-		let	tableWarp = null;
-
-		// 单个table下的thead
-		let	onlyThead = null;
-
-		// 单个table下的TH
-		let	onlyThList = null;
-
-		// 单个TH
-		let	onlyTH = null;
-
-		// 单个TH下的上层DIV
-		let	onlyThWarp = null;
-
-		// 表头提醒DOM
-		let	remindDOM = null;
-
-		// 调整宽度DOM
-		let	adjustDOM = null;
-
-		// 排序DOM
-		let	sortingDom = null;
-
-		// 排序类形
-		let	sortType = null;
-
 		// 是否为插件自动生成的序号列
 		let	isLmOrder = null;
 
 		// 是否为插件自动生成的选择列
 		let	isLmCheckbox = null;
 
-		onlyThead = $('thead[grid-manager-thead]', $table);
-		onlyThList = $('th', onlyThead);
-		wrapHtml = `<div class="table-wrap">
+		// 单个table下的thead
+		const onlyThead = $('thead[grid-manager-thead]', $table);
+
+		// 单个table下的TH
+		const onlyThList = $('th', onlyThead);
+
+		// 外围的html片段
+		const wrapHtml = `<div class="table-wrap">
 						<div class="table-div" style="height:calc(${settings.height} - 40px)"></div>
 						<span class="text-dreamland"></span>
 					</div>`;
 		$table.wrap(wrapHtml);
-		tableWarp = $table.closest('.table-wrap');
+
+		// 单个table所在的DIV容器
+		const tableWarp = $table.closest('.table-wrap');
 
 		// 嵌入配置列表DOM
 		if (settings.supportConfig) {
-			tableWarp.append(_configHtml);
+			tableWarp.append(Config.html);
 		}
 
 		// 嵌入Ajax分页DOM
 		if (settings.supportAjaxPage) {
-			tableWarp.append(_ajaxPageHtml);
+			tableWarp.append(AjaxPage.createHtml($table));
 			AjaxPage.initAjaxPage($table);
 		}
 
 		// 嵌入导出表格数据事件源
 		if (settings.supportExport) {
-			tableWarp.append(exportActionHtml);
+			tableWarp.append(Export.html);
 		}
 		const configList = $('.config-list', tableWarp);
-		let onlyWidth;
-		onlyThWarp = $('<div class="th-wrap"></div>');
+
+		// 单个TH
+		let onlyTH = null;
+
+		// 单个TH所占宽度
+		let onlyWidth = 0;
+
+		// 单个TH下的上层DIV
+		const onlyThWarp = $('<div class="th-wrap"></div>');
 		$.each(onlyThList, (i2, v2) => {
 			onlyTH = $(v2);
 			onlyTH.attr('th-visible', 'visible');
@@ -386,7 +352,7 @@ class Core {
 			// 嵌入表头提醒事件源
 			// 插件自动生成的排序与选择列不做事件绑定
 			if (settings.supportRemind && onlyTH.attr('remind') !== undefined && !isLmOrder && !isLmCheckbox) {
-				remindDOM = $(_remindHtml);
+				const remindDOM = $(Remind.html);
 				remindDOM.find('.ra-title').text(onlyTH.text());
 				remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
 				if (onlyThWarpPaddingTop !== '' && onlyThWarpPaddingTop !== '0px') {
@@ -397,9 +363,10 @@ class Core {
 
 			// 嵌入排序事件源
 			// 插件自动生成的排序与选择列不做事件绑定
-			sortType = onlyTH.attr('sorting');
+			// 排序类型
+			const sortType = onlyTH.attr('sorting');
 			if (settings.supportSorting && sortType !== undefined && !isLmOrder && !isLmCheckbox) {
-				sortingDom = $(_sortingHtml);
+				const sortingDom = $(Sort.html);
 
 				// 依据 sortType 进行初始显示
 				switch (sortType) {
@@ -419,7 +386,7 @@ class Core {
 			}
 			// 嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
 			if (settings.supportAdjust && !isLmOrder && !isLmCheckbox) {
-				adjustDOM = $(_adjustHtml);
+				const adjustDOM = $(Adjust.html);
 				// 最后一列不支持调整宽度
 				if (i2 === onlyThList.length - 1) {
 					adjustDOM.hide();

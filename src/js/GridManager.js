@@ -270,10 +270,10 @@ export default class GridManager {
 		return $table;
 	}
 
-	/*
-	 @初始化列表
-	 $.table: table[jTool object]
-	 */
+	/**
+	 * 初始化列表
+	 * @param table
+     */
 	initTable(table) {
 		// 渲染HTML，嵌入所需的事件源DOM
 		Core.createDOM(table);

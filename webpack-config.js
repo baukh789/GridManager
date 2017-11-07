@@ -7,6 +7,8 @@ const config = {
 	// 入口文件所在的上下文
 	context: path.join(__dirname, "src/"),
 
+	devtool: 'source-map',
+
 	// 入口文件配置
 	entry: {
 		js: './js/index.js'
