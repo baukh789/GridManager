@@ -2,6 +2,86 @@
 import { jTool } from '../src/js/Base';
 import Cache from '../src/js/Cache';
 import testData from '../src/data/testData';
+/**
+ * 对象完整性验证
+ */
+describe('Cache 对象完整性验证', function() {
+	it('对象完整性验证 Cache.initGridData', function(){
+		expect(Cache.initGridData).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.__getRowData', function(){
+		expect(Cache.__getRowData).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.setRowData', function(){
+		expect(Cache.setRowData).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.getTableData', function(){
+		expect(Cache.getTableData).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.initUserMemory', function(){
+		expect(Cache.initUserMemory).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.delUserMemory', function(){
+		expect(Cache.delUserMemory).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.getMemoryKey', function(){
+		expect(Cache.getMemoryKey).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.getUserMemory', function(){
+		expect(Cache.getUserMemory).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.saveUserMemory', function(){
+		expect(Cache.saveUserMemory).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.initCoreMethod', function(){
+		expect(Cache.initCoreMethod).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.getSettings', function(){
+		expect(Cache.getSettings).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.setSettings', function(){
+		expect(Cache.setSettings).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.cleanTableCacheForVersion', function(){
+		expect(Cache.cleanTableCacheForVersion).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.cleanTableCache', function(){
+		expect(Cache.cleanTableCache).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.configTheadForCache', function(){
+		expect(Cache.configTheadForCache).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.setOriginalThDOM', function(){
+		expect(Cache.setOriginalThDOM).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.getOriginalThDOM', function(){
+		expect(Cache.getOriginalThDOM).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.__setGridManager', function(){
+		expect(Cache.__setGridManager).toBeDefined();
+	});
+
+	it('对象完整性验证 Cache.__getGridManager', function(){
+		expect(Cache.__getGridManager).toBeDefined();
+	});
+});
 describe('Cache.js', function() {
 
 	let table = null;

@@ -2,6 +2,54 @@
 import { jTool } from '../src/js/Base';
 import AjaxPage from '../src/js/AjaxPage';
 import Cache from '../src/js/Cache';
+/**
+ * 对象完整性验证
+ */
+describe('AjaxPage 对象完整性验证', function() {
+	it('对象完整性验证 AjaxPage.createHtml', function(){
+		expect(AjaxPage.initAjaxPage).toBeDefined();
+	});
+
+	it('对象完整性验证 AjaxPage.initAjaxPage', function(){
+		expect(AjaxPage.initAjaxPage).toBeDefined();
+	});
+
+	it('对象完整性验证 AjaxPage.createPaginationDOM', function(){
+		expect(AjaxPage.createPaginationDOM).toBeDefined();
+	});
+
+	it('对象完整性验证 AjaxPage.joinPagination', function(){
+		expect(AjaxPage.joinPagination).toBeDefined();
+	});
+
+	it('对象完整性验证 AjaxPage.createPageSizeDOM', function(){
+		expect(AjaxPage.createPageSizeDOM).toBeDefined();
+	});
+
+	it('对象完整性验证 AjaxPage.bindPageJumpEvent', function(){
+		expect(AjaxPage.bindPageJumpEvent).toBeDefined();
+	});
+
+	it('对象完整性验证 AjaxPage.gotoPage', function(){
+		expect(AjaxPage.gotoPage).toBeDefined();
+	});
+
+	it('对象完整性验证 AjaxPage.bindSetPageSizeEvent', function(){
+		expect(AjaxPage.bindSetPageSizeEvent).toBeDefined();
+	});
+
+	it('对象完整性验证 AjaxPage.resetPSize', function(){
+		expect(AjaxPage.resetPSize).toBeDefined();
+	});
+
+	it('对象完整性验证 AjaxPage.resetPageData', function(){
+		expect(AjaxPage.resetPageData).toBeDefined();
+	});
+
+	it('对象完整性验证 AjaxPage.configPageForCache', function(){
+		expect(AjaxPage.configPageForCache).toBeDefined();
+	});
+});
 describe('AjaxPage.js', function() {
 	let table = null;
 	let $table = null;
@@ -66,6 +114,7 @@ describe('AjaxPage.js', function() {
 		// AjaxPage.gotoPage($table, 1);
 		// expect(pagingAfter).toHaveBeenCalledWith({cPage: 1, pSize: 10});
 	// });
+
 
 	it('AjaxPage.createHtml($table)', function(){
 		let ajaxPageHtml= `<div class="page-toolbar">

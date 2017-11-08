@@ -31,13 +31,13 @@ class AjaxPage {
 	 * @param $table
      */
 	initAjaxPage($table) {
-		const Settings = Cache.getSettings($table);
+		const settings = Cache.getSettings($table);
 		const _this = this;
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
 		const pageToolbar = $('.page-toolbar', tableWarp);
-		const sizeData = Settings.sizeData;
+		const sizeData = settings.sizeData;
 		pageToolbar.hide();
 
 		// 生成每页显示条数选择框

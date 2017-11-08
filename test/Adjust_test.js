@@ -1,6 +1,30 @@
 'use strict';
 import { jTool } from '../src/js/Base';
 import Adjust from '../src/js/Adjust';
+/**
+ * 对象完整性验证
+ */
+describe('Adjust.js 对象完整性验证', function() {
+	it('对象完整性验证 Adjust.html', function() {
+		expect(Adjust.html).toBeDefined();
+	});
+	it('对象完整性验证 Adjust.bindAdjustEvent', function() {
+		expect(Adjust.bindAdjustEvent).toBeDefined();
+	});
+
+	it('对象完整性验证 Adjust.runMoveEvent', function() {
+		expect(Adjust.runMoveEvent).toBeDefined();
+	});
+
+	it('对象完整性验证 Adjust.runStopEvent', function() {
+		expect(Adjust.runStopEvent).toBeDefined();
+	});
+
+	it('对象完整性验证 Adjust.resetAdjust', function() {
+		expect(Adjust.resetAdjust).toBeDefined();
+	});
+
+});
 describe('Adjust.js', function() {
 	let table = null;
 	let $table = null;
@@ -46,25 +70,13 @@ describe('Adjust.js', function() {
 		document.body.innerHTML = '';
 	});
 
-	it('Adjust.html', function() {
-		expect(Adjust.html).toBe('<span class="adjust-action"></span>');
-	});
-
-	it('Adjust.bindAdjustEvent() 方法是否存在', function() {
-		expect(Adjust.bindAdjustEvent).toBeDefined();
-	});
-
-	it('Adjust.runMoveEvent() 方法是否存在', function() {
-		expect(Adjust.runMoveEvent).toBeDefined();
-	});
-
-	it('Adjust.runStopEvent() 方法是否存在', function() {
-		expect(Adjust.runStopEvent).toBeDefined();
-	});
-
 	it('Adjust.resetAdjust()', function () {
 		expect(Adjust.resetAdjust()).toBe(false);
 		expect(Adjust.resetAdjust($table)).toBe(undefined);
+	});
+
+	it('Adjust.html', function() {
+		expect(Adjust.html).toBe('<span class="adjust-action"></span>');
 	});
 
 	it('宽度调整事件[adjustBefore]', function () {

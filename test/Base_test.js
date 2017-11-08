@@ -1,7 +1,52 @@
 'use strict';
 import { jTool, Base } from '../src/js/Base';
 import testData from '../src/data/testData';
-describe('Base: 验证原型方法总数', function() {
+/**
+ * 对象完整性验证
+ */
+describe('Base 对象完整性验证', function() {
+	it('对象完整性验证 Base.outLog', function(){
+		expect(Base.outLog).toBeDefined();
+	});
+
+	it('对象完整性验证 Base.getKey', function(){
+		expect(Base.getKey).toBeDefined();
+	});
+
+	it('对象完整性验证 Base.getColTd', function(){
+		expect(Base.getColTd).toBeDefined();
+	});
+
+	it('对象完整性验证 Base.initVisible', function(){
+		expect(Base.initVisible).toBeDefined();
+	});
+
+	it('对象完整性验证 Base.setAreVisible', function(){
+		expect(Base.setAreVisible).toBeDefined();
+	});
+
+	it('对象完整性验证 Base.getTextWidth', function(){
+		expect(Base.getTextWidth).toBeDefined();
+	});
+
+	it('对象完整性验证 Base.showLoading', function(){
+		expect(Base.showLoading).toBeDefined();
+	});
+
+	it('对象完整性验证 Base.hideLoading', function(){
+		expect(Base.hideLoading).toBeDefined();
+	});
+
+	it('对象完整性验证 Base.updateInteractive', function(){
+		expect(Base.updateInteractive).toBeDefined();
+	});
+
+	it('对象完整性验证 Base.updateScrollStatus', function(){
+		expect(Base.updateScrollStatus).toBeDefined();
+	});
+
+});
+describe('Base 验证原型方法总数', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {
 		getPropertyCount = function(o){
