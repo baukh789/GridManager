@@ -249,7 +249,7 @@ class Cache {
 		 * @param $table
 		 * @param settings
 		 */
-		this.updateSettings = ($table, settings) => {
+		this.setSettings = ($table, settings) => {
 			// const data = $.extend(true, {}, settings);
 			// $table.data('settings', data);
 			store.settings[Base.getKey($table)] = $.extend(true, {}, settings);

@@ -149,7 +149,7 @@ export default class GridManager {
 		if (isGotoFirstPage) {
 			settings.pageData.cPage = 1;
 		}
-		Cache.updateSettings($table, settings);
+		Cache.setSettings($table, settings);
 		Core.__refreshGrid($table, callback);
 	}
 
@@ -164,7 +164,7 @@ export default class GridManager {
 		const $table = jTool(table);
 		const settings = Cache.getSettings($table);
 		jTool.extend(settings, {ajax_data: ajaxData});
-		Cache.updateSettings($table, settings);
+		Cache.setSettings($table, settings);
 		Core.__refreshGrid($table);
 	}
 
@@ -185,7 +185,7 @@ export default class GridManager {
 		}
 		if (isGotoFirstPage) {
 			settings.pageData['cPage'] = 1;
-			Cache.updateSettings($table, settings);
+			Cache.setSettings($table, settings);
 		}
 		Core.__refreshGrid($table, callback);
 	};
@@ -231,7 +231,7 @@ export default class GridManager {
 		var _settings = new Settings();
 		_settings.textConfig = new TextSettings();
 		jTool.extend(true, _settings, arg);
-		Cache.updateSettings($table, _settings);
+		Cache.setSettings($table, _settings);
 
 		jTool.extend(true, this, _settings);
 

@@ -32,7 +32,7 @@ class Sort {
 			return false;
 		}
 		$.extend(settings.sortData, sortJson);
-		Cache.updateSettings($table, settings);
+		Cache.setSettings($table, settings);
 
 		// 默认执行完后进行刷新列表操作
 		if (typeof (refresh) === 'undefined') {
@@ -123,7 +123,7 @@ class Sort {
 				});
 			}
 			// 调用事件、渲染tbody
-			Cache.updateSettings($table, settings);
+			Cache.setSettings($table, settings);
 			const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
 			settings.sortingBefore(query);
 			Core.__refreshGrid($table, () => {

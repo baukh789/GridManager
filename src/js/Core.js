@@ -74,7 +74,7 @@ class Core {
 		}
 
 		// settings.query = pram;
-		Cache.updateSettings($table, settings);
+		Cache.setSettings($table, settings);
 
 		Base.showLoading(tableWrap);
 
@@ -232,11 +232,11 @@ class Core {
 				if (v.sorting === settings.sortDownText) {
 					sortingHtml = `sorting="${settings.sortDownText}"`;
 					settings.sortData[v.key] = settings.sortDownText;
-					Cache.updateSettings($table, settings);
+					Cache.setSettings($table, settings);
 				} else if (v.sorting === settings.sortUpText) {
 					sortingHtml = `sorting="${settings.sortUpText}"`;
 					settings.sortData[v.key] = settings.sortUpText;
-					Cache.updateSettings($table, settings);
+					Cache.setSettings($table, settings);
 				} else {
 					sortingHtml = 'sorting=""';
 				}

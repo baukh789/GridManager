@@ -275,7 +275,7 @@ class AjaxPage {
 		settings.pageData.pSize = settings.pageData.pSize || settings.pageSize;
 
 		// 更新缓存
-		Cache.updateSettings($table, settings);
+		Cache.setSettings($table, settings);
 
 		// 调用事件、渲染DOM
 		const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
@@ -316,7 +316,7 @@ class AjaxPage {
 			Cache.saveUserMemory(_table);
 
 			// 更新缓存
-			Cache.updateSettings($table, settings);
+			Cache.setSettings($table, settings);
 
 			// 调用事件、渲染tbody
 			const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
@@ -383,7 +383,7 @@ class AjaxPage {
 		_this.resetPSize($table, _pageData);
 
 		// 更新Cache
-		Cache.updateSettings($table, $.extend(true, settings, {pageData: _pageData}));
+		Cache.setSettings($table, $.extend(true, settings, {pageData: _pageData}));
 
 		const tableWarp = $table.closest('.table-wrap');
 
@@ -430,7 +430,7 @@ class AjaxPage {
 			cPage: 1
 		};
 		$.extend(settings, {pageData: pageData});
-		Cache.updateSettings($table, settings);
+		Cache.setSettings($table, settings);
 	}
 }
 export default new AjaxPage();
