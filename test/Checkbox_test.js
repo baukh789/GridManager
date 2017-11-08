@@ -15,13 +15,17 @@ describe('Checkbox 对象完整性验证', function() {
 
 	it('对象完整性验证 Checkbox.initCheckbox', function () {
 		expect(Checkbox.initCheckbox).toBeDefined();
+		expect(Checkbox.initCheckbox.length).toBe(1);
 	});
 
 	it('对象完整性验证 Checkbox.bindCheckboxEvent', function () {
 		expect(Checkbox.bindCheckboxEvent).toBeDefined();
+		expect(Checkbox.bindCheckboxEvent.length).toBe(1);
 	});
 });
-
+/**
+ * 验证原型方法总数
+ */
 describe('Checkbox 验证原型方法总数', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {

@@ -7,50 +7,64 @@ import Cache from '../src/js/Cache';
  */
 describe('AjaxPage 对象完整性验证', function() {
 	it('对象完整性验证 AjaxPage.createHtml', function(){
-		expect(AjaxPage.initAjaxPage).toBeDefined();
+		expect(AjaxPage.createHtml).toBeDefined();
+		expect(AjaxPage.createHtml.length).toBe(1);
 	});
 
 	it('对象完整性验证 AjaxPage.initAjaxPage', function(){
 		expect(AjaxPage.initAjaxPage).toBeDefined();
+		expect(AjaxPage.initAjaxPage.length).toBe(1);
 	});
 
 	it('对象完整性验证 AjaxPage.createPaginationDOM', function(){
 		expect(AjaxPage.createPaginationDOM).toBeDefined();
+		expect(AjaxPage.createPaginationDOM.length).toBe(2);
 	});
 
 	it('对象完整性验证 AjaxPage.joinPagination', function(){
 		expect(AjaxPage.joinPagination).toBeDefined();
+		expect(AjaxPage.joinPagination.length).toBe(2);
 	});
 
 	it('对象完整性验证 AjaxPage.createPageSizeDOM', function(){
 		expect(AjaxPage.createPageSizeDOM).toBeDefined();
+		expect(AjaxPage.createPageSizeDOM.length).toBe(2);
 	});
 
 	it('对象完整性验证 AjaxPage.bindPageJumpEvent', function(){
 		expect(AjaxPage.bindPageJumpEvent).toBeDefined();
+		expect(AjaxPage.bindPageJumpEvent.length).toBe(1);
 	});
 
 	it('对象完整性验证 AjaxPage.gotoPage', function(){
 		expect(AjaxPage.gotoPage).toBeDefined();
+		expect(AjaxPage.gotoPage.length).toBe(2);
 	});
 
 	it('对象完整性验证 AjaxPage.bindSetPageSizeEvent', function(){
 		expect(AjaxPage.bindSetPageSizeEvent).toBeDefined();
+		expect(AjaxPage.bindSetPageSizeEvent.length).toBe(1);
 	});
 
 	it('对象完整性验证 AjaxPage.resetPSize', function(){
 		expect(AjaxPage.resetPSize).toBeDefined();
+		expect(AjaxPage.resetPSize.length).toBe(2);
 	});
 
 	it('对象完整性验证 AjaxPage.resetPageData', function(){
 		expect(AjaxPage.resetPageData).toBeDefined();
+		expect(AjaxPage.resetPageData.length).toBe(2);
 	});
 
 	it('对象完整性验证 AjaxPage.configPageForCache', function(){
 		expect(AjaxPage.configPageForCache).toBeDefined();
+		expect(AjaxPage.configPageForCache.length).toBe(1);
 	});
 });
 
+/**
+ * 验证原型方法总数
+ */
 describe('AjaxPage 验证原型方法总数', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {

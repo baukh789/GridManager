@@ -7,45 +7,59 @@ import testData from '../src/data/testData';
 describe('Base 对象完整性验证', function() {
 	it('对象完整性验证 Base.outLog', function(){
 		expect(Base.outLog).toBeDefined();
+		expect(Base.outLog.length).toBe(2);
 	});
 
 	it('对象完整性验证 Base.getKey', function(){
 		expect(Base.getKey).toBeDefined();
+		expect(Base.getKey.length).toBe(1);
 	});
 
 	it('对象完整性验证 Base.getColTd', function(){
 		expect(Base.getColTd).toBeDefined();
+		expect(Base.getColTd.length).toBe(1);
 	});
 
 	it('对象完整性验证 Base.initVisible', function(){
 		expect(Base.initVisible).toBeDefined();
+		expect(Base.initVisible.length).toBe(1);
 	});
 
 	it('对象完整性验证 Base.setAreVisible', function(){
 		expect(Base.setAreVisible).toBeDefined();
+		expect(Base.setAreVisible.length).toBe(3);
 	});
 
 	it('对象完整性验证 Base.getTextWidth', function(){
 		expect(Base.getTextWidth).toBeDefined();
+		expect(Base.getTextWidth.length).toBe(1);
 	});
 
 	it('对象完整性验证 Base.showLoading', function(){
 		expect(Base.showLoading).toBeDefined();
+		expect(Base.showLoading.length).toBe(2);
 	});
 
 	it('对象完整性验证 Base.hideLoading', function(){
 		expect(Base.hideLoading).toBeDefined();
+		expect(Base.hideLoading.length).toBe(2);
 	});
 
 	it('对象完整性验证 Base.updateInteractive', function(){
 		expect(Base.updateInteractive).toBeDefined();
+		expect(Base.updateInteractive.length).toBe(2);
 	});
 
 	it('对象完整性验证 Base.updateScrollStatus', function(){
 		expect(Base.updateScrollStatus).toBeDefined();
+		expect(Base.updateScrollStatus.length).toBe(1);
 	});
 
 });
+
+/**
+ * 验证原型方法总数
+ */
 describe('Base 验证原型方法总数', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {

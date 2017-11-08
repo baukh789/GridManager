@@ -10,22 +10,29 @@ describe('Adjust.js 对象完整性验证', function() {
 	});
 	it('对象完整性验证 Adjust.bindAdjustEvent', function() {
 		expect(Adjust.bindAdjustEvent).toBeDefined();
+		expect(Adjust.bindAdjustEvent.length).toBe(1);
 	});
 
 	it('对象完整性验证 Adjust.runMoveEvent', function() {
 		expect(Adjust.runMoveEvent).toBeDefined();
+		expect(Adjust.runMoveEvent.length).toBe(3);
 	});
 
 	it('对象完整性验证 Adjust.runStopEvent', function() {
 		expect(Adjust.runStopEvent).toBeDefined();
+		expect(Adjust.runStopEvent.length).toBe(3);
 	});
 
 	it('对象完整性验证 Adjust.resetAdjust', function() {
 		expect(Adjust.resetAdjust).toBeDefined();
+		expect(Adjust.resetAdjust.length).toBe(1);
 	});
 
 });
 
+/**
+ * 验证原型方法总数
+ */
 describe('Adjust 验证原型方法总数', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {

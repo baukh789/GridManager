@@ -8,81 +8,103 @@ import testData from '../src/data/testData';
 describe('Cache 对象完整性验证', function() {
 	it('对象完整性验证 Cache.initGridData', function(){
 		expect(Cache.initGridData).toBeDefined();
+		expect(Cache.initGridData.length).toBe(0);
 	});
 
 	it('对象完整性验证 Cache.__getRowData', function(){
 		expect(Cache.__getRowData).toBeDefined();
+		expect(Cache.__getRowData.length).toBe(2);
 	});
 
 	it('对象完整性验证 Cache.setRowData', function(){
 		expect(Cache.setRowData).toBeDefined();
+		expect(Cache.setRowData.length).toBe(3);
 	});
 
 	it('对象完整性验证 Cache.getTableData', function(){
 		expect(Cache.getTableData).toBeDefined();
+		expect(Cache.getTableData.length).toBe(1);
 	});
 
 	it('对象完整性验证 Cache.initUserMemory', function(){
 		expect(Cache.initUserMemory).toBeDefined();
+		expect(Cache.initUserMemory.length).toBe(0);
 	});
 
 	it('对象完整性验证 Cache.delUserMemory', function(){
 		expect(Cache.delUserMemory).toBeDefined();
+		expect(Cache.delUserMemory.length).toBe(1);
 	});
 
 	it('对象完整性验证 Cache.getMemoryKey', function(){
 		expect(Cache.getMemoryKey).toBeDefined();
+		expect(Cache.getMemoryKey.length).toBe(1);
 	});
 
 	it('对象完整性验证 Cache.getUserMemory', function(){
 		expect(Cache.getUserMemory).toBeDefined();
+		expect(Cache.getUserMemory.length).toBe(1);
 	});
 
 	it('对象完整性验证 Cache.saveUserMemory', function(){
 		expect(Cache.saveUserMemory).toBeDefined();
+		expect(Cache.saveUserMemory.length).toBe(1);
 	});
 
 	it('对象完整性验证 Cache.initCoreMethod', function(){
 		expect(Cache.initCoreMethod).toBeDefined();
+		expect(Cache.initCoreMethod.length).toBe(0);
 	});
 
 	it('对象完整性验证 Cache.getSettings', function(){
 		expect(Cache.getSettings).toBeDefined();
+		expect(Cache.getSettings.length).toBe(1);
 	});
 
 	it('对象完整性验证 Cache.setSettings', function(){
 		expect(Cache.setSettings).toBeDefined();
+		expect(Cache.setSettings.length).toBe(2);
 	});
 
 	it('对象完整性验证 Cache.cleanTableCacheForVersion', function(){
 		expect(Cache.cleanTableCacheForVersion).toBeDefined();
+		expect(Cache.cleanTableCacheForVersion.length).toBe(0);
 	});
 
 	it('对象完整性验证 Cache.cleanTableCache', function(){
 		expect(Cache.cleanTableCache).toBeDefined();
+		expect(Cache.cleanTableCache.length).toBe(2);
 	});
 
 	it('对象完整性验证 Cache.configTheadForCache', function(){
 		expect(Cache.configTheadForCache).toBeDefined();
+		expect(Cache.configTheadForCache.length).toBe(1);
 	});
 
 	it('对象完整性验证 Cache.setOriginalThDOM', function(){
 		expect(Cache.setOriginalThDOM).toBeDefined();
+		expect(Cache.setOriginalThDOM.length).toBe(1);
 	});
 
 	it('对象完整性验证 Cache.getOriginalThDOM', function(){
 		expect(Cache.getOriginalThDOM).toBeDefined();
+		expect(Cache.getOriginalThDOM.length).toBe(1);
 	});
 
 	it('对象完整性验证 Cache.__setGridManager', function(){
 		expect(Cache.__setGridManager).toBeDefined();
+		expect(Cache.__setGridManager.length).toBe(2);
 	});
 
 	it('对象完整性验证 Cache.__getGridManager', function(){
 		expect(Cache.__getGridManager).toBeDefined();
+		expect(Cache.__getGridManager.length).toBe(1);
 	});
 });
 
+/**
+ * 验证原型方法总数
+ */
 describe('Cache 验证原型方法总数', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {

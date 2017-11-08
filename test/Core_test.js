@@ -5,6 +5,59 @@
 import { jTool } from '../src/js/Base';
 import Core from '../src/js/Core';
 import testData from '../src/data/testData';
+/**
+ * 对象完整性验证
+ */
+describe('Core 对象完整性验证', function() {
+	it('对象完整性验证 Core.__refreshGrid', function () {
+		expect(Core.__refreshGrid).toBeDefined();
+		expect(Core.__refreshGrid.length).toBe(2);
+	});
+
+	it('对象完整性验证 Core.removeRefreshingClass', function () {
+		expect(Core.removeRefreshingClass).toBeDefined();
+		expect(Core.removeRefreshingClass.length).toBe(1);
+	});
+
+	it('对象完整性验证 Core.driveDomForSuccessAfter', function () {
+		expect(Core.driveDomForSuccessAfter).toBeDefined();
+		expect(Core.driveDomForSuccessAfter.length).toBe(4);
+	});
+
+	it('对象完整性验证 Core.createDOM', function () {
+		expect(Core.createDOM).toBeDefined();
+		expect(Core.createDOM.length).toBe(1);
+	});
+
+	it('对象完整性验证 Core.resetTd', function () {
+		expect(Core.resetTd).toBeDefined();
+		expect(Core.resetTd.length).toBe(2);
+	});
+});
+/**
+ * 验证原型方法总数
+ */
+describe('Core 验证原型方法总数', function() {
+	var getPropertyCount = null;
+	beforeEach(function() {
+		getPropertyCount = function(o){
+			var n, count = 0;
+			for(n in o){
+				if(o.hasOwnProperty(n)){
+					count++;
+				}
+			}
+			return count;
+		}
+	});
+	afterEach(function(){
+		getPropertyCount = null;
+	});
+	it('Function count', function() {
+		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(5 + 1);
+	});
+});
 describe('Core', function() {
 	let table = null;
 	let $table = null;
