@@ -70,7 +70,7 @@ describe('Adjust.js', function() {
 	it('宽度调整事件[adjustBefore]', function () {
 		expect(adjustBefore.calls.any()).toBe(false);// 函数是否被访问过
 
-		// 触发事件 TODO 应该改写jTool 的trigger 方法
+		// 触发事件 TODO jTool 中预绑定的事件, 无法通过new Event()方式触发.  考虑下改写jTool 相关代码
 		var fireOnThis = document.querySelector('.adjust-action');
 		var evObj = document.createEvent('MouseEvents');
 		evObj.initEvent('mousedown', true, false);
@@ -81,10 +81,11 @@ describe('Adjust.js', function() {
 	});
 
 	it('宽度调整事件[adjustAfter]', function () {
-		// 触发事件 TODO 应该改写jTool 的trigger 方法
-		var evObj = document.createEvent('MouseEvents');
-		evObj.initEvent('mouseleave', true, false);
-		table.dispatchEvent(evObj);
+		// 触发事件
+		expect(adjustAfter.calls.any()).toBe(false);// 函数是否被访问过
+
+		var myEvent = new Event('mouseleave');
+		table.dispatchEvent(myEvent);
 
 		expect(adjustAfter.calls.any()).toBe(true);// 函数是否被访问过
 		expect(adjustAfter).toHaveBeenCalled();  // 函数是否被调用
