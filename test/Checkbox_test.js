@@ -5,6 +5,45 @@
 import { jTool } from '../src/js/Base';
 import Checkbox from '../src/js/Checkbox';
 import testData from '../src/data/testData';
+/**
+ * 对象完整性验证
+ */
+describe('Checkbox 对象完整性验证', function() {
+	it('对象完整性验证 Checkbox.html', function () {
+		expect(Checkbox.html).toBeDefined();
+	});
+
+	it('对象完整性验证 Checkbox.initCheckbox', function () {
+		expect(Checkbox.initCheckbox).toBeDefined();
+	});
+
+	it('对象完整性验证 Checkbox.bindCheckboxEvent', function () {
+		expect(Checkbox.bindCheckboxEvent).toBeDefined();
+	});
+});
+
+describe('Checkbox 验证原型方法总数', function() {
+	var getPropertyCount = null;
+	beforeEach(function() {
+		getPropertyCount = function(o){
+			var n, count = 0;
+			for(n in o){
+				if(o.hasOwnProperty(n)){
+					count++;
+				}
+			}
+			return count;
+		}
+	});
+	afterEach(function(){
+		getPropertyCount = null;
+	});
+	it('Function count', function() {
+		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Checkbox)))).toBe(3 + 1);
+	});
+});
+
 describe('Checkbox', function() {
 
 	let table = null;

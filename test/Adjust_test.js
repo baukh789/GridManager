@@ -25,6 +25,28 @@ describe('Adjust.js 对象完整性验证', function() {
 	});
 
 });
+
+describe('Adjust 验证原型方法总数', function() {
+	var getPropertyCount = null;
+	beforeEach(function() {
+		getPropertyCount = function(o){
+			var n, count = 0;
+			for(n in o){
+				if(o.hasOwnProperty(n)){
+					count++;
+				}
+			}
+			return count;
+		}
+	});
+	afterEach(function(){
+		getPropertyCount = null;
+	});
+	it('Function count', function() {
+		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Adjust)))).toBe(5 + 1);
+	});
+});
 describe('Adjust.js', function() {
 	let table = null;
 	let $table = null;
