@@ -656,7 +656,7 @@ var Cache = function () {
     * @param $table
     * @param settings
     */
-			this.updateSettings = function ($table, settings) {
+			this.setSettings = function ($table, settings) {
 				// const data = $.extend(true, {}, settings);
 				// $table.data('settings', data);
 				_Store2.default.settings[_Base.Base.getKey($table)] = _Base.$.extend(true, {}, settings);
@@ -875,107 +875,134 @@ var Adjust = function () {
    * @param: table [jTool object]
    */
 		value: function bindAdjustEvent($table) {
+			var _this = this;
 			// 监听鼠标调整列宽度
 			$table.off('mousedown', '.adjust-action');
 			$table.on('mousedown', '.adjust-action', function (event) {
 				var _dragAction = (0, _Base.$)(this);
 				// 事件源所在的th
-				var _th = _dragAction.closest('th');
+				var $th = _dragAction.closest('th');
 
 				// 事件源所在的tr
-				var _tr = _th.parent();
+				var $tr = $th.parent();
 
 				// 事件源所在的table
-				var _table = _tr.closest('table');
+				var _$table = $tr.closest('table');
 
 				// 当前存储属性
-				var settings = _Cache2.default.getSettings(_table);
+				var settings = _Cache2.default.getSettings(_$table);
 
 				// 事件源同层级下的所有th
-				var _allTh = _tr.find('th[th-visible="visible"]');
+				var _allTh = $tr.find('th[th-visible="visible"]');
 
 				// 事件源下一个可视th
-				var _nextTh = _allTh.eq(_th.index(_allTh) + 1);
+				var $nextTh = _allTh.eq($th.index(_allTh) + 1);
 
 				// 存储与事件源同列的所有td
-				var _td = _Base.Base.getColTd(_th);
+				var $td = _Base.Base.getColTd($th);
 
 				// 宽度调整触发回调事件
 				settings.adjustBefore(event);
 
 				// 增加宽度调整中样式
-				_th.addClass('adjust-selected');
-				_td.addClass('adjust-selected');
+				$th.addClass('adjust-selected');
+				$td.addClass('adjust-selected');
 
 				// 更新界面交互标识
-				_Base.Base.updateInteractive(_table, 'Adjust');
+				_Base.Base.updateInteractive(_$table, 'Adjust');
 
-				// 绑定鼠标拖动事件
-				var _thWidth = null;
-				var _NextWidth = null;
-				var _thMinWidth = _Base.Base.getTextWidth(_th);
-				var _NextThMinWidth = _Base.Base.getTextWidth(_nextTh);
-				_table.unbind('mousemove');
-				_table.bind('mousemove', function (event) {
-					_table.addClass('no-select-text');
-					_thWidth = event.clientX - _th.offset().left;
-					_thWidth = Math.ceil(_thWidth);
-					_NextWidth = _nextTh.width() + _th.width() - _thWidth;
-					_NextWidth = Math.ceil(_NextWidth);
-					// 达到最小值后不再执行后续操作
-					if (_thWidth < _thMinWidth) {
-						return;
-					}
-					if (_NextWidth < _NextThMinWidth) {
-						_NextWidth = _NextThMinWidth;
-					}
-					// 验证是否更改
-					if (_thWidth === _th.width()) {
-						return;
-					}
-					// 验证宽度是否匹配
-					if (_thWidth + _NextWidth < _th.width() + _nextTh.width()) {
-						_NextWidth = _th.width() + _nextTh.width() - _thWidth;
-					}
-					_th.width(_thWidth);
-					_nextTh.width(_NextWidth);
+				// 执行移动事件
+				_this.runMoveEvent(_$table, $th, $nextTh);
 
-					// 当前宽度调整的事件原为表头置顶的thead th
-					// 修改与置顶thead 对应的 thead
-					if (_th.closest('.set-top').length === 1) {
-						(0, _Base.$)('thead[grid-manager-thead] th[th-name="' + _th.attr('th-name') + '"]', _table).width(_thWidth);
-						(0, _Base.$)('thead[grid-manager-thead] th[th-name="' + _nextTh.attr('th-name') + '"]', _table).width(_NextWidth);
-						(0, _Base.$)('thead[grid-manager-mock-thead]', _table).width((0, _Base.$)('thead[grid-manager-thead]', _table).width());
-					}
-				});
-
-				// 绑定鼠标放开、移出事件
-				_table.unbind('mouseup mouseleave');
-				_table.bind('mouseup mouseleave', function (event) {
-					var settings = _Cache2.default.getSettings($table);
-					_table.unbind('mousemove mouseleave');
-
-					// 存储用户记忆
-					_Cache2.default.saveUserMemory(_table);
-
-					// 其它操作也在table以该事件进行绑定,所以通过class进行区别
-					if (_th.hasClass('adjust-selected')) {
-						// 宽度调整成功回调事件
-						settings.adjustAfter(event);
-					}
-					_th.removeClass('adjust-selected');
-					_td.removeClass('adjust-selected');
-					_table.removeClass('no-select-text');
-
-					// 更新界面交互标识
-					_Base.Base.updateInteractive(_table);
-
-					// 更新滚动轴状态
-					_Base.Base.updateScrollStatus($table);
-				});
+				// 绑定停止事件
+				_this.runStopEvent(_$table, $th, $td);
 				return false;
 			});
 			return this;
+		}
+
+		/**
+   * 执行移动事件
+   * @param $table
+   * @param $th
+   * @param $nextTh
+      */
+
+	}, {
+		key: 'runMoveEvent',
+		value: function runMoveEvent($table, $th, $nextTh) {
+			var _thWidth = null;
+			var _NextWidth = null;
+			var _thMinWidth = _Base.Base.getTextWidth($th);
+			var _NextThMinWidth = _Base.Base.getTextWidth($nextTh);
+			$table.unbind('mousemove');
+			$table.bind('mousemove', function (event) {
+				$table.addClass('no-select-text');
+				_thWidth = event.clientX - $th.offset().left;
+				_thWidth = Math.ceil(_thWidth);
+				_NextWidth = $nextTh.width() + $th.width() - _thWidth;
+				_NextWidth = Math.ceil(_NextWidth);
+				// 达到最小值后不再执行后续操作
+				if (_thWidth < _thMinWidth) {
+					return;
+				}
+				if (_NextWidth < _NextThMinWidth) {
+					_NextWidth = _NextThMinWidth;
+				}
+				// 验证是否更改
+				if (_thWidth === $th.width()) {
+					return;
+				}
+				// 验证宽度是否匹配
+				if (_thWidth + _NextWidth < $th.width() + $nextTh.width()) {
+					_NextWidth = $th.width() + $nextTh.width() - _thWidth;
+				}
+				$th.width(_thWidth);
+				$nextTh.width(_NextWidth);
+
+				// 当前宽度调整的事件原为表头置顶的thead th
+				// 修改与置顶thead 对应的 thead
+				if ($th.closest('.set-top').length === 1) {
+					(0, _Base.$)('thead[grid-manager-thead] th[th-name="' + $th.attr('th-name') + '"]', $table).width(_thWidth);
+					(0, _Base.$)('thead[grid-manager-thead] th[th-name="' + $nextTh.attr('th-name') + '"]', $table).width(_NextWidth);
+					(0, _Base.$)('thead[grid-manager-mock-thead]', $table).width((0, _Base.$)('thead[grid-manager-thead]', $table).width());
+				}
+			});
+		}
+
+		/**
+   * 绑定鼠标放开、移出事件
+   * @param $table
+   * @param $th
+   * @param $td
+      */
+
+	}, {
+		key: 'runStopEvent',
+		value: function runStopEvent($table, $th, $td) {
+			$table.unbind('mouseup mouseleave');
+			$table.bind('mouseup mouseleave', function (event) {
+				var settings = _Cache2.default.getSettings($table);
+				$table.unbind('mousemove mouseleave');
+
+				// 存储用户记忆
+				_Cache2.default.saveUserMemory($table);
+
+				// 其它操作也在table以该事件进行绑定,所以通过class进行区别
+				if ($th.hasClass('adjust-selected')) {
+					// 宽度调整成功回调事件
+					settings.adjustAfter(event);
+				}
+				$th.removeClass('adjust-selected');
+				$td.removeClass('adjust-selected');
+				$table.removeClass('no-select-text');
+
+				// 更新界面交互标识
+				_Base.Base.updateInteractive($table);
+
+				// 更新滚动轴状态
+				_Base.Base.updateScrollStatus($table);
+			});
 		}
 
 		/**
@@ -1150,7 +1177,7 @@ var Core = function () {
 			}
 
 			// settings.query = pram;
-			_Cache2.default.updateSettings($table, settings);
+			_Cache2.default.setSettings($table, settings);
 
 			_Base.Base.showLoading(tableWrap);
 
@@ -1290,8 +1317,8 @@ var Core = function () {
 			// 文本对齐属性
 			var alignAttr = '';
 
-			// 宽度对应的html片段
-			var widthHtml = '';
+			// 宽度信息
+			var widthInfo = '';
 
 			// 提醒对应的html片段
 			var remindHtml = '';
@@ -1312,22 +1339,22 @@ var Core = function () {
 					if (v.sorting === settings.sortDownText) {
 						sortingHtml = 'sorting="' + settings.sortDownText + '"';
 						settings.sortData[v.key] = settings.sortDownText;
-						_Cache2.default.updateSettings($table, settings);
+						_Cache2.default.setSettings($table, settings);
 					} else if (v.sorting === settings.sortUpText) {
 						sortingHtml = 'sorting="' + settings.sortUpText + '"';
 						settings.sortData[v.key] = settings.sortUpText;
-						_Cache2.default.updateSettings($table, settings);
+						_Cache2.default.setSettings($table, settings);
 					} else {
 						sortingHtml = 'sorting=""';
 					}
 				}
-				if (v.width) {
-					widthHtml = 'width="' + v.width + '"';
-				} else {
-					widthHtml = '';
-				}
+
+				// 宽度文本
+				widthInfo = v.width ? 'width="' + v.width + '"' : '';
+
+				// 文本对齐
 				alignAttr = v.align ? 'align="' + v.align + '"' : '';
-				theadHtml += '<th gm-create="false" th-name="' + v.key + '" ' + remindHtml + ' ' + sortingHtml + ' ' + widthHtml + ' ' + alignAttr + '>' + v.text + '</th>';
+				theadHtml += '<th gm-create="false" th-name="' + v.key + '" ' + remindHtml + ' ' + sortingHtml + ' ' + widthInfo + ' ' + alignAttr + '>' + v.text + '</th>';
 			});
 			theadHtml += '</thead>';
 			$table.html(theadHtml + tbodyHtml);
@@ -1343,84 +1370,50 @@ var Core = function () {
 			// 存储原始th DOM
 			_Cache2.default.setOriginalThDOM($table);
 
-			// 表头提醒HTML
-			var _remindHtml = _Remind2.default.html;
-
-			// 配置列表HTML
-			var _configHtml = _Config2.default.html;
-
-			// 宽度调整HTML
-			var _adjustHtml = _Adjust2.default.html;
-
-			// 排序HTML
-			var _sortingHtml = _Sort2.default.html;
-
-			// 导出表格数据所需的事件源DOM
-			var exportActionHtml = _Export2.default.html;
-
-			// AJAX分页HTML
-			var _ajaxPageHtml = _AjaxPage2.default.createHtml($table);
-
-			// 外围的html片段
-			var wrapHtml = null;
-
-			// 单个table所在的DIV容器
-			var tableWarp = null;
-
-			// 单个table下的thead
-			var onlyThead = null;
-
-			// 单个table下的TH
-			var onlyThList = null;
-
-			// 单个TH
-			var onlyTH = null;
-
-			// 单个TH下的上层DIV
-			var onlyThWarp = null;
-
-			// 表头提醒DOM
-			var remindDOM = null;
-
-			// 调整宽度DOM
-			var adjustDOM = null;
-
-			// 排序DOM
-			var sortingDom = null;
-
-			// 排序类形
-			var sortType = null;
-
 			// 是否为插件自动生成的序号列
 			var isLmOrder = null;
 
 			// 是否为插件自动生成的选择列
 			var isLmCheckbox = null;
 
-			onlyThead = (0, _Base.$)('thead[grid-manager-thead]', $table);
-			onlyThList = (0, _Base.$)('th', onlyThead);
-			wrapHtml = '<div class="table-wrap">\n\t\t\t\t\t\t<div class="table-div" style="height:calc(' + settings.height + ' - 40px)"></div>\n\t\t\t\t\t\t<span class="text-dreamland"></span>\n\t\t\t\t\t</div>';
+			// 单个table下的thead
+			var onlyThead = (0, _Base.$)('thead[grid-manager-thead]', $table);
+
+			// 单个table下的TH
+			var onlyThList = (0, _Base.$)('th', onlyThead);
+
+			// 外围的html片段
+			var wrapHtml = '<div class="table-wrap">\n\t\t\t\t\t\t<div class="table-div" style="height:calc(' + settings.height + ' - 40px)"></div>\n\t\t\t\t\t\t<span class="text-dreamland"></span>\n\t\t\t\t\t</div>';
 			$table.wrap(wrapHtml);
-			tableWarp = $table.closest('.table-wrap');
+
+			// 单个table所在的DIV容器
+			var tableWarp = $table.closest('.table-wrap');
 
 			// 嵌入配置列表DOM
 			if (settings.supportConfig) {
-				tableWarp.append(_configHtml);
+				tableWarp.append(_Config2.default.html);
 			}
 
 			// 嵌入Ajax分页DOM
 			if (settings.supportAjaxPage) {
-				tableWarp.append(_ajaxPageHtml);
+				tableWarp.append(_AjaxPage2.default.createHtml($table));
 				_AjaxPage2.default.initAjaxPage($table);
 			}
 
 			// 嵌入导出表格数据事件源
 			if (settings.supportExport) {
-				tableWarp.append(exportActionHtml);
+				tableWarp.append(_Export2.default.html);
 			}
 			var configList = (0, _Base.$)('.config-list', tableWarp);
-			var onlyWidth = void 0;
-			onlyThWarp = (0, _Base.$)('<div class="th-wrap"></div>');
+
+			// 单个TH
+			var onlyTH = null;
+
+			// 单个TH所占宽度
+			var onlyWidth = 0;
+
+			// 单个TH下的上层DIV
+			var onlyThWarp = (0, _Base.$)('<div class="th-wrap"></div>');
 			_Base.$.each(onlyThList, function (i2, v2) {
 				onlyTH = (0, _Base.$)(v2);
 				onlyTH.attr('th-visible', 'visible');
@@ -1456,7 +1449,7 @@ var Core = function () {
 				// 嵌入表头提醒事件源
 				// 插件自动生成的排序与选择列不做事件绑定
 				if (settings.supportRemind && onlyTH.attr('remind') !== undefined && !isLmOrder && !isLmCheckbox) {
-					remindDOM = (0, _Base.$)(_remindHtml);
+					var remindDOM = (0, _Base.$)(_Remind2.default.html);
 					remindDOM.find('.ra-title').text(onlyTH.text());
 					remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
 					if (onlyThWarpPaddingTop !== '' && onlyThWarpPaddingTop !== '0px') {
@@ -1467,9 +1460,10 @@ var Core = function () {
 
 				// 嵌入排序事件源
 				// 插件自动生成的排序与选择列不做事件绑定
-				sortType = onlyTH.attr('sorting');
+				// 排序类型
+				var sortType = onlyTH.attr('sorting');
 				if (settings.supportSorting && sortType !== undefined && !isLmOrder && !isLmCheckbox) {
-					sortingDom = (0, _Base.$)(_sortingHtml);
+					var sortingDom = (0, _Base.$)(_Sort2.default.html);
 
 					// 依据 sortType 进行初始显示
 					switch (sortType) {
@@ -1489,7 +1483,7 @@ var Core = function () {
 				}
 				// 嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
 				if (settings.supportAdjust && !isLmOrder && !isLmCheckbox) {
-					adjustDOM = (0, _Base.$)(_adjustHtml);
+					var adjustDOM = (0, _Base.$)(_Adjust2.default.html);
 					// 最后一列不支持调整宽度
 					if (i2 === onlyThList.length - 1) {
 						adjustDOM.hide();
@@ -1775,13 +1769,13 @@ var AjaxPage = function () {
 	}, {
 		key: 'initAjaxPage',
 		value: function initAjaxPage($table) {
-			var Settings = _Cache2.default.getSettings($table);
+			var settings = _Cache2.default.getSettings($table);
 			var _this = this;
 			var tableWarp = $table.closest('.table-wrap');
 
 			// 分页工具条
 			var pageToolbar = (0, _Base.$)('.page-toolbar', tableWarp);
-			var sizeData = Settings.sizeData;
+			var sizeData = settings.sizeData;
 			pageToolbar.hide();
 
 			// 生成每页显示条数选择框
@@ -2008,7 +2002,7 @@ var AjaxPage = function () {
 			settings.pageData.pSize = settings.pageData.pSize || settings.pageSize;
 
 			// 更新缓存
-			_Cache2.default.updateSettings($table, settings);
+			_Cache2.default.setSettings($table, settings);
 
 			// 调用事件、渲染DOM
 			var query = _Base.$.extend({}, settings.query, settings.sortData, settings.pageData);
@@ -2052,7 +2046,7 @@ var AjaxPage = function () {
 				_Cache2.default.saveUserMemory(_table);
 
 				// 更新缓存
-				_Cache2.default.updateSettings($table, settings);
+				_Cache2.default.setSettings($table, settings);
 
 				// 调用事件、渲染tbody
 				var query = _Base.$.extend({}, settings.query, settings.sortData, settings.pageData);
@@ -2125,7 +2119,7 @@ var AjaxPage = function () {
 			_this.resetPSize($table, _pageData);
 
 			// 更新Cache
-			_Cache2.default.updateSettings($table, _Base.$.extend(true, settings, { pageData: _pageData }));
+			_Cache2.default.setSettings($table, _Base.$.extend(true, settings, { pageData: _pageData }));
 
 			var tableWarp = $table.closest('.table-wrap');
 
@@ -2175,7 +2169,7 @@ var AjaxPage = function () {
 				cPage: 1
 			};
 			_Base.$.extend(settings, { pageData: pageData });
-			_Cache2.default.updateSettings($table, settings);
+			_Cache2.default.setSettings($table, settings);
 		}
 	}]);
 
@@ -2416,9 +2410,6 @@ var GridManager = function () {
    */
 		value: function init(table, arg, callback) {
 			var $table = (0, _Base.jTool)(table);
-			console.log(_Store2.default.ttt);
-			_Store2.default.ttt = 2;
-			var _this = this;
 			if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
 				// 存储gridManagerName值
 				arg.gridManagerName = _Base.Base.getKey($table);
@@ -2428,25 +2419,25 @@ var GridManager = function () {
 			var _settings = new _Settings.Settings();
 			_settings.textConfig = new _Settings.TextSettings();
 			_Base.jTool.extend(true, _settings, arg);
-			_Cache2.default.updateSettings($table, _settings);
+			_Cache2.default.setSettings($table, _settings);
 
 			_Base.jTool.extend(true, this, _settings);
 
 			// 通过版本较验 清理缓存
 			_Cache2.default.cleanTableCacheForVersion();
-			if (_this.gridManagerName.trim() === '') {
-				_this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+			if (this.gridManagerName.trim() === '') {
+				this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 				return false;
 			}
 
 			// 验证当前表格是否已经渲染
 			if ($table.hasClass('GridManager-ready') || $table.hasClass('GridManager-loading')) {
-				_this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
+				this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
 				return false;
 			}
 
 			// 根据本地缓存配置每页显示条数
-			if (_this.supportAjaxPage) {
+			if (this.supportAjaxPage) {
 				_AjaxPage2.default.configPageForCache($table);
 			}
 
@@ -2454,7 +2445,7 @@ var GridManager = function () {
 			$table.addClass('GridManager-loading');
 
 			// 初始化表格
-			_this.initTable($table);
+			this.initTable($table);
 			// 如果初始获取缓存失败，在渲染完成后首先存储一次数据
 			if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
 				window.setTimeout(function () {
@@ -2463,51 +2454,50 @@ var GridManager = function () {
 				}, 1000);
 			}
 			// 启用回调
-			typeof callback === 'function' ? callback(_this.query) : '';
+			typeof callback === 'function' ? callback(this.query) : '';
 			return $table;
 		}
 
-		/*
-   @初始化列表
-   $.table: table[jTool object]
-   */
+		/**
+   * 初始化列表
+   * @param table
+      */
 
 	}, {
 		key: 'initTable',
 		value: function initTable(table) {
-			var _this = this;
 			// 渲染HTML，嵌入所需的事件源DOM
 			_Core2.default.createDOM(table);
 
 			// 获取本地缓存并对列表进行配置
-			if (!_this.disableCache) {
+			if (!this.disableCache) {
 				_Cache2.default.configTheadForCache(table);
 				// 通过缓存配置成功后, 重置宽度调整事件源dom
-				_this.supportAdjust ? _Adjust2.default.resetAdjust(table) : '';
+				this.supportAdjust ? _Adjust2.default.resetAdjust(table) : '';
 			}
 
 			// 绑定宽度调整事件
-			if (_this.supportAdjust) {
+			if (this.supportAdjust) {
 				_Adjust2.default.bindAdjustEvent(table);
 			}
 
 			// 绑定拖拽换位事件
-			if (_this.supportDrag) {
+			if (this.supportDrag) {
 				_Drag2.default.bindDragEvent(table);
 			}
 
 			// 绑定排序事件
-			if (_this.supportSorting) {
+			if (this.supportSorting) {
 				_Sort2.default.bindSortingEvent(table);
 			}
 
 			// 绑定表头提示事件
-			if (_this.supportRemind) {
+			if (this.supportRemind) {
 				_Remind2.default.bindRemindEvent(table);
 			}
 
 			// 绑定配置列表事件
-			if (_this.supportConfig) {
+			if (this.supportConfig) {
 				_Config2.default.bindConfigEvent(table);
 			}
 
@@ -2524,7 +2514,7 @@ var GridManager = function () {
 			_Core2.default.__refreshGrid(table);
 
 			// 存储GM实例
-			_Cache2.default.__setGridManager(table, _this);
+			_Cache2.default.__setGridManager(table, this);
 		}
 	}], [{
 		key: 'get',
@@ -2664,7 +2654,7 @@ var GridManager = function () {
 			if (isGotoFirstPage) {
 				settings.pageData.cPage = 1;
 			}
-			_Cache2.default.updateSettings($table, settings);
+			_Cache2.default.setSettings($table, settings);
 			_Core2.default.__refreshGrid($table, callback);
 		}
 
@@ -2681,7 +2671,7 @@ var GridManager = function () {
 			var $table = (0, _Base.jTool)(table);
 			var settings = _Cache2.default.getSettings($table);
 			_Base.jTool.extend(settings, { ajax_data: ajaxData });
-			_Cache2.default.updateSettings($table, settings);
+			_Cache2.default.setSettings($table, settings);
 			_Core2.default.__refreshGrid($table);
 		}
 
@@ -2704,7 +2694,7 @@ var GridManager = function () {
 			}
 			if (isGotoFirstPage) {
 				settings.pageData['cPage'] = 1;
-				_Cache2.default.updateSettings($table, settings);
+				_Cache2.default.setSettings($table, settings);
 			}
 			_Core2.default.__refreshGrid($table, callback);
 		}
@@ -3295,7 +3285,7 @@ var Sort = function () {
 				return false;
 			}
 			_Base.$.extend(settings.sortData, sortJson);
-			_Cache2.default.updateSettings($table, settings);
+			_Cache2.default.setSettings($table, settings);
 
 			// 默认执行完后进行刷新列表操作
 			if (typeof refresh === 'undefined') {
@@ -3389,7 +3379,7 @@ var Sort = function () {
 					});
 				}
 				// 调用事件、渲染tbody
-				_Cache2.default.updateSettings($table, settings);
+				_Cache2.default.setSettings($table, settings);
 				var query = _Base.$.extend({}, settings.query, settings.sortData, settings.pageData);
 				settings.sortingBefore(query);
 				_Core2.default.__refreshGrid($table, function () {
@@ -4629,3 +4619,4 @@ var require;var require;!function t(e,n,o){function i(s,u){if(!n[s]){if(!e[s]){v
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=GridManager.js.map

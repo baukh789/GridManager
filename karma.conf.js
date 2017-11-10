@@ -8,10 +8,13 @@ module.exports = function (config) {
 		// 可用的框架：https://npmjs.org/browse/keyword/karma-adapter
 		frameworks: ['jasmine'],
 
-		// 需要测试的文件列表
+		// 需要测试的文件列表 https://www.npmjs.com/package/karma-coverage
+		// TODO 这里需要看一下
 		files: [
+			'src/js/*.js',
 			'test/index_test.js'
-			// 'test/Config_test.js'
+			// 'test/Adjust_test.js',
+			// 'test/AjaxPage_test.js'
 		],
 		// 排除在外的文件列表
 		exclude: ['karma.conf.js'],
@@ -47,6 +50,7 @@ module.exports = function (config) {
 
 		// 预处理
 		preprocessors: {
+			'src/js/*.js': ['webpack', 'coverage'],
 			'test/*_test.js': ['webpack']
 		},
 		// optionally, configure the reporter

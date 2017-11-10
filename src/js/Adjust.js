@@ -140,7 +140,7 @@ class Adjust {
 			Base.updateScrollStatus($table);
 		});
 	}
-	
+
 	/**
 	 * 通过缓存配置成功后, 重置宽度调整事件源dom 用于禁用最后一列调整宽度事件
 	 * @param $table
