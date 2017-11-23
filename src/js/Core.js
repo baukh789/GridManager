@@ -347,7 +347,6 @@ class Core {
 			} else {
 				onlyThWarp.html(`<span class="th-text">${onlyTH.html()}</span>`);
 			}
-			let onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
 
 			// 嵌入表头提醒事件源
 			// 插件自动生成的排序与选择列不做事件绑定
@@ -355,9 +354,6 @@ class Core {
 				const remindDOM = $(Remind.html);
 				remindDOM.find('.ra-title').text(onlyTH.text());
 				remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
-				if (onlyThWarpPaddingTop !== '' && onlyThWarpPaddingTop !== '0px') {
-					remindDOM.css('top', onlyThWarpPaddingTop);
-				}
 				onlyThWarp.append(remindDOM);
 			}
 
@@ -378,9 +374,6 @@ class Core {
 						break;
 					default :
 						break;
-				}
-				if (onlyThWarpPaddingTop !== '' && onlyThWarpPaddingTop !== '0px') {
-					sortingDom.css('top', onlyThWarpPaddingTop);
 				}
 				onlyThWarp.append(sortingDom);
 			}
