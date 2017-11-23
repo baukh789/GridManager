@@ -234,7 +234,6 @@ export default class GridManager {
 		var _settings = new Settings();
 		_settings.textConfig = new TextSettings();
 		jTool.extend(true, _settings, arg);
-		console.log(_settings);
 		Cache.setSettings($table, _settings);
 
 		jTool.extend(true, this, _settings);
