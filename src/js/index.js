@@ -78,9 +78,9 @@ import { PublishMethod, publishMethodArray } from './Publish';
 /*
 * 兼容jquery
 * */
-(() => {
-	if (typeof (window.jQuery) !== 'undefined' && window.jQuery.fn.extend) {
-		window.jQuery.fn.extend({
+(jQuery => {
+	if (typeof (jQuery) !== 'undefined' && jQuery.fn.extend) {
+		jQuery.fn.extend({
 			GM: function () {
 				if (arguments.length === 0) {
 					return this.get(0).GM();
@@ -105,4 +105,9 @@ import { PublishMethod, publishMethodArray } from './Publish';
 			}
 		});
 	}
-})();
+})(window.jQuery);
+
+// 恢复jTool占用的$变量
+(jQuery => {
+	window.$ = jQuery || undefined;
+})(window.jQuery);

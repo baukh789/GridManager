@@ -137,7 +137,7 @@ class BaseClass {
 	}
 
 	/**
-	 * 获取TH宽度
+	 * 获取TH中文本的宽度. 该宽度指的是文本所实际占用的宽度
 	 * @param th
 	 * @returns {*}
      */

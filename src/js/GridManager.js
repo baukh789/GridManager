@@ -222,15 +222,19 @@ export default class GridManager {
 	 */
 	init(table, arg, callback) {
 		const $table = jTool(table);
+		// 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
 		if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
 			// 存储gridManagerName值
 			arg.gridManagerName = Base.getKey($table);
+		// 参数中存在配置项 gridManagerName: 更新table DOM 的 grid-manager属性
+		} else {
+			$table.attr('grid-manager', arg.gridManagerName);
 		}
-
 		// 配置参数
 		var _settings = new Settings();
 		_settings.textConfig = new TextSettings();
 		jTool.extend(true, _settings, arg);
+		console.log(_settings);
 		Cache.setSettings($table, _settings);
 
 		jTool.extend(true, this, _settings);

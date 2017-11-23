@@ -3,11 +3,23 @@
  */
 import Store from '../src/js/Store';
 describe('Store.js', function() {
-	it('Store.responseData', function() {
+	it('Store.version', function() {
 		expect(Store.version).toBeDefined();
+	});
+
+	it('Store.gridManager', function() {
 		expect(Store.gridManager).toBeDefined();
+	});
+
+	it('Store.gridManager', function() {
 		expect(Store.responseData).toBeDefined();
+	});
+
+	it('Store.gridManager', function() {
 		expect(Store.originalTh).toBeDefined();
+	});
+
+	it('Store.gridManager', function() {
 		expect(Store.settings).toBeDefined();
 	});
 });
