@@ -17,12 +17,12 @@ describe('index.js', function() {
 	});
 });
 
-// require('./Adjust_test');
-// require('./AjaxPage_test');
+require('./Adjust_test');
+require('./AjaxPage_test');
 require('./Base_test');
-// require('./Cache_test');
-// require('./Checkbox_test');
-// require('./Config_test');
+require('./Cache_test');
+require('./Checkbox_test');
+require('./Config_test');
 // require('./Core_test');
 // require('./Drag_test');
 // require('./Export_test');
