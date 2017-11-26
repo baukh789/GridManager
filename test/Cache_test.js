@@ -180,20 +180,20 @@ describe('Cache.js', function() {
 	});
 
 
-	it('Cache.__getRowData($table, target)', function() {
-		let tr0 = jTool('tbody tr', $table).get(0);
-		let tr1 = jTool('tbody tr', $table).get(1);
-		let trList = document.querySelectorAll('table[grid-manager="'+ gmName +'"] tbody tr');
-		expect(Cache.__getRowData($table, tr0).name).toBe('baukh');
-		expect(Cache.__getRowData($table, tr1).name).toBe('kouzi');
-		expect(Cache.__getRowData($table, tr0).age).toBe('30');
-		expect(Cache.__getRowData($table, tr1).age).toBe('28');
-		expect(Cache.__getRowData($table, trList)[0].info).toBe('野生前端程序');
-		expect(Cache.__getRowData($table, trList)[1].info).toBe('产品经理');
-		tr0 = null;
-		tr1 = null;
-		trList = null;
-	});
+	// it('Cache.__getRowData($table, target)', function() {
+	// 	let tr0 = jTool('tbody tr', $table).get(0);
+	// 	let tr1 = jTool('tbody tr', $table).get(1);
+	// 	let trList = document.querySelectorAll('table[grid-manager="'+ gmName +'"] tbody tr');
+	// 	expect(Cache.__getRowData($table, tr0).name).toBe('baukh');
+	// 	expect(Cache.__getRowData($table, tr1).name).toBe('kouzi');
+	// 	expect(Cache.__getRowData($table, tr0).age).toBe('30');
+	// 	expect(Cache.__getRowData($table, tr1).age).toBe('28');
+	// 	expect(Cache.__getRowData($table, trList)[0].info).toBe('野生前端程序');
+	// 	expect(Cache.__getRowData($table, trList)[1].info).toBe('产品经理');
+	// 	tr0 = null;
+	// 	tr1 = null;
+	// 	trList = null;
+	// });
 
 	it('Cache.delUserMemory($table)', function() {
 		expect(Cache.delUserMemory()).toBe(true);
