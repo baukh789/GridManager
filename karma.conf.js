@@ -1,3 +1,8 @@
+/**
+ * karma: 测试管理工具
+ * phantomjs: 模拟的浏览器环境
+ *
+ */
 const path = require('path');
 module.exports = function (config) {
 	config.set({
@@ -12,7 +17,7 @@ module.exports = function (config) {
 		// TODO 这里需要看一下
 		files: [
 			'src/js/*.js',
-			'test/*_test.js'
+			'test/Config_test.js'
 			// 'test/Adjust_test.js',
 			// 'test/AjaxPage_test.js'
 		],

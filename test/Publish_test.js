@@ -4,6 +4,7 @@
  */
 
 'use strict';
+import '../build/css/GridManager.css';
 import { jTool } from '../src/js/Base';
 import {PublishMethod, publishMethodArray} from '../src/js/Publish';
 import Cache from '../src/js/Cache';

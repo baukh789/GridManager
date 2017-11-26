@@ -2,6 +2,7 @@
  * Created by baukh on 17/4/21.
  */
 
+import '../build/css/GridManager.css';
 import { jTool } from '../src/js/Base';
 import testData from '../src/data/testData';
 import GridManager from '../src/js/GridManager';

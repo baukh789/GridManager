@@ -1,4 +1,5 @@
 'use strict';
+import '../build/css/GridManager.css';
 import { jTool } from '../src/js/Base';
 import Adjust from '../src/js/Adjust';
 import GridManager from '../src/js/GridManager';

@@ -1,4 +1,5 @@
 'use strict';
+import '../build/css/GridManager.css';
 import { jTool } from '../src/js/Base';
 import Order from '../src/js/Order';
 import testData from '../src/data/testData';

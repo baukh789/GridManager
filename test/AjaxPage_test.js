@@ -1,4 +1,5 @@
 'use strict';
+import '../build/css/GridManager.css';
 import { jTool } from '../src/js/Base';
 import AjaxPage from '../src/js/AjaxPage';
 import Cache from '../src/js/Cache';

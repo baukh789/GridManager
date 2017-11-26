@@ -2,6 +2,7 @@
  * Created by baukh on 17/3/12.
  */
 'use strict';
+import '../build/css/GridManager.css';
 import { jTool } from '../src/js/Base';
 import Checkbox from '../src/js/Checkbox';
 import testData from '../src/data/testData';

@@ -2,6 +2,7 @@
  * Created by baukh on 17/3/5.
  */
 'use strict';
+import '../build/css/GridManager.css';
 import { jTool } from '../src/js/Base';
 import I18N from '../src/js/I18n';
 import GridManager from '../src/js/GridManager';

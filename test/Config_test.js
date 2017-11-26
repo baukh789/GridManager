@@ -1,4 +1,5 @@
 'use strict';
+import '../build/css/GridManager.css';
 import { jTool } from '../src/js/Base';
 import Config from '../src/js/Config';
 import testData from '../src/data/testData';
@@ -100,16 +101,20 @@ describe('Config', function() {
 	});
 
 	it('测试展示隐藏配置区域事件', function(){
+		let tableWarp = $table.closest('div.table-wrap');
+		let configArea = jTool('.config-area', tableWarp);
+		let configAction = jTool('.config-action', configArea);
 		jasmine.clock().install();
 		jasmine.clock().tick(100);
-		let tableWarp = $table.closest('div.table-wrap');
-		let configAction = jTool('.config-action', tableWarp);
-		let configArea = configAction.closest('.config-area');
 		expect(configArea.css('display')).toBe('none');
+		jasmine.clock().uninstall();
+
+		jasmine.clock().install();
+		jasmine.clock().tick(100);
 		configAction.trigger('click');
 		expect(configArea.css('display')).toBe('block');
-
 		jasmine.clock().uninstall();
+
 		tableWarp = null;
 		configAction = null;
 		configArea = null;

@@ -1,10 +1,10 @@
 /**
  * Created by baukh on 17/10/26.
  */
+import '../build/css/GridManager.css';
 import { jTool } from '../src/js/Base';
 import GridManager from '../src/js/GridManager';
 import testData from '../src/data/testData';
-import '../build/css/GridManager.css';
 
 describe('GridManager.js', function() {
 	let table = null;
