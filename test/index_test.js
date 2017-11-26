@@ -26,7 +26,7 @@ require('./Config_test');
 require('./Core_test');
 require('./Drag_test');
 require('./Export_test');
-// require('./GridManager_test');
+require('./GridManager_test');
 require('./Hover_test');
 require('./I18n_test');
 require('./Menu_test');
