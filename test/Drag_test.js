@@ -53,7 +53,7 @@ describe('Drag', function() {
 	it('禁用文字选择效果', function(){
 		let _body = null;
 		let dragAction = null;
-		jasmine.clock().install();
+		// jasmine.clock().install();
 		_body = jTool('body');
 		expect(_body.hasClass('no-select-text')).toBe(false);
 	});
