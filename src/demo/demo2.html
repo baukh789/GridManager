@@ -96,7 +96,7 @@
 		,height: '400px'
 		,supportAjaxPage:true
 		,supportSorting: true
-		,disableCache: false
+		,disableCache: true
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
 		,query: {pluginId: 1}
@@ -147,7 +147,7 @@
 				text: '创建时间',
 				sorting: 'DESC',
 				template: function(createDate, rowObject){
-					return new Date(createDate).format('YYYY-MM-DD HH:mm:ss');
+					return new Date(createDate).toLocaleDateString();
 				}
 			},{
 				key: 'lastDate',
@@ -156,7 +156,7 @@
 				text: '最后修改时间',
 				sorting: '',
 				template: function(lastDate, rowObject){
-					return new Date(lastDate).format('YYYY-MM-DD HH:mm:ss');
+					return new Date(lastDate).toLocaleDateString();
 				}
 			},{
 				key: 'action',
@@ -216,29 +216,6 @@
 			window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
 		}
 	}
-	// 日期格式化,不是插件的代码,只用于处理时间格式化
-	Date.prototype.format = function(fmt){
-		var o = {
-			"M+": this.getMonth() + 1, //月份
-			"D+": this.getDate(), //日
-			"d+": this.getDate(), //日
-			"H+": this.getHours(), //小时
-			"h+": this.getHours(), //小时
-			"m+": this.getMinutes(), //分
-			"s+": this.getSeconds(), //秒
-			"q+": Math.floor((this.getMonth() + 3) / 3), //季度
-			"S": this.getMilliseconds() //毫秒
-		};
-		if (/([Y,y]+)/.test(fmt)){
-			fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-		}
-		for (var k in o){
-			if(new RegExp("(" + k + ")").test(fmt)){
-				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-			}
-		}
-		return fmt;
-	};
 
 	// 绑定搜索事件
 	document.querySelector('.search-action').addEventListener('click', function () {
