@@ -11,15 +11,15 @@ describe('Store.js', function() {
 		expect(Store.gridManager).toBeDefined();
 	});
 
-	it('Store.gridManager', function() {
+	it('Store.responseData', function() {
 		expect(Store.responseData).toBeDefined();
 	});
 
-	it('Store.gridManager', function() {
+	it('Store.originalTh', function() {
 		expect(Store.originalTh).toBeDefined();
 	});
 
-	it('Store.gridManager', function() {
+	it('Store.settings', function() {
 		expect(Store.settings).toBeDefined();
 	});
 });

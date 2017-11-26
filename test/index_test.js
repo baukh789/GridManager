@@ -35,4 +35,4 @@ require('./Publish_test');
 require('./Remind_test');
 require('./Settings_test');
 require('./Sort_test');
-require('./Store_test');
+// require('./Store_test');
