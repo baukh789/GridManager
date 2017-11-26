@@ -5,6 +5,7 @@
 import { jTool } from '../src/js/Base';
 import Export from '../src/js/Export';
 import testData from '../src/data/testData';
+import GridManager from '../src/js/GridManager';
 describe('Export', function() {
 	let table = null;
 	let $table = null;
@@ -14,7 +15,7 @@ describe('Export', function() {
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
 		$table = jTool('table[grid-manager="'+ gmName +'"]');
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		var arg = {
 			ajax_data: testData
 			,columnData: [
 				{
@@ -42,7 +43,8 @@ describe('Export', function() {
 					}
 				}
 			]
-		});
+		};
+		new GridManager().init(table, arg);
 	});
 	afterAll(function () {
 		table = null;

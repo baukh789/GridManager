@@ -4,6 +4,7 @@
 
 import { jTool } from '../src/js/Base';
 import testData from '../src/data/testData';
+import GridManager from '../src/js/GridManager';
 describe('Hover.js', function() {
 	let gmName = 'test-hover';
 	let table = document.createElement('table');
@@ -11,7 +12,7 @@ describe('Hover.js', function() {
 	let $table = jTool(table);
 	beforeAll(function(){
 		document.querySelector('body').appendChild(table);
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		var arg  = {
 			ajax_data: testData
 			,query: {name: 'baukh'}
 			,supportAjaxPage: true
@@ -41,7 +42,8 @@ describe('Hover.js', function() {
 					}
 				}
 			]
-		});
+		};
+		new GridManager().init(table, arg);
 	});
 	afterAll(function () {
 		table = null;

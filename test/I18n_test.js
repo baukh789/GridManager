@@ -4,6 +4,7 @@
 'use strict';
 import { jTool } from '../src/js/Base';
 import I18N from '../src/js/I18n';
+import GridManager from '../src/js/GridManager';
 describe('I18n', function() {
 	let table_en = null;
 	let $table_en = null;
@@ -17,7 +18,7 @@ describe('I18n', function() {
 		table_en.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table_en);
 		$table_en = jTool('table[grid-manager="'+ gmName +'"]');
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		var arg_en = {
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 			,disableCache: true
 			,i18n: 'en-us'
@@ -40,14 +41,15 @@ describe('I18n', function() {
 					sorting: 'up'
 				}
 			]
-		});
+		};
+		new GridManager().init(table_en, arg_en);
 
 		//第二组使用默认的zh-cn
 		table_cn = document.createElement('table');
 		table_cn.setAttribute('grid-manager', gmName2);
 		document.querySelector('body').appendChild(table_cn);
 		$table_cn = jTool('table[grid-manager="'+ gmName2 +'"]');
-		document.querySelector('table[grid-manager="'+ gmName2 +'"]').GM({
+		var arg_cn = {
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 			,disableCache: true
 			,columnData: [
@@ -59,7 +61,8 @@ describe('I18n', function() {
 					sorting: 'up'
 				}
 			]
-		});
+		};
+		new GridManager().init(table_cn, arg_cn);
 	});
 	afterAll(function () {
 		table_en = null;

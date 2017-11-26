@@ -5,6 +5,7 @@
 import { jTool } from '../src/js/Base';
 import Core from '../src/js/Core';
 import testData from '../src/data/testData';
+import GridManager from '../src/js/GridManager';
 /**
  * 对象完整性验证
  */
@@ -67,7 +68,7 @@ describe('Core', function() {
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
 		$table = jTool('table[grid-manager="'+ gmName +'"]');
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		var arg = {
 			ajax_data: testData
 			,columnData: [
 				{
@@ -95,7 +96,8 @@ describe('Core', function() {
 					}
 				}
 			]
-		});
+		};
+		new GridManager().init(table, arg);
 	});
 	afterAll(function () {
 		table = null;

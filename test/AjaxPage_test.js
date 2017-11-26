@@ -2,6 +2,7 @@
 import { jTool } from '../src/js/Base';
 import AjaxPage from '../src/js/AjaxPage';
 import Cache from '../src/js/Cache';
+import GridManager from '../src/js/GridManager';
 /**
  * 对象完整性验证
  */
@@ -100,7 +101,7 @@ describe('AjaxPage.js', function() {
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
 		$table = jTool('table[grid-manager="'+ gmName +'"]');
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		var arg = {
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 			,supportAjaxPage:true
 			,disableCache: true
@@ -126,7 +127,8 @@ describe('AjaxPage.js', function() {
 			,pagingBefore: pagingBefore
 			// 分页后事件
 			,pagingAfter: pagingAfter
-		});
+		};
+		new GridManager().init(table, arg);
 	});
 	afterAll(function () {
 		table = null;

@@ -2,6 +2,7 @@
 import { jTool } from '../src/js/Base';
 import Cache from '../src/js/Cache';
 import testData from '../src/data/testData';
+import GridManager from '../src/js/GridManager';
 /**
  * 对象完整性验证
  */
@@ -137,7 +138,7 @@ describe('Cache.js', function() {
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
 		$table = jTool(table);
-		table.GM({
+		var arg = {
 			ajax_data: testData
 			,disableCache: false
 			,query:{tool: 'jasmine'}
@@ -168,7 +169,8 @@ describe('Cache.js', function() {
 					}
 				}
 			]
-		});
+		};
+		new GridManager().init(table, arg);
 	});
 	afterAll(function () {
 		table = null;

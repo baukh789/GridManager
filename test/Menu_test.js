@@ -4,6 +4,7 @@
 import { jTool } from '../src/js/Base';
 import Menu from '../src/js/Menu';
 import testData from '../src/data/testData';
+import GridManager from '../src/js/GridManager';
 describe('Menu.js', function() {
 	let gmName = 'test-menu';
 	let table = document.createElement('table');
@@ -11,7 +12,7 @@ describe('Menu.js', function() {
 	let $table = jTool(table);
 	beforeAll(function(){
 		document.querySelector('body').appendChild(table);
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		var arg = {
 			ajax_data: testData
 			,query: {name: 'baukh'}
 			,supportAjaxPage: true
@@ -43,7 +44,8 @@ describe('Menu.js', function() {
 					}
 				}
 			]
-		});
+		};
+		new GridManager().init(table, arg);
 	});
 	afterAll(function () {
 		table = null;
@@ -78,25 +80,31 @@ describe('Menu.js', function() {
 	});
 
 	it('Menu.isDisabled(dom, events) 获取右键菜单中的某项 是为禁用状态', function(){
+		var eventMock = {
+			stopPropagation: function(){},
+			preventDefault: function(){}
+		};
 		// 上一页
 		const previousDOM = document.querySelector('[grid-action="refresh-page"][refresh-type="previous"]');
-		expect(Menu.isDisabled(previousDOM, window.event)).toBe(true);
+		expect(Menu.isDisabled(previousDOM, eventMock)).toBe(true);
 
 		// 下一页
 		const nextDOM = document.querySelector('[grid-action="refresh-page"][refresh-type="next"]');
-		expect(Menu.isDisabled(nextDOM, window.event)).toBe(true);
+		expect(Menu.isDisabled(nextDOM, eventMock)).toBe(true);
 
 		// 刷新
 		const refreshDOM = document.querySelector('[grid-action="refresh-page"][refresh-type="refresh"]');
-		expect(Menu.isDisabled(refreshDOM, window.event)).toBe(false);
+		expect(Menu.isDisabled(refreshDOM, eventMock)).toBe(false);
 
 		// 另存为EXCEL
 		const exportAllDOM = document.querySelector('[grid-action="export-excel"][only-checked="false"]');
-		expect(Menu.isDisabled(exportAllDOM, window.event)).toBe(false);
+		expect(Menu.isDisabled(exportAllDOM, eventMock)).toBe(false);
 
 		// 已选中项另存为EXCEL 这里非禁用是由于并未打开菜单栏, 只有打开菜单栏时才会通过已选中的行更新禁用状态
 		const exportCheckDOM = document.querySelector('[grid-action="export-excel"][only-checked="true"]');
-		expect(Menu.isDisabled(exportCheckDOM, window.event)).toBe(false);
+		expect(Menu.isDisabled(exportCheckDOM, eventMock)).toBe(false);
+
+		eventMock = null;
 	});
 
 });

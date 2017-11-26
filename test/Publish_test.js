@@ -10,6 +10,7 @@ import Cache from '../src/js/Cache';
 import Export from '../src/js/Export';
 import testData from '../src/data/testData';
 import testData2 from '../src/data/testData2';
+import GridManager from '../src/js/GridManager';
 describe('Publish.js', function() {
 	let gmName = 'test-publish';
 	let table = document.createElement('table');
@@ -17,7 +18,7 @@ describe('Publish.js', function() {
 	let $table = jTool(table);
 	beforeAll(function(){
 		document.querySelector('body').appendChild(table);
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		var arg = {
 			ajax_data: testData
 			,query: {name: 'baukh'}
 			,supportAjaxPage: true
@@ -47,7 +48,8 @@ describe('Publish.js', function() {
 					}
 				}
 			]
-		});
+		};
+		new GridManager().init(table, arg);
 	});
 	afterAll(function () {
 		table = null;

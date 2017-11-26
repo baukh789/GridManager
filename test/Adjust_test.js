@@ -1,6 +1,7 @@
 'use strict';
 import { jTool } from '../src/js/Base';
 import Adjust from '../src/js/Adjust';
+import GridManager from '../src/js/GridManager';
 /**
  * 对象完整性验证
  */
@@ -65,7 +66,7 @@ describe('Adjust.js', function() {
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
 		$table = jTool('table[grid-manager="'+ gmName +'"]');
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		var arg = {
 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 			,disableCache: true
 			,i18n: 'en-us'
@@ -88,7 +89,8 @@ describe('Adjust.js', function() {
 			],
 			adjustBefore: adjustBefore,
 			adjustAfter: adjustAfter
-		});
+		};
+		new GridManager().init(table, arg);
 	});
 	afterAll(function () {
 		table = null;

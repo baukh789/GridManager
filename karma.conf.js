@@ -12,7 +12,7 @@ module.exports = function (config) {
 		// TODO 这里需要看一下
 		files: [
 			'src/js/*.js',
-			'test/index_test.js'
+			'test/*_test.js'
 			// 'test/Adjust_test.js',
 			// 'test/AjaxPage_test.js'
 		],

@@ -2,6 +2,7 @@
 import { jTool } from '../src/js/Base';
 import Order from '../src/js/Order';
 import testData from '../src/data/testData';
+import GridManager from '../src/js/GridManager';
 describe('Order', function() {
 	let table = null;
 	let $table = null;
@@ -12,7 +13,7 @@ describe('Order', function() {
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
 		$table = jTool('table[grid-manager="'+ gmName +'"]');
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		var arg = {
 			ajax_data: testData
 			,disableCache: true
 			,columnData: [
@@ -32,7 +33,8 @@ describe('Order', function() {
 					text: 'url'
 				}
 			]
-		});
+		};
+		new GridManager().init(table, arg);
 	});
 	afterAll(function () {
 		table = null;

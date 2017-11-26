@@ -1,6 +1,7 @@
 'use strict';
 import { jTool, Base } from '../src/js/Base';
 import testData from '../src/data/testData';
+import GridManager from '../src/js/GridManager';
 /**
  * 对象完整性验证
  */
@@ -91,7 +92,7 @@ describe('Base.js', function() {
 		table.setAttribute('grid-manager', gmName);
 		document.querySelector('body').appendChild(table);
 		$table = jTool('table[grid-manager="'+ gmName +'"]');
-		document.querySelector('table[grid-manager="'+ gmName +'"]').GM({
+		var arg = {
 			ajax_data: testData
 			,disableCache: true
 			,i18n: 'en-us'
@@ -121,7 +122,8 @@ describe('Base.js', function() {
 					}
 				}
 			]
-		});
+		};
+		new GridManager().init(table, arg);
 	});
 	afterAll(function () {
 		table = null;
