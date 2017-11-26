@@ -136,40 +136,40 @@ describe('Base.js', function() {
 	});
 
 	// 验证获取th内文本的最低宽度
-	// it('Base.getTextWidth(th)', function(){
-	// 	let $th = jTool('th[th-name="name"]', $table);
-	// 	expect(Base.getTextWidth($th)).toBe(36);
-	// });
+	it('Base.getTextWidth(th)', function(){
+		let $th = jTool('th[th-name="name"]', $table);
+		expect(Base.getTextWidth($th)).toBe(36);
+	});
 
-	// it('Base.showLoading(dom ,cb)', function(){
-	// 	jasmine.clock().install();
-	// 	let tableWrap = $table.closest('.table-wrap');
-	// 	let callbackFN = jasmine.createSpy('callback');
-	// 	expect(jTool('.load-area', tableWrap).length).toBe(0);
-	// 	Base.showLoading(tableWrap, callbackFN);
-	// 	expect(jTool('.load-area', tableWrap).length).toBe(1);
-	// 	jasmine.clock().tick(101);
-	// 	expect(callbackFN).toHaveBeenCalled();
-    //
-	// 	jasmine.clock().uninstall();
-	// 	tableWrap = null;
-	// 	callbackFN = null;
-	// });
-    //
-	// it('Base.hideLoading(dom ,cb)', function(){
-	// 	jasmine.clock().install();
-	// 	let tableWrap = $table.closest('.table-wrap');
-	// 	let callbackFN = jasmine.createSpy('callback');
-	// 	expect(jTool('.load-area', tableWrap).length).toBe(1);
-	// 	Base.hideLoading(tableWrap, callbackFN);
-	// 	jasmine.clock().tick(501);
-	// 	expect(jTool('.load-area', tableWrap).length).toBe(0);
-	// 	expect(callbackFN).toHaveBeenCalled();
-    //
-	// 	jasmine.clock().uninstall();
-	// 	tableWrap = null;
-	// 	callbackFN = null;
-	// });
+	it('Base.showLoading(dom ,cb)', function(){
+		jasmine.clock().install();
+		let tableWrap = $table.closest('.table-wrap');
+		let callbackFN = jasmine.createSpy('callback');
+		expect(jTool('.load-area', tableWrap).length).toBe(0);
+		Base.showLoading(tableWrap, callbackFN);
+		expect(jTool('.load-area', tableWrap).length).toBe(1);
+		jasmine.clock().tick(101);
+		expect(callbackFN).toHaveBeenCalled();
+
+		jasmine.clock().uninstall();
+		tableWrap = null;
+		callbackFN = null;
+	});
+
+	it('Base.hideLoading(dom ,cb)', function(){
+		jasmine.clock().install();
+		let tableWrap = $table.closest('.table-wrap');
+		let callbackFN = jasmine.createSpy('callback');
+		expect(jTool('.load-area', tableWrap).length).toBe(1);
+		Base.hideLoading(tableWrap, callbackFN);
+		jasmine.clock().tick(501);
+		expect(jTool('.load-area', tableWrap).length).toBe(0);
+		expect(callbackFN).toHaveBeenCalled();
+
+		jasmine.clock().uninstall();
+		tableWrap = null;
+		callbackFN = null;
+	});
 
 	it('Base.updateInteractive($table, interactive)', function(){
 		let	tableWrap = $table.closest('.table-wrap');

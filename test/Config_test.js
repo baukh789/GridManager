@@ -98,8 +98,8 @@ describe('Config', function() {
 	});
 
 	it('测试展示隐藏配置区域事件', function(){
-		// jasmine.clock().install();
-		// jasmine.clock().tick(100);
+		jasmine.clock().install();
+		jasmine.clock().tick(100);
 		let tableWarp = $table.closest('div.table-wrap');
 		let configAction = jTool('.config-action', tableWarp);
 		let configArea = configAction.closest('.config-area');
@@ -107,7 +107,7 @@ describe('Config', function() {
 		configAction.trigger('click');
 		expect(configArea.css('display')).toBe('block');
 
-		// jasmine.clock().uninstall();
+		jasmine.clock().uninstall();
 		tableWarp = null;
 		configAction = null;
 		configArea = null;
