@@ -10,8 +10,8 @@
 			width: 100%;
 			height: 100%;
 			overflow-x:hidden;
-			margin: 0px;
-			padding: 0px;
+			margin: 0;
+			padding: 0;
 		}
         .plugin-action{
             display: inline-block;
@@ -209,7 +209,7 @@
 			info: document.querySelector('[name="info"]').value,
 			url: document.querySelector('[name="url"]').value
 		};
-		table.GM('setQuery', _query).GM('refreshGrid', function () {
+		table.GM('setQuery', _query, function () {
 			console.log('搜索成功...');
 		});
 	});

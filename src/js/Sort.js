@@ -1,127 +1,156 @@
 /*
 * Sort: 排序
 * */
-import $ from './jTool';
-import Base from './Base';
+import { $, Base } from './Base';
 import Core from './Core';
 import Cache from './Cache';
-const Sort = {
-	html: function () {
+class Sort {
+	/**
+	 * 获取排序所需HTML
+	 * @returns {string}
+     */
+	get html() {
 		const html = `<div class="sorting-action">
 						<i class="sa-icon sa-up iconfont icon-sanjiao2"></i>
 						<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>
 					</div>`;
 		return html;
 	}
+
 	/*
-	 [对外公开方法]
-	 @手动设置排序
-	 $.table: table [jTool object]
-	 $.sortJson: 需要排序的json串
-	 $.callback: 回调函数
-	 $.refresh: 是否执行完成后对表格进行自动刷新[boolean]
-	 ex: sortJson
-	 sortJson = {
-	 th-name:up/down 	//其中up/down 需要与参数 sortUpText、sortDownText值相同
-	 }
-	 */
-	,setSort: function(table, sortJson, callback, refresh){
-		console.log(refresh);
-		let Settings = Cache.getSettings(table);
-		if(table.length == 0 || !sortJson || $.isEmptyObject(sortJson)){
+	 * 手动设置排序
+	 * @param sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
+	 * @param callback: 回调函数[function]
+	 * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
+	 *
+	 * 排序json串示例:
+	 * sortJson => {name: 'ASC}
+	 * */
+	__setSort($table, sortJson, callback, refresh) {
+		let settings = Cache.getSettings($table);
+		if (!sortJson || $.type(sortJson) !== 'object' || $.isEmptyObject(sortJson)) {
 			return false;
 		}
-		//默认执行完后进行刷新列表操作
-		if(typeof(refresh) === 'undefined'){
+		$.extend(settings.sortData, sortJson);
+		Cache.setSettings($table, settings);
+
+		// 默认执行完后进行刷新列表操作
+		if (typeof (refresh) === 'undefined') {
 			refresh = true;
 		}
-		let _th,
-			_sortAction,
-			_sortType;
-		for(let s in sortJson){
-			_th = $('[th-name="'+ s +'"]', table);
+		let _th = null;
+		let	_sortAction = null;
+		let	_sortType = null;
+		for (let s in sortJson) {
+			_th = $(`[th-name="${s}"]`, $table);
 			_sortType = sortJson[s];
 			_sortAction = $('.sorting-action', _th);
-			if(_sortType == Settings.sortUpText){
-				_th.attr('sorting', Settings.sortUpText);
+			if (_sortType === settings.sortUpText) {
+				_th.attr('sorting', settings.sortUpText);
 				_sortAction.removeClass('sorting-down');
 				_sortAction.addClass('sorting-up');
-			}
-			else if(_sortType == Settings.sortDownText){
-				_th.attr('sorting', Settings.sortDownText);
+			} else if (_sortType === settings.sortDownText) {
+				_th.attr('sorting', settings.sortDownText);
 				_sortAction.removeClass('sorting-up');
 				_sortAction.addClass('sorting-down');
 			}
 		}
-		refresh ? Core.__refreshGrid(table, callback) : (typeof(callback) === 'function' ? callback() : '');
-		return table;
+		refresh ? Core.__refreshGrid($table, callback) : (typeof (callback) === 'function' ? callback() : '');
 	}
-	/*
-	 @绑定排序事件
-	 $.table: table [jTool object]
-	 */
-	,bindSortingEvent: function(table){
-		let Settings = Cache.getSettings(table);
-		// 所有包含排序的列
-		const _thList = $('th[sorting]', table);
-		let	_action,		//向上或向下事件源
-			_th,			//事件源所在的th
-			_table,			//事件源所在的table
-			_thName;		//th对应的名称
 
-		//绑定排序事件
-		$('.sorting-action', _thList).unbind('mouseup');
-		$('.sorting-action', _thList).bind('mouseup', function(){
-			_action = $(this);
-			_th 	= _action.closest('th');
-			_table 	= _th.closest('table');
-			_thName = _th.attr('th-name');
-			if(!_thName || $.trim(_thName) == ''){
+	/**
+	 * 绑定排序事件
+	 * @param $table
+     */
+	bindSortingEvent($table) {
+		const _this = this;
+		let settings = Cache.getSettings($table);
+
+		// 向上或向下事件源
+		let	action = null;
+
+		// 事件源所在的th
+		let	th = null;
+
+		// 事件源所在的table
+		let	table = null;
+
+		// th对应的名称
+		let	thName = null;
+
+		// 绑定排序事件
+		$table.off('mouseup', '.sorting-action');
+		$table.on('mouseup', '.sorting-action', function () {
+			action = $(this);
+			th = action.closest('th');
+			table = th.closest('table');
+			thName = th.attr('th-name');
+			if (!thName || $.trim(thName) === '') {
 				Base.outLog('排序必要的参数丢失', 'error');
 				return false;
 			}
-			//根据组合排序配置项判定：是否清除原排序及排序样式
-			if(!Settings.isCombSorting){
-				$.each($('.sorting-action', _table), function(i, v){
-					if(v != _action.get(0)){   //_action.get(0) 当前事件源的DOM
+
+			// 根据组合排序配置项判定：是否清除原排序及排序样式
+			if (!settings.isCombSorting) {
+				$.each($('.sorting-action', table), (i, v) => {
+					// action.get(0) 当前事件源的DOM
+					if (v !== action.get(0)) {
 						$(v).removeClass('sorting-up sorting-down');
 						$(v).closest('th').attr('sorting', '');
 					}
 				});
 			}
-			//排序操作：升序
-			if(_action.hasClass('sorting-down')){
-				_action.addClass('sorting-up');
-				_action.removeClass('sorting-down');
-				_th.attr('sorting', Settings.sortUpText);
+
+			// 更新排序样式
+			_this.updateSortStyle(action, th, settings);
+
+			// 当前触发项为置顶表头时, 同步更新至原样式
+			if (th.closest('thead[grid-manager-mock-thead]').length === 1) {
+				const _th = $(`thead[grid-manager-thead] th[th-name="${thName}"]`, table);
+				const _action = $('.sorting-action', _th);
+				_this.updateSortStyle(_action, _th, settings);
 			}
-			//排序操作：降序
-			else {
-				_action.addClass('sorting-down');
-				_action.removeClass('sorting-up');
-				_th.attr('sorting', Settings.sortDownText);
-			}
-			//生成排序数据
-			Settings.sortData = {};
-			if(!Settings.isCombSorting) {
-				Settings.sortData[_th.attr('th-name')] = _th.attr('sorting');
-			}else {
-				$.each($('th[th-name][sorting]', _table), function(i, v){
-					if(v.getAttribute('sorting') != ''){
-						Settings.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
+			// 拼装排序数据: 单列排序
+			settings.sortData = {};
+			if (!settings.isCombSorting) {
+				settings.sortData[th.attr('th-name')] = th.attr('sorting');
+			// 拼装排序数据: 组合排序
+			} else {
+				$.each($('thead[grid-manager-thead] th[th-name][sorting]', table), function (i, v) {
+					if (v.getAttribute('sorting') !== '') {
+						settings.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
 					}
 				});
 			}
-			//调用事件、渲染tbody
-			Cache.updateSettings(table, Settings);
-			const query = $.extend({}, Settings.query, Settings.sortData, Settings.pageData);
-			Settings.sortingBefore(query);
-			Core.__refreshGrid(table, function(){
-				Settings.sortingAfter(query,  _th);
+			// 调用事件、渲染tbody
+			Cache.setSettings($table, settings);
+			const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
+			settings.sortingBefore(query);
+			Core.__refreshGrid($table, () => {
+				settings.sortingAfter(query, th);
 			});
 
 		});
-
 	}
-};
-export default Sort;
+
+	/**
+	 * 更新排序样式
+	 * @param sortAction
+	 * @param th
+	 * @param settings
+     */
+	updateSortStyle(sortAction, th, settings) {
+		// 排序操作：升序
+		if (sortAction.hasClass('sorting-down')) {
+			sortAction.addClass('sorting-up');
+			sortAction.removeClass('sorting-down');
+			th.attr('sorting', settings.sortUpText);
+			// 排序操作：降序
+		} else {
+			sortAction.addClass('sorting-down');
+			sortAction.removeClass('sorting-up');
+			th.attr('sorting', settings.sortDownText);
+		}
+	}
+}
+export default new Sort();

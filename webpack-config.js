@@ -1,53 +1,80 @@
-var webpack = require('webpack');
-var path = require('path');
-var TransferWebpackPlugin = require('transfer-webpack-plugin');
-var buildPath = path.resolve(__dirname,"build");
-var config = {
-	//入口文件配置
-	entry:path.resolve(__dirname,'src/js/GridManager.js'),
+const webpack = require('webpack');
+const path = require('path');
+const TransferWebpackPlugin = require('transfer-webpack-plugin');
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const buildPath = path.join(__dirname, "build");
+const config = {
+	// 入口文件所在的上下文
+	context: path.join(__dirname, "src/"),
+
+	devtool: 'source-map',
+
+	// 入口文件配置
+	entry: {
+		js: './js/index.js'
+	},
+
+	// 配置模块如何解析
 	resolve:{
-		extentions:["","js"]//当requrie的模块找不到时,添加这些后缀
+		extensions: [".js"] // 当requrie的模块找不到时,添加这些后缀
 	},
-	//文件导出的配置
+
+	// 文件导出的配置
 	output:{
-		path:buildPath ,
-		filename:"js/GridManager.js"
+		path: buildPath ,
+		filename: "js/GridManager.js"
 	},
+	// 以插件形式定制webpack构建过程
 	plugins: [
-		new webpack.optimize.UglifyJsPlugin({
-			include: /\.min\.js$/,
-			// mangle: false,
-			minimize: true,
-			warnings: false
-		}),
+		// 将样式文件 抽取至独立文件内
+		new ExtractTextWebpackPlugin('/css/GridManager.css'),
+
+		// 将文件传输到构建目录, 这里只有一部分使用此种方式. 其它的在package.json中直接使用shell脚本实现
 		new TransferWebpackPlugin([
-			{from: __dirname + '/src/fonts', to: '/fonts'},
-			{from: __dirname + '/src/css', to: '/css'},
 			{from: __dirname + '/src/demo', to: '/demo'},
 			{from: __dirname + '/version', to: '/version'}
 		])
 	],
+
+	// 处理项目中的不同类型的模块。
 	module: {
-		preLoaders: [
+		rules: [
 			{
-				test: /\.(js|jsx)$/,
+				test: /\.js$/,
 				loader: 'eslint-loader',
-				include: [path.resolve(__dirname, "src/app")],
-				exclude: /(node_modules|bower_components)/
-			}
-		],
-		loaders: [
+				enforce: 'pre',
+				exclude: /(node_modules|bower_components)/,
+				include: path.resolve(__dirname, "src/js")
+			},
 			{
 				test: /\.js?$/,
-				loaders: ['babel?{"presets":["es2015"]}'],
+				loaders: ['babel-loader?{"presets":["es2015"]}'],
 				exclude: /(node_modules|bower_components)/,
 				include: [path.join(__dirname, 'src')]
 			},
 			{
-				test:/\.css$/,
-				loader:'style!css',
+				test: /\.(sc|c)ss$/,
 				exclude: /(node_modules|bower_components)/,
-				include: [path.join(__dirname, 'src')]
+				include: [path.join(__dirname, 'src')],
+				use: ExtractTextWebpackPlugin.extract({
+					use: 'css-loader?-minimize!resolve-url-loader!sass-loader'
+				})
+			},
+			{
+				test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+				loader: 'url-loader?limit=15000&mimetype=application/font-woff&prefix=fonts'
+			},
+			{
+				test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+				loader: 'url-loader?limit=15000&mimetype=application/octet-stream&prefix=fonts'
+			},
+			{
+				test: /\.eot(\?#\w+)?$/,
+				loader: 'url-loader?limit=15000&mimetype=application/vnd.ms-fontobject&prefix=fonts'
+			},
+			{
+				test: /\.svg(#\w+)?$/,
+				loader: 'url-loader?limit=15000&mimetype=image/svg+xml&prefix=fonts'
 			}
 		]
 	}

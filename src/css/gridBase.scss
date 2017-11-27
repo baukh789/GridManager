@@ -1,0 +1,42 @@
+/* 基础样式 */
+html{
+	height: auto !important;
+}
+/* 基本样式, 默认样式清除 */
+.table-wrap, .grid-menu{
+	* {
+		box-sizing: border-box !important;
+		font-size: 12px;
+		color: #000;
+		line-height: 18px;
+		margin: 0;
+		padding: 0;
+	}
+	fieldset, img{
+		border-style: none;
+		border-color: inherit;
+		border-width: medium;
+	}
+	ul, li{
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+	.clear{
+		clear: both;
+	}
+}
+
+/* 禁用文字选中 */
+.no-select-text{
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+}
+/* table配置中样式 */
+table[grid-manager]{
+	visibility: hidden;
+	&.GridManager-ready{
+		visibility: visible;
+	}
+}

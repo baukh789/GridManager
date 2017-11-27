@@ -8,7 +8,7 @@
     <style>
 		html, body{
 			width: 100%;
-			height: 100%;
+			/*height: 100%;*/
 			overflow-x:hidden;
 			margin: 0px;
 			padding: 0px;
@@ -83,6 +83,10 @@
 	</div>
 	<br/>
 	<table></table>
+
+
+
+
 <script type="text/javascript">
 	var table = document.querySelector('table');
 	var TGM = table.GM({
@@ -92,16 +96,42 @@
 		,height: '400px'
 		,supportAjaxPage:true
 		,supportSorting: true
+		,disableCache: false
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
 		,query: {pluginId: 1}
+		,dataKey: 'list'  // 注意: 这里是用来测试responseHandler 是否生效; 数据本身返回为data, 而在这里我把数据名模拟为list, 再通过responseHandler去更改
 		,pageSize:30
+		// 可以通过该方法修改全部的请求参数
+		,requestHandler: function(request){
+			request.newParams = '这个参数是通过 requestHandler 函数新增的';
+		}
+		// 可以通过该方法修改返回的数据
+		,responseHandler: function(response){
+			response.list = response.data;
+		}
 		,columnData: [{
 				key: 'name',
 				remind: 'the name',
 				width: '100px',
+				align: 'right',
 				text: '名称',
 				sorting: ''
+			},{
+				key: 'type',
+				remind: 'the type',
+				text: '分类',
+				template: function(type, rowObject){
+					return `
+						<select>
+							<option value="1" ${type === 1 ? 'selected="selected"' : ''}>前端框架、插件</option>
+							<option value="2" ${type === 2 ? 'selected="selected"' : ''}>javaScript相关链接</option>
+							<option value="3" ${type === 3 ? 'selected="selected"' : ''}>css相关链接</option>
+							<option value="4" ${type === 4 ? 'selected="selected"' : ''}>html相关链接</option>
+							<option value="4" ${type === 5 ? 'selected="selected"' : ''}>工具类相关链接</option>
+							<option value="4" ${type === 6 ? 'selected="selected"' : ''}>其它链接</option>
+						</select>`;
+				}
 			},{
 				key: 'info',
 				remind: 'the info',
@@ -131,11 +161,10 @@
 			},{
 				key: 'action',
 				remind: 'the action',
-				width: '100px',
+				width: '10%',
 				text: '操作',
 				template: function(action, rowObject){
-					return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+					return '<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">删除</span>';
 				}
 			}
 		]
@@ -173,10 +202,20 @@
 		}
 	}, function(query){
 		// 渲染完成后的回调函数
-		console.log(query);
+		console.log('渲染完成后的回调函数:', query);
 	});
 
-	console.log('GirdManger version => ', TGM.version)
+	// 删除功能
+	function delectRowData(node){
+		// 获取到当前的tr node
+		var tr = node.parentNode.parentNode;
+		// 获取到当前渲染tr 所使用的数据
+		var rowData = document.querySelector('table').GM('getRowData', tr);
+		// 执行删除操作
+		if(window.confirm('确认要删除['+rowData.name+']?')){
+			window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
+		}
+	}
 	// 日期格式化,不是插件的代码,只用于处理时间格式化
 	Date.prototype.format = function(fmt){
 		var o = {
@@ -206,10 +245,11 @@
 		var _query = {
 			name: document.querySelector('[name="name"]').value,
 			info: document.querySelector('[name="info"]').value,
-			url: document.querySelector('[name="url"]').value
+			url: document.querySelector('[name="url"]').value,
+			cPage: 1
 		};
-		table.GM('setQuery', _query).GM('refreshGrid', function () {
-			console.log('搜索成功...');
+		table.GM('setQuery', _query, function(){
+			console.log('setQuery执行成功');
 		});
 	});
 
