@@ -231,7 +231,7 @@ export default class GridManager {
 			$table.attr('grid-manager', arg.gridManagerName);
 		}
 		// 配置参数
-		var _settings = new Settings();
+		let _settings = new Settings();
 		_settings.textConfig = new TextSettings();
 		jTool.extend(true, _settings, arg);
 		Cache.setSettings($table, _settings);
