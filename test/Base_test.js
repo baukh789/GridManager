@@ -22,11 +22,6 @@ describe('Base 对象完整性验证', function() {
 		expect(Base.getColTd.length).toBe(1);
 	});
 
-	it('对象完整性验证 Base.initVisible', function(){
-		expect(Base.initVisible).toBeDefined();
-		expect(Base.initVisible.length).toBe(1);
-	});
-
 	it('对象完整性验证 Base.setAreVisible', function(){
 		expect(Base.setAreVisible).toBeDefined();
 		expect(Base.setAreVisible.length).toBe(3);
@@ -80,7 +75,7 @@ describe('Base 验证原型方法总数', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(10 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(9 + 1);
 	});
 });
 // describe('Base.js', function() {

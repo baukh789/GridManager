@@ -54,27 +54,7 @@ class BaseClass {
 	}
 
 	/**
-	 * 初始化列显示|隐藏
-	 * @param $table
-     */
-	initVisible($table) {
-		// 所有的th
-		const _thList = $('thead th', $table);
-
-		// tbody下的tr
-		const _trList = $('tbody tr', $table);
-		let	_td = null;
-		$.each(_thList, (i, v) => {
-			v = $(v);
-			$.each(_trList, (i2, v2) => {
-				_td = $('td', v2).eq(v.index());
-				_td.attr('td-visible', v.attr('th-visible'));
-			});
-		});
-	}
-
-	/**
-	 * 设置列是否可见
+	 * 根据参数设置列是否可见(th 和 td)
 	 * @param $thList 即将配置的列所对应的th[jTool object，可以是多个]
 	 * @param isVisible 是否可见
      * @param cb
@@ -163,8 +143,8 @@ class BaseClass {
 		});
 		const thPaddingLeft = thWarp.css('padding-left');
 		const thPaddingRight = thWarp.css('padding-right');
-		const thWidth = textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0);
-		return thWidth;
+		// 返回宽度值
+		return textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0);
 	}
 
 	/**
@@ -238,6 +218,15 @@ class BaseClass {
 			$tableDiv.css('overflow-x', 'auto');
 			return 'auto';
 		}
+	}
+
+	/**
+	 * 通过配置项columnData 获取指定列的可视信息
+	 * @param col 列的配置信息
+	 * @returns {string}
+     */
+	getVisibleForColumn(col) {
+		return col.isShow ? 'visible' : 'none';
 	}
 }
 const Base = new BaseClass();

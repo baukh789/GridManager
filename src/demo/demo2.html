@@ -96,7 +96,7 @@
 		,height: '400px'
 		,supportAjaxPage:true
 		,supportSorting: true
-		,disableCache: true
+		,disableCache: false
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
 		,query: {pluginId: 1}
@@ -116,11 +116,13 @@
 				width: '100px',
 				align: 'right',
 				text: '名称',
+				isShow: false,
 				sorting: ''
 			},{
 				key: 'type',
 				remind: 'the type',
 				text: '分类',
+			isShow: false,
 				template: function(type, rowObject){
 					return `
 						<select>

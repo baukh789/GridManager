@@ -157,6 +157,47 @@ class Settings {
 		 */
 		const gridData = {
 			// 表格列数据配置项
+			/* columnData示例
+			columnData: [{
+			 // 列的唯一索引。字符串类型，必设项
+			 key: 'url',
+
+			 // 列的显示文本。字符串类型，必设项
+			 name: 'url',
+
+			 // 是否显示, 默认值 true @2.3.15
+			 isShow: true,
+
+			 // 列所占宽度, 字符串类型，非必设项
+			 // 需要注意的是:
+			 // 1.如果当前列的th内文本实际占用宽度大于该参数指定的宽度时， GridManager会自动进行适配。
+			 // 2.建议不要将所有的列都进行宽度设置，而留一个进行自动适应
+			 width: '100px',
+
+			 // 列文本对齐信息，字符串类型，非必设项
+			 // 三种值: 'left', 'center', 'right'
+			 align: '',
+
+			 // 列的排序类型，字符串类型，非必设项
+			 // 在初始化参数supportSorting=true时生效。有三种值:
+			 // 1、'': 该列支持排序，但初始化时不指定排序类型
+			 // 2、'DESC': 该列支持排序，并在初始化时指定排序类型为降序。可通过参数[sortDownText]来指定降序所使用的字符串
+			 // 3、'ASC': 该列支持排序，并在初始化时指定排序类型为升序。可通过参数[sortUpText]来指定升序所使用的字符串
+			 sorting: 'DESC',
+
+			 // 列的表头提醒内容,字符串类型，非必设项
+			 // 在初始化参数supportRemind=true时生效
+			 remind: '文本介绍',
+
+			 // 自定义列模板，函数类型，非必设项
+			 // 通过返回的字符串对列进行重绘
+			 // nodeData: 当前单元格的渲染数据
+			 // rowData: 当前单元格所在行的渲染数据, 本例中: 参数nodeData=== rowData.url
+			 template: function(nodeData, rowData){
+			 return '<a href="'+nodeData+'">'+rowData.url+'</a>';
+			 }
+			 }]
+			*/
 			columnData: [],
 
 			// 表格grid-manager所对应的值[可在html中配置]

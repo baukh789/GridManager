@@ -219,6 +219,8 @@ class Core {
 		// 排序对应的html片段
 		let	sortingHtml	= '';
 
+		// th显示状态
+		let thVisible = '';
 		// 通过配置项[columnData]生成thead
 		$.each(settings.columnData, (i, v) => {
 			// 表头提醒
@@ -247,7 +249,10 @@ class Core {
 
 			// 文本对齐
 			alignAttr = v.align ? `align="${v.align}"` : '';
-			theadHtml += `<th gm-create="false" th-name="${v.key}" ${remindHtml} ${sortingHtml} ${widthInfo} ${alignAttr}>${v.text}</th>`;
+
+			// th可视状态值
+			thVisible = Base.getVisibleForColumn(v);
+			theadHtml += `<th gm-create="false" th-name="${v.key}" th-visible="${thVisible}" ${remindHtml} ${sortingHtml} ${widthInfo} ${alignAttr}>${v.text}</th>`;
 		});
 		theadHtml += '</thead>';
 		$table.html(theadHtml + tbodyHtml);
@@ -312,7 +317,7 @@ class Core {
 		const onlyThWarp = $('<div class="th-wrap"></div>');
 		$.each(onlyThList, (i2, v2) => {
 			onlyTH = $(v2);
-			onlyTH.attr('th-visible', 'visible');
+			// onlyTH.attr('th-visible', 'visible');
 
 			// 是否为自动生成的序号列
 			if (settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
@@ -486,9 +491,30 @@ class Core {
 		}
 
 		// 依据配置对列表进行隐藏、显示
-		if (settings.supportConfig) {
-			Base.initVisible(_table);
-		}
+		this.initVisible(_table);
+	}
+
+	/**
+	 * 根据配置项初始化列显示|隐藏 (th 和 td)
+	 * @param $table
+	 */
+	initVisible($table) {
+		// tbody下的tr
+		const _trList = $('tbody tr', $table);
+		let	_th = null;
+		let	_td = null;
+		let _visible = 'visible';
+		const settings = Cache.getSettings($table);
+		$.each(settings.columnData, (i, col) => {
+			_th = $(`th[th-name="${col.key}"]`, $table);
+			_visible = Base.getVisibleForColumn(col);
+
+			_th.attr('th-visible', _visible);
+			$.each(_trList, (i2, v2) => {
+				_td = $('td', v2).eq(_th.index());
+				_td.attr('td-visible', _visible);
+			});
+		});
 	}
 }
 export default new Core();

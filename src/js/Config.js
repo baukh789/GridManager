@@ -24,8 +24,7 @@ class Config {
 	 * @param $table
      */
 	bindConfigEvent($table) {
-		let Settings = Cache.getSettings($table);
-
+		const settings = Cache.getSettings($table);
 		// GM容器
 		const tableWarp = $table.closest('div.table-wrap');
 
@@ -51,8 +50,14 @@ class Config {
 			_configArea.show();
 
 			// 验证当前是否只有一列处于显示状态 并根据结果进行设置是否可以取消显示
+			let showNum = 0;
+			settings.columnData.forEach(col => {
+				if (col.isShow || typeof (col.isShow) === 'undefined') {
+					showNum++;
+				}
+			});
 			const checkedLi = $('.checked-li', _configArea);
-			checkedLi.length === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
+			showNum === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
 		});
 
 		// 事件: 设置
@@ -101,7 +106,7 @@ class Config {
 			}
 
 			// 重置调整宽度事件源
-			if (Settings.supportAdjust) {
+			if (settings.supportAdjust) {
 				Adjust.resetAdjust(_table);
 			}
 

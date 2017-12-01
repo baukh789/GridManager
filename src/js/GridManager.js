@@ -230,26 +230,42 @@ export default class GridManager {
 		} else {
 			$table.attr('grid-manager', arg.gridManagerName);
 		}
-		// 配置参数
-		var _settings = new Settings();
+		// 合并参数
+		const _settings = new Settings();
 		_settings.textConfig = new TextSettings();
 		jTool.extend(true, _settings, arg);
-		Cache.setSettings($table, _settings);
 
+		// 校验 columnData
+		if (!_settings.columnData || _settings.columnData.length === 0) {
+			this.outLog('请对参数columnData进行有效的配置', 'error');
+			return;
+		}
+
+		// 配置 columnData 下的默认值
+		_settings.columnData.forEach(col => {
+			// 如果未设定, 设置默认值为true
+			col.isShow = col.isShow || typeof (col.isShow) === 'undefined';
+		});
+
+		// 存储配置项
+		Cache.setSettings($table, _settings);
 		jTool.extend(true, this, _settings);
 
 		// 通过版本较验 清理缓存
 		Cache.cleanTableCacheForVersion();
+
+		// 校验 gridManagerName
 		if (this.gridManagerName.trim() === '') {
 			this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 			return false;
 		}
 
-		// 验证当前表格是否已经渲染
+		// 校验 当前表格是否已经渲染
 		if ($table.hasClass('GridManager-ready') || $table.hasClass('GridManager-loading')) {
 			this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
 			return false;
 		}
+
 
 		// 根据本地缓存配置每页显示条数
 		if (this.supportAjaxPage) {

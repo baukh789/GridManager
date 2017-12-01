@@ -16,6 +16,7 @@ const Store = {
 	// 表渲染前的th
 	originalTh: {},
 
+	// TODO 这里需做个调整, 将宽度调整 显示状态 排序状态 等信息即时更新到settings内, 再通过settings的值更新DOM. 以达到数据驱动的效果
 	// 配置信息
 	settings: {}
 };
