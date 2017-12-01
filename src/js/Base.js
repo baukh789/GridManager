@@ -12,16 +12,20 @@ class BaseClass {
 	 * @returns {*}
      */
 	outLog(msg, type) {
-		if (!type) {
-			console.log('GridManager:', msg);
-		} else if (type === 'info') {
-			console.info('GridManager Info: ', msg);
-		} else if (type === 'warn') {
-			console.warn('GridManager Warn: ', msg);
-		} else if (type === 'error') {
-			console.error('GridManager Error: ', msg);
+		switch (type) {
+			case 'info':
+				console.info('GridManager Info: ', msg);
+				break;
+			case 'warn':
+				console.warn('GridManager Warn: ', msg);
+				break;
+			case 'error':
+				console.error('GridManager Error: ', msg);
+				break;
+			default:
+				console.log('GridManager:', msg);
+				break;
 		}
-		return msg;
 	}
 
 	/**
