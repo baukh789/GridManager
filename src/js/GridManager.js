@@ -7,9 +7,11 @@ import { jTool, Base } from './Base';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
 import Cache from './Cache';
-import Core from './Core';
+import Checkbox from './Checkbox';
 import Config from './Config';
+import Core from './Core';
 import Drag from './Drag';
+import Order from './Order';
 import Export from './Export';
 import Menu from './Menu';
 import Remind from './Remind';
@@ -230,26 +232,8 @@ export default class GridManager {
 		} else {
 			$table.attr('grid-manager', arg.gridManagerName);
 		}
-		// 合并参数
-		const _settings = new Settings();
-		_settings.textConfig = new TextSettings();
-		jTool.extend(true, _settings, arg);
 
-		// 校验 columnData
-		if (!_settings.columnData || _settings.columnData.length === 0) {
-			this.outLog('请对参数columnData进行有效的配置', 'error');
-			return;
-		}
-
-		// 配置 columnData 下的默认值
-		_settings.columnData.forEach(col => {
-			// 如果未设定, 设置默认值为true
-			col.isShow = col.isShow || typeof (col.isShow) === 'undefined';
-		});
-
-		// 存储配置项
-		Cache.setSettings($table, _settings);
-		jTool.extend(true, this, _settings);
+		this.initSettings($table, arg);
 
 		// 通过版本较验 清理缓存
 		Cache.cleanTableCacheForVersion();
@@ -277,6 +261,7 @@ export default class GridManager {
 
 		// 初始化表格
 		this.initTable($table);
+
 		// 如果初始获取缓存失败，在渲染完成后首先存储一次数据
 		if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
 			window.setTimeout(() => {
@@ -290,58 +275,117 @@ export default class GridManager {
 	}
 
 	/**
-	 * 初始化列表
-	 * @param table
+	 * 处理设置相关: 合并, 存储
+	 * @param $table
+	 * @param arg
      */
-	initTable(table) {
-		// 渲染HTML，嵌入所需的事件源DOM
-		Core.createDOM(table);
+	initSettings($table, arg) {
+		// 合并参数
+		const _settings = new Settings();
+		_settings.textConfig = new TextSettings();
+
+		// 将默认项与配置项
+		jTool.extend(true, _settings, arg);
+
+		// 存储配置项
+		Cache.setSettings($table, _settings);
+
+		// 校验 columnData
+		if (!_settings.columnData || _settings.columnData.length === 0) {
+			this.outLog('请对参数columnData进行有效的配置', 'error');
+			return;
+		}
+
+
+		// TODO @baukh20171201 新增的, 未试验. 主要是为了处理数据驱动
+		// 为 columnMap columnData 增加 序号列
+		if (_settings.supportAutoOrder) {
+			_settings.columnData.unshift(Order.getColumn($table, _settings.i18n));
+		}
+
+		// 为 columnMap columnData 增加 选择列
+		if (_settings.supportCheckbox) {
+			_settings.columnData.unshift(Checkbox.getColumn($table, _settings.i18n));
+		}
+
+		// 为 columnData 提供锚 => columnMap
+		// columnData 在此之后, 将不再被使用到
+		// columnData 与 columnMap 已经过特殊处理, 不会彼此影响
+		_settings.columnMap = {};
+		_settings.columnData.forEach(col => {
+			_settings.columnMap[col.key] = col;
+
+			// 如果未设定, 设置默认值为true
+			_settings.columnMap[col.key].isShow = col.isShow || typeof (col.isShow) === 'undefined';
+		});
+
+		// 为列增加顺序
+		jTool.each(_settings.columnMap, (index, col) => {
+			col.index = index;
+		});
 
 		// 获取本地缓存并对列表进行配置
 		if (!this.disableCache) {
-			Cache.configTheadForCache(table);
-			// 通过缓存配置成功后, 重置宽度调整事件源dom
-			this.supportAdjust ? Adjust.resetAdjust(table) : '';
+			const userMemory = Cache.getUserMemory($table);
+			console.log(userMemory.cache.th);
+			jTool.extend(true, _settings.columnMap, userMemory.cache.th);
 		}
+
+		// 更新存储配置项
+		Cache.setSettings($table, _settings);
+		jTool.extend(true, this, _settings);
+	}
+
+	/**
+	 * 初始化列表
+	 * @param $table
+     */
+	initTable($table) {
+
+		// 渲染HTML，嵌入所需的事件源DOM
+		Core.createDOM($table);
+
+		// 通过缓存配置成功后, 重置宽度调整事件源dom
+		this.supportAdjust ? Adjust.resetAdjust($table) : '';
 
 		// 绑定宽度调整事件
 		if (this.supportAdjust) {
-			Adjust.bindAdjustEvent(table);
+			Adjust.bindAdjustEvent($table);
 		}
 
 		// 绑定拖拽换位事件
 		if (this.supportDrag) {
-			Drag.bindDragEvent(table);
+			Drag.bindDragEvent($table);
 		}
 
 		// 绑定排序事件
 		if (this.supportSorting) {
-			Sort.bindSortingEvent(table);
+			Sort.bindSortingEvent($table);
 		}
 
 		// 绑定表头提示事件
 		if (this.supportRemind) {
-			Remind.bindRemindEvent(table);
+			Remind.bindRemindEvent($table);
 		}
 
 		// 绑定配置列表事件
 		if (this.supportConfig) {
-			Config.bindConfigEvent(table);
+			Config.bindConfigEvent($table);
 		}
 
-		// 绑定table区域hover事件
-		Hover.onTbodyHover(table);
+		// 绑定$table区域hover事件
+		Hover.onTbodyHover($table);
 
 		// 绑定表头置顶功能
-		Scroll.bindScrollFunction(table);
+		Scroll.bindScrollFunction($table);
 
 		// 绑定右键菜单事件
-		Menu.bindRightMenuEvent(table);
+		Menu.bindRightMenuEvent($table);
 
 		// 渲染tbodyDOM
-		Core.__refreshGrid(table);
+		Core.__refreshGrid($table);
 
 		// 存储GM实例
-		Cache.__setGridManager(table, this);
+		Cache.__setGridManager($table, this);
 	}
 }

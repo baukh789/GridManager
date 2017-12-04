@@ -78,11 +78,6 @@ describe('Cache 对象完整性验证', function() {
 		expect(Cache.cleanTableCache.length).toBe(2);
 	});
 
-	it('对象完整性验证 Cache.configTheadForCache', function(){
-		expect(Cache.configTheadForCache).toBeDefined();
-		expect(Cache.configTheadForCache.length).toBe(1);
-	});
-
 	it('对象完整性验证 Cache.setOriginalThDOM', function(){
 		expect(Cache.setOriginalThDOM).toBeDefined();
 		expect(Cache.setOriginalThDOM.length).toBe(1);

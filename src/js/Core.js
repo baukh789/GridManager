@@ -124,7 +124,8 @@ class Core {
 		window.setTimeout(() => {
 			refreshAction.removeClass('refreshing');
 		}, 2000);
-	};
+	}
+
 	/**
 	 * 执行ajax成功后重新渲染DOM
 	 * @param $table
@@ -151,9 +152,6 @@ class Core {
 
 		let _data = parseRes[settings.dataKey];
 
-		// 数据索引
-		let key = null;
-
 		// 文本对齐属性
 		let	alignAttr = null;
 
@@ -173,16 +171,40 @@ class Core {
 			parseRes.totals = 0;
 			tbodyDOM.html(tbodyTmpHTML);
 		} else {
-			$.each(_data, (i, v) => {
-				Cache.setRowData(gmName, i, v);
-				tbodyTmpHTML += `<tr cache-key="${i}">`;
-				$.each(settings.columnData, (i2, v2) => {
-					key = v2.key;
-					template = v2.template;
-					templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];
-					alignAttr = v2.align ? `align="${v2.align}"` : '';
-					tbodyTmpHTML += `<td gm-create="false" ${alignAttr}>${templateHTML}</td>`;
+			// 为数据追加序号字段
+			if (settings.supportAutoOrder) {
+				let _pageData = settings.pageData;
+				let	_orderBaseNumber = 1;
+
+				// 验证是否存在分页数据
+				if (_pageData && _pageData['pSize'] && _pageData['cPage']) {
+					_orderBaseNumber = _pageData.pSize * (_pageData.cPage - 1) + 1;
+				}
+				_data = _data.map((item, index) => {
+					item[Order.key] = _orderBaseNumber + index;
+					return item;
 				});
+			}
+
+			// 为数据追加全选字段
+			if (settings.supportCheckbox) {
+				_data = _data.map((item, index) => {
+					item[Checkbox.key] = false;
+					return item;
+				});
+			}
+			const tdList = [];
+			$.each(_data, (index, row) => {
+				Cache.setRowData(gmName, index, row);
+				tbodyTmpHTML += `<tr cache-key="${index}">`;
+				$.each(settings.columnMap, (key, col) => {
+					template = col.template;
+					templateHTML = typeof template === 'function' ? template(row[col.key], row) : row[col.key];
+					alignAttr = col.align ? `align="${col.align}"` : '';
+					// 插件自带列(序号,全选) 的 templateHTML会包含dom节点, 所以需要特殊处理一下
+					tdList[col.index] = col.isAutoCreate ? templateHTML : `<td gm-create="false" ${alignAttr}>${templateHTML}</td>`;
+				});
+				tbodyTmpHTML += tdList.join('');
 				tbodyTmpHTML += '</tr>';
 			});
 			tbodyDOM.html(tbodyTmpHTML);
@@ -221,23 +243,37 @@ class Core {
 
 		// th显示状态
 		let thVisible = '';
-		// 通过配置项[columnData]生成thead
-		$.each(settings.columnData, (i, v) => {
+
+		// 将 columnMap 转换为 数组
+		// 转换的原因是为了处理用户记忆
+		const thList = [];
+		if (settings.disableCache) {
+			$.each(settings.columnMap, (key, col) => {
+				thList.push(col);
+			});
+		} else {
+			$.each(settings.columnMap, (key, col) => {
+				thList[col.index] = col;
+			});
+		}
+
+		// thList 生成thead
+		$.each(thList, (index, col) => {
 			// 表头提醒
-			if (settings.supportRemind && typeof (v.remind) === 'string' && v.remind !== '') {
-				remindHtml = `remind="${v.remind}"`;
+			if (settings.supportRemind && typeof (col.remind) === 'string' && col.remind !== '') {
+				remindHtml = `remind="${col.remind}"`;
 			}
 
 			// 排序
 			sortingHtml = '';
-			if (settings.supportSorting && typeof (v.sorting) === 'string') {
-				if (v.sorting === settings.sortDownText) {
+			if (settings.supportSorting && typeof (col.sorting) === 'string') {
+				if (col.sorting === settings.sortDownText) {
 					sortingHtml = `sorting="${settings.sortDownText}"`;
-					settings.sortData[v.key] = settings.sortDownText;
+					settings.sortData[col.key] = settings.sortDownText;
 					Cache.setSettings($table, settings);
-				} else if (v.sorting === settings.sortUpText) {
+				} else if (col.sorting === settings.sortUpText) {
 					sortingHtml = `sorting="${settings.sortUpText}"`;
-					settings.sortData[v.key] = settings.sortUpText;
+					settings.sortData[col.key] = settings.sortUpText;
 					Cache.setSettings($table, settings);
 				} else {
 					sortingHtml = 'sorting=""';
@@ -245,26 +281,38 @@ class Core {
 			}
 
 			// 宽度文本
-			widthInfo = v.width ? `width="${v.width}"` : '';
+			widthInfo = col.width ? `width="${col.width}"` : '';
 
 			// 文本对齐
-			alignAttr = v.align ? `align="${v.align}"` : '';
+			alignAttr = col.align ? `align="${col.align}"` : '';
 
 			// th可视状态值
-			thVisible = Base.getVisibleForColumn(v);
-			theadHtml += `<th gm-create="false" th-name="${v.key}" th-visible="${thVisible}" ${remindHtml} ${sortingHtml} ${widthInfo} ${alignAttr}>${v.text}</th>`;
+			thVisible = Base.getVisibleForColumn(col);
+
+			// 拼接th
+			switch (col.key) {
+				// 插件自动生成序号列
+				case Order.key:
+					theadHtml += Order.getThString($table, thVisible);
+					break;
+				// 插件自动生成选择列
+				case Checkbox.key:
+					theadHtml += Checkbox.getThString($table, thVisible);
+					break;
+				// 普通列
+				default:
+					theadHtml += `<th gm-create="false" th-name="${col.key}" th-visible="${thVisible}" ${remindHtml} ${sortingHtml} ${widthInfo} ${alignAttr}>${col.text}</th>`;
+					break;
+			}
 		});
 		theadHtml += '</thead>';
 		$table.html(theadHtml + tbodyHtml);
 
-		// 嵌入序号DOM
-		if (settings.supportAutoOrder) {
-			Order.initDOM($table);
-		}
-		// 嵌入选择返选DOM
+		// 绑定选择框事件
 		if (settings.supportCheckbox) {
-			Checkbox.initCheckbox($table);
+			Checkbox.bindCheckboxEvent($table);
 		}
+
 		// 存储原始th DOM
 		Cache.setOriginalThDOM($table);
 
@@ -336,8 +384,8 @@ class Core {
 			// 嵌入配置列表项
 			if (settings.supportConfig) {
 				configList
-					.append(`<li th-name="${onlyTH.attr('th-name')}" class="checked-li">
-								<input type="checkbox" checked="checked"/>
+					.append(`<li th-name="${onlyTH.attr('th-name')}">
+								<input type="checkbox"/>
 								<label>
 									<span class="fake-checkbox"></span>
 									${onlyTH.text()}
@@ -434,61 +482,61 @@ class Core {
 		if (!_tr || _tr.length === 0) {
 			return false;
 		}
-		let settings = Cache.getSettings(_table);
+		// let settings = Cache.getSettings(_table);
 
 		// 重置表格序号
-		if (settings.supportAutoOrder) {
-			let _pageData = settings.pageData;
-			let onlyOrderTd = null;
-			let	_orderBaseNumber = 1;
-			let	_orderText;
-
-			// 验证是否存在分页数据
-			if (_pageData && _pageData['pSize'] && _pageData['cPage']) {
-				_orderBaseNumber = _pageData.pSize * (_pageData.cPage - 1) + 1;
-			}
-			$.each(_tr, (i, v) => {
-				_orderText = _orderBaseNumber + i;
-				onlyOrderTd = $('td[gm-order="true"]', v);
-				if (onlyOrderTd.length === 0) {
-					$(v).prepend(`<td gm-order="true" gm-create="true">${_orderText}</td>`);
-				} else {
-					onlyOrderTd.text(_orderText);
-				}
-			});
-		}
+		// if (settings.supportAutoOrder) {
+		// 	let _pageData = settings.pageData;
+		// 	let onlyOrderTd = null;
+		// 	let	_orderBaseNumber = 1;
+		// 	let	_orderText;
+        //
+		// 	// 验证是否存在分页数据
+		// 	if (_pageData && _pageData['pSize'] && _pageData['cPage']) {
+		// 		_orderBaseNumber = _pageData.pSize * (_pageData.cPage - 1) + 1;
+		// 	}
+		// 	$.each(_tr, (i, v) => {
+		// 		_orderText = _orderBaseNumber + i;
+		// 		onlyOrderTd = $('td[gm-order="true"]', v);
+		// 		if (onlyOrderTd.length === 0) {
+		// 			$(v).prepend(Order.getTdString(_orderText));
+		// 		} else {
+		// 			onlyOrderTd.text(_orderText);
+		// 		}
+		// 	});
+		// }
 
 		// 重置表格选择 checkbox
-		if (settings.supportCheckbox) {
-			let onlyCheckTd = null;
-			$.each(_tr, (i, v) => {
-				onlyCheckTd = $('td[gm-checkbox="true"]', v);
-				if (onlyCheckTd.length === 0) {
-					$(v).prepend(`<td gm-checkbox="true" gm-create="true"><input type="checkbox"/></td>`);
-				} else {
-					$('[type="checkbox"]', onlyCheckTd).prop('checked', false);
-				}
-			});
-		}
+		// if (settings.supportCheckbox) {
+		// 	let onlyCheckTd = null;
+		// 	$.each(_tr, (i, v) => {
+		// 		onlyCheckTd = $('td[gm-checkbox="true"]', v);
+		// 		if (onlyCheckTd.length === 0) {
+		// 			$(v).prepend(Checkbox.getTdString());
+		// 		} else {
+		// 			$('[type="checkbox"]', onlyCheckTd).prop('checked', false);
+		// 		}
+		// 	});
+		// }
 
 		// 依据存储数据重置td顺序
-		if (settings.supportDrag) {
-			const _thCacheList = Cache.getOriginalThDOM(_table);
-			let	_td = null;
-			if (!_thCacheList || _thCacheList.length === 0) {
-				Base.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
-				return false;
-			}
-			let _tdArray = [];
-			$.each(_tr, (i, v) => {
-				_tdArray = [];
-				_td = $('td', v);
-				$.each(_td, (i2, v2) => {
-					_tdArray[_thCacheList.eq(i2).index()] = v2.outerHTML;
-				});
-				v.innerHTML = _tdArray.join('');
-			});
-		}
+		// if (settings.supportDrag) {
+		// 	const _thCacheList = Cache.getOriginalThDOM(_table);
+		// 	let	_td = null;
+		// 	if (!_thCacheList || _thCacheList.length === 0) {
+		// 		Base.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
+		// 		return false;
+		// 	}
+		// 	let _tdArray = [];
+		// 	$.each(_tr, (i, v) => {
+		// 		_tdArray = [];
+		// 		_td = $('td', v);
+		// 		$.each(_td, (i2, v2) => {
+		// 			_tdArray[_thCacheList.eq(i2).index()] = v2.outerHTML;
+		// 		});
+		// 		v.innerHTML = _tdArray.join('');
+		// 	});
+		// }
 
 		// 依据配置对列表进行隐藏、显示
 		this.initVisible(_table);
@@ -508,7 +556,6 @@ class Core {
 		$.each(settings.columnData, (i, col) => {
 			_th = $(`th[th-name="${col.key}"]`, $table);
 			_visible = Base.getVisibleForColumn(col);
-
 			_th.attr('th-visible', _visible);
 			$.each(_trList, (i2, v2) => {
 				_td = $('td', v2).eq(_th.index());

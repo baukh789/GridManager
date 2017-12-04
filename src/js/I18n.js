@@ -21,7 +21,7 @@ class I18n {
 	 * @returns {*|string}
      */
 	getText($table, key, language) {
-		return Cache.getSettings($table).textConfig[key][language] || '';
+		return Cache.getSettings($table).textConfig[key][language || this.getLanguage($table)] || '';
 	}
 
 	/**
@@ -47,7 +47,7 @@ class I18n {
 		}
 		let _text = '';
 		try {
-			_text = _this.getText($table, key, _this.getLanguage($table));
+			_text = _this.getText($table, key);
 			if (!intrusion || intrusion.length === 0) {
 				return _text;
 			}

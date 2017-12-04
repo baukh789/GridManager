@@ -3,7 +3,7 @@ const path = require('path');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const config = {
 	// map
-	devtool : 'nosources-source-map',  // TODO  http://www.css88.com/doc/webpack2/configuration/devtool/
+	devtool : 'source-map',  // TODO  http://www.css88.com/doc/webpack2/configuration/devtool/
 
 	// 入口文件配置
 	context: path.join(__dirname, "src/"),

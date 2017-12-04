@@ -186,28 +186,28 @@ class Cache {
 
 			let _cache = {};
 			let _pageCache = {};
-			let _thCache = [];
-			let _thData = {};
+			// let _thCache = [];
+			// let _thData = {};
 
-			let $v;
-			$.each(thList, (i, v) => {
-				$v = $(v);
-				_thData = {};
-				_thData.th_name = $v.attr('th-name');
-				if (Settings.supportDrag) {
-					_thData.th_index = $v.index();
-				}
-				if (Settings.supportAdjust) {
-					// 用于处理宽度在特定情况下发生异常
-					_thData.th_width = $v.width();
-				}
-				if (Settings.supportConfig) {
-					_thData.isShow = $(`.config-area li[th-name="${_thData.th_name}"]`, $table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
-				}
-				_thCache.push(_thData);
-			});
-			_cache.th = _thCache;
-
+			// let $v;
+			// $.each(thList, (i, v) => {
+			// 	$v = $(v);
+			// 	_thData = {};
+			// 	_thData.th_name = $v.attr('th-name');
+			// 	if (Settings.supportDrag) {
+			// 		_thData.th_index = $v.index();
+			// 	}
+			// 	if (Settings.supportAdjust) {
+			// 		// 用于处理宽度在特定情况下发生异常
+			// 		_thData.th_width = $v.width();
+			// 	}
+			// 	if (Settings.supportConfig) {
+			// 		_thData.isShow = $(`.config-area li[th-name="${_thData.th_name}"]`, $table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
+			// 	}
+			// 	_thCache.push(_thData);
+			// });
+			_cache.th = Settings.columnMap;
+			console.log(_cache.th);
 			// 存储分页
 			if (Settings.supportAjaxPage) {
 				_pageCache.pSize = parseInt($('select[name="pSizeArea"]', $table.closest('.table-wrap')).val(), 10);
@@ -288,83 +288,6 @@ class Cache {
 				const Settings = this.getSettings($table);
 				this.delUserMemory($table);
 				Base.outLog(`${Settings.gridManagerName}清除缓存成功,清除原因：${cleanText}`, 'info');
-			}
-		};
-
-
-		/**
-		 * 根据本地缓存thead配置列表: 获取本地缓存, 存储原位置顺序, 根据本地缓存进行配置
-		 * @param $table
-		 */
-		this.configTheadForCache = $table => {
-			let Settings = this.getSettings($table);
-			const _this = this;
-			// 本地缓存的数据
-			const _data = _this.getUserMemory($table);
-			const _domArray = [];
-
-			// 验证：当前$table 没有缓存数据
-			if (!_data || $.isEmptyObject(_data) || !_data.cache || $.isEmptyObject(_data.cache)) {
-				return;
-			}
-
-			// 列表的缓存数据
-			let _cache = _data.cache;
-
-			// th相关 缓存
-			let _thCache = _cache.th;
-
-			// 验证：缓存数据与当前列表项是否匹配
-			let _thNameTmpList = [];
-			let _dataAvailable = true;
-
-			// 单一的th
-			let _th;
-
-			// th的缓存json
-			let _thJson;
-
-			// 验证：缓存数据与当前列表是否匹配
-			if (!_thCache || _thCache.length !== $('thead th', $table).length) {
-				_this.cleanTableCache($table, '缓存数据与当前列表不匹配');
-				return;
-			}
-			$.each(_thCache, (i2, v2) => {
-				_thJson = v2;
-				_th = $('th[th-name=' + _thJson.th_name + ']', $table);
-				if (_th.length === 0 || _thNameTmpList.indexOf(_thJson.th_name) !== -1) {
-					_this.cleanTableCache($table, '缓存数据与当前列表不匹配');
-					_dataAvailable = false;
-					return false;
-				}
-				_thNameTmpList.push(_thJson.th_name);
-			});
-
-			// 数据可用，进行列的配置
-			if (_dataAvailable) {
-				$.each(_thCache, (i2, v2) => {
-					_thJson = v2;
-					_th = $('th[th-name=' + _thJson.th_name + ']', $table);
-					// 配置列的宽度
-					if (Settings.supportAdjust && _th.attr('gm-create') !== 'true') {
-						_th.css('width', _thJson.th_width);
-					}
-					// 配置列排序数据
-					if (Settings.supportDrag && typeof _thJson.th_index !== 'undefined') {
-						_domArray[_thJson.th_index] = _th;
-					} else {
-						_domArray[i2] = _th;
-					}
-					// 配置列的可见
-					if (Settings.supportConfig) {
-						Base.setAreVisible(_th, typeof _thJson.isShow === 'undefined' ? true : _thJson.isShow, true);
-					}
-				});
-
-				// 配置列的顺序
-				if (Settings.supportDrag) {
-					$table.find('thead tr').html(_domArray);
-				}
 			}
 		};
 

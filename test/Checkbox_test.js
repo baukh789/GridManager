@@ -11,13 +11,14 @@ import Checkbox from '../src/js/Checkbox';
  * 对象完整性验证
  */
 describe('Checkbox 对象完整性验证', function() {
-	it('对象完整性验证 Checkbox.html', function () {
-		expect(Checkbox.html).toBeDefined();
+	it('对象完整性验证 Checkbox.getThString', function () {
+		expect(Checkbox.getThString).toBeDefined();
+		expect(Checkbox.getThString.length).toBe(2);
 	});
 
-	it('对象完整性验证 Checkbox.initCheckbox', function () {
-		expect(Checkbox.initCheckbox).toBeDefined();
-		expect(Checkbox.initCheckbox.length).toBe(1);
+	it('对象完整性验证 Checkbox.getColumn', function () {
+		expect(Checkbox.getColumn).toBeDefined();
+		expect(Checkbox.getColumn.length).toBe(2);
 	});
 
 	it('对象完整性验证 Checkbox.bindCheckboxEvent', function () {
@@ -50,6 +51,11 @@ describe('Checkbox 验证原型方法总数', function() {
 	});
 });
 
+describe('Checkbox', function() {
+	it('Checkbox.key', function() {
+		expect(Checkbox.key).toBe('gm_checkbox');
+	});
+});
 // describe('Checkbox', function() {
 //
 // 	let table = null;

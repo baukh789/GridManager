@@ -121,9 +121,6 @@ class Adjust {
 			const settings = Cache.getSettings($table);
 			$table.unbind('mousemove mouseleave');
 
-			// 存储用户记忆
-			Cache.saveUserMemory($table);
-
 			// 其它操作也在table以该事件进行绑定,所以通过class进行区别
 			if ($th.hasClass('adjust-selected')) {
 				// 宽度调整成功回调事件
@@ -138,6 +135,15 @@ class Adjust {
 
 			// 更新滚动轴状态
 			Base.updateScrollStatus($table);
+
+			// 更新表格列Map
+			$.each(settings.columnMap, (key, col) => {
+				col.width = $(`th[th-name="${col.key}"]`, $table).width() + 'px';
+			});
+			Cache.setSettings($table, settings);
+
+			// 存储用户记忆
+			Cache.saveUserMemory($table);
 		});
 	}
 

@@ -4,41 +4,53 @@
 import { $ } from './Base';
 import I18n from './I18n';
 class Checkbox {
+	constructor() {
+		// 序号的唯一标识
+		this.key = 'gm_checkbox';
+	}
+
 	/**
-	 * checkbox 拼接字符串
+	 * 获取 th 的字符串节点
 	 * @param $table
 	 * @returns {string}
      */
-	html($table) {
-		let checkboxHtml = `<th th-name="gm_checkbox" gm-checkbox="true" gm-create="true">
+	getThString($table, thVisible) {
+		let checkboxHtml = `<th th-name="${this.key}" th-visible="${thVisible}" gm-checkbox="true" gm-create="true">
 								<input type="checkbox"/>
 								<span style="display: none">
 									${ I18n.i18nText($table, 'checkall-text') }
 								</span>
 							</th>`;
 		return checkboxHtml;
-	};
-
+	}
 	/**
-	 * 初始化选择与反选DOM
+	 * 获取选择列对象
 	 * @param $table
-     */
-	initCheckbox($table) {
-		// 插入选择DOM
-		$('thead tr', $table).prepend(this.html($table));
-
-		// 绑定选择框事件
-		this.bindCheckboxEvent($table);
-	};
+	 * @param language
+	 * @returns {{key: string, name: (*|string), isShow: boolean, width: string, align: string}}
+	 */
+	getColumn($table, language) {
+		return {
+			key: this.key,
+			name: I18n.getText($table, 'checkall-text', language),
+			isAutoCreate: true,
+			isShow: true,
+			width: '50px',
+			align: 'center',
+			template: nodeData => {
+				return `<td gm-checkbox="true" gm-create="true"><input type="checkbox" ${nodeData ? 'checked="checked"' : ''}/></td>`;
+			}
+		};
+	}
 
 	/**
 	 * 绑定选择框事件
 	 * @param $table
      */
 	bindCheckboxEvent($table) {
+		const _this = this;
 		$table.off('click', 'input[type="checkbox"]');
 		$table.on('click', 'input[type="checkbox"]', function () {
-
 			// 存储th中的checkbox的选中状态
 			let _thChecked = true;
 
@@ -52,7 +64,7 @@ class Checkbox {
 			const _tdCheckbox = $('tbody td[gm-checkbox] input[type="checkbox"]', $table);
 
 			// 当前为全选事件源
-			if (_checkAction.closest('th[th-name="gm_checkbox"]').length === 1) {
+			if (_checkAction.closest(`th[th-name="${_this.key}"]`).length === 1) {
 				$.each(_tdCheckbox, (i, v) => {
 					v.checked = _checkAction.prop('checked');
 					$(v).closest('tr').attr('checked', v.checked);

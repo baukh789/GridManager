@@ -4,6 +4,7 @@ const TransferWebpackPlugin = require('transfer-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const buildPath = path.join(__dirname, "build");
 const config = {
+	
 	// 入口文件所在的上下文
 	context: path.join(__dirname, "src/"),
 

@@ -37,27 +37,44 @@ class Config {
 			// 展示事件源
 			const _configAction = $(this);
 
-			// 设置区域
-			const _configArea = _configAction.closest('.config-area');
+			const _tableWrap = _configAction.closest('.table-wrap');
 
-			// 关闭
+			// 设置区域
+			const _configArea = _tableWrap.find('.config-area');
+
+			// 关闭配置区域
 			if (_configArea.css('display') === 'block') {
 				_configArea.hide();
 				return false;
 			}
 
-			// 打开
-			_configArea.show();
+			// 选中状态的li
+			let checkLi = null;
+
+			// 选中状态的input
+			let checkInput = null;
+
 
 			// 验证当前是否只有一列处于显示状态 并根据结果进行设置是否可以取消显示
+			// TODO 数据驱动不是很好处理, 需要想一下
 			let showNum = 0;
 			settings.columnData.forEach(col => {
-				if (col.isShow || typeof (col.isShow) === 'undefined') {
+				checkLi = $(`li[th-name="${col.key}"]`, _configArea);
+				checkInput = $('input[type="checkbox"]', checkLi);
+				if (col.isShow) {
+					checkLi.addClass('checked-li');
+					checkInput.prop('checked', true);
 					showNum++;
+					return;
 				}
+				checkLi.removeClass('checked-li');
+				checkInput.prop('checked', false);
 			});
 			const checkedLi = $('.checked-li', _configArea);
 			showNum === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
+
+			// 打开配置区域
+			_configArea.show();
 		});
 
 		// 事件: 设置
@@ -96,6 +113,12 @@ class Config {
 			Base.setAreVisible(_th, isVisible, () => {
 				_tableDiv.removeClass('config-editing');
 			});
+
+			// 更新配置信息
+			// TODO 今天时间问题, 之后需要处理
+			// TODO 在配置, 调整宽度, 位置更换后, 应该统一使用同一个方法对 columnMap 进行更新
+			settings.columnMap[_thName].isShow = isVisible;
+			Cache.setSettings($table, settings);
 
 			// 当前处于选中状态的展示项
 			const _checkedList = $('.config-area input[type="checkbox"]:checked', _tableWarp);

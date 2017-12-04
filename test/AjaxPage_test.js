@@ -20,37 +20,37 @@ describe('AjaxPage 对象完整性验证', function() {
 
 	it('对象完整性验证 AjaxPage.createPaginationDOM', function(){
 		expect(AjaxPage.createPaginationDOM).toBeDefined();
-		expect(AjaxPage.createPaginationDOM.length).toBe(2);
+		expect(AjaxPage.createPaginationDOM.length).toBe(1);
 	});
 
 	it('对象完整性验证 AjaxPage.joinPagination', function(){
 		expect(AjaxPage.joinPagination).toBeDefined();
-		expect(AjaxPage.joinPagination.length).toBe(2);
+		expect(AjaxPage.joinPagination.length).toBe(1);
 	});
 
 	it('对象完整性验证 AjaxPage.createPageSizeDOM', function(){
 		expect(AjaxPage.createPageSizeDOM).toBeDefined();
-		expect(AjaxPage.createPageSizeDOM.length).toBe(2);
+		expect(AjaxPage.createPageSizeDOM.length).toBe(1);
 	});
 
 	it('对象完整性验证 AjaxPage.bindPageJumpEvent', function(){
 		expect(AjaxPage.bindPageJumpEvent).toBeDefined();
-		expect(AjaxPage.bindPageJumpEvent.length).toBe(1);
+		expect(AjaxPage.bindPageJumpEvent.length).toBe(0);
 	});
 
 	it('对象完整性验证 AjaxPage.gotoPage', function(){
 		expect(AjaxPage.gotoPage).toBeDefined();
-		expect(AjaxPage.gotoPage.length).toBe(2);
+		expect(AjaxPage.gotoPage.length).toBe(1);
 	});
 
 	it('对象完整性验证 AjaxPage.bindSetPageSizeEvent', function(){
 		expect(AjaxPage.bindSetPageSizeEvent).toBeDefined();
-		expect(AjaxPage.bindSetPageSizeEvent.length).toBe(1);
+		expect(AjaxPage.bindSetPageSizeEvent.length).toBe(0);
 	});
 
 	it('对象完整性验证 AjaxPage.resetPSize', function(){
 		expect(AjaxPage.resetPSize).toBeDefined();
-		expect(AjaxPage.resetPSize.length).toBe(2);
+		expect(AjaxPage.resetPSize.length).toBe(1);
 	});
 
 	it('对象完整性验证 AjaxPage.resetPageData', function(){
@@ -85,7 +85,7 @@ describe('AjaxPage 验证原型方法总数', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(AjaxPage)))).toBe(11 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(AjaxPage)))).toBe(15 + 1);
 	});
 });
 // describe('AjaxPage.js', function() {
