@@ -319,12 +319,12 @@ class Cache {
 			// 不指定table, 清除全部
 			if ($table === null) {
 				this.delUserMemory();
-				Base.outLog(`清除缓存成功,清除原因：${cleanText}`, 'info');
+				Base.outLog(`用户记忆被清除：${cleanText}`, 'warn');
 				// 指定table, 定点清除
 			} else {
 				const Settings = this.getSettings($table);
 				this.delUserMemory($table);
-				Base.outLog(`${Settings.gridManagerName}清除缓存成功,清除原因：${cleanText}`, 'info');
+				Base.outLog(`${Settings.gridManagerName}用户记忆被清除：${cleanText}`, 'warn');
 			}
 		};
 
