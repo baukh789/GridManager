@@ -7,18 +7,15 @@ import { jTool, Base } from './Base';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
 import Cache from './Cache';
-import Checkbox from './Checkbox';
 import Config from './Config';
 import Core from './Core';
 import Drag from './Drag';
-import Order from './Order';
 import Export from './Export';
 import Menu from './Menu';
 import Remind from './Remind';
 import Scroll from './Scroll';
 import Sort from './Sort';
 import store from './Store';
-import { Settings, TextSettings } from './Settings';
 import Hover from './Hover';
 export default class GridManager {
 	/**
@@ -40,7 +37,8 @@ export default class GridManager {
 	 */
 	static
 	get(table) {
-		return Cache.__getGridManager(jTool(table));
+		// return Cache.__getGridManager(jTool(table));
+		return Cache.getSettings(jTool(table));
 	}
 
 	/**
@@ -233,26 +231,27 @@ export default class GridManager {
 			$table.attr('grid-manager', arg.gridManagerName);
 		}
 
-		this.initSettings($table, arg);
-
 		// 通过版本较验 清理缓存
 		Cache.cleanTableCacheForVersion();
 
+		// 初始化设置相关: 合并, 存储
+		const settings = Cache.initSettings($table, arg);
+
 		// 校验 gridManagerName
-		if (this.gridManagerName.trim() === '') {
-			this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+		if (settings.gridManagerName.trim() === '') {
+			Base.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 			return false;
 		}
 
 		// 校验 当前表格是否已经渲染
 		if ($table.hasClass('GridManager-ready') || $table.hasClass('GridManager-loading')) {
-			this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
+			Base.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
 			return false;
 		}
 
 
 		// 根据本地缓存配置每页显示条数
-		if (this.supportAjaxPage) {
+		if (settings.supportAjaxPage) {
 			AjaxPage.configPageForCache($table);
 		}
 
@@ -260,7 +259,7 @@ export default class GridManager {
 		$table.addClass('GridManager-loading');
 
 		// 初始化表格
-		this.initTable($table);
+		this.initTable($table, settings);
 
 		// 如果初始获取缓存失败，在渲染完成后首先存储一次数据
 		if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
@@ -270,106 +269,45 @@ export default class GridManager {
 			}, 1000);
 		}
 		// 启用回调
-		typeof (callback) === 'function' ? callback(this.query) : '';
+		typeof (callback) === 'function' ? callback(settings.query) : '';
 		return $table;
-	}
-
-	/**
-	 * 处理设置相关: 合并, 存储
-	 * @param $table
-	 * @param arg
-     */
-	initSettings($table, arg) {
-		// 合并参数
-		const _settings = new Settings();
-		_settings.textConfig = new TextSettings();
-
-		// 将默认项与配置项
-		jTool.extend(true, _settings, arg);
-
-		// 存储配置项
-		Cache.setSettings($table, _settings);
-
-		// 校验 columnData
-		if (!_settings.columnData || _settings.columnData.length === 0) {
-			this.outLog('请对参数columnData进行有效的配置', 'error');
-			return;
-		}
-
-
-		// TODO @baukh20171201 新增的, 未试验. 主要是为了处理数据驱动
-		// 为 columnMap columnData 增加 序号列
-		if (_settings.supportAutoOrder) {
-			_settings.columnData.unshift(Order.getColumn($table, _settings.i18n));
-		}
-
-		// 为 columnMap columnData 增加 选择列
-		if (_settings.supportCheckbox) {
-			_settings.columnData.unshift(Checkbox.getColumn($table, _settings.i18n));
-		}
-
-		// 为 columnData 提供锚 => columnMap
-		// columnData 在此之后, 将不再被使用到
-		// columnData 与 columnMap 已经过特殊处理, 不会彼此影响
-		_settings.columnMap = {};
-		_settings.columnData.forEach(col => {
-			_settings.columnMap[col.key] = col;
-
-			// 如果未设定, 设置默认值为true
-			_settings.columnMap[col.key].isShow = col.isShow || typeof (col.isShow) === 'undefined';
-		});
-
-		// 为列增加顺序
-		jTool.each(_settings.columnMap, (index, col) => {
-			col.index = index;
-		});
-
-		// 获取本地缓存并对列表进行配置
-		if (!this.disableCache) {
-			const userMemory = Cache.getUserMemory($table);
-			console.log(userMemory.cache.th);
-			jTool.extend(true, _settings.columnMap, userMemory.cache.th);
-		}
-
-		// 更新存储配置项
-		Cache.setSettings($table, _settings);
-		jTool.extend(true, this, _settings);
 	}
 
 	/**
 	 * 初始化列表
 	 * @param $table
+	 * @param settings
      */
-	initTable($table) {
+	initTable($table, settings) {
 
 		// 渲染HTML，嵌入所需的事件源DOM
 		Core.createDOM($table);
 
 		// 通过缓存配置成功后, 重置宽度调整事件源dom
-		this.supportAdjust ? Adjust.resetAdjust($table) : '';
+		settings.supportAdjust ? Adjust.resetAdjust($table) : '';
 
 		// 绑定宽度调整事件
-		if (this.supportAdjust) {
+		if (settings.supportAdjust) {
 			Adjust.bindAdjustEvent($table);
 		}
 
 		// 绑定拖拽换位事件
-		if (this.supportDrag) {
+		if (settings.supportDrag) {
 			Drag.bindDragEvent($table);
 		}
 
 		// 绑定排序事件
-		if (this.supportSorting) {
+		if (settings.supportSorting) {
 			Sort.bindSortingEvent($table);
 		}
 
 		// 绑定表头提示事件
-		if (this.supportRemind) {
+		if (settings.supportRemind) {
 			Remind.bindRemindEvent($table);
 		}
 
 		// 绑定配置列表事件
-		if (this.supportConfig) {
+		if (settings.supportConfig) {
 			Config.bindConfigEvent($table);
 		}
 
@@ -384,8 +322,5 @@ export default class GridManager {
 
 		// 渲染tbodyDOM
 		Core.__refreshGrid($table);
-
-		// 存储GM实例
-		Cache.__setGridManager($table, this);
 	}
 }

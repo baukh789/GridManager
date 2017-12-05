@@ -5,7 +5,10 @@
 * 2.Cache: 核心缓存数据 [存储在DOM上]
 * 3.UserMemory: 用户记忆 [存储在localStorage]
 * */
-import { $, Base } from './Base';
+import { jTool, Base } from './Base';
+import { Settings, TextSettings } from './Settings';
+import Checkbox from './Checkbox';
+import Order from './Order';
 import store from './Store';
 class Cache {
 	constructor() {
@@ -30,12 +33,12 @@ class Cache {
 				return;
 			}
 			// target type = Element 元素时, 返回单条数据对象;
-			if ($.type(target) === 'element') {
+			if (jTool.type(target) === 'element') {
 				return store.responseData[gmName][target.getAttribute('cache-key')];
-			} else if ($.type(target) === 'nodeList') {
+			} else if (jTool.type(target) === 'nodeList') {
 				// target type =  NodeList 类型时, 返回数组
 				let rodData = [];
-				$.each(target, function (i, v) {
+				jTool.each(target, function (i, v) {
 					rodData.push(store.responseData[gmName][v.getAttribute('cache-key')]);
 				});
 				return rodData;
@@ -67,7 +70,6 @@ class Cache {
 		};
 	}
 
-	// TODO 需要处理项: 将所有的记忆信息放至一个字段, 不再使用一个表一个字段.
 	/**
 	 * 用户记忆
 	 */
@@ -178,7 +180,7 @@ class Cache {
 				Base.outLog('当前浏览器不支持：localStorage，缓存功能失效。', 'error');
 				return false;
 			}
-			const thList = $('thead[grid-manager-thead] th', $table);
+			const thList = jTool('thead[grid-manager-thead] th', $table);
 			if (!thList || thList.length === 0) {
 				Base.outLog('saveUserMemory:无效的thList,请检查是否正确配置table,thead,th', 'error');
 				return false;
@@ -186,31 +188,11 @@ class Cache {
 
 			let _cache = {};
 			let _pageCache = {};
-			// let _thCache = [];
-			// let _thData = {};
+			_cache.column = Settings.columnMap;
 
-			// let $v;
-			// $.each(thList, (i, v) => {
-			// 	$v = $(v);
-			// 	_thData = {};
-			// 	_thData.th_name = $v.attr('th-name');
-			// 	if (Settings.supportDrag) {
-			// 		_thData.th_index = $v.index();
-			// 	}
-			// 	if (Settings.supportAdjust) {
-			// 		// 用于处理宽度在特定情况下发生异常
-			// 		_thData.th_width = $v.width();
-			// 	}
-			// 	if (Settings.supportConfig) {
-			// 		_thData.isShow = $(`.config-area li[th-name="${_thData.th_name}"]`, $table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
-			// 	}
-			// 	_thCache.push(_thData);
-			// });
-			_cache.th = Settings.columnMap;
-			console.log(_cache.th);
 			// 存储分页
 			if (Settings.supportAjaxPage) {
-				_pageCache.pSize = parseInt($('select[name="pSizeArea"]', $table.closest('.table-wrap')).val(), 10);
+				_pageCache.pSize = parseInt(jTool('select[name="pSizeArea"]', $table.closest('.table-wrap')).val(), 10);
 				_cache.page = _pageCache;
 			}
 			const _cacheString = JSON.stringify(_cache);
@@ -231,6 +213,64 @@ class Cache {
 	 */
 	initCoreMethod() {
 		/**
+		 * 初始化设置相关: 合并, 存储
+		 * @param $table
+		 * @param arg
+		 */
+		this.initSettings = ($table, arg) => {
+			// 合并参数
+			const _settings = new Settings();
+			_settings.textConfig = new TextSettings();
+
+			// 将默认项与配置项
+			jTool.extend(true, _settings, arg);
+
+			// 存储配置项
+			this.setSettings($table, _settings);
+
+			// 校验 columnData
+			if (!_settings.columnData || _settings.columnData.length === 0) {
+				Base.outLog('请对参数columnData进行有效的配置', 'error');
+				return;
+			}
+
+			// 为 columnMap columnData 增加 序号列
+			if (_settings.supportAutoOrder) {
+				_settings.columnData.unshift(Order.getColumn($table, _settings.i18n));
+			}
+
+			// 为 columnMap columnData 增加 选择列
+			if (_settings.supportCheckbox) {
+				_settings.columnData.unshift(Checkbox.getColumn($table, _settings.i18n));
+			}
+
+			// 为 columnData 提供锚 => columnMap
+			// columnData 在此之后, 将不再被使用到
+			// columnData 与 columnMap 已经过特殊处理, 不会彼此影响
+			_settings.columnMap = {};
+			_settings.columnData.forEach((col, index) => {
+				_settings.columnMap[col.key] = col;
+
+				// 如果未设定, 设置默认值为true
+				_settings.columnMap[col.key].isShow = col.isShow || typeof (col.isShow) === 'undefined';
+
+				// 为列Map 增加索引
+				_settings.columnMap[col.key].index = index;
+			});
+
+			// 获取本地缓存并对列表进行配置
+			if (!_settings.disableCache) {
+				const userMemory = this.getUserMemory($table);
+
+				userMemory.cache && jTool.extend(true, _settings.columnMap, userMemory.cache.column || {});
+			}
+
+			// 更新存储配置项
+			this.setSettings($table, _settings);
+			return _settings;
+		};
+
+		/**
 		 * 获取配置项
 		 * @param $table
 		 * @returns {*}
@@ -239,9 +279,8 @@ class Cache {
 			if (!$table || $table.length === 0) {
 				return {};
 			}
-			// 这里返回的是clone对象 而非对象本身
-			// return $.extend(true, {}, $table.data('settings'));
-			return $.extend(true, {}, store.settings[Base.getKey($table)] || {});
+			// 返回的是 clone 对象 而非对象本身
+			return jTool.extend(true, {}, store.settings[Base.getKey($table)] || {});
 		};
 
 		/**
@@ -250,9 +289,7 @@ class Cache {
 		 * @param settings
 		 */
 		this.setSettings = ($table, settings) => {
-			// const data = $.extend(true, {}, settings);
-			// $table.data('settings', data);
-			store.settings[Base.getKey($table)] = $.extend(true, {}, settings);
+			store.settings[Base.getKey($table)] = jTool.extend(true, {}, settings);
 		};
 
 		/**
@@ -297,9 +334,9 @@ class Cache {
 		 */
 		this.setOriginalThDOM = $table => {
 			const _thList = [];
-			const _thDOM = $('thead[grid-manager-thead] th', $table);
+			const _thDOM = jTool('thead[grid-manager-thead] th', $table);
 
-			$.each(_thDOM, (i, v) => {
+			jTool.each(_thDOM, (i, v) => {
 				_thList.push(v.getAttribute('th-name'));
 			});
 			store.originalTh[Base.getKey($table)] = _thList;
@@ -314,35 +351,10 @@ class Cache {
 		this.getOriginalThDOM = $table => {
 			const _thArray = [];
 			const _thList = store.originalTh[Base.getKey($table)];
-			$.each(_thList, (i, v) => {
-				_thArray.push($(`thead[grid-manager-thead] th[th-name="${v}"]`, $table).get(0));
+			jTool.each(_thList, (i, v) => {
+				_thArray.push(jTool(`thead[grid-manager-thead] th[th-name="${v}"]`, $table).get(0));
 			});
-			return $(_thArray);
-		};
-
-		/**
-		 * 存储GM实例
-		 * @param $table
-		 */
-		this.__setGridManager = ($table, GM) => {
-			store.gridManager[Base.getKey($table)] = GM;
-		};
-
-		/**
-		 * 获取GM实例
-		 * @param $table
-		 * @returns {*}
-		 * @private
-		 */
-		this.__getGridManager = $table => {
-			if (!$table || $table.length === 0) {
-				return {};
-			}
-			const settings = this.getSettings($table);
-			const gridManager = store.gridManager[Base.getKey($table)] || {};
-
-			$.extend(gridManager, settings);
-			return gridManager;
+			return jTool(_thArray);
 		};
 	}
 }

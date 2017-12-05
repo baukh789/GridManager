@@ -249,6 +249,7 @@ class Core {
 		const thList = [];
 		if (settings.disableCache) {
 			$.each(settings.columnMap, (key, col) => {
+				console.log(1);
 				thList.push(col);
 			});
 		} else {
@@ -482,62 +483,6 @@ class Core {
 		if (!_tr || _tr.length === 0) {
 			return false;
 		}
-		// let settings = Cache.getSettings(_table);
-
-		// 重置表格序号
-		// if (settings.supportAutoOrder) {
-		// 	let _pageData = settings.pageData;
-		// 	let onlyOrderTd = null;
-		// 	let	_orderBaseNumber = 1;
-		// 	let	_orderText;
-        //
-		// 	// 验证是否存在分页数据
-		// 	if (_pageData && _pageData['pSize'] && _pageData['cPage']) {
-		// 		_orderBaseNumber = _pageData.pSize * (_pageData.cPage - 1) + 1;
-		// 	}
-		// 	$.each(_tr, (i, v) => {
-		// 		_orderText = _orderBaseNumber + i;
-		// 		onlyOrderTd = $('td[gm-order="true"]', v);
-		// 		if (onlyOrderTd.length === 0) {
-		// 			$(v).prepend(Order.getTdString(_orderText));
-		// 		} else {
-		// 			onlyOrderTd.text(_orderText);
-		// 		}
-		// 	});
-		// }
-
-		// 重置表格选择 checkbox
-		// if (settings.supportCheckbox) {
-		// 	let onlyCheckTd = null;
-		// 	$.each(_tr, (i, v) => {
-		// 		onlyCheckTd = $('td[gm-checkbox="true"]', v);
-		// 		if (onlyCheckTd.length === 0) {
-		// 			$(v).prepend(Checkbox.getTdString());
-		// 		} else {
-		// 			$('[type="checkbox"]', onlyCheckTd).prop('checked', false);
-		// 		}
-		// 	});
-		// }
-
-		// 依据存储数据重置td顺序
-		// if (settings.supportDrag) {
-		// 	const _thCacheList = Cache.getOriginalThDOM(_table);
-		// 	let	_td = null;
-		// 	if (!_thCacheList || _thCacheList.length === 0) {
-		// 		Base.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
-		// 		return false;
-		// 	}
-		// 	let _tdArray = [];
-		// 	$.each(_tr, (i, v) => {
-		// 		_tdArray = [];
-		// 		_td = $('td', v);
-		// 		$.each(_td, (i2, v2) => {
-		// 			_tdArray[_thCacheList.eq(i2).index()] = v2.outerHTML;
-		// 		});
-		// 		v.innerHTML = _tdArray.join('');
-		// 	});
-		// }
-
 		// 依据配置对列表进行隐藏、显示
 		this.initVisible(_table);
 	}
@@ -553,7 +498,7 @@ class Core {
 		let	_td = null;
 		let _visible = 'visible';
 		const settings = Cache.getSettings($table);
-		$.each(settings.columnData, (i, col) => {
+		$.each(settings.columnMap, (i, col) => {
 			_th = $(`th[th-name="${col.key}"]`, $table);
 			_visible = Base.getVisibleForColumn(col);
 			_th.attr('th-visible', _visible);

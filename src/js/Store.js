@@ -5,7 +5,7 @@
 
 const Store = {
 	// 版本号
-	version: '2.3.15',
+	version: '2.3.16',
 
 	// GM实例
 	gridManager: {},

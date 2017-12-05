@@ -56,7 +56,6 @@ class Config {
 
 
 			// 验证当前是否只有一列处于显示状态 并根据结果进行设置是否可以取消显示
-			// TODO 数据驱动不是很好处理, 需要想一下
 			let showNum = 0;
 			settings.columnData.forEach(col => {
 				checkLi = $(`li[th-name="${col.key}"]`, _configArea);

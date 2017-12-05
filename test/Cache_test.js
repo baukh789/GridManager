@@ -87,16 +87,6 @@ describe('Cache 对象完整性验证', function() {
 		expect(Cache.getOriginalThDOM).toBeDefined();
 		expect(Cache.getOriginalThDOM.length).toBe(1);
 	});
-
-	it('对象完整性验证 Cache.__setGridManager', function(){
-		expect(Cache.__setGridManager).toBeDefined();
-		expect(Cache.__setGridManager.length).toBe(2);
-	});
-
-	it('对象完整性验证 Cache.__getGridManager', function(){
-		expect(Cache.__getGridManager).toBeDefined();
-		expect(Cache.__getGridManager.length).toBe(1);
-	});
 });
 
 /**
