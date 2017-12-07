@@ -5,94 +5,94 @@ import Cache from '../src/js/Cache';
 // import testData from '../src/data/testData';
 // import GridManager from '../src/js/GridManager';
 /**
- * 对象完整性验证
+ * 属性及方法验证
  */
-describe('Cache 对象完整性验证', function() {
-	it('对象完整性验证 Cache.initGridData', function(){
+describe('Cache 属性及方法验证', function() {
+	it('Cache.initGridData', function(){
 		expect(Cache.initGridData).toBeDefined();
 		expect(Cache.initGridData.length).toBe(0);
 	});
 
-	it('对象完整性验证 Cache.__getRowData', function(){
+	it('Cache.__getRowData', function(){
 		expect(Cache.__getRowData).toBeDefined();
 		expect(Cache.__getRowData.length).toBe(2);
 	});
 
-	it('对象完整性验证 Cache.setRowData', function(){
+	it('Cache.setRowData', function(){
 		expect(Cache.setRowData).toBeDefined();
 		expect(Cache.setRowData.length).toBe(3);
 	});
 
-	it('对象完整性验证 Cache.getTableData', function(){
+	it('Cache.getTableData', function(){
 		expect(Cache.getTableData).toBeDefined();
 		expect(Cache.getTableData.length).toBe(1);
 	});
 
-	it('对象完整性验证 Cache.initUserMemory', function(){
+	it('Cache.initUserMemory', function(){
 		expect(Cache.initUserMemory).toBeDefined();
 		expect(Cache.initUserMemory.length).toBe(0);
 	});
 
-	it('对象完整性验证 Cache.delUserMemory', function(){
+	it('Cache.delUserMemory', function(){
 		expect(Cache.delUserMemory).toBeDefined();
 		expect(Cache.delUserMemory.length).toBe(1);
 	});
 
-	it('对象完整性验证 Cache.getMemoryKey', function(){
+	it('Cache.getMemoryKey', function(){
 		expect(Cache.getMemoryKey).toBeDefined();
 		expect(Cache.getMemoryKey.length).toBe(1);
 	});
 
-	it('对象完整性验证 Cache.getUserMemory', function(){
+	it('Cache.getUserMemory', function(){
 		expect(Cache.getUserMemory).toBeDefined();
 		expect(Cache.getUserMemory.length).toBe(1);
 	});
 
-	it('对象完整性验证 Cache.saveUserMemory', function(){
+	it('Cache.saveUserMemory', function(){
 		expect(Cache.saveUserMemory).toBeDefined();
 		expect(Cache.saveUserMemory.length).toBe(1);
 	});
 
-	it('对象完整性验证 Cache.initCoreMethod', function(){
+	it('Cache.initCoreMethod', function(){
 		expect(Cache.initCoreMethod).toBeDefined();
 		expect(Cache.initCoreMethod.length).toBe(0);
 	});
 
-	it('对象完整性验证 Cache.getSettings', function(){
+	it('Cache.getSettings', function(){
 		expect(Cache.getSettings).toBeDefined();
 		expect(Cache.getSettings.length).toBe(1);
 	});
 
-	it('对象完整性验证 Cache.setSettings', function(){
+	it('Cache.setSettings', function(){
 		expect(Cache.setSettings).toBeDefined();
 		expect(Cache.setSettings.length).toBe(2);
 	});
 
-	it('对象完整性验证 Cache.cleanTableCacheForVersion', function(){
+	it('Cache.cleanTableCacheForVersion', function(){
 		expect(Cache.cleanTableCacheForVersion).toBeDefined();
 		expect(Cache.cleanTableCacheForVersion.length).toBe(0);
 	});
 
-	it('对象完整性验证 Cache.cleanTableCache', function(){
+	it('Cache.cleanTableCache', function(){
 		expect(Cache.cleanTableCache).toBeDefined();
 		expect(Cache.cleanTableCache.length).toBe(2);
 	});
 
-	it('对象完整性验证 Cache.setOriginalThDOM', function(){
+	it('Cache.setOriginalThDOM', function(){
 		expect(Cache.setOriginalThDOM).toBeDefined();
 		expect(Cache.setOriginalThDOM.length).toBe(1);
 	});
 
-	it('对象完整性验证 Cache.getOriginalThDOM', function(){
+	it('Cache.getOriginalThDOM', function(){
 		expect(Cache.getOriginalThDOM).toBeDefined();
 		expect(Cache.getOriginalThDOM.length).toBe(1);
 	});
 });
 
 /**
- * 验证原型方法总数
+ * 验证类的属性及方法总量
  */
-describe('Cache 验证原型方法总数', function() {
+describe('Cache 验证类的属性及方法总量', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {
 		getPropertyCount = function(o){

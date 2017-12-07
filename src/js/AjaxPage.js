@@ -195,7 +195,12 @@ class AjaxPage {
 		this.bindRefreshEvent($table, pageToolbar);
 
 	}
-	// 绑定分页点击事件
+
+	/**
+	 * 绑定分页点击事件
+	 * @param $table
+	 * @param pageToolbar
+     */
 	bindPageClick($table, pageToolbar) {
 		const _this = this;
 
@@ -212,7 +217,12 @@ class AjaxPage {
 			_this.gotoPage($table, cPage);
 		});
 	}
-	// 绑定快捷跳转事件
+
+	/**
+	 * 绑定快捷跳转事件
+	 * @param $table
+	 * @param pageToolbar
+     */
 	bindInputEvent($table, pageToolbar) {
 		const _this = this;
 		const gp_input = $('.gp-input', pageToolbar);
@@ -231,7 +241,11 @@ class AjaxPage {
 		});
 	}
 
-	// 绑定刷新界面事件
+	/**
+	 * 绑定刷新界面事件
+	 * @param $table
+	 * @param pageToolbar
+     */
 	bindRefreshEvent($table, pageToolbar) {
 		const _this = this;
 		const refreshAction	= $('.refresh-action', pageToolbar);

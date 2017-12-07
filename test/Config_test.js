@@ -5,22 +5,22 @@ import Config from '../src/js/Config';
 // import testData from '../src/data/testData';
 // import GridManager from '../src/js/GridManager';
 /**
- * 对象完整性验证
+ * 属性及方法验证
  */
-describe('Config 对象完整性验证', function() {
-	it('对象完整性验证 Config.html', function () {
+describe('Config 属性及方法验证', function() {
+	it('Config.html', function () {
 		expect(Config.html).toBeDefined();
 	});
 
-	it('对象完整性验证 Config.bindConfigEvent', function () {
+	it('Config.bindConfigEvent', function () {
 		expect(Config.bindConfigEvent).toBeDefined();
 		expect(Config.bindConfigEvent.length).toBe(1);
 	});
 });
 /**
- * 验证原型方法总数
+ * 验证类的属性及方法总量
  */
-describe('Config 验证原型方法总数', function() {
+describe('Config 验证类的属性及方法总量', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {
 		getPropertyCount = function(o){

@@ -8,28 +8,28 @@ import Checkbox from '../src/js/Checkbox';
 // import testData from '../src/data/testData';
 // import GridManager from '../src/js/GridManager';
 /**
- * 对象完整性验证
+ * 属性及方法验证
  */
-describe('Checkbox 对象完整性验证', function() {
-	it('对象完整性验证 Checkbox.getThString', function () {
+describe('Checkbox 属性及方法验证', function() {
+	it('Checkbox.getThString', function () {
 		expect(Checkbox.getThString).toBeDefined();
 		expect(Checkbox.getThString.length).toBe(2);
 	});
 
-	it('对象完整性验证 Checkbox.getColumn', function () {
+	it('Checkbox.getColumn', function () {
 		expect(Checkbox.getColumn).toBeDefined();
 		expect(Checkbox.getColumn.length).toBe(2);
 	});
 
-	it('对象完整性验证 Checkbox.bindCheckboxEvent', function () {
+	it('Checkbox.bindCheckboxEvent', function () {
 		expect(Checkbox.bindCheckboxEvent).toBeDefined();
 		expect(Checkbox.bindCheckboxEvent.length).toBe(1);
 	});
 });
 /**
- * 验证原型方法总数
+ * 验证类的属性及方法总量
  */
-describe('Checkbox 验证原型方法总数', function() {
+describe('Checkbox 验证类的属性及方法总量', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {
 		getPropertyCount = function(o){

@@ -23,7 +23,7 @@ class BaseClass {
 				console.error('GridManager Error: ', msg);
 				break;
 			default:
-				console.log('GridManager:', msg);
+				console.log('GridManager: ', msg);
 				break;
 		}
 	}
@@ -63,6 +63,7 @@ class BaseClass {
 	 * @param isVisible 是否可见
      * @param cb
      */
+	// TODO 应该调整为columnMap更新后触发
 	setAreVisible($thList, isVisible, cb) {
 		// 当前所在的table
 		let _table = null;

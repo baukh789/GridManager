@@ -42,8 +42,7 @@ module.exports = function (config) {
 		// enable / disable watching file and executing tests whenever any file changes
 		autoWatch: true,
 
-		// start these browsers
-		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+		// 配置启动单元测试的环境
 		browsers: ['PhantomJS'],
 
 		captureTimeout: 60000,

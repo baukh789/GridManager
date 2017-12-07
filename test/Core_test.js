@@ -8,43 +8,43 @@ import Core from '../src/js/Core';
 // import testData from '../src/data/testData';
 // import GridManager from '../src/js/GridManager';
 /**
- * 对象完整性验证
+ * 属性及方法验证
  */
-describe('Core 对象完整性验证', function() {
-	it('对象完整性验证 Core.__refreshGrid', function () {
+describe('Core 属性及方法验证', function() {
+	it('Core.__refreshGrid', function () {
 		expect(Core.__refreshGrid).toBeDefined();
 		expect(Core.__refreshGrid.length).toBe(2);
 	});
 
-	it('对象完整性验证 Core.removeRefreshingClass', function () {
+	it('Core.removeRefreshingClass', function () {
 		expect(Core.removeRefreshingClass).toBeDefined();
 		expect(Core.removeRefreshingClass.length).toBe(1);
 	});
 
-	it('对象完整性验证 Core.driveDomForSuccessAfter', function () {
+	it('Core.driveDomForSuccessAfter', function () {
 		expect(Core.driveDomForSuccessAfter).toBeDefined();
 		expect(Core.driveDomForSuccessAfter.length).toBe(4);
 	});
 
-	it('对象完整性验证 Core.initVisible', function(){
+	it('Core.initVisible', function(){
 		expect(Core.initVisible).toBeDefined();
 		expect(Core.initVisible.length).toBe(1);
 	});
 
-	it('对象完整性验证 Core.createDOM', function () {
+	it('Core.createDOM', function () {
 		expect(Core.createDOM).toBeDefined();
 		expect(Core.createDOM.length).toBe(1);
 	});
 
-	it('对象完整性验证 Core.resetTd', function () {
+	it('Core.resetTd', function () {
 		expect(Core.resetTd).toBeDefined();
 		expect(Core.resetTd.length).toBe(2);
 	});
 });
 /**
- * 验证原型方法总数
+ * 验证类的属性及方法总量
  */
-describe('Core 验证原型方法总数', function() {
+describe('Core 验证类的属性及方法总量', function() {
 	var getPropertyCount = null;
 	beforeEach(function() {
 		getPropertyCount = function(o){
