@@ -95,6 +95,7 @@ class Core {
 			type: settings.ajax_type,
 			data: pram,
 			headers: settings.ajax_headers,
+			xhrFields: settings.ajax_xhrFields,
 			cache: true,
 			beforeSend: XMLHttpRequest => {
 				settings.ajax_beforeSend(XMLHttpRequest);

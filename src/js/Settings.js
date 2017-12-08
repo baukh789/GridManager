@@ -212,6 +212,10 @@ class Settings {
 			// ajax请求头信息
 			ajax_headers: {},
 
+			// 设置XHR对象, ajax_xhrFields 中的属性将追加至实例化后的XHR对象上
+			// 示例 -> ajax_xhrFields: {withCredentials: true}, 那么将会配置跨域访问时协带cookies, authorization headers(头部授权)
+			ajax_xhrFields: {},
+
 			// ajax请求之前,与jTool的beforeSend使用方法相同
 			ajax_beforeSend: $.noop,
 

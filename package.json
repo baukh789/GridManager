@@ -66,6 +66,6 @@
     "build:minified:css": "uglifycss build/css/GridManager.css > build/css/GridManager.min.css"
   },
   "dependencies": {
-    "jTool": "^1.2.21"
+    "jTool": "^1.2.22"
   }
 }
