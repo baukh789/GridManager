@@ -38,16 +38,17 @@ class BaseClass {
 	}
 
 	/**
-	 * 获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
-	 * @param $th
-	 * @returns {*|HTMLElement|jQuery}
+	 * 获取同列的 td jTool 对象, 该方法的调用者只允许为 Th
+	 * @param $dom: $th 或 $td
+	 * @returns {*|HTMLElement|jTool}
      */
-	getColTd($th) {
-		const tableWrap = $th.closest('.table-wrap');
-		const thIndex = $th.index();
-		const trList = $('tbody tr', tableWrap);
+	getColTd($dom) {
+		const $table = $dom.closest('table[grid-manager]');
+		const thIndex = $dom.index();
+		const trList = $('tbody tr', $table);
 		let tdList = [];
 		let _td = null;
+
 		$.each(trList, (i, v) => {
 			_td = $('td', v).get(thIndex);
 			if (_td) {
@@ -154,7 +155,7 @@ class BaseClass {
 
 	/**
 	 * 显示加载中动画
-	 * @param dom 加载动画的容器
+	 * @param dom[jTool] 加载动画的容器
 	 * @param cb 回调函数
      */
 	showLoading(dom, cb) {
