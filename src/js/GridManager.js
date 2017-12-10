@@ -61,7 +61,7 @@ export default class GridManager {
      */
 	static
 	clear(table) {
-		return Cache.delUserMemory(jTool(table));
+		return Cache.cleanTableCache(jTool(table), '通过clear()方法清除');
 	}
 
 	/**

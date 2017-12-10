@@ -163,9 +163,10 @@ class Settings {
 			 key: 'url',
 
 			 // 列的显示文本。字符串类型，必设项
-			 name: 'url',
+			 text: 'url',
 
-			 // 是否显示, 默认值 true @2.3.15
+			 // @2.4.0
+			 // 是否显示, 默认值 true
 			 isShow: true,
 
 			 // 列所占宽度, 字符串类型，非必设项
@@ -212,6 +213,7 @@ class Settings {
 			// ajax请求头信息
 			ajax_headers: {},
 
+			// @v2.4.0
 			// 设置XHR对象, ajax_xhrFields 中的属性将追加至实例化后的XHR对象上
 			// 示例 -> ajax_xhrFields: {withCredentials: true}, 那么将会配置跨域访问时协带cookies, authorization headers(头部授权)
 			ajax_xhrFields: {},

@@ -35,7 +35,7 @@ class Order {
 	getColumn($table, language) {
 		return {
 			key: this.key,
-			name: I18n.getText($table, 'order-text', language),
+			text: I18n.getText($table, 'order-text', language),
 			isAutoCreate: true,
 			isShow: true,
 			width: '50px',

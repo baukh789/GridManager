@@ -32,7 +32,7 @@ class Checkbox {
 	getColumn($table, language) {
 		return {
 			key: this.key,
-			name: I18n.getText($table, 'checkall-text', language),
+			text: I18n.getText($table, 'checkall-text', language),
 			isAutoCreate: true,
 			isShow: true,
 			width: '50px',

@@ -124,6 +124,7 @@ class Sort {
 			}
 			// 调用事件、渲染tbody
 			Cache.setSettings($table, settings);
+			console.log(2222);
 			const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
 			settings.sortingBefore(query);
 			Core.__refreshGrid($table, () => {

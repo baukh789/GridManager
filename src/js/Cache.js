@@ -258,12 +258,48 @@ class Cache {
 				_settings.columnMap[col.key].index = index;
 			});
 
-			// 获取本地缓存并对列表进行配置
-			if (!_settings.disableCache) {
-				const userMemory = this.getUserMemory($table);
+			const mergeColumn = () => {
+				// 当前为禁用状态
+				if(_settings.disableCache){
+					return;
+				}
 
-				userMemory.cache && jTool.extend(true, _settings.columnMap, userMemory.cache.column || {});
-			}
+				const userMemory = this.getUserMemory($table);
+				const columnCache = userMemory.cache && userMemory.cache.column ? userMemory.cache.column : {};
+				const columnCacheKeys = Object.keys(columnCache);
+				const columnMapKeys = Object.keys(_settings.columnMap);
+
+				// 无用户记忆
+				if(columnCacheKeys.length === 0){
+					return;
+				}
+
+				// 是否为有效的用户记忆
+				let isUsable = true;
+
+				// 列数量不匹配
+				if (columnCacheKeys.length !== columnMapKeys.length) {
+					isUsable = false;
+				}
+				// 列的key 或 text 不匹配
+				isUsable && jTool.each(_settings.columnMap, (key, col) => {
+					if (!columnCache[key] || columnCache[key].text !== col.text) {
+						isUsable = false;
+						return false;
+					}
+				});
+
+				// 将用户记忆并入 columnMap 内
+				if (isUsable) {
+					jTool.extend(true, _settings.columnMap, columnCache);
+				} else {
+					// 清除用户记忆
+					this.cleanTableCache($table, '与配置项[columnData]不匹配')
+				}
+			};
+			// 合并用户记忆至配置项
+			mergeColumn();
+
 
 			// 更新存储配置项
 			this.setSettings($table, _settings);
@@ -318,13 +354,14 @@ class Cache {
 		this.cleanTableCache = ($table, cleanText) => {
 			// 不指定table, 清除全部
 			if ($table === null) {
-				this.delUserMemory();
 				Base.outLog(`用户记忆被清除：${cleanText}`, 'warn');
+				return this.delUserMemory();
+
 				// 指定table, 定点清除
 			} else {
 				const Settings = this.getSettings($table);
-				this.delUserMemory($table);
 				Base.outLog(`${Settings.gridManagerName}用户记忆被清除：${cleanText}`, 'warn');
+				return this.delUserMemory($table);
 			}
 		};
 
