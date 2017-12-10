@@ -89,6 +89,16 @@
 	var TGM = table.GM({
 		supportRemind: true
 		,i18n: 'en-us'
+		,textConfig: {
+			'order-text': {
+				'zh-cn':'序',
+				'en-us':'NO'  // 从order 更改为 orderNumber
+			}
+			,'first-page': {
+				'zh-cn':'第一页',	// 从首页 更改为 第一页
+				'en-us':'first'
+			}
+		}
 		,gridManagerName: 'test'
 		,isCombSorting: true
 		,height: '300px'

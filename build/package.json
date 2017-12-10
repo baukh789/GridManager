@@ -1,6 +1,6 @@
 {
-  "name": "GridManager",
-  "version": "2.3.15",
+  "name": "gridmanager",
+  "version": "2.3.17",
   "description": "表格管理插件",
   "author": "拭目以待",
   "license": "MIT",
@@ -41,7 +41,7 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-webpack": "^1.8.1",
     "node-sass": "^4.5.3",
-    "phantomjs-prebuilt": "^2.1.13",
+    "phantomjs-prebuilt": "2.1.13",
     "resolve-url-loader": "^2.1.0",
     "sass-loader": "^6.0.6",
     "sinon": "^1.17.2",
@@ -66,6 +66,6 @@
     "build:minified:css": "uglifycss build/css/GridManager.css > build/css/GridManager.min.css"
   },
   "dependencies": {
-    "jTool": "^1.2.21"
+    "jTool": "^1.2.22"
   }
 }

@@ -105,16 +105,20 @@ var BaseClass = function () {
    * @returns {*}
       */
 		value: function outLog(msg, type) {
-			if (!type) {
-				console.log('GridManager:', msg);
-			} else if (type === 'info') {
-				console.info('GridManager Info: ', msg);
-			} else if (type === 'warn') {
-				console.warn('GridManager Warn: ', msg);
-			} else if (type === 'error') {
-				console.error('GridManager Error: ', msg);
+			switch (type) {
+				case 'info':
+					console.info('GridManager Info: ', msg);
+					break;
+				case 'warn':
+					console.warn('GridManager Warn: ', msg);
+					break;
+				case 'error':
+					console.error('GridManager Error: ', msg);
+					break;
+				default:
+					console.log('GridManager: ', msg);
+					break;
 			}
-			return msg;
 		}
 
 		/**
@@ -130,19 +134,20 @@ var BaseClass = function () {
 		}
 
 		/**
-   * 获取与 th 同列的 td jTool 对象, 该方法的调用者只允许为 Th
-   * @param $th
-   * @returns {*|HTMLElement|jQuery}
+   * 获取同列的 td jTool 对象, 该方法的调用者只允许为 Th
+   * @param $dom: $th 或 $td
+   * @returns {*|HTMLElement|jTool}
       */
 
 	}, {
 		key: 'getColTd',
-		value: function getColTd($th) {
-			var tableWrap = $th.closest('.table-wrap');
-			var thIndex = $th.index();
-			var trList = $('tbody tr', tableWrap);
+		value: function getColTd($dom) {
+			var $table = $dom.closest('table[grid-manager]');
+			var thIndex = $dom.index();
+			var trList = $('tbody tr', $table);
 			var tdList = [];
 			var _td = null;
+
 			$.each(trList, function (i, v) {
 				_td = $('td', v).get(thIndex);
 				if (_td) {
@@ -153,34 +158,12 @@ var BaseClass = function () {
 		}
 
 		/**
-   * 初始化列显示|隐藏
-   * @param $table
-      */
-
-	}, {
-		key: 'initVisible',
-		value: function initVisible($table) {
-			// 所有的th
-			var _thList = $('thead th', $table);
-
-			// tbody下的tr
-			var _trList = $('tbody tr', $table);
-			var _td = null;
-			$.each(_thList, function (i, v) {
-				v = $(v);
-				$.each(_trList, function (i2, v2) {
-					_td = $('td', v2).eq(v.index());
-					_td.attr('td-visible', v.attr('th-visible'));
-				});
-			});
-		}
-
-		/**
-   * 设置列是否可见
+   * 根据参数设置列是否可见(th 和 td)
    * @param $thList 即将配置的列所对应的th[jTool object，可以是多个]
    * @param isVisible 是否可见
       * @param cb
       */
+		// TODO 应该调整为columnMap更新后触发
 
 	}, {
 		key: 'setAreVisible',
@@ -242,7 +225,7 @@ var BaseClass = function () {
 		}
 
 		/**
-   * 获取TH宽度
+   * 获取TH中文本的宽度. 该宽度指的是文本所实际占用的宽度
    * @param th
    * @returns {*}
       */
@@ -271,13 +254,13 @@ var BaseClass = function () {
 			});
 			var thPaddingLeft = thWarp.css('padding-left');
 			var thPaddingRight = thWarp.css('padding-right');
-			var thWidth = textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0);
-			return thWidth;
+			// 返回宽度值
+			return textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0);
 		}
 
 		/**
    * 显示加载中动画
-   * @param dom 加载动画的容器
+   * @param dom[jTool] 加载动画的容器
    * @param cb 回调函数
       */
 
@@ -359,6 +342,18 @@ var BaseClass = function () {
 				return 'auto';
 			}
 		}
+
+		/**
+   * 通过配置项columnData 获取指定列的可视信息
+   * @param col 列的配置信息
+   * @returns {string}
+      */
+
+	}, {
+		key: 'getVisibleForColumn',
+		value: function getVisibleForColumn(col) {
+			return col.isShow ? 'visible' : 'none';
+		}
 	}]);
 
 	return BaseClass;
@@ -391,7 +386,17 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _Base = __webpack_require__(0);
 
-var _Store = __webpack_require__(12);
+var _Settings2 = __webpack_require__(19);
+
+var _Checkbox = __webpack_require__(8);
+
+var _Checkbox2 = _interopRequireDefault(_Checkbox);
+
+var _Order = __webpack_require__(11);
+
+var _Order2 = _interopRequireDefault(_Order);
+
+var _Store = __webpack_require__(14);
 
 var _Store2 = _interopRequireDefault(_Store);
 
@@ -428,12 +433,12 @@ var Cache = function () {
 					return;
 				}
 				// target type = Element 元素时, 返回单条数据对象;
-				if (_Base.$.type(target) === 'element') {
+				if (_Base.jTool.type(target) === 'element') {
 					return _Store2.default.responseData[gmName][target.getAttribute('cache-key')];
-				} else if (_Base.$.type(target) === 'nodeList') {
+				} else if (_Base.jTool.type(target) === 'nodeList') {
 					// target type =  NodeList 类型时, 返回数组
 					var rodData = [];
-					_Base.$.each(target, function (i, v) {
+					_Base.jTool.each(target, function (i, v) {
 						rodData.push(_Store2.default.responseData[gmName][v.getAttribute('cache-key')]);
 					});
 					return rodData;
@@ -465,7 +470,6 @@ var Cache = function () {
 			};
 		}
 
-		// TODO 需要处理项: 将所有的记忆信息放至一个字段, 不再使用一个表一个字段.
 		/**
    * 用户记忆
    */
@@ -580,7 +584,7 @@ var Cache = function () {
 					_Base.Base.outLog('当前浏览器不支持：localStorage，缓存功能失效。', 'error');
 					return false;
 				}
-				var thList = (0, _Base.$)('thead[grid-manager-thead] th', $table);
+				var thList = (0, _Base.jTool)('thead[grid-manager-thead] th', $table);
 				if (!thList || thList.length === 0) {
 					_Base.Base.outLog('saveUserMemory:无效的thList,请检查是否正确配置table,thead,th', 'error');
 					return false;
@@ -588,31 +592,11 @@ var Cache = function () {
 
 				var _cache = {};
 				var _pageCache = {};
-				var _thCache = [];
-				var _thData = {};
-
-				var $v = void 0;
-				_Base.$.each(thList, function (i, v) {
-					$v = (0, _Base.$)(v);
-					_thData = {};
-					_thData.th_name = $v.attr('th-name');
-					if (Settings.supportDrag) {
-						_thData.th_index = $v.index();
-					}
-					if (Settings.supportAdjust) {
-						// 用于处理宽度在特定情况下发生异常
-						_thData.th_width = $v.width();
-					}
-					if (Settings.supportConfig) {
-						_thData.isShow = (0, _Base.$)('.config-area li[th-name="' + _thData.th_name + '"]', $table.closest('.table-wrap')).find('input[type="checkbox"]').get(0).checked;
-					}
-					_thCache.push(_thData);
-				});
-				_cache.th = _thCache;
+				_cache.column = Settings.columnMap;
 
 				// 存储分页
 				if (Settings.supportAjaxPage) {
-					_pageCache.pSize = parseInt((0, _Base.$)('select[name="pSizeArea"]', $table.closest('.table-wrap')).val(), 10);
+					_pageCache.pSize = parseInt((0, _Base.jTool)('select[name="pSizeArea"]', $table.closest('.table-wrap')).val(), 10);
 					_cache.page = _pageCache;
 				}
 				var _cacheString = JSON.stringify(_cache);
@@ -638,6 +622,99 @@ var Cache = function () {
 			var _this3 = this;
 
 			/**
+    * 初始化设置相关: 合并, 存储
+    * @param $table
+    * @param arg
+    */
+			this.initSettings = function ($table, arg) {
+				// 合并参数
+				var _settings = new _Settings2.Settings();
+				_settings.textConfig = new _Settings2.TextSettings();
+
+				// 将默认项与配置项
+				_Base.jTool.extend(true, _settings, arg);
+
+				// 存储配置项
+				_this3.setSettings($table, _settings);
+
+				// 校验 columnData
+				if (!_settings.columnData || _settings.columnData.length === 0) {
+					_Base.Base.outLog('请对参数columnData进行有效的配置', 'error');
+					return;
+				}
+
+				// 为 columnMap columnData 增加 序号列
+				if (_settings.supportAutoOrder) {
+					_settings.columnData.unshift(_Order2.default.getColumn($table, _settings.i18n));
+				}
+
+				// 为 columnMap columnData 增加 选择列
+				if (_settings.supportCheckbox) {
+					_settings.columnData.unshift(_Checkbox2.default.getColumn($table, _settings.i18n));
+				}
+
+				// 为 columnData 提供锚 => columnMap
+				// columnData 在此之后, 将不再被使用到
+				// columnData 与 columnMap 已经过特殊处理, 不会彼此影响
+				_settings.columnMap = {};
+				_settings.columnData.forEach(function (col, index) {
+					_settings.columnMap[col.key] = col;
+
+					// 如果未设定, 设置默认值为true
+					_settings.columnMap[col.key].isShow = col.isShow || typeof col.isShow === 'undefined';
+
+					// 为列Map 增加索引
+					_settings.columnMap[col.key].index = index;
+				});
+
+				var mergeColumn = function mergeColumn() {
+					// 当前为禁用状态
+					if (_settings.disableCache) {
+						return;
+					}
+
+					var userMemory = _this3.getUserMemory($table);
+					var columnCache = userMemory.cache && userMemory.cache.column ? userMemory.cache.column : {};
+					var columnCacheKeys = Object.keys(columnCache);
+					var columnMapKeys = Object.keys(_settings.columnMap);
+
+					// 无用户记忆
+					if (columnCacheKeys.length === 0) {
+						return;
+					}
+
+					// 是否为有效的用户记忆
+					var isUsable = true;
+
+					// 列数量不匹配
+					if (columnCacheKeys.length !== columnMapKeys.length) {
+						isUsable = false;
+					}
+					// 列的key 或 text 不匹配
+					isUsable && _Base.jTool.each(_settings.columnMap, function (key, col) {
+						if (!columnCache[key] || columnCache[key].text !== col.text) {
+							isUsable = false;
+							return false;
+						}
+					});
+
+					// 将用户记忆并入 columnMap 内
+					if (isUsable) {
+						_Base.jTool.extend(true, _settings.columnMap, columnCache);
+					} else {
+						// 清除用户记忆
+						_this3.cleanTableCache($table, '与配置项[columnData]不匹配');
+					}
+				};
+				// 合并用户记忆至配置项
+				mergeColumn();
+
+				// 更新存储配置项
+				_this3.setSettings($table, _settings);
+				return _settings;
+			};
+
+			/**
     * 获取配置项
     * @param $table
     * @returns {*}
@@ -646,9 +723,8 @@ var Cache = function () {
 				if (!$table || $table.length === 0) {
 					return {};
 				}
-				// 这里返回的是clone对象 而非对象本身
-				// return $.extend(true, {}, $table.data('settings'));
-				return _Base.$.extend(true, {}, _Store2.default.settings[_Base.Base.getKey($table)] || {});
+				// 返回的是 clone 对象 而非对象本身
+				return _Base.jTool.extend(true, {}, _Store2.default.settings[_Base.Base.getKey($table)] || {});
 			};
 
 			/**
@@ -657,9 +733,7 @@ var Cache = function () {
     * @param settings
     */
 			this.setSettings = function ($table, settings) {
-				// const data = $.extend(true, {}, settings);
-				// $table.data('settings', data);
-				_Store2.default.settings[_Base.Base.getKey($table)] = _Base.$.extend(true, {}, settings);
+				_Store2.default.settings[_Base.Base.getKey($table)] = _Base.jTool.extend(true, {}, settings);
 			};
 
 			/**
@@ -688,89 +762,14 @@ var Cache = function () {
 			this.cleanTableCache = function ($table, cleanText) {
 				// 不指定table, 清除全部
 				if ($table === null) {
-					_this3.delUserMemory();
-					_Base.Base.outLog('\u6E05\u9664\u7F13\u5B58\u6210\u529F,\u6E05\u9664\u539F\u56E0\uFF1A' + cleanText, 'info');
+					_Base.Base.outLog('\u7528\u6237\u8BB0\u5FC6\u88AB\u6E05\u9664\uFF1A' + cleanText, 'warn');
+					return _this3.delUserMemory();
+
 					// 指定table, 定点清除
 				} else {
-					var Settings = _this3.getSettings($table);
-					_this3.delUserMemory($table);
-					_Base.Base.outLog(Settings.gridManagerName + '\u6E05\u9664\u7F13\u5B58\u6210\u529F,\u6E05\u9664\u539F\u56E0\uFF1A' + cleanText, 'info');
-				}
-			};
-
-			/**
-    * 根据本地缓存thead配置列表: 获取本地缓存, 存储原位置顺序, 根据本地缓存进行配置
-    * @param $table
-    */
-			this.configTheadForCache = function ($table) {
-				var Settings = _this3.getSettings($table);
-				var _this = _this3;
-				// 本地缓存的数据
-				var _data = _this.getUserMemory($table);
-				var _domArray = [];
-
-				// 验证：当前$table 没有缓存数据
-				if (!_data || _Base.$.isEmptyObject(_data) || !_data.cache || _Base.$.isEmptyObject(_data.cache)) {
-					return;
-				}
-
-				// 列表的缓存数据
-				var _cache = _data.cache;
-
-				// th相关 缓存
-				var _thCache = _cache.th;
-
-				// 验证：缓存数据与当前列表项是否匹配
-				var _thNameTmpList = [];
-				var _dataAvailable = true;
-
-				// 单一的th
-				var _th = void 0;
-
-				// th的缓存json
-				var _thJson = void 0;
-
-				// 验证：缓存数据与当前列表是否匹配
-				if (!_thCache || _thCache.length !== (0, _Base.$)('thead th', $table).length) {
-					_this.cleanTableCache($table, '缓存数据与当前列表不匹配');
-					return;
-				}
-				_Base.$.each(_thCache, function (i2, v2) {
-					_thJson = v2;
-					_th = (0, _Base.$)('th[th-name=' + _thJson.th_name + ']', $table);
-					if (_th.length === 0 || _thNameTmpList.indexOf(_thJson.th_name) !== -1) {
-						_this.cleanTableCache($table, '缓存数据与当前列表不匹配');
-						_dataAvailable = false;
-						return false;
-					}
-					_thNameTmpList.push(_thJson.th_name);
-				});
-
-				// 数据可用，进行列的配置
-				if (_dataAvailable) {
-					_Base.$.each(_thCache, function (i2, v2) {
-						_thJson = v2;
-						_th = (0, _Base.$)('th[th-name=' + _thJson.th_name + ']', $table);
-						// 配置列的宽度
-						if (Settings.supportAdjust && _th.attr('gm-create') !== 'true') {
-							_th.css('width', _thJson.th_width);
-						}
-						// 配置列排序数据
-						if (Settings.supportDrag && typeof _thJson.th_index !== 'undefined') {
-							_domArray[_thJson.th_index] = _th;
-						} else {
-							_domArray[i2] = _th;
-						}
-						// 配置列的可见
-						if (Settings.supportConfig) {
-							_Base.Base.setAreVisible(_th, typeof _thJson.isShow === 'undefined' ? true : _thJson.isShow, true);
-						}
-					});
-
-					// 配置列的顺序
-					if (Settings.supportDrag) {
-						$table.find('thead tr').html(_domArray);
-					}
+					var _Settings = _this3.getSettings($table);
+					_Base.Base.outLog(_Settings.gridManagerName + '\u7528\u6237\u8BB0\u5FC6\u88AB\u6E05\u9664\uFF1A' + cleanText, 'warn');
+					return _this3.delUserMemory($table);
 				}
 			};
 
@@ -780,9 +779,9 @@ var Cache = function () {
     */
 			this.setOriginalThDOM = function ($table) {
 				var _thList = [];
-				var _thDOM = (0, _Base.$)('thead[grid-manager-thead] th', $table);
+				var _thDOM = (0, _Base.jTool)('thead[grid-manager-thead] th', $table);
 
-				_Base.$.each(_thDOM, function (i, v) {
+				_Base.jTool.each(_thDOM, function (i, v) {
 					_thList.push(v.getAttribute('th-name'));
 				});
 				_Store2.default.originalTh[_Base.Base.getKey($table)] = _thList;
@@ -797,35 +796,10 @@ var Cache = function () {
 			this.getOriginalThDOM = function ($table) {
 				var _thArray = [];
 				var _thList = _Store2.default.originalTh[_Base.Base.getKey($table)];
-				_Base.$.each(_thList, function (i, v) {
-					_thArray.push((0, _Base.$)('thead[grid-manager-thead] th[th-name="' + v + '"]', $table).get(0));
+				_Base.jTool.each(_thList, function (i, v) {
+					_thArray.push((0, _Base.jTool)('thead[grid-manager-thead] th[th-name="' + v + '"]', $table).get(0));
 				});
-				return (0, _Base.$)(_thArray);
-			};
-
-			/**
-    * 存储GM实例
-    * @param $table
-    */
-			this.__setGridManager = function ($table, GM) {
-				_Store2.default.gridManager[_Base.Base.getKey($table)] = GM;
-			};
-
-			/**
-    * 获取GM实例
-    * @param $table
-    * @returns {*}
-    * @private
-    */
-			this.__getGridManager = function ($table) {
-				if (!$table || $table.length === 0) {
-					return {};
-				}
-				var settings = _this3.getSettings($table);
-				var gridManager = _Store2.default.gridManager[_Base.Base.getKey($table)] || {};
-
-				_Base.$.extend(gridManager, settings);
-				return gridManager;
+				return (0, _Base.jTool)(_thArray);
 			};
 		}
 	}]);
@@ -985,9 +959,6 @@ var Adjust = function () {
 				var settings = _Cache2.default.getSettings($table);
 				$table.unbind('mousemove mouseleave');
 
-				// 存储用户记忆
-				_Cache2.default.saveUserMemory($table);
-
 				// 其它操作也在table以该事件进行绑定,所以通过class进行区别
 				if ($th.hasClass('adjust-selected')) {
 					// 宽度调整成功回调事件
@@ -1002,6 +973,15 @@ var Adjust = function () {
 
 				// 更新滚动轴状态
 				_Base.Base.updateScrollStatus($table);
+
+				// 更新表格列Map
+				_Base.$.each(settings.columnMap, function (key, col) {
+					col.width = (0, _Base.$)('th[th-name="' + col.key + '"]', $table).width() + 'px';
+				});
+				_Cache2.default.setSettings($table, settings);
+
+				// 存储用户记忆
+				_Cache2.default.saveUserMemory($table);
 			});
 		}
 
@@ -1066,7 +1046,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _Base = __webpack_require__(0);
 
-var _Menu = __webpack_require__(9);
+var _Menu = __webpack_require__(10);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -1082,11 +1062,11 @@ var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
-var _Config = __webpack_require__(8);
+var _Config = __webpack_require__(9);
 
 var _Config2 = _interopRequireDefault(_Config);
 
-var _Checkbox = __webpack_require__(14);
+var _Checkbox = __webpack_require__(8);
 
 var _Checkbox2 = _interopRequireDefault(_Checkbox);
 
@@ -1094,15 +1074,15 @@ var _Export = __webpack_require__(6);
 
 var _Export2 = _interopRequireDefault(_Export);
 
-var _Order = __webpack_require__(17);
+var _Order = __webpack_require__(11);
 
 var _Order2 = _interopRequireDefault(_Order);
 
-var _Remind = __webpack_require__(10);
+var _Remind = __webpack_require__(12);
 
 var _Remind2 = _interopRequireDefault(_Remind);
 
-var _Sort = __webpack_require__(11);
+var _Sort = __webpack_require__(13);
 
 var _Sort2 = _interopRequireDefault(_Sort);
 
@@ -1167,6 +1147,7 @@ var Core = function () {
 					pram['sort_' + key] = value;
 				});
 			}
+
 			// 当前页不存在,或者小于1时, 修正为1
 			if (!pram.cPage || pram.cPage < 1) {
 				pram.cPage = 1;
@@ -1198,6 +1179,7 @@ var Core = function () {
 				type: settings.ajax_type,
 				data: pram,
 				headers: settings.ajax_headers,
+				xhrFields: settings.ajax_xhrFields,
 				cache: true,
 				beforeSend: function beforeSend(XMLHttpRequest) {
 					settings.ajax_beforeSend(XMLHttpRequest);
@@ -1231,8 +1213,6 @@ var Core = function () {
 				refreshAction.removeClass('refreshing');
 			}, 2000);
 		}
-	}, {
-		key: 'driveDomForSuccessAfter',
 
 		/**
    * 执行ajax成功后重新渲染DOM
@@ -1241,6 +1221,9 @@ var Core = function () {
    * @param response
    * @param callback
       */
+
+	}, {
+		key: 'driveDomForSuccessAfter',
 		value: function driveDomForSuccessAfter($table, settings, response, callback) {
 			// tbody dom
 			var tbodyDOM = (0, _Base.$)('tbody', $table);
@@ -1260,9 +1243,6 @@ var Core = function () {
 
 			var _data = parseRes[settings.dataKey];
 
-			// 数据索引
-			var key = null;
-
 			// 文本对齐属性
 			var alignAttr = null;
 
@@ -1278,16 +1258,40 @@ var Core = function () {
 				parseRes.totals = 0;
 				tbodyDOM.html(tbodyTmpHTML);
 			} else {
-				_Base.$.each(_data, function (i, v) {
-					_Cache2.default.setRowData(gmName, i, v);
-					tbodyTmpHTML += '<tr cache-key="' + i + '">';
-					_Base.$.each(settings.columnData, function (i2, v2) {
-						key = v2.key;
-						template = v2.template;
-						templateHTML = typeof template === 'function' ? template(v[key], v) : v[key];
-						alignAttr = v2.align ? 'align="' + v2.align + '"' : '';
-						tbodyTmpHTML += '<td gm-create="false" ' + alignAttr + '>' + templateHTML + '</td>';
+				// 为数据追加序号字段
+				if (settings.supportAutoOrder) {
+					var _pageData = settings.pageData;
+					var _orderBaseNumber = 1;
+
+					// 验证是否存在分页数据
+					if (_pageData && _pageData['pSize'] && _pageData['cPage']) {
+						_orderBaseNumber = _pageData.pSize * (_pageData.cPage - 1) + 1;
+					}
+					_data = _data.map(function (item, index) {
+						item[_Order2.default.key] = _orderBaseNumber + index;
+						return item;
 					});
+				}
+
+				// 为数据追加全选字段
+				if (settings.supportCheckbox) {
+					_data = _data.map(function (item, index) {
+						item[_Checkbox2.default.key] = false;
+						return item;
+					});
+				}
+				var tdList = [];
+				_Base.$.each(_data, function (index, row) {
+					_Cache2.default.setRowData(gmName, index, row);
+					tbodyTmpHTML += '<tr cache-key="' + index + '">';
+					_Base.$.each(settings.columnMap, function (key, col) {
+						template = col.template;
+						templateHTML = typeof template === 'function' ? template(row[col.key], row) : row[col.key];
+						alignAttr = col.align ? 'align="' + col.align + '"' : '';
+						// 插件自带列(序号,全选) 的 templateHTML会包含dom节点, 所以需要特殊处理一下
+						tdList[col.index] = col.isAutoCreate ? templateHTML : '<td gm-create="false" ' + alignAttr + '>' + templateHTML + '</td>';
+					});
+					tbodyTmpHTML += tdList.join('');
 					tbodyTmpHTML += '</tr>';
 				});
 				tbodyDOM.html(tbodyTmpHTML);
@@ -1310,7 +1314,7 @@ var Core = function () {
       */
 		value: function createDOM($table) {
 			var settings = _Cache2.default.getSettings($table);
-			$table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0).attr('grid-manager', settings.gridManagerName);
+			$table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0);
 			var theadHtml = '<thead grid-manager-thead>';
 			var tbodyHtml = '<tbody></tbody>';
 
@@ -1326,23 +1330,39 @@ var Core = function () {
 			// 排序对应的html片段
 			var sortingHtml = '';
 
-			// 通过配置项[columnData]生成thead
-			_Base.$.each(settings.columnData, function (i, v) {
+			// th显示状态
+			var thVisible = '';
+
+			// 将 columnMap 转换为 数组
+			// 转换的原因是为了处理用户记忆
+			var thList = [];
+			if (settings.disableCache) {
+				_Base.$.each(settings.columnMap, function (key, col) {
+					thList.push(col);
+				});
+			} else {
+				_Base.$.each(settings.columnMap, function (key, col) {
+					thList[col.index] = col;
+				});
+			}
+
+			// thList 生成thead
+			_Base.$.each(thList, function (index, col) {
 				// 表头提醒
-				if (settings.supportRemind && typeof v.remind === 'string' && v.remind !== '') {
-					remindHtml = 'remind="' + v.remind + '"';
+				if (settings.supportRemind && typeof col.remind === 'string' && col.remind !== '') {
+					remindHtml = 'remind="' + col.remind + '"';
 				}
 
 				// 排序
 				sortingHtml = '';
-				if (settings.supportSorting && typeof v.sorting === 'string') {
-					if (v.sorting === settings.sortDownText) {
+				if (settings.supportSorting && typeof col.sorting === 'string') {
+					if (col.sorting === settings.sortDownText) {
 						sortingHtml = 'sorting="' + settings.sortDownText + '"';
-						settings.sortData[v.key] = settings.sortDownText;
+						settings.sortData[col.key] = settings.sortDownText;
 						_Cache2.default.setSettings($table, settings);
-					} else if (v.sorting === settings.sortUpText) {
+					} else if (col.sorting === settings.sortUpText) {
 						sortingHtml = 'sorting="' + settings.sortUpText + '"';
-						settings.sortData[v.key] = settings.sortUpText;
+						settings.sortData[col.key] = settings.sortUpText;
 						_Cache2.default.setSettings($table, settings);
 					} else {
 						sortingHtml = 'sorting=""';
@@ -1350,23 +1370,38 @@ var Core = function () {
 				}
 
 				// 宽度文本
-				widthInfo = v.width ? 'width="' + v.width + '"' : '';
+				widthInfo = col.width ? 'width="' + col.width + '"' : '';
 
 				// 文本对齐
-				alignAttr = v.align ? 'align="' + v.align + '"' : '';
-				theadHtml += '<th gm-create="false" th-name="' + v.key + '" ' + remindHtml + ' ' + sortingHtml + ' ' + widthInfo + ' ' + alignAttr + '>' + v.text + '</th>';
+				alignAttr = col.align ? 'align="' + col.align + '"' : '';
+
+				// th可视状态值
+				thVisible = _Base.Base.getVisibleForColumn(col);
+
+				// 拼接th
+				switch (col.key) {
+					// 插件自动生成序号列
+					case _Order2.default.key:
+						theadHtml += _Order2.default.getThString($table, thVisible);
+						break;
+					// 插件自动生成选择列
+					case _Checkbox2.default.key:
+						theadHtml += _Checkbox2.default.getThString($table, thVisible);
+						break;
+					// 普通列
+					default:
+						theadHtml += '<th gm-create="false" th-name="' + col.key + '" th-visible="' + thVisible + '" ' + remindHtml + ' ' + sortingHtml + ' ' + widthInfo + ' ' + alignAttr + '>' + col.text + '</th>';
+						break;
+				}
 			});
 			theadHtml += '</thead>';
 			$table.html(theadHtml + tbodyHtml);
 
-			// 嵌入序号DOM
-			if (settings.supportAutoOrder) {
-				_Order2.default.initDOM($table);
-			}
-			// 嵌入选择返选DOM
+			// 绑定选择框事件
 			if (settings.supportCheckbox) {
-				_Checkbox2.default.initCheckbox($table);
+				_Checkbox2.default.bindCheckboxEvent($table);
 			}
+
 			// 存储原始th DOM
 			_Cache2.default.setOriginalThDOM($table);
 
@@ -1416,7 +1451,7 @@ var Core = function () {
 			var onlyThWarp = (0, _Base.$)('<div class="th-wrap"></div>');
 			_Base.$.each(onlyThList, function (i2, v2) {
 				onlyTH = (0, _Base.$)(v2);
-				onlyTH.attr('th-visible', 'visible');
+				// onlyTH.attr('th-visible', 'visible');
 
 				// 是否为自动生成的序号列
 				if (settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
@@ -1434,7 +1469,7 @@ var Core = function () {
 
 				// 嵌入配置列表项
 				if (settings.supportConfig) {
-					configList.append('<li th-name="' + onlyTH.attr('th-name') + '" class="checked-li">\n\t\t\t\t\t\t\t\t<input type="checkbox" checked="checked"/>\n\t\t\t\t\t\t\t\t<label>\n\t\t\t\t\t\t\t\t\t<span class="fake-checkbox"></span>\n\t\t\t\t\t\t\t\t\t' + onlyTH.text() + '\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</li>');
+					configList.append('<li th-name="' + onlyTH.attr('th-name') + '">\n\t\t\t\t\t\t\t\t<input type="checkbox"/>\n\t\t\t\t\t\t\t\t<label>\n\t\t\t\t\t\t\t\t\t<span class="fake-checkbox"></span>\n\t\t\t\t\t\t\t\t\t' + onlyTH.text() + '\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t</li>');
 				}
 
 				// 嵌入拖拽事件源
@@ -1444,7 +1479,6 @@ var Core = function () {
 				} else {
 					onlyThWarp.html('<span class="th-text">' + onlyTH.html() + '</span>');
 				}
-				var onlyThWarpPaddingTop = onlyThWarp.css('padding-top');
 
 				// 嵌入表头提醒事件源
 				// 插件自动生成的排序与选择列不做事件绑定
@@ -1452,9 +1486,6 @@ var Core = function () {
 					var remindDOM = (0, _Base.$)(_Remind2.default.html);
 					remindDOM.find('.ra-title').text(onlyTH.text());
 					remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
-					if (onlyThWarpPaddingTop !== '' && onlyThWarpPaddingTop !== '0px') {
-						remindDOM.css('top', onlyThWarpPaddingTop);
-					}
 					onlyThWarp.append(remindDOM);
 				}
 
@@ -1475,9 +1506,6 @@ var Core = function () {
 							break;
 						default:
 							break;
-					}
-					if (onlyThWarpPaddingTop !== '' && onlyThWarpPaddingTop !== '0px') {
-						sortingDom.css('top', onlyThWarpPaddingTop);
 					}
 					onlyThWarp.append(sortingDom);
 				}
@@ -1536,66 +1564,33 @@ var Core = function () {
 			if (!_tr || _tr.length === 0) {
 				return false;
 			}
-			var settings = _Cache2.default.getSettings(_table);
-
-			// 重置表格序号
-			if (settings.supportAutoOrder) {
-				var _pageData = settings.pageData;
-				var onlyOrderTd = null;
-				var _orderBaseNumber = 1;
-				var _orderText = void 0;
-
-				// 验证是否存在分页数据
-				if (_pageData && _pageData['pSize'] && _pageData['cPage']) {
-					_orderBaseNumber = _pageData.pSize * (_pageData.cPage - 1) + 1;
-				}
-				_Base.$.each(_tr, function (i, v) {
-					_orderText = _orderBaseNumber + i;
-					onlyOrderTd = (0, _Base.$)('td[gm-order="true"]', v);
-					if (onlyOrderTd.length === 0) {
-						(0, _Base.$)(v).prepend('<td gm-order="true" gm-create="true">' + _orderText + '</td>');
-					} else {
-						onlyOrderTd.text(_orderText);
-					}
-				});
-			}
-
-			// 重置表格选择 checkbox
-			if (settings.supportCheckbox) {
-				var onlyCheckTd = null;
-				_Base.$.each(_tr, function (i, v) {
-					onlyCheckTd = (0, _Base.$)('td[gm-checkbox="true"]', v);
-					if (onlyCheckTd.length === 0) {
-						(0, _Base.$)(v).prepend('<td gm-checkbox="true" gm-create="true"><input type="checkbox"/></td>');
-					} else {
-						(0, _Base.$)('[type="checkbox"]', onlyCheckTd).prop('checked', false);
-					}
-				});
-			}
-
-			// 依据存储数据重置td顺序
-			if (settings.supportDrag) {
-				var _thCacheList = _Cache2.default.getOriginalThDOM(_table);
-				var _td = null;
-				if (!_thCacheList || _thCacheList.length === 0) {
-					_Base.Base.outLog('resetTdForCache:列位置重置所必须的原TH DOM获取失败', 'error');
-					return false;
-				}
-				var _tdArray = [];
-				_Base.$.each(_tr, function (i, v) {
-					_tdArray = [];
-					_td = (0, _Base.$)('td', v);
-					_Base.$.each(_td, function (i2, v2) {
-						_tdArray[_thCacheList.eq(i2).index()] = v2.outerHTML;
-					});
-					v.innerHTML = _tdArray.join('');
-				});
-			}
-
 			// 依据配置对列表进行隐藏、显示
-			if (settings.supportConfig) {
-				_Base.Base.initVisible(_table);
-			}
+			this.initVisible(_table);
+		}
+
+		/**
+   * 根据配置项初始化列显示|隐藏 (th 和 td)
+   * @param $table
+   */
+
+	}, {
+		key: 'initVisible',
+		value: function initVisible($table) {
+			// tbody下的tr
+			var _trList = (0, _Base.$)('tbody tr', $table);
+			var _th = null;
+			var _td = null;
+			var _visible = 'visible';
+			var settings = _Cache2.default.getSettings($table);
+			_Base.$.each(settings.columnMap, function (i, col) {
+				_th = (0, _Base.$)('th[th-name="' + col.key + '"]', $table);
+				_visible = _Base.Base.getVisibleForColumn(col);
+				_th.attr('th-visible', _visible);
+				_Base.$.each(_trList, function (i2, v2) {
+					_td = (0, _Base.$)('td', v2).eq(_th.index());
+					_td.attr('td-visible', _visible);
+				});
+			});
 		}
 	}]);
 
@@ -1660,7 +1655,7 @@ var I18n = function () {
 	}, {
 		key: 'getText',
 		value: function getText($table, key, language) {
-			return _Cache2.default.getSettings($table).textConfig[key][language] || '';
+			return _Cache2.default.getSettings($table).textConfig[key][language || this.getLanguage($table)] || '';
 		}
 
 		/**
@@ -1689,7 +1684,7 @@ var I18n = function () {
 			}
 			var _text = '';
 			try {
-				_text = _this.getText($table, key, _this.getLanguage($table));
+				_text = _this.getText($table, key);
 				if (!intrusion || intrusion.length === 0) {
 					return _text;
 				}
@@ -1857,10 +1852,10 @@ var AjaxPage = function () {
 			// 配置页码
 			for (i; i <= maxI; i++) {
 				if (i === cPage) {
-					tHtml += '<li class="active">\n\t\t\t\t\t\t\t' + cPage + '\n\t\t\t\t\t\t</li>';
+					tHtml += '<li class="active">' + cPage + '</li>';
 					continue;
 				}
-				tHtml += '<li c-page="' + i + '">\n\t\t\t\t\t\t' + i + '\n\t\t\t\t\t</li>';
+				tHtml += '<li c-page="' + i + '">' + i + '</li>';
 			}
 			tHtml += lHtml;
 
@@ -1913,24 +1908,28 @@ var AjaxPage = function () {
 	}, {
 		key: 'bindPageJumpEvent',
 		value: function bindPageJumpEvent($table) {
-			var _this = this;
 			var tableWarp = $table.closest('.table-wrap');
 
 			// 分页工具条
 			var pageToolbar = (0, _Base.$)('.page-toolbar', tableWarp);
 
-			// 分页区域
-			// const pagination = $('.pagination', pageToolbar);
+			this.bindPageClick($table, pageToolbar);
+			this.bindInputEvent($table, pageToolbar);
+			this.bindRefreshEvent($table, pageToolbar);
+		}
 
-			// 快捷跳转
-			var gp_input = (0, _Base.$)('.gp-input', pageToolbar);
+		/**
+   * 绑定分页点击事件
+   * @param $table
+   * @param pageToolbar
+      */
 
-			// 快捷跳转
-			var refreshAction = (0, _Base.$)('.refresh-action', pageToolbar);
+	}, {
+		key: 'bindPageClick',
+		value: function bindPageClick($table, pageToolbar) {
+			var _this = this;
 
-			// 绑定分页点击事件
-			pageToolbar.off('click', 'li');
-			pageToolbar.on('click', 'li', function () {
+			pageToolbar.off('click', 'li').on('click', 'li', function () {
 				var pageAction = (0, _Base.$)(this);
 
 				// 分页页码
@@ -1942,9 +1941,21 @@ var AjaxPage = function () {
 				cPage = window.parseInt(cPage);
 				_this.gotoPage($table, cPage);
 			});
-			// 绑定快捷跳转事件
-			gp_input.unbind('keyup');
-			gp_input.bind('keyup', function (e) {
+		}
+
+		/**
+   * 绑定快捷跳转事件
+   * @param $table
+   * @param pageToolbar
+      */
+
+	}, {
+		key: 'bindInputEvent',
+		value: function bindInputEvent($table, pageToolbar) {
+			var _this = this;
+			var gp_input = (0, _Base.$)('.gp-input', pageToolbar);
+
+			gp_input.unbind('keyup').bind('keyup', function (e) {
 				if (e.which !== 13) {
 					return;
 				}
@@ -1956,9 +1967,21 @@ var AjaxPage = function () {
 				_this.gotoPage($table, _inputValue);
 				this.value = '';
 			});
-			// 绑定刷新界面事件
-			refreshAction.unbind('click');
-			refreshAction.bind('click', function () {
+		}
+
+		/**
+   * 绑定刷新界面事件
+   * @param $table
+   * @param pageToolbar
+      */
+
+	}, {
+		key: 'bindRefreshEvent',
+		value: function bindRefreshEvent($table, pageToolbar) {
+			var _this = this;
+			var refreshAction = (0, _Base.$)('.refresh-action', pageToolbar);
+
+			refreshAction.unbind('click').bind('click', function () {
 				var _tableWarp = (0, _Base.$)(this).closest('.table-wrap');
 				var _table = (0, _Base.$)('table[grid-manager]', _tableWarp);
 				var _input = (0, _Base.$)('.page-toolbar .gp-input', _tableWarp);
@@ -2346,15 +2369,15 @@ var _Cache = __webpack_require__(1);
 
 var _Cache2 = _interopRequireDefault(_Cache);
 
+var _Config = __webpack_require__(9);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 var _Core = __webpack_require__(3);
 
 var _Core2 = _interopRequireDefault(_Core);
 
-var _Config = __webpack_require__(8);
-
-var _Config2 = _interopRequireDefault(_Config);
-
-var _Drag = __webpack_require__(15);
+var _Drag = __webpack_require__(16);
 
 var _Drag2 = _interopRequireDefault(_Drag);
 
@@ -2362,11 +2385,11 @@ var _Export = __webpack_require__(6);
 
 var _Export2 = _interopRequireDefault(_Export);
 
-var _Menu = __webpack_require__(9);
+var _Menu = __webpack_require__(10);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _Remind = __webpack_require__(10);
+var _Remind = __webpack_require__(12);
 
 var _Remind2 = _interopRequireDefault(_Remind);
 
@@ -2374,17 +2397,15 @@ var _Scroll = __webpack_require__(18);
 
 var _Scroll2 = _interopRequireDefault(_Scroll);
 
-var _Sort = __webpack_require__(11);
+var _Sort = __webpack_require__(13);
 
 var _Sort2 = _interopRequireDefault(_Sort);
 
-var _Store = __webpack_require__(12);
+var _Store = __webpack_require__(14);
 
 var _Store2 = _interopRequireDefault(_Store);
 
-var _Settings = __webpack_require__(19);
-
-var _Hover = __webpack_require__(16);
+var _Hover = __webpack_require__(17);
 
 var _Hover2 = _interopRequireDefault(_Hover);
 
@@ -2410,34 +2431,35 @@ var GridManager = function () {
    */
 		value: function init(table, arg, callback) {
 			var $table = (0, _Base.jTool)(table);
+			// 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
 			if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
 				// 存储gridManagerName值
 				arg.gridManagerName = _Base.Base.getKey($table);
+				// 参数中存在配置项 gridManagerName: 更新table DOM 的 grid-manager属性
+			} else {
+				$table.attr('grid-manager', arg.gridManagerName);
 			}
-
-			// 配置参数
-			var _settings = new _Settings.Settings();
-			_settings.textConfig = new _Settings.TextSettings();
-			_Base.jTool.extend(true, _settings, arg);
-			_Cache2.default.setSettings($table, _settings);
-
-			_Base.jTool.extend(true, this, _settings);
 
 			// 通过版本较验 清理缓存
 			_Cache2.default.cleanTableCacheForVersion();
-			if (this.gridManagerName.trim() === '') {
-				this.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+
+			// 初始化设置相关: 合并, 存储
+			var settings = _Cache2.default.initSettings($table, arg);
+
+			// 校验 gridManagerName
+			if (settings.gridManagerName.trim() === '') {
+				_Base.Base.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
 				return false;
 			}
 
-			// 验证当前表格是否已经渲染
+			// 校验 当前表格是否已经渲染
 			if ($table.hasClass('GridManager-ready') || $table.hasClass('GridManager-loading')) {
-				this.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
+				_Base.Base.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
 				return false;
 			}
 
 			// 根据本地缓存配置每页显示条数
-			if (this.supportAjaxPage) {
+			if (settings.supportAjaxPage) {
 				_AjaxPage2.default.configPageForCache($table);
 			}
 
@@ -2445,7 +2467,8 @@ var GridManager = function () {
 			$table.addClass('GridManager-loading');
 
 			// 初始化表格
-			this.initTable($table);
+			this.initTable($table, settings);
+
 			// 如果初始获取缓存失败，在渲染完成后首先存储一次数据
 			if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
 				window.setTimeout(function () {
@@ -2454,67 +2477,62 @@ var GridManager = function () {
 				}, 1000);
 			}
 			// 启用回调
-			typeof callback === 'function' ? callback(this.query) : '';
+			typeof callback === 'function' ? callback(settings.query) : '';
 			return $table;
 		}
 
 		/**
    * 初始化列表
-   * @param table
+   * @param $table
+   * @param settings
       */
 
 	}, {
 		key: 'initTable',
-		value: function initTable(table) {
-			// 渲染HTML，嵌入所需的事件源DOM
-			_Core2.default.createDOM(table);
+		value: function initTable($table, settings) {
 
-			// 获取本地缓存并对列表进行配置
-			if (!this.disableCache) {
-				_Cache2.default.configTheadForCache(table);
-				// 通过缓存配置成功后, 重置宽度调整事件源dom
-				this.supportAdjust ? _Adjust2.default.resetAdjust(table) : '';
-			}
+			// 渲染HTML，嵌入所需的事件源DOM
+			_Core2.default.createDOM($table);
+
+			// 通过缓存配置成功后, 重置宽度调整事件源dom
+			settings.supportAdjust ? _Adjust2.default.resetAdjust($table) : '';
 
 			// 绑定宽度调整事件
-			if (this.supportAdjust) {
-				_Adjust2.default.bindAdjustEvent(table);
+			if (settings.supportAdjust) {
+				_Adjust2.default.bindAdjustEvent($table);
 			}
 
 			// 绑定拖拽换位事件
-			if (this.supportDrag) {
-				_Drag2.default.bindDragEvent(table);
+			if (settings.supportDrag) {
+				_Drag2.default.bindDragEvent($table);
 			}
 
 			// 绑定排序事件
-			if (this.supportSorting) {
-				_Sort2.default.bindSortingEvent(table);
+			if (settings.supportSorting) {
+				_Sort2.default.bindSortingEvent($table);
 			}
 
 			// 绑定表头提示事件
-			if (this.supportRemind) {
-				_Remind2.default.bindRemindEvent(table);
+			if (settings.supportRemind) {
+				_Remind2.default.bindRemindEvent($table);
 			}
 
 			// 绑定配置列表事件
-			if (this.supportConfig) {
-				_Config2.default.bindConfigEvent(table);
+			if (settings.supportConfig) {
+				_Config2.default.bindConfigEvent($table);
 			}
 
-			// 绑定table区域hover事件
-			_Hover2.default.onTbodyHover(table);
+			// 绑定$table区域hover事件
+			_Hover2.default.onTbodyHover($table);
 
 			// 绑定表头置顶功能
-			_Scroll2.default.bindScrollFunction(table);
+			_Scroll2.default.bindScrollFunction($table);
 
 			// 绑定右键菜单事件
-			_Menu2.default.bindRightMenuEvent(table);
+			_Menu2.default.bindRightMenuEvent($table);
 
 			// 渲染tbodyDOM
-			_Core2.default.__refreshGrid(table);
-
-			// 存储GM实例
-			_Cache2.default.__setGridManager(table, this);
+			_Core2.default.__refreshGrid($table);
 		}
 	}], [{
 		key: 'get',
@@ -2527,7 +2545,8 @@ var GridManager = function () {
    * @returns {*}
    */
 		value: function get(table) {
-			return _Cache2.default.__getGridManager((0, _Base.jTool)(table));
+			// return Cache.__getGridManager(jTool(table));
+			return _Cache2.default.getSettings((0, _Base.jTool)(table));
 		}
 
 		/**
@@ -2554,7 +2573,7 @@ var GridManager = function () {
 	}, {
 		key: 'clear',
 		value: function clear(table) {
-			return _Cache2.default.delUserMemory((0, _Base.jTool)(table));
+			return _Cache2.default.cleanTableCache((0, _Base.jTool)(table), '通过clear()方法清除');
 		}
 
 		/**
@@ -2756,6 +2775,124 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Checkbox: 数据选择/全选/返选
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * */
+
+
+var _Base = __webpack_require__(0);
+
+var _I18n = __webpack_require__(4);
+
+var _I18n2 = _interopRequireDefault(_I18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Checkbox = function () {
+	function Checkbox() {
+		_classCallCheck(this, Checkbox);
+
+		// 序号的唯一标识
+		this.key = 'gm_checkbox';
+	}
+
+	/**
+  * 获取 th 的字符串节点
+  * @param $table
+  * @returns {string}
+     */
+
+
+	_createClass(Checkbox, [{
+		key: 'getThString',
+		value: function getThString($table, thVisible) {
+			var checkboxHtml = '<th th-name="' + this.key + '" th-visible="' + thVisible + '" gm-checkbox="true" gm-create="true">\n\t\t\t\t\t\t\t\t<input type="checkbox"/>\n\t\t\t\t\t\t\t\t<span style="display: none">\n\t\t\t\t\t\t\t\t\t' + _I18n2.default.i18nText($table, 'checkall-text') + '\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t</th>';
+			return checkboxHtml;
+		}
+		/**
+   * 获取选择列对象
+   * @param $table
+   * @param language
+   * @returns {{key: string, name: (*|string), isShow: boolean, width: string, align: string}}
+   */
+
+	}, {
+		key: 'getColumn',
+		value: function getColumn($table, language) {
+			return {
+				key: this.key,
+				text: _I18n2.default.getText($table, 'checkall-text', language),
+				isAutoCreate: true,
+				isShow: true,
+				width: '50px',
+				align: 'center',
+				template: function template(nodeData) {
+					return '<td gm-checkbox="true" gm-create="true"><input type="checkbox" ' + (nodeData ? 'checked="checked"' : '') + '/></td>';
+				}
+			};
+		}
+
+		/**
+   * 绑定选择框事件
+   * @param $table
+      */
+
+	}, {
+		key: 'bindCheckboxEvent',
+		value: function bindCheckboxEvent($table) {
+			var _this = this;
+			$table.off('click', 'input[type="checkbox"]');
+			$table.on('click', 'input[type="checkbox"]', function () {
+				// 存储th中的checkbox的选中状态
+				var _thChecked = true;
+
+				// 全选键事件源
+				var _checkAction = (0, _Base.$)(this);
+
+				// th中的选择框
+				var _thCheckbox = (0, _Base.$)('thead th[gm-checkbox] input[type="checkbox"]', $table);
+
+				// td中的选择框
+				var _tdCheckbox = (0, _Base.$)('tbody td[gm-checkbox] input[type="checkbox"]', $table);
+
+				// 当前为全选事件源
+				if (_checkAction.closest('th[th-name="' + _this.key + '"]').length === 1) {
+					_Base.$.each(_tdCheckbox, function (i, v) {
+						v.checked = _checkAction.prop('checked');
+						(0, _Base.$)(v).closest('tr').attr('checked', v.checked);
+					});
+				} else {
+					// 当前为单个选择
+					_Base.$.each(_tdCheckbox, function (i, v) {
+						if (v.checked === false) {
+							_thChecked = false;
+						}
+						(0, _Base.$)(v).closest('tr').attr('checked', v.checked);
+					});
+					_thCheckbox.prop('checked', _thChecked);
+				}
+			});
+		}
+	}]);
+
+	return Checkbox;
+}();
+
+exports.default = new Checkbox();
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Config: th配置
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * */
 
@@ -2788,8 +2925,7 @@ var Config = function () {
    * @param $table
       */
 		value: function bindConfigEvent($table) {
-			var Settings = _Cache2.default.getSettings($table);
-
+			var settings = _Cache2.default.getSettings($table);
 			// GM容器
 			var tableWarp = $table.closest('div.table-wrap');
 
@@ -2802,21 +2938,42 @@ var Config = function () {
 				// 展示事件源
 				var _configAction = (0, _Base.$)(this);
 
-				// 设置区域
-				var _configArea = _configAction.closest('.config-area');
+				var _tableWrap = _configAction.closest('.table-wrap');
 
-				// 关闭
+				// 设置区域
+				var _configArea = _tableWrap.find('.config-area');
+
+				// 关闭配置区域
 				if (_configArea.css('display') === 'block') {
 					_configArea.hide();
 					return false;
 				}
 
-				// 打开
-				_configArea.show();
+				// 选中状态的li
+				var checkLi = null;
+
+				// 选中状态的input
+				var checkInput = null;
 
 				// 验证当前是否只有一列处于显示状态 并根据结果进行设置是否可以取消显示
+				var showNum = 0;
+				settings.columnData.forEach(function (col) {
+					checkLi = (0, _Base.$)('li[th-name="' + col.key + '"]', _configArea);
+					checkInput = (0, _Base.$)('input[type="checkbox"]', checkLi);
+					if (col.isShow) {
+						checkLi.addClass('checked-li');
+						checkInput.prop('checked', true);
+						showNum++;
+						return;
+					}
+					checkLi.removeClass('checked-li');
+					checkInput.prop('checked', false);
+				});
 				var checkedLi = (0, _Base.$)('.checked-li', _configArea);
-				checkedLi.length === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
+				showNum === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
+
+				// 打开配置区域
+				_configArea.show();
 			});
 
 			// 事件: 设置
@@ -2856,6 +3013,12 @@ var Config = function () {
 					_tableDiv.removeClass('config-editing');
 				});
 
+				// 更新配置信息
+				// TODO 今天时间问题, 之后需要处理
+				// TODO 在配置, 调整宽度, 位置更换后, 应该统一使用同一个方法对 columnMap 进行更新
+				settings.columnMap[_thName].isShow = isVisible;
+				_Cache2.default.setSettings($table, settings);
+
 				// 当前处于选中状态的展示项
 				var _checkedList = (0, _Base.$)('.config-area input[type="checkbox"]:checked', _tableWarp);
 
@@ -2865,7 +3028,7 @@ var Config = function () {
 				}
 
 				// 重置调整宽度事件源
-				if (Settings.supportAdjust) {
+				if (settings.supportAdjust) {
 					_Adjust2.default.resetAdjust(_table);
 				}
 
@@ -2925,7 +3088,7 @@ var Config = function () {
 exports.default = new Config();
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3162,7 +3325,108 @@ var Menu = function () {
 exports.default = new Menu();
 
 /***/ }),
-/* 10 */
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Order: 序号
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * */
+
+
+var _Base = __webpack_require__(0);
+
+var _I18n = __webpack_require__(4);
+
+var _I18n2 = _interopRequireDefault(_I18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Order = function () {
+	function Order() {
+		_classCallCheck(this, Order);
+
+		// 序号的唯一标识
+		this.key = 'gm_order';
+	}
+
+	/**
+  * 获取 th 的字符串节点
+  * @param $table
+  * @returns {string}
+  */
+
+
+	_createClass(Order, [{
+		key: 'getThString',
+		value: function getThString($table, thVisible) {
+			return '<th th-name="' + this.key + '" th-visible="' + thVisible + '" gm-order="true" gm-create="true">' + _I18n2.default.i18nText($table, 'order-text') + '</th>';
+		}
+
+		/**
+   * 获取 td 的字符串节点
+   * @param orderText
+      */
+		// getTdString(orderText) {
+		// 	return `<td gm-order="true" gm-create="true">${orderText}</td>`;
+		// }
+
+		/**
+   * 获取序号列对象
+   * @param $table
+   * @param language
+   * @returns {{key: string, name: (*|string), isShow: boolean, width: string, align: string}}
+      */
+
+	}, {
+		key: 'getColumn',
+		value: function getColumn($table, language) {
+			return {
+				key: this.key,
+				text: _I18n2.default.getText($table, 'order-text', language),
+				isAutoCreate: true,
+				isShow: true,
+				width: '50px',
+				align: 'center',
+				template: function template(nodeData) {
+					return '<td gm-order="true" gm-create="true">' + nodeData + '</td>';
+				}
+			};
+		}
+
+		/**
+   * 生成序号DOM
+   * @param $table
+   * @returns {boolean}
+      */
+
+	}, {
+		key: 'initDOM',
+		value: function initDOM($table) {
+			var orderHtml = '<th th-name="' + Order.key + '" gm-order="true" gm-create="true">' + _I18n2.default.i18nText($table, 'order-text') + '</th>';
+			(0, _Base.jTool)('thead tr', $table).prepend(orderHtml);
+			if ((0, _Base.jTool)('th[th-name="' + Order.key + '"]', $table).length === 0) {
+				return false;
+			}
+			return true;
+		}
+	}]);
+
+	return Order;
+}();
+
+exports.default = new Order();
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3232,7 +3496,7 @@ var Remind = function () {
 exports.default = new Remind();
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3380,6 +3644,7 @@ var Sort = function () {
 				}
 				// 调用事件、渲染tbody
 				_Cache2.default.setSettings($table, settings);
+				console.log(2222);
 				var query = _Base.$.extend({}, settings.query, settings.sortData, settings.pageData);
 				settings.sortingBefore(query);
 				_Core2.default.__refreshGrid($table, function () {
@@ -3429,7 +3694,7 @@ var Sort = function () {
 exports.default = new Sort();
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3445,7 +3710,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var Store = {
 	// 版本号
-	version: '2.3.15',
+	version: '2.3.17',
 
 	// GM实例
 	gridManager: {},
@@ -3456,14 +3721,18 @@ var Store = {
 	// 表渲染前的th
 	originalTh: {},
 
-	// 配置信息
-	settings: {}
+	// 表配置信息存储器
+	settings: {
+		// columnData: 表配置项, 在宽度\位置等信息变化后 会 即时更新
+		// columnMap: 是在GridManager.js中通过columnData生成的, 在宽度\位置等信息变化后 会 即时更新
+		// 其它配置项...
+	}
 };
 
 exports.default = Store;
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3611,114 +3880,7 @@ exports.PublishMethod = PublishMethod;
 exports.publishMethodArray = publishMethodArray;
 
 /***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Checkbox: 数据选择/全选/返选
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * */
-
-
-var _Base = __webpack_require__(0);
-
-var _I18n = __webpack_require__(4);
-
-var _I18n2 = _interopRequireDefault(_I18n);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Checkbox = function () {
-	function Checkbox() {
-		_classCallCheck(this, Checkbox);
-	}
-
-	_createClass(Checkbox, [{
-		key: 'html',
-
-		/**
-   * checkbox 拼接字符串
-   * @param $table
-   * @returns {string}
-      */
-		value: function html($table) {
-			var checkboxHtml = '<th th-name="gm_checkbox" gm-checkbox="true" gm-create="true">\n\t\t\t\t\t\t\t\t<input type="checkbox"/>\n\t\t\t\t\t\t\t\t<span style="display: none">\n\t\t\t\t\t\t\t\t\t' + _I18n2.default.i18nText($table, 'checkall-text') + '\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t</th>';
-			return checkboxHtml;
-		}
-	}, {
-		key: 'initCheckbox',
-
-
-		/**
-   * 初始化选择与反选DOM
-   * @param $table
-      */
-		value: function initCheckbox($table) {
-			// 插入选择DOM
-			(0, _Base.$)('thead tr', $table).prepend(this.html($table));
-
-			// 绑定选择框事件
-			this.bindCheckboxEvent($table);
-		}
-	}, {
-		key: 'bindCheckboxEvent',
-
-
-		/**
-   * 绑定选择框事件
-   * @param $table
-      */
-		value: function bindCheckboxEvent($table) {
-			$table.off('click', 'input[type="checkbox"]');
-			$table.on('click', 'input[type="checkbox"]', function () {
-
-				// 存储th中的checkbox的选中状态
-				var _thChecked = true;
-
-				// 全选键事件源
-				var _checkAction = (0, _Base.$)(this);
-
-				// th中的选择框
-				var _thCheckbox = (0, _Base.$)('thead th[gm-checkbox] input[type="checkbox"]', $table);
-
-				// td中的选择框
-				var _tdCheckbox = (0, _Base.$)('tbody td[gm-checkbox] input[type="checkbox"]', $table);
-
-				// 当前为全选事件源
-				if (_checkAction.closest('th[th-name="gm_checkbox"]').length === 1) {
-					_Base.$.each(_tdCheckbox, function (i, v) {
-						v.checked = _checkAction.prop('checked');
-						(0, _Base.$)(v).closest('tr').attr('checked', v.checked);
-					});
-				} else {
-					// 当前为单个选择
-					_Base.$.each(_tdCheckbox, function (i, v) {
-						if (v.checked === false) {
-							_thChecked = false;
-						}
-						(0, _Base.$)(v).closest('tr').attr('checked', v.checked);
-					});
-					_thCheckbox.prop('checked', _thChecked);
-				}
-			});
-		}
-	}]);
-
-	return Checkbox;
-}();
-
-exports.default = new Checkbox();
-
-/***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3896,6 +4058,12 @@ var Drag = function () {
 						});
 					}
 
+					// 更新表格列Map
+					_Base.$.each(settings.columnMap, function (key, col) {
+						col.index = (0, _Base.$)('th[th-name="' + col.key + '"]', $table).index();
+					});
+					_Cache2.default.setSettings($table, settings);
+
 					// 存储用户记忆
 					_Cache2.default.saveUserMemory(_table);
 
@@ -3968,7 +4136,7 @@ var Drag = function () {
 exports.default = new Drag();
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4027,60 +4195,6 @@ var Hover = function () {
 }();
 
 exports.default = new Hover();
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * Order: 序号
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * */
-
-
-var _Base = __webpack_require__(0);
-
-var _I18n = __webpack_require__(4);
-
-var _I18n2 = _interopRequireDefault(_I18n);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Order = function () {
-	function Order() {
-		_classCallCheck(this, Order);
-	}
-
-	_createClass(Order, [{
-		key: 'initDOM',
-
-		/**
-   * 生成序号DOM
-   * @param $table
-   * @returns {boolean}
-      */
-		value: function initDOM($table) {
-			var orderHtml = '<th th-name="gm_order" gm-order="true" gm-create="true">' + _I18n2.default.i18nText($table, 'order-text') + '</th>';
-			(0, _Base.$)('thead tr', $table).prepend(orderHtml);
-			if ((0, _Base.$)('th[th-name="gm_order"]', $table).length === 0) {
-				return false;
-			}
-			return true;
-		}
-	}]);
-
-	return Order;
-}();
-
-exports.default = new Order();
 
 /***/ }),
 /* 18 */
@@ -4365,6 +4479,41 @@ var Settings = function Settings() {
   */
 	var gridData = {
 		// 表格列数据配置项
+		/* columnData示例
+  columnData: [{
+   // 列的唯一索引。字符串类型，必设项
+   key: 'url',
+  	 // 列的显示文本。字符串类型，必设项
+   text: 'url',
+  	 // @2.4.0
+   // 是否显示, 默认值 true
+   isShow: true,
+  	 // 列所占宽度, 字符串类型，非必设项
+   // 需要注意的是:
+   // 1.如果当前列的th内文本实际占用宽度大于该参数指定的宽度时， GridManager会自动进行适配。
+   // 2.建议不要将所有的列都进行宽度设置，而留一个进行自动适应
+   width: '100px',
+  	 // 列文本对齐信息，字符串类型，非必设项
+   // 三种值: 'left', 'center', 'right'
+   align: '',
+  	 // 列的排序类型，字符串类型，非必设项
+   // 在初始化参数supportSorting=true时生效。有三种值:
+   // 1、'': 该列支持排序，但初始化时不指定排序类型
+   // 2、'DESC': 该列支持排序，并在初始化时指定排序类型为降序。可通过参数[sortDownText]来指定降序所使用的字符串
+   // 3、'ASC': 该列支持排序，并在初始化时指定排序类型为升序。可通过参数[sortUpText]来指定升序所使用的字符串
+   sorting: 'DESC',
+  	 // 列的表头提醒内容,字符串类型，非必设项
+   // 在初始化参数supportRemind=true时生效
+   remind: '文本介绍',
+  	 // 自定义列模板，函数类型，非必设项
+   // 通过返回的字符串对列进行重绘
+   // nodeData: 当前单元格的渲染数据
+   // rowData: 当前单元格所在行的渲染数据, 本例中: 参数nodeData=== rowData.url
+   template: function(nodeData, rowData){
+   return '<a href="'+nodeData+'">'+rowData.url+'</a>';
+   }
+   }]
+  */
 		columnData: [],
 
 		// 表格grid-manager所对应的值[可在html中配置]
@@ -4378,6 +4527,11 @@ var Settings = function Settings() {
 
 		// ajax请求头信息
 		ajax_headers: {},
+
+		// @v2.4.0
+		// 设置XHR对象, ajax_xhrFields 中的属性将追加至实例化后的XHR对象上
+		// 示例 -> ajax_xhrFields: {withCredentials: true}, 那么将会配置跨域访问时协带cookies, authorization headers(头部授权)
+		ajax_xhrFields: {},
 
 		// ajax请求之前,与jTool的beforeSend使用方法相同
 		ajax_beforeSend: _Base.$.noop,
@@ -4495,7 +4649,7 @@ var _GridManager = __webpack_require__(7);
 
 var _GridManager2 = _interopRequireDefault(_GridManager);
 
-var _Publish = __webpack_require__(13);
+var _Publish = __webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4576,9 +4730,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /*
 * 兼容jquery
 * */
-(function () {
-	if (typeof window.jQuery !== 'undefined' && window.jQuery.fn.extend) {
-		window.jQuery.fn.extend({
+(function (jQuery) {
+	if (typeof jQuery !== 'undefined' && jQuery.fn.extend) {
+		jQuery.fn.extend({
 			GM: function GM() {
 				if (arguments.length === 0) {
 					return this.get(0).GM();
@@ -4603,7 +4757,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 			}
 		});
 	}
-})();
+})(window.jQuery);
+
+// 恢复jTool占用的$变量
+(function (jQuery) {
+	window.$ = jQuery || undefined;
+})(window.jQuery);
 
 /***/ }),
 /* 21 */
@@ -4615,7 +4774,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var require;var require;!function t(e,n,o){function i(s,u){if(!n[s]){if(!e[s]){var a="function"==typeof require&&require;if(!u&&a)return require(s,!0);if(r)return r(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var l=n[s]={exports:{}};e[s][0].call(l.exports,function(t){var n=e[s][1][t];return i(n?n:t)},l,l.exports,t,e,n,o)}return n[s].exports}for(var r="function"==typeof require&&require,s=0;s<o.length;s++)i(o[s]);return i}({1:[function(t,e){var n=t("./utilities"),o=t("../src/Css"),i={show:function(){return n.each(this.DOMList,function(t,e){var n="",o=["SPAN","A","FONT","I"];if(-1!==e.nodeName.indexOf(o))return e.style.display="inline-block",this;switch(e.nodeName){case"TABLE":n="table";break;case"THEAD":n="table-header-group";break;case"TBODY":n="table-row-group";break;case"TR":n="table-row";break;case"TH":n="table-cell";break;case"TD":n="table-cell";break;default:n="block"}e.style.display=n}),this},hide:function(){return n.each(this.DOMList,function(t,e){e.style.display="none"}),this},animate:function(t,e,i){var r=this,s="",u="",a=r.DOMList[0];if(t){"undefined"===n.type(i)&&"function"===n.type(e)&&(i=e,e=0),"undefined"===n.type(i)&&(i=n.noop),"undefined"===n.type(e)&&(e=0),n.each(t,function(t,e){t=n.toHyphen(t),s+=t+":"+n.getStyle(a,t)+";",u+=t+":"+e+";"});var c="@keyframes jToolAnimate {from {"+s+"}to {"+u+"}}",l=document.createElement("style");l.className="jTool-animate-style",l.type="text/css",document.head.appendChild(l),l.textContent=l.textContent+c,a.style.animation="jToolAnimate "+e/1e3+"s ease-in-out forwards",window.setTimeout(function(){o.css.call(r,t),a.style.animation="",l.remove(),i()},e)}}};e.exports=i},{"../src/Css":3,"./utilities":13}],2:[function(t,e){var n=t("./utilities"),o={addClass:function(t){return this.changeClass(t,"add")},removeClass:function(t){return this.changeClass(t,"remove")},toggleClass:function(t){return this.changeClass(t,"toggle")},hasClass:function(t){return[].some.call(this.DOMList,function(e){return e.classList.contains(t)})},parseClassName:function(t){return t.indexOf(" ")?t.split(" "):[t]},changeClass:function(t,e){var o=this.parseClassName(t);return n.each(this.DOMList,function(t,i){n.each(o,function(t,n){i.classList[e](n)})}),this}};e.exports=o},{"./utilities":13}],3:[function(t,e){var n=t("./utilities"),o={css:function(t,e){function o(t,e){"number"===n.type(e)&&(e=e.toString()),-1!==r.indexOf(t)&&-1===e.indexOf("px")&&(e+="px"),n.each(i.DOMList,function(n,o){o.style[t]=e})}var i=this,r=["width","height","min-width","max-width","min-height","min-height","top","left","right","bottom","padding-top","padding-right","padding-bottom","padding-left","margin-top","margin-right","margin-bottom","margin-left","border-width","border-top-width","border-left-width","border-right-width","border-bottom-width"];if("string"===n.type(t)&&!e&&0!==e)return-1!==r.indexOf(t)?parseInt(n.getStyle(this.DOMList[0],t),10):n.getStyle(this.DOMList[0],t);if("object"===n.type(t)){var s=t;for(var u in s)o(u,s[u])}else o(t,e);return this},width:function(t){return this.css("width",t)},height:function(t){return this.css("height",t)}};e.exports=o},{"./utilities":13}],4:[function(t,e){var n=t("./utilities"),o={dataKey:"jTool"+n.version,data:function(t,e){var o=this,i={};if("undefined"==typeof t&&"undefined"==typeof e)return o.DOMList[0][o.dataKey];if("undefined"!=typeof e){var r=n.type(e);return("string"===r||"number"===r)&&o.attr(t,e),n.each(o.DOMList,function(n,r){i=r[o.dataKey]||{},i[t]=e,r[o.dataKey]=i}),this}return i=o.DOMList[0][o.dataKey]||{},this.transformValue(i[t]||o.attr(t))},removeData:function(t){var e,o=this;"undefined"!=typeof t&&(n.each(o.DOMList,function(n,i){e=i[o.dataKey]||{},delete e[t]}),o.removeAttr(t))},attr:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o.setAttribute(t,e)}),this):this.transformValue(this.DOMList[0].getAttribute(t))},removeAttr:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){n.removeAttribute(t)})},prop:function(t,e){return"undefined"==typeof t&&"undefined"==typeof e?"":"undefined"!=typeof e?(n.each(this.DOMList,function(n,o){o[t]=e}),this):this.transformValue(this.DOMList[0][t])},removeProp:function(t){"undefined"!=typeof t&&n.each(this.DOMList,function(e,n){delete n[t]})},val:function(t){return this.prop("value",t)||""},transformValue:function(t){return"null"===n.type(t)&&(t=void 0),t}};e.exports=o},{"./utilities":13}],5:[function(t,e){var n=t("./utilities"),o=t("./Sizzle"),i={append:function(t){return this.html(t,"append")},prepend:function(t){return this.html(t,"prepend")},before:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;return n.insertBefore(t,e),this},after:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;n.lastChild==e?n.appendChild(t):n.insertBefore(t,e.nextSibling)},text:function(t){return"undefined"!=typeof t?(n.each(this.DOMList,function(e,n){n.textContent=t}),this):this.DOMList[0].textContent},html:function(t,e){if("undefined"==typeof t&&"undefined"==typeof e)return this.DOMList[0].innerHTML;var o=this,i=n.type(t);t.jTool?t=t.DOMList:"string"===i?t=n.createDOM(t||""):"element"===i&&(t=[t]);var r;return n.each(o.DOMList,function(o,i){e?"prepend"===e&&(r=i.firstChild):i.innerHTML="",n.each(t,function(t,e){e=e.cloneNode(!0),e.nodeType||(e=document.createTextNode(e)),r?i.insertBefore(e,r):i.appendChild(e),i.normalize()})}),this},wrap:function(t){var e;return n.each(this.DOMList,function(n,i){e=i.parentNode;var r=new o(t,i.ownerDocument).get(0);e.insertBefore(r,i),r.querySelector(":empty").appendChild(i)}),this},closest:function(t){function e(){return n&&0!==i.length&&1===n.nodeType?void(-1===[].indexOf.call(i,n)&&(n=n.parentNode,e())):void(n=null)}var n=this.DOMList[0].parentNode;if("undefined"==typeof t)return new o(n);var i=document.querySelectorAll(t);return e(),new o(n)},parent:function(){return this.closest()},clone:function(t){return new o(this.DOMList[0].cloneNode(t||!1))},remove:function(){n.each(this.DOMList,function(t,e){e.remove()})}};e.exports=i},{"./Sizzle":9,"./utilities":13}],6:[function(t,e){var n=t("./Sizzle"),o={get:function(t){return this.DOMList[t]},eq:function(t){return new n(this.DOMList[t])},find:function(t){return new n(t,this)},index:function(t){var e=this.DOMList[0];return t?t.jTool&&(t=t.DOMList):t=e.parentNode.childNodes,t?[].indexOf.call(t,e):-1}};e.exports=o},{"./Sizzle":9}],7:[function(t,e){var n=t("./utilities"),o={on:function(t,e,n,o){return this.addEvent(this.getEventObject(t,e,n,o))},off:function(t,e){return this.removeEvent(this.getEventObject(t,e))},bind:function(t,e,n){return this.on(t,void 0,e,n)},unbind:function(t){return this.removeEvent(this.getEventObject(t))},trigger:function(t){return n.each(this.DOMList,function(e,o){try{if(o.jToolEvent&&o.jToolEvent[t].length>0){var i=new Event(t);o.dispatchEvent(i)}else"click"!==t?n.error("预绑定的事件只有click事件可以通过trigger进行调用"):"click"===t&&o[t]()}catch(r){n.error("事件:["+t+"]未能正确执行, 请确定方法已经绑定成功")}}),this},getEventObject:function(t,e,o,i){if("function"==typeof e&&(i=o||!1,o=e,e=void 0),!t)return n.error("事件绑定失败,原因: 参数中缺失事件类型"),this;if(e&&"element"===n.type(this.DOMList[0])||(e=""),""!==e){var r=o;o=function(t){for(var n=t.target;n!==this;){if(-1!==[].indexOf.call(this.querySelectorAll(e),n)){r.apply(n,arguments);break}n=n.parentNode}}}var s,u,a=t.split(" "),c=[];return n.each(a,function(t,r){return""===r.trim()?!0:(s=r.split("."),u={eventName:r+e,type:s[0],querySelector:e,callback:o||n.noop,useCapture:i||!1,nameScope:s[1]||void 0},void c.push(u))}),c},addEvent:function(t){var e=this;return n.each(t,function(t,o){n.each(e.DOMList,function(t,e){e.jToolEvent=e.jToolEvent||{},e.jToolEvent[o.eventName]=e.jToolEvent[o.eventName]||[],e.jToolEvent[o.eventName].push(o),e.addEventListener(o.type,o.callback,o.useCapture)})}),e},removeEvent:function(t){var e,o=this;return n.each(t,function(t,i){n.each(o.DOMList,function(t,o){o.jToolEvent&&(e=o.jToolEvent[i.eventName],e&&(n.each(e,function(t,e){o.removeEventListener(e.type,e.callback)}),o.jToolEvent[i.eventName]=void 0))})}),o}};e.exports=o},{"./utilities":13}],8:[function(t,e){var n=t("./utilities"),o={offset:function(){var t={top:0,left:0},e=this.DOMList[0];if(!e.getClientRects().length)return t;if("none"===n.getStyle(e,"display"))return t;t=e.getBoundingClientRect();var o=e.ownerDocument.documentElement;return{top:t.top+window.pageYOffset-o.clientTop,left:t.left+window.pageXOffset-o.clientLeft}},scrollTop:function(t){return this.scrollFN(t,"top")},scrollLeft:function(t){return this.scrollFN(t,"left")},scrollFN:function(t,e){var n=this.DOMList[0];return t||0===t?(this.setScrollFN(n,e,t),this):this.getScrollFN(n,e)},getScrollFN:function(t,e){return n.isWindow(t)?"top"===e?t.pageYOffset:t.pageXOffset:9===t.nodeType?"top"===e?t.body.scrollTop:t.body.scrollLeft:1===t.nodeType?"top"===e?t.scrollTop:t.scrollLeft:void 0},setScrollFN:function(t,e,o){return n.isWindow(t)?"top"===e?t.document.body.scrollTop=o:t.document.body.scrollLeft=o:9===t.nodeType?"top"===e?t.body.scrollTop=o:t.body.scrollLeft=o:1===t.nodeType?"top"===e?t.scrollTop=o:t.scrollLeft=o:void 0}};e.exports=o},{"./utilities":13}],9:[function(t,e){var n=t("./utilities"),o=function(t,e){var o;return t?n.isWindow(t)?(o=[t],e=void 0):t===document?(o=[document],e=void 0):t instanceof HTMLElement?(o=[t],e=void 0):t instanceof NodeList||t instanceof Array?(o=t,e=void 0):t.jTool?(o=t.DOMList,e=void 0):/<.+>/.test(t)?(o=n.createDOM(t),e=void 0):(e?e="string"==typeof e?document.querySelectorAll(e):e instanceof HTMLElement?[e]:e instanceof NodeList?e:e.jTool?e.DOMList:void 0:o=document.querySelectorAll(t),e&&(o=[],n.each(e,function(e,i){n.each(i.querySelectorAll(t),function(t,e){e&&o.push(e)})}))):t=null,o&&0!==o.length||(o=void 0),this.jTool=!0,this.DOMList=o,this.length=this.DOMList?this.DOMList.length:0,this.querySelector=t,this};e.exports=o},{"./utilities":13}],10:[function(t,e){function n(t){var e={url:null,type:"GET",data:null,headers:{},async:!0,beforeSend:s.noop,complete:s.noop,success:s.noop,error:s.noop};if(t=r(e,t),!t.url)return void s.error("jTool ajax: url不能为空");var n=new XMLHttpRequest,o="";"object"===s.type(t.data)?s.each(t.data,function(t,e){""!==o&&(o+="&"),o+=t+"="+e}):o=t.data,"GET"===t.type.toUpperCase()&&o&&(t.url=t.url+(-1===t.url.indexOf("?")?"?":"&")+o,o=null),n.open(t.type,t.url,t.async);for(var i in t.headers)n.setRequestHeader(i,t.headers[i]);t.beforeSend(n),n.onload=function(){t.complete(n,n.status)},n.onreadystatechange=function(){4===n.readyState&&(n.status>=200&&n.status<300||304===n.status?t.success(n.response,n.status):t.error(n,n.status,n.statusText))},n.send(o)}function o(t,e,o){n({url:t,type:"POST",data:e,success:o})}function i(t,e,o){n({url:t,type:"GET",data:e,success:o})}var r=t("./extend"),s=t("./utilities");e.exports={ajax:n,post:o,get:i}},{"./extend":11,"./utilities":13}],11:[function(t,e){function n(){function t(e,i){for(var r in e)e.hasOwnProperty(r)&&(n&&"object"===o.type(e[r])?("object"!==o.type(i[r])&&(i[r]={}),t(e[r],i[r])):i[r]=e[r])}if(0===arguments.length)return{};var e,n=!1,i=1,r=arguments[0];for(1===arguments.length&&"object"==typeof arguments[0]?(r=this,i=0):2===arguments.length&&"boolean"==typeof arguments[0]?(n=arguments[0],r=this,i=1):arguments.length>2&&"boolean"==typeof arguments[0]&&(n=arguments[0],r=arguments[1]||{},i=2);i<arguments.length;i++)e=arguments[i]||{},t(e,r);return r}var o=t("./utilities");e.exports=n},{"./utilities":13}],12:[function(t,e){var n=t("./Sizzle"),o=t("./extend"),i=t("./utilities"),r=t("./ajax"),s=t("./Event"),u=t("./Css"),a=t("./Class"),c=t("./Document"),l=t("./Offset"),d=t("./Element"),f=t("./Animate"),p=t("./Data"),h=function(t,e){return new n(t,e)};n.prototype=h.prototype={},h.extend=h.prototype.extend=o,h.extend(i),h.extend(r),h.prototype.extend(s),h.prototype.extend(u),h.prototype.extend(a),h.prototype.extend(c),h.prototype.extend(l),h.prototype.extend(d),h.prototype.extend(f),h.prototype.extend(p),"undefined"!=typeof window.$&&(window._$=$),window.jTool=window.$=h,e.exports=h},{"./Animate":1,"./Class":2,"./Css":3,"./Data":4,"./Document":5,"./Element":6,"./Event":7,"./Offset":8,"./Sizzle":9,"./ajax":10,"./extend":11,"./utilities":13}],13:[function(t,e){function n(){return-1==navigator.userAgent.indexOf("Chrome")?!1:!0}function o(t){return null!==t&&t===t.window}function i(t){return Array.isArray(t)}function r(t){return v[y.call(t)]||(t instanceof Element?"element":"")}function s(){}function u(t,e){t&&t.jTool&&(t=t.DOMList);var n=r(t);if("array"===n||"nodeList"===n||"arguments"===n)[].every.call(t,function(t,n){o(t)?s():t.jTool?t=t.get(0):s();return e.call(t,n,t)===!1?!1:!0});else if("object"===n)for(var i in t)if(e.call(t[i],i,t[i])===!1)break}function a(t){return t.trim()}function c(t){throw new Error("[jTool Error: "+t+"]")}function l(t){var e=!0;for(var n in t)t.hasOwnProperty(n)&&(e=!1);return e}function d(t,e){return e?window.getComputedStyle(t)[e]:window.getComputedStyle(t)}function f(t){var e=["px","vem","em","%"],n="";return"number"==typeof t?n:(u(e,function(e,o){return-1!==t.indexOf(o)?(n=o,!1):void 0}),n)}function p(t){return t.replace(/-\w/g,function(t){return t.split("-")[1].toUpperCase()})}function h(t){return t.replace(/([A-Z])/g,"-$1").toLowerCase()}function m(t){var e=document.querySelector("#jTool-create-dom");if(!e||0===e.length){var n=document.createElement("table");n.id="jTool-create-dom",n.style.display="none",document.body.appendChild(n),e=document.querySelector("#jTool-create-dom")}e.innerHTML=t||"";var o=e.childNodes;return 1!=o.length||/<tbody|<TBODY/.test(t)||"TBODY"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<thead|<THEAD/.test(t)||"THEAD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<tr|<TR/.test(t)||"TR"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<td|<TD/.test(t)||"TD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<th|<TH/.test(t)||"TH"!==o[0].nodeName||(o=o[0].childNodes),e.remove(),o}var y=Object.prototype.toString,v={"[object String]":"string","[object Boolean]":"boolean","[object Undefined]":"undefined","[object Number]":"number","[object Object]":"object","[object Error]":"error","[object Function]":"function","[object Date]":"date","[object Array]":"array","[object RegExp]":"regexp","[object Null]":"null","[object NodeList]":"nodeList","[object Arguments]":"arguments","[object Window]":"window","[object HTMLDocument]":"document"};e.exports={isWindow:o,isChrome:n,isArray:i,noop:s,type:r,toHyphen:h,toHump:p,getStyleUnit:f,getStyle:d,isEmptyObject:l,trim:a,error:c,each:u,createDOM:m,version:"1.2.21"}},{}]},{},[12]);
+var require;var require;!function t(e,n,o){function i(s,a){if(!n[s]){if(!e[s]){var u="function"==typeof require&&require;if(!a&&u)return require(s,!0);if(r)return r(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var l=n[s]={exports:{}};e[s][0].call(l.exports,function(t){var n=e[s][1][t];return i(n||t)},l,l.exports,t,e,n,o)}return n[s].exports}for(var r="function"==typeof require&&require,s=0;s<o.length;s++)i(o[s]);return i}({1:[function(t,e,n){var o=t("./utilities"),i=t("../src/Css"),r={show:function(){return o.each(this.DOMList,function(t,e){var n="",o=["SPAN","A","FONT","I"];if(-1!==e.nodeName.indexOf(o))return e.style.display="inline-block",this;switch(e.nodeName){case"TABLE":n="table";break;case"THEAD":n="table-header-group";break;case"TBODY":n="table-row-group";break;case"TR":n="table-row";break;case"TH":case"TD":n="table-cell";break;default:n="block"}e.style.display=n}),this},hide:function(){return o.each(this.DOMList,function(t,e){e.style.display="none"}),this},animate:function(t,e,n){var r=this,s="",a="",u=r.DOMList[0];if(t){"undefined"===o.type(n)&&"function"===o.type(e)&&(n=e,e=0),"undefined"===o.type(n)&&(n=o.noop),"undefined"===o.type(e)&&(e=0),o.each(t,function(t,e){t=o.toHyphen(t),s+=t+":"+o.getStyle(u,t)+";",a+=t+":"+e+";"});var c="@keyframes jToolAnimate {from {"+s+"}to {"+a+"}}",l=document.createElement("style");l.className="jTool-animate-style",l.type="text/css",document.head.appendChild(l),l.textContent=l.textContent+c,u.style.animation="jToolAnimate "+e/1e3+"s ease-in-out forwards",window.setTimeout(function(){i.css.call(r,t),u.style.animation="",l.remove(),n()},e)}}};e.exports=r},{"../src/Css":3,"./utilities":13}],2:[function(t,e,n){var o=t("./utilities"),i={addClass:function(t){return this.changeClass(t,"add")},removeClass:function(t){return this.changeClass(t,"remove")},toggleClass:function(t){return this.changeClass(t,"toggle")},hasClass:function(t){return[].some.call(this.DOMList,function(e){return e.classList.contains(t)})},parseClassName:function(t){return t.indexOf(" ")?t.split(" "):[t]},changeClass:function(t,e){var n=this.parseClassName(t);return o.each(this.DOMList,function(t,i){o.each(n,function(t,n){i.classList[e](n)})}),this}};e.exports=i},{"./utilities":13}],3:[function(t,e,n){var o=t("./utilities"),i={css:function(t,e){function n(t,e){"number"===o.type(e)&&(e=e.toString()),-1!==r.indexOf(t)&&-1===e.indexOf("px")&&(e+="px"),o.each(i.DOMList,function(n,o){o.style[t]=e})}var i=this,r=["width","height","min-width","max-width","min-height","min-height","top","left","right","bottom","padding-top","padding-right","padding-bottom","padding-left","margin-top","margin-right","margin-bottom","margin-left","border-width","border-top-width","border-left-width","border-right-width","border-bottom-width"];if("string"===o.type(t)&&!e&&0!==e)return-1!==r.indexOf(t)?parseInt(o.getStyle(this.DOMList[0],t),10):o.getStyle(this.DOMList[0],t);if("object"===o.type(t)){var s=t;for(var a in s)n(a,s[a])}else n(t,e);return this},width:function(t){return this.css("width",t)},height:function(t){return this.css("height",t)}};e.exports=i},{"./utilities":13}],4:[function(t,e,n){var o=t("./utilities"),i={dataKey:"jTool"+o.version,data:function(t,e){var n=this,i={};if(void 0===t&&void 0===e)return n.DOMList[0][n.dataKey];if(void 0!==e){var r=o.type(e);return"string"!==r&&"number"!==r||n.attr(t,e),o.each(n.DOMList,function(o,r){i=r[n.dataKey]||{},i[t]=e,r[n.dataKey]=i}),this}return i=n.DOMList[0][n.dataKey]||{},this.transformValue(i[t]||n.attr(t))},removeData:function(t){var e,n=this;void 0!==t&&(o.each(n.DOMList,function(o,i){e=i[n.dataKey]||{},delete e[t]}),n.removeAttr(t))},attr:function(t,e){return void 0===t&&void 0===e?"":void 0!==e?(o.each(this.DOMList,function(n,o){o.setAttribute(t,e)}),this):this.transformValue(this.DOMList[0].getAttribute(t))},removeAttr:function(t){void 0!==t&&o.each(this.DOMList,function(e,n){n.removeAttribute(t)})},prop:function(t,e){return void 0===t&&void 0===e?"":void 0!==e?(o.each(this.DOMList,function(n,o){o[t]=e}),this):this.transformValue(this.DOMList[0][t])},removeProp:function(t){void 0!==t&&o.each(this.DOMList,function(e,n){delete n[t]})},val:function(t){return this.prop("value",t)||""},transformValue:function(t){return"null"===o.type(t)&&(t=void 0),t}};e.exports=i},{"./utilities":13}],5:[function(t,e,n){var o=t("./utilities"),i=t("./Sizzle"),r={append:function(t){return this.html(t,"append")},prepend:function(t){return this.html(t,"prepend")},before:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0];return e.parentNode.insertBefore(t,e),this},after:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;n.lastChild==e?n.appendChild(t):n.insertBefore(t,e.nextSibling)},text:function(t){return void 0!==t?(o.each(this.DOMList,function(e,n){n.textContent=t}),this):this.DOMList[0].textContent},html:function(t,e){if(void 0===t&&void 0===e)return this.DOMList[0].innerHTML;var n=this,i=o.type(t);t.jTool?t=t.DOMList:"string"===i?t=o.createDOM(t||""):"element"===i&&(t=[t]);var r;return o.each(n.DOMList,function(n,i){e?"prepend"===e&&(r=i.firstChild):i.innerHTML="",o.each(t,function(t,e){e=e.cloneNode(!0),e.nodeType||(e=document.createTextNode(e)),r?i.insertBefore(e,r):i.appendChild(e),i.normalize()})}),this},wrap:function(t){var e;return o.each(this.DOMList,function(n,o){e=o.parentNode;var r=new i(t,o.ownerDocument).get(0);e.insertBefore(r,o),r.querySelector(":empty").appendChild(o)}),this},closest:function(t){function e(){if(!n||0===o.length||1!==n.nodeType)return void(n=null);-1===[].indexOf.call(o,n)&&(n=n.parentNode,e())}var n=this.DOMList[0].parentNode;if(void 0===t)return new i(n);var o=document.querySelectorAll(t);return e(),new i(n)},parent:function(){return this.closest()},clone:function(t){return new i(this.DOMList[0].cloneNode(t||!1))},remove:function(){o.each(this.DOMList,function(t,e){e.remove()})}};e.exports=r},{"./Sizzle":9,"./utilities":13}],6:[function(t,e,n){var o=t("./Sizzle"),i={get:function(t){return this.DOMList[t]},eq:function(t){return new o(this.DOMList[t])},find:function(t){return new o(t,this)},index:function(t){var e=this.DOMList[0];return t?t.jTool&&(t=t.DOMList):t=e.parentNode.childNodes,t?[].indexOf.call(t,e):-1}};e.exports=i},{"./Sizzle":9}],7:[function(t,e,n){var o=t("./utilities"),i={on:function(t,e,n,o){return this.addEvent(this.getEventObject(t,e,n,o))},off:function(t,e){return this.removeEvent(this.getEventObject(t,e))},bind:function(t,e,n){return this.on(t,void 0,e,n)},unbind:function(t){return this.removeEvent(this.getEventObject(t))},trigger:function(t){return o.each(this.DOMList,function(e,n){try{if(n.jToolEvent&&n.jToolEvent[t].length>0){var i=new Event(t);n.dispatchEvent(i)}else"click"!==t?o.error("预绑定的事件只有click事件可以通过trigger进行调用"):"click"===t&&n[t]()}catch(e){o.error("事件:["+t+"]未能正确执行, 请确定方法已经绑定成功")}}),this},getEventObject:function(t,e,n,i){if("function"==typeof e&&(i=n||!1,n=e,e=void 0),!t)return o.error("事件绑定失败,原因: 参数中缺失事件类型"),this;if(e&&"element"===o.type(this.DOMList[0])||(e=""),""!==e){var r=n;n=function(t){for(var n=t.target;n!==this;){if(-1!==[].indexOf.call(this.querySelectorAll(e),n)){r.apply(n,arguments);break}n=n.parentNode}}}var s,a,u=t.split(" "),c=[];return o.each(u,function(t,r){if(""===r.trim())return!0;s=r.split("."),a={eventName:r+e,type:s[0],querySelector:e,callback:n||o.noop,useCapture:i||!1,nameScope:s[1]||void 0},c.push(a)}),c},addEvent:function(t){var e=this;return o.each(t,function(t,n){o.each(e.DOMList,function(t,e){e.jToolEvent=e.jToolEvent||{},e.jToolEvent[n.eventName]=e.jToolEvent[n.eventName]||[],e.jToolEvent[n.eventName].push(n),e.addEventListener(n.type,n.callback,n.useCapture)})}),e},removeEvent:function(t){var e,n=this;return o.each(t,function(t,i){o.each(n.DOMList,function(t,n){n.jToolEvent&&(e=n.jToolEvent[i.eventName])&&(o.each(e,function(t,e){n.removeEventListener(e.type,e.callback)}),n.jToolEvent[i.eventName]=void 0)})}),n}};e.exports=i},{"./utilities":13}],8:[function(t,e,n){var o=t("./utilities"),i={offset:function(){var t={top:0,left:0},e=this.DOMList[0];if(!e.getClientRects().length)return t;if("none"===o.getStyle(e,"display"))return t;t=e.getBoundingClientRect();var n=e.ownerDocument.documentElement;return{top:t.top+window.pageYOffset-n.clientTop,left:t.left+window.pageXOffset-n.clientLeft}},scrollTop:function(t){return this.scrollFN(t,"top")},scrollLeft:function(t){return this.scrollFN(t,"left")},scrollFN:function(t,e){var n=this.DOMList[0];return t||0===t?(this.setScrollFN(n,e,t),this):this.getScrollFN(n,e)},getScrollFN:function(t,e){return o.isWindow(t)?"top"===e?t.pageYOffset:t.pageXOffset:9===t.nodeType?"top"===e?t.body.scrollTop:t.body.scrollLeft:1===t.nodeType?"top"===e?t.scrollTop:t.scrollLeft:void 0},setScrollFN:function(t,e,n){return o.isWindow(t)?"top"===e?t.document.body.scrollTop=n:t.document.body.scrollLeft=n:9===t.nodeType?"top"===e?t.body.scrollTop=n:t.body.scrollLeft=n:1===t.nodeType?"top"===e?t.scrollTop=n:t.scrollLeft=n:void 0}};e.exports=i},{"./utilities":13}],9:[function(t,e,n){var o=t("./utilities"),i=function(t,e){var n;return t?o.isWindow(t)?(n=[t],e=void 0):t===document?(n=[document],e=void 0):t instanceof HTMLElement?(n=[t],e=void 0):t instanceof NodeList||t instanceof Array?(n=t,e=void 0):t.jTool?(n=t.DOMList,e=void 0):/<.+>/.test(t)?(n=o.createDOM(t),e=void 0):(e?e="string"==typeof e?document.querySelectorAll(e):e instanceof HTMLElement?[e]:e instanceof NodeList?e:e.jTool?e.DOMList:void 0:n=document.querySelectorAll(t),e&&(n=[],o.each(e,function(e,i){o.each(i.querySelectorAll(t),function(t,e){e&&n.push(e)})}))):t=null,n&&0!==n.length||(n=void 0),this.jTool=!0,this.DOMList=n,this.length=this.DOMList?this.DOMList.length:0,this.querySelector=t,this};e.exports=i},{"./utilities":13}],10:[function(t,e,n){function o(t){var e={url:null,type:"GET",data:null,headers:{},async:!0,xhrFields:{},beforeSend:a.noop,complete:a.noop,success:a.noop,error:a.noop};if(t=s(e,t),!t.url)return void a.error("jTool ajax: url不能为空");var n=new XMLHttpRequest,o="";"object"===a.type(t.data)?a.each(t.data,function(t,e){""!==o&&(o+="&"),o+=t+"="+e}):o=t.data,"GET"===t.type.toUpperCase()&&o&&(t.url=t.url+(-1===t.url.indexOf("?")?"?":"&")+o,o=null),n.open(t.type,t.url,t.async);for(var i in t.xhrFields)n[i]=t.xhrFields[i];for(var r in t.headers)n.setRequestHeader(r,t.headers[r]);t.beforeSend(n),n.onload=function(){t.complete(n,n.status)},n.onreadystatechange=function(){4===n.readyState&&(n.status>=200&&n.status<300||304===n.status?t.success(n.response,n.status):t.error(n,n.status,n.statusText))},n.send(o)}function i(t,e,n){o({url:t,type:"POST",data:e,success:n})}function r(t,e,n){o({url:t,type:"GET",data:e,success:n})}var s=t("./extend"),a=t("./utilities");e.exports={ajax:o,post:i,get:r}},{"./extend":11,"./utilities":13}],11:[function(t,e,n){function o(){function t(e,o){for(var r in e)e.hasOwnProperty(r)&&(n&&"object"===i.type(e[r])?("object"!==i.type(o[r])&&(o[r]={}),t(e[r],o[r])):o[r]=e[r])}if(0===arguments.length)return{};var e,n=!1,o=1,r=arguments[0];for(1===arguments.length&&"object"==typeof arguments[0]?(r=this,o=0):2===arguments.length&&"boolean"==typeof arguments[0]?(n=arguments[0],r=this,o=1):arguments.length>2&&"boolean"==typeof arguments[0]&&(n=arguments[0],r=arguments[1]||{},o=2);o<arguments.length;o++)e=arguments[o]||{},t(e,r);return r}var i=t("./utilities");e.exports=o},{"./utilities":13}],12:[function(t,e,n){var o=t("./Sizzle"),i=t("./extend"),r=t("./utilities"),s=t("./ajax"),a=t("./Event"),u=t("./Css"),c=t("./Class"),l=t("./Document"),d=t("./Offset"),f=t("./Element"),h=t("./Animate"),p=t("./Data"),v=function(t,e){return new o(t,e)};o.prototype=v.prototype={},v.extend=v.prototype.extend=i,v.extend(r),v.extend(s),v.prototype.extend(a),v.prototype.extend(u),v.prototype.extend(c),v.prototype.extend(l),v.prototype.extend(d),v.prototype.extend(f),v.prototype.extend(h),v.prototype.extend(p),void 0!==window.$&&(window._$=$),window.jTool=window.$=v,e.exports=v},{"./Animate":1,"./Class":2,"./Css":3,"./Data":4,"./Document":5,"./Element":6,"./Event":7,"./Offset":8,"./Sizzle":9,"./ajax":10,"./extend":11,"./utilities":13}],13:[function(t,e,n){function o(){return-1!=navigator.userAgent.indexOf("Chrome")}function i(t){return null!==t&&t===t.window}function r(t){return Array.isArray(t)}function s(t){return g[y.call(t)]||(t instanceof Element?"element":"")}function a(){}function u(t,e){t&&t.jTool&&(t=t.DOMList);var n=s(t);if("array"===n||"nodeList"===n||"arguments"===n)[].every.call(t,function(t,n){i(t)?a():t.jTool?t=t.get(0):a();return!1!==e.call(t,n,t)});else if("object"===n)for(var o in t)if(!1===e.call(t[o],o,t[o]))break}function c(t){return t.trim()}function l(t){throw new Error("[jTool Error: "+t+"]")}function d(t){var e=!0;for(var n in t)t.hasOwnProperty(n)&&(e=!1);return e}function f(t,e){return e?window.getComputedStyle(t)[e]:window.getComputedStyle(t)}function h(t){var e=["px","vem","em","%"],n="";return"number"==typeof t?n:(u(e,function(e,o){if(-1!==t.indexOf(o))return n=o,!1}),n)}function p(t){return t.replace(/-\w/g,function(t){return t.split("-")[1].toUpperCase()})}function v(t){return t.replace(/([A-Z])/g,"-$1").toLowerCase()}function m(t){var e=document.querySelector("#jTool-create-dom");if(!e||0===e.length){var n=document.createElement("table");n.id="jTool-create-dom",n.style.display="none",document.body.appendChild(n),e=document.querySelector("#jTool-create-dom")}e.innerHTML=t||"";var o=e.childNodes;return 1!=o.length||/<tbody|<TBODY/.test(t)||"TBODY"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<thead|<THEAD/.test(t)||"THEAD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<tr|<TR/.test(t)||"TR"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<td|<TD/.test(t)||"TD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<th|<TH/.test(t)||"TH"!==o[0].nodeName||(o=o[0].childNodes),e.remove(),o}var y=Object.prototype.toString,g={"[object String]":"string","[object Boolean]":"boolean","[object Undefined]":"undefined","[object Number]":"number","[object Object]":"object","[object Error]":"error","[object Function]":"function","[object Date]":"date","[object Array]":"array","[object RegExp]":"regexp","[object Null]":"null","[object NodeList]":"nodeList","[object Arguments]":"arguments","[object Window]":"window","[object HTMLDocument]":"document"};e.exports={isWindow:i,isChrome:o,isArray:r,noop:a,type:s,toHyphen:v,toHump:p,getStyleUnit:h,getStyle:f,isEmptyObject:d,trim:c,error:l,each:u,createDOM:m,version:"1.2.21"}},{}]},{},[12]);
+
 
 /***/ })
 /******/ ]);

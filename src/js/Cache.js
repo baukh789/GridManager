@@ -260,7 +260,7 @@ class Cache {
 
 			const mergeColumn = () => {
 				// 当前为禁用状态
-				if(_settings.disableCache){
+				if (_settings.disableCache) {
 					return;
 				}
 
@@ -270,7 +270,7 @@ class Cache {
 				const columnMapKeys = Object.keys(_settings.columnMap);
 
 				// 无用户记忆
-				if(columnCacheKeys.length === 0){
+				if (columnCacheKeys.length === 0) {
 					return;
 				}
 
@@ -294,7 +294,7 @@ class Cache {
 					jTool.extend(true, _settings.columnMap, columnCache);
 				} else {
 					// 清除用户记忆
-					this.cleanTableCache($table, '与配置项[columnData]不匹配')
+					this.cleanTableCache($table, '与配置项[columnData]不匹配');
 				}
 			};
 			// 合并用户记忆至配置项
