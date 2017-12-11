@@ -1144,7 +1144,7 @@ var Core = function () {
 			if (settings.supportSorting) {
 				_Base.$.each(settings.sortData, function (key, value) {
 					// 增加sort_前缀,防止与搜索时的条件重叠
-					pram['sort_' + key] = value;
+					pram['' + settings.sortKey + key] = value;
 				});
 			}
 
@@ -1157,11 +1157,6 @@ var Core = function () {
 				pram.cPage = pram.tPage;
 			}
 
-			// settings.query = pram;
-			_Cache2.default.setSettings($table, settings);
-
-			_Base.Base.showLoading(tableWrap);
-
 			// 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
 			// 说明|备注:
 			// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
@@ -1170,9 +1165,26 @@ var Core = function () {
 				settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
 			}
 
-			// 请求前处理程序, 可以通过该方法修改全部的请求参数
+			// 请求前处理程序, 可以通过该方法增加 或 修改全部的请求参数
+			// requestHandler方法内更改方式示例: pram.cPage = 1;
 			settings.requestHandler(pram);
 
+			// 将 requestHandler 内修改的分页参数合并至 settings.pageData
+			if (settings.supportAjaxPage) {
+				_Base.$.each(settings.pageData, function (key, value) {
+					settings.pageData[key] = pram[key] || value;
+				});
+			}
+
+			// 将 requestHandler 内修改的排序参数合并至 settings.sortData
+			if (settings.supportSorting) {
+				_Base.$.each(settings.sortData, function (key, value) {
+					settings.sortData[key] = pram['' + settings.sortKey + key] || value;
+				});
+			}
+			_Cache2.default.setSettings($table, settings);
+
+			_Base.Base.showLoading(tableWrap);
 			// 执行ajax
 			_Base.$.ajax({
 				url: settings.ajax_url,
@@ -3534,45 +3546,53 @@ var Sort = function () {
 		key: '__setSort',
 
 
+		// TODO @baukh20171211: 需要确认下手动执行排序是否要调 sortingBefore 与 sortingAfter. 如果要调用, 需要解决th为空的问题
+		// TODO @baukh20171211: 需要处理setSort执行时与配置项 isCombSorting 的关联
 		/*
    * 手动设置排序
-   * @param sortJson: 需要排序的json串 如:{th-name:'down'} value需要与参数sortUpText 或 sortDownText值相同
+   * @param $table: table jTool
+   * @param sortJson: 需要排序的json串  key为value需要与参数sortUpText 或 sortDownText值相同
    * @param callback: 回调函数[function]
    * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
    *
-   * 排序json串示例:
-   * sortJson => {name: 'ASC}
+   * sortJson详细说明
+   * 格式: {key: value} key 需要与参数 columnData 中的 key匹配, value  为参数 sortUpText 或 sortDownText 的值
+   * 示例: sortJson => {name: 'ASC}
    * */
 		value: function __setSort($table, sortJson, callback, refresh) {
+			var _this2 = this;
+
 			var settings = _Cache2.default.getSettings($table);
 			if (!sortJson || _Base.$.type(sortJson) !== 'object' || _Base.$.isEmptyObject(sortJson)) {
+				_Base.Base.outLog('排序数据不可用', 'warn');
 				return false;
 			}
 			_Base.$.extend(settings.sortData, sortJson);
 			_Cache2.default.setSettings($table, settings);
 
+			// 回调函数为空时赋值空方法
+			if (typeof callback !== 'function') {
+				callback = function callback() {};
+			}
+
 			// 默认执行完后进行刷新列表操作
 			if (typeof refresh === 'undefined') {
 				refresh = true;
 			}
-			var _th = null;
-			var _sortAction = null;
-			var _sortType = null;
-			for (var s in sortJson) {
-				_th = (0, _Base.$)('[th-name="' + s + '"]', $table);
-				_sortType = sortJson[s];
-				_sortAction = (0, _Base.$)('.sorting-action', _th);
-				if (_sortType === settings.sortUpText) {
-					_th.attr('sorting', settings.sortUpText);
-					_sortAction.removeClass('sorting-down');
-					_sortAction.addClass('sorting-up');
-				} else if (_sortType === settings.sortDownText) {
-					_th.attr('sorting', settings.sortDownText);
-					_sortAction.removeClass('sorting-up');
-					_sortAction.addClass('sorting-down');
-				}
+
+			// 执行更新
+			if (refresh) {
+				_Core2.default.__refreshGrid($table, function () {
+					// 更新排序样式
+					_this2.updateSortStyle($table);
+
+					// 执行回调函数
+					callback();
+				});
+			} else {
+				// 执行回调函数
+				callback();
 			}
-			refresh ? _Core2.default.__refreshGrid($table, callback) : typeof callback === 'function' ? callback() : '';
 		}
 
 		/**
@@ -3584,70 +3604,50 @@ var Sort = function () {
 		key: 'bindSortingEvent',
 		value: function bindSortingEvent($table) {
 			var _this = this;
-			var settings = _Cache2.default.getSettings($table);
-
-			// 向上或向下事件源
-			var action = null;
-
-			// 事件源所在的th
-			var th = null;
-
-			// 事件源所在的table
-			var table = null;
-
-			// th对应的名称
-			var thName = null;
 
 			// 绑定排序事件
 			$table.off('mouseup', '.sorting-action');
 			$table.on('mouseup', '.sorting-action', function () {
-				action = (0, _Base.$)(this);
-				th = action.closest('th');
-				table = th.closest('table');
-				thName = th.attr('th-name');
+				// 向上或向下事件源
+				var action = (0, _Base.$)(this);
+
+				// 事件源所在的th
+				var th = action.closest('th');
+
+				// 事件源所在的table
+				var _$table = th.closest('table');
+
+				// th对应的名称
+				var thName = th.attr('th-name');
+				var settings = _Cache2.default.getSettings(_$table);
+
 				if (!thName || _Base.$.trim(thName) === '') {
 					_Base.Base.outLog('排序必要的参数丢失', 'error');
 					return false;
 				}
 
-				// 根据组合排序配置项判定：是否清除原排序及排序样式
+				var oldSort = settings.sortData[th.attr('th-name')];
+
+				// 单例排序: 清空原有排序数据
 				if (!settings.isCombSorting) {
-					_Base.$.each((0, _Base.$)('.sorting-action', table), function (i, v) {
-						// action.get(0) 当前事件源的DOM
-						if (v !== action.get(0)) {
-							(0, _Base.$)(v).removeClass('sorting-up sorting-down');
-							(0, _Base.$)(v).closest('th').attr('sorting', '');
-						}
-					});
+					settings.sortData = {};
 				}
 
-				// 更新排序样式
-				_this.updateSortStyle(action, th, settings);
+				settings.sortData[th.attr('th-name')] = oldSort === settings.sortDownText ? settings.sortUpText : settings.sortDownText;
 
-				// 当前触发项为置顶表头时, 同步更新至原样式
-				if (th.closest('thead[grid-manager-mock-thead]').length === 1) {
-					var _th = (0, _Base.$)('thead[grid-manager-thead] th[th-name="' + thName + '"]', table);
-					var _action = (0, _Base.$)('.sorting-action', _th);
-					_this.updateSortStyle(_action, _th, settings);
-				}
-				// 拼装排序数据: 单列排序
-				settings.sortData = {};
-				if (!settings.isCombSorting) {
-					settings.sortData[th.attr('th-name')] = th.attr('sorting');
-					// 拼装排序数据: 组合排序
-				} else {
-					_Base.$.each((0, _Base.$)('thead[grid-manager-thead] th[th-name][sorting]', table), function (i, v) {
-						if (v.getAttribute('sorting') !== '') {
-							settings.sortData[v.getAttribute('th-name')] = v.getAttribute('sorting');
-						}
-					});
-				}
 				// 调用事件、渲染tbody
-				_Cache2.default.setSettings($table, settings);
-				console.log(2222);
+				_Cache2.default.setSettings(_$table, settings);
+
+				// 合并排序请求
 				var query = _Base.$.extend({}, settings.query, settings.sortData, settings.pageData);
+
+				// 执行排序前事件
 				settings.sortingBefore(query);
-				_Core2.default.__refreshGrid($table, function () {
+				_Core2.default.__refreshGrid(_$table, function () {
+					// 更新排序样式
+					_this.updateSortStyle(_$table);
+
+					// 排行排序后事件
 					settings.sortingAfter(query, th);
 				});
 			});
@@ -3655,25 +3655,41 @@ var Sort = function () {
 
 		/**
    * 更新排序样式
-   * @param sortAction
-   * @param th
-   * @param settings
+   * @param $table
       */
 
 	}, {
 		key: 'updateSortStyle',
-		value: function updateSortStyle(sortAction, th, settings) {
-			// 排序操作：升序
-			if (sortAction.hasClass('sorting-down')) {
-				sortAction.addClass('sorting-up');
-				sortAction.removeClass('sorting-down');
-				th.attr('sorting', settings.sortUpText);
+		value: function updateSortStyle($table) {
+			var settings = _Cache2.default.getSettings($table);
+			var $th = null;
+			var $sortAction = null;
+
+			// 重置排序样式
+			_Base.$.each((0, _Base.$)('.sorting-action', $table), function (i, v) {
+				(0, _Base.$)(v).removeClass('sorting-up sorting-down');
+				(0, _Base.$)(v).closest('th').attr('sorting', '');
+			});
+
+			// 根据排序数据更新排序
+			_Base.$.each(settings.sortData, function (key, value) {
+				$th = (0, _Base.$)('thead th[th-name="' + key + '"]', $table);
+				$sortAction = (0, _Base.$)('.sorting-action', $th);
+
+				// 排序操作：升序
+				if (value === settings.sortUpText) {
+					$sortAction.addClass('sorting-up');
+					$sortAction.removeClass('sorting-down');
+					$th.attr('sorting', settings.sortUpText);
+				}
+
 				// 排序操作：降序
-			} else {
-				sortAction.addClass('sorting-down');
-				sortAction.removeClass('sorting-up');
-				th.attr('sorting', settings.sortDownText);
-			}
+				if (value === settings.sortDownText) {
+					$sortAction.addClass('sorting-down');
+					$sortAction.removeClass('sorting-up');
+					$th.attr('sorting', settings.sortDownText);
+				}
+			});
 		}
 	}, {
 		key: 'html',

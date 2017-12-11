@@ -1,6 +1,6 @@
 {
   "name": "gridmanager",
-  "version": "2.3.17",
+  "version": "2.3.18",
   "description": "表格管理插件",
   "author": "拭目以待",
   "license": "MIT",
@@ -59,9 +59,8 @@
     "start": "node server",
     "lint": "eslint src/js/",
     "test": "karma start",
-    "build": "npm run build:dev && npm run build:minified:js && npm run build:minified:css && npm run copy",
+    "build": "webpack --config webpack-config.js && npm run build:minified:js && npm run build:minified:css && npm run copy",
     "copy": "cp package.json build/package.json && cp README.md build/README.md && cp README-CN.md build/README-CN.md && cp README-EN.md build/README-EN.md",
-    "build:dev": "webpack --config webpack-config.js",
     "build:minified:js": "uglifyjs build/js/GridManager.js -mc > build/js/GridManager.min.js",
     "build:minified:css": "uglifycss build/css/GridManager.css > build/css/GridManager.min.css"
   },

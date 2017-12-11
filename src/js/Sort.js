@@ -49,9 +49,6 @@ class Sort {
 			refresh = true;
 		}
 
-		// 合并排序请求
-		const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
-
 		// 执行更新
 		if (refresh) {
 			Core.__refreshGrid($table, () => {
