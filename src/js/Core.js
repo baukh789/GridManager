@@ -61,7 +61,7 @@ class Core {
 		if (settings.supportSorting) {
 			$.each(settings.sortData, (key, value) => {
 				// 增加sort_前缀,防止与搜索时的条件重叠
-				pram[`sort_${key}`] = value;
+				pram[`${settings.sortKey}${key}`] = value;
 			});
 		}
 
@@ -74,11 +74,6 @@ class Core {
 			pram.cPage = pram.tPage;
 		}
 
-		// settings.query = pram;
-		Cache.setSettings($table, settings);
-
-		Base.showLoading(tableWrap);
-
 		// 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
 		// 说明|备注:
 		// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
@@ -87,9 +82,26 @@ class Core {
 			settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
 		}
 
-		// 请求前处理程序, 可以通过该方法修改全部的请求参数
+		// 请求前处理程序, 可以通过该方法增加 或 修改全部的请求参数
+		// requestHandler方法内更改方式示例: pram.cPage = 1;
 		settings.requestHandler(pram);
 
+		// 将 requestHandler 内修改的分页参数合并至 settings.pageData
+		if (settings.supportAjaxPage) {
+			$.each(settings.pageData, (key, value) => {
+				settings.pageData[key] = pram[key] || value;
+			});
+		}
+
+		// 将 requestHandler 内修改的排序参数合并至 settings.sortData
+		if (settings.supportSorting) {
+			$.each(settings.sortData, (key, value) => {
+				settings.sortData[key] = pram[`${settings.sortKey}${key}`] || value;
+			});
+		}
+		Cache.setSettings($table, settings);
+
+		Base.showLoading(tableWrap);
 		// 执行ajax
 		$.ajax({
 			url: settings.ajax_url,
