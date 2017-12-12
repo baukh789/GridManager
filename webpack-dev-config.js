@@ -1,6 +1,6 @@
-const webpack = require('webpack');
 const path = require('path');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const genRules = require('./webpack-common.loader');
 const config = {
 	// map
 	devtool : 'source-map',  // TODO  http://www.css88.com/doc/webpack2/configuration/devtool/
@@ -34,45 +34,7 @@ const config = {
 
 	// 处理项目中的不同类型的模块
 	module: {
-		rules: [
-			{
-				test: /\.js$/,
-				loader: 'eslint-loader',
-				enforce: 'pre',
-				exclude: /(node_modules|bower_components)/,
-				include: path.resolve(__dirname, "src/js")
-			},
-			{
-				test: /\.js?$/,
-				loaders: ['babel-loader?{"presets":["es2015"]}'],
-				exclude: /(node_modules|bower_components)/,
-				include: [path.join(__dirname, 'src')]
-			},
-			{
-				test: /\.(sc|c)ss$/,
-				exclude: /(node_modules|bower_components)/,
-				include: [path.join(__dirname, 'src')],
-				use: ExtractTextWebpackPlugin.extract({
-					use: 'css-loader?-minimize!resolve-url-loader!sass-loader'
-				})
-			},
-			{
-				test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-				loader: 'url-loader?limit=15000&mimetype=application/font-woff&prefix=fonts'
-			},
-			{
-				test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-				loader: 'url-loader?limit=15000&mimetype=application/octet-stream&prefix=fonts'
-			},
-			{
-				test: /\.eot(\?#\w+)?$/,
-				loader: 'url-loader?limit=15000&mimetype=application/vnd.ms-fontobject&prefix=fonts'
-			},
-			{
-				test: /\.svg(#\w+)?$/,
-				loader: 'url-loader?limit=15000&mimetype=image/svg+xml&prefix=fonts'
-			}
-		]
+		rules: genRules('src')
 	}
 };
 
