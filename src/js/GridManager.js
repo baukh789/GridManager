@@ -222,6 +222,18 @@ export default class GridManager {
 	 */
 	init(table, arg, callback) {
 		const $table = jTool(table);
+		// 校验: 初始参
+		if (!arg || jTool.isEmptyObject(arg)) {
+			Base.outLog('init()方法中未发现有效的参数', 'error');
+			return;
+		}
+
+		// 校验: columnData
+		if (!arg.columnData || arg.columnData.length === 0) {
+			Base.outLog('请对参数columnData进行有效的配置', 'error');
+			return;
+		}
+
 		// 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
 		if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
 			// 存储gridManagerName值
@@ -237,18 +249,17 @@ export default class GridManager {
 		// 初始化设置相关: 合并, 存储
 		const settings = Cache.initSettings($table, arg);
 
-		// 校验 gridManagerName
+		// 校验: gridManagerName
 		if (settings.gridManagerName.trim() === '') {
 			Base.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
-			return false;
+			return;
 		}
 
-		// 校验 当前表格是否已经渲染
+		// 校验: 当前表格是否已经渲染
 		if ($table.hasClass('GridManager-ready') || $table.hasClass('GridManager-loading')) {
-			Base.outLog('渲染失败：可能该表格已经渲染或正在渲染', 'error');
-			return false;
+			Base.outLog('渲染失败,可能该表格已经渲染或正在渲染', 'error');
+			return;
 		}
-
 
 		// 根据本地缓存配置每页显示条数
 		if (settings.supportAjaxPage) {
@@ -270,7 +281,6 @@ export default class GridManager {
 		}
 		// 启用回调
 		typeof (callback) === 'function' ? callback(settings.query) : '';
-		return $table;
 	}
 
 	/**

@@ -25,33 +25,36 @@ describe('Adjust 验证类的属性及方法总量', function() {
 	});
 });
 
-/**
- * 属性及方法验证
- */
-describe('Adjust.js', function() {
-	it('Adjust.html', function() {
+describe('Adjust.html', function() {
+	it('基础验证', function(){
 		expect(Adjust.html).toBeDefined();
 		expect(Adjust.html).toBe('<span class="adjust-action"></span>');
 	});
+});
 
-	it('Adjust.bindAdjustEvent($table)', function() {
+describe('Adjust.bindAdjustEvent($table)', function() {
+	it('基础验证', function(){
 		expect(Adjust.bindAdjustEvent).toBeDefined();
 		expect(Adjust.bindAdjustEvent.length).toBe(1);
 	});
+});
 
-	it('Adjust.runMoveEvent($table, $th, $nextTh)', function() {
+describe('Adjust.runMoveEvent($table, $th, $nextTh)', function() {
+	it('基础验证', function(){
 		expect(Adjust.runMoveEvent).toBeDefined();
 		expect(Adjust.runMoveEvent.length).toBe(3);
 	});
+});
 
-	it('Adjust.runStopEvent($table, $th, $td)', function() {
+describe('Adjust.runStopEvent($table, $th, $td)', function() {
+	it('基础验证', function(){
 		expect(Adjust.runStopEvent).toBeDefined();
 		expect(Adjust.runStopEvent.length).toBe(3);
 	});
-
-	it('Adjust.resetAdjust($table)', function() {
+});
+describe('Adjust.resetAdjust($table)', function() {
+	it('基础验证', function() {
 		expect(Adjust.resetAdjust).toBeDefined();
 		expect(Adjust.resetAdjust.length).toBe(1);
 	});
-
 });

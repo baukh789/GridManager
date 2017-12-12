@@ -17,7 +17,7 @@ class Cache {
 		this.initUserMemory();
 	}
 	/**
-	 * 渲染表格使用的json数据 通过每个tr上的cache-key进行获取
+	 * 表格渲染数据 注意: 通过每个tr上的cache-key进行获取
 	 */
 	initGridData() {
 		/**
@@ -228,12 +228,6 @@ class Cache {
 			// 存储配置项
 			this.setSettings($table, _settings);
 
-			// 校验 columnData
-			if (!_settings.columnData || _settings.columnData.length === 0) {
-				Base.outLog('请对参数columnData进行有效的配置', 'error');
-				return;
-			}
-
 			// 为 columnMap columnData 增加 序号列
 			if (_settings.supportAutoOrder) {
 				_settings.columnData.unshift(Order.getColumn($table, _settings.i18n));
@@ -354,13 +348,13 @@ class Cache {
 		this.cleanTableCache = ($table, cleanText) => {
 			// 不指定table, 清除全部
 			if ($table === null) {
-				Base.outLog(`用户记忆被清除：${cleanText}`, 'warn');
+				Base.outLog(`用户记忆被清除: ${cleanText}`, 'warn');
 				return this.delUserMemory();
 
 				// 指定table, 定点清除
 			} else {
 				const Settings = this.getSettings($table);
-				Base.outLog(`${Settings.gridManagerName}用户记忆被清除：${cleanText}`, 'warn');
+				Base.outLog(`${Settings.gridManagerName}用户记忆被清除: ${cleanText}`, 'warn');
 				return this.delUserMemory($table);
 			}
 		};
