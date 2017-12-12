@@ -1,10 +1,11 @@
+@import "mixins";
 /* 表格分页 */
 .table-wrap{
 	.page-toolbar{
-		width: 100%;
-		position: relative;
-		padding: 5px 0;
-		background-color: #e8e8e8;
+	  width: 100%;
+	  position: relative;
+	  padding: 5px 0;
+	  @include bg-image();
 		.dataTables_info{
 			display: inline-block;
 			padding: 6px 5px;
@@ -35,28 +36,28 @@
 			display: inline-block;
 			width: 30px;
 			height: 30px;
-			padding: 8px 6px 6px 8px;
+		  	line-height: 30px;
+			padding: 1px 0px 0px 1px;
 			vertical-align: middle;
+		    text-align: center;
 			&:hover{
-				color: #3276b1;
+				color: #777;
 			}
 			i{
 				cursor: pointer;
 				line-height: 15px;
 				font-size: 16px;
-				color: #4078c0;
-				font-weight: 600;
+				color: #82bdf4;
+				font-weight: bold;
 			}
 			&.refreshing{
-				-webkit-animation: rotationMedia 2s ease-in-out infinite;
-				-moz-animation: rotationMedia 2s ease-in-out infinite;
 				animation: rotationMedia 2s ease-in-out infinite;
 			}
 		}
 		.ajax-page{
 			position: absolute;
 			height: 30px;
-			right: 0;
+			right: 5px;
 			bottom: 5px;
 			:after{
 				clear: both;
@@ -72,7 +73,7 @@
 					background-color: #fff;
 					border: 1px solid #ddd;
 					border-left: none;
-					color: #3276b1;
+					color: #777;
 					position: relative;
 					line-height: 18px;
 					text-align: center;
@@ -89,7 +90,7 @@
 						cursor: not-allowed;
 					}
 					&.active, &.active:focus, &.active:hover{
-						background-color: #3276b1;
+						background-color: #777;
 						color: #fff;
 						z-index: 2;
 					}
