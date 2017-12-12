@@ -5,6 +5,7 @@
 @import "./gridLoading.scss";
 @import "./gridPage.scss";
 @import "./gridConfig.scss";
+@import "./mixins.scss";
 /* table所在的DIV */
 .table-wrap{
 	position: relative;
@@ -14,10 +15,8 @@
 		overflow: auto;
 		/* 自定义滚动条样式 */
 		&::-webkit-scrollbar-track {
-			-webkit-border-radius: 5px;
-			-moz-border-radius: 5px;
 			border-radius: 5px;
-			background-color: #fafafa;
+			background-color: #f3f3f3;
 		}
 		&::-webkit-scrollbar-track-piece {
 			display: none;
@@ -28,8 +27,6 @@
 			height: 10px;
 		}
 		&::-webkit-scrollbar-thumb{
-			-webkit-border-radius: 5px;
-			-moz-border-radius: 5px;
 			border-radius: 5px;
 			background-color: #e1e1e1;
 			width: 6px;
@@ -46,8 +43,7 @@
 			table-layout: fixed;
 			word-wrap: break-word;
 			text-align: center;
-			background-color: #dad9c7;
-			font-size: 12px;
+			background-color: #d8d8d8;
 			width: 100%;
 			border-collapse: separate;
 			border-spacing: 1px;
@@ -64,7 +60,6 @@
 					display: none;
 				}
 				&[th-visible="visible"]{
-
 					display: table-cell;
 				}
 				/* 宽度调整选中 */
@@ -79,14 +74,8 @@
 				/* 拖拽换位中 */
 				&.drag-ongoing{
 					cursor: all-scroll;
-					background: #666 !important;
-					border-color: #ccc !important;
-					color: #fff !important;
-					opacity: 0.5;
 					&.opacityChange{
 						opacity: 1;
-						-webkit-animation: opacityChange 1s ease-in-out infinite;
-						-moz-animation: opacityChange 1s ease-in-out infinite;
 						animation: opacityChange 1s ease-in-out infinite;
 					}
 				}
@@ -115,31 +104,31 @@
 			thead{
 				tr{
 					th{
-						background-color: #e6eeee;
-						&:hover{
-							background-color: #8dbdd8;
-						}
-						&[th-visible="none"]{
-							display: none;
-						}
-						&[th-visible="visible"]{
-
-							display: table-cell;
-						}
-						&[remind] .th-wrap{
-							padding-left: 24px;
-						}
-						&[sorting] .th-wrap{
-							padding-right: 24px;
-						}
-						&[gm-create="true"] .th-wrap{
-							padding: 6px 4px;
-						}
-						&[gm-create="true"]{
-							background-color: #e6eeee !important;
-							opacity: 0.4;
-						}
-						.th-wrap{
+					  color: #000;
+					  @include bg-image();
+					  &:hover{
+						  background-color: #e0e0e0;
+					  }
+					  &[th-visible="none"]{
+						  display: none;
+					  }
+					  &[th-visible="visible"]{
+						  display: table-cell;
+					  }
+					  &[remind] .th-wrap{
+						  padding-left: 24px;
+					  }
+					  &[sorting] .th-wrap{
+						  padding-right: 24px;
+					  }
+					  &[gm-create="true"] .th-wrap{
+						  padding: 6px 4px;
+					  }
+					  &[gm-create="true"]{
+						  background-color: #f3f3f3 !important;
+						  opacity: 0.4;
+					  }
+					  .th-wrap{
 							width: 100%;
 							height: 100%;
 							position: relative;
@@ -314,11 +303,10 @@
 							display: none;
 						}
 						&[td-visible="visible"]{
-
 							display: table-cell;
 						}
 						&[col-hover="true"]{
-							background-color: #e6eeee;
+							background-color: #f3f3f3;
 						}
 						&td[gm-create="true"]{
 							background-color: #f8f8f8;
@@ -335,7 +323,7 @@
 						}
 					}
 					&[row-hover="true"] td{
-						background-color: #e6eeee;
+						background-color: #f3f3f3;
 						color: #000;
 					}
 				}
@@ -378,17 +366,17 @@
 			width: 100%;
 			margin: 0 !important;
 			padding: 0 !important;
-			background-color: #dad9c7;
+			background-color: #d8d8d8;
 			border-collapse: separate;
 			border-spacing: 1px;
 			font-size: 12px !important;
 			font-family: arial !important;
 			tr{
 				th{
-					background-color: #e6eeee;
+					background-color: #f3f3f3;
 					text-align: center;
 					&:hover{
-						background-color: #8dbdd8;
+						background-color: #e0e0e0;
 					}
 				}
 				td{

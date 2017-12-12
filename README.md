@@ -6,8 +6,8 @@
 [![coverage](https://img.shields.io/codecov/c/github/baukh789/GridManager.svg?style=flat-square)](https://codecov.io/gh/baukh789/GridManager)
 
 ## Language
-- [English](./README-EN.md)
-- [中文](./README-CN.md)
+- [English](readme/README-EN.md)
+- [中文](readme/README-CN.md)
 
 ## API and Demo
 - [API](http://gridmanager.lovejavascript.com/api/index.html)
@@ -22,4 +22,4 @@
 - [License](/LICENSE)
 
 ## Participate In Development
-- [Developer Documentation](./DEVELOP-README.md)
+- [Developer Documentation](readme/DEVELOP-README.md)

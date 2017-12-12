@@ -1,12 +1,13 @@
 /* 右键菜单 */
 .grid-menu[grid-master]{
+  	color: #000;
 	display: none;
 	width: 200px;
 	max-height: 200px;
 	position: absolute;
 	border: 1px solid #ccc;
 	padding: 5px 0;
-	background-color: #fff;
+	background: #fff;
 	z-index: 3;
 	[grid-action]{
 		display: block;
@@ -14,12 +15,12 @@
 		padding: 5px 20px;
 		cursor: default;
 		&:hover{
-			background-color: #3276b1;
+			background: #777;
 			color: #fff;
 		}
 		&.disabled{
 			color: #ccc;
-			background-color: #fff;
+			background: #fff;
 		}
 		.iconfont{
 			display: block;
@@ -34,7 +35,7 @@
 	.grid-line{
 		display: block;
 		height: 3px;
-		background-color: #e8e8e8;
+		background: #e8e8e8;
 		border-top: 1px solid #f8f8f8;
 		border-bottom: 1px solid #f8f8f8;
 	}
