@@ -25,76 +25,99 @@ describe('AjaxPage 验证类的属性及方法总量', function() {
 	});
 });
 
-/**
- * 属性及方法验证
- */
-describe('AjaxPage 属性及方法验证', function() {
-	it('AjaxPage.createHtml($table)', function(){
+describe('AjaxPage.createHtml($table)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.createHtml).toBeDefined();
 		expect(AjaxPage.createHtml.length).toBe(1);
 	});
+});
 
-	it('AjaxPage.initAjaxPage($table)', function(){
+describe('AjaxPage.initAjaxPage($table)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.initAjaxPage).toBeDefined();
 		expect(AjaxPage.initAjaxPage.length).toBe(1);
 	});
+});
 
-	it('AjaxPage.createPaginationDOM($table, pageData)', function(){
+describe('AjaxPage.createPaginationDOM($table, pageData)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.createPaginationDOM).toBeDefined();
 		expect(AjaxPage.createPaginationDOM.length).toBe(2);
 	});
+});
 
-	it('AjaxPage.joinPagination($table, pageData)', function(){
+describe('AjaxPage.joinPagination($table, pageData)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.joinPagination).toBeDefined();
 		expect(AjaxPage.joinPagination.length).toBe(2);
 	});
+});
 
-	it('AjaxPage.createPageSizeDOM($table, _sizeData_)', function(){
+describe('AjaxPage.createPageSizeDOM($table, _sizeData_)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.createPageSizeDOM).toBeDefined();
 		expect(AjaxPage.createPageSizeDOM.length).toBe(2);
 	});
+});
 
-	it('AjaxPage.bindPageJumpEvent($table)', function(){
+describe('AjaxPage.bindPageJumpEvent($table)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.bindPageJumpEvent).toBeDefined();
 		expect(AjaxPage.bindPageJumpEvent.length).toBe(1);
 	});
+});
 
-	it('AjaxPage.bindPageClick($table, pageToolbar)', function(){
+describe('AjaxPage.bindPageClick($table, pageToolbar)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.bindPageClick).toBeDefined();
 		expect(AjaxPage.bindPageClick.length).toBe(2);
 	});
+});
 
-	it('AjaxPage.bindInputEvent($table, pageToolbar)', function(){
+describe('AjaxPage.bindInputEvent($table, pageToolbar)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.bindInputEvent).toBeDefined();
 		expect(AjaxPage.bindInputEvent.length).toBe(2);
 	});
+});
 
-	it('AjaxPage.bindRefreshEvent($table, pageToolbar)', function(){
+describe('AjaxPage.bindRefreshEvent($table, pageToolbar)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.bindRefreshEvent).toBeDefined();
 		expect(AjaxPage.bindRefreshEvent.length).toBe(2);
 	});
+});
 
-	it('AjaxPage.gotoPage($table, _cPage)', function(){
+describe('AjaxPage.gotoPage($table, _cPage)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.gotoPage).toBeDefined();
 		expect(AjaxPage.gotoPage.length).toBe(2);
 	});
+});
 
-	it('AjaxPage.bindSetPageSizeEvent($table)', function(){
+describe('AjaxPage.bindSetPageSizeEvent($table)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.bindSetPageSizeEvent).toBeDefined();
 		expect(AjaxPage.bindSetPageSizeEvent.length).toBe(1);
 	});
+});
 
-	it('AjaxPage.resetPSize($table, _pageData_)', function(){
+describe('AjaxPage.resetPSize($table, _pageData_)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.resetPSize).toBeDefined();
 		expect(AjaxPage.resetPSize.length).toBe(2);
 	});
+});
 
-	it('AjaxPage.resetPageData($table, totals)', function(){
+describe('AjaxPage.resetPageData($table, totals)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.resetPageData).toBeDefined();
 		expect(AjaxPage.resetPageData.length).toBe(2);
 	});
+});
 
-	it('AjaxPage.configPageForCache($table)', function(){
+describe('AjaxPage.configPageForCache($table)', function() {
+	it('基础验证', function () {
 		expect(AjaxPage.configPageForCache).toBeDefined();
 		expect(AjaxPage.configPageForCache.length).toBe(1);
 	});

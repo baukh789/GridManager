@@ -1,7 +1,7 @@
 /*
  *  GridManager: 入口
  * */
-import { jTool } from './Base';
+import { jTool, Base } from './Base';
 import GridManager from './GridManager';
 import { PublishMethod, publishMethodArray } from './Publish';
 /*
@@ -47,24 +47,11 @@ import { PublishMethod, publishMethodArray } from './Publish';
 		}
 
 		if (publishMethodArray.indexOf(name) === -1) {
-			throw new Error(`GridManager Error:方法调用错误，请确定方法名[${name}]是否正确`);
+			Base.outLog(`方法调用错误，请确定方法名[${name}]是否正确`, 'error');
+			return;
 		}
 
-		// let gmObj;
-		// 当前为初始化方法
-		if (name === 'init') {
-			const _GM = new GridManager();
-			_GM.init(this, settings, callback);
-			return _GM;
-			// 当前为其它方法
-		} else if (name !== 'init') {
-			// gmObj = $table.data('gridManager');
-			// console.log(gmObj);
-			const gmData = PublishMethod[name](this, settings, callback, condition);
-
-			// 如果方法存在返回值则返回，如果没有返回dom, 用于链式操作
-			return typeof (gmData) === 'undefined' ? this : gmData;
-		}
+		return PublishMethod[name](this, settings, callback, condition) || this;
 	};
 })(jTool);
 

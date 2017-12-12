@@ -2,292 +2,372 @@
  * Created by baukh on 17/4/17.
  * 注意: 公开方法在实际调用时 与 测试时方法不同, document.querySelector('table').GM('get');
  */
+'use strict';
+import {PublishMethod, publishMethodArray} from '../src/js/Publish';
+import testData from '../src/data/testData';
 
-// 'use strict';
-// import '../build/css/GridManager.css';
-// import { jTool } from '../src/js/Base';
-// import {PublishMethod, publishMethodArray} from '../src/js/Publish';
-// import Cache from '../src/js/Cache';
-// import Export from '../src/js/Export';
-// import testData from '../src/data/testData';
-// import testData2 from '../src/data/testData2';
-// import GridManager from '../src/js/GridManager';
-// describe('Publish.js', function() {
-// 	let gmName = 'test-publish';
-// 	let table = document.createElement('table');
-// 	table.setAttribute('grid-manager', gmName);
-// 	let $table = jTool(table);
-// 	beforeAll(function(){
-// 		document.querySelector('body').appendChild(table);
-// 		var arg = {
-// 			ajax_data: testData
-// 			,query: {name: 'baukh'}
-// 			,supportAjaxPage: true
-// 			,columnData: [
-// 				{
-// 					key: 'name',
-// 					width: '100px',
-// 					text: '名称'
-// 				},{
-// 					key: 'info',
-// 					text: '使用说明'
-// 				},{
-// 					key: 'url',
-// 					text: 'url'
-// 				},{
-// 					key: 'createDate',
-// 					text: '创建时间'
-// 				},{
-// 					key: 'lastDate',
-// 					text: '最后修改时间'
-// 				},{
-// 					key: 'action',
-// 					text: '操作',
-// 					template: function(action, rowObject){
-// 						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-// 							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-// 					}
-// 				}
-// 			]
-// 		};
-// 		new GridManager().init(table, arg);
-// 	});
-// 	afterAll(function () {
-// 		table = null;
-// 		$table = null;
-// 		gmName = null;
-// 		document.body.innerHTML = '';
-// 	});
-//
-// 	it('核对对外公开方法总数 及 方法名匹配', function(){
-// 		expect(publishMethodArray.length).toBe(14);
-// 		let list = [
-// 			'init',					// 初始化方法
-// 			'setSort',				// 手动设置排序
-// 			'get',					//通过jTool实例获取GridManager
-// 			'showTh',				//显示Th及对应的TD项
-// 			'hideTh',				//隐藏Th及对应的TD项
-// 			'exportGridToXls',		//导出表格 .xls
-// 			'getLocalStorage',		//获取指定表格的本地存储数据
-// 			'setQuery',				//配置query 该参数会在分页触发后返回至pagingAfter(query)方法
-// 			'setAjaxData',          //用于再次配置ajax_data数据, 配置后会根据配置的数据即刻刷新表格
-// 			'refreshGrid',			//刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
-// 			'getCheckedTr',			//获取当前选中的行
-// 			'getRowData',			//获取当前行渲染时使用的数据
-// 			'getCheckedData',		//获取当前选中行渲染时使用的数据
-// 			'clear'					//清除指定表的表格记忆数据
-// 			];
-// 		publishMethodArray.forEach(function(v, i){
-// 			expect(list.indexOf(v)).not.toBe(-1);
-// 		});
-// 		list = null;
-// 	});
-//
-// 	it('PublishMethod.get($table)', function(){
-// 		let gm = null;
-// 		gm = PublishMethod.get($table);
-// 		expect(gm).toBeDefined();
-// 		expect(gm['supportDrag']).toBe(true);
-// 		expect(gm['sortData']).toEqual({});
-// 		expect(gm['sortUpText']).toBe('ASC');
-// 		expect(gm['width']).toBe('100%');
-// 		expect(gm['height']).toBe('300px');
-//
-// 		gm = null;
-// 	});
-//
-// 	it('PublishMethod.getLocalStorage($table)', function(){
-// 		let userMemory = null;
-// 		userMemory = PublishMethod.getLocalStorage($table);
-// 		expect(userMemory.key).toEqual('/context.html-test-publish');
-// 		Cache.saveUserMemory($table);
-// 		userMemory = PublishMethod.getLocalStorage($table);
-// 		expect(userMemory.key).toBeDefined();
-// 		expect(userMemory.cache).toBeDefined();
-//
-// 		userMemory = null;
-// 	});
-//
-// 	it('PublishMethod.clear($table)', function(){
-// 		// expect($table.attr('grid-manager')).toBe('test-publish');
-//
-// 		let userMemory = null;
-// 		PublishMethod.clear($table);
-// 		userMemory = PublishMethod.getLocalStorage($table);
-// 		expect(userMemory.cache).toEqual({});
-// 		userMemory = null;
-// 	});
-//
-// 	it('PublishMethod.getRowData($table, target)', function(){
-// 		let tr = null;
-// 		let trList = null;
-// 		let rowData = null;
-// 		tr = table.querySelector('tbody tr:first-child');
-// 		trList = table.querySelectorAll('tbody tr');
-//
-// 		// Element 返回Object形式数据
-// 		rowData = PublishMethod.getRowData($table, tr);
-// 		expect(rowData.createDate).toBe('2015-03-12');
-// 		// NodeList 返回数组
-// 		rowData = PublishMethod.getRowData($table, trList);
-// 		expect(rowData.length).toBe(trList.length);
-//
-// 		tr = null;
-// 		trList = null;
-// 		rowData = null;
-// 	});
-//
-// 	it('PublishMethod.setSort($table, sortJson, callback, refresh)', function(){
-// 		let settings = null;
-// 		let sortJson = null;
-// 		let callback = null;
-// 		settings = Cache.getSettings($table);
-// 		sortJson = {name:'DESC', createDate:'ASC'};
-// 		callback = jasmine.createSpy('callback');
-// 		expect(settings.sortData).toEqual({});
-// 		PublishMethod.setSort($table, sortJson, callback, false);
-//
-// 		settings = Cache.getSettings($table);
-// 		expect(settings.sortData).toEqual(sortJson);
-//
-// 		expect(jTool('th[th-name="name"]', $table).attr('sorting')).toBe('DESC');
-// 		expect(jTool('th[th-name="createDate"]', $table).attr('sorting')).toBe('ASC');
-//
-// 		settings = null;
-// 		sortJson = null;
-// 		callback = null;
-// 	});
-//
-// 	it('PublishMethod.hideTh($table, th)', function(){
-// 		let visibleTh = null;
-// 		let th = null;
-// 		let thList = null;
-// 		// 以下操作将自动生成列排除在外
-// 		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
-// 		expect(visibleTh.length).toBe(6);
-//
-// 		// 隐藏一列
-// 		th = jTool('th[th-name="name"]', $table);
-// 		PublishMethod.hideTh($table, th);
-// 		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
-// 		expect(visibleTh.length).toBe(5);
-//
-// 		// 隐藏全部
-// 		thList = jTool('th[gm-create="false"]', $table);
-// 		PublishMethod.hideTh($table, thList);
-// 		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
-// 		expect(visibleTh.length).toBe(0);
-//
-// 		visibleTh = null;
-// 		th = null;
-// 		thList = null;
-// 	});
-//
-// 	it('PublishMethod.showTh($table, th)', function(){
-// 		let visibleTh = null;
-// 		let th = null;
-// 		let thList = null;
-// 		// 以下操作将自动生成列排除在外
-// 		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
-// 		expect(visibleTh.length).toBe(0);
-//
-// 		// 显示一列
-// 		th = jTool('th[th-name="name"]', $table);
-// 		PublishMethod.showTh($table, th);
-// 		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
-// 		expect(visibleTh.length).toBe(1);
-//
-// 		// 显示全部
-// 		thList = jTool('th[gm-create="false"]', $table);
-// 		PublishMethod.showTh($table, thList);
-// 		visibleTh = jTool('th[th-visible="visible"][gm-create="false"]', $table);
-// 		expect(visibleTh.length).toBe(6);
-//
-// 		visibleTh = null;
-// 		th = null;
-// 		thList = null;
-// 	});
-//
-// 	it('PublishMethod.exportGridToXls($table, fileName, onlyChecked)', function(){
-// 		expect(PublishMethod.exportGridToXls($table, 'test', true)).toBe(Export.__exportGridToXls($table, 'test', true));
-// 	});
-//
-// 	it('PublishMethod.setQuery($table, query)', function(){
-// 		let query = null;
-// 		let settings = null;
-//
-// 		// 未执行setQuery时, 使用init时配置的query
-// 		settings = Cache.getSettings($table);
-// 		expect(settings.query).toEqual({name: 'baukh'});
-//
-// 		query = {
-// 			testKey: 'love javascript'
-// 		};
-// 		PublishMethod.setQuery($table, query);
-// 		settings = Cache.getSettings($table);
-// 		expect(settings.query).toEqual({testKey: 'love javascript'});
-//
-// 		query = {
-// 			testName: 'baukh'
-// 		};
-//
-// 		PublishMethod.setQuery($table, query);
-// 		settings = Cache.getSettings($table);
-// 		expect(settings.query).toEqual({testName: 'baukh'});
-//
-// 		query = null;
-// 		settings = null;
-// 	});
-//
-// 	it('PublishMethod.setAjaxData($table, ajaxData)', function(){
-// 		let settings = null;
-// 		settings = Cache.getSettings($table);
-// 		expect(settings.pageData.tSize).toBe(8);
-//
-// 		PublishMethod.setAjaxData($table, testData2);
-// 		settings = Cache.getSettings($table);
-// 		expect(settings.pageData.tSize).toBe(5);
-//
-// 		settings = null;
-// 	});
-//
-// 	it('PublishMethod.refreshGrid($table, callback)', function(){
-// 		let callback = null;
-// 		callback = jasmine.createSpy('callback');
-// 		PublishMethod.refreshGrid($table, callback);
-// 		expect(callback).toHaveBeenCalled();
-//
-// 		callback = null;
-// 	});
-//
-// 	it('PublishMethod.getCheckedTr(table)', function(){
-// 		let checkedList = null;
-// 		let checkboxList = null;
-// 		checkedList = PublishMethod.getCheckedTr(table);
-// 		expect(jTool.type(checkedList)).toBe('nodeList');
-// 		expect(checkedList.length).toBe(0);
-//
-// 		checkboxList = jTool('tr td[gm-checkbox="true"] input', table);
-// 		checkboxList.eq(0).trigger('click');
-// 		checkedList = PublishMethod.getCheckedTr(table);
-// 		expect(checkedList.length).toBe(1);
-//
-// 		checkboxList.eq(1).trigger('click');
-// 		checkedList = PublishMethod.getCheckedTr(table);
-// 		expect(checkedList.length).toBe(2);
-//
-// 		checkedList = null;
-// 		checkboxList = null;
-// 	});
-//
-// 	it('PublishMethod.getCheckedData(table)', function () {
-// 		let checkedData = null;
-// 		checkedData = PublishMethod.getCheckedData(table);
-// 		expect(checkedData.length).toBe(2);
-// 		expect(checkedData[0].name).toBe('baukh');
-// 		expect(checkedData[1].name).toBe('kouzi');
-//
-// 		checkedData = null;
-// 	});
-//
-// });
+describe('publishMethodArray', function() {
+	it('公开方法列表', function () {
+		expect(publishMethodArray).toEqual(['init', 'get', 'getLocalStorage', 'clear', 'getRowData', 'setSort', 'showTh', 'hideTh', 'exportGridToXls', 'setQuery', 'setAjaxData', 'refreshGrid', 'getCheckedTr', 'getCheckedData']);
+	});
+});
+
+/**
+ * 验证类的属性及方法总量
+ */
+describe('Publish 验证类的属性及方法总量', function() {
+	var getPropertyCount = null;
+	beforeEach(function() {
+		getPropertyCount = function(o){
+			var n, count = 0;
+			for(n in o){
+				if(o.hasOwnProperty(n)){
+					count++;
+				}
+			}
+			return count;
+		}
+	});
+	afterEach(function(){
+		getPropertyCount = null;
+	});
+	it('Function count', function() {
+		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(14 + 1);
+	});
+});
+
+describe('PublishMethod.init(table, settings, callback)', function() {
+	let table = null;
+	let arg = null;
+	beforeEach(function(){
+		// 存储console, 用于在测方式完成后原还console对象
+		console._error = console.error;
+		console.error = jasmine.createSpy("error");
+
+		table = document.createElement('table');
+		document.body.appendChild(table);
+		arg = null;
+	});
+
+	afterEach(function(){
+		console.error = console._error;
+		document.body.innerHTML = '';
+		table = null;
+		arg = null;
+	});
+
+	it('基础验证', function () {
+		expect(PublishMethod.init).toBeDefined();
+		expect(PublishMethod.init.length).toBe(3);
+	});
+
+	it('配置参为空', function () {
+		PublishMethod.init(table);
+		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', 'init()方法中未发现有效的参数');
+	});
+
+	it('columnData 为空', function () {
+		arg = {
+			gridManagerName: 'test-publish'
+		};
+		PublishMethod.init(table, arg);
+		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '请对参数columnData进行有效的配置');
+	});
+
+	// gridManagerName 为空
+	it('gridManagerName 为空', function () {
+		arg = {
+			columnData: [{
+				key: 'url',
+				text: '链接'
+			}]
+		};
+		PublishMethod.init(table, arg);
+		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName');
+	});
+
+	it('当前表格已经渲染', function () {
+		arg = {
+			gridManagerName: 'test-publish',
+			columnData: [{
+				key: 'url',
+				text: '链接'
+			}]
+		};
+		table.className = 'GridManager-ready';
+		PublishMethod.init(table, arg);
+		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '渲染失败,可能该表格已经渲染或正在渲染');
+	});
+
+	it('当前表格正在渲染', function () {
+		arg = {
+			gridManagerName: 'test-publish',
+			columnData: [{
+				key: 'url',
+				text: '链接'
+			}]
+		};
+		table.className = 'GridManager-loading';
+		PublishMethod.init(table, arg);
+		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '渲染失败,可能该表格已经渲染或正在渲染');
+	});
+
+	it('回调函数是否调用', function () {
+		table.className = '';
+		arg = {
+			ajax_data: testData,
+			gridManagerName: 'test-publish',
+			columnData: [
+				{
+					key: 'name',
+					width: '100px',
+					text: '名称'
+				},{
+					key: 'info',
+					text: '使用说明'
+				},{
+					key: 'url',
+					text: 'url'
+				},{
+					key: 'createDate',
+					text: '创建时间'
+				},{
+					key: 'lastDate',
+					text: '最后修改时间'
+				},{
+					key: 'action',
+					text: '操作',
+					template: function(action, rowObject){
+						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+					}
+				}
+			]
+		};
+
+		let callback = jasmine.createSpy('callback');
+		PublishMethod.init(table, arg, callback);
+		expect(callback).toHaveBeenCalled();
+	});
+});
+
+
+describe('PublishMethod.get(table)', function() {
+	let table = null;
+	let arg = null;
+	beforeEach(function(){
+		table = document.createElement('table');
+		document.body.appendChild(table);
+		arg = null;
+	});
+
+	afterEach(function(){
+		table = null;
+		arg = null;
+		document.body.innerHTML = '';
+	});
+
+	it('基础验证', function () {
+		expect(PublishMethod.get).toBeDefined();
+		expect(PublishMethod.get.length).toBe(1);
+	});
+
+	it('参数为空', function () {
+		expect(PublishMethod.get()).toEqual({});
+	});
+
+	it('验证返回值', function () {
+		// 抽取两个值进行较验
+		expect(PublishMethod.get(table).gridManagerName).toBe('');
+		expect(PublishMethod.get(table).sortKey).toBe('sort_');
+	});
+});
+
+
+describe('PublishMethod.getLocalStorage(table)', function() {
+	let table = null;
+	let arg = null;
+	beforeEach(function(){
+		table = document.createElement('table');
+		document.body.appendChild(table);
+		arg = null;
+	});
+
+	afterEach(function(){
+		table = null;
+		arg = null;
+		document.body.innerHTML = '';
+	});
+
+	it('基础验证', function () {
+		expect(PublishMethod.getLocalStorage).toBeDefined();
+		expect(PublishMethod.getLocalStorage.length).toBe(1);
+	});
+
+	it('参数为空', function () {
+		expect(PublishMethod.getLocalStorage()).toEqual({});
+	});
+
+	it('验证返回值', function () {
+		// 当前表格并不存在本地存储, 所以返回为空对象
+		expect(PublishMethod.getLocalStorage(table)).toEqual({});
+	});
+});
+
+describe('PublishMethod.clear(table)', function() {
+	let table = null;
+	let arg = null;
+	beforeEach(function () {
+		// 存储console, 用于在测方式完成后原还console对象
+		console._warn = console.warn;
+		console.warn = jasmine.createSpy("warn");
+
+		table = document.createElement('table');
+		document.body.appendChild(table);
+		arg = null;
+	});
+
+	afterEach(function () {
+		console.error = console._error;
+		document.body.innerHTML = '';
+		table = null;
+		arg = null;
+	});
+
+	it('基础验证', function () {
+		expect(PublishMethod.clear).toBeDefined();
+		expect(PublishMethod.clear.length).toBe(1);
+	});
+
+	it('console提示文本', function () {
+		PublishMethod.clear(table);
+		expect(console.warn).toHaveBeenCalledWith('GridManager Warn: ', '用户记忆被清除: 通过clear()方法清除');
+	});
+});
+
+
+describe('PublishMethod.getRowData(table, target)', function() {
+	let table = null;
+	let arg = null;
+	let trList = null;
+	beforeEach(function () {
+		table = document.createElement('table');
+		document.body.appendChild(table);
+		arg = {
+			ajax_data: testData,
+			gridManagerName: 'test-publish-getRowData',
+			columnData: [
+				{
+					key: 'name',
+					width: '100px',
+					text: '名称'
+				},{
+					key: 'info',
+					text: '使用说明'
+				},{
+					key: 'url',
+					text: 'url'
+				},{
+					key: 'createDate',
+					text: '创建时间'
+				},{
+					key: 'lastDate',
+					text: '最后修改时间'
+				},{
+					key: 'action',
+					text: '操作',
+					template: function(action, rowObject){
+						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+					}
+				}
+			]
+		};
+		PublishMethod.init(table, arg);
+		trList = document.querySelectorAll('tbody tr');
+	});
+
+	afterEach(function () {
+		table = null;
+		arg = null;
+		trList = null;
+	});
+
+	it('基础验证', function () {
+		expect(PublishMethod.getRowData).toBeDefined();
+		expect(PublishMethod.getRowData.length).toBe(2);
+	});
+
+	it('target为空', function () {
+		expect(PublishMethod.getRowData(table)).toEqual({});
+	});
+
+	it('参数完整', function () {
+		expect(PublishMethod.getRowData(table, trList[0])).toEqual(testData.data[0]);
+		expect(PublishMethod.getRowData(table, trList[2])).toEqual(testData.data[2]);
+	});
+});
+
+describe('PublishMethod.setSort(table, sortJson, callback, refresh)', function() {
+	it('基础验证', function () {
+		expect(PublishMethod.setSort).toBeDefined();
+		expect(PublishMethod.setSort.length).toBe(4);
+	});
+});
+
+describe('PublishMethod.showTh(table, target)', function() {
+	it('基础验证', function () {
+		expect(PublishMethod.showTh).toBeDefined();
+		expect(PublishMethod.showTh.length).toBe(2);
+	});
+});
+
+describe('PublishMethod.hideTh(table, target)', function() {
+	it('基础验证', function () {
+		expect(PublishMethod.hideTh).toBeDefined();
+		expect(PublishMethod.hideTh.length).toBe(2);
+	});
+});
+
+describe('PublishMethod.exportGridToXls(table, fileName, onlyChecked)', function() {
+	it('基础验证', function () {
+		expect(PublishMethod.exportGridToXls).toBeDefined();
+		expect(PublishMethod.exportGridToXls.length).toBe(3);
+	});
+});
+
+describe('PublishMethod.setQuery(table, query, isGotoFirstPage, callback)', function() {
+	it('基础验证', function () {
+		expect(PublishMethod.setQuery).toBeDefined();
+		expect(PublishMethod.setQuery.length).toBe(4);
+	});
+});
+
+describe('PublishMethod.setAjaxData(table, ajaxData)', function() {
+	it('基础验证', function () {
+		expect(PublishMethod.setAjaxData).toBeDefined();
+		expect(PublishMethod.setAjaxData.length).toBe(2);
+	});
+});
+
+describe('PublishMethod.refreshGrid(table, isGotoFirstPage, callback)', function() {
+	it('基础验证', function () {
+		expect(PublishMethod.refreshGrid).toBeDefined();
+		expect(PublishMethod.refreshGrid.length).toBe(3);
+	});
+});
+
+describe('PublishMethod.getCheckedTr(table)', function() {
+	it('基础验证', function () {
+		expect(PublishMethod.getCheckedTr).toBeDefined();
+		expect(PublishMethod.getCheckedTr.length).toBe(1);
+	});
+});
+
+describe('PublishMethod.getCheckedTr(table)', function() {
+	it('基础验证', function () {
+		expect(PublishMethod.getCheckedData).toBeDefined();
+		expect(PublishMethod.getCheckedData.length).toBe(1);
+	});
+});
