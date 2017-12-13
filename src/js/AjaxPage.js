@@ -11,13 +11,13 @@ class AjaxPage {
 	 * @param $table
 	 * @returns {string}
      */
-	createHtml($table) {
+	createHtml(settings) {
 		const html = `<div class="page-toolbar">
 						<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>
 						<div class="goto-page">
-							${ I18n.i18nText($table, 'goto-first-text') }
+							${ I18n.i18nText(settings, 'goto-first-text') }
 							<input type="text" class="gp-input"/>
-							${ I18n.i18nText($table, 'goto-last-text') }
+							${ I18n.i18nText(settings, 'goto-last-text') }
 						</div>
 						<div class="change-size"><select name="pSizeArea"></select></div>
 						<div class="dataTables_info"></div>
@@ -32,30 +32,46 @@ class AjaxPage {
      */
 	initAjaxPage($table) {
 		const settings = Cache.getSettings($table);
-		const _this = this;
+
+		const sizeData = settings.sizeData;
+		// error
+		if (!sizeData || sizeData.length === 0) {
+			Base.outLog('渲染失败：参数[sizeData]配置错误', 'error');
+			return;
+		}
+
+		// 根据本地缓存配置每页显示条数
+		if (!settings.disableCache) {
+			this.configPageForCache($table);
+		}
+
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
 		const pageToolbar = $('.page-toolbar', tableWarp);
-		const sizeData = settings.sizeData;
+
+		// 分页区域
+		const pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);
+
 		pageToolbar.hide();
 
 		// 生成每页显示条数选择框
-		_this.createPageSizeDOM($table, sizeData);
+		pSizeArea.html(this.getPageSizeHtml(sizeData));
 
 		// 绑定页面跳转事件
-		_this.bindPageJumpEvent($table);
+		this.bindPageJumpEvent($table);
 
 		// 绑定设置显示条数切换事件
-		_this.bindSetPageSizeEvent($table);
+		this.bindSetPageSizeEvent($table);
 	}
 
 	/**
 	 * 生成页码DOM节点
 	 * @param $table
+	 * @param settings
 	 * @param pageData 分页数据格式
      */
-	createPaginationDOM($table, pageData) {
+	createPaginationDOM($table, settings, pageData) {
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
@@ -64,15 +80,15 @@ class AjaxPage {
 		// 分页区域
 		const pagination = $('.pagination', pageToolbar);
 
-		pagination.html(this.joinPagination($table, pageData));
+		pagination.html(this.joinPagination(settings, pageData));
 	}
 
 	/**
 	 * 拼接页码字符串
-	 * @param $table
+	 * @param settings
 	 * @param pageData 分页数据格式
      */
-	joinPagination($table, pageData) {
+	joinPagination(settings, pageData) {
 		// 当前页
 		let cPage = Number(pageData.cPage || 0);
 
@@ -94,10 +110,10 @@ class AjaxPage {
 			previousClassName += ' disabled';
 		}
 		tHtml += `<li c-page="1" class="${firstClassName}">
-					${I18n.i18nText($table, 'first-page')}
+					${I18n.i18nText(settings, 'first-page')}
 				</li>
 				<li c-page="${cPage - 1}" class="${previousClassName}">
-					${I18n.i18nText($table, 'previous-page')}
+					${I18n.i18nText(settings, 'previous-page')}
 				</li>`;
 		// 循环开始数
 		let i = 1;
@@ -105,7 +121,7 @@ class AjaxPage {
 		// 循环结束数
 		let	maxI = tPage;
 
-		// 配置first端省略符
+		// 配置 first端省略符
 		if (cPage > 4) {
 			tHtml += `<li c-page="1">
 						1
@@ -115,7 +131,7 @@ class AjaxPage {
 					</li>`;
 			i = cPage - 2;
 		}
-		// 配置last端省略符
+		// 配置 last端省略符
 		if ((tPage - cPage) > 4) {
 			maxI = cPage + 2;
 			lHtml += `<li class="disabled">
@@ -143,41 +159,24 @@ class AjaxPage {
 			lastClassName += ' disabled';
 		}
 		tHtml += `<li c-page="${ cPage + 1 }" class="${ nextClassName }">
-					${ I18n.i18nText($table, 'next-page') }
+					${ I18n.i18nText(settings, 'next-page') }
 				</li>
 				<li c-page="${ tPage }" class="${ lastClassName }">
-					${ I18n.i18nText($table, 'last-page') }
+					${ I18n.i18nText(settings, 'last-page') }
 				</li>`;
 		return tHtml;
 	}
 
 	/**
 	 * 生成每页显示条数选择框据
-	 * @param $table
-	 * @param _sizeData_ 选择框自定义条数
+	 * @param sizeData 选择框自定义条数
      */
-	createPageSizeDOM($table, _sizeData_) {
-		const tableWarp	= $table.closest('.table-wrap');
-
-		// 分页工具条
-		const pageToolbar = $('.page-toolbar', tableWarp);
-
-		// 分页区域
-		const pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);
-
-		// error
-		if (!_sizeData_ || _sizeData_.length === 0) {
-			Base.outLog('渲染失败：参数[sizeData]配置错误', 'error');
-			return;
-		}
-
-		let _ajaxPageHtml = '';
-		$.each(_sizeData_, (i, v) => {
-			_ajaxPageHtml += `<option value="${ v }">
-								${ v }
-							</option>`;
+	getPageSizeHtml(sizeData) {
+		let pageSizeHtml = '';
+		$.each(sizeData, (index, value) => {
+			pageSizeHtml += `<option value="${value}">${value}</option>`;
 		});
-		pSizeArea.html(_ajaxPageHtml);
+		return pageSizeHtml;
 	}
 
 	/**
@@ -346,10 +345,11 @@ class AjaxPage {
 	/**
 	 * 重置每页显示条数, 重置条数文字信息 [注: 这个方法只做显示更新, 不操作Cache 数据]
 	 * @param $table
+	 * @param settings
 	 * @param _pageData_ 分页数据格式
 	 * @returns {boolean}
      */
-	resetPSize($table, _pageData_) {
+	resetPSize($table, settings, _pageData_) {
 		const tableWarp = $table.closest('.table-wrap');
 		const toolBar = $('.page-toolbar', tableWarp);
 		const pSizeArea = $('select[name="pSizeArea"]', toolBar);
@@ -368,7 +368,7 @@ class AjaxPage {
 		// 总共条数
 		const totalNum = _pageData_.tSize;
 
-		const tmpHtml = I18n.i18nText($table, 'dataTablesInfo', [fromNum, toNum, totalNum]);
+		const tmpHtml = I18n.i18nText(settings, 'dataTablesInfo', [fromNum, toNum, totalNum]);
 
 		// 根据返回值修正单页条数显示值
 		pSizeArea.val(_pageData_.pSize || 10);
@@ -390,13 +390,13 @@ class AjaxPage {
 		if (isNaN(parseInt(totals, 10))) {
 			return;
 		}
-		const _pageData = getPageData(totals);
+		const _pageData = this.getPageData(settings, totals);
 
 		// 生成页码DOM节点
-		_this.createPaginationDOM($table, _pageData);
+		_this.createPaginationDOM($table, settings, _pageData);
 
 		// 重置当前页显示条数
-		_this.resetPSize($table, _pageData);
+		_this.resetPSize($table, settings, _pageData);
 
 		// 更新Cache
 		Cache.setSettings($table, $.extend(true, settings, {pageData: _pageData}));
@@ -406,19 +406,23 @@ class AjaxPage {
 		// 分页工具条
 		const pageToolbar = $('.page-toolbar', tableWarp);
 		pageToolbar.show();
+	}
 
-		// 计算分页数据
-		function getPageData(tSize) {
-			const _pSize = settings.pageData.pSize || settings.pageSize;
-			const _tSize = tSize;
-			const _cPage = settings.pageData.cPage || 1;
-			return {
-				tPage: Math.ceil(_tSize / _pSize),		// 总页数
-				cPage: _cPage,							// 当前页
-				pSize: _pSize,							// 每页显示条数
-				tSize: _tSize							// 总条路
-			};
-		}
+	/**
+	 * 计算并返回分页数据
+	 * @param settings
+	 * @param totals
+	 * @returns {{tPage: number, cPage: *, pSize: *, tSize: *}}
+     */
+	getPageData(settings, totals) {
+		const _pSize = settings.pageData.pSize || settings.pageSize;
+		const _cPage = settings.pageData.cPage || 1;
+		return {
+			tPage: Math.ceil(totals / _pSize),		// 总页数
+			cPage: _cPage,							// 当前页
+			pSize: _pSize,							// 每页显示条数
+			tSize: totals							// 总条路
+		};
 	}
 
 	/**

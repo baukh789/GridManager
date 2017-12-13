@@ -5,7 +5,6 @@
 import '../css/index.scss';
 import { jTool, Base } from './Base';
 import Adjust from './Adjust';
-import AjaxPage from './AjaxPage';
 import Cache from './Cache';
 import Config from './Config';
 import Core from './Core';
@@ -259,11 +258,6 @@ export default class GridManager {
 		if ($table.hasClass('GridManager-ready') || $table.hasClass('GridManager-loading')) {
 			Base.outLog('渲染失败,可能该表格已经渲染或正在渲染', 'error');
 			return;
-		}
-
-		// 根据本地缓存配置每页显示条数
-		if (settings.supportAjaxPage) {
-			AjaxPage.configPageForCache($table);
 		}
 
 		// 增加渲染中标注

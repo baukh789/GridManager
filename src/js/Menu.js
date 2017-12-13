@@ -47,27 +47,27 @@ class Menu {
 		// 分页类操作
 		if (Settings.supportAjaxPage) {
 			menuHTML += `<span grid-action="refresh-page" refresh-type="previous">
-							${I18n.i18nText($table, 'previous-page')}
+							${I18n.i18nText(Settings, 'previous-page')}
 							<i class="iconfont icon-sanjiao2"></i>
 						</span>
 						<span grid-action="refresh-page" refresh-type="next">
-							${I18n.i18nText($table, 'next-page')}
+							${I18n.i18nText(Settings, 'next-page')}
 							<i class="iconfont icon-sanjiao1"></i>
 						</span>`;
 		}
 		menuHTML += `<span grid-action="refresh-page" refresh-type="refresh">
-						${I18n.i18nText($table, 'refresh')}
+						${I18n.i18nText(Settings, 'refresh')}
 						<i class="iconfont icon-31shuaxin"></i>
 					</span>`;
 		// 导出类
 		if (Settings.supportExport) {
 			menuHTML += `<span class="grid-line"></span>
 						<span grid-action="export-excel" only-checked="false">
-							${I18n.i18nText($table, 'save-as-excel')}
+							${I18n.i18nText(Settings, 'save-as-excel')}
 							<i class="iconfont icon-baocun"></i>
 						</span>
 						<span grid-action="export-excel" only-checked="true">
-							${I18n.i18nText($table, 'save-as-excel-for-checked')}
+							${I18n.i18nText(Settings, 'save-as-excel-for-checked')}
 							<i class="iconfont icon-saveas24"></i>
 						</span>`;
 		}
@@ -75,7 +75,7 @@ class Menu {
 		if (Settings.supportConfig) {
 			menuHTML += `<span class="grid-line"></span>
 						<span grid-action="config-grid">
-							${I18n.i18nText($table, 'config-grid')}
+							${I18n.i18nText(Settings, 'config-grid')}
 							<i class="iconfont icon-shezhi"></i>
 						</span>`;
 		}

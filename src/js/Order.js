@@ -11,11 +11,11 @@ class Order {
 
 	/**
 	 * 获取 th 的字符串节点
-	 * @param $table
+	 * @param settings
 	 * @returns {string}
 	 */
-	getThString($table, thVisible) {
-		return `<th th-name="${this.key}" th-visible="${thVisible}" gm-order="true" gm-create="true">${I18n.i18nText($table, 'order-text')}</th>`;
+	getThString(settings, thVisible) {
+		return `<th th-name="${this.key}" th-visible="${thVisible}" gm-order="true" gm-create="true">${I18n.i18nText(settings, 'order-text')}</th>`;
 	}
 
 	/**
@@ -32,10 +32,10 @@ class Order {
 	 * @param language
 	 * @returns {{key: string, name: (*|string), isShow: boolean, width: string, align: string}}
      */
-	getColumn($table, language) {
+	getColumn(settings) {
 		return {
 			key: this.key,
-			text: I18n.getText($table, 'order-text', language),
+			text: I18n.getText(settings, 'order-text'),
 			isAutoCreate: true,
 			isShow: true,
 			width: '50px',

@@ -307,11 +307,11 @@ class Core {
 			switch (col.key) {
 				// 插件自动生成序号列
 				case Order.key:
-					theadHtml += Order.getThString($table, thVisible);
+					theadHtml += Order.getThString(settings, thVisible);
 					break;
 				// 插件自动生成选择列
 				case Checkbox.key:
-					theadHtml += Checkbox.getThString($table, thVisible);
+					theadHtml += Checkbox.getThString(settings, thVisible);
 					break;
 				// 普通列
 				default:
@@ -359,7 +359,7 @@ class Core {
 
 		// 嵌入Ajax分页DOM
 		if (settings.supportAjaxPage) {
-			tableWarp.append(AjaxPage.createHtml($table));
+			tableWarp.append(AjaxPage.createHtml(settings));
 			AjaxPage.initAjaxPage($table);
 		}
 

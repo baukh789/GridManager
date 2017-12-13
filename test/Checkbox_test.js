@@ -43,10 +43,10 @@ describe('Checkbox.getThString($table, thVisible)', function() {
 	});
 });
 
-describe('Checkbox.getColumn($table, language)', function() {
+describe('Checkbox.getColumn(settings)', function() {
 	it('基础验证', function () {
 		expect(Checkbox.getColumn).toBeDefined();
-		expect(Checkbox.getColumn.length).toBe(2);
+		expect(Checkbox.getColumn.length).toBe(1);
 	});
 });
 

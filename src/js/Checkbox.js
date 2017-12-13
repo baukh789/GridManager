@@ -11,28 +11,29 @@ class Checkbox {
 
 	/**
 	 * 获取 th 的字符串节点
-	 * @param $table
+	 * @param settings
 	 * @returns {string}
      */
-	getThString($table, thVisible) {
+	getThString(settings, thVisible) {
 		let checkboxHtml = `<th th-name="${this.key}" th-visible="${thVisible}" gm-checkbox="true" gm-create="true">
 								<input type="checkbox"/>
 								<span style="display: none">
-									${ I18n.i18nText($table, 'checkall-text') }
+									${ I18n.i18nText(settings, 'checkall-text') }
 								</span>
 							</th>`;
 		return checkboxHtml;
 	}
+
 	/**
 	 * 获取选择列对象
-	 * @param $table
+	 * @param settings
 	 * @param language
 	 * @returns {{key: string, name: (*|string), isShow: boolean, width: string, align: string}}
 	 */
-	getColumn($table, language) {
+	getColumn(settings) {
 		return {
 			key: this.key,
-			text: I18n.getText($table, 'checkall-text', language),
+			text: I18n.getText(settings, 'checkall-text'),
 			isAutoCreate: true,
 			isShow: true,
 			width: '50px',

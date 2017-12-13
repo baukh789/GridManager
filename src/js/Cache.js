@@ -230,12 +230,12 @@ class Cache {
 
 			// 为 columnMap columnData 增加 序号列
 			if (_settings.supportAutoOrder) {
-				_settings.columnData.unshift(Order.getColumn($table, _settings.i18n));
+				_settings.columnData.unshift(Order.getColumn(_settings));
 			}
 
 			// 为 columnMap columnData 增加 选择列
 			if (_settings.supportCheckbox) {
-				_settings.columnData.unshift(Checkbox.getColumn($table, _settings.i18n));
+				_settings.columnData.unshift(Checkbox.getColumn(_settings));
 			}
 
 			// 为 columnData 提供锚 => columnMap

@@ -5,24 +5,20 @@
  */
 const path = require('path');
 module.exports = function (config) {
+	// karma config: http://karma-runner.github.io/1.0/config/configuration-file.html
+	// karma-coverage: https://www.npmjs.com/package/karma-coverage
 	config.set({
 		// 将用于解决所有的模式基本路径（例如，文件，排除）
 		basePath: '',
 
-		// 框架使用
+		// 使用框架
 		// 可用的框架：https://npmjs.org/browse/keyword/karma-adapter
 		frameworks: ['jasmine'],
 
-		// 需要测试的文件列表 https://www.npmjs.com/package/karma-coverage
-		// TODO 这里需要看一下
+		// 需要测试的文件列表
 		files: [
-			// 'src/js/Adjust.js',
 			'test/*_test.js'
-			// 'test/Adjust_test.js',
-			// 'test/AjaxPage_test.js'
 		],
-		// 排除在外的文件列表
-		exclude: ['karma.conf.js'],
 
 		// 使用端口
 		port: 9876,
@@ -30,16 +26,15 @@ module.exports = function (config) {
 		// 是否在输出日志中使用颜色
 		colors: true,
 
-		// Continuous Integration mode
-		// if true, Karma captures browsers, runs the tests and exits
+		// 持续集成模式: 配置为true 将会持续运行测试, 直致完成返回0(成功)或1(失败). 示例: Done. Your build exited with 0.
 		singleRun: true,
 
 
-		// level of logging
+		// 日志级别
 		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
 		logLevel: config.LOG_INFO,
 
-		// enable / disable watching file and executing tests whenever any file changes
+		// 是否监听文件变化
 		autoWatch: true,
 
 		// 配置启动单元测试的环境
@@ -52,15 +47,16 @@ module.exports = function (config) {
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
 		reporters: ['progress', 'coverage'],
 
-		// TODO ES6 coverage 存在差异 https://github.com/webpack-contrib/karma-webpack/issues/21
 		// 预处理
 		preprocessors: {
-			'src/js/*.js': ['webpack', 'sourcemap', 'coverage'],
-			'test/*_test.js': ['webpack', 'sourcemap']
+			// src/js/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/js/*.js 不需要通过 webpack 进行打.
+			'src/js/*.js': ['sourcemap', 'coverage'],
+			'test/*_test.js': ['webpack']
 		},
 		// optionally, configure the reporter
 		coverageReporter: {
 			reporters: [
+				// generates ./coverage/chart/*.html
 				{ type: 'html', subdir: 'chart' },
 				// generates ./coverage/lcov.info
 				{type:'lcovonly', subdir: '.'},
@@ -69,7 +65,7 @@ module.exports = function (config) {
 			]
 		},
 
-		// webpack config
+		// webpack config: https://github.com/webpack-contrib/karma-webpack
 		webpack: {
 			//入口文件配置
 			entry: {
@@ -108,9 +104,11 @@ module.exports = function (config) {
 					}
 				]
 			}
-
 		},
+
 		webpackMiddleware: {noInfo: false}, // no webpack output
+
+		// Karma有多少个浏览器并行启动
 		concurrency: Infinity
 	});
 };

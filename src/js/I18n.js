@@ -2,38 +2,37 @@
  * I18n: 国际化
  * */
 import { Base } from './Base';
-import Cache from './Cache';
 class I18n {
 	/**
 	 * 获取所用语种，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
-	 * @param $table
+	 * @param settings
 	 * @returns {string|string}
      */
-	getLanguage($table) {
-		return Cache.getSettings($table).i18n;
+	getLanguage(settings) {
+		return settings.i18n;
 	}
 
 	/**
 	 * 指定[表格 键值 语种]获取对应文本
-	 * @param $table 表格
+	 * @param settings
 	 * @param key 键值
-	 * @param language 语种
+	 * @param language 语种: 非必须, 不指定则会使用当前的配置 settings.i18n
 	 * @returns {*|string}
      */
-	getText($table, key, language) {
-		return Cache.getSettings($table).textConfig[key][language || this.getLanguage($table)] || '';
+	getText(settings, key, language) {
+		return settings.textConfig[key][language || this.getLanguage(settings)] || '';
 	}
 
 	/**
 	 * 获取与当前配置国际化匹配的文本
-	 * @param $table
+	 * @param settings
 	 * @param key 指向的文本索引
 	 * @param v1 可为空，也存在一至3项，只存在一项时可为数组
 	 * @param v2 可为空，也存在一至3项，只存在一项时可为数组
 	 * @param v3 可为空，也存在一至3项，只存在一项时可为数组
      * @returns {string}
      */
-	i18nText($table, key, v1, v2, v3) {
+	i18nText(settings, key, v1, v2, v3) {
 		const _this = this;
 		let intrusion = [];
 
@@ -47,7 +46,7 @@ class I18n {
 		}
 		let _text = '';
 		try {
-			_text = _this.getText($table, key);
+			_text = _this.getText(settings, key);
 			if (!intrusion || intrusion.length === 0) {
 				return _text;
 			}
@@ -56,7 +55,7 @@ class I18n {
 			});
 			return _text;
 		} catch (e) {
-			Base.outLog(`未找到与${key}相匹配的${_this.getLanguage($table)}语言`, 'warn');
+			Base.outLog(`未找到与${key}相匹配的${_this.getLanguage(settings)}语言`, 'warn');
 			return '';
 		}
 	}
