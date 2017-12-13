@@ -16,7 +16,7 @@ module.exports = function (config) {
 		// 需要测试的文件列表 https://www.npmjs.com/package/karma-coverage
 		// TODO 这里需要看一下
 		files: [
-			'src/js/*.js',
+			// 'src/js/Adjust.js',
 			'test/*_test.js'
 			// 'test/Adjust_test.js',
 			// 'test/AjaxPage_test.js'
@@ -52,14 +52,16 @@ module.exports = function (config) {
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
 		reporters: ['progress', 'coverage'],
 
+		// TODO ES6 coverage 存在差异 https://github.com/webpack-contrib/karma-webpack/issues/21
 		// 预处理
 		preprocessors: {
-			'src/js/*.js': ['webpack', 'coverage'],
-			'test/*_test.js': ['webpack']
+			'src/js/*.js': ['webpack', 'sourcemap', 'coverage'],
+			'test/*_test.js': ['webpack', 'sourcemap']
 		},
 		// optionally, configure the reporter
 		coverageReporter: {
 			reporters: [
+				{ type: 'html', subdir: 'chart' },
 				// generates ./coverage/lcov.info
 				{type:'lcovonly', subdir: '.'},
 				// generates ./coverage/coverage-final.json
@@ -78,13 +80,6 @@ module.exports = function (config) {
 			},
 			module: {
 				rules: [
-					// {
-					// 	test: /\.js$/,
-					// 	loader: 'istanbul-instrumenter-loader',
-					// 	enforce: 'pre',
-					// 	exclude: /node_modules|_spec\.js$/,
-					// 	include: [path.join(__dirname, './src')]
-					// },
 					{
 						test: /\.js?$/,
 						use: ['babel-loader?{"presets":["es2015"]}'],

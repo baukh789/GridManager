@@ -25,8 +25,14 @@ app.use(/\/$/, function (req, res) {
 	res.redirect('/demo/index.html');
 });
 
+// 配置coverage路径
+app.use(/\/coverage$/, function (req, res) {
+	res.redirect('/coverage/chart/index.html');
+});
+
 // 配置资源路径
 app.use(express.static(target));
+app.use(express.static(__dirname));
 app.listen(1987, function (err) {
 	if (err) {
 		console.log(err);

@@ -80,6 +80,6 @@ class Checkbox {
 				_thCheckbox.prop('checked', _thChecked);
 			}
 		});
-	};
+	}
 }
 export default new Checkbox();
