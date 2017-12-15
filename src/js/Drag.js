@@ -156,9 +156,7 @@ class Drag {
 				}
 
 				// 更新表格列Map
-				$.each(settings.columnMap, (key, col) => {
-					col.index = $(`th[th-name="${col.key}"]`, $table).index();
-				});
+				settings.columnMap = Cache.reworkColumnMap($table, settings.columnMap);
 				Cache.setSettings($table, settings);
 
 				// 存储用户记忆

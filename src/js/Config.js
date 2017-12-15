@@ -24,7 +24,6 @@ class Config {
 	 * @param $table
      */
 	bindConfigEvent($table) {
-		const settings = Cache.getSettings($table);
 		// GM容器
 		const tableWarp = $table.closest('div.table-wrap');
 
@@ -34,6 +33,7 @@ class Config {
 		// 事件: 打开 关闭
 		configAction.unbind('click');
 		configAction.bind('click', function () {
+			const settings = Cache.getSettings($table);
 			// 展示事件源
 			const _configAction = $(this);
 
@@ -54,10 +54,11 @@ class Config {
 			// 选中状态的input
 			let checkInput = null;
 
-
-			// 验证当前是否只有一列处于显示状态 并根据结果进行设置是否可以取消显示
+			// 可视列计数
 			let showNum = 0;
-			settings.columnData.forEach(col => {
+
+			// 重置列的可视操作
+			$.each(settings.columnMap, (key, col) => {
 				checkLi = $(`li[th-name="${col.key}"]`, _configArea);
 				checkInput = $('input[type="checkbox"]', checkLi);
 				if (col.isShow) {
@@ -69,6 +70,8 @@ class Config {
 				checkLi.removeClass('checked-li');
 				checkInput.prop('checked', false);
 			});
+
+			// 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示
 			const checkedLi = $('.checked-li', _configArea);
 			showNum === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
 
@@ -79,6 +82,7 @@ class Config {
 		// 事件: 设置
 		$('.config-list li', tableWarp).unbind('click');
 		$('.config-list li', tableWarp).bind('click', function () {
+			const settings = Cache.getSettings($table);
 			// 单个的设置项
 			const _only = $(this);
 
@@ -112,12 +116,6 @@ class Config {
 			Base.setAreVisible(_th, isVisible, () => {
 				_tableDiv.removeClass('config-editing');
 			});
-
-			// 更新配置信息
-			// TODO 今天时间问题, 之后需要处理
-			// TODO 在配置, 调整宽度, 位置更换后, 应该统一使用同一个方法对 columnMap 进行更新
-			settings.columnMap[_thName].isShow = isVisible;
-			Cache.setSettings($table, settings);
 
 			// 当前处于选中状态的展示项
 			const _checkedList = $('.config-area input[type="checkbox"]:checked', _tableWarp);
@@ -158,6 +156,12 @@ class Config {
 				}
 			});
 
+			// 更新表格列Map
+			settings.columnMap = Cache.reworkColumnMap($table, settings.columnMap);
+
+			// 重置settings
+			Cache.setSettings($table, settings);
+			console.log(settings);
 			// 存储用户记忆
 			Cache.saveUserMemory(_table);
 

@@ -161,17 +161,18 @@ class Cache {
 		this.saveUserMemory = $table => {
 			const Settings = this.getSettings($table);
 			const _this = this;
-
 			// 当前为禁用缓存模式，直接跳出
 			if (Settings.disableCache) {
 				return false;
 			}
-			// 当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-			const noCache = $table.attr('no-cache');
+			// 当前表是否存在
 			if (!$table || $table.length === 0) {
 				Base.outLog('saveUserMemory:无效的table', 'error');
 				return false;
 			}
+
+			// 当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
+			const noCache = $table.attr('no-cache');
 			if (noCache && noCache === 'true') {
 				Base.outLog('缓存功能已被禁用：当前表缺失必要参数', 'info');
 				return false;
@@ -221,19 +222,17 @@ class Cache {
 			// 合并参数
 			const _settings = new Settings();
 			_settings.textConfig = new TextSettings();
-
-			// 将默认项与配置项
 			jTool.extend(true, _settings, arg);
 
 			// 存储配置项
 			this.setSettings($table, _settings);
 
-			// 为 columnMap columnData 增加 序号列
+			// 为 columnData 增加 序号列
 			if (_settings.supportAutoOrder) {
 				_settings.columnData.unshift(Order.getColumn(_settings));
 			}
 
-			// 为 columnMap columnData 增加 选择列
+			// 为 columnData 增加 选择列
 			if (_settings.supportCheckbox) {
 				_settings.columnData.unshift(Checkbox.getColumn(_settings));
 			}
@@ -314,12 +313,39 @@ class Cache {
 		};
 
 		/**
-		 * 更新配置项
+		 * 重置配置项
 		 * @param $table
 		 * @param settings
 		 */
 		this.setSettings = ($table, settings) => {
 			store.settings[Base.getKey($table)] = jTool.extend(true, {}, settings);
+		};
+
+		/**
+		 * 将 columnMap 返厂回修, 并返回最新的值, 适用操作[宽度调整, 位置调整, 可视状态调整]
+		 * @param $table
+		 * @param columnMap
+		 * @returns {*}
+		 */
+		this.reworkColumnMap = ($table, columnMap) => {
+			// columnMap 为无效数据, 跳出
+			if (!columnMap || jTool.isEmptyObject(columnMap)) {
+				Base.outLog('columnMap 为无效数据', 'error');
+				return;
+			}
+			let th = null;
+			jTool.each(columnMap, (key, col) => {
+				th = jTool(`thead[grid-manager-thead] th[th-name="${col.key}"]`, $table);
+				// 宽度
+				col.width = th.width() + 'px';
+
+				// 位置索引
+				col.index = th.index();
+
+				// 可视状态
+				col.isShow = th.attr('th-visible') === 'visible';
+			});
+			return columnMap;
 		};
 
 		/**
@@ -347,8 +373,8 @@ class Cache {
 		 */
 		this.cleanTableCache = ($table, cleanText) => {
 			// 不指定table, 清除全部
-			if ($table === null) {
-				Base.outLog(`用户记忆被清除: ${cleanText}`, 'warn');
+			if (!$table || $table.length === 0) {
+				Base.outLog(`用户记忆被全部清除: ${cleanText}`, 'warn');
 				return this.delUserMemory();
 
 				// 指定table, 定点清除

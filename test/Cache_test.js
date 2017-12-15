@@ -126,6 +126,13 @@ describe('Cache.setSettings($table, settings)', function() {
 	});
 });
 
+describe('Cache.reworkColumnMap($table, columnMap)', function() {
+	it('基础验证', function(){
+		expect(Cache.reworkColumnMap).toBeDefined();
+		expect(Cache.reworkColumnMap.length).toBe(2);
+	});
+});
+
 describe('Cache.cleanTableCacheForVersion()', function() {
 	it('基础验证', function(){
 		expect(Cache.cleanTableCacheForVersion).toBeDefined();

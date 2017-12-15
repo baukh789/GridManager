@@ -2,8 +2,8 @@
  * Base: 基础方法
  * */
 import {} from '../../node_modules/jTool/jTool.min';
-const $ = window.jTool;
-const jTool = window.jTool;
+let $ = window.jTool;
+let jTool = window.jTool;
 class BaseClass {
 	/**
 	 * 输出日志

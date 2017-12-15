@@ -229,7 +229,7 @@ describe('PublishMethod.clear(table)', function() {
 	});
 
 	afterEach(function () {
-		console.error = console._error;
+		console.warn = console._warn;
 		document.body.innerHTML = '';
 		table = null;
 		arg = null;
@@ -241,8 +241,8 @@ describe('PublishMethod.clear(table)', function() {
 	});
 
 	it('console提示文本', function () {
-		PublishMethod.clear(table);
-		expect(console.warn).toHaveBeenCalledWith('GridManager Warn: ', '用户记忆被清除: 通过clear()方法清除');
+		PublishMethod.clear();
+		expect(console.warn).toHaveBeenCalledWith('GridManager Warn: ', '用户记忆被全部清除: 通过clear()方法清除');
 	});
 });
 

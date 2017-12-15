@@ -137,9 +137,9 @@ class Adjust {
 			Base.updateScrollStatus($table);
 
 			// 更新表格列Map
-			$.each(settings.columnMap, (key, col) => {
-				col.width = $(`th[th-name="${col.key}"]`, $table).width() + 'px';
-			});
+			settings.columnMap = Cache.reworkColumnMap($table, settings.columnMap);
+
+			// 重置settings
 			Cache.setSettings($table, settings);
 
 			// 存储用户记忆
