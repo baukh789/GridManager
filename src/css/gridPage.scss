@@ -1,4 +1,7 @@
 @import "./mixins.scss";
+
+$font-normal-color: #000;
+$font-active-color: #0083ba;
 /* 表格分页 */
 .table-wrap{
 	.page-toolbar{
@@ -27,7 +30,7 @@
 			.gp-input{
 				width: 50px;
 				height: 25px;
-				border: 1px solid #ccc;
+				border: 1px solid #ddd;
 				padding: 0 5px;
 				margin: 0 5px;
 			}
@@ -37,17 +40,17 @@
 			width: 30px;
 			height: 30px;
 		  	line-height: 30px;
-			padding: 1px 0px 0px 1px;
+			padding: 1px 0 0 1px;
 			vertical-align: middle;
 		    text-align: center;
 			&:hover{
-				color: #777;
+				color: $font-normal-color;
 			}
 			i{
 				cursor: pointer;
 				line-height: 15px;
 				font-size: 16px;
-				color: #82bdf4;
+				color: $font-active-color;
 				font-weight: bold;
 			}
 			&.refreshing{
@@ -68,16 +71,16 @@
 					display: block;
 					min-width: 30px;
 					height: 30px;
-					float: left;
+				  	line-height: 18px;
+				  	float: left;
 					padding: 5px 10px;
 					background-color: #fff;
 					border: 1px solid #ddd;
 					border-left: none;
-					color: #777;
+					color: $font-normal-color;
 					position: relative;
-					line-height: 18px;
 					text-align: center;
-					cursor: default;
+					cursor: pointer;
 					&:first-child{
 						border-bottom-left-radius: 2px;
 						border-top-left-radius: 2px;
@@ -90,14 +93,14 @@
 						cursor: not-allowed;
 					}
 					&.active, &.active:focus, &.active:hover{
-						background-color: #777;
+						background-color: $font-active-color;
 						color: #fff;
 						z-index: 2;
 					}
 					&:focus, &:hover{
 						background-color: #eee;
 						border-color: #ddd;
-						color: #214e75;
+						color: $font-active-color;
 					}
 				}
 			}

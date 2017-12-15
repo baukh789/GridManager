@@ -239,7 +239,8 @@ class Core {
      */
 	createDOM($table) {
 		let settings = Cache.getSettings($table);
-		$table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0);
+		// $table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0);
+		$table.attr('width', '100%').attr('cellspacing', 0);
 		let theadHtml = '<thead grid-manager-thead>';
 		let	tbodyHtml = '<tbody></tbody>';
 
