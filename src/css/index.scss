@@ -54,6 +54,7 @@ $font-family: arial !important;
 			font-family: $font-family;
 			tr{
 			  border-bottom: $table-border;
+			  th:last-child,
 			  td:last-child {
 				border-right: none;
 			  }
