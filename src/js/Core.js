@@ -241,7 +241,6 @@ class Core {
      */
 	createDOM($table) {
 		let settings = Cache.getSettings($table);
-		// $table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0);
 		$table.attr('width', '100%').attr('cellspacing', 0);
 		let theadHtml = '<thead grid-manager-thead>';
 		let	tbodyHtml = '<tbody></tbody>';
@@ -383,7 +382,6 @@ class Core {
 		const onlyThWarp = $('<div class="th-wrap"></div>');
 		$.each(onlyThList, (i2, v2) => {
 			onlyTH = $(v2);
-			// onlyTH.attr('th-visible', 'visible');
 
 			// 是否为自动生成的序号列
 			if (settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
