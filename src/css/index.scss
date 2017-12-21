@@ -11,12 +11,12 @@ $table-border: 1px solid #e8e8e8;
 $font-normal-size: 12px;
 $font-family: arial !important;
 /* table所在的DIV */
-.table-wrap{
+.table-wrap {
 	position: relative;
 	overflow: hidden;
 	background-color: #fff;
-  	border: $table-border;
-	.table-div{
+	border: $table-border;
+	.table-div {
 		padding-right: 10px;
 		overflow: auto;
 		/* 自定义滚动条样式 */
@@ -32,7 +32,7 @@ $font-family: arial !important;
 			width: 10px;
 			height: 10px;
 		}
-		&::-webkit-scrollbar-thumb{
+		&::-webkit-scrollbar-thumb {
 			border-radius: 5px;
 			background-color: #e1e1e1;
 			width: 6px;
@@ -41,254 +41,254 @@ $font-family: arial !important;
 			background-clip: content-box;
 		}
 		/* 配置列表功能 */
-		.config-editing{
+		.config-editing {
 			overflow-x: hidden;
 		}
 		/* table */
-		table[grid-manager]{
+		table[grid-manager] {
 			table-layout: fixed;
 			word-wrap: break-word;
 			text-align: center;
 			width: 100%;
-		  	border-collapse: collapse;
+			border-collapse: collapse;
 			font-family: $font-family;
-			tr{
-			  border-bottom: $table-border;
-			  th:last-child,
-			  td:last-child {
-				border-right: none;
-			  }
+			tr {
+				border-bottom: $table-border;
+				th:last-child,
+				td:last-child {
+					border-right: none;
+				}
 			}
-		  	th{
-			  text-align: center;
-			  color: #000;
-			  border-right: $table-border;
-			  @include bg-image();
-			  &:hover{
-				background-color: #e0e0e0;
-			  }
-			  &[th-visible="none"]{
-				display: none;
-			  }
-			  &[th-visible="visible"]{
-				display: table-cell;
-			  }
-			  &[remind] .th-wrap{
-				padding-left: 24px;
-			  }
-			  &[sorting] .th-wrap{
-				padding-right: 24px;
-			  }
-			  &[gm-create="true"] .th-wrap{
-				padding: 6px 4px;
-			  }
-			  &[gm-create="true"]{
-				background-color: #f3f3f3 !important;
-				opacity: 0.4;
-			  }
-			  .th-wrap{
-				width: 100%;
-				height: 100%;
-				position: relative;
-				padding: 6px;
-				.th-text{
-				  display: block;
-				  width: 100%;
-				  height: 100%;
-				  @include text-overflow();
+			th {
+				text-align: center;
+				color: #000;
+				border-right: $table-border;
+				@include bg-image();
+				&:hover {
+					background-color: #e0e0e0;
 				}
-				/* 宽度调整事件源 */
-				.adjust-action{
-				  display: block;
-				  width: 6px;
-				  height: 100%;
-				  position: absolute;
-				  top: 0;
-				  right: -4px;
-				  cursor: col-resize;
-				  z-index: 2;
-				}
-				/* 表头提醒 */
-				.remind-action{
-				  width: 16px;
-				  height: 16px;
-				  position: absolute;
-				  top: 6px;
-				  left: 4px;
-				  cursor: help;
-				  .ra-area{
+				&[th-visible="none"] {
 					display: none;
-					min-width: 150px;
-					max-width: 300px;
-					position: absolute;
-					top: 80%;
-					left: 80%;
-					padding: 12px;
-					border: 3px solid #000;
-					z-index: 9999;
-					border-radius: 5px;
-					box-shadow: 3px 3px 10px 0 #222;
-					background-color: #000;
-					opacity: 0.8;
-					line-height: 14px;
-					color: #fff;
-					.ra-title{
-					  display: block;
-					  text-align: left;
-					  margin-bottom: 4px;
-					  font-weight: 600;
-					  font-size: 1.1em;
-					  color: #FF6;
-					  @include text-overflow();
-					}
-					.ra-con{
-					  display: block;
-					  font-weight: 500;
-					  text-align: left;
-					  font-size: 0.9em;
-					  color: #fff;
-					}
-				  }
-				  .ra-help{
-					display: block;
-					width: 16px;
-					height: 16px;
-					font-size: $font-normal-size;
-					line-height: 18px;
-					color: #666;
-				  }
-				  &:hover{
-					.ra-help{
-					  color: #2b669a;
-					}
-				  }
 				}
-				/* 排序 */
-				.sorting-action{
-				  display: block;
-				  width: 20px;
-				  height: 18px;
-				  position: absolute;
-				  top: 6px;
-				  right: 5px;
-				  cursor: default;
-				  z-index: 2;
-				  color: #444;
-				  &:hover{
-					color: #000;
-				  }
-				  &.sorting-up{
-					.sa-up{
-					  opacity: 1;
-					}
-					.sa-down{
-					  opacity: 0.1;
-					}
-				  }
-				  &.sorting-down{
-					.sa-up{
-					  opacity: 0.1;
-					}
-					.sa-down{
-					  opacity: 1;
-					}
-				  }
-				  .sa-icon{
-					display: block;
-					height: 10px;
-					position: absolute;
-					font-size: $font-normal-size;
-					line-height: 10px;
-				  }
-				  .sa-up{
-					top: 0;
-					right: 0;
-				  }
-				  .sa-down{
-					bottom: 0;
-					right: 0;
-				  }
+				&[th-visible="visible"] {
+					display: table-cell;
 				}
-				/* 拖拽换位 */
-				.drag-action{
-				  cursor: all-scroll;
+				&[remind] .th-wrap {
+					padding-left: 24px;
 				}
-			  }
+				&[sorting] .th-wrap {
+					padding-right: 24px;
+				}
+				&[gm-create="true"] .th-wrap {
+					padding: 6px 4px;
+				}
+				&[gm-create="true"] {
+					background-color: #f3f3f3 !important;
+					opacity: 0.4;
+				}
+				.th-wrap {
+					width: 100%;
+					height: 100%;
+					position: relative;
+					padding: 6px;
+					.th-text {
+						display: block;
+						width: 100%;
+						height: 100%;
+						@include text-overflow();
+					}
+					/* 宽度调整事件源 */
+					.adjust-action {
+						display: block;
+						width: 6px;
+						height: 100%;
+						position: absolute;
+						top: 0;
+						right: -4px;
+						cursor: col-resize;
+						z-index: 2;
+					}
+					/* 表头提醒 */
+					.remind-action {
+						width: 16px;
+						height: 16px;
+						position: absolute;
+						top: 6px;
+						left: 4px;
+						cursor: help;
+						.ra-area {
+							display: none;
+							min-width: 150px;
+							max-width: 300px;
+							position: absolute;
+							top: 80%;
+							left: 80%;
+							padding: 12px;
+							border: 3px solid #000;
+							z-index: 9999;
+							border-radius: 5px;
+							box-shadow: 3px 3px 10px 0 #222;
+							background-color: #000;
+							opacity: 0.8;
+							line-height: 14px;
+							color: #fff;
+							.ra-title {
+								display: block;
+								text-align: left;
+								margin-bottom: 4px;
+								font-weight: 600;
+								font-size: 1.1em;
+								color: #FF6;
+								@include text-overflow();
+							}
+							.ra-con {
+								display: block;
+								font-weight: 500;
+								text-align: left;
+								font-size: 0.9em;
+								color: #fff;
+							}
+						}
+						.ra-help {
+							display: block;
+							width: 16px;
+							height: 16px;
+							font-size: $font-normal-size;
+							line-height: 18px;
+							color: #666;
+						}
+						&:hover {
+							.ra-help {
+								color: #2b669a;
+							}
+						}
+					}
+					/* 排序 */
+					.sorting-action {
+						display: block;
+						width: 20px;
+						height: 18px;
+						position: absolute;
+						top: 6px;
+						right: 5px;
+						cursor: default;
+						z-index: 2;
+						color: #444;
+						&:hover {
+							color: #000;
+						}
+						&.sorting-up {
+							.sa-up {
+								opacity: 1;
+							}
+							.sa-down {
+								opacity: 0.1;
+							}
+						}
+						&.sorting-down {
+							.sa-up {
+								opacity: 0.1;
+							}
+							.sa-down {
+								opacity: 1;
+							}
+						}
+						.sa-icon {
+							display: block;
+							height: 10px;
+							position: absolute;
+							font-size: $font-normal-size;
+							line-height: 10px;
+						}
+						.sa-up {
+							top: 0;
+							right: 0;
+						}
+						.sa-down {
+							bottom: 0;
+							right: 0;
+						}
+					}
+					/* 拖拽换位 */
+					.drag-action {
+						cursor: all-scroll;
+					}
+				}
 			}
-			td{
+			td {
 				text-align: left;
-			  	border-right: $table-border;
+				border-right: $table-border;
 			}
-			th, td{
-				&[th-visible="none"]{
+			th, td {
+				&[th-visible="none"] {
 					display: none;
 				}
-				&[th-visible="visible"]{
+				&[th-visible="visible"] {
 					display: table-cell;
 				}
 				/* 宽度调整选中 */
-				&.adjust-selected{
+				&.adjust-selected {
 					border-right-width: 2px;
 					border-right-style: dashed;
 					border-right-color: #ccc;
-					&.drag-action{
+					&.drag-action {
 						cursor: col-resize;
 					}
 				}
 				/* 拖拽换位中 */
-				&.drag-ongoing{
+				&.drag-ongoing {
 					cursor: all-scroll;
-					&.opacityChange{
+					&.opacityChange {
 						opacity: 1;
 						animation: opacityChange 1s ease-in-out infinite;
 					}
 				}
 				/* 文本对齐 */
-				&[align]{
-					&[align="left"]{
+				&[align] {
+					&[align="left"] {
 						text-align: left;
 					}
-					&[align="center"]{
+					&[align="center"] {
 						text-align: center;
 					}
-					&[align="right"]{
+					&[align="right"] {
 						text-align: right;
 					}
 				}
 				/* 由插件自动生成的序号 与 全选 */
-				&[gm-create="true"]{
+				&[gm-create="true"] {
 					width: 50px;
 					text-align: center;
 					cursor: default;
-					&[gm-checkbox="true"] input[type=checkbox]{
+					&[gm-checkbox="true"] input[type=checkbox] {
 						vertical-align: middle;
 					}
 				}
 			}
-			thead{
-			  	tr {
-				  height: 40px;
-				  line-height: 40px;
+			thead {
+				tr {
+					height: 40px;
+					line-height: 40px;
 				}
-				&.scrolling{
+				&.scrolling {
 					visibility: hidden;
 				}
 				/* 表头置顶 */
-				&.set-top{
+				&.set-top {
 					position: absolute;
 					left: 0;
 					top: 0;
 					z-index: 2;
 					background-color: #ddd;
-					tr{
-						th{
+					tr {
+						th {
 							/* 表头提醒 */
-							.remind-action{
-								.ra-area{
+							.remind-action {
+								.ra-area {
 									visibility: hidden;
 									display: none;
 								}
-								&:hover .ra-area{
+								&:hover .ra-area {
 									visibility: visible;
 									display: block !important;
 								}
@@ -297,28 +297,28 @@ $font-family: arial !important;
 					}
 				}
 			}
-			tbody{
-				tr{
-					td{
+			tbody {
+				tr {
+					td {
 						@include text-overflow();
 						background-color: #fff;
 						color: #3d3d3d;
 						padding: 4px;
 						vertical-align: top;
-						&[td-visible="none"]{
+						&[td-visible="none"] {
 							display: none;
 						}
-						&[td-visible="visible"]{
+						&[td-visible="visible"] {
 							display: table-cell;
 						}
-						&[col-hover="true"]{
+						&[col-hover="true"] {
 							background-color: #f3f3f3;
 						}
-						&td[gm-create="true"]{
+						&td[gm-create="true"] {
 							background-color: #f8f8f8;
 						}
 						/* 空模板样式 */
-						.gm-emptyTemplate{
+						.gm-emptyTemplate {
 							width: 100%;
 							height: 100px;
 							line-height: 100px;
@@ -328,7 +328,7 @@ $font-family: arial !important;
 							background-color: #f8f8f8;
 						}
 					}
-					&[row-hover="true"] td{
+					&[row-hover="true"] td {
 						background-color: #f3f3f3;
 						color: #000;
 					}
@@ -336,20 +336,20 @@ $font-family: arial !important;
 			}
 		}
 	}
-	&[user-interactive="Adjust"] .table-div{
+	&[user-interactive="Adjust"] .table-div {
 		overflow: hidden;
 	}
-	&[user-interactive="Drag"] .table-div{
+	&[user-interactive="Drag"] .table-div {
 		overflow: hidden;
 	}
 
 	/* 导出excel */
-	#gm-export-action{
+	#gm-export-action {
 		display: none;
 	}
 
 	/* 文本镜像：用于实时获取th的文本宽度 */
-	.text-dreamland{
+	.text-dreamland {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -359,7 +359,7 @@ $font-family: arial !important;
 	}
 
 	/* 拖拽换位镜象 */
-	.dreamland-div{
+	.dreamland-div {
 		display: none;
 		position: absolute;
 		border: 1px solid #ccc;
@@ -367,7 +367,7 @@ $font-family: arial !important;
 		background: #fff;
 		cursor: all-scroll;
 		z-index: 9;
-		.dreamland-table{
+		.dreamland-table {
 			table-layout: fixed;
 			width: 100%;
 			margin: 0 !important;
@@ -377,15 +377,15 @@ $font-family: arial !important;
 			border-spacing: 1px;
 			font-size: $font-normal-size !important;
 			font-family: $font-family;
-			tr{
-				th{
+			tr {
+				th {
 					background-color: #f3f3f3;
 					text-align: center;
-					&:hover{
+					&:hover {
 						background-color: #e0e0e0;
 					}
 				}
-				td{
+				td {
 					background-color: #fff;
 					color: #3d3d3d;
 					padding: 4px;
@@ -398,7 +398,7 @@ $font-family: arial !important;
 	}
 
 	/*遮罩*/
-	.mask-element{
+	.mask-element {
 		width: 100%;
 		height: 100%;
 		position: absolute;
