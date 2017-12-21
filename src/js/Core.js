@@ -16,7 +16,6 @@ import Order from './Order';
 import Remind from './Remind';
 import Sort from './Sort';
 class Core {
-
 	/**
 	 * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
 	 * @param $table
@@ -24,7 +23,6 @@ class Core {
      * @private
      */
 	__refreshGrid($table, callback) {
-
 		const settings = Cache.getSettings($table);
 
 		const tableWrap = $table.closest('.table-wrap');
@@ -148,14 +146,14 @@ class Core {
 	 * @param callback
      */
 	driveDomForSuccessAfter($table, settings, response, callback) {
-		// tbody dom
-		const tbodyDOM = $('tbody', $table);
-		const gmName = Base.getKey($table);
-
 		if (!response) {
 			Base.outLog('请求数据失败！请查看配置参数[ajax_url或ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
 			return;
 		}
+
+		// tbody dom
+		const tbodyDOM = $('tbody', $table);
+		const gmName = Base.getKey($table);
 
 		// 用于拼接tbody的HTML结构
 		let tbodyTmpHTML = '';
@@ -213,8 +211,12 @@ class Core {
 				tbodyTmpHTML += `<tr cache-key="${index}">`;
 				$.each(settings.columnMap, (key, col) => {
 					template = col.template;
+					// td 模板
 					templateHTML = typeof template === 'function' ? template(row[col.key], row) : row[col.key];
+
+					// td 文本对齐方向
 					alignAttr = col.align ? `align="${col.align}"` : '';
+
 					// 插件自带列(序号,全选) 的 templateHTML会包含dom节点, 所以需要特殊处理一下
 					tdList[col.index] = col.isAutoCreate ? templateHTML : `<td gm-create="false" ${alignAttr}>${templateHTML}</td>`;
 				});
@@ -376,6 +378,7 @@ class Core {
 		// 单个TH所占宽度
 		let onlyWidth = 0;
 
+		// TODO baukh20171216: 这个操作应该考虑下放到生成th时就去做
 		// 单个TH下的上层DIV
 		const onlyThWarp = $('<div class="th-wrap"></div>');
 		$.each(onlyThList, (i2, v2) => {
@@ -478,10 +481,11 @@ class Core {
 		$table.addClass('GridManager-ready');
 	}
 
+	// TODO resetTd方法已经不再处理多项事件, 现只处理initVisible, 而这个事项可以移到 driveDomForSuccessAfter 内进行处理
 	/**
 	 * 重置列表, 处理局部刷新、分页事件之后的td排序
-	 * @param dom: able 或者 tr
-	 * @param isSingleRow: 指定DOM节点是否为tr[布尔值]
+	 * @param dom: table 或者 tr
+	 * @param isSingleRow: 指定DOM节点是否为tr[布尔值] TODO: 之前会存在为true的情况, 现在的版本该参数已经失去作用
      */
 	resetTd(dom, isSingleRow) {
 		let _table = null;
@@ -512,7 +516,7 @@ class Core {
 		let	_td = null;
 		let _visible = 'visible';
 		const settings = Cache.getSettings($table);
-		$.each(settings.columnMap, (i, col) => {
+		$.each(settings.columnMap, (index, col) => {
 			_th = $(`th[th-name="${col.key}"]`, $table);
 			_visible = Base.getVisibleForColumn(col);
 			_th.attr('th-visible', _visible);

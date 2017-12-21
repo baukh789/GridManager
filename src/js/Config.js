@@ -161,7 +161,7 @@ class Config {
 
 			// 重置settings
 			Cache.setSettings($table, settings);
-			console.log(settings);
+
 			// 存储用户记忆
 			Cache.saveUserMemory(_table);
 

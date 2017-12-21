@@ -17,6 +17,7 @@ $font-family: arial !important;
 	background-color: #fff;
   	border: $table-border;
 	.table-div{
+		padding-right: 10px;
 		overflow: auto;
 		/* 自定义滚动条样式 */
 		&::-webkit-scrollbar-track {

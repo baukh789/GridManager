@@ -2,45 +2,8 @@
  * Created by baukh on 17/4/19.
  */
 'use strict';
-import '../build/css/GridManager.css';
-// import { jTool } from '../src/js/Base';
+import { jTool } from '../src/js/Base';
 import Core from '../src/js/Core';
-// import testData from '../src/data/testData';
-// import GridManager from '../src/js/GridManager';
-/**
- * 属性及方法验证
- */
-describe('Core 属性及方法验证', function() {
-	it('Core.__refreshGrid', function () {
-		expect(Core.__refreshGrid).toBeDefined();
-		expect(Core.__refreshGrid.length).toBe(2);
-	});
-
-	it('Core.removeRefreshingClass', function () {
-		expect(Core.removeRefreshingClass).toBeDefined();
-		expect(Core.removeRefreshingClass.length).toBe(1);
-	});
-
-	it('Core.driveDomForSuccessAfter', function () {
-		expect(Core.driveDomForSuccessAfter).toBeDefined();
-		expect(Core.driveDomForSuccessAfter.length).toBe(4);
-	});
-
-	it('Core.initVisible', function(){
-		expect(Core.initVisible).toBeDefined();
-		expect(Core.initVisible.length).toBe(1);
-	});
-
-	it('Core.createDOM', function () {
-		expect(Core.createDOM).toBeDefined();
-		expect(Core.createDOM.length).toBe(1);
-	});
-
-	it('Core.resetTd', function () {
-		expect(Core.resetTd).toBeDefined();
-		expect(Core.resetTd.length).toBe(2);
-	});
-});
 /**
  * 验证类的属性及方法总量
  */
@@ -65,76 +28,94 @@ describe('Core 验证类的属性及方法总量', function() {
 		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(6 + 1);
 	});
 });
-// describe('Core', function() {
-// 	let table = null;
-// 	let $table = null;
-// 	let gmName = 'test-core';
-// 	beforeAll(function(){
-// 		table = document.createElement('table');
-// 		table.setAttribute('grid-manager', gmName);
-// 		document.querySelector('body').appendChild(table);
-// 		$table = jTool('table[grid-manager="'+ gmName +'"]');
-// 		var arg = {
-// 			ajax_data: testData
-// 			,columnData: [
-// 				{
-// 					key: 'name',
-// 					width: '100px',
-// 					text: '名称'
-// 				},{
-// 					key: 'info',
-// 					text: '使用说明'
-// 				},{
-// 					key: 'url',
-// 					text: 'url'
-// 				},{
-// 					key: 'createDate',
-// 					text: '创建时间'
-// 				},{
-// 					key: 'lastDate',
-// 					text: '最后修改时间'
-// 				},{
-// 					key: 'action',
-// 					text: '操作',
-// 					template: function(action, rowObject){
-// 						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-// 							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-// 					}
-// 				}
-// 			]
-// 		};
-// 		new GridManager().init(table, arg);
-// 	});
-// 	afterAll(function () {
-// 		table = null;
-// 		$table = null;
-// 		gmName = null;
-// 		document.body.innerHTML = '';
-// 	});
-//
-// 	// 刷新成功后, 回调函数执行
-// 	it('Core.__refreshGrid($table, callback)', function(){
-// 		let callback = jasmine.createSpy('callback');
-// 		Core.__refreshGrid($table, callback);
-// 		expect(callback).toHaveBeenCalled();
-//
-// 		callback = null;
-// 	});
-//
-// 	it('Core.removeRefreshingClass($tableWrap)', function(){
-// 	});
-//
-// 	it('Core.driveDomForSuccessAfter($table, settings, response, callback)', function(){
-// 	});
-//
-//
-// 	// TODO 暂时没想到怎么测这个方法
-// 	it('Core.createDOM($table)', function(){
-//
-// 	});
-//
-// 	it('Core.resetTd(dom, isSingleRow)', function(){
-// 		Core.resetTd($table, false);
-// 		Core.resetTd($table.find('tbody tr:first-child'), true);
-// 	});
-// });
+
+describe('Core.__refreshGrid($table, callback)', function() {
+	it('基础验证', function () {
+		expect(Core.__refreshGrid).toBeDefined();
+		expect(Core.__refreshGrid.length).toBe(2);
+	});
+});
+
+describe('Core.removeRefreshingClass($tableWrap)', function() {
+	var tableWrap = null;
+	var $tableWrap = null;
+	var $refreshAction = null;
+	beforeEach(function() {
+		tableWrap = `
+					<div class="table-wrap">
+						<div class="page-toolbar">
+							<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>
+						</div>
+					</div>`;
+		document.body.innerHTML = tableWrap;
+		$tableWrap = jTool('.table-wrap');
+		$refreshAction = jTool('.refresh-action', $tableWrap);
+	});
+	afterEach(function(){
+		tableWrap = null;
+		$tableWrap = null;
+		$refreshAction = null;
+		document.body.innerHTML = '';
+	});
+
+	it('基础验证', function () {
+		expect(Core.removeRefreshingClass).toBeDefined();
+		expect(Core.removeRefreshingClass.length).toBe(1);
+	});
+
+	it('删除效果', function () {
+		expect($refreshAction.hasClass('refreshing')).toBe(false);
+
+		$refreshAction.addClass('refreshing');
+		expect($refreshAction.hasClass('refreshing')).toBe(true);
+
+		jasmine.clock().install();
+		Core.removeRefreshingClass($tableWrap);
+		jasmine.clock().tick(2000);
+		expect($refreshAction.hasClass('refreshing')).toBe(false);
+		jasmine.clock().uninstall();
+	});
+});
+
+describe('Core.driveDomForSuccessAfter($table, settings, response, callback)', function() {
+	beforeEach(function() {
+		// 存储console, 用于在测方式完成后原还console对象
+		console._error = console.error;
+		console.error = jasmine.createSpy("error");
+	});
+	afterEach(function(){
+		console.error = console._error;
+		console._error = null;
+	});
+
+	it('基础验证', function () {
+		expect(Core.driveDomForSuccessAfter).toBeDefined();
+		expect(Core.driveDomForSuccessAfter.length).toBe(4);
+	});
+
+	it('数据错误提示文本', function () {
+		Core.driveDomForSuccessAfter(null, null, null, null);
+		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '请求数据失败！请查看配置参数[ajax_url或ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确');
+	});
+});
+
+describe('Core.createDOM($table)', function() {
+	it('基础验证', function () {
+		expect(Core.createDOM).toBeDefined();
+		expect(Core.createDOM.length).toBe(1);
+	});
+});
+
+describe('Core.resetTd(dom, isSingleRow)', function() {
+	it('基础验证', function () {
+		expect(Core.resetTd).toBeDefined();
+		expect(Core.resetTd.length).toBe(2);
+	});
+});
+
+describe('Core.initVisible($table)', function() {
+	it('基础验证', function () {
+		expect(Core.initVisible).toBeDefined();
+		expect(Core.initVisible.length).toBe(1);
+	});
+});
