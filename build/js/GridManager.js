@@ -255,7 +255,8 @@ var BaseClass = function () {
 			var thPaddingLeft = thWarp.css('padding-left');
 			var thPaddingRight = thWarp.css('padding-right');
 			// 返回宽度值
-			return textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0);
+			// 文本所占宽度 + 左内间距 + 右内间距 + 由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错
+			return textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2;
 		}
 
 		/**
@@ -3761,7 +3762,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var Store = {
 	// 版本号
-	version: '2.3.21',
+	version: '2.3.23',
 
 	// GM实例
 	gridManager: {},

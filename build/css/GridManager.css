@@ -688,13 +688,12 @@ table[grid-manager].GridManager-ready {
   padding-right: 24px;
 }
 
-.table-wrap .table-div table[grid-manager] th[gm-create="true"] .th-wrap {
-  padding: 6px 4px;
+.table-wrap .table-div table[grid-manager] th[gm-create="true"] {
+  background-color: #f3f3f3;
 }
 
-.table-wrap .table-div table[grid-manager] th[gm-create="true"] {
-  background-color: #f3f3f3 !important;
-  opacity: 0.4;
+.table-wrap .table-div table[grid-manager] th[gm-create="true"] .th-wrap {
+  padding: 6px 4px;
 }
 
 .table-wrap .table-div table[grid-manager] th .th-wrap {

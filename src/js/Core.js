@@ -382,7 +382,7 @@ class Core {
 		const onlyThWarp = $('<div class="th-wrap"></div>');
 		$.each(onlyThList, (i2, v2) => {
 			onlyTH = $(v2);
-			// onlyThWarp.width(onlyTH.width() -1);
+
 			// 是否为自动生成的序号列
 			if (settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
 				isLmOrder = true;
