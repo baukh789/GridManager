@@ -150,7 +150,8 @@ class BaseClass {
 		const thPaddingLeft = thWarp.css('padding-left');
 		const thPaddingRight = thWarp.css('padding-right');
 		// 返回宽度值
-		return textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0);
+		// 文本所占宽度 + 左内间距 + 右内间距 + 由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错
+		return textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2;
 	}
 
 	/**

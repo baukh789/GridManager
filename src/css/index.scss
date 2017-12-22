@@ -79,12 +79,11 @@ $font-family: arial !important;
 				&[sorting] .th-wrap {
 					padding-right: 24px;
 				}
-				&[gm-create="true"] .th-wrap {
-					padding: 6px 4px;
-				}
 				&[gm-create="true"] {
-					background-color: #f3f3f3 !important;
-					opacity: 0.4;
+					background-color: #f3f3f3;
+					.th-wrap {
+						padding: 6px 4px;
+					}
 				}
 				.th-wrap {
 					/*减去的1px 为border-right. 原因是table元素存在特殊性, thead浮动后border的宽度不会计算到th内,而是会在原基础上将th的宽加1. */
