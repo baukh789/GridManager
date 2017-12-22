@@ -606,6 +606,7 @@ table[grid-manager].GridManager-ready {
 }
 
 .table-wrap .table-div {
+  padding-right: 10px;
   overflow: auto;
   /* 自定义滚动条样式 */
   /* 配置列表功能 */
@@ -653,6 +654,7 @@ table[grid-manager].GridManager-ready {
   border-bottom: 1px solid #e8e8e8;
 }
 
+.table-wrap .table-div table[grid-manager] tr th:last-child,
 .table-wrap .table-div table[grid-manager] tr td:last-child {
   border-right: none;
 }
@@ -696,7 +698,8 @@ table[grid-manager].GridManager-ready {
 }
 
 .table-wrap .table-div table[grid-manager] th .th-wrap {
-  width: 100%;
+  /*减去的1px 为border-right. 原因是table元素存在特殊性, thead浮动后border的宽度不会计算到th内,而是会在原基础上将th的宽加1. */
+  width: calc(100% - 1px);
   height: 100%;
   position: relative;
   padding: 6px;

@@ -565,17 +565,18 @@ var Cache = function () {
 			this.saveUserMemory = function ($table) {
 				var Settings = _this2.getSettings($table);
 				var _this = _this2;
-
 				// 当前为禁用缓存模式，直接跳出
 				if (Settings.disableCache) {
 					return false;
 				}
-				// 当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-				var noCache = $table.attr('no-cache');
+				// 当前表是否存在
 				if (!$table || $table.length === 0) {
 					_Base.Base.outLog('saveUserMemory:无效的table', 'error');
 					return false;
 				}
+
+				// 当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
+				var noCache = $table.attr('no-cache');
 				if (noCache && noCache === 'true') {
 					_Base.Base.outLog('缓存功能已被禁用：当前表缺失必要参数', 'info');
 					return false;
@@ -630,19 +631,17 @@ var Cache = function () {
 				// 合并参数
 				var _settings = new _Settings2.Settings();
 				_settings.textConfig = new _Settings2.TextSettings();
-
-				// 将默认项与配置项
 				_Base.jTool.extend(true, _settings, arg);
 
 				// 存储配置项
 				_this3.setSettings($table, _settings);
 
-				// 为 columnMap columnData 增加 序号列
+				// 为 columnData 增加 序号列
 				if (_settings.supportAutoOrder) {
 					_settings.columnData.unshift(_Order2.default.getColumn(_settings));
 				}
 
-				// 为 columnMap columnData 增加 选择列
+				// 为 columnData 增加 选择列
 				if (_settings.supportCheckbox) {
 					_settings.columnData.unshift(_Checkbox2.default.getColumn(_settings));
 				}
@@ -722,12 +721,39 @@ var Cache = function () {
 			};
 
 			/**
-    * 更新配置项
+    * 重置配置项
     * @param $table
     * @param settings
     */
 			this.setSettings = function ($table, settings) {
 				_Store2.default.settings[_Base.Base.getKey($table)] = _Base.jTool.extend(true, {}, settings);
+			};
+
+			/**
+    * 将 columnMap 返厂回修, 并返回最新的值, 适用操作[宽度调整, 位置调整, 可视状态调整]
+    * @param $table
+    * @param columnMap
+    * @returns {*}
+    */
+			this.reworkColumnMap = function ($table, columnMap) {
+				// columnMap 为无效数据, 跳出
+				if (!columnMap || _Base.jTool.isEmptyObject(columnMap)) {
+					_Base.Base.outLog('columnMap 为无效数据', 'error');
+					return;
+				}
+				var th = null;
+				_Base.jTool.each(columnMap, function (key, col) {
+					th = (0, _Base.jTool)('thead[grid-manager-thead] th[th-name="' + col.key + '"]', $table);
+					// 宽度
+					col.width = th.width() + 'px';
+
+					// 位置索引
+					col.index = th.index();
+
+					// 可视状态
+					col.isShow = th.attr('th-visible') === 'visible';
+				});
+				return columnMap;
 			};
 
 			/**
@@ -969,9 +995,9 @@ var Adjust = function () {
 				_Base.Base.updateScrollStatus($table);
 
 				// 更新表格列Map
-				_Base.$.each(settings.columnMap, function (key, col) {
-					col.width = (0, _Base.$)('th[th-name="' + col.key + '"]', $table).width() + 'px';
-				});
+				settings.columnMap = _Cache2.default.reworkColumnMap($table, settings.columnMap);
+
+				// 重置settings
 				_Cache2.default.setSettings($table, settings);
 
 				// 存储用户记忆
@@ -1091,7 +1117,6 @@ var Core = function () {
 
 	_createClass(Core, [{
 		key: '__refreshGrid',
-
 
 		/**
    * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
@@ -1231,14 +1256,14 @@ var Core = function () {
 	}, {
 		key: 'driveDomForSuccessAfter',
 		value: function driveDomForSuccessAfter($table, settings, response, callback) {
-			// tbody dom
-			var tbodyDOM = (0, _Base.$)('tbody', $table);
-			var gmName = _Base.Base.getKey($table);
-
 			if (!response) {
 				_Base.Base.outLog('请求数据失败！请查看配置参数[ajax_url或ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
 				return;
 			}
+
+			// tbody dom
+			var tbodyDOM = (0, _Base.$)('tbody', $table);
+			var gmName = _Base.Base.getKey($table);
 
 			// 用于拼接tbody的HTML结构
 			var tbodyTmpHTML = '';
@@ -1292,8 +1317,12 @@ var Core = function () {
 					tbodyTmpHTML += '<tr cache-key="' + index + '">';
 					_Base.$.each(settings.columnMap, function (key, col) {
 						template = col.template;
+						// td 模板
 						templateHTML = typeof template === 'function' ? template(row[col.key], row) : row[col.key];
+
+						// td 文本对齐方向
 						alignAttr = col.align ? 'align="' + col.align + '"' : '';
+
 						// 插件自带列(序号,全选) 的 templateHTML会包含dom节点, 所以需要特殊处理一下
 						tdList[col.index] = col.isAutoCreate ? templateHTML : '<td gm-create="false" ' + alignAttr + '>' + templateHTML + '</td>';
 					});
@@ -1320,7 +1349,6 @@ var Core = function () {
       */
 		value: function createDOM($table) {
 			var settings = _Cache2.default.getSettings($table);
-			// $table.attr('width', '100%').attr('cellspacing', 1).attr('cellpadding', 0);
 			$table.attr('width', '100%').attr('cellspacing', 0);
 			var theadHtml = '<thead grid-manager-thead>';
 			var tbodyHtml = '<tbody></tbody>';
@@ -1454,11 +1482,11 @@ var Core = function () {
 			// 单个TH所占宽度
 			var onlyWidth = 0;
 
+			// TODO baukh20171216: 这个操作应该考虑下放到生成th时就去做
 			// 单个TH下的上层DIV
 			var onlyThWarp = (0, _Base.$)('<div class="th-wrap"></div>');
 			_Base.$.each(onlyThList, function (i2, v2) {
 				onlyTH = (0, _Base.$)(v2);
-				// onlyTH.attr('th-visible', 'visible');
 
 				// 是否为自动生成的序号列
 				if (settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
@@ -1549,10 +1577,11 @@ var Core = function () {
 			$table.addClass('GridManager-ready');
 		}
 
+		// TODO resetTd方法已经不再处理多项事件, 现只处理initVisible, 而这个事项可以移到 driveDomForSuccessAfter 内进行处理
 		/**
    * 重置列表, 处理局部刷新、分页事件之后的td排序
-   * @param dom: able 或者 tr
-   * @param isSingleRow: 指定DOM节点是否为tr[布尔值]
+   * @param dom: table 或者 tr
+   * @param isSingleRow: 指定DOM节点是否为tr[布尔值] TODO: 之前会存在为true的情况, 现在的版本该参数已经失去作用
       */
 
 	}, {
@@ -1589,7 +1618,7 @@ var Core = function () {
 			var _td = null;
 			var _visible = 'visible';
 			var settings = _Cache2.default.getSettings($table);
-			_Base.$.each(settings.columnMap, function (i, col) {
+			_Base.$.each(settings.columnMap, function (index, col) {
 				_th = (0, _Base.$)('th[th-name="' + col.key + '"]', $table);
 				_visible = _Base.Base.getVisibleForColumn(col);
 				_th.attr('th-visible', _visible);
@@ -2938,7 +2967,6 @@ var Config = function () {
    * @param $table
       */
 		value: function bindConfigEvent($table) {
-			var settings = _Cache2.default.getSettings($table);
 			// GM容器
 			var tableWarp = $table.closest('div.table-wrap');
 
@@ -2948,6 +2976,7 @@ var Config = function () {
 			// 事件: 打开 关闭
 			configAction.unbind('click');
 			configAction.bind('click', function () {
+				var settings = _Cache2.default.getSettings($table);
 				// 展示事件源
 				var _configAction = (0, _Base.$)(this);
 
@@ -2968,9 +2997,11 @@ var Config = function () {
 				// 选中状态的input
 				var checkInput = null;
 
-				// 验证当前是否只有一列处于显示状态 并根据结果进行设置是否可以取消显示
+				// 可视列计数
 				var showNum = 0;
-				settings.columnData.forEach(function (col) {
+
+				// 重置列的可视操作
+				_Base.$.each(settings.columnMap, function (key, col) {
 					checkLi = (0, _Base.$)('li[th-name="' + col.key + '"]', _configArea);
 					checkInput = (0, _Base.$)('input[type="checkbox"]', checkLi);
 					if (col.isShow) {
@@ -2982,6 +3013,8 @@ var Config = function () {
 					checkLi.removeClass('checked-li');
 					checkInput.prop('checked', false);
 				});
+
+				// 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示
 				var checkedLi = (0, _Base.$)('.checked-li', _configArea);
 				showNum === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
 
@@ -2992,6 +3025,7 @@ var Config = function () {
 			// 事件: 设置
 			(0, _Base.$)('.config-list li', tableWarp).unbind('click');
 			(0, _Base.$)('.config-list li', tableWarp).bind('click', function () {
+				var settings = _Cache2.default.getSettings($table);
 				// 单个的设置项
 				var _only = (0, _Base.$)(this);
 
@@ -3025,12 +3059,6 @@ var Config = function () {
 				_Base.Base.setAreVisible(_th, isVisible, function () {
 					_tableDiv.removeClass('config-editing');
 				});
-
-				// 更新配置信息
-				// TODO 今天时间问题, 之后需要处理
-				// TODO 在配置, 调整宽度, 位置更换后, 应该统一使用同一个方法对 columnMap 进行更新
-				settings.columnMap[_thName].isShow = isVisible;
-				_Cache2.default.setSettings($table, settings);
 
 				// 当前处于选中状态的展示项
 				var _checkedList = (0, _Base.$)('.config-area input[type="checkbox"]:checked', _tableWarp);
@@ -3070,6 +3098,12 @@ var Config = function () {
 						(0, _Base.$)(v).width(_thWidth);
 					}
 				});
+
+				// 更新表格列Map
+				settings.columnMap = _Cache2.default.reworkColumnMap($table, settings.columnMap);
+
+				// 重置settings
+				_Cache2.default.setSettings($table, settings);
 
 				// 存储用户记忆
 				_Cache2.default.saveUserMemory(_table);
@@ -3727,7 +3761,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var Store = {
 	// 版本号
-	version: '2.3.19',
+	version: '2.3.21',
 
 	// GM实例
 	gridManager: {},
@@ -4112,9 +4146,7 @@ var Drag = function () {
 					}
 
 					// 更新表格列Map
-					_Base.$.each(settings.columnMap, function (key, col) {
-						col.index = (0, _Base.$)('th[th-name="' + col.key + '"]', $table).index();
-					});
+					settings.columnMap = _Cache2.default.reworkColumnMap($table, settings.columnMap);
 					_Cache2.default.setSettings($table, settings);
 
 					// 存储用户记忆
