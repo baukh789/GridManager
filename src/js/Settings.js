@@ -278,54 +278,67 @@ class TextSettings {
 	constructor() {
 		this['order-text'] = {
 			'zh-cn': '序号',
+			'zh-tw': '序號',
 			'en-us': 'order'
 		};
 		this['first-page'] = {
 			'zh-cn': '首页',
+			'zh-tw': '首頁',
 			'en-us': 'first'
 		};
 		this['previous-page'] = {
 			'zh-cn': '上一页',
+			'zh-tw': '上一頁',
 			'en-us': 'previous'
 		};
 		this['next-page'] = {
 			'zh-cn': '下一页',
+			'zh-tw': '下一頁',
 			'en-us': 'next'
 		};
 		this['last-page'] = {
 			'zh-cn': '尾页',
+			'zh-tw': '尾頁',
 			'en-us': 'last'
 		};
 		this['dataTablesInfo'] = {
 			'zh-cn': '此页显示 {0}-{1} 共{2}条',
+			'zh-tw': '此頁顯示 {0}-{1} 共{2}條',
 			'en-us': 'this page show {0}-{1} count {2}'
 		};
 		this['goto-first-text'] = {
 			'zh-cn': '跳转至',
+			'zh-tw': '跳轉至',
 			'en-us': 'goto'
 		};
 		this['goto-last-text'] = {
 			'zh-cn': '页',
+			'zh-tw': '頁',
 			'en-us': 'page'
 		};
 		this['refresh'] = {
 			'zh-cn': '重新加载',
+			'zh-tw': '重新加載',
 			'en-us': 'Refresh'
 		};
 		this['save-as-excel'] = {
 			'zh-cn': '另存为Excel',
+			'zh-tw': '另存為Excel',
 			'en-us': 'Save as Excel'
 		};
 		this['save-as-excel-for-checked'] = {
 			'zh-cn': '已选中项另存为Excel',
+			'zh-tw': '已選中項另存為Excel',
 			'en-us': 'Save selected as Excel'
 		};
 		this['config-grid'] = {
 			'zh-cn': '配置表',
+			'zh-tw': '配置表',
 			'en-us': 'Setting Grid'
 		};
 		this['checkall-text'] = {
 			'zh-cn': '全选',
+			'zh-tw': '全選',
 			'en-us': 'All'
 		};
 	}

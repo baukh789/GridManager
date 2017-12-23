@@ -214,66 +214,79 @@ describe('textConfig', function() {
 	});
 	it('验证国际化文本[order-text]初始值', function(){
 		expect(textConfig['order-text']['zh-cn']).toBe('序号');
+		expect(textConfig['order-text']['zh-tw']).toBe('序號');
 		expect(textConfig['order-text']['en-us']).toBe('order');
 	});
 
 	it('验证国际化文本[first-page]初始值', function(){
 		expect(textConfig['first-page']['zh-cn']).toBe('首页');
+		expect(textConfig['first-page']['zh-tw']).toBe('首頁');
 		expect(textConfig['first-page']['en-us']).toBe('first');
 	});
 
 	it('验证国际化文本[previous-page]初始值', function(){
 		expect(textConfig['previous-page']['zh-cn']).toBe('上一页');
+		expect(textConfig['previous-page']['zh-tw']).toBe('上一頁');
 		expect(textConfig['previous-page']['en-us']).toBe('previous');
 	});
 
 	it('验证国际化文本[next-page]初始值', function(){
 		expect(textConfig['next-page']['zh-cn']).toBe('下一页');
+		expect(textConfig['next-page']['zh-tw']).toBe('下一頁');
 		expect(textConfig['next-page']['en-us']).toBe('next');
 	});
 
 	it('验证国际化文本[last-page]初始值', function(){
 		expect(textConfig['last-page']['zh-cn']).toBe('尾页');
+		expect(textConfig['last-page']['zh-tw']).toBe('尾頁');
 		expect(textConfig['last-page']['en-us']).toBe('last');
 	});
 
 	it('验证国际化文本[dataTablesInfo]初始值', function(){
 		expect(textConfig['dataTablesInfo']['zh-cn']).toBe('此页显示 {0}-{1} 共{2}条');
+		expect(textConfig['dataTablesInfo']['zh-tw']).toBe('此頁顯示 {0}-{1} 共{2}條');
 		expect(textConfig['dataTablesInfo']['en-us']).toBe('this page show {0}-{1} count {2}');
 	});
 
 	it('验证国际化文本[goto-first-text]初始值', function(){
 		expect(textConfig['goto-first-text']['zh-cn']).toBe('跳转至');
+		expect(textConfig['goto-first-text']['zh-tw']).toBe('跳轉至');
 		expect(textConfig['goto-first-text']['en-us']).toBe('goto');
 	});
 
 	it('验证国际化文本[goto-last-text]初始值', function(){
 		expect(textConfig['goto-last-text']['zh-cn']).toBe('页');
+		expect(textConfig['goto-last-text']['zh-tw']).toBe('頁');
 		expect(textConfig['goto-last-text']['en-us']).toBe('page');
 	});
 
 	it('验证国际化文本[refresh]初始值', function(){
 		expect(textConfig['refresh']['zh-cn']).toBe('重新加载');
+		expect(textConfig['refresh']['zh-tw']).toBe('重新加載');
 		expect(textConfig['refresh']['en-us']).toBe('Refresh');
 	});
 
 	it('验证国际化文本[save-as-excel]初始值', function(){
 		expect(textConfig['save-as-excel']['zh-cn']).toBe('另存为Excel');
+		expect(textConfig['save-as-excel']['zh-tw']).toBe('另存為Excel');
 		expect(textConfig['save-as-excel']['en-us']).toBe('Save as Excel');
 	});
 
 	it('验证国际化文本[save-as-excel-for-checked]初始值', function(){
 		expect(textConfig['save-as-excel-for-checked']['zh-cn']).toBe('已选中项另存为Excel');
+		expect(textConfig['save-as-excel-for-checked']['zh-tw']).toBe('已選中項另存為Excel');
 		expect(textConfig['save-as-excel-for-checked']['en-us']).toBe('Save selected as Excel');
 	});
 
 	it('验证国际化文本[config-grid]初始值', function(){
 		expect(textConfig['config-grid']['zh-cn']).toBe('配置表');
+		expect(textConfig['config-grid']['zh-tw']).toBe('配置表');
 		expect(textConfig['config-grid']['en-us']).toBe('Setting Grid');
 	});
 
 	it('验证国际化文本[checkall-text]初始值', function(){
 		expect(textConfig['checkall-text']['zh-cn']).toBe('全选');
+		expect(textConfig['checkall-text']['zh-tw']).toBe('全選');
 		expect(textConfig['checkall-text']['en-us']).toBe('All');
 	});
 });
