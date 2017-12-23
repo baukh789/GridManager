@@ -5,10 +5,11 @@
 'use strict';
 import {PublishMethod, publishMethodArray} from '../src/js/Publish';
 import testData from '../src/data/testData';
+import { GM_VERSION, GM_PUBLISH_METHOD_LIST } from '../src/common/constants';
 
 describe('publishMethodArray', function() {
 	it('公开方法列表', function () {
-		expect(publishMethodArray).toEqual(['init', 'get', 'getLocalStorage', 'clear', 'getRowData', 'setSort', 'showTh', 'hideTh', 'exportGridToXls', 'setQuery', 'setAjaxData', 'refreshGrid', 'getCheckedTr', 'getCheckedData']);
+		expect(publishMethodArray).toEqual(GM_PUBLISH_METHOD_LIST);
 	});
 });
 
@@ -33,7 +34,7 @@ describe('Publish 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(14 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(15 + 1);
 	});
 });
 
@@ -152,7 +153,6 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 	});
 });
 
-
 describe('PublishMethod.get(table)', function() {
 	let table = null;
 	let arg = null;
@@ -184,6 +184,17 @@ describe('PublishMethod.get(table)', function() {
 	});
 });
 
+
+describe('PublishMethod.version()', function() {
+	it('基础验证', function () {
+		expect(PublishMethod.version()).toBeDefined();
+		expect(PublishMethod.version.length).toBe(0);
+	});
+
+	it('返回值验证', function () {
+		expect(PublishMethod.version()).toBe(GM_VERSION);
+	});
+});
 
 describe('PublishMethod.getLocalStorage(table)', function() {
 	let table = null;

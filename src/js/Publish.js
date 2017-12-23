@@ -4,6 +4,7 @@
  * 参数中的table, 将由组件自动添加
  */
 import GridManager from './GridManager';
+import { GM_PUBLISH_METHOD_LIST } from '../common/constants';
 class PublishMethodClass {
 	/**
 	 * 初始化方法
@@ -11,6 +12,14 @@ class PublishMethodClass {
 	init(table, settings, callback) {
 		const _GM = new GridManager();
 		return _GM.init(table, settings, callback);
+	}
+
+	/**
+	 * 当前版本号
+	 * @returns {string}
+     */
+	version() {
+		return	GridManager.version;
 	}
 
 	/*
@@ -105,6 +114,6 @@ class PublishMethodClass {
 	}
 }
 // 对外公开方法列表
-const publishMethodArray = ['init', 'get', 'getLocalStorage', 'clear', 'getRowData', 'setSort', 'showTh', 'hideTh', 'exportGridToXls', 'setQuery', 'setAjaxData', 'refreshGrid', 'getCheckedTr', 'getCheckedData'];
+const publishMethodArray = GM_PUBLISH_METHOD_LIST;
 const PublishMethod = new PublishMethodClass();
 export {PublishMethod, publishMethodArray};
