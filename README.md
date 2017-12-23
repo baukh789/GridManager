@@ -14,6 +14,7 @@
 - [Demo](http://www.lovejavascript.com/node_modules/GridManager/demo/index.html)
 
 ## Version Information
+- [v2.4.x.md](/version/v2.4.x.md)
 - [v2.3.x.md](/version/v2.3.x.md)
 - [v2.2.x.md](/version/v2.2.x.md)
 - [v2.1.x.md](/version/v2.1.x.md)
