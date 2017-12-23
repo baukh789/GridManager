@@ -1,63 +1,43 @@
 /**
  * Created by baukh on 17/4/21.
  */
+'use strict';
+import Drag from '../src/js/Drag';
+/**
+ * 验证类的属性及方法总量
+ */
+describe('Drag 验证类的属性及方法总量', function() {
+	var getPropertyCount = null;
+	beforeEach(function() {
+		getPropertyCount = function(o){
+			var n, count = 0;
+			for(n in o){
+				if(o.hasOwnProperty(n)){
+					count++;
+				}
+			}
+			return count;
+		}
+	});
+	afterEach(function(){
+		getPropertyCount = null;
+	});
+	it('Function count', function() {
+		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Drag)))).toBe(2 + 1);
+	});
+});
 
-// import '../build/css/GridManager.css';
-// import { jTool } from '../src/js/Base';
-// import testData from '../src/data/testData';
-// import GridManager from '../src/js/GridManager';
-// describe('Drag', function() {
-// 	let table = null;
-// 	let $table = null;
-// 	let gmName = 'test-drag';
-// 	beforeAll(function () {
-// 		table = document.createElement('table');
-// 		table.setAttribute('grid-manager', gmName);
-// 		document.querySelector('body').appendChild(table);
-// 		$table = jTool('table[grid-manager="'+ gmName +'"]');
-// 		var arg = {
-// 			ajax_data: testData
-// 			, columnData: [
-// 				{
-// 					key: 'name',
-// 					width: '100px',
-// 					text: '名称'
-// 				}, {
-// 					key: 'info',
-// 					text: '使用说明'
-// 				}, {
-// 					key: 'url',
-// 					text: 'url'
-// 				}, {
-// 					key: 'createDate',
-// 					text: '创建时间'
-// 				}, {
-// 					key: 'lastDate',
-// 					text: '最后修改时间'
-// 				}, {
-// 					key: 'action',
-// 					text: '操作',
-// 					template: function (action, rowObject) {
-// 						return '<span class="plugin-action edit-action" learnLink-id="' + rowObject.id + '">编辑</span>'
-// 							+ '<span class="plugin-action del-action" learnLink-id="' + rowObject.id + '">删除</span>';
-// 					}
-// 				}
-// 			]
-// 		};
-// 		new GridManager().init(table, arg);
-// 	});
-// 	afterAll(function () {
-// 		table = null;
-// 		$table = null;
-// 		gmName = null;
-// 		document.body.innerHTML = '';
-// 	});
-//
-// 	it('禁用文字选择效果', function(){
-// 		let _body = null;
-// 		let dragAction = null;
-// 		// jasmine.clock().install();
-// 		_body = jTool('body');
-// 		expect(_body.hasClass('no-select-text')).toBe(false);
-// 	});
-// });
+describe('Drag.bindDragEvent($table)', function() {
+	it('基础验证', function() {
+		expect(Drag.bindDragEvent).toBeDefined();
+		expect(Drag.bindDragEvent.length).toBe(1);
+	});
+});
+
+describe('Drag.updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV, haveMockThead)', function() {
+	it('基础验证', function() {
+		expect(Drag.updateDrag).toBeDefined();
+		expect(Drag.updateDrag.length).toBe(7);
+	});
+});

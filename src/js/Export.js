@@ -10,8 +10,31 @@ class Export {
 	 * @returns {string}
      */
 	get html() {
-		const html = '<a href="" download="" id="gm-export-action"></a>';
-		return html;
+		return '<a href="" download="" id="gm-export-action"></a>';
+	}
+
+	/**
+	 * uri type base64
+	 * @returns {string}
+     */
+	get URI() {
+		return 'data:application/vnd.ms-excel;base64,';
+	}
+
+	/**
+	 * 获取下载 url
+	 * @param exportHTML
+     */
+	getHref(exportHTML) {
+		return this.URI + window.btoa(unescape(encodeURIComponent(exportHTML || '')));
+	}
+
+	/**
+	 * 导出文件名
+	 * @param fileName
+     */
+	getDownload(fileName) {
+		return `${fileName}.xls`
 	}
 
 	/**
@@ -46,16 +69,12 @@ class Export {
      * @private
      */
 	__exportGridToXls($table, fileName, onlyChecked) {
-		let Settings = Cache.getSettings($table);
 		// createDOM内添加
 		const gmExportAction = $('#gm-export-action');
 		if (gmExportAction.length === 0) {
 			Core.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
 			return false;
 		}
-
-		// type base64
-		const uri = 'data:application/vnd.ms-excel;base64,';
 
 		// 存储导出的thead数据
 
@@ -88,15 +107,15 @@ class Export {
 			tbodyHTML += '</tr>';
 		});
 
+		if (!fileName) {
+			fileName = Cache.getSettings($table).gridManagerName;
+		}
+
 		// 拼接要导出html格式数据
 		const exportHTML = this.createExportHTML(theadHTML, tbodyHTML);
-		gmExportAction.prop('href', uri + base64(exportHTML));
-		gmExportAction.prop('download', `${fileName || Settings.gridManagerName}.xls`);
+		gmExportAction.prop('href', this.getHref(exportHTML));
+		gmExportAction.prop('download', this.getDownload(fileName));
 		gmExportAction.get(0).click();
-
-		function base64(s) {
-			return window.btoa(unescape(encodeURIComponent(s)));
-		}
 
 		// 成功后返回true
 		return true;

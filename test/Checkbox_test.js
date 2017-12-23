@@ -2,7 +2,6 @@
  * Created by baukh on 17/3/12.
  */
 'use strict';
-// var Checkbox = require('../src/js/Checkbox').default
 import Checkbox from '../src/js/Checkbox';
 /**
  * 验证类的属性及方法总量

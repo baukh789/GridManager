@@ -1,89 +1,117 @@
 /**
  * Created by baukh on 17/6/19.
  */
-// 'use strict';
-// import '../build/css/GridManager.css';
-// import { jTool } from '../src/js/Base';
-// import Export from '../src/js/Export';
-// import testData from '../src/data/testData';
-// import GridManager from '../src/js/GridManager';
-// describe('Export', function() {
-// 	let table = null;
-// 	let $table = null;
-// 	let gmName = 'test-export';
-// 	beforeAll(function(){
-// 		table = document.createElement('table');
-// 		table.setAttribute('grid-manager', gmName);
-// 		document.querySelector('body').appendChild(table);
-// 		$table = jTool('table[grid-manager="'+ gmName +'"]');
-// 		var arg = {
-// 			ajax_data: testData
-// 			,columnData: [
-// 				{
-// 					key: 'name',
-// 					width: '100px',
-// 					text: '名称'
-// 				},{
-// 					key: 'info',
-// 					text: '使用说明'
-// 				},{
-// 					key: 'url',
-// 					text: 'url'
-// 				},{
-// 					key: 'createDate',
-// 					text: '创建时间'
-// 				},{
-// 					key: 'lastDate',
-// 					text: '最后修改时间'
-// 				},{
-// 					key: 'action',
-// 					text: '操作',
-// 					template: function(action, rowObject){
-// 						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-// 							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-// 					}
-// 				}
-// 			]
-// 		};
-// 		new GridManager().init(table, arg);
-// 	});
-// 	afterAll(function () {
-// 		table = null;
-// 		$table = null;
-// 		gmName = null;
-// 		document.body.innerHTML = '';
-// 	});
-//
-// 	it('Export.html', function(){
-// 		let html = '<a href="" download="" id="gm-export-action"></a>';
-// 		expect(Export.html).toBe(html);
-// 		html = null;
-// 	});
-//
-// 	it('Export.__exportGridToXls()', function(){
-// 		expect(Export.__exportGridToXls($table, 'exportName')).toBe(true);
-// 	});
-//
-// 	it('Export.createExportHTML(theadHTML, tbodyHTML)', function(){
-// 		let theadHTML = '<tr><th>th1</th><th>th1</th></tr>';
-// 		let tbodyHTML = '<tr><td>td1</td><td>td2</td></tr>';
-// 		let exportHTML = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-// 								<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
-// 								<body>
-// 									<table>
-// 										<thead>
-// 											${theadHTML}
-// 										</thead>
-// 										<tbody>
-// 											${tbodyHTML}
-// 										</tbody>
-// 									</table>
-// 								</body>
-// 							</html>`;
-// 		expect(Export.createExportHTML(theadHTML, tbodyHTML).replace(/\s/g, '')).toBe(exportHTML.replace(/\s/g, ''));
-// 		theadHTML = null;
-// 		tbodyHTML = null;
-// 		exportHTML = null;
-// 	});
-//
-// });
+
+'use strict';
+import Export from '../src/js/Export';
+/**
+ * 验证类的属性及方法总量
+ */
+describe('Export 验证类的属性及方法总量', function() {
+	var getPropertyCount = null;
+	beforeEach(function() {
+		getPropertyCount = function(o){
+			var n, count = 0;
+			for(n in o){
+				if(o.hasOwnProperty(n)){
+					count++;
+				}
+			}
+			return count;
+		}
+	});
+	afterEach(function(){
+		getPropertyCount = null;
+	});
+	it('Function count', function() {
+		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Export)))).toBe(6 + 1);
+	});
+});
+
+describe('Export.html', function() {
+	it('基础验证', function() {
+		expect(Export.html).toBeDefined();
+		expect(Export.html).toBe('<a href="" download="" id="gm-export-action"></a>');
+	});
+});
+
+describe('Export.URI', function() {
+	it('基础验证', function() {
+		expect(Export.URI).toBeDefined();
+		expect(Export.URI).toBe('data:application/vnd.ms-excel;base64,');
+	});
+});
+
+describe('Export.getHref(exportHTML)', function() {
+	var exportHTML = null;
+	beforeEach(function() {
+		exportHTML = 'test exportHTML. 这里有一条测试用例';
+	});
+	afterEach(function(){
+		exportHTML = null;
+	});
+	it('基础验证', function() {
+		expect(Export.getHref).toBeDefined();
+		expect(Export.getHref.length).toBe(1);
+		expect(Export.getHref(exportHTML)).toBe(Export.URI + window.btoa(unescape(encodeURIComponent(exportHTML || ''))));
+	});
+});
+
+describe('Export.getDownload(fileName)', function() {
+	var fileName = null;
+	beforeEach(function() {
+		fileName = 'filename';
+	});
+	afterEach(function(){
+		fileName = null;
+	});
+	it('基础验证', function() {
+		expect(Export.getDownload).toBeDefined();
+		expect(Export.getDownload.length).toBe(1);
+		expect(Export.getDownload(fileName)).toBe(`${fileName}.xls`);
+	});
+});
+
+describe('Export.createExportHTML(theadHTML, tbodyHTML)', function() {
+	var exportHTML = null;
+	var theadHTML = '<tr><th>test</th></tr>';
+	var tbodyHTML = '<tr><td>test</td></tr>';
+	beforeEach(function() {
+		exportHTML = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+						<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
+						<body>
+							<table>
+								<thead>
+									${theadHTML}
+								</thead>
+								<tbody>
+									${tbodyHTML}
+								</tbody>
+							</table>
+						</body>
+					</html>`;
+	});
+
+	afterEach(function(){
+		exportHTML = null;
+		theadHTML = null;
+		tbodyHTML = null;
+	});
+
+	it('基础验证', function() {
+		expect(Export.createExportHTML).toBeDefined();
+		expect(Export.createExportHTML.length).toBe(2);
+	});
+
+	it('返回值', function() {
+		expect(Export.createExportHTML(theadHTML, tbodyHTML).replace(/\s/g, '')).toBe(exportHTML.replace(/\s/g, ''));
+	});
+});
+
+describe('Export.__exportGridToXls($table, fileName, onlyChecked)', function() {
+	it('基础验证', function() {
+		expect(Export.__exportGridToXls).toBeDefined();
+		expect(Export.__exportGridToXls.length).toBe(3);
+	});
+});
