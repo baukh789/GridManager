@@ -31,9 +31,14 @@ class Export {
 
 	/**
 	 * 导出文件名
+	 * @param $table
 	 * @param fileName
      */
-	getDownload(fileName) {
+	getDownload($table, fileName) {
+		if (!fileName) {
+			fileName = Cache.getSettings($table).gridManagerName;
+		}
+
 		return `${fileName}.xls`
 	}
 
@@ -107,14 +112,10 @@ class Export {
 			tbodyHTML += '</tr>';
 		});
 
-		if (!fileName) {
-			fileName = Cache.getSettings($table).gridManagerName;
-		}
-
 		// 拼接要导出html格式数据
 		const exportHTML = this.createExportHTML(theadHTML, tbodyHTML);
 		gmExportAction.prop('href', this.getHref(exportHTML));
-		gmExportAction.prop('download', this.getDownload(fileName));
+		gmExportAction.prop('download', this.getDownload($table, fileName));
 		gmExportAction.get(0).click();
 
 		// 成功后返回true

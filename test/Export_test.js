@@ -58,7 +58,7 @@ describe('Export.getHref(exportHTML)', function() {
 	});
 });
 
-describe('Export.getDownload(fileName)', function() {
+describe('Export.getDownload($table, fileName)', function() {
 	var fileName = null;
 	beforeEach(function() {
 		fileName = 'filename';
@@ -68,8 +68,8 @@ describe('Export.getDownload(fileName)', function() {
 	});
 	it('基础验证', function() {
 		expect(Export.getDownload).toBeDefined();
-		expect(Export.getDownload.length).toBe(1);
-		expect(Export.getDownload(fileName)).toBe(`${fileName}.xls`);
+		expect(Export.getDownload.length).toBe(2);
+		expect(Export.getDownload(undefined, fileName)).toBe(`${fileName}.xls`);
 	});
 });
 
