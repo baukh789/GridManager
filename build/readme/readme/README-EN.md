@@ -135,7 +135,7 @@ npm install GridManager
 ```
 ## Q&A
 ### It doesn't work when configured by myself althought there is the method or the property in API?
-You can find the version of the `Gridmanager` by the way of  `document.querySelector('table').GM('get').version ` .If it is different from  the main station version ,please try again after downloading the newer one.
+You can find the version of the `Gridmanager` by the way of  `GM.version or document.querySelector('table').GM('version')` .If it is different from  the main station version ,please try again after downloading the newer one.
 ### How to set my grid if datas have been existed before rendering?
 You can solve it by setting the `ajax_data`, datas will not be asked by `ajax_url` if the ajax_data is existed, and `ajax_beforeSend、ajax_error、ajax_complete` will lose efficacy, only `ajax_success` will be done.
 

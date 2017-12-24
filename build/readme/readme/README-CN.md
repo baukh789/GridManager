@@ -135,7 +135,7 @@ npm install GridManager
 ```
 ## 常见问题解答
 ### API上存在的属性或方法，自已配置后却不生效?
-可以通过 `document.querySelector('table').GM('get').version` 查看 `GridManager` 版本号。如版本号与主站版本存在差异，请重新下载新版本进行尝试。
+可以通过 `GM.version 或 document.querySelector('table').GM('version')` 查看 `GridManager` 版本号。如版本号与主站版本存在差异，请重新下载新版本进行尝试。
     
 ### 数据在渲染前就已经存在,如何配置?
 可以通过参数 `ajax_data` 进行配置,如果存在配置数据 `ajax_data`,将不再通过 `ajax_url` 进行数据请求。且 `ajax_beforeSend、ajax_error、ajax_complete` 将失效，仅有 `ajax_success` 会被执行。

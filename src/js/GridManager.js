@@ -42,7 +42,7 @@ export default class GridManager {
 	/**
 	 * @静态方法
 	 * 获取指定表格的本地存储数据
-	 * 成功则返回本地存储数据,失败则返回空对象
+	 * 成功后返回本地存储数据,失败则返回空对象
 	 * @param table
 	 * @returns {{}}
      */
@@ -53,7 +53,7 @@ export default class GridManager {
 
 	/**
 	 * @静态方法
-	 * 清除指定表的表格记忆数据,  如果未指定删除的table, 则全部清除
+	 * 清除指定表的表格记忆数据, 如果未指定删除的table, 则全部清除
 	 * @param table
 	 * @returns {boolean}
      */
@@ -113,7 +113,7 @@ export default class GridManager {
 
 	/**
 	 * @静态方法
-	 * 导出表格 .xls
+	 * 导出.xls格式文件
 	 * @param table
 	 * @param fileName 导出后的文件名
 	 * @param onlyChecked 是否只导出已选中的表格
@@ -133,7 +133,7 @@ export default class GridManager {
 	 * @param isGotoFirstPage: 是否返回第一页[Boolean default=true]
 	 * 注意事项:
 	 * - 当query的key与分页及排序等字段冲突时将会被忽略.
-	 * - setQuery() 会立即触发刷新操作
+	 * - setQuery() 执行后会立即触发刷新操作
 	 * - 在此配置的query在分页事件触发时, 会以参数形式传递至pagingAfter(query)事件内
 	 * - setQuery方法中对query字段执行的操作是覆盖而不是合并, query参数位传递的任意值都会将原来的值覆盖.
 	 */
@@ -155,7 +155,7 @@ export default class GridManager {
 
 	/**
 	 * @静态方法
-	 * 配置静态数ajaxData
+	 * 配置静态数ajaxData; 用于再次配置ajax_data数据, 配置后会根据参数ajaxData即时刷新表格
 	 * @param table
 	 * @param ajaxData: 配置的数据
 	 */

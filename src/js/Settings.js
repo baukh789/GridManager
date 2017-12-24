@@ -148,7 +148,7 @@ class Settings {
 		 * 国际化
 		 */
 		const i18n = {
-			// 选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
+			// 选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语, zh-tw: 繁体中文] 默认zh-cn
 			i18n: 'zh-cn'
 		};
 

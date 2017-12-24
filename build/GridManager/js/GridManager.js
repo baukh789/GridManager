@@ -2116,7 +2116,7 @@ var GridManager = function () {
 		/**
    * @静态方法
    * 获取指定表格的本地存储数据
-   * 成功后返回本地存储数据,失败则返回空对象
+   * 成功则返回本地存储数据,失败则返回空对象
    * @param table
    * @returns {{}}
       */
@@ -2129,7 +2129,7 @@ var GridManager = function () {
 
 		/**
    * @静态方法
-   * 清除指定表的表格记忆数据, 如果未指定删除的table, 则全部清除
+   * 清除指定表的表格记忆数据,  如果未指定删除的table, 则全部清除
    * @param table
    * @returns {boolean}
       */
@@ -2199,7 +2199,7 @@ var GridManager = function () {
 
 		/**
    * @静态方法
-   * 导出.xls格式文件
+   * 导出表格 .xls
    * @param table
    * @param fileName 导出后的文件名
    * @param onlyChecked 是否只导出已选中的表格
@@ -2221,7 +2221,7 @@ var GridManager = function () {
    * @param isGotoFirstPage: 是否返回第一页[Boolean default=true]
    * 注意事项:
    * - 当query的key与分页及排序等字段冲突时将会被忽略.
-   * - setQuery() 执行后会立即触发刷新操作
+   * - setQuery() 会立即触发刷新操作
    * - 在此配置的query在分页事件触发时, 会以参数形式传递至pagingAfter(query)事件内
    * - setQuery方法中对query字段执行的操作是覆盖而不是合并, query参数位传递的任意值都会将原来的值覆盖.
    */
@@ -2245,7 +2245,7 @@ var GridManager = function () {
 
 		/**
    * @静态方法
-   * 配置静态数ajaxData; 用于再次配置ajax_data数据, 配置后会根据参数ajaxData即时刷新表格
+   * 配置静态数ajaxData
    * @param table
    * @param ajaxData: 配置的数据
    */
@@ -3617,11 +3617,13 @@ var Sort = function () {
 		/*
    * 手动设置排序
    * @param $table: table jTool
-   * @param sortJson: 排序信息
-   * 格式: {key: value} key 需要与参数 columnData 中的 key匹配, value  为参数 sortUpText 或 sortDownText 的值
-   * 示例: sortJson => {name: 'ASC}
+   * @param sortJson: 需要排序的json串  key为value需要与参数sortUpText 或 sortDownText值相同
    * @param callback: 回调函数[function]
    * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
+   *
+   * sortJson详细说明
+   * 格式: {key: value} key 需要与参数 columnData 中的 key匹配, value  为参数 sortUpText 或 sortDownText 的值
+   * 示例: sortJson => {name: 'ASC}
    * */
 		value: function __setSort($table, sortJson, callback, refresh) {
 			var _this2 = this;
@@ -4635,7 +4637,7 @@ var Settings = function Settings() {
   * 国际化
   */
 	var i18n = {
-		// 选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语, zh-tw: 繁体中文] 默认zh-cn
+		// 选择使用哪种语言，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
 		i18n: 'zh-cn'
 	};
 

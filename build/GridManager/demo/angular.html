@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GridManager:使用静态数据渲染</title>
+	<!--引入 GridManager 依赖-->
+	<link rel="stylesheet" type="text/css" href="../css/GridManager.css">
+	<script type="text/javascript" src="../js/GridManager.js"></script>
+	<!--引入angular 依赖-->
+	<script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
+
+	</head>
+<body ng-app="myApp">
+
+<div ng-controller="gm">
+	<angular-grid-manager option="option"></angular-grid-manager>
+</div>
+
+<script type="text/javascript">
+	var app = angular.module("myApp", []);
+	app.controller('gm', function($scope){
+		// 配置GridManager init 必要参数
+		var colData = [{
+			key: 'name',
+			remind: 'the name',
+			width: '100px',
+			text: '名称',
+			sorting: ''
+		},{
+			key: 'info',
+			remind: 'the info',
+			text: '使用说明'
+		},{
+			key: 'url',
+			remind: 'the url',
+			text: 'url'
+		},{
+			key: 'createDate',
+			remind: 'the createDate',
+			width: '100px',
+			text: '创建时间',
+			sorting: 'DESC',
+			template: function(createDate, rowObject){
+				return new Date(createDate);
+			}
+		},{
+			key: 'lastDate',
+			remind: 'the lastDate',
+			width: '100px',
+			text: '最后修改时间',
+			sorting: '',
+			template: function(lastDate, rowObject){
+				return new Date(lastDate);
+			}
+		},{
+			key: 'action',
+			remind: 'the action',
+			width: '100px',
+			text: '操作',
+			template: function(action, rowObject){
+				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+			}
+		}];
+		var queryInfo = {pluginId: 1};
+		$scope.option = {
+			gridManagerName: 'testAngular',
+			height: '400px',
+			columnData: colData,
+			supportRemind: true,
+			isCombSorting:  true,
+			supportAjaxPage: true,
+			supportSorting: true,
+			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
+			ajax_type: 'POST',
+			query: queryInfo,
+			pageSize: 20,
+			ajax_success: function(){
+				console.log(arguments);
+			},
+			pagingAfter: function () {
+				console.log('pagingAfter');
+			}
+		};
+	});
+
+	// 添加一个指令
+	app.directive("angularGridManager", function() {
+		return {
+			restrict : 'E',
+			scope: {
+				option: '='
+			},
+			template : '<table></table>',
+			compile: function(element, arg){
+				return function($scope){
+					var table = element[0].querySelector('angular-grid-manager table');
+					table.GM($scope.option);
+				}
+			}
+		};
+	});
+
+
+
+</script>
+</body>
+</html>
+
+
+
+

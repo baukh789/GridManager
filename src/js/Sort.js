@@ -22,13 +22,11 @@ class Sort {
 	/*
 	 * 手动设置排序
 	 * @param $table: table jTool
-	 * @param sortJson: 需要排序的json串  key为value需要与参数sortUpText 或 sortDownText值相同
-	 * @param callback: 回调函数[function]
-	 * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
-	 *
-	 * sortJson详细说明
+	 * @param sortJson: 排序信息
 	 * 格式: {key: value} key 需要与参数 columnData 中的 key匹配, value  为参数 sortUpText 或 sortDownText 的值
 	 * 示例: sortJson => {name: 'ASC}
+	 * @param callback: 回调函数[function]
+	 * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
 	 * */
 	__setSort($table, sortJson, callback, refresh) {
 		let settings = Cache.getSettings($table);
