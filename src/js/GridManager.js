@@ -36,7 +36,6 @@ export default class GridManager {
 	 */
 	static
 	get(table) {
-		// return Cache.__getGridManager(jTool(table));
 		return Cache.getSettings(jTool(table));
 	}
 
@@ -88,6 +87,7 @@ export default class GridManager {
 		Sort.__setSort(jTool(table), sortJson, callback, refresh);
 	}
 
+	// TODO 这个方法名称起的不规范, 按作用应该更名为showCol
 	/**
 	 * @静态方法
 	 * 显示Th及对应的TD项
@@ -99,6 +99,7 @@ export default class GridManager {
 		Base.setAreVisible(jTool(target), true);
 	}
 
+	// TODO 这个方法名称起的不规范, 按作用应该更名为hideCol
 	/**
 	 * @静态方法
 	 * 隐藏Th及对应的TD项
@@ -131,10 +132,10 @@ export default class GridManager {
 	 * @param callback: 回调函数
 	 * @param isGotoFirstPage: 是否返回第一页[Boolean default=true]
 	 * 注意事项:
-	 * - query的key值如果与分页及排序等字段冲突, query中的值将会被忽略.
+	 * - 当query的key与分页及排序等字段冲突时将会被忽略.
 	 * - setQuery() 会立即触发刷新操作
 	 * - 在此配置的query在分页事件触发时, 会以参数形式传递至pagingAfter(query)事件内
-	 * - setQuery对query字段执行的操作是修改而不是合并, 每次执行setQuery都会将之前配置的query值覆盖
+	 * - setQuery方法中对query字段执行的操作是覆盖而不是合并, query参数位传递的任意值都会将原来的值覆盖.
 	 */
 	static
 	setQuery(table, query, isGotoFirstPage, callback) {

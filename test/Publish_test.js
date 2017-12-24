@@ -5,6 +5,7 @@
 'use strict';
 import {PublishMethod, publishMethodArray} from '../src/js/Publish';
 import testData from '../src/data/testData';
+import testData2 from '../src/data/testData2';
 import { GM_VERSION, GM_PUBLISH_METHOD_LIST } from '../src/common/constants';
 
 describe('publishMethodArray', function() {
@@ -18,7 +19,7 @@ describe('publishMethodArray', function() {
  */
 describe('Publish 验证类的属性及方法总量', function() {
 	var getPropertyCount = null;
-	beforeEach(function() {
+	beforeAll(function() {
 		getPropertyCount = function(o){
 			var n, count = 0;
 			for(n in o){
@@ -29,7 +30,7 @@ describe('Publish 验证类的属性及方法总量', function() {
 			return count;
 		}
 	});
-	afterEach(function(){
+	afterAll(function(){
 		getPropertyCount = null;
 	});
 	it('Function count', function() {
@@ -41,7 +42,7 @@ describe('Publish 验证类的属性及方法总量', function() {
 describe('PublishMethod.init(table, settings, callback)', function() {
 	let table = null;
 	let arg = null;
-	beforeEach(function(){
+	beforeAll(function(){
 		// 存储console, 用于在测方式完成后原还console对象
 		console._error = console.error;
 		console._warn = console.warn;
@@ -53,7 +54,7 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 		arg = null;
 	});
 
-	afterEach(function(){
+	afterAll(function(){
 		console.error = console._error;
 		console.warn = console._warn;
 		document.body.innerHTML = '';
@@ -122,6 +123,8 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 		arg = {
 			ajax_data: testData,
 			gridManagerName: 'test-publish',
+			supportSorting: true,
+			supportRemind: true,
 			columnData: [
 				{
 					key: 'name',
@@ -155,122 +158,27 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 		expect(callback).toHaveBeenCalled();
 	});
 });
-// TODO 这个测试与 init 未做到完全独立
-describe('PublishMethod.get(table)', function() {
+
+describe('PublishMethod 非init方法验证', function() {
 	let table = null;
 	let arg = null;
-	beforeEach(function(){
-		table = document.createElement('table');
-		document.body.appendChild(table);
-		arg = null;
-	});
-
-	afterEach(function(){
-		table = null;
-		arg = null;
-		document.body.innerHTML = '';
-	});
-
-	it('基础验证', function () {
-		expect(PublishMethod.get).toBeDefined();
-		expect(PublishMethod.get.length).toBe(1);
-	});
-
-	it('参数为空', function () {
-		expect(PublishMethod.get()).toEqual({});
-	});
-
-	it('验证返回值', function () {
-		// 抽取两个值进行较验
-		expect(PublishMethod.get(table).gridManagerName).toBe('');
-		expect(PublishMethod.get(table).sortKey).toBe('sort_');
-	});
-});
-
-
-describe('PublishMethod.version()', function() {
-	it('基础验证', function () {
-		expect(PublishMethod.version()).toBeDefined();
-		expect(PublishMethod.version.length).toBe(0);
-	});
-
-	it('返回值验证', function () {
-		expect(PublishMethod.version()).toBe(GM_VERSION);
-	});
-});
-
-describe('PublishMethod.getLocalStorage(table)', function() {
-	let table = null;
-	let arg = null;
-	beforeEach(function(){
-		table = document.createElement('table');
-		document.body.appendChild(table);
-		arg = null;
-	});
-
-	afterEach(function(){
-		table = null;
-		arg = null;
-		document.body.innerHTML = '';
-	});
-
-	it('基础验证', function () {
-		expect(PublishMethod.getLocalStorage).toBeDefined();
-		expect(PublishMethod.getLocalStorage.length).toBe(1);
-	});
-
-	it('参数为空', function () {
-		expect(PublishMethod.getLocalStorage()).toEqual({});
-	});
-
-	it('验证返回值', function () {
-		// 当前表格并不存在本地存储, 所以返回为空对象
-		expect(PublishMethod.getLocalStorage(table)).toEqual({});
-	});
-});
-
-describe('PublishMethod.clear(table)', function() {
-	let table = null;
-	let arg = null;
-	beforeEach(function () {
+	let trList = null;
+	let gridManagerName = null;
+	let queryValue = null;
+	beforeAll(function () {
 		// 存储console, 用于在测方式完成后原还console对象
 		console._warn = console.warn;
 		console.warn = jasmine.createSpy("warn");
 
-		table = document.createElement('table');
-		document.body.appendChild(table);
-		arg = null;
-	});
+		gridManagerName = 'test-publish';
+		queryValue = {'ccname': 'baukh'};
 
-	afterEach(function () {
-		console.warn = console._warn;
-		document.body.innerHTML = '';
-		table = null;
-		arg = null;
-	});
-
-	it('基础验证', function () {
-		expect(PublishMethod.clear).toBeDefined();
-		expect(PublishMethod.clear.length).toBe(1);
-	});
-
-	it('console提示文本', function () {
-		PublishMethod.clear();
-		expect(console.warn).toHaveBeenCalledWith('GridManager Warn: ', '用户记忆被全部清除: 通过clear()方法清除');
-	});
-});
-
-
-describe('PublishMethod.getRowData(table, target)', function() {
-	let table = null;
-	let arg = null;
-	let trList = null;
-	beforeEach(function () {
 		table = document.createElement('table');
 		document.body.appendChild(table);
 		arg = {
 			ajax_data: testData,
-			gridManagerName: 'test-publish-getRowData',
+			gridManagerName: gridManagerName,
+			query: queryValue,
 			columnData: [
 				{
 					key: 'name',
@@ -302,86 +210,446 @@ describe('PublishMethod.getRowData(table, target)', function() {
 		trList = document.querySelectorAll('tbody tr');
 	});
 
-	afterEach(function () {
+	afterAll(function () {
 		table = null;
 		arg = null;
 		trList = null;
+		gridManagerName = null;
+		queryValue = null;
+		console.warn = console._warn;
+		document.body.innerHTML = '';
 	});
 
-	it('基础验证', function () {
-		expect(PublishMethod.getRowData).toBeDefined();
-		expect(PublishMethod.getRowData.length).toBe(2);
+
+	describe('PublishMethod.get(table)', function() {
+		it('基础验证', function () {
+			expect(PublishMethod.get).toBeDefined();
+			expect(PublishMethod.get.length).toBe(1);
+		});
+
+		it('参数为空', function () {
+			expect(PublishMethod.get()).toEqual({});
+		});
+
+		it('验证返回值', function () {
+			// 抽取两个值进行较验
+			expect(PublishMethod.get(table).gridManagerName).toBe(gridManagerName);
+			expect(PublishMethod.get(table).sortKey).toBe('sort_');
+		});
 	});
 
-	it('target为空', function () {
-		expect(PublishMethod.getRowData(table)).toEqual({});
+
+	describe('PublishMethod.version()', function() {
+		it('基础验证', function () {
+			expect(PublishMethod.version()).toBeDefined();
+			expect(PublishMethod.version.length).toBe(0);
+		});
+
+		it('返回值验证', function () {
+			expect(PublishMethod.version()).toBe(GM_VERSION);
+		});
 	});
 
-	it('参数完整', function () {
-		expect(PublishMethod.getRowData(table, trList[0])).toEqual(testData.data[0]);
-		expect(PublishMethod.getRowData(table, trList[2])).toEqual(testData.data[2]);
-	});
-});
+	describe('PublishMethod.getLocalStorage(table)', function() {
+		it('基础验证', function () {
+			expect(PublishMethod.getLocalStorage).toBeDefined();
+			expect(PublishMethod.getLocalStorage.length).toBe(1);
+		});
 
-describe('PublishMethod.setSort(table, sortJson, callback, refresh)', function() {
-	it('基础验证', function () {
-		expect(PublishMethod.setSort).toBeDefined();
-		expect(PublishMethod.setSort.length).toBe(4);
-	});
-});
+		it('参数为空', function () {
+			expect(PublishMethod.getLocalStorage()).toEqual({});
+		});
 
-describe('PublishMethod.showTh(table, target)', function() {
-	it('基础验证', function () {
-		expect(PublishMethod.showTh).toBeDefined();
-		expect(PublishMethod.showTh.length).toBe(2);
+		it('验证返回值', function () {
+			// 当前表格并不存在本地存储, 所以返回为空对象
+			expect(PublishMethod.getLocalStorage(table)).toEqual({});
+		});
 	});
-});
 
-describe('PublishMethod.hideTh(table, target)', function() {
-	it('基础验证', function () {
-		expect(PublishMethod.hideTh).toBeDefined();
-		expect(PublishMethod.hideTh.length).toBe(2);
-	});
-});
+	describe('PublishMethod.clear(table)', function() {
+		it('基础验证', function () {
+			expect(PublishMethod.clear).toBeDefined();
+			expect(PublishMethod.clear.length).toBe(1);
+		});
 
-describe('PublishMethod.exportGridToXls(table, fileName, onlyChecked)', function() {
-	it('基础验证', function () {
-		expect(PublishMethod.exportGridToXls).toBeDefined();
-		expect(PublishMethod.exportGridToXls.length).toBe(3);
+		it('console提示文本', function () {
+			PublishMethod.clear();
+			expect(console.warn).toHaveBeenCalledWith('GridManager Warn: ', '用户记忆被全部清除: 通过clear()方法清除');
+		});
 	});
-});
 
-describe('PublishMethod.setQuery(table, query, isGotoFirstPage, callback)', function() {
-	it('基础验证', function () {
-		expect(PublishMethod.setQuery).toBeDefined();
-		expect(PublishMethod.setQuery.length).toBe(4);
-	});
-});
 
-describe('PublishMethod.setAjaxData(table, ajaxData)', function() {
-	it('基础验证', function () {
-		expect(PublishMethod.setAjaxData).toBeDefined();
-		expect(PublishMethod.setAjaxData.length).toBe(2);
-	});
-});
+	describe('PublishMethod.getRowData(table, target)', function() {
+		it('基础验证', function () {
+			expect(PublishMethod.getRowData).toBeDefined();
+			expect(PublishMethod.getRowData.length).toBe(2);
+		});
 
-describe('PublishMethod.refreshGrid(table, isGotoFirstPage, callback)', function() {
-	it('基础验证', function () {
-		expect(PublishMethod.refreshGrid).toBeDefined();
-		expect(PublishMethod.refreshGrid.length).toBe(3);
-	});
-});
+		it('target为空', function () {
+			expect(PublishMethod.getRowData(table)).toEqual({});
+		});
 
-describe('PublishMethod.getCheckedTr(table)', function() {
-	it('基础验证', function () {
-		expect(PublishMethod.getCheckedTr).toBeDefined();
-		expect(PublishMethod.getCheckedTr.length).toBe(1);
+		it('参数完整', function () {
+			expect(PublishMethod.getRowData(table, trList[0])).toEqual(testData.data[0]);
+			expect(PublishMethod.getRowData(table, trList[2])).toEqual(testData.data[2]);
+		});
 	});
-});
 
-describe('PublishMethod.getCheckedTr(table)', function() {
-	it('基础验证', function () {
-		expect(PublishMethod.getCheckedData).toBeDefined();
-		expect(PublishMethod.getCheckedData.length).toBe(1);
+	describe('PublishMethod.setSort(table, sortJson, callback, refresh)', function() {
+		let callback1 = null;
+		let callback2 = null;
+		let callback3 = null;
+		let sortJson = null;
+		beforeEach(() => {
+			callback1 = jasmine.createSpy('callback');
+			callback2 = jasmine.createSpy('callback');
+			callback3 = jasmine.createSpy('callback');
+		});
+
+		afterEach(() => {
+			callback1 = null;
+			callback2 = null;
+			callback3 = null;
+			sortJson = null;
+		});
+		it('基础验证', function () {
+			expect(PublishMethod.setSort).toBeDefined();
+			expect(PublishMethod.setSort.length).toBe(4);
+		});
+
+		it('执行', function () {
+			sortJson = {
+				name: 'DESC'
+			};
+			PublishMethod.setSort(table, sortJson, callback1);
+			expect(callback1).toHaveBeenCalled();
+			expect(PublishMethod.get(table).sortData.name).toBe('DESC');
+
+			sortJson = {
+				name: 'ASC'
+			};
+			PublishMethod.setSort(table, sortJson, callback2, false);
+			expect(callback2).toHaveBeenCalled();
+			expect(PublishMethod.get(table).sortData.name).toBe('ASC');
+
+			// 传递无效的值
+			sortJson = {
+				name: undefined
+			};
+			PublishMethod.setSort(table, sortJson, callback3, false);
+			expect(callback3).toHaveBeenCalled();
+			expect(PublishMethod.get(table).sortData.name).toBe(undefined);
+
+		});
 	});
+
+	describe('PublishMethod.showTh(table, target) or PublishMethod.hideTh(table, target)', function() {
+		let firstTh = null;
+		let lastTh = null;
+		let firstTd = null;
+		let lastTd = null;
+		beforeAll(() => {
+			firstTh = table.querySelector('thead th');
+			lastTh = table.querySelector('thead th:last-child');
+			firstTd = table.querySelector('tbody td');
+			lastTd = table.querySelector('tbody td:last-child');
+		});
+
+		afterAll(() => {
+			firstTh = null;
+			lastTh = null;
+			firstTd = null;
+			lastTd = null;
+		});
+
+		it('基础验证', function () {
+			expect(PublishMethod.showTh).toBeDefined();
+			expect(PublishMethod.showTh.length).toBe(2);
+
+			expect(PublishMethod.hideTh).toBeDefined();
+			expect(PublishMethod.hideTh.length).toBe(2);
+		});
+
+		it('执行 hideTh', function () {
+			expect(firstTh.getAttribute('th-visible')).toBe('visible');
+			expect(firstTd.getAttribute('td-visible')).toBe('visible');
+			expect(lastTh.getAttribute('th-visible')).toBe('visible');
+			expect(lastTd.getAttribute('td-visible')).toBe('visible');
+
+			PublishMethod.hideTh(table, firstTh);
+			expect(firstTd.getAttribute('td-visible')).toBe('none');
+		});
+
+		it('执行 showTh', function () {
+			expect(firstTh.getAttribute('th-visible')).toBe('none');
+			expect(firstTd.getAttribute('td-visible')).toBe('none');
+			expect(lastTh.getAttribute('th-visible')).toBe('visible');
+			expect(lastTd.getAttribute('td-visible')).toBe('visible');
+
+			PublishMethod.showTh(table, firstTh);
+			expect(firstTh.getAttribute('th-visible')).toBe('visible');
+			expect(firstTd.getAttribute('td-visible')).toBe('visible');
+			expect(lastTh.getAttribute('th-visible')).toBe('visible');
+			expect(lastTd.getAttribute('td-visible')).toBe('visible');
+		});
+
+		it('执行 showTh or hideTh', function () {
+			expect(firstTh.getAttribute('th-visible')).toBe('visible');
+			expect(firstTd.getAttribute('td-visible')).toBe('visible');
+			expect(lastTh.getAttribute('th-visible')).toBe('visible');
+			expect(lastTd.getAttribute('td-visible')).toBe('visible');
+
+			PublishMethod.hideTh(table, [firstTh, lastTh]);
+			expect(firstTh.getAttribute('th-visible')).toBe('none');
+			expect(firstTd.getAttribute('td-visible')).toBe('none');
+			expect(lastTh.getAttribute('th-visible')).toBe('none');
+			expect(lastTd.getAttribute('td-visible')).toBe('none');
+
+			PublishMethod.showTh(table, [firstTh, lastTh]);
+			expect(firstTh.getAttribute('th-visible')).toBe('visible');
+			expect(firstTd.getAttribute('td-visible')).toBe('visible');
+			expect(lastTh.getAttribute('th-visible')).toBe('visible');
+			expect(lastTd.getAttribute('td-visible')).toBe('visible');
+		});
+	});
+
+	describe('PublishMethod.exportGridToXls(table, fileName, onlyChecked)', function() {
+		it('基础验证', function () {
+			expect(PublishMethod.exportGridToXls).toBeDefined();
+			expect(PublishMethod.exportGridToXls.length).toBe(3);
+		});
+
+		it('执行', function () {
+			expect(PublishMethod.exportGridToXls(table)).toBe(true);
+		});
+	});
+
+	describe('PublishMethod.setQuery(table, query, isGotoFirstPage, callback)', function() {
+		let callback1 = null;
+		let callback2 = null;
+		let callback3 = null;
+		beforeEach(() => {
+			callback1 = jasmine.createSpy('callback');
+			callback2 = jasmine.createSpy('callback');
+			callback3 = jasmine.createSpy('callback');
+		});
+
+		afterEach(() => {
+			callback1 = null;
+			callback2 = null;
+			callback3 = null;
+		});
+
+		it('基础验证', function () {
+			expect(PublishMethod.setQuery).toBeDefined();
+			expect(PublishMethod.setQuery.length).toBe(4);
+		});
+
+		it('执行', function () {
+			// query 为 init 时传递的参数值
+			expect(PublishMethod.get(table).query).toEqual(queryValue);
+
+			// query值为空, 不指定 isGotoFirstPage
+			PublishMethod.setQuery(table, {}, callback1);
+			expect(callback1).toHaveBeenCalled();
+			expect(PublishMethod.get(table).query).toEqual({});
+
+			// query值不为空, 指定 isGotoFirstPage = true
+			PublishMethod.setQuery(table, {cc: 1}, true, callback2);
+			expect(callback2).toHaveBeenCalled();
+			expect(PublishMethod.get(table).query).toEqual({cc: 1});
+
+			// query值为空对象, 指定 isGotoFirstPage = false
+			PublishMethod.setQuery(table, {}, false, callback3);
+			expect(callback3).toHaveBeenCalled();
+			expect(PublishMethod.get(table).query).toEqual({});
+
+			// 不传递query, 不指定 isGotoFirstPage
+			PublishMethod.setQuery(table, undefined, false, callback3);
+			expect(callback3).toHaveBeenCalled();
+			expect(PublishMethod.get(table).query).toBeUndefined();
+
+		});
+	});
+
+	describe('PublishMethod.setAjaxData(table, ajaxData)', function() {
+		let checkAllTh = null;
+		let checkOneTh = null;
+		beforeAll(() => {
+			checkAllTh = table.querySelector('thead th[gm-checkbox="true"] input');
+			checkOneTh = table.querySelector('tbody td[gm-checkbox="true"] input');
+		});
+
+		afterAll(() => {
+			checkAllTh = null;
+			checkOneTh = null;
+		});
+
+		it('基础验证', function () {
+			expect(PublishMethod.setAjaxData).toBeDefined();
+			expect(PublishMethod.setAjaxData.length).toBe(2);
+		});
+
+		it('执行', function () {
+			// 全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(testData.data.length);
+
+			// 取消全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(0);
+
+			// 将静态数据更换为 testData2
+			PublishMethod.setAjaxData(table, testData2);
+
+			// 全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(testData2.data.length);
+
+			// 取消全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(0);
+
+			// 将静态数据更换为 testData
+			PublishMethod.setAjaxData(table, testData);
+
+			// 全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(testData.data.length);
+
+			// 取消全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(0);
+
+		});
+	});
+
+	describe('PublishMethod.refreshGrid(table, isGotoFirstPage, callback)', function() {
+		let callback1 = null;
+		let callback2 = null;
+		let callback3 = null;
+		beforeAll(() => {
+			callback1 = jasmine.createSpy('callback');
+			callback2 = jasmine.createSpy('callback');
+			callback3 = jasmine.createSpy('callback');
+		});
+
+		afterAll(() => {
+			callback1 = null;
+			callback2 = null;
+			callback3 = null;
+		});
+
+		it('基础验证', function () {
+			expect(PublishMethod.refreshGrid).toBeDefined();
+			expect(PublishMethod.refreshGrid.length).toBe(3);
+		});
+
+		it('执行', function () {
+			PublishMethod.refreshGrid(table, callback1);
+			expect(callback1).toHaveBeenCalled();
+
+			PublishMethod.refreshGrid(table, true, callback2);
+			expect(callback2).toHaveBeenCalled();
+
+			PublishMethod.refreshGrid(table, false, callback3);
+			expect(callback3).toHaveBeenCalled();
+		});
+	});
+
+	describe('PublishMethod.getCheckedTr(table)', function() {
+		let checkAllTh = null;
+		let checkOneTh = null;
+		beforeAll(() => {
+			checkAllTh = table.querySelector('thead th[gm-checkbox="true"] input');
+			checkOneTh = table.querySelector('tbody td[gm-checkbox="true"] input');
+		});
+
+		afterAll(() => {
+			checkAllTh = null;
+			checkOneTh = null;
+		});
+
+		it('基础验证', function () {
+			expect(PublishMethod.getCheckedTr).toBeDefined();
+			expect(PublishMethod.getCheckedTr.length).toBe(1);
+		});
+
+		it('操作验证', function () {
+			// 全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(testData.data.length);
+
+			// 取消全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(0);
+
+			// 选中第一个
+			checkOneTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(1);
+
+			// 全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(testData.data.length);
+
+			// 取消全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedTr(table).length).toBe(0);
+		});
+	});
+
+	describe('PublishMethod.getCheckedTr(table)', function() {
+		let checkAllTh = null;
+		let checkOneTh = null;
+		beforeAll(() => {
+			checkAllTh = table.querySelector('thead th[gm-checkbox="true"] input');
+			checkOneTh = table.querySelector('tbody td[gm-checkbox="true"] input');
+		});
+
+		afterAll(() => {
+			checkAllTh = null;
+			checkOneTh = null;
+		});
+
+		it('基础验证', function () {
+			expect(PublishMethod.getCheckedData).toBeDefined();
+			expect(PublishMethod.getCheckedData.length).toBe(1);
+		});
+
+		it('返回值', function () {
+			expect(PublishMethod.getCheckedData(table).length).toEqual(0);
+			expect(PublishMethod.getCheckedData(table)).toEqual([]);
+
+			// 全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedData(table).length).toBe(testData.data.length);
+			expect(PublishMethod.getCheckedData(table)[0].createDate).toBe(testData.data[0].createDate);
+			expect(PublishMethod.getCheckedData(table)[1].name).toBe(testData.data[1].name);
+			expect(PublishMethod.getCheckedData(table)[2].age).toBe(testData.data[2].age);
+
+			// 取消全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedData(table).length).toBe(0);
+
+			// 选中第一个
+			checkOneTh.click();
+			expect(PublishMethod.getCheckedData(table).length).toBe(1);
+			expect(PublishMethod.getCheckedData(table)[0].createDate).toBe(testData.data[0].createDate);
+			expect(PublishMethod.getCheckedData(table)[0].name).toBe(testData.data[0].name);
+			expect(PublishMethod.getCheckedData(table)[0].age).toBe(testData.data[0].age);
+			expect(PublishMethod.getCheckedData(table)[0].info).toBe(testData.data[0].info);
+			expect(PublishMethod.getCheckedData(table)[0].operation).toBe(testData.data[0].operation);
+
+			// 全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedData(table).length).toBe(testData.data.length);
+			expect(PublishMethod.getCheckedData(table)).toEqual(testData.data);
+
+			// 取消全选
+			checkAllTh.click();
+			expect(PublishMethod.getCheckedData(table).length).toEqual(0);
+			expect(PublishMethod.getCheckedData(table)).toEqual([]);
+		});
+	});
+
 });

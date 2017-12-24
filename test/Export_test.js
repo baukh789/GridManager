@@ -1,7 +1,6 @@
 /**
  * Created by baukh on 17/6/19.
  */
-
 'use strict';
 import Export from '../src/js/Export';
 /**
