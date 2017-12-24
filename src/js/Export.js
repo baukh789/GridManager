@@ -39,7 +39,7 @@ class Export {
 			fileName = Cache.getSettings($table).gridManagerName;
 		}
 
-		return `${fileName}.xls`
+		return `${fileName}.xls`;
 	}
 
 	/**

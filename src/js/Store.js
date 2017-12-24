@@ -5,7 +5,7 @@
 import { GM_VERSION } from '../common/constants';
 const Store = {
 	// 版本号
-	version: '2.3.23',
+	version: GM_VERSION,
 
 	// GM实例
 	gridManager: {},

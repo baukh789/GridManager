@@ -44,7 +44,9 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 	beforeEach(function(){
 		// 存储console, 用于在测方式完成后原还console对象
 		console._error = console.error;
+		console._warn = console.warn;
 		console.error = jasmine.createSpy("error");
+		console.warn = jasmine.createSpy("error");
 
 		table = document.createElement('table');
 		document.body.appendChild(table);
@@ -53,6 +55,7 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 
 	afterEach(function(){
 		console.error = console._error;
+		console.warn = console._warn;
 		document.body.innerHTML = '';
 		table = null;
 		arg = null;
@@ -152,7 +155,7 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 		expect(callback).toHaveBeenCalled();
 	});
 });
-
+// TODO 这个测试与 init 未做到完全独立
 describe('PublishMethod.get(table)', function() {
 	let table = null;
 	let arg = null;

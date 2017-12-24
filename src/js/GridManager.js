@@ -318,8 +318,8 @@ export default class GridManager {
 		// 绑定$table区域hover事件
 		Hover.onTbodyHover($table);
 
-		// 绑定表头置顶功能
-		Scroll.bindScrollFunction($table);
+		// 初始化表格卷轴
+		Scroll.init($table);
 
 		// 绑定右键菜单事件
 		Menu.bindRightMenuEvent($table);
