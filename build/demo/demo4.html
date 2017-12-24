@@ -4,21 +4,26 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel="stylesheet" type="text/css" href="../css/GridManager.css">
 	<script type="text/javascript" src="../js/GridManager.js"></script>
-    <title>GridManager:多表渲染</title>
+    <title>GridManager:多表I18N</title>
     <style>
 
     </style>
 </head>
 
 <body>
-	<div style="width:95%;margin:0 auto;">
+	<h3>简体中文: { i18n: 'zh-cn' }</h3>
+	<div>
 		<table grid-manager="test1"></table>
 	</div>
 	<br/>
-	<br/>
-	<br/>
-	<div style="width:95%;margin:0 auto;">
+	<h3>English: { i18n: 'en-us' }</h3>
+	<div>
 		<table grid-manager="test2"></table>
+	</div>
+	<br/>
+	<h3>繁體中文: { i18n: zh-tw' }</h3>
+	<div>
+		<table grid-manager="test3"></table>
 	</div>
 <script type="text/javascript">
 	// test1 demo
@@ -30,9 +35,48 @@
 		,supportCheckbox: false
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
-		,query: {pluginId: 1, ccname: 'baukh'}
-		,i18n: 'en-us'
+		,query: {tableName: 'test1', ccname: 'baukh'}
 		,pageSize:10
+		,columnData: [{
+			key: 'name',
+			remind: '网站标题',
+			width: '100px',
+			text: '标题',
+			sorting: 'up'
+		},{
+			key: 'info',
+			remind: '网站介绍',
+			text: '介绍',
+			sorting: ''
+		},{
+			key: 'url',
+			remind: '网站地址',
+			text: '地址'
+		},{
+			key: 'action',
+			remind: '信息操作',
+			text: '操作',
+			template: function(action, rowObject){
+				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+			}
+		}
+		]
+		,ajax_success: function () {
+			console.log('test1 ajax_success');
+		}
+	});
+
+	// test 2demo
+	document.querySelector('table[grid-manager="test2"]').GM({
+		supportRemind: true
+		,height: '400px'
+		,i18n: 'en-us'
+		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajax_type: 'POST'
+		,query: {tableName: 'test2', 'love': 'kouzi'}
+		,pageSize:20
+		,supportAjaxPage:true
 		,columnData: [{
 			key: 'name',
 			remind: 'the name',
@@ -58,48 +102,46 @@
 			}
 		}
 		]
-		,ajax_success: function () {
-//			console.log(document.querySelector('table[grid-manager="test1"]').GM('get'));
-			console.log('test1 ajax_success');
+		,ajax_success: function (data) {
+			console.log('test2 ajax_success');
 		}
 	});
-
-	// test 2demo
-	document.querySelector('table[grid-manager="test2"]').GM({
+	// test 3demo
+	document.querySelector('table[grid-manager="test3"]').GM({
 		supportRemind: true
-		,height: '400px'
+		,height: '300px'
+		,i18n: 'zh-tw'
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
-		,query: {pluginId: 2, 'ccname': 'kouzi'}
-		,pageSize:20
+		,query: {tableName: 'test3', baby: 'kouzi'}
+		,pageSize:30
 		,supportAjaxPage:true
 		,columnData: [{
 			key: 'name',
-			remind: 'the name',
+			remind: '網站名稱',
 			width: '100px',
-			text: '名称',
+			text: '名稱',
 			sorting: 'up'
 		},{
 			key: 'info',
-			remind: 'the info',
-			text: '使用说明',
+			remind: '網站介紹',
+			text: '介紹',
 			sorting: ''
 		},{
 			key: 'url',
-			remind: 'the url',
-			text: 'url'
+			remind: '網站地址',
+			text: '地址'
 		},{
 			key: 'action',
-			remind: 'the action',
+			remind: '信息操作',
 			text: '操作',
 			template: function(action, rowObject){
 				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+					+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
 			}
 		}
 		]
 		,ajax_success: function (data) {
-			console.log(document.querySelector('table[grid-manager="test2"]').GM('get'));
 			console.log('test2 ajax_success');
 		}
 	});

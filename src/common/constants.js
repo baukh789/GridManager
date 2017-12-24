@@ -3,7 +3,7 @@
  * 常量
  */
 // 版本号
-export const GM_VERSION = '2.3.23';
+export const GM_VERSION = '2.3.24';
 
 // 公开方法列表
 export const GM_PUBLISH_METHOD_LIST = [

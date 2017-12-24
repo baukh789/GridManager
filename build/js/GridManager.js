@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,7 +83,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * */
 
 
-__webpack_require__(22);
+__webpack_require__(23);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -387,7 +387,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _Base = __webpack_require__(0);
 
-var _Settings2 = __webpack_require__(19);
+var _Settings2 = __webpack_require__(20);
 
 var _Checkbox = __webpack_require__(8);
 
@@ -1771,8 +1771,32 @@ var Export = function () {
 	}
 
 	_createClass(Export, [{
-		key: 'createExportHTML',
+		key: 'getHref',
 
+
+		/**
+   * 获取下载 url
+   * @param exportHTML
+      */
+		value: function getHref(exportHTML) {
+			return this.URI + window.btoa(unescape(encodeURIComponent(exportHTML || '')));
+		}
+
+		/**
+   * 导出文件名
+   * @param $table
+   * @param fileName
+      */
+
+	}, {
+		key: 'getDownload',
+		value: function getDownload($table, fileName) {
+			if (!fileName) {
+				fileName = _Cache2.default.getSettings($table).gridManagerName;
+			}
+
+			return fileName + '.xls';
+		}
 
 		/**
    * 拼接要导出html格式数据
@@ -1780,6 +1804,9 @@ var Export = function () {
    * @param tbodyHTML
    * @returns {string}
       */
+
+	}, {
+		key: 'createExportHTML',
 		value: function createExportHTML(theadHTML, tbodyHTML) {
 			var exportHTML = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">\n\t\t\t\t\t\t\t\t<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>\n\t\t\t\t\t\t\t\t<body>\n\t\t\t\t\t\t\t\t\t<table>\n\t\t\t\t\t\t\t\t\t\t<thead>\n\t\t\t\t\t\t\t\t\t\t\t' + theadHTML + '\n\t\t\t\t\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t\t\t\t' + tbodyHTML + '\n\t\t\t\t\t\t\t\t\t\t</tbody>\n\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t</body>\n\t\t\t\t\t\t\t</html>';
 			return exportHTML;
@@ -1797,16 +1824,12 @@ var Export = function () {
 	}, {
 		key: '__exportGridToXls',
 		value: function __exportGridToXls($table, fileName, onlyChecked) {
-			var Settings = _Cache2.default.getSettings($table);
 			// createDOM内添加
 			var gmExportAction = (0, _Base.$)('#gm-export-action');
 			if (gmExportAction.length === 0) {
 				_Core2.default.outLog('导出失败，请查看配置项:supportExport是否配置正确', 'error');
 				return false;
 			}
-
-			// type base64
-			var uri = 'data:application/vnd.ms-excel;base64,';
 
 			// 存储导出的thead数据
 
@@ -1841,13 +1864,9 @@ var Export = function () {
 
 			// 拼接要导出html格式数据
 			var exportHTML = this.createExportHTML(theadHTML, tbodyHTML);
-			gmExportAction.prop('href', uri + base64(exportHTML));
-			gmExportAction.prop('download', (fileName || Settings.gridManagerName) + '.xls');
+			gmExportAction.prop('href', this.getHref(exportHTML));
+			gmExportAction.prop('download', this.getDownload($table, fileName));
 			gmExportAction.get(0).click();
-
-			function base64(s) {
-				return window.btoa(unescape(encodeURIComponent(s)));
-			}
 
 			// 成功后返回true
 			return true;
@@ -1860,8 +1879,18 @@ var Export = function () {
    * @returns {string}
       */
 		get: function get() {
-			var html = '<a href="" download="" id="gm-export-action"></a>';
-			return html;
+			return '<a href="" download="" id="gm-export-action"></a>';
+		}
+
+		/**
+   * uri type base64
+   * @returns {string}
+      */
+
+	}, {
+		key: 'URI',
+		get: function get() {
+			return 'data:application/vnd.ms-excel;base64,';
 		}
 	}]);
 
@@ -1887,7 +1916,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
 
-__webpack_require__(21);
+__webpack_require__(22);
 
 var _Base = __webpack_require__(0);
 
@@ -1907,7 +1936,7 @@ var _Core = __webpack_require__(3);
 
 var _Core2 = _interopRequireDefault(_Core);
 
-var _Drag = __webpack_require__(16);
+var _Drag = __webpack_require__(17);
 
 var _Drag2 = _interopRequireDefault(_Drag);
 
@@ -1923,7 +1952,7 @@ var _Remind = __webpack_require__(12);
 
 var _Remind2 = _interopRequireDefault(_Remind);
 
-var _Scroll = __webpack_require__(18);
+var _Scroll = __webpack_require__(19);
 
 var _Scroll2 = _interopRequireDefault(_Scroll);
 
@@ -1935,7 +1964,7 @@ var _Store = __webpack_require__(14);
 
 var _Store2 = _interopRequireDefault(_Store);
 
-var _Hover = __webpack_require__(17);
+var _Hover = __webpack_require__(18);
 
 var _Hover2 = _interopRequireDefault(_Hover);
 
@@ -2061,8 +2090,8 @@ var GridManager = function () {
 			// 绑定$table区域hover事件
 			_Hover2.default.onTbodyHover($table);
 
-			// 绑定表头置顶功能
-			_Scroll2.default.bindScrollFunction($table);
+			// 初始化表格卷轴
+			_Scroll2.default.init($table);
 
 			// 绑定右键菜单事件
 			_Menu2.default.bindRightMenuEvent($table);
@@ -2081,7 +2110,6 @@ var GridManager = function () {
    * @returns {*}
    */
 		value: function get(table) {
-			// return Cache.__getGridManager(jTool(table));
 			return _Cache2.default.getSettings((0, _Base.jTool)(table));
 		}
 
@@ -2141,6 +2169,7 @@ var GridManager = function () {
 			_Sort2.default.__setSort((0, _Base.jTool)(table), sortJson, callback, refresh);
 		}
 
+		// TODO 这个方法名称起的不规范, 按作用应该更名为showCol
 		/**
    * @静态方法
    * 显示Th及对应的TD项
@@ -2154,6 +2183,7 @@ var GridManager = function () {
 			_Base.Base.setAreVisible((0, _Base.jTool)(target), true);
 		}
 
+		// TODO 这个方法名称起的不规范, 按作用应该更名为hideCol
 		/**
    * @静态方法
    * 隐藏Th及对应的TD项
@@ -2190,10 +2220,10 @@ var GridManager = function () {
    * @param callback: 回调函数
    * @param isGotoFirstPage: 是否返回第一页[Boolean default=true]
    * 注意事项:
-   * - query的key值如果与分页及排序等字段冲突, query中的值将会被忽略.
+   * - 当query的key与分页及排序等字段冲突时将会被忽略.
    * - setQuery() 会立即触发刷新操作
    * - 在此配置的query在分页事件触发时, 会以参数形式传递至pagingAfter(query)事件内
-   * - setQuery对query字段执行的操作是修改而不是合并, 每次执行setQuery都会将之前配置的query值覆盖
+   * - setQuery方法中对query字段执行的操作是覆盖而不是合并, query参数位传递的任意值都会将原来的值覆盖.
    */
 
 	}, {
@@ -3755,14 +3785,12 @@ exports.default = new Sort();
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-/**
- * Created by baukh on 17/10/24.
- * 实例化数据的存储对象
- */
+
+var _constants = __webpack_require__(15);
 
 var Store = {
 	// 版本号
-	version: '2.3.23',
+	version: _constants.GM_VERSION,
 
 	// GM实例
 	gridManager: {},
@@ -3779,12 +3807,34 @@ var Store = {
 		// columnMap: 是在GridManager.js中通过columnData生成的, 在宽度\位置等信息变化后 会 即时更新
 		// 其它配置项...
 	}
-};
-
+}; /**
+    * Created by baukh on 17/10/24.
+    * 实例化数据的存储对象
+    */
 exports.default = Store;
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * Created by baukh on 17/12/23.
+ * 常量
+ */
+// 版本号
+var GM_VERSION = exports.GM_VERSION = '2.3.24';
+
+// 公开方法列表
+var GM_PUBLISH_METHOD_LIST = exports.GM_PUBLISH_METHOD_LIST = ['init', 'get', 'version', 'getLocalStorage', 'clear', 'getRowData', 'setSort', 'showTh', 'hideTh', 'exportGridToXls', 'setQuery', 'setAjaxData', 'refreshGrid', 'getCheckedTr', 'getCheckedData'];
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3806,6 +3856,8 @@ var _GridManager = __webpack_require__(6);
 
 var _GridManager2 = _interopRequireDefault(_GridManager);
 
+var _constants = __webpack_require__(15);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3824,6 +3876,17 @@ var PublishMethodClass = function () {
 		value: function init(table, settings, callback) {
 			var _GM = new _GridManager2.default();
 			return _GM.init(table, settings, callback);
+		}
+
+		/**
+   * 当前版本号
+   * @returns {string}
+      */
+
+	}, {
+		key: 'version',
+		value: function version() {
+			return _GridManager2.default.version;
 		}
 
 		/*
@@ -3962,13 +4025,13 @@ var PublishMethodClass = function () {
 // 对外公开方法列表
 
 
-var publishMethodArray = ['init', 'get', 'getLocalStorage', 'clear', 'getRowData', 'setSort', 'showTh', 'hideTh', 'exportGridToXls', 'setQuery', 'setAjaxData', 'refreshGrid', 'getCheckedTr', 'getCheckedData'];
+var publishMethodArray = _constants.GM_PUBLISH_METHOD_LIST;
 var PublishMethod = new PublishMethodClass();
 exports.PublishMethod = PublishMethod;
 exports.publishMethodArray = publishMethodArray;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4222,7 +4285,7 @@ var Drag = function () {
 exports.default = new Drag();
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4283,7 +4346,7 @@ var Hover = function () {
 exports.default = new Hover();
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4295,6 +4358,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Scroll: 滚动轴
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      * #001: 存在多次渲染时, 将会存在多个resize事件. 每个事件对应处理一个table. 这样做的好处是, 多个表之间无关联. 保持了相对独立性
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * */
 
 
@@ -4308,59 +4372,76 @@ var Scroll = function () {
 	}
 
 	_createClass(Scroll, [{
-		key: 'bindScrollFunction',
+		key: 'init',
+		value: function init($table) {
+			this.bindResizeToTable($table);
+			this.bindScrollToTableDiv($table);
+		}
+
+		/**
+   * 为单个table绑定resize事件
+   * #001
+   * @param $table
+      */
+
+	}, {
+		key: 'bindResizeToTable',
+		value: function bindResizeToTable($table) {
+			// 绑定resize事件: 对表头吸顶的列宽度进行修正
+			window.addEventListener('resize', function () {
+				// 吸顶元素
+				var _setTopHead = (0, _Base.jTool)('.set-top', $table);
+				if (_setTopHead && _setTopHead.length === 1) {
+					_setTopHead.remove();
+					$table.closest('.table-div').trigger('scroll');
+				}
+			});
+		}
 
 		/**
    * 绑定表格滚动轴功能
    * @param table
       */
-		value: function bindScrollFunction(table) {
-			var tableDIV = table.closest('.table-div');
 
-			// 绑定resize事件: 对表头吸顶的列宽度进行修正
-			window.addEventListener('resize', function () {
-				// 吸顶元素
-				var _setTopHead = (0, _Base.$)('.set-top', table);
-				if (_setTopHead && _setTopHead.length === 1) {
-					_setTopHead.remove();
-					table.closest('.table-div').trigger('scroll');
-				}
-			});
+	}, {
+		key: 'bindScrollToTableDiv',
+		value: function bindScrollToTableDiv($table) {
+			var tableDIV = $table.closest('.table-div');
 
 			// 绑定滚动条事件
 			tableDIV.unbind('scroll');
 			tableDIV.bind('scroll', function (e, _isWindowResize_) {
-				var _scrollDOMTop = (0, _Base.$)(this).scrollTop();
+				var _scrollDOMTop = (0, _Base.jTool)(this).scrollTop();
 
 				// 列表head
-				var _thead = (0, _Base.$)('thead[grid-manager-thead]', table);
+				var _thead = (0, _Base.jTool)('thead[grid-manager-thead]', $table);
 
 				// 列表body
-				var _tbody = (0, _Base.$)('tbody', table);
+				var _tbody = (0, _Base.jTool)('tbody', $table);
 
 				// 吸顶元素
-				var _setTopHead = (0, _Base.$)('.set-top', table);
+				var _setTopHead = (0, _Base.jTool)('.set-top', $table);
 
 				// 当前列表数据为空
-				if ((0, _Base.$)('tr', _tbody).length === 0) {
+				if ((0, _Base.jTool)('tr', _tbody).length === 0) {
 					return true;
 				}
 
 				// 配置吸顶区的宽度
 				if (_setTopHead.length === 0 || _isWindowResize_) {
-					_setTopHead.length === 0 ? table.append(_thead.clone(true).addClass('set-top')) : '';
-					_setTopHead = (0, _Base.$)('.set-top', table);
+					_setTopHead.length === 0 ? $table.append(_thead.clone(true).addClass('set-top')) : '';
+					_setTopHead = (0, _Base.jTool)('.set-top', $table);
 					_setTopHead.removeAttr('grid-manager-thead');
 					_setTopHead.attr('grid-manager-mock-thead', '');
 					_setTopHead.removeClass('scrolling');
 					_setTopHead.css({
 						width: _thead.width(),
-						left: -table.closest('.table-div').scrollLeft() + 'px'
+						left: -$table.closest('.table-div').scrollLeft() + 'px'
 					});
 
 					// 防止window.resize事件后导致的吸顶宽度错误. 可以优化
-					_Base.$.each((0, _Base.$)('th', _thead), function (i, v) {
-						(0, _Base.$)('th', _setTopHead).eq(i).width((0, _Base.$)(v).width());
+					_Base.jTool.each((0, _Base.jTool)('th', _thead), function (i, v) {
+						(0, _Base.jTool)('th', _setTopHead).eq(i).width((0, _Base.jTool)(v).width());
 					});
 				}
 				if (_setTopHead.length === 0) {
@@ -4375,7 +4456,7 @@ var Scroll = function () {
 				} else {
 					_thead.addClass('scrolling');
 					_setTopHead.css({
-						left: -table.closest('.table-div').scrollLeft() + 'px'
+						left: -$table.closest('.table-div').scrollLeft() + 'px'
 					});
 				}
 				return true;
@@ -4389,7 +4470,7 @@ var Scroll = function () {
 exports.default = new Scroll();
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4667,54 +4748,67 @@ var TextSettings = function TextSettings() {
 
 	this['order-text'] = {
 		'zh-cn': '序号',
+		'zh-tw': '序號',
 		'en-us': 'order'
 	};
 	this['first-page'] = {
 		'zh-cn': '首页',
+		'zh-tw': '首頁',
 		'en-us': 'first'
 	};
 	this['previous-page'] = {
 		'zh-cn': '上一页',
+		'zh-tw': '上一頁',
 		'en-us': 'previous'
 	};
 	this['next-page'] = {
 		'zh-cn': '下一页',
+		'zh-tw': '下一頁',
 		'en-us': 'next'
 	};
 	this['last-page'] = {
 		'zh-cn': '尾页',
+		'zh-tw': '尾頁',
 		'en-us': 'last'
 	};
 	this['dataTablesInfo'] = {
 		'zh-cn': '此页显示 {0}-{1} 共{2}条',
+		'zh-tw': '此頁顯示 {0}-{1} 共{2}條',
 		'en-us': 'this page show {0}-{1} count {2}'
 	};
 	this['goto-first-text'] = {
 		'zh-cn': '跳转至',
+		'zh-tw': '跳轉至',
 		'en-us': 'goto'
 	};
 	this['goto-last-text'] = {
 		'zh-cn': '页',
+		'zh-tw': '頁',
 		'en-us': 'page'
 	};
 	this['refresh'] = {
 		'zh-cn': '重新加载',
+		'zh-tw': '重新加載',
 		'en-us': 'Refresh'
 	};
 	this['save-as-excel'] = {
 		'zh-cn': '另存为Excel',
+		'zh-tw': '另存為Excel',
 		'en-us': 'Save as Excel'
 	};
 	this['save-as-excel-for-checked'] = {
 		'zh-cn': '已选中项另存为Excel',
+		'zh-tw': '已選中項另存為Excel',
 		'en-us': 'Save selected as Excel'
 	};
 	this['config-grid'] = {
 		'zh-cn': '配置表',
+		'zh-tw': '配置表',
 		'en-us': 'Setting Grid'
 	};
 	this['checkall-text'] = {
 		'zh-cn': '全选',
+		'zh-tw': '全選',
 		'en-us': 'All'
 	};
 };
@@ -4723,7 +4817,7 @@ exports.Settings = Settings;
 exports.TextSettings = TextSettings;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4735,7 +4829,7 @@ var _GridManager = __webpack_require__(6);
 
 var _GridManager2 = _interopRequireDefault(_GridManager);
 
-var _Publish = __webpack_require__(15);
+var _Publish = __webpack_require__(16);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4838,13 +4932,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })(window.jQuery);
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var require;var require;!function t(e,n,o){function i(s,a){if(!n[s]){if(!e[s]){var u="function"==typeof require&&require;if(!a&&u)return require(s,!0);if(r)return r(s,!0);var c=new Error("Cannot find module '"+s+"'");throw c.code="MODULE_NOT_FOUND",c}var l=n[s]={exports:{}};e[s][0].call(l.exports,function(t){var n=e[s][1][t];return i(n||t)},l,l.exports,t,e,n,o)}return n[s].exports}for(var r="function"==typeof require&&require,s=0;s<o.length;s++)i(o[s]);return i}({1:[function(t,e,n){var o=t("./utilities"),i=t("../src/Css"),r={show:function(){return o.each(this.DOMList,function(t,e){var n="",o=["SPAN","A","FONT","I"];if(-1!==e.nodeName.indexOf(o))return e.style.display="inline-block",this;switch(e.nodeName){case"TABLE":n="table";break;case"THEAD":n="table-header-group";break;case"TBODY":n="table-row-group";break;case"TR":n="table-row";break;case"TH":case"TD":n="table-cell";break;default:n="block"}e.style.display=n}),this},hide:function(){return o.each(this.DOMList,function(t,e){e.style.display="none"}),this},animate:function(t,e,n){var r=this,s="",a="",u=r.DOMList[0];if(t){"undefined"===o.type(n)&&"function"===o.type(e)&&(n=e,e=0),"undefined"===o.type(n)&&(n=o.noop),"undefined"===o.type(e)&&(e=0),o.each(t,function(t,e){t=o.toHyphen(t),s+=t+":"+o.getStyle(u,t)+";",a+=t+":"+e+";"});var c="@keyframes jToolAnimate {from {"+s+"}to {"+a+"}}",l=document.createElement("style");l.className="jTool-animate-style",l.type="text/css",document.head.appendChild(l),l.textContent=l.textContent+c,u.style.animation="jToolAnimate "+e/1e3+"s ease-in-out forwards",window.setTimeout(function(){i.css.call(r,t),u.style.animation="",l.remove(),n()},e)}}};e.exports=r},{"../src/Css":3,"./utilities":13}],2:[function(t,e,n){var o=t("./utilities"),i={addClass:function(t){return this.changeClass(t,"add")},removeClass:function(t){return this.changeClass(t,"remove")},toggleClass:function(t){return this.changeClass(t,"toggle")},hasClass:function(t){return[].some.call(this.DOMList,function(e){return e.classList.contains(t)})},parseClassName:function(t){return t.indexOf(" ")?t.split(" "):[t]},changeClass:function(t,e){var n=this.parseClassName(t);return o.each(this.DOMList,function(t,i){o.each(n,function(t,n){i.classList[e](n)})}),this}};e.exports=i},{"./utilities":13}],3:[function(t,e,n){var o=t("./utilities"),i={css:function(t,e){function n(t,e){"number"===o.type(e)&&(e=e.toString()),-1!==r.indexOf(t)&&-1===e.indexOf("px")&&(e+="px"),o.each(i.DOMList,function(n,o){o.style[t]=e})}var i=this,r=["width","height","min-width","max-width","min-height","min-height","top","left","right","bottom","padding-top","padding-right","padding-bottom","padding-left","margin-top","margin-right","margin-bottom","margin-left","border-width","border-top-width","border-left-width","border-right-width","border-bottom-width"];if("string"===o.type(t)&&!e&&0!==e)return-1!==r.indexOf(t)?parseInt(o.getStyle(this.DOMList[0],t),10):o.getStyle(this.DOMList[0],t);if("object"===o.type(t)){var s=t;for(var a in s)n(a,s[a])}else n(t,e);return this},width:function(t){return this.css("width",t)},height:function(t){return this.css("height",t)}};e.exports=i},{"./utilities":13}],4:[function(t,e,n){var o=t("./utilities"),i={dataKey:"jTool"+o.version,data:function(t,e){var n=this,i={};if(void 0===t&&void 0===e)return n.DOMList[0][n.dataKey];if(void 0!==e){var r=o.type(e);return"string"!==r&&"number"!==r||n.attr(t,e),o.each(n.DOMList,function(o,r){i=r[n.dataKey]||{},i[t]=e,r[n.dataKey]=i}),this}return i=n.DOMList[0][n.dataKey]||{},this.transformValue(i[t]||n.attr(t))},removeData:function(t){var e,n=this;void 0!==t&&(o.each(n.DOMList,function(o,i){e=i[n.dataKey]||{},delete e[t]}),n.removeAttr(t))},attr:function(t,e){return void 0===t&&void 0===e?"":void 0!==e?(o.each(this.DOMList,function(n,o){o.setAttribute(t,e)}),this):this.transformValue(this.DOMList[0].getAttribute(t))},removeAttr:function(t){void 0!==t&&o.each(this.DOMList,function(e,n){n.removeAttribute(t)})},prop:function(t,e){return void 0===t&&void 0===e?"":void 0!==e?(o.each(this.DOMList,function(n,o){o[t]=e}),this):this.transformValue(this.DOMList[0][t])},removeProp:function(t){void 0!==t&&o.each(this.DOMList,function(e,n){delete n[t]})},val:function(t){return this.prop("value",t)||""},transformValue:function(t){return"null"===o.type(t)&&(t=void 0),t}};e.exports=i},{"./utilities":13}],5:[function(t,e,n){var o=t("./utilities"),i=t("./Sizzle"),r={append:function(t){return this.html(t,"append")},prepend:function(t){return this.html(t,"prepend")},before:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0];return e.parentNode.insertBefore(t,e),this},after:function(t){t.jTool&&(t=t.DOMList[0]);var e=this.DOMList[0],n=e.parentNode;n.lastChild==e?n.appendChild(t):n.insertBefore(t,e.nextSibling)},text:function(t){return void 0!==t?(o.each(this.DOMList,function(e,n){n.textContent=t}),this):this.DOMList[0].textContent},html:function(t,e){if(void 0===t&&void 0===e)return this.DOMList[0].innerHTML;var n=this,i=o.type(t);t.jTool?t=t.DOMList:"string"===i?t=o.createDOM(t||""):"element"===i&&(t=[t]);var r;return o.each(n.DOMList,function(n,i){e?"prepend"===e&&(r=i.firstChild):i.innerHTML="",o.each(t,function(t,e){e=e.cloneNode(!0),e.nodeType||(e=document.createTextNode(e)),r?i.insertBefore(e,r):i.appendChild(e),i.normalize()})}),this},wrap:function(t){var e;return o.each(this.DOMList,function(n,o){e=o.parentNode;var r=new i(t,o.ownerDocument).get(0);e.insertBefore(r,o),r.querySelector(":empty").appendChild(o)}),this},closest:function(t){function e(){if(!n||0===o.length||1!==n.nodeType)return void(n=null);-1===[].indexOf.call(o,n)&&(n=n.parentNode,e())}var n=this.DOMList[0].parentNode;if(void 0===t)return new i(n);var o=document.querySelectorAll(t);return e(),new i(n)},parent:function(){return this.closest()},clone:function(t){return new i(this.DOMList[0].cloneNode(t||!1))},remove:function(){o.each(this.DOMList,function(t,e){e.remove()})}};e.exports=r},{"./Sizzle":9,"./utilities":13}],6:[function(t,e,n){var o=t("./Sizzle"),i={get:function(t){return this.DOMList[t]},eq:function(t){return new o(this.DOMList[t])},find:function(t){return new o(t,this)},index:function(t){var e=this.DOMList[0];return t?t.jTool&&(t=t.DOMList):t=e.parentNode.childNodes,t?[].indexOf.call(t,e):-1}};e.exports=i},{"./Sizzle":9}],7:[function(t,e,n){var o=t("./utilities"),i={on:function(t,e,n,o){return this.addEvent(this.getEventObject(t,e,n,o))},off:function(t,e){return this.removeEvent(this.getEventObject(t,e))},bind:function(t,e,n){return this.on(t,void 0,e,n)},unbind:function(t){return this.removeEvent(this.getEventObject(t))},trigger:function(t){return o.each(this.DOMList,function(e,n){try{if(n.jToolEvent&&n.jToolEvent[t].length>0){var i=new Event(t);n.dispatchEvent(i)}else"click"!==t?o.error("预绑定的事件只有click事件可以通过trigger进行调用"):"click"===t&&n[t]()}catch(e){o.error("事件:["+t+"]未能正确执行, 请确定方法已经绑定成功")}}),this},getEventObject:function(t,e,n,i){if("function"==typeof e&&(i=n||!1,n=e,e=void 0),!t)return o.error("事件绑定失败,原因: 参数中缺失事件类型"),this;if(e&&"element"===o.type(this.DOMList[0])||(e=""),""!==e){var r=n;n=function(t){for(var n=t.target;n!==this;){if(-1!==[].indexOf.call(this.querySelectorAll(e),n)){r.apply(n,arguments);break}n=n.parentNode}}}var s,a,u=t.split(" "),c=[];return o.each(u,function(t,r){if(""===r.trim())return!0;s=r.split("."),a={eventName:r+e,type:s[0],querySelector:e,callback:n||o.noop,useCapture:i||!1,nameScope:s[1]||void 0},c.push(a)}),c},addEvent:function(t){var e=this;return o.each(t,function(t,n){o.each(e.DOMList,function(t,e){e.jToolEvent=e.jToolEvent||{},e.jToolEvent[n.eventName]=e.jToolEvent[n.eventName]||[],e.jToolEvent[n.eventName].push(n),e.addEventListener(n.type,n.callback,n.useCapture)})}),e},removeEvent:function(t){var e,n=this;return o.each(t,function(t,i){o.each(n.DOMList,function(t,n){n.jToolEvent&&(e=n.jToolEvent[i.eventName])&&(o.each(e,function(t,e){n.removeEventListener(e.type,e.callback)}),n.jToolEvent[i.eventName]=void 0)})}),n}};e.exports=i},{"./utilities":13}],8:[function(t,e,n){var o=t("./utilities"),i={offset:function(){var t={top:0,left:0},e=this.DOMList[0];if(!e.getClientRects().length)return t;if("none"===o.getStyle(e,"display"))return t;t=e.getBoundingClientRect();var n=e.ownerDocument.documentElement;return{top:t.top+window.pageYOffset-n.clientTop,left:t.left+window.pageXOffset-n.clientLeft}},scrollTop:function(t){return this.scrollFN(t,"top")},scrollLeft:function(t){return this.scrollFN(t,"left")},scrollFN:function(t,e){var n=this.DOMList[0];return t||0===t?(this.setScrollFN(n,e,t),this):this.getScrollFN(n,e)},getScrollFN:function(t,e){return o.isWindow(t)?"top"===e?t.pageYOffset:t.pageXOffset:9===t.nodeType?"top"===e?t.body.scrollTop:t.body.scrollLeft:1===t.nodeType?"top"===e?t.scrollTop:t.scrollLeft:void 0},setScrollFN:function(t,e,n){return o.isWindow(t)?"top"===e?t.document.body.scrollTop=n:t.document.body.scrollLeft=n:9===t.nodeType?"top"===e?t.body.scrollTop=n:t.body.scrollLeft=n:1===t.nodeType?"top"===e?t.scrollTop=n:t.scrollLeft=n:void 0}};e.exports=i},{"./utilities":13}],9:[function(t,e,n){var o=t("./utilities"),i=function(t,e){var n;return t?o.isWindow(t)?(n=[t],e=void 0):t===document?(n=[document],e=void 0):t instanceof HTMLElement?(n=[t],e=void 0):t instanceof NodeList||t instanceof Array?(n=t,e=void 0):t.jTool?(n=t.DOMList,e=void 0):/<.+>/.test(t)?(n=o.createDOM(t),e=void 0):(e?e="string"==typeof e?document.querySelectorAll(e):e instanceof HTMLElement?[e]:e instanceof NodeList?e:e.jTool?e.DOMList:void 0:n=document.querySelectorAll(t),e&&(n=[],o.each(e,function(e,i){o.each(i.querySelectorAll(t),function(t,e){e&&n.push(e)})}))):t=null,n&&0!==n.length||(n=void 0),this.jTool=!0,this.DOMList=n,this.length=this.DOMList?this.DOMList.length:0,this.querySelector=t,this};e.exports=i},{"./utilities":13}],10:[function(t,e,n){function o(t){var e={url:null,type:"GET",data:null,headers:{},async:!0,xhrFields:{},beforeSend:a.noop,complete:a.noop,success:a.noop,error:a.noop};if(t=s(e,t),!t.url)return void a.error("jTool ajax: url不能为空");var n=new XMLHttpRequest,o="";"object"===a.type(t.data)?a.each(t.data,function(t,e){""!==o&&(o+="&"),o+=t+"="+e}):o=t.data,"GET"===t.type.toUpperCase()&&o&&(t.url=t.url+(-1===t.url.indexOf("?")?"?":"&")+o,o=null),n.open(t.type,t.url,t.async);for(var i in t.xhrFields)n[i]=t.xhrFields[i];for(var r in t.headers)n.setRequestHeader(r,t.headers[r]);t.beforeSend(n),n.onload=function(){t.complete(n,n.status)},n.onreadystatechange=function(){4===n.readyState&&(n.status>=200&&n.status<300||304===n.status?t.success(n.response,n.status):t.error(n,n.status,n.statusText))},n.send(o)}function i(t,e,n){o({url:t,type:"POST",data:e,success:n})}function r(t,e,n){o({url:t,type:"GET",data:e,success:n})}var s=t("./extend"),a=t("./utilities");e.exports={ajax:o,post:i,get:r}},{"./extend":11,"./utilities":13}],11:[function(t,e,n){function o(){function t(e,o){for(var r in e)e.hasOwnProperty(r)&&(n&&"object"===i.type(e[r])?("object"!==i.type(o[r])&&(o[r]={}),t(e[r],o[r])):o[r]=e[r])}if(0===arguments.length)return{};var e,n=!1,o=1,r=arguments[0];for(1===arguments.length&&"object"==typeof arguments[0]?(r=this,o=0):2===arguments.length&&"boolean"==typeof arguments[0]?(n=arguments[0],r=this,o=1):arguments.length>2&&"boolean"==typeof arguments[0]&&(n=arguments[0],r=arguments[1]||{},o=2);o<arguments.length;o++)e=arguments[o]||{},t(e,r);return r}var i=t("./utilities");e.exports=o},{"./utilities":13}],12:[function(t,e,n){var o=t("./Sizzle"),i=t("./extend"),r=t("./utilities"),s=t("./ajax"),a=t("./Event"),u=t("./Css"),c=t("./Class"),l=t("./Document"),d=t("./Offset"),f=t("./Element"),h=t("./Animate"),p=t("./Data"),v=function(t,e){return new o(t,e)};o.prototype=v.prototype={},v.extend=v.prototype.extend=i,v.extend(r),v.extend(s),v.prototype.extend(a),v.prototype.extend(u),v.prototype.extend(c),v.prototype.extend(l),v.prototype.extend(d),v.prototype.extend(f),v.prototype.extend(h),v.prototype.extend(p),void 0!==window.$&&(window._$=$),window.jTool=window.$=v,e.exports=v},{"./Animate":1,"./Class":2,"./Css":3,"./Data":4,"./Document":5,"./Element":6,"./Event":7,"./Offset":8,"./Sizzle":9,"./ajax":10,"./extend":11,"./utilities":13}],13:[function(t,e,n){function o(){return-1!=navigator.userAgent.indexOf("Chrome")}function i(t){return null!==t&&t===t.window}function r(t){return Array.isArray(t)}function s(t){return g[y.call(t)]||(t instanceof Element?"element":"")}function a(){}function u(t,e){t&&t.jTool&&(t=t.DOMList);var n=s(t);if("array"===n||"nodeList"===n||"arguments"===n)[].every.call(t,function(t,n){i(t)?a():t.jTool?t=t.get(0):a();return!1!==e.call(t,n,t)});else if("object"===n)for(var o in t)if(!1===e.call(t[o],o,t[o]))break}function c(t){return t.trim()}function l(t){throw new Error("[jTool Error: "+t+"]")}function d(t){var e=!0;for(var n in t)t.hasOwnProperty(n)&&(e=!1);return e}function f(t,e){return e?window.getComputedStyle(t)[e]:window.getComputedStyle(t)}function h(t){var e=["px","vem","em","%"],n="";return"number"==typeof t?n:(u(e,function(e,o){if(-1!==t.indexOf(o))return n=o,!1}),n)}function p(t){return t.replace(/-\w/g,function(t){return t.split("-")[1].toUpperCase()})}function v(t){return t.replace(/([A-Z])/g,"-$1").toLowerCase()}function m(t){var e=document.querySelector("#jTool-create-dom");if(!e||0===e.length){var n=document.createElement("table");n.id="jTool-create-dom",n.style.display="none",document.body.appendChild(n),e=document.querySelector("#jTool-create-dom")}e.innerHTML=t||"";var o=e.childNodes;return 1!=o.length||/<tbody|<TBODY/.test(t)||"TBODY"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<thead|<THEAD/.test(t)||"THEAD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<tr|<TR/.test(t)||"TR"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<td|<TD/.test(t)||"TD"!==o[0].nodeName||(o=o[0].childNodes),1!=o.length||/<th|<TH/.test(t)||"TH"!==o[0].nodeName||(o=o[0].childNodes),e.remove(),o}var y=Object.prototype.toString,g={"[object String]":"string","[object Boolean]":"boolean","[object Undefined]":"undefined","[object Number]":"number","[object Object]":"object","[object Error]":"error","[object Function]":"function","[object Date]":"date","[object Array]":"array","[object RegExp]":"regexp","[object Null]":"null","[object NodeList]":"nodeList","[object Arguments]":"arguments","[object Window]":"window","[object HTMLDocument]":"document"};e.exports={isWindow:i,isChrome:o,isArray:r,noop:a,type:s,toHyphen:v,toHump:p,getStyleUnit:h,getStyle:f,isEmptyObject:d,trim:c,error:l,each:u,createDOM:m,version:"1.2.21"}},{}]},{},[12]);

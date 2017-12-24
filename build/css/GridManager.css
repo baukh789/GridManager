@@ -606,7 +606,6 @@ table[grid-manager].GridManager-ready {
 }
 
 .table-wrap .table-div {
-  padding-right: 10px;
   overflow: auto;
   /* 自定义滚动条样式 */
   /* 配置列表功能 */
