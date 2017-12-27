@@ -230,12 +230,8 @@ class AjaxPage {
 			if (e.which !== 13) {
 				return;
 			}
-			const _inputValue = parseInt(this.value, 10);
-			if (!_inputValue) {
-				this.focus();
-				return;
-			}
-			_this.gotoPage($table, _inputValue);
+			let _cPage = parseInt(this.value, 10);
+			_this.gotoPage($table, _cPage);
 			this.value = '';
 		});
 	}
@@ -246,29 +242,13 @@ class AjaxPage {
 	 * @param pageToolbar
      */
 	bindRefreshEvent($table, pageToolbar) {
-		const _this = this;
 		const refreshAction	= $('.refresh-action', pageToolbar);
 
 		refreshAction.unbind('click').bind('click', function () {
 			const _tableWarp = $(this).closest('.table-wrap');
 			const _table = $('table[grid-manager]', _tableWarp);
-			const _input = $('.page-toolbar .gp-input', _tableWarp);
-			const _value = _input.val();
 
-			// 跳转输入框为空时: 刷新当前页
-			if (_value.trim() === '') {
-				Core.__refreshGrid(_table);
-				return;
-			}
-
-			// 跳转输入框不为空时: 验证输入值是否有效,如果有效跳转至指定页,如果无效对输入框进行聚焦
-			const _inputValue = parseInt(_input.val(), 10);
-			if (!_inputValue) {
-				_input.focus();
-				return;
-			}
-			_this.gotoPage($table, _inputValue);
-			_input.val('');
+			Core.__refreshGrid(_table);
 		});
 	}
 
@@ -279,6 +259,10 @@ class AjaxPage {
      */
 	gotoPage($table, _cPage) {
 		const settings = Cache.getSettings($table);
+
+		if (!_cPage || _cPage < 1) {
+			_cPage = 1;
+		}
 
 		// 跳转的指定页大于总页数
 		if (_cPage > settings.pageData.tPage) {

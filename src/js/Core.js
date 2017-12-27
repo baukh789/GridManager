@@ -63,15 +63,6 @@ class Core {
 			});
 		}
 
-		// 当前页不存在,或者小于1时, 修正为1
-		if (!pram.cPage || pram.cPage < 1) {
-			pram.cPage = 1;
-
-			// 当前页大于总页数时, 修正为总页数
-		} else if (pram.cPage > pram.tPage) {
-			pram.cPage = pram.tPage;
-		}
-
 		// 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
 		// 说明|备注:
 		// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data

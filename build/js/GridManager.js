@@ -1168,15 +1168,6 @@ var Core = function () {
 				});
 			}
 
-			// 当前页不存在,或者小于1时, 修正为1
-			if (!pram.cPage || pram.cPage < 1) {
-				pram.cPage = 1;
-
-				// 当前页大于总页数时, 修正为总页数
-			} else if (pram.cPage > pram.tPage) {
-				pram.cPage = pram.tPage;
-			}
-
 			// 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
 			// 说明|备注:
 			// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
@@ -2585,12 +2576,8 @@ var AjaxPage = function () {
 				if (e.which !== 13) {
 					return;
 				}
-				var _inputValue = parseInt(this.value, 10);
-				if (!_inputValue) {
-					this.focus();
-					return;
-				}
-				_this.gotoPage($table, _inputValue);
+				var _cPage = parseInt(this.value, 10);
+				_this.gotoPage($table, _cPage);
 				this.value = '';
 			});
 		}
@@ -2604,29 +2591,13 @@ var AjaxPage = function () {
 	}, {
 		key: 'bindRefreshEvent',
 		value: function bindRefreshEvent($table, pageToolbar) {
-			var _this = this;
 			var refreshAction = (0, _Base.$)('.refresh-action', pageToolbar);
 
 			refreshAction.unbind('click').bind('click', function () {
 				var _tableWarp = (0, _Base.$)(this).closest('.table-wrap');
 				var _table = (0, _Base.$)('table[grid-manager]', _tableWarp);
-				var _input = (0, _Base.$)('.page-toolbar .gp-input', _tableWarp);
-				var _value = _input.val();
 
-				// 跳转输入框为空时: 刷新当前页
-				if (_value.trim() === '') {
-					_Core2.default.__refreshGrid(_table);
-					return;
-				}
-
-				// 跳转输入框不为空时: 验证输入值是否有效,如果有效跳转至指定页,如果无效对输入框进行聚焦
-				var _inputValue = parseInt(_input.val(), 10);
-				if (!_inputValue) {
-					_input.focus();
-					return;
-				}
-				_this.gotoPage($table, _inputValue);
-				_input.val('');
+				_Core2.default.__refreshGrid(_table);
 			});
 		}
 
@@ -2640,6 +2611,10 @@ var AjaxPage = function () {
 		key: 'gotoPage',
 		value: function gotoPage($table, _cPage) {
 			var settings = _Cache2.default.getSettings($table);
+
+			if (!_cPage || _cPage < 1) {
+				_cPage = 1;
+			}
 
 			// 跳转的指定页大于总页数
 			if (_cPage > settings.pageData.tPage) {
@@ -3826,7 +3801,7 @@ Object.defineProperty(exports, "__esModule", {
  * 常量
  */
 // 版本号
-var GM_VERSION = exports.GM_VERSION = '2.4.0';
+var GM_VERSION = exports.GM_VERSION = '2.4.2';
 
 // 公开方法列表
 var GM_PUBLISH_METHOD_LIST = exports.GM_PUBLISH_METHOD_LIST = ['init', 'get', 'version', 'getLocalStorage', 'clear', 'getRowData', 'setSort', 'showTh', 'hideTh', 'exportGridToXls', 'setQuery', 'setAjaxData', 'refreshGrid', 'getCheckedTr', 'getCheckedData'];
