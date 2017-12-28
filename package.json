@@ -44,7 +44,6 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.8.1",
     "node-sass": "^4.5.3",
-    "phantomjs-prebuilt": "2.1.13",
     "resolve-url-loader": "^2.1.0",
     "sass-loader": "^6.0.6",
     "sinon": "^1.17.2",

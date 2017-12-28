@@ -90,7 +90,7 @@ module.exports = function (config) {
 		webpack: {
 			//入口文件配置
 			entry: {
-				js: './test/index_test.js'
+				js: './test/*_test.js'
 			},
 			resolve:{
 				extensions: [".js"] //当requrie的模块找不到时,添加这些后缀

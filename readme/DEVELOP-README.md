@@ -40,8 +40,9 @@ npm test
 
 ## 问题汇总
 ### npm install 总是失败?
-这是由于在国内加载时,有些依赖包无法加载导致的. 将以下包移除掉再进行install, 这两个包都是用于npm run test, 如果需要, 进行单独安装
-- karma-phantomjs-launcher  安装需要翻墙
+这是由于在国内加载时,有些依赖包无法加载导致的. 
+将以 karma-phantomjs-launcher 与 phantomjs-prebuilt 移除掉再进行install, 这两个包都是用于npm run test
+- karma-phantomjs-launcher  需要注意两点: 1.单独安装; 2.翻墙
 ```
 	npm install karma-phantomjs-launcher
 ```
