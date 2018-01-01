@@ -38,19 +38,19 @@ class BaseClass {
 	}
 
 	/**
-	 * 获取同列的 td jTool 对象, 该方法的调用者只允许为 Th
+	 * 获取同列的 td jTool 对象
 	 * @param $dom: $th 或 $td
 	 * @returns {*|HTMLElement|jTool}
      */
 	getColTd($dom) {
 		const $table = $dom.closest('table[grid-manager]');
-		const thIndex = $dom.index();
+		const domIndex = $dom.index();
 		const trList = $('tbody tr', $table);
 		let tdList = [];
 		let _td = null;
 
 		$.each(trList, (i, v) => {
-			_td = $('td', v).get(thIndex);
+			_td = $('td', v).get(domIndex);
 			if (_td) {
 				tdList.push(_td);
 			}

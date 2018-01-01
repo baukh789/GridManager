@@ -1,60 +1,85 @@
 /**
  * Created by baukh on 17/8/16.
  */
+'use strict';
+import Hover from '../src/js/Hover';
+import { jTool } from '../src/js/Base';
+/**
+ * 验证类的属性及方法总量
+ */
+describe('Hover 验证类的属性及方法总量', function() {
+	var getPropertyCount = null;
+	beforeEach(function() {
+		getPropertyCount = function(o){
+			var n, count = 0;
+			for(n in o){
+				if(o.hasOwnProperty(n)){
+					count++;
+				}
+			}
+			return count;
+		}
+	});
+	afterEach(function(){
+		getPropertyCount = null;
+	});
+	it('Function count', function() {
+		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
+		// 静态函数并不会计算到实例化对象内
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Hover)))).toBe(2 + 1);
+	});
+});
 
-// import '../build/css/GridManager.css';
-// import { jTool } from '../src/js/Base';
-// import testData from '../src/data/testData';
-// import GridManager from '../src/js/GridManager';
-// describe('Hover.js', function() {
-// 	let gmName = 'test-hover';
-// 	let table = document.createElement('table');
-// 	table.setAttribute('grid-manager', gmName);
-// 	let $table = jTool(table);
-// 	beforeAll(function(){
-// 		document.querySelector('body').appendChild(table);
-// 		var arg  = {
-// 			ajax_data: testData
-// 			,query: {name: 'baukh'}
-// 			,supportAjaxPage: true
-// 			,columnData: [
-// 				{
-// 					key: 'name',
-// 					width: '100px',
-// 					text: '名称'
-// 				},{
-// 					key: 'info',
-// 					text: '使用说明'
-// 				},{
-// 					key: 'url',
-// 					text: 'url'
-// 				},{
-// 					key: 'createDate',
-// 					text: '创建时间'
-// 				},{
-// 					key: 'lastDate',
-// 					text: '最后修改时间'
-// 				},{
-// 					key: 'action',
-// 					text: '操作',
-// 					template: function(action, rowObject){
-// 						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-// 							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-// 					}
-// 				}
-// 			]
-// 		};
-// 		new GridManager().init(table, arg);
-// 	});
-// 	afterAll(function () {
-// 		table = null;
-// 		$table = null;
-// 		gmName = null;
-// 		document.body.innerHTML = '';
-// 	});
-//
-// 	it('验证Hover.onTbodyHover($table)方法中的事件是否绑定成功', function(){
-// 		expect(table.jToolEvent.mousemovetd.length).toBe(1);
-// 	});
-//
-// });
+/**
+ * 实例化方法验证
+ */
+describe('Hover.onTbodyHover($table)', function() {
+	it('基础验证', function() {
+		expect(Hover.onTbodyHover).toBeDefined();
+		expect(Hover.onTbodyHover.length).toBe(1);
+	});
+});
+
+describe('Hover.updateHover(td)', function() {
+	let table = null;
+	let $table = null;
+	let $tr = null;
+	let $td = null;
+
+	beforeEach(function () {
+		table = `<table grid-manager="test-hover">
+					<thead>
+						<tr><th th-name="one">name</th></tr>
+					</thead>
+					<tbody>
+						<tr><td>td-text</td></tr>
+					</tbody>
+				</table>`;
+		document.body.innerHTML = table;
+		$table = jTool('table');
+		$tr = jTool('tbody tr', $table);
+		$td = jTool('td', $tr);
+	});
+
+	afterAll(function () {
+		document.body.innerHTML = '';
+		table = null;
+		$table = null;
+		$tr = null;
+		$td = null;
+	});
+
+	it('基础验证', function() {
+		expect(Hover.updateHover).toBeDefined();
+		expect(Hover.updateHover.length).toBe(1);
+	});
+
+	it('绑定验证', function() {
+		expect($tr.attr('row-hover')).toBeUndefined();
+		expect($td.attr('col-hover')).toBeUndefined();
+
+		Hover.updateHover($td.get(0));
+		expect($tr.attr('row-hover')).toBe('true');
+		expect($td.attr('col-hover')).toBe('true');
+	});
+});
