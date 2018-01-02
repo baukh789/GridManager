@@ -33,10 +33,10 @@ app.use(/\/coverage$/, function (req, res) {
 // 配置资源路径
 app.use(express.static(target));
 app.use(express.static(__dirname));
-app.listen(1987, function (err) {
+app.listen(2015, function (err) {
 	if (err) {
 		console.log(err);
 		return;
 	}
-	console.log('started at http://localhost:1987');
+	console.log('started at http://localhost:2015');
 });
