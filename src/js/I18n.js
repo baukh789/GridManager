@@ -1,7 +1,7 @@
 /*
  * I18n: 国际化
  * */
-import { Base } from './Base';
+import { jTool, Base } from './Base';
 class I18n {
 	/**
 	 * 获取所用语种，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
@@ -37,21 +37,24 @@ class I18n {
 		let intrusion = [];
 
 		// 处理参数，实现多态化
-		if (arguments.length === 3 && typeof (arguments[2]) === 'object') {
+		if (arguments.length === 3 && jTool.type(arguments[2]) === 'array') {
 			intrusion = arguments[2];
-		} else if (arguments.length > 1) {
-			for (let i = 1; i < arguments.length; i++) {
+		} else if (arguments.length > 2) {
+			for (let i = 2; i < arguments.length; i++) {
 				intrusion.push(arguments[i]);
 			}
 		}
+
 		let _text = '';
 		try {
 			_text = _this.getText(settings, key);
 			if (!intrusion || intrusion.length === 0) {
 				return _text;
 			}
+
+			// 更换包含{}的文本
 			_text = _text.replace(/{\d+}/g, word => {
-				return intrusion[word.match(/\d+/)];
+				return intrusion[word.match(/\d+/)] || '';
 			});
 			return _text;
 		} catch (e) {

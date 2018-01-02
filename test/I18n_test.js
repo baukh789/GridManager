@@ -1,147 +1,116 @@
 /**
  * Created by baukh on 17/3/5.
  */
-// 'use strict';
-// import '../build/css/GridManager.css';
-// import { jTool } from '../src/js/Base';
-// import I18N from '../src/js/I18n';
-// import GridManager from '../src/js/GridManager';
-// describe('I18n', function() {
-// 	let table_en = null;
-// 	let $table_en = null;
-// 	let table_cn = null;
-// 	let $table_cn = null;
-// 	let gmName = 'test-i18n-en';
-// 	let gmName2 = 'test-i18n-cn';
-// 	beforeAll(function(){
-// 		// 第一组设置为en-us, 且其中几项被重置
-// 		table_en = document.createElement('table');
-// 		table_en.setAttribute('grid-manager', gmName);
-// 		document.querySelector('body').appendChild(table_en);
-// 		$table_en = jTool('table[grid-manager="'+ gmName +'"]');
-// 		var arg_en = {
-// 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-// 			,disableCache: true
-// 			,i18n: 'en-us'
-// 			,textConfig: {
-// 				'order-text': {
-// 					'zh-cn':'序号被改动了',   // 由于当前设置为en-us; 所以更改后并不会在表格中显示出来
-// 					'en-us':'order'
-// 				},
-// 				'first-page': {
-// 					'zh-cn':'首页',
-// 					'en-us':'first page' // 将默认值 first 修改为 first page
-// 				}
-// 			}
-// 			,columnData: [
-// 				{
-// 					key: 'name',
-// 					remind: 'the name',
-// 					width: '100px',
-// 					text: '名称',
-// 					sorting: 'up'
-// 				}
-// 			]
-// 		};
-// 		new GridManager().init(table_en, arg_en);
-//
-// 		//第二组使用默认的zh-cn
-// 		table_cn = document.createElement('table');
-// 		table_cn.setAttribute('grid-manager', gmName2);
-// 		document.querySelector('body').appendChild(table_cn);
-// 		$table_cn = jTool('table[grid-manager="'+ gmName2 +'"]');
-// 		var arg_cn = {
-// 			ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-// 			,disableCache: true
-// 			,columnData: [
-// 				{
-// 					key: 'name',
-// 					remind: 'the name',
-// 					width: '100px',
-// 					text: '名称',
-// 					sorting: 'up'
-// 				}
-// 			]
-// 		};
-// 		new GridManager().init(table_cn, arg_cn);
-// 	});
-// 	afterAll(function () {
-// 		table_en = null;
-// 		table_cn = null;
-// 		$table_en = null;
-// 		$table_cn = null;
-// 		gmName = null;
-// 		gmName2 = null;
-// 		document.body.innerHTML = '';
-// 	});
-//
-// 	it('验证使用语言', function() {
-// 		expect( I18N.getLanguage($table_en) ).toBe('en-us');
-// 		expect( I18N.getLanguage($table_cn) ).toBe('zh-cn');
-// 	});
-//
-// 	it('验证国际化文本内容[序号]', function() {
-// 		expect( I18N.i18nText($table_en, 'order-text') ).toBe('order');
-// 		expect( I18N.i18nText($table_cn, 'order-text') ).toBe('序号');
-// 	});
-//
-// 	it('验证国际化文本内容[首页]', function() {
-// 		expect( I18N.i18nText($table_en, 'first-page') ).toBe('first page');
-// 		expect( I18N.i18nText($table_cn, 'first-page') ).toBe('首页');
-// 	});
-//
-// 	it('验证国际化文本内容[上一页]', function() {
-// 		expect( I18N.i18nText($table_en, 'previous-page') ).toBe('previous');
-// 		expect( I18N.i18nText($table_cn, 'previous-page') ).toBe('上一页');
-// 	});
-//
-// 	it('验证国际化文本内容[下一页]', function() {
-// 		expect( I18N.i18nText($table_en, 'next-page') ).toBe('next');
-// 		expect( I18N.i18nText($table_cn, 'next-page') ).toBe('下一页');
-// 	});
-//
-// 	it('验证国际化文本内容[尾页]', function() {
-// 		expect( I18N.i18nText($table_en, 'last-page') ).toBe('last');
-// 		expect( I18N.i18nText($table_cn, 'last-page') ).toBe('尾页');
-// 	});
-//
-// 	it('验证国际化文本内容[显示条数]', function() {
-// 		expect( I18N.i18nText($table_en, 'dataTablesInfo', [1, 10, 20]) ).toBe('this page show 1-10 count 20');
-// 		expect( I18N.i18nText($table_cn, 'dataTablesInfo', [1, 10, 20]) ).toBe('此页显示 1-10 共20条');
-// 	});
-//
-// 	it('验证国际化文本内容[跳转至]', function() {
-// 		expect( I18N.i18nText($table_en, 'goto-first-text') ).toBe('goto');
-// 		expect( I18N.i18nText($table_cn, 'goto-first-text') ).toBe('跳转至');
-// 	});
-//
-// 	it('验证国际化文本内容[页]', function() {
-// 		expect( I18N.i18nText($table_en, 'goto-last-text') ).toBe('page');
-// 		expect( I18N.i18nText($table_cn, 'goto-last-text') ).toBe('页');
-// 	});
-//
-// 	it('验证国际化文本内容[重新加载]', function() {
-// 		expect( I18N.i18nText($table_en, 'refresh') ).toBe('Refresh');
-// 		expect( I18N.i18nText($table_cn, 'refresh') ).toBe('重新加载');
-// 	});
-//
-// 	it('验证国际化文本内容[另存为Excel]', function() {
-// 		expect( I18N.i18nText($table_en, 'save-as-excel') ).toBe('Save as Excel');
-// 		expect( I18N.i18nText($table_cn, 'save-as-excel') ).toBe('另存为Excel');
-// 	});
-//
-// 	it('验证国际化文本内容[已选中项另存为Excel]', function() {
-// 		expect( I18N.i18nText($table_en, 'save-as-excel-for-checked') ).toBe('Save selected as Excel');
-// 		expect( I18N.i18nText($table_cn, 'save-as-excel-for-checked') ).toBe('已选中项另存为Excel');
-// 	});
-//
-// 	it('验证国际化文本内容[配置表]', function() {
-// 		expect( I18N.i18nText($table_en, 'config-grid') ).toBe('Setting Grid');
-// 		expect( I18N.i18nText($table_cn, 'config-grid') ).toBe('配置表');
-// 	});
-//
-// 	it('验证国际化文本内容[全选]', function() {
-// 		expect( I18N.i18nText($table_en, 'checkall-text') ).toBe('All');
-// 		expect( I18N.i18nText($table_cn, 'checkall-text') ).toBe('全选');
-// 	});
-// });
+'use strict';
+import I18n from '../src/js/I18n';
+import { Settings, TextSettings } from '../src/js/Settings';
+/**
+ * 验证类的属性及方法总量
+ */
+describe('I18n 验证类的属性及方法总量', function() {
+	var getPropertyCount = null;
+	beforeEach(function() {
+		getPropertyCount = function(o){
+			var n, count = 0;
+			for(n in o){
+				if(o.hasOwnProperty(n)){
+					count++;
+				}
+			}
+			return count;
+		}
+	});
+	afterEach(function(){
+		getPropertyCount = null;
+	});
+	it('Function count', function() {
+		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
+		// 静态函数并不会计算到实例化对象内
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(I18n)))).toBe(3 + 1);
+	});
+});
+
+/**
+ * 实例化方法验证
+ */
+describe('I18n.getLanguage(settings)', function() {
+	it('基础验证', function() {
+		expect(I18n.getLanguage).toBeDefined();
+		expect(I18n.getLanguage.length).toBe(1);
+	});
+
+	it('返回值验证', function() {
+		let settings = new Settings();
+		expect(I18n.getLanguage(settings)).toBe('zh-cn');
+		settings = null;
+	});
+});
+
+describe('getText(settings, key, language)', function() {
+	it('基础验证', function() {
+		expect(I18n.getText).toBeDefined();
+		expect(I18n.getText.length).toBe(3);
+	});
+
+	it('返回值验证', function() {
+
+		let settings = new Settings();
+		settings.textConfig = new TextSettings();
+
+		// 未指定语言的
+		expect(I18n.getText(settings, 'order-text')).toBe('序号');
+
+		// 指定错误语言的
+		expect(I18n.getText(settings, 'order-text', 'll')).toBe('');
+
+		// 指定正确语言的
+		expect(I18n.getText(settings, 'order-text', 'zh-tw')).toBe('序號');
+		settings = null;
+	});
+});
+
+describe('i18nText(settings, key, v1, v2, v3)', function() {
+	let settings = null;
+	beforeEach(function(){
+		settings = new Settings();
+		settings.textConfig = new TextSettings();
+
+		// 存储console, 用于在测方式完成后原还console对象
+		console._warn = console.warn;
+		console.warn = jasmine.createSpy("warn");
+	});
+
+	afterEach(function(){
+		settings = null;
+
+		// 还原console
+		console.warn = console._warn;
+	});
+	it('基础验证', function() {
+		expect(I18n.i18nText).toBeDefined();
+		expect(I18n.i18nText.length).toBe(5);
+	});
+
+	it('返回值验证', function() {
+
+		// 未指定{}内容的
+		expect(I18n.i18nText(settings, 'order-text')).toBe('序号');
+
+		// 指定1个{}内容的
+		expect(I18n.i18nText(settings, 'dataTablesInfo', 1)).toBe('此页显示 1- 共条');
+
+		// 指定2个{}内容的
+		expect(I18n.i18nText(settings, 'dataTablesInfo', 1, 2)).toBe('此页显示 1-2 共条');
+
+		// 指定3个{}内容的
+		expect(I18n.i18nText(settings, 'dataTablesInfo', 1, 2, 3)).toBe('此页显示 1-2 共3条');
+
+		// 指定1个{}内容的- 数组
+		expect(I18n.i18nText(settings, 'dataTablesInfo', [1, 2, 3])).toBe('此页显示 1-2 共3条');
+
+		// 指定错误的, 并验证错误打印信息
+		expect(I18n.i18nText(settings, 'undefinedKey', [1, 2, 3])).toBe('');
+		expect(console.warn).toHaveBeenCalledWith('GridManager Warn: ', '未找到与undefinedKey相匹配的zh-cn语言');
+	});
+});
+
