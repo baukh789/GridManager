@@ -9,8 +9,9 @@ import { PublishMethod, publishMethodArray } from './Publish';
 * */
 (jTool => {
 	Element.prototype.GM = Element.prototype.GridManager = function () {
-		// 特殊情况处理：单组tr进行操作，如resetTd()方法
-		if (this.nodeName === 'TR') {
+		// 验证当前Element是否为table
+		if (this.nodeName !== 'TABLE') {
+			Base.outLog('不支持对非table标签的操作');
 			return;
 		}
 		// 方法名

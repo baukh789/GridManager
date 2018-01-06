@@ -142,12 +142,9 @@ class Core {
 			return;
 		}
 
-		// tbody dom
 		const tbodyDOM = $('tbody', $table);
 		const gmName = Base.getKey($table);
 
-		// 用于拼接tbody的HTML结构
-		let tbodyTmpHTML = '';
 		let parseRes = typeof (response) === 'string' ? JSON.parse(response) : response;
 
 		// 执行请求后执行程序, 通过该程序可以修改返回值格式
@@ -166,13 +163,9 @@ class Core {
 
 		// 数据为空时
 		if (!_data || _data.length === 0) {
-			tbodyTmpHTML = `<tr emptyTemplate>
-										<td colspan="${$('th[th-visible="visible"]', $table).length}">
-										${settings.emptyTemplate || '<div class="gm-emptyTemplate">数据为空</div>'}
-										</td>
-									</tr>`;
+			let visibleNum = $('th[th-visible="visible"]', $table).length;
 			parseRes.totals = 0;
-			tbodyDOM.html(tbodyTmpHTML);
+			tbodyDOM.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
 		} else {
 			// 为数据追加序号字段
 			if (settings.supportAutoOrder) {
@@ -197,6 +190,10 @@ class Core {
 				});
 			}
 			const tdList = [];
+
+			// 拼接tbody的HTML结构
+			let tbodyTmpHTML = '';
+
 			$.each(_data, (index, row) => {
 				Cache.setRowData(gmName, index, row);
 				tbodyTmpHTML += `<tr cache-key="${index}">`;
@@ -215,7 +212,7 @@ class Core {
 				tbodyTmpHTML += '</tr>';
 			});
 			tbodyDOM.html(tbodyTmpHTML);
-			this.resetTd($table, false);
+			this.initVisible($table);
 		}
 		// 渲染分页
 		if (settings.supportAjaxPage) {
@@ -468,30 +465,6 @@ class Core {
 		// 删除渲染中标识、增加渲染完成标识
 		$table.removeClass('GridManager-loading');
 		$table.addClass('GridManager-ready');
-	}
-
-	// TODO resetTd方法已经不再处理多项事件, 现只处理initVisible, 而这个事项可以移到 driveDomForSuccessAfter 内进行处理
-	/**
-	 * 重置列表, 处理局部刷新、分页事件之后的td排序
-	 * @param dom: table 或者 tr
-	 * @param isSingleRow: 指定DOM节点是否为tr[布尔值] TODO: 之前会存在为true的情况, 现在的版本该参数已经失去作用
-     */
-	resetTd(dom, isSingleRow) {
-		let _table = null;
-		let	_tr = null;
-		if (isSingleRow) {
-			_tr = $(dom);
-			_table = _tr.closest('table');
-		} else {
-			_table = $(dom);
-			_tr	= _table.find('tbody tr');
-		}
-
-		if (!_tr || _tr.length === 0) {
-			return false;
-		}
-		// 依据配置对列表进行隐藏、显示
-		this.initVisible(_table);
 	}
 
 	/**

@@ -243,7 +243,10 @@ class Settings {
 			dataKey: 'data',
 
 			// ajax请求返回的数据总条数key键值,默认为totals
-			totalsKey: 'totals'
+			totalsKey: 'totals',
+
+			// 为空时显示的html
+			emptyTemplate: '<div class="gm-emptyTemplate">数据为空</div>'
 		};
 
 		/**

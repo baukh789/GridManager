@@ -6,6 +6,32 @@ let $ = window.jTool;
 let jTool = window.jTool;
 class BaseClass {
 	/**
+	 * 获取数据为空时的html
+	 * @param visibleNum: 可视状态TH的数据
+	 * @param emptyTemplate: 自定义的为空显示模版
+	 * @returns {string}
+     */
+	getEmptyHtml(visibleNum, emptyTemplate) {
+		return `<tr emptyTemplate>
+					<td colspan="${visibleNum || 1}">
+					${emptyTemplate || ''}
+					</td>
+				</tr>`;
+	}
+
+	/**
+	 * 更新数据为空显示DOM所占的列数
+	 * @param $table
+     */
+	updateEmptyCol($table) {
+		const emptyDOM = jTool('tr[emptyTemplate]', $table);
+		if (emptyDOM.length === 0) {
+			return;
+		}
+		jTool('td', emptyDOM).attr('colspan', jTool('th[th-visible="visible"]', $table).length);
+	}
+
+	/**
 	 * 输出日志
 	 * @param msg 输出文本
 	 * @param type 输出分类[info,warn,error]
@@ -67,7 +93,7 @@ class BaseClass {
 	// TODO 应该调整为columnMap更新后触发
 	setAreVisible($thList, isVisible, cb) {
 		// 当前所在的table
-		let _table = null;
+		let $table = null;
 
 		// 当前所在的容器
 		let	_tableWarp;
@@ -88,17 +114,16 @@ class BaseClass {
 		let	_checkbox = null;
 		$.each($thList, (i, v) => {
 			_th = $(v);
-			_table = _th.closest('table');
-			_tableWarp = _table.closest('.table-wrap');
-			_trList = $('tbody tr', _table);
+			$table = _th.closest('table');
+			_tableWarp = $table.closest('.table-wrap');
+			_trList = $('tbody tr[cache-key]', $table);
 			_checkLi = $(`.config-area li[th-name="${_th.attr('th-name')}"]`, _tableWarp);
-			_checkbox = _checkLi.find('input[type="checkbox"]');
-			if (_checkbox.length === 0) {
-				return;
-			}
+			_checkbox = jTool('input[type="checkbox"]', _checkLi);
+
 			$.each(_trList, (i2, v2) => {
 				_tdList.push($(v2).find('td').get(_th.index()));
 			});
+
 			// 显示
 			if (isVisible) {
 				_th.attr('th-visible', 'visible');
@@ -118,6 +143,7 @@ class BaseClass {
 				_checkLi.removeClass('checked-li');
 				_checkbox.prop('checked', false);
 			}
+			this.updateEmptyCol($table);
 			typeof cb === 'function' ? cb() : '';
 		});
 	}
@@ -161,7 +187,7 @@ class BaseClass {
      */
 	showLoading(dom, cb) {
 		if (!dom || dom.length === 0) {
-			return;
+			return false;
 		}
 		const loading = dom.find('.load-area');
 		if (loading.length > 0) {
@@ -178,6 +204,8 @@ class BaseClass {
 		window.setTimeout(() => {
 			typeof cb === 'function' ? cb() : '';
 		}, 100);
+
+		return true;
 	}
 
 	/**
@@ -187,12 +215,13 @@ class BaseClass {
      */
 	hideLoading(dom, cb) {
 		if (!dom || dom.length === 0) {
-			return;
+			return false;
 		}
 		window.setTimeout(() => {
 			$('.load-area', dom).remove();
 			typeof cb === 'function' ? cb() : '';
 		}, 500);
+		return true;
 	}
 
 	/**

@@ -188,6 +188,10 @@ describe('Settings', function() {
 		expect(settings.totalsKey).toBe('totals');
 	});
 
+	it('验证属性[emptyTemplate]初始值', function() {
+		expect(settings.emptyTemplate).toBe('<div class="gm-emptyTemplate">数据为空</div>');
+	});
+
 	it('验证属性[supportExport]初始值', function() {
 		expect(settings.supportExport).toBe(true);
 	});

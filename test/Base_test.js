@@ -21,7 +21,109 @@ describe('Base 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(10 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(12 + 1);
+	});
+});
+
+describe('Base.getEmptyHtml(visibleNum, emptyTemplate)', function() {
+	let emptyTemplate = null;
+	beforeEach(function(){
+	});
+
+	afterEach(function(){
+		emptyTemplate = null;
+	});
+
+	it('基础验证', function () {
+		expect(Base.getEmptyHtml).toBeDefined();
+		expect(Base.getEmptyHtml.length).toBe(2);
+	});
+
+	it('返回值验证', function () {
+		// 参数正常
+		emptyTemplate = `<tr emptyTemplate>
+							<td colspan="3">
+								<p>返回为空</p>
+							</td>
+						</tr>`;
+		expect(Base.getEmptyHtml(3, '<p>返回为空</p>').replace(/\s/g, '')).toBe(emptyTemplate.replace(/\s/g, ''));
+
+		// 不传递参数
+		emptyTemplate = `<tr emptyTemplate>
+							<td colspan="1">
+							</td>
+						</tr>`;
+		expect(Base.getEmptyHtml().replace(/\s/g, '')).toBe(emptyTemplate.replace(/\s/g, ''));
+	});
+});
+
+describe('Base.updateEmptyCol($table)', function() {
+	let table = null;
+	let $table = null;
+	let colspan = null;
+	beforeEach(function(){
+	});
+
+	afterEach(function(){
+		table = null;
+		$table = null;
+		colspan = null;
+		document.body.innerHTML = '';
+	});
+
+	it('基础验证', function () {
+		expect(Base.updateEmptyCol).toBeDefined();
+		expect(Base.updateEmptyCol.length).toBe(1);
+	});
+
+	it('当前数据为空', function () {
+		table = `<table grid-manager="test">
+					<thead>
+						<tr>
+						<th th-name="th-one" th-visible="visible">th-one</th>
+						<th th-name="th-two" th-visible="visible">th-two</th>
+						<th th-name="th-three">th-three</th>
+						</tr>
+					</thead>
+						<tr emptyTemplate>
+							<td></td>
+						</tr>
+					<tbody>
+					
+					</tbody>
+				</table>`;
+		document.body.innerHTML = table;
+		$table = jTool('table[grid-manager="test"]');
+		colspan = jTool('tr[emptyTemplate] td', $table).attr('colspan');
+		expect(colspan).toBeUndefined();
+		Base.updateEmptyCol($table);
+		colspan = jTool('tr[emptyTemplate] td', $table).attr('colspan');
+		expect(colspan).toBe('2');
+	});
+
+	it('当前数据不为空', function () {
+		table = `<table grid-manager="test">
+					<thead>
+						<tr>
+						<th th-name="th-one" th-visible="visible">th-one</th>
+						<th th-name="th-two" th-visible="visible">th-two</th>
+						<th th-name="th-three">th-three</th>
+						</tr>
+					</thead>
+						<tr>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+						</tr>
+					<tbody>
+					
+					</tbody>
+				</table>`;
+		document.body.innerHTML = table;
+		$table = jTool('table[grid-manager="test"]');
+		expect(jTool('tr[emptyTemplate] td', $table).length).toBe(0);
+		Base.updateEmptyCol($table);
+		expect(jTool('tr[emptyTemplate] td', $table).length).toBe(0);
 	});
 });
 
@@ -155,15 +257,37 @@ describe('Base.getTextWidth(th)', function() {
 });
 
 describe('Base.showLoading(dom, cb)', function() {
+	beforeEach(function(){
+	});
+
+	afterEach(function(){
+		document.body.innerHTML = '';
+	});
 	it('基础验证', function () {
 		expect(Base.showLoading).toBeDefined();
 		expect(Base.showLoading.length).toBe(2);
 	});
 
+	it('并不存在的dom', function () {
+		expect(Base.showLoading(jTool('body-void'))).toBe(false);
+	});
+
+	it('无回调函数', function () {
+		jasmine.clock().install();
+		expect(Base.showLoading(jTool('body'))).toBe(true);
+		jasmine.clock().tick(500);
+		jasmine.clock().uninstall();
+	});
+
+	it('连续两次调用', function () {
+		Base.showLoading(jTool('body'));
+		expect(Base.showLoading(jTool('body'))).toBe(true);
+	});
+
 	it('回调函数是否执行', function () {
 		jasmine.clock().install();
 		let callback = jasmine.createSpy('callback');
-		Base.showLoading(jTool('body'), callback);
+		expect(Base.showLoading(jTool('body'), callback)).toBe(true);
 		jasmine.clock().tick(100);
 		expect(callback).toHaveBeenCalled();
 		jasmine.clock().uninstall();
@@ -177,10 +301,21 @@ describe('Base.hideLoading(dom, cb)', function() {
 		expect(Base.hideLoading.length).toBe(2);
 	});
 
+	it('并不存在的dom', function () {
+		expect(Base.hideLoading(jTool('body-void'))).toBe(false);
+	});
+
+	it('无回调函数', function () {
+		jasmine.clock().install();
+		expect(Base.hideLoading(jTool('body'))).toBe(true);
+		jasmine.clock().tick(500);
+		jasmine.clock().uninstall();
+	});
+
 	it('回调函数是否执行', function () {
 		jasmine.clock().install();
 		let callback = jasmine.createSpy('callback');
-		Base.hideLoading(jTool('body'), callback);
+		expect(Base.hideLoading(jTool('body'), callback)).toBe(true);
 		jasmine.clock().tick(500);
 		expect(callback).toHaveBeenCalled();
 		jasmine.clock().uninstall();
