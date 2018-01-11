@@ -17,8 +17,6 @@ class Sort {
 		return html;
 	}
 
-	// TODO @baukh20171211: 需要确认下手动执行排序是否要调 sortingBefore 与 sortingAfter. 如果要调用, 需要解决th为空的问题
-	// TODO @baukh20171211: 需要处理setSort执行时与配置项 isCombSorting 的关联
 	/*
 	 * 手动设置排序
 	 * @param $table: table jTool

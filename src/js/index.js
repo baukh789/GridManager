@@ -11,7 +11,7 @@ import { PublishMethod, publishMethodArray } from './Publish';
 	Element.prototype.GM = Element.prototype.GridManager = function () {
 		// 验证当前Element是否为table
 		if (this.nodeName !== 'TABLE') {
-			Base.outLog('不支持对非table标签的操作');
+			Base.outLog('不支持对非table标签实例化', 'error');
 			return;
 		}
 		// 方法名
@@ -64,22 +64,11 @@ import { PublishMethod, publishMethodArray } from './Publish';
 })();
 
 /*
-* 兼容jquery
+* 兼容jQuery
 * */
 (jQuery => {
 	if (typeof (jQuery) !== 'undefined' && jQuery.fn.extend) {
 		jQuery.fn.extend({
-			GM: function () {
-				if (arguments.length === 0) {
-					return this.get(0).GM();
-				} else if (arguments.length === 1) {
-					return this.get(0).GM(arguments[0]);
-				} else if (arguments.length === 2) {
-					return this.get(0).GM(arguments[0], arguments[1]);
-				} else if (arguments.length === 3) {
-					return this.get(0).GM(arguments[0], arguments[1], arguments[2]);
-				}
-			},
 			GridManager: function () {
 				if (arguments.length === 0) {
 					return this.get(0).GridManager();
@@ -91,6 +80,10 @@ import { PublishMethod, publishMethodArray } from './Publish';
 					return this.get(0).GridManager(arguments[0], arguments[1], arguments[2]);
 				}
 			}
+		});
+		// 提供简捷调用方式
+		jQuery.fn.extend({
+			GM: jQuery.fn.GridManager
 		});
 	}
 })(window.jQuery);

@@ -1,12 +1,17 @@
 /**
- * Created by baukh on 17/6/20.
+ * Created by baukh on 18/1/11.
+ * index.js 中兼容jQuery 部分测试
  */
+
+window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.min');
 import '../src/js/index';
 import testData from '../src/data/testData';
 
-describe('index.js Element.prototype.GM', function() {
+describe('index.js jQuery', () => {
 	let table = null;
+	let $table = null;
 	let div = null;
+	let $div = null;
 	let arg = null;
 	beforeEach(function(){
 		// 存储console, 用于在测方式完成后原还console对象
@@ -21,6 +26,8 @@ describe('index.js Element.prototype.GM', function() {
 
 		table = document.createElement('table');
 		div = document.createElement('div');
+		$table = jQuery(table);
+		$div = jQuery(div);
 		document.body.appendChild(table);
 		document.body.appendChild(div);
 	});
@@ -35,42 +42,39 @@ describe('index.js Element.prototype.GM', function() {
 		document.body.innerHTML = '';
 		table = null;
 		div = null;
+		$table = null;
+		$div = null;
 		arg = null;
 	});
-	it('验证Element.prototype 是否绑定成功', function(){
-		expect(Element.prototype.GridManager).toBeDefined();
-		expect(Element.prototype.GM).toBeDefined();
-		expect(Element.prototype.GridManager).toBe(Element.prototype.GM);
-	});
 
-	it('验证GridManager 挂载至window 是否成功', function(){
-		expect(window.GridManager).toBeDefined();
-		expect(window.GM).toBeDefined();
-		expect(window.GridManager).toBe(window.GM);
-	});
+	it('验证jQuery.fn 是否挂载成功', function(){
+		expect(jQuery.fn.GridManager).toBeDefined();
+		expect(jQuery.fn.GM).toBeDefined();
+		expect(jQuery.fn.GridManager).toBe(jQuery.fn.GM);
 
-	it('GM() 与 GridManager()', function(){
+		expect($.fn.GridManager).toBeDefined();
+		expect($.fn.GM).toBeDefined();
+		expect($.fn.GridManager).toBe($.fn.GM);
+	});it('GM() 与 GridManager()', function(){
 		expect(table.GM === table.GridManager).toBe(true);
 	});
 
 	it('非 table 的Element', function(){
-		expect(div.GM()).toBeUndefined();
+		expect($div.GM()).toBeUndefined();
 		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '不支持对非table标签实例化');
 	});
 
 	it('GM() 参数为空', function(){
-		expect(table.GM()).toBeDefined();
+		expect($table.GM()).toBeDefined();
 	});
 
 	it('未传递方法名参数', function(){
-		expect(table.GM({'name': 'cc'})).toBeDefined();
+		expect($table.GM({'name': 'cc'})).toBeDefined();
 	});
 
 	it('未存在回调函数', function(){
-		expect(table.GM('init', {})).toBeDefined();
-	});
-
-	it('完整参数', function(){
+		expect($table.GM('init', {})).toBeDefined();
+	});it('完整参数', function(){
 		arg = {
 			ajax_data: testData,
 			gridManagerName: 'test-index',
@@ -104,13 +108,14 @@ describe('index.js Element.prototype.GM', function() {
 			]
 		};
 		let callback = jasmine.createSpy('callback');
-		expect(table.GM('init', arg, callback)).toBeDefined();
+		expect($table.GM('init', arg, callback)).toBeDefined();
 		expect(callback).toHaveBeenCalled();
 		callback = null;
 	});
 
 	it('错误的方法名', function(){
-		expect(table.GM('errorFnName', {'name': 'cc'})).toBeUndefined();
+		expect($table.GM('errorFnName', {'name': 'cc'})).toBeUndefined();
 		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '方法调用错误，请确定方法名[errorFnName]是否正确');
 	});
 });
+

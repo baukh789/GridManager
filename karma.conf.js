@@ -31,6 +31,7 @@ module.exports = function (config) {
 			// 'test/Hover_test.js',
 			// 'test/I18n_test.js',
 			// 'test/index_test.js',
+			// 'test/index_jQuery_test.js',
 			// 'test/Menu_test.js',
 			// 'test/Order_test.js',
 			// 'test/Publish_test.js',

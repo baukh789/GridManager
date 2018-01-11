@@ -90,7 +90,6 @@ class BaseClass {
 	 * @param isVisible 是否可见
      * @param cb
      */
-	// TODO 应该调整为columnMap更新后触发
 	setAreVisible($thList, isVisible, cb) {
 		// 当前所在的table
 		let $table = null;
