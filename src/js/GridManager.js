@@ -322,8 +322,8 @@ export default class GridManager {
 		// 初始化表格卷轴
 		Scroll.init($table);
 
-		// 绑定右键菜单事件
-		Menu.bindRightMenuEvent($table);
+		// 初始化右键菜单事件
+		Menu.init($table);
 
 		// 渲染tbodyDOM
 		Core.__refreshGrid($table);

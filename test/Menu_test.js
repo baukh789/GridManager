@@ -1,111 +1,257 @@
 /**
  * Created by baukh on 17/9/30.
  */
-// import '../build/css/GridManager.css';
-// import { jTool } from '../src/js/Base';
-// import Menu from '../src/js/Menu';
-// import testData from '../src/data/testData';
-// import GridManager from '../src/js/GridManager';
-// describe('Menu.js', function() {
-// 	let gmName = 'test-menu';
-// 	let table = document.createElement('table');
-// 	table.setAttribute('grid-manager', gmName);
-// 	let $table = jTool(table);
-// 	beforeAll(function(){
-// 		document.querySelector('body').appendChild(table);
-// 		var arg = {
-// 			ajax_data: testData
-// 			,query: {name: 'baukh'}
-// 			,supportAjaxPage: true
-// 			,supportExport: true
-// 			,supportConfig: false
-// 			,columnData: [
-// 				{
-// 					key: 'name',
-// 					width: '100px',
-// 					text: '名称'
-// 				},{
-// 					key: 'info',
-// 					text: '使用说明'
-// 				},{
-// 					key: 'url',
-// 					text: 'url'
-// 				},{
-// 					key: 'createDate',
-// 					text: '创建时间'
-// 				},{
-// 					key: 'lastDate',
-// 					text: '最后修改时间'
-// 				},{
-// 					key: 'action',
-// 					text: '操作',
-// 					template: function(action, rowObject){
-// 						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-// 							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-// 					}
-// 				}
-// 			]
-// 		};
-// 		new GridManager().init(table, arg);
-// 	});
-// 	afterAll(function () {
-// 		table = null;
-// 		$table = null;
-// 		gmName = null;
-// 		document.body.innerHTML = '';
-// 	});
-//
-// 	it('验证操作项在右键菜单项中是否存在', function(){
-// 		// 上一页
-// 		const previousDOM = document.querySelector('[grid-action="refresh-page"][refresh-type="previous"]');
-// 		expect(previousDOM).toBeDefined();
-// 		// 下一页
-// 		const nextDOM = document.querySelector('[grid-action="refresh-page"][refresh-type="next"]');
-// 		expect(nextDOM).toBeDefined();
-//
-// 		// 刷新
-// 		const refreshDOM = document.querySelector('[grid-action="refresh-page"][refresh-type="refresh"]');
-// 		expect(refreshDOM).toBeDefined();
-//
-// 		// 另存为EXCEL
-// 		const exportAllDOM = document.querySelector('[grid-action="export-excel"][only-checked="false"]');
-// 		expect(exportAllDOM).toBeDefined();
-//
-// 		// 已选中项另存为EXCEL
-// 		const exportCheckDOM = document.querySelector('[grid-action="export-excel"][only-checked="true"]');
-// 		expect(exportCheckDOM).toBeDefined();
-//
-// 		// 配置
-// 		const configDOM = document.querySelector('[grid-action="config-grid"]');
-// 		expect(configDOM).toBeNull();
-// 	});
-//
-// 	it('Menu.isDisabled(dom, events) 获取右键菜单中的某项 是为禁用状态', function(){
-// 		var eventMock = {
-// 			stopPropagation: function(){},
-// 			preventDefault: function(){}
-// 		};
-// 		// 上一页
-// 		const previousDOM = document.querySelector('[grid-action="refresh-page"][refresh-type="previous"]');
-// 		expect(Menu.isDisabled(previousDOM, eventMock)).toBe(true);
-//
-// 		// 下一页
-// 		const nextDOM = document.querySelector('[grid-action="refresh-page"][refresh-type="next"]');
-// 		expect(Menu.isDisabled(nextDOM, eventMock)).toBe(true);
-//
-// 		// 刷新
-// 		const refreshDOM = document.querySelector('[grid-action="refresh-page"][refresh-type="refresh"]');
-// 		expect(Menu.isDisabled(refreshDOM, eventMock)).toBe(false);
-//
-// 		// 另存为EXCEL
-// 		const exportAllDOM = document.querySelector('[grid-action="export-excel"][only-checked="false"]');
-// 		expect(Menu.isDisabled(exportAllDOM, eventMock)).toBe(false);
-//
-// 		// 已选中项另存为EXCEL 这里非禁用是由于并未打开菜单栏, 只有打开菜单栏时才会通过已选中的行更新禁用状态
-// 		const exportCheckDOM = document.querySelector('[grid-action="export-excel"][only-checked="true"]');
-// 		expect(Menu.isDisabled(exportCheckDOM, eventMock)).toBe(false);
-//
-// 		eventMock = null;
-// 	});
-//
-// });
+'use strict';
+import { jTool } from '../src/js/Base';
+import { Settings, TextSettings} from '../src/js/Settings';
+import Menu from '../src/js/Menu';
+/**
+ * 验证类的属性及方法总量
+ */
+describe('Menu 验证类的属性及方法总量', () => {
+	var getPropertyCount = null;
+	beforeEach(function() {
+		getPropertyCount = function(o){
+			var n, count = 0;
+			for(n in o){
+				if(o.hasOwnProperty(n)){
+					count++;
+				}
+			}
+			return count;
+		}
+	});
+	afterEach(() => {
+		getPropertyCount = null;
+	});
+	it('Function count', () => {
+		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Menu)))).toBe(6 + 1);
+	});
+});
+
+describe('Menu.keyName', () => {
+	it('基础验证', () => {
+		expect(Menu.keyName).toBeDefined();
+		expect(Menu.keyName).toBe('grid-master');
+	});
+});
+
+describe('Menu.init($table)', () => {
+	it('基础验证', () => {
+		expect(Menu.init).toBeDefined();
+		expect(Menu.init.length).toBe(1);
+	});
+});
+
+describe('Menu.createMenuDOM(settings)', () => {
+	let settings = null;
+	beforeEach(() => {
+		settings = new Settings();
+		settings.textConfig = new TextSettings();
+		settings.gridManagerName = 'test-createMenuDOM';
+		settings.pageDate = {
+			cPage: 1,
+			pSize: 10,
+			tPage: 3
+		};
+	});
+
+	afterEach(() => {
+		document.body.innerHTML = '';
+		settings = null;
+	});
+	it('基础验证', () => {
+		expect(Menu.createMenuDOM).toBeDefined();
+		expect(Menu.createMenuDOM.length).toBe(1);
+	});
+
+	it('使用默认配置', () => {
+		Menu.createMenuDOM(settings);
+
+		// 菜单区域
+		expect(jTool(`.grid-menu[${Menu.keyName}="test-createMenuDOM"]`).length).toBe(1);
+
+		// 上一页
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="previous"]`).length).toBe(0);
+
+		// 重新加载
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="refresh"]`).length).toBe(1);
+
+		// 下一页
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="next"]`).length).toBe(0);
+
+		// 另存为Excel
+		expect(jTool(`[grid-action="export-excel"][only-checked="false"]`).length).toBe(1);
+
+		//  已选中项另存为Excel
+		expect(jTool(`[grid-action="export-excel"][only-checked="true"]`).length).toBe(1);
+
+		//  配置表
+		expect(jTool(`[grid-action="config-grid"]`).length).toBe(1);
+	});
+
+	it('开启分页功能', () => {
+		settings.supportAjaxPage = true;
+		Menu.createMenuDOM(settings);
+
+		// 菜单区域
+		expect(jTool(`.grid-menu[${Menu.keyName}="test-createMenuDOM"]`).length).toBe(1);
+
+		// 上一页
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="previous"]`).length).toBe(1);
+
+		// 重新加载
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="refresh"]`).length).toBe(1);
+
+		// 下一页
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="next"]`).length).toBe(1);
+
+		// 另存为Excel
+		expect(jTool(`[grid-action="export-excel"][only-checked="false"]`).length).toBe(1);
+
+		//  已选中项另存为Excel
+		expect(jTool(`[grid-action="export-excel"][only-checked="true"]`).length).toBe(1);
+
+		//  配置表
+		expect(jTool(`[grid-action="config-grid"]`).length).toBe(1);
+	});
+
+	it('禁用导出功能', () => {
+		settings.supportExport = false;
+		Menu.createMenuDOM(settings);
+
+		// 菜单区域
+		expect(jTool(`.grid-menu[${Menu.keyName}="test-createMenuDOM"]`).length).toBe(1);
+
+		// 上一页
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="previous"]`).length).toBe(0);
+
+		// 重新加载
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="refresh"]`).length).toBe(1);
+
+		// 下一页
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="next"]`).length).toBe(0);
+
+		// 另存为Excel
+		expect(jTool(`[grid-action="export-excel"][only-checked="false"]`).length).toBe(0);
+
+		//  已选中项另存为Excel
+		expect(jTool(`[grid-action="export-excel"][only-checked="true"]`).length).toBe(0);
+
+		//  配置表
+		expect(jTool(`[grid-action="config-grid"]`).length).toBe(1);
+	});
+
+	it('禁用配置功能', () => {
+		settings.supportConfig = false;
+		Menu.createMenuDOM(settings);
+
+		// 菜单区域
+		expect(jTool(`.grid-menu[${Menu.keyName}="test-createMenuDOM"]`).length).toBe(1);
+
+		// 上一页
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="previous"]`).length).toBe(0);
+
+		// 重新加载
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="refresh"]`).length).toBe(1);
+
+		// 下一页
+		expect(jTool(`[grid-action="refresh-page"][refresh-type="next"]`).length).toBe(0);
+
+		// 另存为Excel
+		expect(jTool(`[grid-action="export-excel"][only-checked="false"]`).length).toBe(1);
+
+		//  已选中项另存为Excel
+		expect(jTool(`[grid-action="export-excel"][only-checked="true"]`).length).toBe(1);
+
+		//  配置表
+		expect(jTool(`[grid-action="config-grid"]`).length).toBe(0);
+	});
+});
+
+describe('Menu.bindRightMenuEvent($table, settings)', () => {
+	it('基础验证', () => {
+		expect(Menu.bindRightMenuEvent).toBeDefined();
+		expect(Menu.bindRightMenuEvent.length).toBe(2);
+	});
+});
+
+describe('Menu.updateMenuPageStatus(gridManagerName, pageData)', () => {
+	let menuHtml = null;
+	let pageData = null;
+	beforeEach(() => {
+		menuHtml = `<div class="grid-menu" ${Menu.keyName}="test-updateMenuPageStatus">
+						<span grid-action="refresh-page" refresh-type="previous">
+							上一页
+							<i class="iconfont icon-sanjiao2"></i>
+						</span>
+						<span grid-action="refresh-page" refresh-type="next">
+							下一页
+							<i class="iconfont icon-sanjiao1"></i>
+						</span>;
+					</div>`;
+	});
+
+	afterEach(() => {
+		document.body.innerHTML = '';
+		menuHtml = null;
+		pageData = null;
+	});
+	it('基础验证', () => {
+		expect(Menu.updateMenuPageStatus).toBeDefined();
+		expect(Menu.updateMenuPageStatus.length).toBe(2);
+	});
+
+	it('不存在DOM节点', () => {
+		expect(Menu.updateMenuPageStatus()).toBeUndefined();
+	});
+
+	it('当前处于第一页', () => {
+		document.body.innerHTML = menuHtml;
+		pageData = {
+			cPage: 1,
+			tPage: 3
+		};
+		Menu.updateMenuPageStatus('test-updateMenuPageStatus', pageData);
+		expect(jTool('[refresh-type="previous"]').hasClass('disabled')).toBe(true);
+		expect(jTool('[refresh-type="next"]').hasClass('disabled')).toBe(false);
+	});
+
+	it('当前处于最后一页', () => {
+		document.body.innerHTML = menuHtml;
+		pageData = {
+			cPage: 3,
+			tPage: 3
+		};
+		Menu.updateMenuPageStatus('test-updateMenuPageStatus', pageData);
+		expect(jTool('[refresh-type="previous"]').hasClass('disabled')).toBe(false);
+		expect(jTool('[refresh-type="next"]').hasClass('disabled')).toBe(true);
+	});
+});
+
+describe('Menu.isDisabled(dom, events)', () => {
+	let event = null;
+	beforeEach(() => {
+		// event mock
+		event = {
+			stopPropagation: ()=>{},
+			preventDefault: () => {}
+		};
+		document.body.innerHTML = '<div id="test1" class="disabled"></div><div id="test2"></div>';
+	});
+
+	afterEach(() => {
+		event = null;
+		document.body.innerHTML = '';
+	});
+	it('基础验证', () => {
+		expect(Menu.isDisabled).toBeDefined();
+		expect(Menu.isDisabled.length).toBe(2);
+	});
+
+	it('返回值', () => {
+		expect(Menu.isDisabled(document.querySelector('#test1'), event)).toBe(true);
+		expect(Menu.isDisabled(document.querySelector('#test2'), event)).toBe(false);
+	});
+});

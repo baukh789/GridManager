@@ -217,7 +217,7 @@ class Core {
 		// 渲染分页
 		if (settings.supportAjaxPage) {
 			AjaxPage.resetPageData($table, parseRes[settings.totalsKey]);
-			Menu.checkMenuPageAction($table);
+			Menu.updateMenuPageStatus(settings.gridManagerName, settings.pageData);
 		}
 		typeof callback === 'function' ? callback() : '';
 	};
