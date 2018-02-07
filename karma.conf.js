@@ -7,6 +7,7 @@ const path = require('path');
 module.exports = function (config) {
 	// karma config: http://karma-runner.github.io/1.0/config/configuration-file.html
 	// karma-coverage: https://www.npmjs.com/package/karma-coverage
+	// Travis CI: http://www.ruanyifeng.com/blog/2017/12/travis_ci_tutorial.html
 	config.set({
 		// 将用于解决所有的模式基本路径（例如，文件，排除）
 		basePath: '',

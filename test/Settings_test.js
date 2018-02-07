@@ -36,6 +36,10 @@ describe('Settings', function() {
 		expect(typeof settings.adjustAfter).toBe('function');
 	});
 
+	it('验证属性[supportMenu]初始值', function() {
+		expect(settings.supportMenu).toBe(true);
+	});
+
 	it('验证属性[supportRemind]初始值', function() {
 		expect(settings.supportRemind).toBe(false);
 	});

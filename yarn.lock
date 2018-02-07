@@ -3361,9 +3361,9 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-jTool@^1.2.22:
-  version "1.2.22"
-  resolved "https://registry.yarnpkg.com/jTool/-/jTool-1.2.22.tgz#3d9dbe16ccaedc9e99435455ca7207614fbe8f9c"
+jTool@^1.2.23:
+  version "1.2.23"
+  resolved "https://registry.yarnpkg.com/jTool/-/jTool-1.2.23.tgz#837593394745faa546d2fa12634ec0f8c95279f7"
 
 jasmine-ajax@^3.0.0, jasmine-ajax@^3.2.0:
   version "3.3.1"

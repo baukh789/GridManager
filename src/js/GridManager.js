@@ -323,7 +323,9 @@ export default class GridManager {
 		Scroll.init($table);
 
 		// 初始化右键菜单事件
-		Menu.init($table);
+		if (settings.supportMenu) {
+			Menu.init($table);
+		}
 
 		// 渲染tbodyDOM
 		Core.__refreshGrid($table);

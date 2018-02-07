@@ -59,6 +59,17 @@
 		.search-area .sa-ele .search-action:hover, .search-area .sa-ele .reset-action:hover{
 			opacity: 0.7;
 		}
+
+		.action-list{
+			border-top: 1px solid #e8e8e8;
+		}
+		.action-list > span{
+			display: inline-block;
+			border-right: 1px solid #e8e8e8;
+		}
+		.action-list > span:last-child{
+			border-right: 0;
+		}
     </style>
 </head>
 
@@ -178,9 +189,16 @@
 				key: 'action',
 				remind: 'the action',
 				width: '10%',
-				text: '操作',
+				text: `<div>操作</div>
+						<div class="action-list">
+							<span>新增</span>
+							<span>编辑</span>
+							<span>删除</span>
+						</div>`,
 				template: function(action, rowObject){
-					return '<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">删除</span>';
+					return '<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">新增</span>' +
+						'<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">编辑</span>' +
+						'<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">删除</span>';
 				}
 			}
 		]

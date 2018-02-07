@@ -33,6 +33,13 @@ class Settings {
 		};
 
 		/**
+		 * 右键菜单
+         */
+		const menu = {
+			supportMenu: true
+		};
+
+		/**
 		 * 表头提醒
 		 */
 		const remind = {
@@ -260,6 +267,7 @@ class Settings {
 		const settings = {
 			...drag,
 			...adjust,
+			...menu,
 			...remind,
 			...config,
 			...gridStyle,
