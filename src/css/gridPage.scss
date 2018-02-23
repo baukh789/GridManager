@@ -13,14 +13,15 @@ $font-active-color: #0083ba;
 			display: inline-block;
 			width: 30px;
 			height: 30px;
-			line-height: 32px;
-			padding: 1px 0 0 1px;
+			padding: 7.5px;
 			vertical-align: middle;
-			text-align: center;
 			&:hover {
 				color: $font-normal-color;
 			}
 			i {
+				display: block;
+				width: 15px;
+				height: 15px;
 				cursor: pointer;
 				line-height: 15px;
 				font-size: 16px;
@@ -49,7 +50,7 @@ $font-active-color: #0083ba;
 			vertical-align: middle;
 			select[name="pSizeArea"] {
 				height: 25px;
-				padding: 4px;
+				padding: 0 4px;
 			}
 		}
 		.dataTables_info {
