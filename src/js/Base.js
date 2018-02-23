@@ -6,6 +6,23 @@ let $ = window.jTool;
 let jTool = window.jTool;
 class BaseClass {
 	/**
+	 * 获取表的GM 唯一标识
+	 * @param $table
+	 * @returns {*|string}
+	 */
+	getKey($table) {
+		return $table.attr('grid-manager') || '';
+	}
+
+	/**
+	 * 获取表头吸顶所使用的attr
+	 * @returns {string}
+     */
+	getSetTopAttr() {
+		return 'grid-manager-mock-thead';
+	}
+
+	/**
 	 * 获取数据为空时的html
 	 * @param visibleNum: 可视状态TH的数据
 	 * @param emptyTemplate: 自定义的为空显示模版
@@ -52,15 +69,6 @@ class BaseClass {
 				console.log('GridManager: ', msg);
 				break;
 		}
-	}
-
-	/**
-	 * 获取表的GM 唯一标识
-	 * @param $table
-	 * @returns {*|string}
-     */
-	getKey($table) {
-		return $table.attr('grid-manager') || '';
 	}
 
 	/**

@@ -2,7 +2,7 @@
  * Scroll: 滚动轴
  * #001: 存在多次渲染时, 将会存在多个resize事件. 每个事件对应处理一个table. 这样做的好处是, 多个表之间无关联. 保持了相对独立性
  * */
-import { jTool } from './Base';
+import { jTool, Base } from './Base';
 class Scroll {
 	init($table) {
 		this.bindResizeToTable($table);
@@ -18,7 +18,7 @@ class Scroll {
 		// 绑定resize事件: 对表头吸顶的列宽度进行修正
 		window.addEventListener('resize', () => {
 			// 吸顶元素
-			const _setTopHead = jTool('.set-top', $table);
+			const _setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
 			if (_setTopHead && _setTopHead.length === 1) {
 				_setTopHead.remove();
 				$table.closest('.table-div').trigger('scroll');
@@ -45,7 +45,7 @@ class Scroll {
 			const _tbody = jTool('tbody', $table);
 
 			// 吸顶元素
-			let _setTopHead = jTool('.set-top', $table);
+			let _setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
 
 			// 当前列表数据为空
 			if (jTool('tr', _tbody).length === 0) {
@@ -54,10 +54,9 @@ class Scroll {
 
 			// 配置吸顶区的宽度
 			if (_setTopHead.length === 0 || _isWindowResize_) {
-				_setTopHead.length === 0 ? $table.append(_thead.clone(true).addClass('set-top')) : '';
-				_setTopHead = jTool('.set-top', $table);
+				_setTopHead.length === 0 ? $table.append(_thead.clone(true).attr(Base.getSetTopAttr(), '')) : '';
+				_setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
 				_setTopHead.removeAttr('grid-manager-thead');
-				_setTopHead.attr('grid-manager-mock-thead', '');
 				_setTopHead.removeClass('scrolling');
 				_setTopHead.css({
 					width: _thead.width(),

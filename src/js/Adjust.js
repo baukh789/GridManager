@@ -101,10 +101,10 @@ class Adjust {
 
 			// 当前宽度调整的事件原为表头置顶的thead th
 			// 修改与置顶thead 对应的 thead
-			if ($th.closest('.set-top').length === 1) {
+			if ($th.closest(`thead[${Base.getSetTopAttr()}]`).length === 1) {
 				$(`thead[grid-manager-thead] th[th-name="${$th.attr('th-name')}"]`, $table).width(_thWidth);
 				$(`thead[grid-manager-thead] th[th-name="${$nextTh.attr('th-name')}"]`, $table).width(_NextWidth);
-				$('thead[grid-manager-mock-thead]', $table).width($('thead[grid-manager-thead]', $table).width());
+				$(`thead[${Base.getSetTopAttr()}]`, $table).width($('thead[grid-manager-thead]', $table).width());
 			}
 		});
 	}

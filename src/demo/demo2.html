@@ -189,16 +189,9 @@
 				key: 'action',
 				remind: 'the action',
 				width: '10%',
-				text: `<div>操作</div>
-						<div class="action-list">
-							<span>新增</span>
-							<span>编辑</span>
-							<span>删除</span>
-						</div>`,
+				text: `<div>操作</div>`,
 				template: function(action, rowObject){
-					return '<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">新增</span>' +
-						'<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">编辑</span>' +
-						'<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">删除</span>';
+					return '<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">删除</span>';
 				}
 			}
 		]

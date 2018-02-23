@@ -273,7 +273,7 @@ $font-family: arial !important;
 					visibility: hidden;
 				}
 				/* 表头置顶 */
-				&.set-top {
+				&[grid-manager-mock-thead] {
 					position: absolute;
 					left: 0;
 					top: 0;

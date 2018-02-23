@@ -123,7 +123,7 @@ class Drag {
 
 				// 当前触发项为置顶表头时, 同步更新至原样式
 				let haveMockThead = false;  // 当前是否包含置顶表头
-				if (_th.closest('thead[grid-manager-mock-thead]').length === 1) {
+				if (_th.closest(`thead[${Base.getSetTopAttr()}]`).length === 1) {
 					haveMockThead = true;
 				}
 				_this.updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV, haveMockThead);

@@ -229,7 +229,8 @@ class Core {
      */
 	createDOM($table) {
 		let settings = Cache.getSettings($table);
-		$table.attr('width', '100%').attr('cellspacing', 0);
+		// TODO 这行代码已经移到css内, 需要进行验证
+		// $table.attr('width', '100%').attr('cellspacing', 0);
 		let theadHtml = '<thead grid-manager-thead>';
 		let	tbodyHtml = '<tbody></tbody>';
 

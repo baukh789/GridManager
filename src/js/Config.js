@@ -166,7 +166,7 @@ class Config {
 			Cache.saveUserMemory(_table);
 
 			// 处理置顶表头
-			const topThead = $('thead.set-top', _table);
+			const topThead = $(`thead[${Base.getSetTopAttr()}]`, _table);
 			if (topThead.length === 1) {
 				topThead.remove();
 				_tableDiv.trigger('scroll');
