@@ -3,31 +3,39 @@
 $font-normal-color: #000;
 $font-active-color: #0083ba;
 /* 表格分页 */
-.table-wrap{
-	.page-toolbar{
-	  width: 100%;
-	  position: relative;
-	  padding: 5px 0;
-	  @include bg-image();
-		.dataTables_info{
+.table-wrap {
+	.page-toolbar {
+		width: 100%;
+		position: relative;
+		padding: 5px 0;
+		@include bg-image();
+		.refresh-action {
 			display: inline-block;
-			padding: 6px 5px;
+			width: 30px;
+			height: 30px;
+			line-height: 32px;
+			padding: 1px 0 0 1px;
 			vertical-align: middle;
-		}
-		.change-size{
-			display: inline-block;
-			padding: 2.5px 10px;
-			vertical-align: middle;
-			select[name="pSizeArea"]{
-				height: 25px;
-				padding: 4px;
+			text-align: center;
+			&:hover {
+				color: $font-normal-color;
+			}
+			i {
+				cursor: pointer;
+				line-height: 15px;
+				font-size: 16px;
+				color: $font-active-color;
+				font-weight: bold;
+			}
+			&.refreshing {
+				animation: rotationMedia 2s ease-in-out infinite;
 			}
 		}
-		.goto-page{
+		.goto-page {
 			display: inline-block;
 			padding: 2.5px 10px;
 			vertical-align: middle;
-			.gp-input{
+			.gp-input {
 				width: 50px;
 				height: 25px;
 				border: 1px solid #ddd;
@@ -35,44 +43,36 @@ $font-active-color: #0083ba;
 				margin: 0 5px;
 			}
 		}
-		.refresh-action{
+		.change-size {
 			display: inline-block;
-			width: 30px;
-			height: 30px;
-		  	line-height: 32px;
-			padding: 1px 0 0 1px;
+			padding: 2.5px 10px;
 			vertical-align: middle;
-		    text-align: center;
-			&:hover{
-				color: $font-normal-color;
-			}
-			i{
-				cursor: pointer;
-				line-height: 15px;
-				font-size: 16px;
-				color: $font-active-color;
-				font-weight: bold;
-			}
-			&.refreshing{
-				animation: rotationMedia 2s ease-in-out infinite;
+			select[name="pSizeArea"] {
+				height: 25px;
+				padding: 4px;
 			}
 		}
-		.ajax-page{
+		.dataTables_info {
+			display: inline-block;
+			padding: 6px 5px;
+			vertical-align: middle;
+		}
+		.ajax-page {
 			position: absolute;
 			height: 30px;
 			right: 5px;
 			bottom: 5px;
-			:after{
+			:after {
 				clear: both;
 			}
-			.pagination{
+			.pagination {
 				display: inline-block;
-				> li{
+				> li {
 					display: block;
 					min-width: 30px;
 					height: 30px;
-				  	line-height: 18px;
-				  	float: left;
+					line-height: 18px;
+					float: left;
 					padding: 5px 10px;
 					background-color: #fff;
 					border: 1px solid #ddd;
@@ -81,23 +81,23 @@ $font-active-color: #0083ba;
 					position: relative;
 					text-align: center;
 					cursor: pointer;
-					&:first-child{
+					&:first-child {
 						border-bottom-left-radius: 2px;
 						border-top-left-radius: 2px;
 						border-left: 1px solid #ddd;
 					}
-					&.disabled, &.disabled:focus, .disabled:hover{
+					&.disabled, &.disabled:focus, .disabled:hover {
 						background-color: #fff;
 						border-color: #ddd;
 						color: #999;
 						cursor: not-allowed;
 					}
-					&.active, &.active:focus, &.active:hover{
+					&.active, &.active:focus, &.active:hover {
 						background-color: $font-active-color;
 						color: #fff;
 						z-index: 2;
 					}
-					&:focus, &:hover{
+					&:focus, &:hover {
 						background-color: #eee;
 						border-color: #ddd;
 						color: $font-active-color;
