@@ -191,7 +191,7 @@ class AjaxPage {
 
 		this.bindPageClick($table, pageToolbar);
 		this.bindInputEvent($table, pageToolbar);
-		this.bindRefreshEvent($table, pageToolbar);
+		this.bindRefreshEvent(pageToolbar);
 
 	}
 
@@ -203,7 +203,8 @@ class AjaxPage {
 	bindPageClick($table, pageToolbar) {
 		const _this = this;
 
-		pageToolbar.off('click', 'li').on('click', 'li', function () {
+		pageToolbar.off('click', 'li');
+		pageToolbar.on('click', 'li', function () {
 			const pageAction = $(this);
 
 			// 分页页码
@@ -226,7 +227,8 @@ class AjaxPage {
 		const _this = this;
 		const gp_input = $('.gp-input', pageToolbar);
 
-		gp_input.unbind('keyup').bind('keyup', function (e) {
+		gp_input.unbind('keyup');
+		gp_input.bind('keyup', function (e) {
 			if (e.which !== 13) {
 				return;
 			}
@@ -238,13 +240,13 @@ class AjaxPage {
 
 	/**
 	 * 绑定刷新界面事件
-	 * @param $table
 	 * @param pageToolbar
      */
-	bindRefreshEvent($table, pageToolbar) {
+	bindRefreshEvent(pageToolbar) {
 		const refreshAction	= $('.refresh-action', pageToolbar);
 
-		refreshAction.unbind('click').bind('click', function () {
+		refreshAction.unbind('click');
+		refreshAction.bind('click', function () {
 			const _tableWarp = $(this).closest('.table-wrap');
 			const _table = $('table[grid-manager]', _tableWarp);
 
@@ -435,6 +437,30 @@ class AjaxPage {
 		};
 		$.extend(settings, {pageData: pageData});
 		Cache.setSettings($table, settings);
+	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		const tableWarp = $table.closest('.table-wrap');
+		const pageToolbar = $('.page-toolbar', tableWarp);
+		const gp_input = $('.gp-input', pageToolbar);
+		const refreshAction	= $('.refresh-action', pageToolbar);
+		const sizeArea = $('select[name=pSizeArea]', pageToolbar);
+
+		// 清理: 分页点击事件
+		pageToolbar.off('click', 'li');
+
+		// 清理: 快捷跳转事件
+		gp_input.unbind('keyup');
+
+		// 清理: 刷新界面事件
+		refreshAction.unbind('click');
+
+		// 清理: 设置当前页显示数事件
+		sizeArea.unbind('change');
 	}
 }
 export default new AjaxPage();

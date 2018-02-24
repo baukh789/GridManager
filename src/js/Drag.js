@@ -220,5 +220,21 @@ class Drag {
 			}
 		}
 	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		const $body = $('body');
+		// 清理: 拖拽换位事件
+		$table.off('mousedown', '.drag-action');
+
+		// 清理: 拖拽滑动事件
+		$body.unbind('mousemove');
+
+		// 清理: 拖拽停止事件
+		$body.unbind('mouseup');
+	}
 }
 export default new Drag();

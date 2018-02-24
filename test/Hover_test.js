@@ -26,7 +26,7 @@ describe('Hover 验证类的属性及方法总量', function() {
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
 		// 静态函数并不会计算到实例化对象内
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Hover)))).toBe(2 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Hover)))).toBe(3 + 1);
 	});
 });
 
@@ -81,5 +81,12 @@ describe('Hover.updateHover(td)', function() {
 		Hover.updateHover($td.get(0));
 		expect($tr.attr('row-hover')).toBe('true');
 		expect($td.attr('col-hover')).toBe('true');
+	});
+});
+
+describe('Hover.destroy($table)', function() {
+	it('基础验证', function() {
+		expect(Hover.destroy).toBeDefined();
+		expect(Hover.destroy.length).toBe(1);
 	});
 });

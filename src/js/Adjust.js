@@ -167,5 +167,20 @@ class Adjust {
 		// 更新滚动轴状态
 		Base.updateScrollStatus($table);
 	}
+
+	/**
+	 * 消毁
+	 * @param $table
+     */
+	destroy($table) {
+		// 清理: 鼠标放开、移出事件
+		$table.unbind('mouseup mouseleave');
+
+		// 清理: 移动事件
+		$table.unbind('mousemove');
+
+		// 清理: 宽度调整事件
+		$table.off('mousedown', '.adjust-action');
+	}
 }
 export default new Adjust();

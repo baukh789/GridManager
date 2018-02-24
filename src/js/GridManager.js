@@ -5,7 +5,9 @@
 import '../css/index.scss';
 import { jTool, Base } from './Base';
 import Adjust from './Adjust';
+import AjaxPage from './AjaxPage';
 import Cache from './Cache';
+import Checkbox from './Checkbox';
 import Config from './Config';
 import Core from './Core';
 import Drag from './Drag';
@@ -212,6 +214,37 @@ export default class GridManager {
 		const $table = jTool(table);
 		return Cache.__getRowData($table, this.getCheckedTr(table));
 	};
+
+	/**
+	 * @静态方法
+	 * 消毁当前实例
+	 * @param $table
+	 */
+	static
+	destroy(table) {
+		const $table = jTool(table);
+		// 清除各模块中的事件及部分DOM
+		Adjust.destroy($table);
+		AjaxPage.destroy($table);
+		Checkbox.destroy($table);
+		Config.destroy($table);
+		Drag.destroy($table);
+		Hover.destroy($table);
+		Menu.destroy($table);
+		Remind.destroy($table);
+		Scroll.destroy($table);
+		Sort.destroy($table);
+
+		// 清除实例及数据
+		Cache.setSettings($table, {});
+
+		// 清除DOM属性及节点
+		const $tableWrap = $table.closest('.table-wrap');
+		$table.removeClass('GridManager-ready');
+		$table.html('');
+		$tableWrap.after($table);
+		$tableWrap.remove();
+	}
 
 	/**
 	 * [对外公开方法]

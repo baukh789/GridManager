@@ -26,7 +26,7 @@ describe('Menu 验证类的属性及方法总量', () => {
 	});
 	it('Function count', () => {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Menu)))).toBe(6 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Menu)))).toBe(7 + 1);
 	});
 });
 
@@ -253,5 +253,12 @@ describe('Menu.isDisabled(dom, events)', () => {
 	it('返回值', () => {
 		expect(Menu.isDisabled(document.querySelector('#test1'), event)).toBe(true);
 		expect(Menu.isDisabled(document.querySelector('#test2'), event)).toBe(false);
+	});
+});
+
+describe('Menu.destroy($table)', () => {
+	it('基础验证', () => {
+		expect(Menu.destroy).toBeDefined();
+		expect(Menu.destroy.length).toBe(1);
 	});
 });

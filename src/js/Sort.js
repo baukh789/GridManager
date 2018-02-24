@@ -150,5 +150,14 @@ class Sort {
 			}
 		});
 	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		// 清理: 排序事件
+		$table.off('mouseup', '.sorting-action');
+	}
 }
 export default new Sort();

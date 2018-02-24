@@ -195,6 +195,7 @@ class Core {
 			let tbodyTmpHTML = '';
 
 			$.each(_data, (index, row) => {
+				// TODO 考虑在循环外对数据进行存储, 直接对responseData[gmName]进行操作
 				Cache.setRowData(gmName, index, row);
 				tbodyTmpHTML += `<tr cache-key="${index}">`;
 				$.each(settings.columnMap, (key, col) => {
@@ -366,7 +367,7 @@ class Core {
 		// 单个TH所占宽度
 		let onlyWidth = 0;
 
-		// TODO baukh20171216: 这个操作应该考虑下放到生成th时就去做
+		// TODO baukh20171216: 这个操作应该考虑下前置到生成th时
 		// 单个TH下的上层DIV
 		const onlyThWarp = $('<div class="th-wrap"></div>');
 		$.each(onlyThList, (i2, v2) => {

@@ -18,7 +18,7 @@ import { PublishMethod, publishMethodArray } from './Publish';
 		let name = null;
 
 		// 参数
-		let	settings = null;
+		let	arg = null;
 
 		// 回调函数
 		let	callback = null;
@@ -29,20 +29,20 @@ import { PublishMethod, publishMethodArray } from './Publish';
 		// 格式化参数
 		// ex: document.querySelector('table').GridManager()
 		if (arguments.length === 0) {
-			name	 = 'init';
-			settings = {};
+			name	= 'init';
+			arg = {};
 			callback = undefined;
 		} else if (jTool.type(arguments[0]) !== 'string') {
-			// ex: document.querySelector('table').GridManager({settings}, callback)
+			// ex: document.querySelector('table').GridManager({arg}, callback)
 			name	 = 'init';
-			settings = arguments[0];
+			arg = arguments[0];
 			callback = arguments[1];
 		} else {
 			// ex: document.querySelector('table').GridManager('get')
 			// ex: document.querySelector('table').GM('showTh', $th);
 			// ex: document.querySelector('table').GM('setSort',sortJson,callback, refresh);
 			name = arguments[0];
-			settings = arguments[1];
+			arg = arguments[1];
 			callback = arguments[2];
 			condition = arguments[3];
 		}
@@ -52,7 +52,13 @@ import { PublishMethod, publishMethodArray } from './Publish';
 			return;
 		}
 
-		return PublishMethod[name](this, settings, callback, condition) || this;
+		// 非init方法, 且当前并未实例化
+		const settings = GridManager.get(this);
+		if (name !== 'init' && (!settings || !settings.gridManagerName)) {
+			Base.outLog(`方法调用错误，请确定表格已实例化`, 'error');
+			return;
+		}
+		return PublishMethod[name](this, arg, callback, condition) || this;
 	};
 })(jTool);
 

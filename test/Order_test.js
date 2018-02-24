@@ -1,56 +1,94 @@
-// 'use strict';
-// import '../build/css/GridManager.css';
-// import { jTool } from '../src/js/Base';
-// import Order from '../src/js/Order';
-// import testData from '../src/data/testData';
-// import GridManager from '../src/js/GridManager';
-// describe('Order', function() {
-// 	let table = null;
-// 	let $table = null;
-// 	let gmName = 'test-order';
-//
-// 	beforeAll(function(){
-// 		table = document.createElement('table');
-// 		table.setAttribute('grid-manager', gmName);
-// 		document.querySelector('body').appendChild(table);
-// 		$table = jTool('table[grid-manager="'+ gmName +'"]');
-// 		var arg = {
-// 			ajax_data: testData
-// 			,disableCache: true
-// 			,columnData: [
-// 				{
-// 					key: 'name',
-// 					remind: 'the name',
-// 					width: '100px',
-// 					text: '名称',
-// 					sorting: ''
-// 				},{
-// 					key: 'info',
-// 					remind: 'the info',
-// 					text: '使用说明'
-// 				},{
-// 					key: 'url',
-// 					remind: 'the url',
-// 					text: 'url'
-// 				}
-// 			]
-// 		};
-// 		new GridManager().init(table, arg);
-// 	});
-// 	afterAll(function () {
-// 		table = null;
-// 		$table = null;
-// 		gmName = null;
-// 		document.body.innerHTML = '';
-// 	});
-//
-// 	it('Order.initDOM($table)', function(){
-// 		expect(Order.initDOM($table)).toBe(true);
-// 	});
-//
-// 	it('验证自动生成列[序号]宽度', function(){
-// 		let autoCreateOrder = jTool('th[th-name="gm_order"]').width();
-// 		expect(autoCreateOrder).toBe(50);
-// 		autoCreateOrder = null;
-// 	});
-// });
+'use strict';
+import Order from '../src/js/Order';
+import { jTool } from '../src/js/Base';
+import { Settings, TextSettings} from '../src/js/Settings';
+/**
+ * 验证类的属性及方法总量
+ */
+describe('Order 验证类的属性及方法总量', function() {
+	var getPropertyCount = null;
+	beforeEach(function() {
+		getPropertyCount = function(o){
+			var n, count = 0;
+			for(n in o){
+				if(o.hasOwnProperty(n)){
+					count++;
+				}
+			}
+			return count;
+		}
+	});
+	afterEach(function(){
+		getPropertyCount = null;
+	});
+	it('Function count', function() {
+		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Order)))).toBe(3 + 1);
+	});
+});
+
+describe('Order.key', function() {
+	it('基础验证', function() {
+		expect(Order.key).toBeDefined();
+		expect(Order.key).toBe('gm_order');
+	});
+});
+
+describe('Order.getThString(settings, thVisible)', function() {
+	let settings = null;
+	beforeEach(() => {
+		settings = new Settings();
+		settings.textConfig = new TextSettings();
+		settings.gridManagerName = 'test-getThString';
+		settings.pageDate = {
+			cPage: 1,
+			pSize: 10,
+			tPage: 3
+		};
+	});
+
+	afterEach(() => {
+		settings = null;
+	});
+	it('基础验证', function() {
+		expect(Order.getThString).toBeDefined();
+		expect(Order.getThString.length).toBe(2);
+	});
+
+	it('返回值', function() {
+		expect(Order.getThString(settings, true)).toBe('<th th-name="gm_order" th-visible="true" gm-order="true" gm-create="true">序号</th>');
+		expect(Order.getThString(settings, false)).toBe('<th th-name="gm_order" th-visible="false" gm-order="true" gm-create="true">序号</th>');
+	});
+});
+
+describe('Order.getColumn(settings)', function() {
+	let settings = null;
+	beforeEach(() => {
+		settings = new Settings();
+		settings.textConfig = new TextSettings();
+		settings.gridManagerName = 'test-getThString';
+		settings.pageDate = {
+			cPage: 1,
+			pSize: 10,
+			tPage: 3
+		};
+	});
+
+	afterEach(() => {
+		settings = null;
+	});
+	it('基础验证', function() {
+		expect(Order.getColumn).toBeDefined();
+		expect(Order.getColumn.length).toBe(1);
+	});
+
+	it('返回值', function() {
+		expect(Order.getColumn(settings).key).toBe('gm_order');
+		expect(Order.getColumn(settings).text).toBe('序号');
+		expect(Order.getColumn(settings).isAutoCreate).toBe(true);
+		expect(Order.getColumn(settings).isShow).toBe(true);
+		expect(Order.getColumn(settings).width).toBe('50px');
+		expect(Order.getColumn(settings).align).toBe('center');
+		expect(Order.getColumn(settings).template(1)).toBe('<td gm-order="true" gm-create="true">1</td>');
+	});
+});

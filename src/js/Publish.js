@@ -112,8 +112,15 @@ class PublishMethodClass {
 	getCheckedData(table) {
 		return GridManager.getCheckedData(table);
 	}
+
+	/*
+	 * 消毁当前实例
+	 * */
+	destroy(table) {
+		return GridManager.destroy(table);
+	}
 }
 // 对外公开方法列表
 const publishMethodArray = GM_PUBLISH_METHOD_LIST;
 const PublishMethod = new PublishMethodClass();
-export {PublishMethod, publishMethodArray};
+export { PublishMethod, publishMethodArray };

@@ -22,7 +22,7 @@ describe('AjaxPage 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(AjaxPage)))).toBe(15 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(AjaxPage)))).toBe(16 + 1);
 	});
 });
 
@@ -207,7 +207,7 @@ describe('AjaxPage.bindInputEvent($table, pageToolbar)', function() {
 describe('AjaxPage.bindRefreshEvent($table, pageToolbar)', function() {
 	it('基础验证', function () {
 		expect(AjaxPage.bindRefreshEvent).toBeDefined();
-		expect(AjaxPage.bindRefreshEvent.length).toBe(2);
+		expect(AjaxPage.bindRefreshEvent.length).toBe(1);
 	});
 });
 
@@ -294,10 +294,17 @@ describe('AjaxPage.getPageData(settings, totals)', function() {
 	});
 });
 
-
 describe('AjaxPage.configPageForCache($table)', function() {
 	it('基础验证', function () {
 		expect(AjaxPage.configPageForCache).toBeDefined();
 		expect(AjaxPage.configPageForCache.length).toBe(1);
 	});
 });
+
+describe('AjaxPage.destroy($table)', function() {
+	it('基础验证', function () {
+		expect(AjaxPage.destroy).toBeDefined();
+		expect(AjaxPage.destroy.length).toBe(1);
+	});
+});
+

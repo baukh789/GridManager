@@ -240,5 +240,35 @@ class Menu {
 			return false;
 		}
 	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		const tableWarp = $table.closest('.table-wrap');
+		const settings = Cache.getSettings($table);
+		const menuDOM = jTool(`.grid-menu[${this.keyName}="${settings.gridManagerName}"]`);
+		const _body = jTool('body');
+
+		// 清理: 打开右键菜单栏事件
+		tableWarp.unbind('contextmenu');
+
+		// 清理：上一页、下一页、重新加载
+		jTool('[grid-action="refresh-page"]').unbind('click');
+
+		// 清理：另存为EXCEL、已选中表格另存为Excel
+		jTool('[grid-action="export-excel"]').unbind('click');
+
+		// 清理：配置表
+		jTool('[grid-action="config-grid"]').unbind('click');
+
+
+		// 清理：隐藏非当前展示表格的菜单项
+		_body.off('mousedown.gridMenu');
+
+		// 删除DOM节点
+		menuDOM.remove();
+	}
 }
 export default new Menu();

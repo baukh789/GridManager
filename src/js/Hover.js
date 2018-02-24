@@ -38,6 +38,15 @@ class Hover {
 			Base.getColTd($td).attr('col-hover', 'true');
 		}
 	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		// 清理: 鼠标移动事件
+		$table.off('mousemove', 'td');
+	}
 }
 export default new Hover();
 

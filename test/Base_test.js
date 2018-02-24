@@ -21,7 +21,41 @@ describe('Base 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(12 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(13 + 1);
+	});
+});
+
+
+describe('Base.getKey($table)', function() {
+	let table = null;
+	beforeEach(function(){
+		table = document.createElement('table');
+	});
+
+	afterEach(function(){
+		table = null;
+	});
+
+	it('基础验证', function () {
+		expect(Base.getKey).toBeDefined();
+		expect(Base.getKey.length).toBe(1);
+	});
+
+	it('返回值验证', function () {
+		table.setAttribute('grid-manager', 'hello-gm');
+		expect(Base.getKey(jTool(table))).toBe('hello-gm');
+	});
+});
+
+
+describe('Base.getSetTopAttr()', function() {
+	it('基础验证', function () {
+		expect(Base.getSetTopAttr).toBeDefined();
+		expect(Base.getSetTopAttr.length).toBe(0);
+	});
+
+	it('返回值验证', function () {
+		expect(Base.getSetTopAttr()).toBe('grid-manager-mock-thead');
 	});
 });
 
@@ -186,27 +220,6 @@ describe('Base.outLog(msg, type)', function() {
 	it('undefined', function(){
 		Base.outLog('hello GridManager');
 		expect(console.log).toHaveBeenCalledWith('GridManager: ', 'hello GridManager');
-	});
-});
-
-describe('Base.getKey($table)', function() {
-	let table = null;
-	beforeEach(function(){
-		table = document.createElement('table');
-	});
-
-	afterEach(function(){
-		table = null;
-	});
-
-	it('基础验证', function () {
-		expect(Base.getKey).toBeDefined();
-		expect(Base.getKey.length).toBe(1);
-	});
-
-	it('返回值验证', function () {
-		table.setAttribute('grid-manager', 'hello-gm');
-		expect(Base.getKey(jTool(table))).toBe('hello-gm');
 	});
 });
 

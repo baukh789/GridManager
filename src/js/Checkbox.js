@@ -5,12 +5,12 @@ import { $ } from './Base';
 import I18n from './I18n';
 class Checkbox {
 	constructor() {
-		// 序号的唯一标识
+		// 全选的唯一标识
 		this.key = 'gm_checkbox';
 	}
 
 	/**
-	 * 获取 th 的字符串节点
+	 * 获取 全选字符串
 	 * @param settings
 	 * @returns {string}
      */
@@ -81,6 +81,15 @@ class Checkbox {
 				_thCheckbox.prop('checked', _thChecked);
 			}
 		});
+	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		// 清理: 选择框事件
+		$table.off('click', 'input[type="checkbox"]');
 	}
 }
 export default new Checkbox();

@@ -24,7 +24,7 @@ describe('Drag 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Drag)))).toBe(2 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Drag)))).toBe(3 + 1);
 	});
 });
 
@@ -39,5 +39,12 @@ describe('Drag.updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV, have
 	it('基础验证', function() {
 		expect(Drag.updateDrag).toBeDefined();
 		expect(Drag.updateDrag.length).toBe(7);
+	});
+});
+
+describe('Drag.destroy($table)', function() {
+	it('基础验证', function() {
+		expect(Drag.destroy).toBeDefined();
+		expect(Drag.destroy.length).toBe(1);
 	});
 });

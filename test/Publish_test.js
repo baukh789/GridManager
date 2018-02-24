@@ -35,7 +35,7 @@ describe('Publish 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(15 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(16 + 1);
 	});
 });
 
@@ -652,4 +652,70 @@ describe('PublishMethod 非init方法验证', function() {
 		});
 	});
 
+});
+
+describe('PublishMethod.destroy(table)', function() {
+	let table = null;
+	let arg = null;
+	beforeEach(() => {
+		arg = {
+			ajax_data: testData,
+			gridManagerName: 'test-publish',
+			supportSorting: true,
+			supportRemind: true,
+			supportAjaxPage: true,
+			columnData: [
+				{
+					key: 'name',
+					width: '100px',
+					text: '名称'
+				},{
+					key: 'info',
+					text: '使用说明'
+				},{
+					key: 'url',
+					text: 'url'
+				},{
+					key: 'createDate',
+					text: '创建时间'
+				},{
+					key: 'lastDate',
+					text: '最后修改时间'
+				},{
+					key: 'action',
+					text: '操作',
+					template: function(action, rowObject){
+						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+					}
+				}
+			]
+		};
+		table = document.createElement('table');
+		document.body.appendChild(table);
+		PublishMethod.init(table, arg);
+	});
+
+	afterEach(() => {
+		table = null;
+		arg = null;
+		document.body.innerHTML = '';
+	});
+
+	it('基础验证', function () {
+		expect(PublishMethod.destroy).toBeDefined();
+		expect(PublishMethod.destroy.length).toBe(1);
+	});
+
+	it('验证移除效果', function () {
+		expect(table.jToolEvent['clickinput[type="checkbox"]']).toBeDefined();
+		expect(table.jToolEvent['mousedown.adjust-action']).toBeDefined();
+		expect(table.jToolEvent['mouseup.sorting-action']).toBeDefined();
+		expect(table.jToolEvent['mousemovetd']).toBeDefined();
+		PublishMethod.destroy(table);
+		expect(table.jToolEvent['clickinput[type="checkbox"]']).toBeUndefined();
+		expect(table.jToolEvent['mousedown.adjust-action']).toBeUndefined();
+		expect(table.jToolEvent['mouseup.sorting-action']).toBeUndefined();
+		expect(table.jToolEvent['mousemovetd']).toBeUndefined();
+	});
 });

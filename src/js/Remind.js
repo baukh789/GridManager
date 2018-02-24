@@ -22,8 +22,8 @@ class Remind {
 	 * 绑定表头提醒功能
 	 * @param table
      */
-	bindRemindEvent(table) {
-		const remindAction = $('.remind-action', table);
+	bindRemindEvent($table) {
+		const remindAction = $('.remind-action', $table);
 		remindAction.unbind('mouseenter');
 		remindAction.bind('mouseenter', function () {
 			let raArea = $(this).find('.ra-area');
@@ -40,6 +40,20 @@ class Remind {
 			let raArea = $(this).find('.ra-area');
 			raArea.hide();
 		});
+	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		const remindAction = $('.remind-action', $table);
+
+		// 清理: 表头提醒移入事件
+		remindAction.unbind('mouseenter');
+
+		// 清理: 表头提醒移出事件
+		remindAction.unbind('mouseleave');
 	}
 }
 export default new Remind();

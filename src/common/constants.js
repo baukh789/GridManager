@@ -21,6 +21,7 @@ export const GM_PUBLISH_METHOD_LIST = [
 	'setAjaxData',
 	'refreshGrid',
 	'getCheckedTr',
-	'getCheckedData'
+	'getCheckedData',
+	'destroy'
 ];
 

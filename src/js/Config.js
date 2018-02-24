@@ -173,5 +173,20 @@ class Config {
 			}
 		});
 	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		const tableWarp = $table.closest('div.table-wrap');
+		const configAction = $('.config-action', tableWarp);
+
+		// 清理: 配置列表事件 - 打开或关闭
+		configAction.unbind('click');
+
+		// 清理: 配置列表事件 - 配置
+		$('.config-list li', tableWarp).unbind('click');
+	}
 }
 export default new Config();

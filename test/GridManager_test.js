@@ -136,12 +136,27 @@ describe('GridManager.refreshGrid(table, isGotoFirstPage, callback)', function()
 	});
 });
 
+describe('GridManager.getCheckedTr(table)', function() {
+	it('基础验证', function() {
+		expect(GridManager.getCheckedTr).toBeDefined();
+		expect(GridManager.getCheckedTr.length).toBe(1);
+	});
+});
+
 describe('GridManager.getCheckedData(table)', function() {
 	it('基础验证', function() {
 		expect(GridManager.getCheckedData).toBeDefined();
 		expect(GridManager.getCheckedData.length).toBe(1);
 	});
 });
+
+describe('GridManager.destroy(table)', function() {
+	it('基础验证', function() {
+		expect(GridManager.destroy).toBeDefined();
+		expect(GridManager.destroy.length).toBe(1);
+	});
+});
+
 
 
 

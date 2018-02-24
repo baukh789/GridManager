@@ -113,4 +113,10 @@ describe('index.js Element.prototype.GM', function() {
 		expect(table.GM('errorFnName', {'name': 'cc'})).toBeUndefined();
 		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '方法调用错误，请确定方法名[errorFnName]是否正确');
 	});
+
+	it('非init方法, 且当前并未实例化', function(){
+		table.GM('destroy');
+		expect(table.GM('get', {'name': 'cc'})).toBeUndefined();
+		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '方法调用错误，请确定表格已实例化');
+	});
 });

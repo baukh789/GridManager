@@ -1,71 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel="stylesheet" type="text/css" href="../css/GridManager.css">
-	<script type="text/javascript" src="http://www.lovejavascript.com/js/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript" src="../js/GridManager.js"></script>
-<title>GridManager:jquery环境下渲染</title>
-<style>
+    <title>GridManager:多表I18N</title>
+    <style>
 
-	html, body{
-		width: 100%;
-		height: 100%;
-		overflow-x:hidden;
-		margin: 0px;
-		padding: 0px;
-	}
-</style>
+    </style>
 </head>
 
 <body>
-	<div class="dialog-demo">
-		<table grid-manager="demoOne"></table>
+	<h3>简体中文: { i18n: 'zh-cn' }</h3>
+	<div>
+		<table grid-manager="test1"></table>
 	</div>
-<script type="text/javascript" >
-	$('table').GM({
+	<br/>
+	<h3>English: { i18n: 'en-us' }</h3>
+	<div>
+		<table grid-manager="test2"></table>
+	</div>
+	<br/>
+	<h3>繁體中文: { i18n: zh-tw' }</h3>
+	<div>
+		<table grid-manager="test3"></table>
+	</div>
+<script type="text/javascript">
+	// test1 demo
+	document.querySelector('table[grid-manager="test1"]').GM({
 		supportRemind: true
-		,gridManagerName: 'test'
-//			,disableCache:true
 		,height: '300px'
 		,supportAjaxPage:true
 		,supportSorting: true
+		,supportCheckbox: false
 		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
-		,query: {pluginId: 1}
-		,pageSize:20
+		,query: {tableName: 'test1', ccname: 'baukh'}
+		,pageSize:10
 		,columnData: [{
 			key: 'name',
-			remind: 'the name',
+			remind: '网站标题',
 			width: '100px',
-			text: '名称',
-			sorting: 'DESC'
+			text: '标题',
+			sorting: 'up'
 		},{
 			key: 'info',
-			remind: 'the info',
-			text: '使用说明',
+			remind: '网站介绍',
+			text: '介绍',
 			sorting: ''
 		},{
 			key: 'url',
-			remind: 'the url',
-			text: 'url'
-		},{
-			key: 'createDate',
-			remind: 'the createDate',
-			text: '创建时间',
-			template: function(createDate, rowObject){
-				return new Date(createDate).format('YYYY-MM-DD HH:mm:ss');
-			}
-		},{
-			key: 'lastDate',
-			remind: 'the lastDate',
-			text: '最后修改时间',
-			template: function(lastDate, rowObject){
-				return new Date(lastDate).format('YYYY-MM-DD HH:mm:ss');
-			}
+			remind: '网站地址',
+			text: '地址'
 		},{
 			key: 'action',
-			remind: 'the action',
+			remind: '信息操作',
 			text: '操作',
 			template: function(action, rowObject){
 				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
@@ -73,63 +62,92 @@
 			}
 		}
 		]
-		// 分页前事件
-		,pagingBefore: function(query){
-			console.log('pagingBefore', query);
-		}
-		// 分页后事件
-		,pagingAfter: function(data){
-			console.log('pagingAfter', data);
-		}
-		// 排序前事件
-		,sortingBefore: function (data) {
-			console.log('sortBefore', data);
-		}
-		// 排序后事件
-		,sortingAfter: function (data) {
-			console.log('sortAfter', data);
-		}
-		// 宽度调整前事件
-		,adjustBefore: function (event) {
-			console.log('adjustBefore', event);
-		}
-		// 宽度调整后事件
-		,adjustAfter: function (event) {
-			console.log('adjustAfter', event);
-		}
-		// 拖拽前事件
-		,dragBefore: function (event) {
-			console.log('dragBefore', event);
-		}
-		// 拖拽后事件
-		,dragAfter: function (event) {
-			console.log('dragAfter', event);
+		,ajax_success: function () {
+			console.log('test1 ajax_success');
 		}
 	});
 
-	// 日期格式化,不是插件的代码,只用于处理时间格式化
-	Date.prototype.format = function(fmt){
-		var o = {
-			"M+": this.getMonth() + 1, //月份
-			"D+": this.getDate(), //日
-			"d+": this.getDate(), //日
-			"H+": this.getHours(), //小时
-			"h+": this.getHours(), //小时
-			"m+": this.getMinutes(), //分
-			"s+": this.getSeconds(), //秒
-			"q+": Math.floor((this.getMonth() + 3) / 3), //季度
-			"S": this.getMilliseconds() //毫秒
-		};
-		if (/([Y,y]+)/.test(fmt)){
-			fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-		}
-		for (var k in o){
-			if(new RegExp("(" + k + ")").test(fmt)){
-				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+	// test 2demo
+	document.querySelector('table[grid-manager="test2"]').GM({
+		supportRemind: true
+		,height: '400px'
+		,i18n: 'en-us'
+		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajax_type: 'POST'
+		,query: {tableName: 'test2', 'love': 'kouzi'}
+		,pageSize:20
+		,supportAjaxPage:true
+		,columnData: [{
+			key: 'name',
+			remind: 'the name',
+			width: '100px',
+			text: 'name',
+			sorting: 'up'
+		},{
+			key: 'info',
+			remind: 'the info',
+			text: 'info',
+			sorting: ''
+		},{
+			key: 'url',
+			remind: 'the url',
+			text: 'url'
+		},{
+			key: 'action',
+			remind: 'the action',
+			text: 'action',
+			template: function(action, rowObject){
+				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
 			}
 		}
-		return fmt;
-	}
+		]
+		,ajax_success: function (data) {
+			console.log('test2 ajax_success');
+		}
+	});
+	// test 3demo
+	document.querySelector('table[grid-manager="test3"]').GM({
+		supportRemind: true
+		,height: '300px'
+		,i18n: 'zh-tw'
+		,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajax_type: 'POST'
+		,query: {tableName: 'test3', baby: 'kouzi'}
+		,pageSize:30
+		,supportAjaxPage:true
+		,columnData: [{
+			key: 'name',
+			remind: '網站名稱',
+			width: '100px',
+			text: '名稱',
+			sorting: 'up'
+		},{
+			key: 'info',
+			remind: '網站介紹',
+			text: '介紹',
+			sorting: ''
+		},{
+			key: 'url',
+			remind: '網站地址',
+			text: '地址'
+		},{
+			key: 'action',
+			remind: '信息操作',
+			text: '操作',
+			template: function(action, rowObject){
+				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+					+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+			}
+		}
+		]
+		,ajax_success: function (data) {
+			console.log('test2 ajax_success');
+		}
+	});
+
+
 </script>
+
 </body>
 </html>
