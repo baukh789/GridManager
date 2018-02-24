@@ -1,7 +1,6 @@
 /*
  * Order: 序号
  * */
-import { jTool } from './Base';
 import I18n from './I18n';
 class Order {
 	// 序号的唯一标识
