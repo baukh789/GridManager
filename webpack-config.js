@@ -1,5 +1,6 @@
 const path = require('path');
-const TransferWebpackPlugin = require('transfer-webpack-plugin');
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const genRules = require('./webpack-common.loader');
 const buildPath = path.join(__dirname, "build");
@@ -29,18 +30,34 @@ const config = {
 	// 以插件形式定制webpack构建过程
 	plugins: [
 		// 将样式文件 抽取至独立文件内
-		new ExtractTextWebpackPlugin('/css/GridManager.css'),
+		new ExtractTextWebpackPlugin({
+			filename: 'css/GridManager.css',
+			disable: false,
+			allChunks: true
+		}),
 
-		// 将文件传输到构建目录, 这里只有一部分使用此种方式. 其它的在package.json中直接使用shell脚本实现
-		new TransferWebpackPlugin([
-			{from: __dirname + '/src/demo', to: '/demo'},
-			{from: __dirname + '/version', to: '/version'}
-		])
+		// 将文件复制到构建目录
+		// CopyWebpackPlugin-> https://github.com/webpack-contrib/copy-webpack-plugin
+		new CopyWebpackPlugin([
+			{from: __dirname + '/src/demo', to: 'demo'},
+			{from: __dirname + '/version', to: 'version'},
+			{from: path.join(__dirname, '/readme'), to: 'readme'},
+			{from: path.join(__dirname, '/package.json'), to: '', toType: 'file'},
+			{from: path.join(__dirname, '/README.md'), to: '', toType: 'file'}
+		]),
+
+		// 使用webpack内置插件压缩js
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false
+			},
+			sourceMap: false // 是否生成map文件
+		})
 	],
 
 	// 处理项目中的不同类型的模块。
 	module: {
-		rules: genRules('src')
+		rules: genRules('src', false)
 	}
 };
 

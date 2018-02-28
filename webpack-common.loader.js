@@ -5,7 +5,7 @@
 const path = require('path');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 
-module.exports = (srcCodeDir) => {
+module.exports = (srcCodeDir, idDev) => {
 	return [
 		{
 			test: /\.js$/,
@@ -25,7 +25,23 @@ module.exports = (srcCodeDir) => {
 			exclude: /(node_modules|bower_components)/,
 			include: [path.join(__dirname, srcCodeDir + '/css')],
 			use: ExtractTextWebpackPlugin.extract({
-				use: 'css-loader?-minimize!resolve-url-loader!sass-loader'
+				use: [{
+						loader: 'css-loader',
+						options: {
+							url: true, // 启用/禁用 url() 处理
+							minimize: !idDev, // 启用/禁用 压缩
+							sourceMap: false // 启用/禁用 Sourcemaps
+						}
+					},
+					{
+						loader: 'resolve-url-loader'
+					},
+					{
+						loader: 'sass-loader',
+						options: {
+							sourceMap: false // 启用/禁用 Sourcemaps
+						}
+					}]
 			})
 		},
 		{

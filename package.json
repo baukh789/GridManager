@@ -23,6 +23,7 @@
     "babel-preset-es2015": "^6.6.0",
     "babel-preset-stage-0": "^6.5.0",
     "codecov": "^1.0.1",
+    "copy-webpack-plugin": "^4.4.2",
     "css-loader": "^0.28.0",
     "eslint": "^1.8.0",
     "eslint-friendly-formatter": "^1.2.2",
@@ -49,9 +50,6 @@
     "sass-loader": "^6.0.6",
     "sinon": "^1.17.2",
     "style-loader": "^0.16.1",
-    "transfer-webpack-plugin": "^0.1.4",
-    "uglifycss": "0.0.25",
-    "uglifyjs": "^2.4.10",
     "url-loader": "^0.5.9",
     "watchify": "^3.7.0",
     "webpack": "^2.0.0",
@@ -62,10 +60,7 @@
     "start": "node server",
     "lint": "eslint src/js/",
     "test": "NODE_ENV=test karma start",
-    "build": "webpack --config webpack-config.js && npm run build:minified:js && npm run build:minified:css && npm run copy",
-    "copy": "cp package.json build/package.json && cp README.md build/README.md && cp -r readme build/readme",
-    "build:minified:js": "uglifyjs build/js/GridManager.js -mc > build/js/GridManager.min.js",
-    "build:minified:css": "uglifycss build/css/GridManager.css > build/css/GridManager.min.css"
+    "build": "webpack --config webpack-config.js"
   },
   "dependencies": {
     "jTool": "^1.2.23"

@@ -29,12 +29,16 @@ const config = {
 	// 以插件形式定制webpack构建过程
 	plugins: [
 		// 将样式文件 抽取至独立文件内
-		new ExtractTextWebpackPlugin(__dirname + '/css/GridManager.css')
+		new ExtractTextWebpackPlugin({
+			filename: 'css/GridManager.css',
+			disable: false,
+			allChunks: true
+		})
 	],
 
 	// 处理项目中的不同类型的模块
 	module: {
-		rules: genRules('src')
+		rules: genRules('src', true)
 	}
 };
 
