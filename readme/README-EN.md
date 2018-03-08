@@ -10,7 +10,8 @@
 - [DEMO](http://www.lovejavascript.com/node_modules/GridManager/demo/index.html)
 
 ## Operation Instruction
-Please choose the right tag to download, don’t use the codes of the branch in the master.
+> Please choose the right tag to download, don’t use the codes of the branch in the master.
+
 - Jquery is used before v 2.0
 - Native code is used from v2.1
 

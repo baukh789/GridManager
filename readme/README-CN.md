@@ -10,7 +10,8 @@
 - [演示](http://www.lovejavascript.com/node_modules/GridManager/demo/index.html)
 
 ## 使用需知
-下载时请选择对应的tag进行下载, 请不要直接使用master分支上的代码.
+> 下载时请选择对应的tag进行下载, 请不要直接使用master分支上的代码.
+
 - v2.0和之前版本为jquery版本
 - v2.1开始为原生js版本
 

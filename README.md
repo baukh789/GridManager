@@ -5,7 +5,7 @@
 [![npm downloads](https://img.shields.io/npm/dt/GridManager.svg?style=flat-square)](https://www.npmjs.com/package/GridManager)
 [![coverage](https://img.shields.io/codecov/c/github/baukh789/GridManager.svg?style=flat-square)](https://codecov.io/gh/baukh789/GridManager)
 
-## Language
+## Select Language
 - [English](readme/README-EN.md)
 - [中文](readme/README-CN.md)
 

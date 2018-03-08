@@ -31,8 +31,13 @@ const config = {
 	plugins: [
 		// 将样式文件 抽取至独立文件内
 		new ExtractTextWebpackPlugin({
+			// 生成文件的文件名
 			filename: 'css/GridManager.css',
+
+			// 是否禁用插件
 			disable: false,
+
+			// 是否向所有额外的 chunk 提取（默认只提取初始加载模块）
 			allChunks: true
 		}),
 
