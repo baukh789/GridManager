@@ -81,11 +81,10 @@ class Export {
 			return false;
 		}
 
-		// 存储导出的thead数据
-
+		// 存储导出的thead
 		let	theadHTML = '';
 
-		// 存储导出的tbody下的数据
+		// 存储导出的tbody
 		let	tbodyHTML = '';
 
 		const thDOM = $('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', $table);
@@ -107,7 +106,7 @@ class Export {
 			tdDOM = $('td[gm-create="false"][td-visible="visible"]', v);
 			tbodyHTML += '<tr>';
 			$.each(tdDOM, (i2, v2) => {
-				tbodyHTML += v2.outerHTML;
+				tbodyHTML += `<td>${v2.textContent}</td>`;
 			});
 			tbodyHTML += '</tr>';
 		});
