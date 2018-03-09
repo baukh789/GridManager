@@ -16,7 +16,6 @@ import Menu from './Menu';
 import Remind from './Remind';
 import Scroll from './Scroll';
 import Sort from './Sort';
-import store from './Store';
 import Hover from './Hover';
 export default class GridManager {
 	/**
@@ -27,7 +26,7 @@ export default class GridManager {
 	 */
 	static
 	get version() {
-		return store.version;
+		return Cache.getVersion();
 	}
 
 	/**

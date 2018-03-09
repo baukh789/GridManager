@@ -26,6 +26,17 @@ describe('Cache 验证类的属性及方法总量', function() {
 	});
 });
 
+describe('Cache.getVersion()', function() {
+	it('基础验证', function(){
+		expect(Cache.getVersion).toBeDefined();
+		expect(Cache.getVersion.length).toBe(0);
+	});
+
+	it('验证返回值', function(){
+		expect(typeof(Cache.getVersion())).toBe('string');
+	});
+});
+
 describe('Cache.getRowData($table, target)', function() {
 	it('基础验证', function(){
 		expect(Cache.getRowData).toBeDefined();
@@ -37,13 +48,6 @@ describe('Cache.setRowData(gmName, key, value)', function() {
 	it('基础验证', function(){
 		expect(Cache.setRowData).toBeDefined();
 		expect(Cache.setRowData.length).toBe(3);
-	});
-});
-
-describe('Cache.getTableData($table)', function() {
-	it('基础验证', function(){
-		expect(Cache.getTableData).toBeDefined();
-		expect(Cache.getTableData.length).toBe(1);
 	});
 });
 

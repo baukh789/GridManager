@@ -11,6 +11,13 @@ import Checkbox from './Checkbox';
 import Order from './Order';
 import store from './Store';
 class Cache {
+	/**
+	 * 版本信息
+	 * @returns {*}
+     */
+	getVersion() {
+		return store.version;
+	}
 
 	/**
 	 * 获取当前行渲染时使用的数据
@@ -56,9 +63,10 @@ class Cache {
 	 * 获取完整的渲染时使用的数据
 	 * @param $table
 	 */
-	getTableData($table) {
-		return store.responseData[Base.getKey($table)] || {};
-	}
+	// TODO 该方法暂时无用
+	// getTableData($table) {
+	// 	return store.responseData[Base.getKey($table)] || {};
+	// }
 
 	/**
 	 * 删除用户记忆
