@@ -102,6 +102,7 @@ class Adjust {
 	 * @param $table
 	 * @param $th
 	 * @param $nextTh
+	 * @private
      */
 	__runMoveEvent($table, $th, $nextTh) {
 		let _thWidth = null;
@@ -148,6 +149,7 @@ class Adjust {
 	 * @param $table
 	 * @param $th
 	 * @param $td
+     * @private
      */
 	__runStopEvent($table, $th, $td) {
 		$table.unbind('mouseup mouseleave');

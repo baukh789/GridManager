@@ -153,6 +153,7 @@ class AjaxPage {
 	 * @param $table
 	 * @param settings
 	 * @param pageData 分页数据格式
+	 * @private
      */
 	__createPaginationDOM($table, settings, pageData) {
 		const tableWarp = $table.closest('.table-wrap');
@@ -170,6 +171,7 @@ class AjaxPage {
 	 * 拼接页码字符串
 	 * @param settings
 	 * @param pageData 分页数据格式
+	 * @private
      */
 	__joinPagination(settings, pageData) {
 		// 当前页
@@ -253,6 +255,7 @@ class AjaxPage {
 	/**
 	 * 生成每页显示条数选择框据
 	 * @param sizeData 选择框自定义条数
+	 * @private
      */
 	__getPageSizeHtml(sizeData) {
 		let pageSizeHtml = '';
@@ -265,6 +268,7 @@ class AjaxPage {
 	/**
 	 * 绑定页面跳转事件
 	 * @param $table
+	 * @private
      */
 	__bindPageJumpEvent($table) {
 		const tableWarp	= $table.closest('.table-wrap');
@@ -282,6 +286,7 @@ class AjaxPage {
 	 * 绑定分页点击事件
 	 * @param $table
 	 * @param pageToolbar
+	 * @private
      */
 	__bindPageClick($table, pageToolbar) {
 		pageToolbar.off('click', 'li');
@@ -303,6 +308,7 @@ class AjaxPage {
 	 * 绑定快捷跳转事件
 	 * @param $table
 	 * @param pageToolbar
+	 * @private
      */
 	__bindInputEvent($table, pageToolbar) {
 		const gp_input = $('.gp-input', pageToolbar);
@@ -321,6 +327,7 @@ class AjaxPage {
 	/**
 	 * 绑定刷新界面事件
 	 * @param pageToolbar
+	 * @private
      */
 	__bindRefreshEvent(pageToolbar) {
 		const refreshAction	= $('.refresh-action', pageToolbar);
@@ -337,6 +344,7 @@ class AjaxPage {
 	/**
 	 * 绑定设置当前页显示数事件
 	 * @param $table
+	 * @private
      */
 	__bindSetPageSizeEvent($table) {
 		const tableWarp = $table.closest('.table-wrap');
@@ -382,6 +390,7 @@ class AjaxPage {
 	 * @param settings
 	 * @param _pageData_ 分页数据格式
 	 * @returns {boolean}
+	 * @private
      */
 	__resetPSize($table, settings, _pageData_) {
 		const tableWarp = $table.closest('.table-wrap');
@@ -418,6 +427,7 @@ class AjaxPage {
 	 * @param settings
 	 * @param totals
 	 * @returns {{tPage: number, cPage: *, pSize: *, tSize: *}}
+	 * @private
      */
 	__getPageData(settings, totals) {
 		const _pSize = settings.pageData.pSize || settings.pageSize;
@@ -434,6 +444,7 @@ class AjaxPage {
 	 * 根据本地缓存配置分页数据
 	 * @param $table
 	 * @param settings
+	 * @private
      */
 	__configPageForCache($table, settings) {
 		let _data = Cache.getUserMemory($table);

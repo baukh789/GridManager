@@ -22,17 +22,7 @@ describe('Cache 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Cache)))).toBe(3 + 1);
-	});
-});
-
-/**
- * 表格渲染数据
- */
-describe('Cache.initGridData()', function() {
-	it('基础验证', function(){
-		expect(Cache.initGridData).toBeDefined();
-		expect(Cache.initGridData.length).toBe(0);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Cache)))).toBe(14 + 1);
 	});
 });
 
@@ -57,51 +47,31 @@ describe('Cache.getTableData($table)', function() {
 	});
 });
 
-/**
- * 用户记忆
- */
-describe('Cache.initUserMemory()', function() {
-	it('基础验证', function(){
-		expect(Cache.initUserMemory).toBeDefined();
-		expect(Cache.initUserMemory.length).toBe(0);
-	});
-});
-
-describe('Cache.delUserMemory', function() {
+describe('Cache.delUserMemory($table, cleanText)', function() {
 	it('基础验证', function(){
 		expect(Cache.delUserMemory).toBeDefined();
-		expect(Cache.delUserMemory.length).toBe(1);
+		expect(Cache.delUserMemory.length).toBe(2);
 	});
 });
 
-describe('Cache.getMemoryKey', function() {
+describe('Cache.(getMemoryKey($table)', function() {
 	it('基础验证', function(){
 		expect(Cache.getMemoryKey).toBeDefined();
 		expect(Cache.getMemoryKey.length).toBe(1);
 	});
 });
 
-describe('Cache.getUserMemory', function() {
+describe('Cache.getUserMemory($table)', function() {
 	it('基础验证', function(){
 		expect(Cache.getUserMemory).toBeDefined();
 		expect(Cache.getUserMemory.length).toBe(1);
 	});
 });
 
-describe('Cache.saveUserMemory', function() {
+describe('Cache.saveUserMemory($table)', function() {
 	it('基础验证', function(){
 		expect(Cache.saveUserMemory).toBeDefined();
 		expect(Cache.saveUserMemory.length).toBe(1);
-	});
-});
-
-/**
- * 核心方法
- */
-describe('Cache.initCoreMethod()', function() {
-	it('基础验证', function(){
-		expect(Cache.initCoreMethod).toBeDefined();
-		expect(Cache.initCoreMethod.length).toBe(0);
 	});
 });
 
@@ -137,13 +107,6 @@ describe('Cache.cleanTableCacheForVersion()', function() {
 	it('基础验证', function(){
 		expect(Cache.cleanTableCacheForVersion).toBeDefined();
 		expect(Cache.cleanTableCacheForVersion.length).toBe(0);
-	});
-});
-
-describe('Cache.cleanTableCache($table, cleanText)', function() {
-	it('基础验证', function(){
-		expect(Cache.cleanTableCache).toBeDefined();
-		expect(Cache.cleanTableCache.length).toBe(2);
 	});
 });
 
