@@ -17,11 +17,10 @@ class Adjust {
 	 * @param: table [jTool object]
 	 */
 	bindAdjustEvent($table) {
-		const _this = this;
 		// 监听鼠标调整列宽度
 		$table.off('mousedown', '.adjust-action');
-		$table.on('mousedown', '.adjust-action', function (event) {
-			const _dragAction = $(this);
+		$table.on('mousedown', '.adjust-action', event => {
+			const _dragAction = $(event.target);
 			// 事件源所在的th
 			let $th = _dragAction.closest('th');
 
@@ -54,13 +53,48 @@ class Adjust {
 			Base.updateInteractive(_$table, 'Adjust');
 
 			// 执行移动事件
-			_this.runMoveEvent(_$table, $th, $nextTh);
+			this.__runMoveEvent(_$table, $th, $nextTh);
 
 			// 绑定停止事件
-			_this.runStopEvent(_$table, $th, $td);
+			this.__runStopEvent(_$table, $th, $td);
 			return false;
 		});
-		return this;
+	}
+
+	/**
+	 * 通过缓存配置成功后, 重置宽度调整事件源dom 用于禁用最后一列调整宽度事件
+	 * @param $table
+	 * @returns {boolean}
+	 */
+	resetAdjust($table) {
+		if (!$table || $table.length === 0) {
+			return false;
+		}
+		let _thList = $('thead [th-visible="visible"]', $table);
+		let	_adjustAction = $('.adjust-action', _thList);
+		if (!_adjustAction || _adjustAction.length === 0) {
+			return false;
+		}
+		_adjustAction.show();
+		_adjustAction.eq(_adjustAction.length - 1).hide();
+
+		// 更新滚动轴状态
+		Base.updateScrollStatus($table);
+	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		// 清理: 鼠标放开、移出事件
+		$table.unbind('mouseup mouseleave');
+
+		// 清理: 移动事件
+		$table.unbind('mousemove');
+
+		// 清理: 宽度调整事件
+		$table.off('mousedown', '.adjust-action');
 	}
 
 	/**
@@ -69,13 +103,13 @@ class Adjust {
 	 * @param $th
 	 * @param $nextTh
      */
-	runMoveEvent($table, $th, $nextTh) {
+	__runMoveEvent($table, $th, $nextTh) {
 		let _thWidth = null;
 		let	_NextWidth = null;
 		let _thMinWidth = Base.getTextWidth($th);
 		let	_NextThMinWidth = Base.getTextWidth($nextTh);
 		$table.unbind('mousemove');
-		$table.bind('mousemove', function (event) {
+		$table.bind('mousemove', event => {
 			$table.addClass('no-select-text');
 			_thWidth = event.clientX - $th.offset().left;
 			_thWidth = Math.ceil(_thWidth);
@@ -115,9 +149,9 @@ class Adjust {
 	 * @param $th
 	 * @param $td
      */
-	runStopEvent($table, $th, $td) {
+	__runStopEvent($table, $th, $td) {
 		$table.unbind('mouseup mouseleave');
-		$table.bind('mouseup mouseleave', function (event) {
+		$table.bind('mouseup mouseleave', event => {
 			const settings = Cache.getSettings($table);
 			$table.unbind('mousemove mouseleave');
 
@@ -145,42 +179,6 @@ class Adjust {
 			// 存储用户记忆
 			Cache.saveUserMemory($table);
 		});
-	}
-
-	/**
-	 * 通过缓存配置成功后, 重置宽度调整事件源dom 用于禁用最后一列调整宽度事件
-	 * @param $table
-	 * @returns {boolean}
-     */
-	resetAdjust($table) {
-		if (!$table || $table.length === 0) {
-			return false;
-		}
-		let _thList = $('thead [th-visible="visible"]', $table);
-		let	_adjustAction = $('.adjust-action', _thList);
-		if (!_adjustAction || _adjustAction.length === 0) {
-			return false;
-		}
-		_adjustAction.show();
-		_adjustAction.eq(_adjustAction.length - 1).hide();
-
-		// 更新滚动轴状态
-		Base.updateScrollStatus($table);
-	}
-
-	/**
-	 * 消毁
-	 * @param $table
-     */
-	destroy($table) {
-		// 清理: 鼠标放开、移出事件
-		$table.unbind('mouseup mouseleave');
-
-		// 清理: 移动事件
-		$table.unbind('mousemove');
-
-		// 清理: 宽度调整事件
-		$table.off('mousedown', '.adjust-action');
 	}
 }
 export default new Adjust();

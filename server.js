@@ -1,15 +1,10 @@
-var express = require('express');
-var app = express();
-var webpack = require('webpack');
-var webpackConfig = require('./webpack-dev-config');
-var compiler = webpack(webpackConfig);
+const path = require('path');
+const express = require('express');
+const app = express();
+const webpack = require('webpack');
+const webpackConfig = require('./webpack-dev-config');
+const compiler = webpack(webpackConfig);
 
-// 是否为开发模式; true: 使用src下的资源, false: 使用build下的资源
-var isDev = true;
-var target = 'build';
-if(isDev){
-	target = 'src';
-}
 // 配置热启动
 app.use(require('webpack-dev-middleware')(compiler, {
 	noInfo: false,
@@ -30,8 +25,8 @@ app.use(/\/coverage$/, function (req, res) {
 	res.redirect('/coverage/chart/index.html');
 });
 
-// 配置资源路径
-app.use(express.static(target));
+// 配置资源路径√
+app.use(express.static(path.join(__dirname, 'src')));
 app.use(express.static(__dirname));
 app.listen(2015, function (err) {
 	if (err) {

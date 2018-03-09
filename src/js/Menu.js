@@ -157,7 +157,7 @@ class Menu {
 				cPage = settings.pageData.cPage;
 			}
 
-			AjaxPage.gotoPage(_table, cPage);
+			AjaxPage.gotoPage(_table, settings, cPage);
 			_body.off('mousedown.gridMenu');
 			_gridMenu.hide();
 		});

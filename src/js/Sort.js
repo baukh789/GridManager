@@ -47,7 +47,7 @@ class Sort {
 
 		// 执行更新
 		if (refresh) {
-			Core.__refreshGrid($table, () => {
+			Core.refresh($table, () => {
 				// 更新排序样式
 				this.updateSortStyle($table);
 
@@ -105,7 +105,7 @@ class Sort {
 
 			// 执行排序前事件
 			settings.sortingBefore(query);
-			Core.__refreshGrid(_$table, () => {
+			Core.refresh(_$table, () => {
 				// 更新排序样式
 				_this.updateSortStyle(_$table);
 

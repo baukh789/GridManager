@@ -60,21 +60,38 @@ describe('AjaxPage.createHtml($table)', function() {
 	});
 });
 
-describe('AjaxPage.initAjaxPage($table)', function() {
+describe('AjaxPage.initAjaxPage($table, settings)', function() {
 	it('基础验证', function () {
 		expect(AjaxPage.initAjaxPage).toBeDefined();
-		expect(AjaxPage.initAjaxPage.length).toBe(1);
+		expect(AjaxPage.initAjaxPage.length).toBe(2);
 	});
 });
 
-describe('AjaxPage.createPaginationDOM($table, settings, pageData)', function() {
+describe('AjaxPage.gotoPage($table, settings, toPage)', function() {
+	var settings = null;
+	var toPage = null;
+	var pageData = null;
+	beforeEach(function() {
+	});
+	afterEach(function(){
+		settings = null;
+		toPage = null;
+		pageData = null;
+	});
 	it('基础验证', function () {
-		expect(AjaxPage.createPaginationDOM).toBeDefined();
-		expect(AjaxPage.createPaginationDOM.length).toBe(3);
+		expect(AjaxPage.gotoPage).toBeDefined();
+		expect(AjaxPage.gotoPage.length).toBe(3);
 	});
 });
 
-describe('AjaxPage.joinPagination(settings, pageData)', function() {
+describe('AjaxPage.__createPaginationDOM($table, settings, pageData)', function() {
+	it('基础验证', function () {
+		expect(AjaxPage.__createPaginationDOM).toBeDefined();
+		expect(AjaxPage.__createPaginationDOM.length).toBe(3);
+	});
+});
+
+describe('AjaxPage.__joinPagination(settings, pageData)', function() {
 	var settings = null;
 	var pageData = null;
 	var paginatioHtml = null;
@@ -89,8 +106,8 @@ describe('AjaxPage.joinPagination(settings, pageData)', function() {
 	});
 
 	it('基础验证', function () {
-		expect(AjaxPage.joinPagination).toBeDefined();
-		expect(AjaxPage.joinPagination.length).toBe(2);
+		expect(AjaxPage.__joinPagination).toBeDefined();
+		expect(AjaxPage.__joinPagination.length).toBe(2);
 	});
 
 	it('返回值->无省略符,cPage=1', function () {
@@ -102,7 +119,7 @@ describe('AjaxPage.joinPagination(settings, pageData)', function() {
 						<li c-page="3">3</li>
 						<li c-page="2" class="next-page">下一页</li>
 						<li c-page="3" class="last-page">尾页</li>`;
-		expect(AjaxPage.joinPagination(settings, pageData).replace(/\s/g, '')).toBe(paginatioHtml.replace(/\s/g, ''));
+		expect(AjaxPage.__joinPagination(settings, pageData).replace(/\s/g, '')).toBe(paginatioHtml.replace(/\s/g, ''));
 	});
 
 	it('返回值->无省略符,cPage=2', function () {
@@ -115,7 +132,7 @@ describe('AjaxPage.joinPagination(settings, pageData)', function() {
 						<li c-page="3" class="next-page">下一页</li>
 						<li c-page="3" class="last-page">尾页</li>`;
 
-		expect(AjaxPage.joinPagination(settings, pageData).replace(/\s/g, '')).toBe(paginatioHtml.replace(/\s/g, ''));
+		expect(AjaxPage.__joinPagination(settings, pageData).replace(/\s/g, '')).toBe(paginatioHtml.replace(/\s/g, ''));
 	});
 
 	it('返回值->last端省略符', function () {
@@ -130,7 +147,7 @@ describe('AjaxPage.joinPagination(settings, pageData)', function() {
 						<li c-page="2" class="next-page">下一页</li>
 						<li c-page="7" class="last-page">尾页</li>`;
 
-		expect(AjaxPage.joinPagination(settings, pageData).replace(/\s/g, '')).toBe(paginatioHtml.replace(/\s/g, ''));
+		expect(AjaxPage.__joinPagination(settings, pageData).replace(/\s/g, '')).toBe(paginatioHtml.replace(/\s/g, ''));
 	});
 
 	it('返回值->first端省略符', function () {
@@ -145,11 +162,11 @@ describe('AjaxPage.joinPagination(settings, pageData)', function() {
 						<li c-page="8" class="next-page disabled">下一页</li>
 						<li c-page="7" class="last-page disabled">尾页</li>`;
 
-		expect(AjaxPage.joinPagination(settings, pageData).replace(/\s/g, '')).toBe(paginatioHtml.replace(/\s/g, ''));
+		expect(AjaxPage.__joinPagination(settings, pageData).replace(/\s/g, '')).toBe(paginatioHtml.replace(/\s/g, ''));
 	});
 });
 
-describe('AjaxPage.getPageSizeHtml(sizeData)', function() {
+describe('AjaxPage.__getPageSizeHtml(sizeData)', function() {
 	var sizeData = null;
 	var pageSizeHtml = null;
 	beforeEach(function() {
@@ -160,8 +177,8 @@ describe('AjaxPage.getPageSizeHtml(sizeData)', function() {
 	});
 
 	it('基础验证', function () {
-		expect(AjaxPage.getPageSizeHtml).toBeDefined();
-		expect(AjaxPage.getPageSizeHtml.length).toBe(1);
+		expect(AjaxPage.__getPageSizeHtml).toBeDefined();
+		expect(AjaxPage.__getPageSizeHtml.length).toBe(1);
 	});
 
 	it('返回值->[10, 30, 50]', function () {
@@ -169,7 +186,7 @@ describe('AjaxPage.getPageSizeHtml(sizeData)', function() {
 		pageSizeHtml = `<option value="10">10</option>
 						<option value="30">30</option>
 						<option value="50">50</option>`;
-		expect(AjaxPage.getPageSizeHtml(sizeData).replace(/\s/g, '')).toBe(pageSizeHtml.replace(/\s/g, ''));
+		expect(AjaxPage.__getPageSizeHtml(sizeData).replace(/\s/g, '')).toBe(pageSizeHtml.replace(/\s/g, ''));
 	});
 
 	it('返回值->[10, 20, 30, 50, 100]', function () {
@@ -179,67 +196,65 @@ describe('AjaxPage.getPageSizeHtml(sizeData)', function() {
 						<option value="30">30</option>
 						<option value="50">50</option>
 						<option value="100">100</option>`;
-		expect(AjaxPage.getPageSizeHtml(sizeData).replace(/\s/g, '')).toBe(pageSizeHtml.replace(/\s/g, ''));
+		expect(AjaxPage.__getPageSizeHtml(sizeData).replace(/\s/g, '')).toBe(pageSizeHtml.replace(/\s/g, ''));
 	});
 });
 
-describe('AjaxPage.bindPageJumpEvent($table)', function() {
+describe('AjaxPage.__bindPageJumpEvent($table)', function() {
 	it('基础验证', function () {
-		expect(AjaxPage.bindPageJumpEvent).toBeDefined();
-		expect(AjaxPage.bindPageJumpEvent.length).toBe(1);
+		expect(AjaxPage.__bindPageJumpEvent).toBeDefined();
+		expect(AjaxPage.__bindPageJumpEvent.length).toBe(1);
 	});
 });
 
-describe('AjaxPage.bindPageClick($table, pageToolbar)', function() {
+describe('AjaxPage.__bindPageClick($table, pageToolbar)', function() {
 	it('基础验证', function () {
-		expect(AjaxPage.bindPageClick).toBeDefined();
-		expect(AjaxPage.bindPageClick.length).toBe(2);
+		expect(AjaxPage.__bindPageClick).toBeDefined();
+		expect(AjaxPage.__bindPageClick.length).toBe(2);
 	});
 });
 
-describe('AjaxPage.bindInputEvent($table, pageToolbar)', function() {
+describe('AjaxPage.__bindInputEvent($table, pageToolbar)', function() {
 	it('基础验证', function () {
-		expect(AjaxPage.bindInputEvent).toBeDefined();
-		expect(AjaxPage.bindInputEvent.length).toBe(2);
+		expect(AjaxPage.__bindInputEvent).toBeDefined();
+		expect(AjaxPage.__bindInputEvent.length).toBe(2);
 	});
 });
 
-describe('AjaxPage.bindRefreshEvent($table, pageToolbar)', function() {
+describe('AjaxPage.__bindRefreshEvent($table, pageToolbar)', function() {
 	it('基础验证', function () {
-		expect(AjaxPage.bindRefreshEvent).toBeDefined();
-		expect(AjaxPage.bindRefreshEvent.length).toBe(1);
+		expect(AjaxPage.__bindRefreshEvent).toBeDefined();
+		expect(AjaxPage.__bindRefreshEvent.length).toBe(1);
+	});
+
+	it('返回值验证', function () {
+		expect(AjaxPage.__bindRefreshEvent).toBeDefined();
+		expect(AjaxPage.__bindRefreshEvent.length).toBe(1);
 	});
 });
 
-describe('AjaxPage.gotoPage($table, _cPage)', function() {
+describe('AjaxPage.__bindSetPageSizeEvent($table)', function() {
 	it('基础验证', function () {
-		expect(AjaxPage.gotoPage).toBeDefined();
-		expect(AjaxPage.gotoPage.length).toBe(2);
+		expect(AjaxPage.__bindSetPageSizeEvent).toBeDefined();
+		expect(AjaxPage.__bindSetPageSizeEvent.length).toBe(1);
 	});
 });
 
-describe('AjaxPage.bindSetPageSizeEvent($table)', function() {
+describe('AjaxPage.__resetPSize($table, settings, _pageData_)', function() {
 	it('基础验证', function () {
-		expect(AjaxPage.bindSetPageSizeEvent).toBeDefined();
-		expect(AjaxPage.bindSetPageSizeEvent.length).toBe(1);
+		expect(AjaxPage.__resetPSize).toBeDefined();
+		expect(AjaxPage.__resetPSize.length).toBe(3);
 	});
 });
 
-describe('AjaxPage.resetPSize($table, settings, _pageData_)', function() {
-	it('基础验证', function () {
-		expect(AjaxPage.resetPSize).toBeDefined();
-		expect(AjaxPage.resetPSize.length).toBe(3);
-	});
-});
-
-describe('AjaxPage.resetPageData($table, totals)', function() {
+describe('AjaxPage.resetPageData($table, settings, totals)', function() {
 	it('基础验证', function () {
 		expect(AjaxPage.resetPageData).toBeDefined();
-		expect(AjaxPage.resetPageData.length).toBe(2);
+		expect(AjaxPage.resetPageData.length).toBe(3);
 	});
 });
 
-describe('AjaxPage.getPageData(settings, totals)', function() {
+describe('AjaxPage.__getPageData(settings, totals)', function() {
 	var settings = null;
 	var totals = null;
 	var pageData = null;
@@ -252,8 +267,8 @@ describe('AjaxPage.getPageData(settings, totals)', function() {
 	});
 
 	it('基础验证', function () {
-		expect(AjaxPage.getPageData).toBeDefined();
-		expect(AjaxPage.getPageData.length).toBe(2);
+		expect(AjaxPage.__getPageData).toBeDefined();
+		expect(AjaxPage.__getPageData.length).toBe(2);
 	});
 
 	it('返回值-> 使用 pageData.pSize', function () {
@@ -265,7 +280,7 @@ describe('AjaxPage.getPageData(settings, totals)', function() {
 			}
 		};
 		pageData = {tPage: 5, cPage: 2, pSize: 20, tSize: 95};
-		expect(AjaxPage.getPageData(settings, totals)).toEqual(pageData);
+		expect(AjaxPage.__getPageData(settings, totals)).toEqual(pageData);
 	});
 
 	it('返回值-> 使用 settings.pageSize', function () {
@@ -277,7 +292,7 @@ describe('AjaxPage.getPageData(settings, totals)', function() {
 			}
 		};
 		pageData = {tPage: 4, cPage: 2, pSize: 30, tSize: 95};
-		expect(AjaxPage.getPageData(settings, totals)).toEqual(pageData);
+		expect(AjaxPage.__getPageData(settings, totals)).toEqual(pageData);
 	});
 
 	it('返回值-> 使用 settings.pageSize 和 pageData.pSize', function () {
@@ -290,14 +305,14 @@ describe('AjaxPage.getPageData(settings, totals)', function() {
 			}
 		};
 		pageData = {tPage: 5, cPage: 2, pSize: 20, tSize: 95};
-		expect(AjaxPage.getPageData(settings, totals)).toEqual(pageData);
+		expect(AjaxPage.__getPageData(settings, totals)).toEqual(pageData);
 	});
 });
 
-describe('AjaxPage.configPageForCache($table)', function() {
+describe('AjaxPage.__configPageForCache($table, settings)', function() {
 	it('基础验证', function () {
-		expect(AjaxPage.configPageForCache).toBeDefined();
-		expect(AjaxPage.configPageForCache.length).toBe(1);
+		expect(AjaxPage.__configPageForCache).toBeDefined();
+		expect(AjaxPage.__configPageForCache.length).toBe(2);
 	});
 });
 

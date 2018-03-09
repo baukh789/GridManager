@@ -36,10 +36,10 @@ describe('Cache.initGridData()', function() {
 	});
 });
 
-describe('Cache.__getRowData($table, target)', function() {
+describe('Cache.getRowData($table, target)', function() {
 	it('基础验证', function(){
-		expect(Cache.__getRowData).toBeDefined();
-		expect(Cache.__getRowData.length).toBe(2);
+		expect(Cache.getRowData).toBeDefined();
+		expect(Cache.getRowData.length).toBe(2);
 	});
 });
 

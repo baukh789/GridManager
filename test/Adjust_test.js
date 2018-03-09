@@ -5,10 +5,11 @@ import { jTool } from '../src/js/Base';
  * 验证类的属性及方法总量
  */
 describe('Adjust 验证类的属性及方法总量', function() {
-	var getPropertyCount = null;
+	let getPropertyCount = null;
 	beforeEach(function() {
 		getPropertyCount = function(o){
-			var n, count = 0;
+			let n = 0;
+			let count = 0;
 			for(n in o){
 				if(o.hasOwnProperty(n)){
 					count++;
@@ -34,23 +35,37 @@ describe('Adjust.html', function() {
 });
 
 describe('Adjust.bindAdjustEvent($table)', function() {
+	let $table = null;
+	beforeEach(function() {
+		document.body.innerHTML = '<table></table>';
+		$table = jTool('table');
+	});
+	afterEach(function(){
+		document.body.innerHTML = '';
+		$table = null;
+	});
+
 	it('基础验证', function(){
 		expect(Adjust.bindAdjustEvent).toBeDefined();
 		expect(Adjust.bindAdjustEvent.length).toBe(1);
 	});
-});
 
-describe('Adjust.runMoveEvent($table, $th, $nextTh)', function() {
-	it('基础验证', function(){
-		expect(Adjust.runMoveEvent).toBeDefined();
-		expect(Adjust.runMoveEvent.length).toBe(3);
+	it('返回值验证', function(){
+		expect(Adjust.bindAdjustEvent($table)).toBeUndefined();
 	});
 });
 
-describe('Adjust.runStopEvent($table, $th, $td)', function() {
+describe('Adjust.__runMoveEvent($table, $th, $nextTh)', function() {
 	it('基础验证', function(){
-		expect(Adjust.runStopEvent).toBeDefined();
-		expect(Adjust.runStopEvent.length).toBe(3);
+		expect(Adjust.__runMoveEvent).toBeDefined();
+		expect(Adjust.__runMoveEvent.length).toBe(3);
+	});
+});
+
+describe('Adjust.__runStopEvent($table, $th, $td)', function() {
+	it('基础验证', function(){
+		expect(Adjust.__runStopEvent).toBeDefined();
+		expect(Adjust.__runStopEvent.length).toBe(3);
 	});
 });
 

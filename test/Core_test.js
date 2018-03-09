@@ -29,10 +29,10 @@ describe('Core 验证类的属性及方法总量', function() {
 	});
 });
 
-describe('Core.__refreshGrid($table, callback)', function() {
+describe('Core.refresh($table, callback)', function() {
 	it('基础验证', function () {
-		expect(Core.__refreshGrid).toBeDefined();
-		expect(Core.__refreshGrid.length).toBe(2);
+		expect(Core.refresh).toBeDefined();
+		expect(Core.refresh.length).toBe(2);
 	});
 });
 

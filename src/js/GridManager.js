@@ -73,7 +73,7 @@ export default class GridManager {
      */
 	static
 	getRowData(table, target) {
-		return Cache.__getRowData(jTool(table), target);
+		return Cache.getRowData(jTool(table), target);
 	}
 
 	/**
@@ -152,7 +152,7 @@ export default class GridManager {
 			settings.pageData.cPage = 1;
 		}
 		Cache.setSettings($table, settings);
-		Core.__refreshGrid($table, callback);
+		Core.refresh($table, callback);
 	}
 
 	/**
@@ -167,7 +167,7 @@ export default class GridManager {
 		const settings = Cache.getSettings($table);
 		jTool.extend(settings, {ajax_data: ajaxData});
 		Cache.setSettings($table, settings);
-		Core.__refreshGrid($table);
+		Core.refresh($table);
 	}
 
 	/**
@@ -189,7 +189,7 @@ export default class GridManager {
 			settings.pageData['cPage'] = 1;
 			Cache.setSettings($table, settings);
 		}
-		Core.__refreshGrid($table, callback);
+		Core.refresh($table, callback);
 	};
 
 	/**
@@ -212,7 +212,7 @@ export default class GridManager {
 	static
 	getCheckedData(table) {
 		const $table = jTool(table);
-		return Cache.__getRowData($table, this.getCheckedTr(table));
+		return Cache.getRowData($table, this.getCheckedTr(table));
 	};
 
 	/**
@@ -361,6 +361,6 @@ export default class GridManager {
 		}
 
 		// 渲染tbodyDOM
-		Core.__refreshGrid($table);
+		Core.refresh($table);
 	}
 }

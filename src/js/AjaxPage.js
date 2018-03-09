@@ -29,10 +29,9 @@ class AjaxPage {
 	/**
 	 * 初始化分页
 	 * @param $table
+	 * @param settings
      */
-	initAjaxPage($table) {
-		const settings = Cache.getSettings($table);
-
+	initAjaxPage($table, settings) {
 		const sizeData = settings.sizeData;
 		// error
 		if (!sizeData || sizeData.length === 0) {
@@ -42,7 +41,7 @@ class AjaxPage {
 
 		// 根据本地缓存配置每页显示条数
 		if (!settings.disableCache) {
-			this.configPageForCache($table);
+			this.__configPageForCache($table, settings);
 		}
 
 		const tableWarp = $table.closest('.table-wrap');
@@ -56,13 +55,97 @@ class AjaxPage {
 		pageToolbar.hide();
 
 		// 生成每页显示条数选择框
-		pSizeArea.html(this.getPageSizeHtml(sizeData));
+		pSizeArea.html(this.__getPageSizeHtml(sizeData));
 
 		// 绑定页面跳转事件
-		this.bindPageJumpEvent($table);
+		this.__bindPageJumpEvent($table);
 
 		// 绑定设置显示条数切换事件
-		this.bindSetPageSizeEvent($table);
+		this.__bindSetPageSizeEvent($table);
+	}
+
+	/**
+	 * 重置分页数据
+	 * @param $table
+	 * @param settings
+	 * @param totals 总条数
+	 */
+	resetPageData($table, settings, totals) {
+		const _this = this;
+		if (isNaN(parseInt(totals, 10))) {
+			return;
+		}
+		const _pageData = this.__getPageData(settings, totals);
+
+		// 生成页码DOM节点
+		_this.__createPaginationDOM($table, settings, _pageData);
+
+		// 重置当前页显示条数
+		_this.__resetPSize($table, settings, _pageData);
+
+		// 更新Cache
+		Cache.setSettings($table, $.extend(true, settings, {pageData: _pageData}));
+
+		const tableWarp = $table.closest('.table-wrap');
+
+		// 分页工具条
+		const pageToolbar = $('.page-toolbar', tableWarp);
+		pageToolbar.show();
+	}
+
+	/**
+	 * 跳转至指定页
+	 * @param $table
+	 * @param settings
+	 * @param toPage 跳转页
+	 */
+	gotoPage($table, settings, toPage) {
+		if (!toPage || toPage < 1) {
+			toPage = 1;
+		}
+
+		// 跳转的指定页大于总页数
+		if (toPage > settings.pageData.tPage) {
+			toPage = settings.pageData.tPage;
+		}
+
+		// 替换被更改的值
+		settings.pageData.cPage = toPage;
+		settings.pageData.pSize = settings.pageData.pSize || settings.pageSize;
+
+		// 更新缓存
+		Cache.setSettings($table, settings);
+
+		// 调用事件、渲染DOM
+		const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
+		settings.pagingBefore(query);
+		Core.refresh($table, () => {
+			settings.pagingAfter(query);
+		});
+	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		const tableWarp = $table.closest('.table-wrap');
+		const pageToolbar = $('.page-toolbar', tableWarp);
+		const gp_input = $('.gp-input', pageToolbar);
+		const refreshAction	= $('.refresh-action', pageToolbar);
+		const sizeArea = $('select[name=pSizeArea]', pageToolbar);
+
+		// 清理: 分页点击事件
+		pageToolbar.off('click', 'li');
+
+		// 清理: 快捷跳转事件
+		gp_input.unbind('keyup');
+
+		// 清理: 刷新界面事件
+		refreshAction.unbind('click');
+
+		// 清理: 设置当前页显示数事件
+		sizeArea.unbind('change');
 	}
 
 	/**
@@ -71,7 +154,7 @@ class AjaxPage {
 	 * @param settings
 	 * @param pageData 分页数据格式
      */
-	createPaginationDOM($table, settings, pageData) {
+	__createPaginationDOM($table, settings, pageData) {
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
@@ -80,7 +163,7 @@ class AjaxPage {
 		// 分页区域
 		const pagination = $('.pagination', pageToolbar);
 
-		pagination.html(this.joinPagination(settings, pageData));
+		pagination.html(this.__joinPagination(settings, pageData));
 	}
 
 	/**
@@ -88,7 +171,7 @@ class AjaxPage {
 	 * @param settings
 	 * @param pageData 分页数据格式
      */
-	joinPagination(settings, pageData) {
+	__joinPagination(settings, pageData) {
 		// 当前页
 		let cPage = Number(pageData.cPage || 0);
 
@@ -171,7 +254,7 @@ class AjaxPage {
 	 * 生成每页显示条数选择框据
 	 * @param sizeData 选择框自定义条数
      */
-	getPageSizeHtml(sizeData) {
+	__getPageSizeHtml(sizeData) {
 		let pageSizeHtml = '';
 		$.each(sizeData, (index, value) => {
 			pageSizeHtml += `<option value="${value}">${value}</option>`;
@@ -183,15 +266,15 @@ class AjaxPage {
 	 * 绑定页面跳转事件
 	 * @param $table
      */
-	bindPageJumpEvent($table) {
+	__bindPageJumpEvent($table) {
 		const tableWarp	= $table.closest('.table-wrap');
 
 		// 分页工具条
 		const pageToolbar = $('.page-toolbar', tableWarp);
 
-		this.bindPageClick($table, pageToolbar);
-		this.bindInputEvent($table, pageToolbar);
-		this.bindRefreshEvent(pageToolbar);
+		this.__bindPageClick($table, pageToolbar);
+		this.__bindInputEvent($table, pageToolbar);
+		this.__bindRefreshEvent(pageToolbar);
 
 	}
 
@@ -200,12 +283,10 @@ class AjaxPage {
 	 * @param $table
 	 * @param pageToolbar
      */
-	bindPageClick($table, pageToolbar) {
-		const _this = this;
-
+	__bindPageClick($table, pageToolbar) {
 		pageToolbar.off('click', 'li');
-		pageToolbar.on('click', 'li', function () {
-			const pageAction = $(this);
+		pageToolbar.on('click', 'li', event => {
+			const pageAction = $(event.target);
 
 			// 分页页码
 			let cPage = pageAction.attr('c-page');
@@ -214,7 +295,7 @@ class AjaxPage {
 				return false;
 			}
 			cPage = window.parseInt(cPage);
-			_this.gotoPage($table, cPage);
+			this.gotoPage($table, Cache.getSettings($table), cPage);
 		});
 	}
 
@@ -223,18 +304,17 @@ class AjaxPage {
 	 * @param $table
 	 * @param pageToolbar
      */
-	bindInputEvent($table, pageToolbar) {
-		const _this = this;
+	__bindInputEvent($table, pageToolbar) {
 		const gp_input = $('.gp-input', pageToolbar);
 
 		gp_input.unbind('keyup');
-		gp_input.bind('keyup', function (e) {
-			if (e.which !== 13) {
+		gp_input.bind('keyup', event => {
+			if (event.which !== 13) {
 				return;
 			}
-			let _cPage = parseInt(this.value, 10);
-			_this.gotoPage($table, _cPage);
-			this.value = '';
+			let _cPage = parseInt(event.target.value, 10);
+			this.gotoPage($table, Cache.getSettings($table), _cPage);
+			event.target.value = '';
 		});
 	}
 
@@ -242,47 +322,15 @@ class AjaxPage {
 	 * 绑定刷新界面事件
 	 * @param pageToolbar
      */
-	bindRefreshEvent(pageToolbar) {
+	__bindRefreshEvent(pageToolbar) {
 		const refreshAction	= $('.refresh-action', pageToolbar);
 
 		refreshAction.unbind('click');
-		refreshAction.bind('click', function () {
-			const _tableWarp = $(this).closest('.table-wrap');
+		refreshAction.bind('click', event => {
+			const _tableWarp = $(event.target).closest('.table-wrap');
 			const _table = $('table[grid-manager]', _tableWarp);
 
-			Core.__refreshGrid(_table);
-		});
-	}
-
-	/**
-	 * 跳转至指定页
-	 * @param $table
-	 * @param _cPage 指定页
-     */
-	gotoPage($table, _cPage) {
-		const settings = Cache.getSettings($table);
-
-		if (!_cPage || _cPage < 1) {
-			_cPage = 1;
-		}
-
-		// 跳转的指定页大于总页数
-		if (_cPage > settings.pageData.tPage) {
-			_cPage = settings.pageData.tPage;
-		}
-
-		// 替换被更改的值
-		settings.pageData.cPage = _cPage;
-		settings.pageData.pSize = settings.pageData.pSize || settings.pageSize;
-
-		// 更新缓存
-		Cache.setSettings($table, settings);
-
-		// 调用事件、渲染DOM
-		const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
-		settings.pagingBefore(query);
-		Core.__refreshGrid($table, () => {
-			settings.pagingAfter(query);
+			Core.refresh(_table);
 		});
 	}
 
@@ -290,7 +338,7 @@ class AjaxPage {
 	 * 绑定设置当前页显示数事件
 	 * @param $table
      */
-	bindSetPageSizeEvent($table) {
+	__bindSetPageSizeEvent($table) {
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
@@ -304,8 +352,8 @@ class AjaxPage {
 			return false;
 		}
 		sizeArea.unbind('change');
-		sizeArea.bind('change', function () {
-			const _size = $(this);
+		sizeArea.bind('change', event => {
+			const _size = $(event.target);
 			const _tableWarp = _size.closest('.table-wrap');
 			const _table = $('table[grid-manager]', _tableWarp);
 			const settings = Cache.getSettings($table);
@@ -322,7 +370,7 @@ class AjaxPage {
 			// 调用事件、渲染tbody
 			const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
 			settings.pagingBefore(query);
-			Core.__refreshGrid(_table, () => {
+			Core.refresh(_table, () => {
 				settings.pagingAfter(query);
 			});
 		});
@@ -335,7 +383,7 @@ class AjaxPage {
 	 * @param _pageData_ 分页数据格式
 	 * @returns {boolean}
      */
-	resetPSize($table, settings, _pageData_) {
+	__resetPSize($table, settings, _pageData_) {
 		const tableWarp = $table.closest('.table-wrap');
 		const toolBar = $('.page-toolbar', tableWarp);
 		const pSizeArea = $('select[name="pSizeArea"]', toolBar);
@@ -366,41 +414,12 @@ class AjaxPage {
 	}
 
 	/**
-	 * 重置分页数据
-	 * @param $table
-	 * @param totals 总条数
-     */
-	resetPageData($table, totals) {
-		const settings = Cache.getSettings($table);
-		const _this = this;
-		if (isNaN(parseInt(totals, 10))) {
-			return;
-		}
-		const _pageData = this.getPageData(settings, totals);
-
-		// 生成页码DOM节点
-		_this.createPaginationDOM($table, settings, _pageData);
-
-		// 重置当前页显示条数
-		_this.resetPSize($table, settings, _pageData);
-
-		// 更新Cache
-		Cache.setSettings($table, $.extend(true, settings, {pageData: _pageData}));
-
-		const tableWarp = $table.closest('.table-wrap');
-
-		// 分页工具条
-		const pageToolbar = $('.page-toolbar', tableWarp);
-		pageToolbar.show();
-	}
-
-	/**
 	 * 计算并返回分页数据
 	 * @param settings
 	 * @param totals
 	 * @returns {{tPage: number, cPage: *, pSize: *, tSize: *}}
      */
-	getPageData(settings, totals) {
+	__getPageData(settings, totals) {
 		const _pSize = settings.pageData.pSize || settings.pageSize;
 		const _cPage = settings.pageData.cPage || 1;
 		return {
@@ -414,9 +433,9 @@ class AjaxPage {
 	/**
 	 * 根据本地缓存配置分页数据
 	 * @param $table
+	 * @param settings
      */
-	configPageForCache($table) {
-		const settings = Cache.getSettings($table);
+	__configPageForCache($table, settings) {
 		let _data = Cache.getUserMemory($table);
 
 		// 缓存对应
@@ -437,30 +456,6 @@ class AjaxPage {
 		};
 		$.extend(settings, {pageData: pageData});
 		Cache.setSettings($table, settings);
-	}
-
-	/**
-	 * 消毁
-	 * @param $table
-	 */
-	destroy($table) {
-		const tableWarp = $table.closest('.table-wrap');
-		const pageToolbar = $('.page-toolbar', tableWarp);
-		const gp_input = $('.gp-input', pageToolbar);
-		const refreshAction	= $('.refresh-action', pageToolbar);
-		const sizeArea = $('select[name=pSizeArea]', pageToolbar);
-
-		// 清理: 分页点击事件
-		pageToolbar.off('click', 'li');
-
-		// 清理: 快捷跳转事件
-		gp_input.unbind('keyup');
-
-		// 清理: 刷新界面事件
-		refreshAction.unbind('click');
-
-		// 清理: 设置当前页显示数事件
-		sizeArea.unbind('change');
 	}
 }
 export default new AjaxPage();

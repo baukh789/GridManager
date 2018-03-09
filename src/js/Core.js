@@ -22,7 +22,7 @@ class Core {
 	 * @param callback
      * @private
      */
-	__refreshGrid($table, callback) {
+	refresh($table, callback) {
 		const settings = Cache.getSettings($table);
 
 		const tableWrap = $table.closest('.table-wrap');
@@ -217,7 +217,7 @@ class Core {
 		}
 		// 渲染分页
 		if (settings.supportAjaxPage) {
-			AjaxPage.resetPageData($table, parseRes[settings.totalsKey]);
+			AjaxPage.resetPageData($table, settings, parseRes[settings.totalsKey]);
 			Menu.updateMenuPageStatus(settings.gridManagerName, settings.pageData);
 		}
 		typeof callback === 'function' ? callback() : '';
@@ -352,7 +352,7 @@ class Core {
 		// 嵌入Ajax分页DOM
 		if (settings.supportAjaxPage) {
 			tableWarp.append(AjaxPage.createHtml(settings));
-			AjaxPage.initAjaxPage($table);
+			AjaxPage.initAjaxPage($table, settings);
 		}
 
 		// 嵌入导出表格数据事件源

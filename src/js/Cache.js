@@ -27,7 +27,7 @@ class Cache {
 		 * @returns {*}
          * @private
          */
-		this.__getRowData = ($table, target) => {
+		this.getRowData = ($table, target) => {
 			const gmName = Base.getKey($table);
 			if (!store.responseData[gmName]) {
 				return;
