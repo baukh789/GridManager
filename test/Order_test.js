@@ -39,7 +39,7 @@ describe('Order.getThString(settings, thVisible)', function() {
 	beforeEach(() => {
 		settings = new Settings();
 		settings.textConfig = new TextSettings();
-		settings.gridManagerName = 'test-getThString';
+		settings.gridManagerName = 'order-getThString';
 		settings.pageDate = {
 			cPage: 1,
 			pSize: 10,
@@ -66,7 +66,7 @@ describe('Order.getColumn(settings)', function() {
 	beforeEach(() => {
 		settings = new Settings();
 		settings.textConfig = new TextSettings();
-		settings.gridManagerName = 'test-getThString';
+		settings.gridManagerName = 'order-getColumn';
 		settings.pageDate = {
 			cPage: 1,
 			pSize: 10,

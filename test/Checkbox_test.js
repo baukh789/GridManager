@@ -3,6 +3,7 @@
  */
 'use strict';
 import Checkbox from '../src/js/Checkbox';
+import {Settings, TextSettings} from '../src/js/Settings';
 /**
  * 验证类的属性及方法总量
  */
@@ -24,7 +25,7 @@ describe('Checkbox 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Checkbox)))).toBe(4 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Checkbox)))).toBe(5 + 1);
 	});
 });
 
@@ -36,16 +37,62 @@ describe('Checkbox.key', function() {
 });
 
 describe('Checkbox.getThString($table, thVisible)', function() {
+	let settings = null;
+	let checkboxHtml = null;
+	beforeEach(() => {
+		settings = new Settings();
+		settings.textConfig = new TextSettings();
+		settings.gridManagerName = 'checkbox-getThString';
+	});
+
+	afterEach(() => {
+		settings = null;
+		checkboxHtml = null;
+	});
+
 	it('基础验证', function () {
 		expect(Checkbox.getThString).toBeDefined();
 		expect(Checkbox.getThString.length).toBe(2);
 	});
+
+	it('返回值验证', function () {
+		checkboxHtml = `<th th-name="gm_checkbox" th-visible="true" gm-checkbox="true" gm-create="true">
+							<input type="checkbox"/>
+							<span style="display: none">
+								全选
+							</span>
+						</th>`;
+		expect(Checkbox.getThString(settings, true).replace(/\s/g, '')).toBe(checkboxHtml.replace(/\s/g, ''));
+	});
 });
 
 describe('Checkbox.getColumn(settings)', function() {
+	let settings = null;
+	let column = null;
+	beforeEach(() => {
+		settings = new Settings();
+		settings.textConfig = new TextSettings();
+		settings.gridManagerName = 'checkbox-getColumn';
+	});
+
+	afterEach(() => {
+		settings = null;
+		column = null;
+	});
+
 	it('基础验证', function () {
 		expect(Checkbox.getColumn).toBeDefined();
 		expect(Checkbox.getColumn.length).toBe(1);
+	});
+
+	it('返回值验证', function () {
+		column = Checkbox.getColumn(settings);
+		expect(typeof column).toBe('object');
+		expect(column.key).toBe('gm_checkbox');
+		expect(column.isAutoCreate).toBe(true);
+		expect(column.isShow).toBe(true);
+		expect(column.width).toBe('50px');
+		expect(column.align).toBe('center');
 	});
 });
 
