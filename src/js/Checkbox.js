@@ -6,7 +6,7 @@ import I18n from './I18n';
 class Checkbox {
 	// 全选的唯一标识
 	get key() {
-		return 'gm_checkbox'
+		return 'gm_checkbox';
 	}
 
 	/**
@@ -51,7 +51,7 @@ class Checkbox {
 	bindCheckboxEvent($table) {
 		const _this = this;
 		$table.off('click', 'input[type="checkbox"]');
-		$table.on('click', 'input[type="checkbox"]', function() {
+		$table.on('click', 'input[type="checkbox"]', function () {
 			// 存储th中的checkbox的选中状态
 			let _thChecked = true;
 

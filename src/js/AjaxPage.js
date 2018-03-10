@@ -291,7 +291,7 @@ class AjaxPage {
 	__bindPageClick($table, pageToolbar) {
 		const _this = this;
 		pageToolbar.off('click', 'li');
-		pageToolbar.on('click', 'li', function() {
+		pageToolbar.on('click', 'li', function () {
 			const pageAction = jTool(this);
 
 			// 分页页码
@@ -316,7 +316,7 @@ class AjaxPage {
 		const gp_input = jTool('.gp-input', pageToolbar);
 
 		gp_input.unbind('keyup');
-		gp_input.bind('keyup', function() {
+		gp_input.bind('keyup', function () {
 			if (event.which !== 13) {
 				return;
 			}

@@ -65,7 +65,7 @@ class Adjust {
 		const _this = this;
 		// 监听鼠标调整列宽度
 		$table.off('mousedown', '.adjust-action');
-		$table.on('mousedown', '.adjust-action', function() {
+		$table.on('mousedown', '.adjust-action', function () {
 			const _dragAction = jTool(this);
 			// 事件源所在的th
 			let $th = _dragAction.closest('th');

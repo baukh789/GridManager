@@ -40,7 +40,7 @@ class Config {
 
 		// 事件: 打开 关闭
 		configAction.unbind('click');
-		configAction.bind('click', function() {
+		configAction.bind('click', function () {
 			const settings = Cache.getSettings($table);
 			// 展示事件源
 			const _configAction = jTool(this);
@@ -89,7 +89,7 @@ class Config {
 
 		// 事件: 设置
 		jTool('.config-list li', tableWarp).unbind('click');
-		jTool('.config-list li', tableWarp).bind('click', function() {
+		jTool('.config-list li', tableWarp).bind('click', function () {
 			const settings = Cache.getSettings($table);
 			// 单个的设置项
 			const _only = jTool(this);
