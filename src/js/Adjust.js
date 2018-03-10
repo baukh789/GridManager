@@ -1,7 +1,7 @@
 /*
  * Adjust: 宽度调整
  * */
-import { $, Base } from './Base';
+import { jTool, Base } from './Base';
 import Cache from './Cache';
 class Adjust {
 	/**
@@ -20,7 +20,7 @@ class Adjust {
 		// 监听鼠标调整列宽度
 		$table.off('mousedown', '.adjust-action');
 		$table.on('mousedown', '.adjust-action', event => {
-			const _dragAction = $(event.target);
+			const _dragAction = jTool(event.target);
 			// 事件源所在的th
 			let $th = _dragAction.closest('th');
 
@@ -70,8 +70,8 @@ class Adjust {
 		if (!$table || $table.length === 0) {
 			return false;
 		}
-		let _thList = $('thead [th-visible="visible"]', $table);
-		let	_adjustAction = $('.adjust-action', _thList);
+		let _thList = jTool('thead [th-visible="visible"]', $table);
+		let	_adjustAction = jTool('.adjust-action', _thList);
 		if (!_adjustAction || _adjustAction.length === 0) {
 			return false;
 		}
@@ -137,9 +137,9 @@ class Adjust {
 			// 当前宽度调整的事件原为表头置顶的thead th
 			// 修改与置顶thead 对应的 thead
 			if ($th.closest(`thead[${Base.getSetTopAttr()}]`).length === 1) {
-				$(`thead[grid-manager-thead] th[th-name="${$th.attr('th-name')}"]`, $table).width(_thWidth);
-				$(`thead[grid-manager-thead] th[th-name="${$nextTh.attr('th-name')}"]`, $table).width(_NextWidth);
-				$(`thead[${Base.getSetTopAttr()}]`, $table).width($('thead[grid-manager-thead]', $table).width());
+				jTool(`thead[grid-manager-thead] th[th-name="${$th.attr('th-name')}"]`, $table).width(_thWidth);
+				jTool(`thead[grid-manager-thead] th[th-name="${$nextTh.attr('th-name')}"]`, $table).width(_NextWidth);
+				jTool(`thead[${Base.getSetTopAttr()}]`, $table).width(jTool('thead[grid-manager-thead]', $table).width());
 			}
 		});
 	}
