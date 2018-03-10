@@ -289,9 +289,10 @@ class AjaxPage {
 	 * @private
      */
 	__bindPageClick($table, pageToolbar) {
+		const _this = this;
 		pageToolbar.off('click', 'li');
-		pageToolbar.on('click', 'li', event => {
-			const pageAction = jTool(event.target);
+		pageToolbar.on('click', 'li', function() {
+			const pageAction = jTool(this);
 
 			// 分页页码
 			let cPage = pageAction.attr('c-page');
@@ -300,7 +301,7 @@ class AjaxPage {
 				return false;
 			}
 			cPage = window.parseInt(cPage);
-			this.gotoPage($table, Cache.getSettings($table), cPage);
+			_this.gotoPage($table, Cache.getSettings($table), cPage);
 		});
 	}
 
@@ -311,16 +312,17 @@ class AjaxPage {
 	 * @private
      */
 	__bindInputEvent($table, pageToolbar) {
+		const _this = this;
 		const gp_input = jTool('.gp-input', pageToolbar);
 
 		gp_input.unbind('keyup');
-		gp_input.bind('keyup', event => {
+		gp_input.bind('keyup', function() {
 			if (event.which !== 13) {
 				return;
 			}
-			let _cPage = parseInt(event.target.value, 10);
-			this.gotoPage($table, Cache.getSettings($table), _cPage);
-			event.target.value = '';
+			let _cPage = parseInt(this.value, 10);
+			_this.gotoPage($table, Cache.getSettings($table), _cPage);
+			this.value = '';
 		});
 	}
 

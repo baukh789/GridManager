@@ -23,7 +23,7 @@ describe('Adjust 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Adjust)))).toBe(6 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Adjust)))).toBe(7 + 1);
 	});
 });
 
@@ -34,7 +34,14 @@ describe('Adjust.html', function() {
 	});
 });
 
-describe('Adjust.bindAdjustEvent($table)', function() {
+describe('Adjust.init($table)', function() {
+	it('基础验证', function(){
+		expect(Adjust.init).toBeDefined();
+		expect(Adjust.init.length).toBe(1);
+	});
+});
+
+describe('Adjust.__bindAdjustEvent($table)', function() {
 	let $table = null;
 	beforeEach(function() {
 		document.body.innerHTML = '<table></table>';
@@ -46,12 +53,12 @@ describe('Adjust.bindAdjustEvent($table)', function() {
 	});
 
 	it('基础验证', function(){
-		expect(Adjust.bindAdjustEvent).toBeDefined();
-		expect(Adjust.bindAdjustEvent.length).toBe(1);
+		expect(Adjust.__bindAdjustEvent).toBeDefined();
+		expect(Adjust.__bindAdjustEvent.length).toBe(1);
 	});
 
 	it('返回值验证', function(){
-		expect(Adjust.bindAdjustEvent($table)).toBeUndefined();
+		expect(Adjust.__bindAdjustEvent($table)).toBeUndefined();
 	});
 });
 

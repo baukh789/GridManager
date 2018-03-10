@@ -323,29 +323,29 @@ export default class GridManager {
 		// 通过缓存配置成功后, 重置宽度调整事件源dom
 		settings.supportAdjust ? Adjust.resetAdjust($table) : '';
 
-		// 绑定宽度调整事件
+		// init Adjust
 		if (settings.supportAdjust) {
-			Adjust.bindAdjustEvent($table);
+			Adjust.init($table);
 		}
 
-		// 绑定拖拽换位事件
+		// init Drag
 		if (settings.supportDrag) {
-			Drag.bindDragEvent($table);
+			Drag.init($table);
 		}
 
-		// 绑定排序事件
+		// init Sort
 		if (settings.supportSorting) {
-			Sort.bindSortingEvent($table);
+			Sort.init($table);
 		}
 
-		// 绑定表头提示事件
+		// init Remind
 		if (settings.supportRemind) {
-			Remind.bindRemindEvent($table);
+			Remind.init($table);
 		}
 
-		// 绑定配置列表事件
+		// init Config
 		if (settings.supportConfig) {
-			Config.bindConfigEvent($table);
+			Config.init($table);
 		}
 
 		// 绑定$table区域hover事件

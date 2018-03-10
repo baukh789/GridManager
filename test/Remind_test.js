@@ -24,7 +24,7 @@ describe('Remind 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Remind)))).toBe(3 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Remind)))).toBe(4 + 1);
 	});
 });
 
@@ -42,10 +42,17 @@ describe('Remind.html', function() {
 	});
 });
 
-describe('Remind.bindRemindEvent($table)', function() {
+describe('Remind.init($table)', function() {
 	it('基础验证', function() {
-		expect(Remind.bindRemindEvent).toBeDefined();
-		expect(Remind.bindRemindEvent.length).toBe(1);
+		expect(Remind.init).toBeDefined();
+		expect(Remind.init.length).toBe(1);
+	});
+});
+
+describe('Remind.__bindRemindEvent($table)', function() {
+	it('基础验证', function() {
+		expect(Remind.__bindRemindEvent).toBeDefined();
+		expect(Remind.__bindRemindEvent.length).toBe(1);
 	});
 });
 

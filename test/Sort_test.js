@@ -24,7 +24,14 @@ describe('Sort 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Sort)))).toBe(5 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Sort)))).toBe(6 + 1);
+	});
+});
+
+describe('Sort.init($table)', function() {
+	it('基础验证', function() {
+		expect(Sort.init).toBeDefined();
+		expect(Sort.init.length).toBe(1);
 	});
 });
 
@@ -46,10 +53,10 @@ describe('Sort.__setSort($table, sortJson, callback, refresh)', function() {
 	});
 });
 
-describe('Sort.bindSortingEvent($table)', function() {
+describe('Sort.__bindSortingEvent($table)', function() {
 	it('基础验证', function() {
-		expect(Sort.bindSortingEvent).toBeDefined();
-		expect(Sort.bindSortingEvent.length).toBe(1);
+		expect(Sort.__bindSortingEvent).toBeDefined();
+		expect(Sort.__bindSortingEvent.length).toBe(1);
 	});
 });
 

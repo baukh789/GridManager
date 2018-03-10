@@ -4,7 +4,7 @@
 * 2.渲染GM DOM
 * 3.重置tbody
 * */
-import { $, Base } from './Base';
+import { jTool, Base } from './Base';
 import Menu from './Menu';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';
@@ -28,7 +28,7 @@ class Core {
 		const tableWrap = $table.closest('.table-wrap');
 
 		// 刷新按纽
-		const refreshAction = $('.page-toolbar .refresh-action', tableWrap);
+		const refreshAction = jTool('.page-toolbar .refresh-action', tableWrap);
 
 		// 增加刷新中标识
 		refreshAction.addClass('refreshing');
@@ -48,16 +48,16 @@ class Core {
 			typeof callback === 'function' ? callback() : '';
 			return;
 		}
-		let pram = $.extend(true, {}, settings.query);
+		let pram = jTool.extend(true, {}, settings.query);
 
 		// 合并分页信息至请求参
 		if (settings.supportAjaxPage) {
-			$.extend(pram, settings.pageData);
+			jTool.extend(pram, settings.pageData);
 		}
 
 		// 合并排序信息至请求参
 		if (settings.supportSorting) {
-			$.each(settings.sortData, (key, value) => {
+			jTool.each(settings.sortData, (key, value) => {
 				// 增加sort_前缀,防止与搜索时的条件重叠
 				pram[`${settings.sortKey}${key}`] = value;
 			});
@@ -77,14 +77,14 @@ class Core {
 
 		// 将 requestHandler 内修改的分页参数合并至 settings.pageData
 		if (settings.supportAjaxPage) {
-			$.each(settings.pageData, (key, value) => {
+			jTool.each(settings.pageData, (key, value) => {
 				settings.pageData[key] = pram[key] || value;
 			});
 		}
 
 		// 将 requestHandler 内修改的排序参数合并至 settings.sortData
 		if (settings.supportSorting) {
-			$.each(settings.sortData, (key, value) => {
+			jTool.each(settings.sortData, (key, value) => {
 				settings.sortData[key] = pram[`${settings.sortKey}${key}`] || value;
 			});
 		}
@@ -92,7 +92,7 @@ class Core {
 
 		Base.showLoading(tableWrap);
 		// 执行ajax
-		$.ajax({
+		jTool.ajax({
 			url: settings.ajax_url,
 			type: settings.ajax_type,
 			data: pram,
@@ -123,7 +123,7 @@ class Core {
      */
 	removeRefreshingClass($tableWrap) {
 		// 刷新按纽
-		const refreshAction = $('.page-toolbar .refresh-action', $tableWrap);
+		const refreshAction = jTool('.page-toolbar .refresh-action', $tableWrap);
 		window.setTimeout(() => {
 			refreshAction.removeClass('refreshing');
 		}, 2000);
@@ -142,7 +142,7 @@ class Core {
 			return;
 		}
 
-		const tbodyDOM = $('tbody', $table);
+		const tbodyDOM = jTool('tbody', $table);
 		const gmName = Base.getKey($table);
 
 		let parseRes = typeof (response) === 'string' ? JSON.parse(response) : response;
@@ -163,7 +163,7 @@ class Core {
 
 		// 数据为空时
 		if (!_data || _data.length === 0) {
-			let visibleNum = $('th[th-visible="visible"]', $table).length;
+			let visibleNum = jTool('th[th-visible="visible"]', $table).length;
 			parseRes.totals = 0;
 			tbodyDOM.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
 		} else {
@@ -194,11 +194,11 @@ class Core {
 			// 拼接tbody的HTML结构
 			let tbodyTmpHTML = '';
 
-			$.each(_data, (index, row) => {
+			jTool.each(_data, (index, row) => {
 				// TODO 考虑在循环外对数据进行存储, 直接对responseData[gmName]进行操作
 				Cache.setRowData(gmName, index, row);
 				tbodyTmpHTML += `<tr cache-key="${index}">`;
-				$.each(settings.columnMap, (key, col) => {
+				jTool.each(settings.columnMap, (key, col) => {
 					template = col.template;
 					// td 模板
 					templateHTML = typeof template === 'function' ? template(row[col.key], row) : row[col.key];
@@ -254,17 +254,17 @@ class Core {
 		// 转换的原因是为了处理用户记忆
 		const thList = [];
 		if (settings.disableCache) {
-			$.each(settings.columnMap, (key, col) => {
+			jTool.each(settings.columnMap, (key, col) => {
 				thList.push(col);
 			});
 		} else {
-			$.each(settings.columnMap, (key, col) => {
+			jTool.each(settings.columnMap, (key, col) => {
 				thList[col.index] = col;
 			});
 		}
 
 		// thList 生成thead
-		$.each(thList, (index, col) => {
+		jTool.each(thList, (index, col) => {
 			// 表头提醒
 			if (settings.supportRemind && typeof (col.remind) === 'string' && col.remind !== '') {
 				remindHtml = `remind="${col.remind}"`;
@@ -329,10 +329,10 @@ class Core {
 		let	isLmCheckbox = null;
 
 		// 单个table下的thead
-		const onlyThead = $('thead[grid-manager-thead]', $table);
+		const onlyThead = jTool('thead[grid-manager-thead]', $table);
 
 		// 单个table下的TH
-		const onlyThList = $('th', onlyThead);
+		const onlyThList = jTool('th', onlyThead);
 
 		// 外围的html片段
 		const wrapHtml = `<div class="table-wrap">
@@ -359,7 +359,7 @@ class Core {
 		if (settings.supportExport) {
 			tableWarp.append(Export.html);
 		}
-		const configList = $('.config-list', tableWarp);
+		const configList = jTool('.config-list', tableWarp);
 
 		// 单个TH
 		let onlyTH = null;
@@ -369,9 +369,9 @@ class Core {
 
 		// TODO baukh20171216: 这个操作应该考虑下前置到生成th时
 		// 单个TH下的上层DIV
-		const onlyThWarp = $('<div class="th-wrap"></div>');
-		$.each(onlyThList, (i2, v2) => {
-			onlyTH = $(v2);
+		const onlyThWarp = jTool('<div class="th-wrap"></div>');
+		jTool.each(onlyThList, (index, item) => {
+			onlyTH = jTool(item);
 
 			// 是否为自动生成的序号列
 			if (settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
@@ -410,7 +410,7 @@ class Core {
 			// 嵌入表头提醒事件源
 			// 插件自动生成的排序与选择列不做事件绑定
 			if (settings.supportRemind && onlyTH.attr('remind') !== undefined && !isLmOrder && !isLmCheckbox) {
-				const remindDOM = $(Remind.html);
+				const remindDOM = jTool(Remind.html);
 				remindDOM.find('.ra-title').text(onlyTH.text());
 				remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
 				onlyThWarp.append(remindDOM);
@@ -421,7 +421,7 @@ class Core {
 			// 排序类型
 			const sortType = onlyTH.attr('sorting');
 			if (settings.supportSorting && sortType !== undefined && !isLmOrder && !isLmCheckbox) {
-				const sortingDom = $(Sort.html);
+				const sortingDom = jTool(Sort.html);
 
 				// 依据 sortType 进行初始显示
 				switch (sortType) {
@@ -438,9 +438,9 @@ class Core {
 			}
 			// 嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
 			if (settings.supportAdjust && !isLmOrder && !isLmCheckbox) {
-				const adjustDOM = $(Adjust.html);
+				const adjustDOM = jTool(Adjust.html);
 				// 最后一列不支持调整宽度
-				if (i2 === onlyThList.length - 1) {
+				if (index === onlyThList.length - 1) {
 					adjustDOM.hide();
 				}
 				onlyThWarp.append(adjustDOM);
@@ -475,17 +475,17 @@ class Core {
 	 */
 	initVisible($table) {
 		// tbody下的tr
-		const _trList = $('tbody tr', $table);
+		const _trList = jTool('tbody tr', $table);
 		let	_th = null;
 		let	_td = null;
 		let _visible = 'visible';
 		const settings = Cache.getSettings($table);
-		$.each(settings.columnMap, (index, col) => {
-			_th = $(`th[th-name="${col.key}"]`, $table);
+		jTool.each(settings.columnMap, (index, col) => {
+			_th = jTool(`th[th-name="${col.key}"]`, $table);
 			_visible = Base.getVisibleForColumn(col);
 			_th.attr('th-visible', _visible);
-			$.each(_trList, (i2, v2) => {
-				_td = $('td', v2).eq(_th.index());
+			jTool.each(_trList, (i2, v2) => {
+				_td = jTool('td', v2).eq(_th.index());
 				_td.attr('td-visible', _visible);
 			});
 		});

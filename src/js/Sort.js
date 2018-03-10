@@ -17,6 +17,14 @@ class Sort {
 		return html;
 	}
 
+	/**
+	 * 初始化排序
+	 * @param $table
+     */
+	init($table) {
+		this.__bindSortingEvent($table);
+	}
+
 	/*
 	 * 手动设置排序
 	 * @param $table: table jTool
@@ -64,7 +72,7 @@ class Sort {
 	 * 绑定排序事件
 	 * @param $table
      */
-	bindSortingEvent($table) {
+	__bindSortingEvent($table) {
 		const _this = this;
 
 		// 绑定排序事件

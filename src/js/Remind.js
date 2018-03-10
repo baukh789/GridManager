@@ -19,10 +19,18 @@ class Remind {
 	}
 
 	/**
+	 * 初始化表头提醒
+	 * @param $table
+     */
+	init($table) {
+		this.__bindRemindEvent($table);
+	}
+
+	/**
 	 * 绑定表头提醒功能
 	 * @param table
      */
-	bindRemindEvent($table) {
+	__bindRemindEvent($table) {
 		const remindAction = $('.remind-action', $table);
 		remindAction.unbind('mouseenter');
 		remindAction.bind('mouseenter', function () {

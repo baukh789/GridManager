@@ -49,13 +49,14 @@ class Checkbox {
 	 * @param $table
      */
 	bindCheckboxEvent($table) {
+		const _this = this;
 		$table.off('click', 'input[type="checkbox"]');
-		$table.on('click', 'input[type="checkbox"]', event => {
+		$table.on('click', 'input[type="checkbox"]', function() {
 			// 存储th中的checkbox的选中状态
 			let _thChecked = true;
 
 			// 全选键事件源
-			const _checkAction = jTool(event.target);
+			const _checkAction = jTool(this);
 
 			// th中的选择框
 			const _thCheckbox = jTool('thead th[gm-checkbox] input[type="checkbox"]', $table);
@@ -64,7 +65,7 @@ class Checkbox {
 			const _tdCheckbox = jTool('tbody td[gm-checkbox] input[type="checkbox"]', $table);
 
 			// 当前为全选事件源
-			if (_checkAction.closest(`th[th-name="${this.key}"]`).length === 1) {
+			if (_checkAction.closest(`th[th-name="${_this.key}"]`).length === 1) {
 				jTool.each(_tdCheckbox, (index, item) => {
 					item.checked = _checkAction.prop('checked');
 					jTool(item).closest('tr').attr('checked', item.checked);

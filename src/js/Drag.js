@@ -6,10 +6,18 @@ import Adjust from './Adjust';
 import Cache from './Cache';
 class Drag {
 	/**
+	 * 初始化拖拽
+	 * @param $table
+     */
+	init($table) {
+		this.__bindDragEvent($table);
+	}
+
+	/**
 	 * 绑定拖拽换位事件
 	 * @param $table
 	 */
-	bindDragEvent($table) {
+	__bindDragEvent($table) {
 		const _this = this;
 
 		// 指定拖拽换位事件源,配置拖拽样式
