@@ -1,7 +1,7 @@
 /*
  * AjaxPage: 分页
  * */
-import { $, Base } from './Base';
+import { jTool, Base } from './Base';
 import Core from './Core';
 import Cache from './Cache';
 import I18n from './I18n';
@@ -47,10 +47,10 @@ class AjaxPage {
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
-		const pageToolbar = $('.page-toolbar', tableWarp);
+		const pageToolbar = jTool('.page-toolbar', tableWarp);
 
 		// 分页区域
-		const pSizeArea	= $('select[name="pSizeArea"]', pageToolbar);
+		const pSizeArea	= jTool('select[name="pSizeArea"]', pageToolbar);
 
 		pageToolbar.hide();
 
@@ -84,12 +84,12 @@ class AjaxPage {
 		_this.__resetPSize($table, settings, _pageData);
 
 		// 更新Cache
-		Cache.setSettings($table, $.extend(true, settings, {pageData: _pageData}));
+		Cache.setSettings($table, jTool.extend(true, settings, {pageData: _pageData}));
 
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
-		const pageToolbar = $('.page-toolbar', tableWarp);
+		const pageToolbar = jTool('.page-toolbar', tableWarp);
 		pageToolbar.show();
 	}
 
@@ -117,7 +117,7 @@ class AjaxPage {
 		Cache.setSettings($table, settings);
 
 		// 调用事件、渲染DOM
-		const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
+		const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
 		settings.pagingBefore(query);
 		Core.refresh($table, () => {
 			settings.pagingAfter(query);
@@ -130,10 +130,10 @@ class AjaxPage {
 	 */
 	destroy($table) {
 		const tableWarp = $table.closest('.table-wrap');
-		const pageToolbar = $('.page-toolbar', tableWarp);
-		const gp_input = $('.gp-input', pageToolbar);
-		const refreshAction	= $('.refresh-action', pageToolbar);
-		const sizeArea = $('select[name=pSizeArea]', pageToolbar);
+		const pageToolbar = jTool('.page-toolbar', tableWarp);
+		const gp_input = jTool('.gp-input', pageToolbar);
+		const refreshAction	= jTool('.refresh-action', pageToolbar);
+		const sizeArea = jTool('select[name=pSizeArea]', pageToolbar);
 
 		// 清理: 分页点击事件
 		pageToolbar.off('click', 'li');
@@ -159,10 +159,10 @@ class AjaxPage {
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
-		const pageToolbar = $('.page-toolbar', tableWarp);
+		const pageToolbar = jTool('.page-toolbar', tableWarp);
 
 		// 分页区域
-		const pagination = $('.pagination', pageToolbar);
+		const pagination = jTool('.pagination', pageToolbar);
 
 		pagination.html(this.__joinPagination(settings, pageData));
 	}
@@ -259,7 +259,7 @@ class AjaxPage {
      */
 	__getPageSizeHtml(sizeData) {
 		let pageSizeHtml = '';
-		$.each(sizeData, (index, value) => {
+		jTool.each(sizeData, (index, value) => {
 			pageSizeHtml += `<option value="${value}">${value}</option>`;
 		});
 		return pageSizeHtml;
@@ -274,7 +274,7 @@ class AjaxPage {
 		const tableWarp	= $table.closest('.table-wrap');
 
 		// 分页工具条
-		const pageToolbar = $('.page-toolbar', tableWarp);
+		const pageToolbar = jTool('.page-toolbar', tableWarp);
 
 		this.__bindPageClick($table, pageToolbar);
 		this.__bindInputEvent($table, pageToolbar);
@@ -291,7 +291,7 @@ class AjaxPage {
 	__bindPageClick($table, pageToolbar) {
 		pageToolbar.off('click', 'li');
 		pageToolbar.on('click', 'li', event => {
-			const pageAction = $(event.target);
+			const pageAction = jTool(event.target);
 
 			// 分页页码
 			let cPage = pageAction.attr('c-page');
@@ -311,7 +311,7 @@ class AjaxPage {
 	 * @private
      */
 	__bindInputEvent($table, pageToolbar) {
-		const gp_input = $('.gp-input', pageToolbar);
+		const gp_input = jTool('.gp-input', pageToolbar);
 
 		gp_input.unbind('keyup');
 		gp_input.bind('keyup', event => {
@@ -330,12 +330,12 @@ class AjaxPage {
 	 * @private
      */
 	__bindRefreshEvent(pageToolbar) {
-		const refreshAction	= $('.refresh-action', pageToolbar);
+		const refreshAction	= jTool('.refresh-action', pageToolbar);
 
 		refreshAction.unbind('click');
 		refreshAction.bind('click', event => {
-			const _tableWarp = $(event.target).closest('.table-wrap');
-			const _table = $('table[grid-manager]', _tableWarp);
+			const _tableWarp = jTool(event.target).closest('.table-wrap');
+			const _table = jTool('table[grid-manager]', _tableWarp);
 
 			Core.refresh(_table);
 		});
@@ -350,10 +350,10 @@ class AjaxPage {
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
-		const pageToolbar = $('.page-toolbar', tableWarp);
+		const pageToolbar = jTool('.page-toolbar', tableWarp);
 
 		// 切换条数区域
-		const sizeArea = $('select[name=pSizeArea]', pageToolbar);
+		const sizeArea = jTool('select[name=pSizeArea]', pageToolbar);
 
 		if (!sizeArea || sizeArea.length === 0) {
 			Base.outLog('未找到单页显示数切换区域，停止该事件绑定', 'info');
@@ -361,9 +361,9 @@ class AjaxPage {
 		}
 		sizeArea.unbind('change');
 		sizeArea.bind('change', event => {
-			const _size = $(event.target);
+			const _size = jTool(event.target);
 			const _tableWarp = _size.closest('.table-wrap');
-			const _table = $('table[grid-manager]', _tableWarp);
+			const _table = jTool('table[grid-manager]', _tableWarp);
 			const settings = Cache.getSettings($table);
 			settings.pageData = {
 				cPage: 1,
@@ -376,7 +376,7 @@ class AjaxPage {
 			Cache.setSettings($table, settings);
 
 			// 调用事件、渲染tbody
-			const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
+			const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
 			settings.pagingBefore(query);
 			Core.refresh(_table, () => {
 				settings.pagingAfter(query);
@@ -394,9 +394,9 @@ class AjaxPage {
      */
 	__resetPSize($table, settings, _pageData_) {
 		const tableWarp = $table.closest('.table-wrap');
-		const toolBar = $('.page-toolbar', tableWarp);
-		const pSizeArea = $('select[name="pSizeArea"]', toolBar);
-		const pSizeInfo = $('.dataTables_info', toolBar);
+		const toolBar = jTool('.page-toolbar', tableWarp);
+		const pSizeArea = jTool('select[name="pSizeArea"]', toolBar);
+		const pSizeInfo = jTool('.dataTables_info', toolBar);
 		if (!pSizeArea || pSizeArea.length === 0) {
 			Base.outLog('未找到条数切换区域，停止该事件绑定', 'info');
 			return false;
@@ -465,7 +465,7 @@ class AjaxPage {
 			pSize: _pSize,
 			cPage: 1
 		};
-		$.extend(settings, {pageData: pageData});
+		jTool.extend(settings, {pageData: pageData});
 		Cache.setSettings($table, settings);
 	}
 }
