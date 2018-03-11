@@ -1,7 +1,7 @@
 /*
  * Drag: 拖拽
  * */
-import { $, Base } from './Base';
+import { jTool, Base } from './Base';
 import Adjust from './Adjust';
 import Cache from './Cache';
 class Drag {
@@ -23,13 +23,13 @@ class Drag {
 		// 指定拖拽换位事件源,配置拖拽样式
 		$table.off('mousedown', '.drag-action');
 		$table.on('mousedown', '.drag-action', function (event) {
-			const $body = $('body');
+			const $body = jTool('body');
 
 			// 获取设置项
 			let settings = Cache.getSettings($table);
 
 			// 事件源th
-			let _th = $(this).closest('th');
+			let _th = jTool(this).closest('th');
 
 			// 事件源的上一个th
 			let prevTh = null;
@@ -70,30 +70,30 @@ class Drag {
 
 			// 增加临时展示DOM
 			_tableWrap.append('<div class="dreamland-div"></div>');
-			let dreamlandDIV = $('.dreamland-div', _tableWrap);
+			let dreamlandDIV = jTool('.dreamland-div', _tableWrap);
 			dreamlandDIV.get(0).innerHTML = `<table class="dreamland-table ${_table.attr('class')}"></table>`;
 
 			// tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
 			let _tbodyHtml = '';
 			let _cloneTr = null;
 			let _cloneTd = null;
-			$.each(colTd, (i, v) => {
+			jTool.each(colTd, (i, v) => {
 				_cloneTd = v.cloneNode(true);
 				_cloneTd.style.height = v.offsetHeight + 'px';
-				_cloneTr = $(v).closest('tr').clone();
+				_cloneTr = jTool(v).closest('tr').clone();
 				_tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
 			});
 			let tmpHtml = `<thead>
 								<tr>
 								<th style="height:${_th.height()}px">
-								${$('.drag-action', _th).get(0).outerHTML}
+								${jTool('.drag-action', _th).get(0).outerHTML}
 								</th>
 								</tr>
 							</thead>
 							<tbody>
 								${_tbodyHtml}
 							</tbody>`;
-			$('.dreamland-table', dreamlandDIV).html(tmpHtml);
+			jTool('.dreamland-table', dreamlandDIV).html(tmpHtml);
 
 			// 存储移动时的th所处的位置
 			let _thIndex = 0;
@@ -147,7 +147,7 @@ class Drag {
 				$body.unbind('mousemove');
 				$body.unbind('mouseup');
 				// 清除临时展示被移动的列
-				dreamlandDIV = $('.dreamland-div');
+				dreamlandDIV = jTool('.dreamland-div');
 				if (dreamlandDIV.length !== 0) {
 					dreamlandDIV.animate({
 						top: `${_table.get(0).offsetTop}px`,
@@ -204,26 +204,26 @@ class Drag {
 		if (prevTh && prevTh.length !== 0 && dreamlandDIV.offset().left < prevTh.offset().left) {
 			prevTd = Base.getColTd(prevTh);
 			prevTh.before(_th);
-			$.each(colTd, (i, v) => {
+			jTool.each(colTd, (i, v) => {
 				prevTd.eq(i).before(v);
 			});
 
 			if (haveMockThead) {
-				let _prevTh = $(`thead[grid-manager-thead] th[th-name="${prevTh.attr('th-name')}"]`, _table);
-				let __th = $(`thead[grid-manager-thead] th[th-name="${_th.attr('th-name')}"]`, _table);
+				let _prevTh = jTool(`thead[grid-manager-thead] th[th-name="${prevTh.attr('th-name')}"]`, _table);
+				let __th = jTool(`thead[grid-manager-thead] th[th-name="${_th.attr('th-name')}"]`, _table);
 				_prevTh.before(__th);
 			}
 			// 处理向右拖拽
 		} else if (nextTh && nextTh.length !== 0 && dreamlandDIV.offset().left + dreamlandDIV.width() > nextTh.offset().left) {
 			nextTd = Base.getColTd(nextTh);
 			nextTh.after(_th);
-			$.each(colTd, (i, v) => {
+			jTool.each(colTd, (i, v) => {
 				nextTd.eq(i).after(v);
 			});
 
 			if (haveMockThead) {
-				let _nextTh = $(`thead[grid-manager-thead] th[th-name="${nextTh.attr('th-name')}"]`, _table);
-				let __th = $(`thead[grid-manager-thead] th[th-name="${_th.attr('th-name')}"]`, _table);
+				let _nextTh = jTool(`thead[grid-manager-thead] th[th-name="${nextTh.attr('th-name')}"]`, _table);
+				let __th = jTool(`thead[grid-manager-thead] th[th-name="${_th.attr('th-name')}"]`, _table);
 				_nextTh.after(__th);
 			}
 		}
@@ -234,7 +234,7 @@ class Drag {
 	 * @param $table
 	 */
 	destroy($table) {
-		const $body = $('body');
+		const $body = jTool('body');
 		// 清理: 拖拽换位事件
 		$table.off('mousedown', '.drag-action');
 
