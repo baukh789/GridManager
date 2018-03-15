@@ -183,8 +183,8 @@ class BaseClass {
 		const thPaddingLeft = thWarp.css('padding-left');
 		const thPaddingRight = thWarp.css('padding-right');
 		// 返回宽度值
-		// 文本所占宽度 + 左内间距 + 右内间距 + 由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错
-		return textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2;
+		// 文本所占宽度 + 左内间距 + 右内间距 + (由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错) + th-wrap减去的1px
+		return textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1;
 	}
 
 	/**
@@ -204,7 +204,7 @@ class BaseClass {
 		dom.append(loadingDom);
 
 		// 进行loading图标居中显示
-		const loadInner = dom.find('.load-area').find('.loadInner');
+		const loadInner = jTool('.load-area .loadInner', dom);
 		const domHeight = dom.height();
 		const loadInnerHeight = loadInner.height();
 		loadInner.css('margin-top', (domHeight - loadInnerHeight) / 2);
