@@ -22,7 +22,7 @@ describe('Cache 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Cache)))).toBe(14 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Cache)))).toBe(16 + 1);
 	});
 });
 
@@ -44,10 +44,24 @@ describe('Cache.getRowData($table, target)', function() {
 	});
 });
 
-describe('Cache.setRowData(gmName, key, value)', function() {
+describe('Cache.setRowData($table, index, rowData)', function() {
 	it('基础验证', function(){
 		expect(Cache.setRowData).toBeDefined();
 		expect(Cache.setRowData.length).toBe(3);
+	});
+});
+
+describe('Cache.getTableData($table)', function() {
+	it('基础验证', function(){
+		expect(Cache.getTableData).toBeDefined();
+		expect(Cache.getTableData.length).toBe(1);
+	});
+});
+
+describe('Cache.setTableData($table, data)', function() {
+	it('基础验证', function(){
+		expect(Cache.setTableData).toBeDefined();
+		expect(Cache.setTableData.length).toBe(2);
 	});
 });
 

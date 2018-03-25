@@ -3,6 +3,8 @@
  * */
 import { jTool } from './Base';
 import I18n from './I18n';
+import Cache from './Cache';
+
 class Checkbox {
 	// 全选的唯一标识
 	get key() {
@@ -64,14 +66,21 @@ class Checkbox {
 			// td中的选择框
 			const _tdCheckbox = jTool('tbody td[gm-checkbox] input[type="checkbox"]', $table);
 
+			// TODO @baukh20180322: 这里的命名存在问题
+			const _tr = jTool(_checkAction).closest('tr');
+
 			// 当前为全选事件源
 			if (_checkAction.closest(`th[th-name="${_this.key}"]`).length === 1) {
-				jTool.each(_tdCheckbox, (index, item) => {
-					item.checked = _checkAction.prop('checked');
-					jTool(item).closest('tr').attr('checked', item.checked);
+				jTool.each(_tdCheckbox, (index, input) => {
+					input.checked = _checkAction.prop('checked');
+					jTool(input).closest('tr').attr('checked', input.checked);
 				});
 			} else {
 				// 当前为单个选择
+				// TODO @baukh20180322: 可以将此处的 getRowData, setRowData 抽取成一个Checkbox类的方法进行处理
+				const rowData = Cache.getRowData($table, _tr.get(0));
+				rowData[_this.key] = true;
+				Cache.setRowData($table, _tr.attr('cache-key'), rowData);
 				jTool.each(_tdCheckbox, (index, item) => {
 					if (item.checked === false) {
 						_thChecked = false;

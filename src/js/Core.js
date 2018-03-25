@@ -143,7 +143,7 @@ class Core {
 		}
 
 		const tbodyDOM = jTool('tbody', $table);
-		const gmName = Base.getKey($table);
+		// const gmName = Base.getKey($table);
 
 		let parseRes = typeof (response) === 'string' ? JSON.parse(response) : response;
 
@@ -161,13 +161,18 @@ class Core {
 		// 数据模板导出的html
 		let	templateHTML = null;
 
+		// 清空thead中的全选 TODO @baukh20180322: 现在Checkbox内进行处理, 如果存在问题. 再在这里进行处理
+		if (settings.supportCheckbox) {
+			jTool(`thead th[th-name=${Checkbox.key}] input[type="checkbox"]`, $table).prop('checked', false);
+		}
+
 		// 数据为空时
 		if (!_data || _data.length === 0) {
 			let visibleNum = jTool('th[th-visible="visible"]', $table).length;
 			parseRes.totals = 0;
 			tbodyDOM.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
 		} else {
-			// 为数据追加序号字段
+			// add order
 			if (settings.supportAutoOrder) {
 				let _pageData = settings.pageData;
 				let	_orderBaseNumber = 1;
@@ -182,7 +187,7 @@ class Core {
 				});
 			}
 
-			// 为数据追加全选字段
+			// add checkbox
 			if (settings.supportCheckbox) {
 				_data = _data.map((item, index) => {
 					item[Checkbox.key] = false;
@@ -194,9 +199,10 @@ class Core {
 			// 拼接tbody的HTML结构
 			let tbodyTmpHTML = '';
 
+			// 存储表格数据
+			Cache.setTableData($table, _data);
+
 			jTool.each(_data, (index, row) => {
-				// TODO 考虑在循环外对数据进行存储, 直接对responseData[gmName]进行操作
-				Cache.setRowData(gmName, index, row);
 				tbodyTmpHTML += `<tr cache-key="${index}">`;
 				jTool.each(settings.columnMap, (key, col) => {
 					template = col.template;

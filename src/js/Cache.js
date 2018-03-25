@@ -20,7 +20,7 @@ class Cache {
 	}
 
 	/**
-	 * 获取当前行渲染时使用的数据
+	 * 获取当前行使用的数据
 	 * @param $table 当前操作的grid,由插件自动传入
 	 * @param target 将要获取数据所对应的tr[Element or NodeList]
 	 * @returns {*}
@@ -47,26 +47,35 @@ class Cache {
 	}
 
 	/**
-	 * 存储行数据
-	 * @param gmName
-	 * @param key
-	 * @param value
-	 */
-	setRowData(gmName, key, value) {
-		if (!store.responseData[gmName]) {
-			store.responseData[gmName] = {};
-		}
-		store.responseData[gmName][key] = value;
+	 * 设置当前行使用的数据
+	 * @param $table
+	 * @param index
+	 * @param rowData
+     */
+	setRowData($table, index, rowData) {
+		store.responseData[Base.getKey($table)][index] = rowData;
 	}
 
 	/**
-	 * 获取完整的渲染时使用的数据
+	 * 获取表格数据
 	 * @param $table
 	 */
-	// TODO 该方法暂时无用
-	// getTableData($table) {
-	// 	return store.responseData[Base.getKey($table)] || {};
-	// }
+	getTableData($table) {
+		return store.responseData[Base.getKey($table)] || [];
+	}
+
+	/**
+	 * 存储表格数据
+	 * @param $table
+	 * @param data
+	 */
+	setTableData($table, data) {
+		const gmName = Base.getKey($table);
+		if (!store.responseData[gmName]) {
+			store.responseData[gmName] = {};
+		}
+		store.responseData[gmName] = data;
+	}
 
 	/**
 	 * 删除用户记忆
