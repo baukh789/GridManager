@@ -184,9 +184,9 @@ class Core {
 
 			// add checkbox
 			if (settings.supportCheckbox) {
-				_data = _data.map((item, index) => {
-					item[Checkbox.key] = false;
-					return item;
+				_data = _data.map(rowData => {
+					rowData[Checkbox.key] = false;
+					return rowData;
 				});
 			}
 			const tdList = [];
