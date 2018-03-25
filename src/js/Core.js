@@ -161,11 +161,6 @@ class Core {
 		// 数据模板导出的html
 		let	templateHTML = null;
 
-		// 清空thead中的全选 TODO @baukh20180322: 现在Checkbox内进行处理, 如果存在问题. 再在这里进行处理
-		if (settings.supportCheckbox) {
-			jTool(`thead th[th-name=${Checkbox.key}] input[type="checkbox"]`, $table).prop('checked', false);
-		}
-
 		// 数据为空时
 		if (!_data || _data.length === 0) {
 			let visibleNum = jTool('th[th-visible="visible"]', $table).length;
@@ -221,6 +216,13 @@ class Core {
 			tbodyDOM.html(tbodyTmpHTML);
 			this.initVisible($table);
 		}
+
+
+		// 渲染选择框
+		if (settings.supportCheckbox) {
+			Checkbox.resetDOM($table, _data);
+		}
+
 		// 渲染分页
 		if (settings.supportAjaxPage) {
 			AjaxPage.resetPageData($table, settings, parseRes[settings.totalsKey]);
@@ -236,8 +238,6 @@ class Core {
      */
 	createDOM($table) {
 		let settings = Cache.getSettings($table);
-		// TODO 这行代码已经移到css内, 需要进行验证
-		// $table.attr('width', '100%').attr('cellspacing', 0);
 		let theadHtml = '<thead grid-manager-thead>';
 		let	tbodyHtml = '<tbody></tbody>';
 

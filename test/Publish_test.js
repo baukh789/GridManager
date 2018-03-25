@@ -708,12 +708,20 @@ describe('PublishMethod.destroy(table)', function() {
 	});
 
 	it('验证移除效果', function () {
-		expect(table.jToolEvent['clickinput[type="checkbox"]']).toBeDefined();
+		// 全选
+		expect(table.jToolEvent['clickth[gm-checkbox="true"] input[type="checkbox"]']).toBeDefined();
+		expect(table.jToolEvent['clicktd[gm-checkbox="true"] input[type="checkbox"]']).toBeDefined();
+
+		// 宽度调整
 		expect(table.jToolEvent['mousedown.adjust-action']).toBeDefined();
+
+		// 排序
 		expect(table.jToolEvent['mouseup.sorting-action']).toBeDefined();
+
+		// Hover
 		expect(table.jToolEvent['mousemovetd']).toBeDefined();
 		PublishMethod.destroy(table);
-		expect(table.jToolEvent['clickinput[type="checkbox"]']).toBeUndefined();
+		expect(table.jToolEvent['clickth[gm-checkbox="true"] input[type="checkbox"]']).toBeUndefined();
 		expect(table.jToolEvent['mousedown.adjust-action']).toBeUndefined();
 		expect(table.jToolEvent['mouseup.sorting-action']).toBeUndefined();
 		expect(table.jToolEvent['mousemovetd']).toBeUndefined();

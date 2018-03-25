@@ -52,44 +52,72 @@ class Checkbox {
      */
 	bindCheckboxEvent($table) {
 		const _this = this;
-		$table.off('click', 'input[type="checkbox"]');
-		$table.on('click', 'input[type="checkbox"]', function () {
-			// 存储th中的checkbox的选中状态
-			let _thChecked = true;
+		// th内的全选
+		$table.off('click', 'th[gm-checkbox="true"] input[type="checkbox"]');
+		$table.on('click', 'th[gm-checkbox="true"] input[type="checkbox"]', function () {
+			const tableData = _this.resetData($table, this.checked, true);
+			_this.resetDOM($table, tableData);
+		});
 
-			// 全选键事件源
-			const _checkAction = jTool(this);
+		// td内的单选
+		$table.off('click', 'td[gm-checkbox="true"] input[type="checkbox"]');
+		$table.on('click', 'td[gm-checkbox="true"] input[type="checkbox"]', function () {
+			const tableData = _this.resetData($table, this.checked, false, jTool(this).closest('tr').attr('cache-key'));
+			_this.resetDOM($table, tableData);
+		});
+	}
 
-			// th中的选择框
-			const _thCheckbox = jTool('thead th[gm-checkbox] input[type="checkbox"]', $table);
+	/**
+	 *
+	 * 重置选择框相关数据
+	 * @param $table
+	 * @param status
+	 * @param isAllCheck
+	 * @param cacheKey
+     * @returns {*}
+     */
+	resetData($table, status, isAllCheck, cacheKey) {
+		const tableData = Cache.getTableData($table);
+		// 全选
+		if (isAllCheck && !cacheKey) {
+			tableData.forEach(row => {
+				row[this.key] = status;
+			});
+		}
 
-			// td中的选择框
-			const _tdCheckbox = jTool('tbody td[gm-checkbox] input[type="checkbox"]', $table);
+		// 单选
+		if (!isAllCheck && cacheKey) {
+			tableData[cacheKey][this.key] = status;
+		}
 
-			// TODO @baukh20180322: 这里的命名存在问题
-			const _tr = jTool(_checkAction).closest('tr');
+		// 存储数据
+		Cache.setTableData($table, tableData);
+		return tableData;
+	}
 
-			// 当前为全选事件源
-			if (_checkAction.closest(`th[th-name="${_this.key}"]`).length === 1) {
-				jTool.each(_tdCheckbox, (index, input) => {
-					input.checked = _checkAction.prop('checked');
-					jTool(input).closest('tr').attr('checked', input.checked);
-				});
-			} else {
-				// 当前为单个选择
-				// TODO @baukh20180322: 可以将此处的 getRowData, setRowData 抽取成一个Checkbox类的方法进行处理
-				const rowData = Cache.getRowData($table, _tr.get(0));
-				rowData[_this.key] = true;
-				Cache.setRowData($table, _tr.attr('cache-key'), rowData);
-				jTool.each(_tdCheckbox, (index, item) => {
-					if (item.checked === false) {
-						_thChecked = false;
-					}
-					jTool(item).closest('tr').attr('checked', item.checked);
-				});
-				_thCheckbox.prop('checked', _thChecked);
+	/**
+	 * 重置选择框DOM
+	 * @param $table
+	 * @param tableData
+     */
+	resetDOM($table, tableData) {
+		// 当前是否为全选
+		let checkedAll = true;
+
+		// 更改DOM
+		// update td checkbox DOM
+		tableData.forEach((row, index) => {
+			const $tr = jTool(`tbody tr[cache-key="${index}"]`, $table);
+			const $input = jTool(`td[gm-checkbox="true"] input[type="checkbox"]`, $tr);
+			$tr.attr('checked', row[this.key]);
+			$input.prop('checked', row[this.key]);
+			if (!row[this.key]) {
+				checkedAll = false;
 			}
 		});
+
+		// reset th checkbox DOM
+		jTool(`thead tr th[gm-checkbox="true"] input[type="checkbox"]`, $table).prop('checked', checkedAll);
 	}
 
 	/**
@@ -98,7 +126,8 @@ class Checkbox {
 	 */
 	destroy($table) {
 		// 清理: 选择框事件
-		$table.off('click', 'input[type="checkbox"]');
+		$table.off('click', 'th[gm-checkbox="true"] input[type="checkbox"]');
+		$table.off('click', 'td[gm-checkbox="true"] input[type="checkbox"]');
 	}
 }
 export default new Checkbox();
