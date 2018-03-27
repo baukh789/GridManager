@@ -5,12 +5,11 @@ const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const genRules = require('./webpack-common.loader');
 const buildPath = path.join(__dirname, "build");
 
+// API: http://www.css88.com/doc/webpack2/guides/development/
 const config = {
 
 	// 入口文件所在的上下文
 	context: path.join(__dirname, "src/"),
-
-	devtool: 'source-map',
 
 	// 入口文件配置
 	entry: {
@@ -25,14 +24,14 @@ const config = {
 	// 文件导出的配置
 	output:{
 		path: buildPath ,
-		filename: "js/GridManager.js"
+		filename: "js/gm.js"
 	},
 	// 以插件形式定制webpack构建过程
 	plugins: [
 		// 将样式文件 抽取至独立文件内
 		new ExtractTextWebpackPlugin({
 			// 生成文件的文件名
-			filename: 'css/GridManager.css',
+			filename: 'css/gm.css',
 
 			// 是否禁用插件
 			disable: false,

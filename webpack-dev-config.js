@@ -1,9 +1,12 @@
 const path = require('path');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const genRules = require('./webpack-common.loader');
+
+// API: http://www.css88.com/doc/webpack2/guides/development/
 const config = {
 	// map
-	devtool : 'source-map',  // TODO  http://www.css88.com/doc/webpack2/configuration/devtool/
+	//  http://www.css88.com/doc/webpack2/configuration/devtool/
+	devtool : 'source-map',
 
 	// 入口文件配置
 	context: path.join(__dirname, "src/"),
