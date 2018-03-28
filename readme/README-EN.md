@@ -31,13 +31,13 @@
 
 ## Install Command
 ```
-npm install GridManager
+npm install gridmanager
 ```
 
 ## Way of Introduction
 ```html
-<link rel="stylesheet" type="text/css" href="/node_modules/GridManager/css/GridManager.css"/>
-<script type="text/javascript" src="/node_modules/GridManager/js/GridManager.js"></script>
+<link rel="stylesheet" type="text/css" href="/node_modules/gridmanager/css/gm.css"/>
+<script type="text/javascript" src="/node_modules/gridmanager/js/gm.js"></script>
 ```
 
 ## Browser Capabilities

@@ -32,13 +32,13 @@
 
 ## 安装命令
 ```
-npm install GridManager
+npm install gridmanager
 ```
 
 ## 引入方式
 ```html
-<link rel="stylesheet" type="text/css" href="/node_modules/GridManager/css/GridManager.css"/>
-<script type="text/javascript" src="/node_modules/GridManager/js/GridManager.js"></script>
+<link rel="stylesheet" type="text/css" href="/node_modules/gridmanager/css/gm.css"/>
+<script type="text/javascript" src="/node_modules/gridmanager/js/gm.js"></script>
 ```
 
 ## 浏览器兼容

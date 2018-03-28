@@ -24,7 +24,7 @@ const config = {
 	// 文件导出的配置
 	output:{
 		// path: '/' ,
-		filename: "js/GridManager.js",
+		filename: "js/gm.js",
 		// publicPath 对于热替换（HMR）是必须的，让webpack知道在哪里载入热更新的模块（chunk）
 		publicPath: "/"
 	},
@@ -33,7 +33,7 @@ const config = {
 	plugins: [
 		// 将样式文件 抽取至独立文件内
 		new ExtractTextWebpackPlugin({
-			filename: 'css/GridManager.css',
+			filename: 'css/gm.css',
 			disable: false,
 			allChunks: true
 		})
