@@ -28,6 +28,7 @@
 - Context Menu: frequently used functions can be find in the context menu
 
 ## Version Information
+- [v2.5.x.md](/version/v2.5.x.md)
 - [v2.4.x.md](/version/v2.4.x.md)
 - [v2.3.x.md](/version/v2.3.x.md)
 - [v2.2.x.md](/version/v2.2.x.md)
