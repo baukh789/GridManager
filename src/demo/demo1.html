@@ -238,21 +238,22 @@
 			});
 		}
 
+		// 删除功能
+		function delectRowData(node){
+			// 获取到当前的tr node
+			var tr = node.parentNode.parentNode;
+			// 获取到当前渲染tr 所使用的数据
+			var rowData = document.querySelector('table').GM('getRowData', tr);
+			// 执行删除操作
+			if(window.confirm('确认要删除['+rowData.name+']?')){
+				window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
+			}
+		}
+
 		/**
-		 * 提供demo中的搜索, 重置, 删除方法
+		 * 提供demo中的搜索, 重置
 		 */
 		(function(){
-			// 删除功能
-			function delectRowData(node){
-				// 获取到当前的tr node
-				var tr = node.parentNode.parentNode;
-				// 获取到当前渲染tr 所使用的数据
-				var rowData = document.querySelector('table').GM('getRowData', tr);
-				// 执行删除操作
-				if(window.confirm('确认要删除['+rowData.name+']?')){
-					window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
-				}
-			}
 
 			// 绑定搜索事件
 			document.querySelector('.search-action').addEventListener('click', function () {
