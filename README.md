@@ -27,6 +27,9 @@
 - Export: the visible data or the checked lists can be download
 - Context Menu: frequently used functions can be find in the context menu
 
+## GridManager of Angular 
+- [Angular 1.x](https://github.com/baukh789/GridManager-Angular-1.x)
+
 ## Version Information
 - [v2.5.x.md](/version/v2.5.x.md)
 - [v2.4.x.md](/version/v2.4.x.md)
