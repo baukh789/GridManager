@@ -187,6 +187,7 @@
 					width: '100px',
 					text: '最后修改时间',
 					sorting: '',
+					// 使用函数返回template
 					template: function(lastDate, rowObject){
 						return new Date(lastDate).toLocaleDateString();
 					}
@@ -195,9 +196,8 @@
 					remind: 'the action',
 					width: '10%',
 					text: `<div>操作</div>`,
-					template: function(action, rowObject){
-						return '<span class="plugin-action del-action" onclick="delectRowData(this)" learnLink-id="'+rowObject.id+'">删除</span>';
-					}
+					// 直接返回template
+					template: '<span class="plugin-action del-action" onclick="delectRowData(this)">删除</span>'
 				}
 				]
 				// 分页前事件

@@ -202,7 +202,7 @@ class Core {
 				jTool.each(settings.columnMap, (key, col) => {
 					template = col.template;
 					// td 模板
-					templateHTML = typeof template === 'function' ? template(row[col.key], row) : row[col.key];
+					templateHTML = typeof template === 'function' ? template(row[col.key], row) : (typeof template === 'string' ? template : row[col.key]);
 
 					// td 文本对齐方向
 					alignAttr = col.align ? `align="${col.align}"` : '';
