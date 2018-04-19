@@ -30,6 +30,7 @@
 ## GridManager by frameworks
 - [GridManager by Angular 1.x](https://github.com/baukh789/GridManager-Angular-1.x)
 - [GridManager by Vue](https://github.com/baukh789/GridManager-Vue)
+- [GridManager by React](https://github.com/baukh789/GridManager-React)
 
 ## Version Information
 - [v2.5.x.md](/version/v2.5.x.md)
