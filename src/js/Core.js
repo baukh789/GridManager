@@ -142,7 +142,7 @@ class Core {
 			return;
 		}
 
-		const tbodyDOM = jTool('tbody', $table);
+		const $tbody = jTool('tbody', $table);
 		// const gmName = Base.getKey($table);
 
 		let parseRes = typeof (response) === 'string' ? JSON.parse(response) : response;
@@ -152,20 +152,14 @@ class Core {
 
 		let _data = parseRes[settings.dataKey];
 
-		// 文本对齐属性
-		let	alignAttr = null;
-
-		// 数据模板
-		let	template = null;
-
-		// 数据模板导出的html
-		let	templateHTML = null;
+		// td模板
+		let	tdTemplate = null;
 
 		// 数据为空时
 		if (!_data || _data.length === 0) {
 			let visibleNum = jTool('th[th-visible="visible"]', $table).length;
 			parseRes.totals = 0;
-			tbodyDOM.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
+			$tbody.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
 		} else {
 			// add order
 			if (settings.supportAutoOrder) {
@@ -189,34 +183,39 @@ class Core {
 					return rowData;
 				});
 			}
-			const tdList = [];
-
-			// 拼接tbody的HTML结构
-			let tbodyTmpHTML = '';
 
 			// 存储表格数据
 			Cache.setTableData($table, _data);
 
+			// 清空 tbody
+			$tbody.html('');
+
+            // 组装 tbody
 			jTool.each(_data, (index, row) => {
-				tbodyTmpHTML += `<tr cache-key="${index}">`;
+				const trNode = document.createElement('tr');
+				trNode.setAttribute('cache-key', index);
 				jTool.each(settings.columnMap, (key, col) => {
-					template = col.template;
+					tdTemplate = col.template;
 					// td 模板
-					templateHTML = typeof template === 'function' ? template(row[col.key], row) : (typeof template === 'string' ? template : row[col.key]);
+					tdTemplate = typeof tdTemplate === 'function' ? tdTemplate(row[col.key], row) : (typeof tdTemplate === 'string' ? tdTemplate : row[col.key]);
 
-					// td 文本对齐方向
-					alignAttr = col.align ? `align="${col.align}"` : '';
+					// 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
+					let tdNode = null;
+					if (col.isAutoCreate) {
+						tdNode = jTool(tdTemplate).get(0);
+					} else {
+						tdNode = jTool('<td gm-create="false"></td>').get(0);
+						jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerText = tdTemplate || '';
+					}
 
-					// 插件自带列(序号,全选) 的 templateHTML会包含dom节点, 所以需要特殊处理一下
-					tdList[col.index] = col.isAutoCreate ? templateHTML : `<td gm-create="false" ${alignAttr}>${templateHTML}</td>`;
+                    // td 文本对齐方向
+					col.align && tdNode.setAttribute('align', col.align);
+					trNode.appendChild(tdNode);
 				});
-				tbodyTmpHTML += tdList.join('');
-				tbodyTmpHTML += '</tr>';
+				$tbody.append(trNode);
 			});
-			tbodyDOM.html(tbodyTmpHTML);
 			this.initVisible($table);
 		}
-
 
 		// 渲染选择框
 		if (settings.supportCheckbox) {

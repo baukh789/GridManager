@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const genRules = require('./webpack-common.loader');
-const buildPath = path.join(__dirname, "build");
+const buildPath = path.join(__dirname, "dist");
 
 // API: http://www.css88.com/doc/webpack2/guides/development/
 const config = {

@@ -2,8 +2,8 @@
 node_modules/
 npm-debug.log
 build
+dist
 .idea
 .DS_Store
 js/.DS_Store
 /coverage
-build/GridManager.zip

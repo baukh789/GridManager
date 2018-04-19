@@ -18,7 +18,7 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-			'test/*_test.js',
+			// 'test/*_test.js',
 			// 'test/Adjust_test.js',
 			// 'test/AjaxPage_test.js',
 			// 'test/Base_test.js',
@@ -35,7 +35,7 @@ module.exports = function (config) {
 			// 'test/index_jQuery_test.js',
 			// 'test/Menu_test.js',
 			// 'test/Order_test.js',
-			// 'test/Publish_test.js',
+			'test/Publish_test.js',
 			// 'test/Remind_test.js',
 			// 'test/Scroll_test.js',
 			// 'test/Settings_test.js',

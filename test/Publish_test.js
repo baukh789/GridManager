@@ -135,20 +135,30 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 					text: '使用说明'
 				},{
 					key: 'url',
-					text: 'url'
+					text: 'url',
+                    // 使用函数返回 dom node
+                    template: function(url) {
+                        var urlNode = document.createElement('a');
+                        urlNode.setAttribute('href', url);
+                        urlNode.setAttribute('target', '_blank');
+                        urlNode.innerText = url;
+                        return urlNode;
+                    }
 				},{
 					key: 'createDate',
 					text: '创建时间'
 				},{
 					key: 'lastDate',
-					text: '最后修改时间'
-				},{
+					text: '最后修改时间',
+                    // 使用函数返回 htmlString
+                    template: function(lastDate, rowObject){
+                        return new Date(lastDate).toLocaleDateString();
+                    }
+                },{
 					key: 'action',
 					text: '操作',
-					template: function(action, rowObject){
-						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-					}
+                    // 直接返回 htmlString
+                    template: '<span class="plugin-action del-action" onclick="delectRowData(this)">删除</span>'
 				}
 			]
 		};
