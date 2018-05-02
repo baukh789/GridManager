@@ -205,10 +205,10 @@ class Core {
 						tdNode = jTool(tdTemplate).get(0);
 					} else {
 						tdNode = jTool('<td gm-create="false"></td>').get(0);
-						jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerText = tdTemplate || '';
+						jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = tdTemplate || '';
 					}
 
-                    // td 文本对齐方向
+					// td 文本对齐方向
 					col.align && tdNode.setAttribute('align', col.align);
 					trNode.appendChild(tdNode);
 				});
