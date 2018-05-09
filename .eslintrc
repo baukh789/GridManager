@@ -55,7 +55,7 @@
     // 规定callback 如果有err参数，只能写出err 或者 error .
     "handle-callback-err": [2, "^(err|error)$" ],
     //这个就是关于用什么来缩进了，规定使用tab 来进行缩进，switch中case也需要一个tab .
-    "indent": [2, "tab", { "SwitchCase": 1 }],
+    "indent": 0,
     //该规则规定了在对象字面量语法中，key和value之间的空白，冒号前不要空格，冒号后面需要一个空格
     "key-spacing": [2, { "beforeColon": false, "afterColon": true }],
     //构造函数首字母大写

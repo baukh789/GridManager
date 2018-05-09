@@ -182,14 +182,8 @@ class Adjust {
 			// 更新滚动轴状态
 			Base.updateScrollStatus($table);
 
-			// 更新表格列Map
-			settings.columnMap = Cache.reworkColumnMap($table, settings.columnMap);
-
-			// 重置settings
-			Cache.setSettings($table, settings);
-
-			// 存储用户记忆
-			Cache.saveUserMemory($table);
+            // 更新存储信息
+            Cache.update($table, settings);
 		});
 	}
 }

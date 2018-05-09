@@ -90,7 +90,6 @@ class Config {
 		// 事件: 设置
 		jTool('.config-list li', tableWarp).unbind('click');
 		jTool('.config-list li', tableWarp).bind('click', function () {
-			const settings = Cache.getSettings($table);
 			// 单个的设置项
 			const _only = jTool(this);
 
@@ -107,10 +106,12 @@ class Config {
 			const _tableDiv	= jTool('.table-div', _tableWarp);
 
 			// 所对应的table
-			const _table = jTool('[grid-manager]', _tableWarp);
+			const _$table = jTool('[grid-manager]', _tableWarp);
+
+            const settings = Cache.getSettings(_$table);
 
 			// 所对应的th
-			const _th = jTool(`thead[grid-manager-thead] th[th-name="${_thName}"]`, _table);
+			const _th = jTool(`thead[grid-manager-thead] th[th-name="${_thName}"]`, _$table);
 
 			// 最后一项显示列不允许隐藏
 			if (_only.hasClass('no-click')) {
@@ -135,14 +136,14 @@ class Config {
 
 			// 重置调整宽度事件源
 			if (settings.supportAdjust) {
-				Adjust.resetAdjust(_table);
+				Adjust.resetAdjust(_$table);
 			}
 
 			// 重置镜像滚动条的宽度
 			jTool('.sa-inner', _tableWarp).width('100%');
 
 			// 重置当前可视th的宽度
-			const _visibleTh = jTool('thead[grid-manager-thead] th[th-visible="visible"]', _table);
+			const _visibleTh = jTool('thead[grid-manager-thead] th[th-visible="visible"]', _$table);
 			jTool.each(_visibleTh, (i, v) => {
 				// 特殊处理: GM自动创建的列使终为50px
 				if (v.getAttribute('gm-create') === 'true') {
@@ -164,17 +165,11 @@ class Config {
 				}
 			});
 
-			// 更新表格列Map
-			settings.columnMap = Cache.reworkColumnMap($table, settings.columnMap);
-
-			// 重置settings
-			Cache.setSettings($table, settings);
-
-			// 存储用户记忆
-			Cache.saveUserMemory(_table);
+            // 更新存储信息
+            Cache.update(_$table, settings);
 
 			// 处理置顶表头
-			const topThead = jTool(`thead[${Base.getSetTopAttr()}]`, _table);
+			const topThead = jTool(`thead[${Base.getSetTopAttr()}]`, _$table);
 			if (topThead.length === 1) {
 				topThead.remove();
 				_tableDiv.trigger('scroll');

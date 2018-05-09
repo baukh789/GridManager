@@ -372,7 +372,7 @@ class AjaxPage {
 				pSize: window.parseInt(_size.val())
 			};
 
-			Cache.saveUserMemory(_table);
+			Cache.saveUserMemory(_table, settings);
 
 			// 更新缓存
 			Cache.setSettings($table, settings);

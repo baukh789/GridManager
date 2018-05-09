@@ -98,6 +98,8 @@ export default class GridManager {
 	static
 	showTh(table, target) {
 		Base.setAreVisible(jTool(target), true);
+        // 更新存储信息
+        Cache.update(jTool(table));
 	}
 
 	// TODO 这个方法名称起的不规范, 按作用应该更名为hideCol
@@ -110,6 +112,8 @@ export default class GridManager {
 	static
 	hideTh(table, target) {
 		Base.setAreVisible(jTool(target), false);
+        // 更新存储信息
+        Cache.update(jTool(table));
 	}
 
 	/**
@@ -302,7 +306,7 @@ export default class GridManager {
 		// 如果初始获取缓存失败，在渲染完成后首先存储一次数据
 		if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
 			window.setTimeout(() => {
-				Cache.saveUserMemory($table);
+				Cache.saveUserMemory($table, settings);
 				$table.removeAttr('grid-manager-cache-error');
 			}, 1000);
 		}

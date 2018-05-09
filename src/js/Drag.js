@@ -163,12 +163,8 @@ class Drag {
 					});
 				}
 
-				// 更新表格列Map
-				settings.columnMap = Cache.reworkColumnMap($table, settings.columnMap);
-				Cache.setSettings($table, settings);
-
-				// 存储用户记忆
-				Cache.saveUserMemory(_table);
+                // 更新存储信息
+                Cache.update($table, settings);
 
 				// 重置调整宽度事件源
 				if (settings.supportAdjust) {
