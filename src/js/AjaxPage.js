@@ -13,7 +13,7 @@ class AjaxPage {
      */
 	createHtml(settings) {
 		const html = `<div class="page-toolbar">
-						<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>
+						<div class="refresh-action"><i class="iconfont icon-refresh"></i></div>
 						<div class="goto-page">
 							${ I18n.i18nText(settings, 'goto-first-text') }
 							<input type="text" class="gp-input"/>

@@ -184,11 +184,11 @@ describe('Menu.updateMenuPageStatus(gridManagerName, pageData)', () => {
 		menuHtml = `<div class="grid-menu" ${Menu.keyName}="test-updateMenuPageStatus">
 						<span grid-action="refresh-page" refresh-type="previous">
 							上一页
-							<i class="iconfont icon-sanjiao2"></i>
+							<i class="iconfont icon-up"></i>
 						</span>
 						<span grid-action="refresh-page" refresh-type="next">
 							下一页
-							<i class="iconfont icon-sanjiao1"></i>
+							<i class="iconfont icon-down"></i>
 						</span>;
 					</div>`;
 	});

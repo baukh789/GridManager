@@ -12,7 +12,7 @@ class Config {
 	get html() {
 		const html = `<div class="config-area">
 						<span class="config-action">
-							<i class="iconfont icon-31xingdongdian"></i>
+							<i class="iconfont icon-close"></i>
 						</span>
 						<ul class="config-list"></ul>
 					</div>`;

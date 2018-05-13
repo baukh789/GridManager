@@ -9,7 +9,7 @@ class Remind {
      */
 	get html() {
 		const html = `<div class="remind-action">
-						<i class="ra-help iconfont icon-icon"></i>
+						<i class="ra-help iconfont icon-help"></i>
 						<div class="ra-area">
 							<span class="ra-title"></span>
 							<span class="ra-con"></span>

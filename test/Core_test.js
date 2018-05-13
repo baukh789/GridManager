@@ -44,7 +44,7 @@ describe('Core.removeRefreshingClass($tableWrap)', function() {
 		tableWrap = `
 					<div class="table-wrap">
 						<div class="page-toolbar">
-							<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>
+							<div class="refresh-action"><i class="iconfont icon-refresh"></i></div>
 						</div>
 					</div>`;
 		document.body.innerHTML = tableWrap;

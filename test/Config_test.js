@@ -30,7 +30,7 @@ describe('Config.html', function() {
 		expect(Config.html).toBeDefined();
 		var configHtml = `<div class="config-area">
 							<span class="config-action">
-								<i class="iconfont icon-31xingdongdian"></i>
+								<i class="iconfont icon-close"></i>
 							</span>
 							<ul class="config-list"></ul>
 						</div>`;

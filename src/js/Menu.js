@@ -35,18 +35,18 @@ class Menu {
 		if (settings.supportAjaxPage) {
 			menuHTML += `<span grid-action="refresh-page" refresh-type="previous">
 							${I18n.i18nText(settings, 'previous-page')}
-							<i class="iconfont icon-sanjiao2"></i>
+							<i class="iconfont icon-up"></i>
 						</span>
 						<span grid-action="refresh-page" refresh-type="next">
 							${I18n.i18nText(settings, 'next-page')}
-							<i class="iconfont icon-sanjiao1"></i>
+							<i class="iconfont icon-down"></i>
 						</span>`;
 		}
 
 		// 重新加载当前页
 		menuHTML += `<span grid-action="refresh-page" refresh-type="refresh">
 						${I18n.i18nText(settings, 'refresh')}
-						<i class="iconfont icon-31shuaxin"></i>
+						<i class="iconfont icon-refresh"></i>
 					</span>`;
 
 		// 导出
@@ -54,11 +54,11 @@ class Menu {
 			menuHTML += `<span class="grid-line"></span>
 						<span grid-action="export-excel" only-checked="false">
 							${I18n.i18nText(settings, 'save-as-excel')}
-							<i class="iconfont icon-baocun"></i>
+							<i class="iconfont icon-xls"></i>
 						</span>
 						<span grid-action="export-excel" only-checked="true">
 							${I18n.i18nText(settings, 'save-as-excel-for-checked')}
-							<i class="iconfont icon-saveas24"></i>
+							<i class="iconfont icon-xls"></i>
 						</span>`;
 		}
 
@@ -67,7 +67,7 @@ class Menu {
 			menuHTML += `<span class="grid-line"></span>
 						<span grid-action="config-grid">
 							${I18n.i18nText(settings, 'config-grid')}
-							<i class="iconfont icon-shezhi"></i>
+							<i class="iconfont icon-config"></i>
 						</span>`;
 		}
 		menuHTML += `</div>`;

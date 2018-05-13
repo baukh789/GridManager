@@ -38,8 +38,8 @@ describe('Sort.init($table)', function() {
 describe('Sort.html', function() {
 	it('基础验证', function() {
 		let sortHtml = `<div class="sorting-action">
-						<i class="sa-icon sa-up iconfont icon-sanjiao2"></i>
-						<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>
+						<i class="sa-icon sa-up iconfont icon-up"></i>
+						<i class="sa-icon sa-down iconfont icon-down"></i>
 					</div>`;
 		expect(Sort.html.replace(/\s/g, '')).toBe(sortHtml.replace(/\s/g, ''));
 		sortHtml = null;

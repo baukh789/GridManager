@@ -44,7 +44,7 @@ describe('AjaxPage.createHtml($table)', function() {
 
 	it('返回值', function () {
 		let ajaxPageHtml = `<div class="page-toolbar">
-						<div class="refresh-action"><i class="iconfont icon-shuaxin"></i></div>
+						<div class="refresh-action"><i class="iconfont icon-refresh"></i></div>
 						<div class="goto-page">
 							跳转至
 							<input type="text" class="gp-input"/>

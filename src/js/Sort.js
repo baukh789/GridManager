@@ -11,8 +11,8 @@ class Sort {
      */
 	get html() {
 		const html = `<div class="sorting-action">
-						<i class="sa-icon sa-up iconfont icon-sanjiao2"></i>
-						<i class="sa-icon sa-down iconfont icon-sanjiao1"></i>
+						<i class="sa-icon sa-up iconfont icon-up"></i>
+						<i class="sa-icon sa-down iconfont icon-down"></i>
 					</div>`;
 		return html;
 	}
