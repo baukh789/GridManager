@@ -2,7 +2,7 @@
  * Created by baukh on 17/4/19.
  */
 'use strict';
-import { jTool } from '../src/js/Base';
+import {Base, jTool} from '../src/js/Base';
 import Core from '../src/js/Core';
 /**
  * 验证类的属性及方法总量
@@ -25,7 +25,7 @@ describe('Core 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(5 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(6 + 1);
 	});
 });
 
@@ -106,6 +106,12 @@ describe('Core.createDOM($table)', function() {
 	});
 });
 
+describe('Core.bindEvent($table)', function() {
+    it('基础验证', function () {
+        expect(Core.bindEvent).toBeDefined();
+        expect(Core.bindEvent.length).toBe(1);
+    });
+});
 describe('Core.initVisible($table)', function() {
 	it('基础验证', function () {
 		expect(Core.initVisible).toBeDefined();

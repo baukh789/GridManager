@@ -52,9 +52,9 @@
 			remind: 'the action',
 			width: '100px',
 			text: '操作',
-			template: function(action, rowObject){
-				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+			template: (action, rowObject) => {
+			    // TODO gm-click 事件所执行的函数只能为全局函数，需要调整为可调用指定域的函数
+				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'" gm-click="app.$options.testGM">删除</span>';
 			}
 		}];
 	var option = {
@@ -71,7 +71,7 @@
 		pageSize: 20
 	};
 
-	new Vue({
+	var app = new Vue({
 		el: '#app',
 		data: {
 			name: "testVue",
@@ -90,7 +90,13 @@
 		mounted: function(){
 			var table = document.querySelector('table[grid-name="' + this.option.gridManagerName + '"]');
 			table.GM(this.option);
-		}
+		},
+
+        // 测试vue下的GM事件
+        testGM(o) {
+            console.log('testGM', arguments[0]);
+            return this;
+        }
 	});
 </script>
 

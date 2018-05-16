@@ -214,6 +214,10 @@ class Core {
 				});
 				$tbody.append(trNode);
 			});
+
+			// 为新生成的tbody 的内容绑定事件
+			this.bindEvent($table);
+
 			this.initVisible($table);
 		}
 
@@ -230,6 +234,16 @@ class Core {
 		typeof callback === 'function' ? callback() : '';
 	};
 
+    /**
+     * 为新增的单元格绑定事件
+     * @param $table
+     */
+	bindEvent($table) {
+        jTool('[gm-click]', $table).bind('click', function (event) {
+            const row = Cache.getRowData($table, this.parentNode.parentNode);
+            Base.runStr(this.getAttribute('gm-click'), row);
+        });
+    }
 
 	/**
 	 * 渲染HTML，根据配置嵌入所需的事件源DOM
