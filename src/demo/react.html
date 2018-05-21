@@ -50,7 +50,11 @@
 		componentDidMount: function () {
 			var table = document.querySelector('table[data-name="'+this.props.gridManagerName+'"]');
 			table.GM(this.props);
-		}
+			GM.setScope(table, this);
+		},
+        testGM: function(row) {
+		    console.log(row);
+        }
 	});
 
 	// 配置GridManager init 必要参数
@@ -92,8 +96,7 @@
 		width: '100px',
 		text: '操作',
 		template: function(action, rowObject){
-			return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-					+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+            return '<span class="plugin-action edit-action" gm-click="testGM">删除</span>';
 		}
 	}];
 	var queryInfo = {pluginId: 1};

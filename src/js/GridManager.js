@@ -40,6 +40,17 @@ export default class GridManager {
 		return Cache.getSettings(jTool(table));
 	}
 
+    /**
+     * @静态方法
+     * 存储表格渲染所在的域
+     * @param table
+     * @returns {*}
+     */
+    static
+    setScope(table, scope) {
+        return Cache.setScope(jTool(table), scope);
+    }
+
 	/**
 	 * @静态方法
 	 * 获取指定表格的本地存储数据

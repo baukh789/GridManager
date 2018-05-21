@@ -7,9 +7,9 @@ describe('Store.js', function() {
 		expect(Store.version).toBeDefined();
 	});
 
-	// it('Store.gridManager', function() {
-	// 	expect(Store.gridManager).toBeDefined();
-	// });
+	it('Store.scope', function() {
+		expect(Store.scope).toBeDefined();
+	});
 
 	it('Store.responseData', function() {
 		expect(Store.responseData).toBeDefined();

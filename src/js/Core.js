@@ -211,6 +211,7 @@ class Core {
 					// td 文本对齐方向
 					col.align && tdNode.setAttribute('align', col.align);
 					trNode.appendChild(tdNode);
+                    // trNode.$scope = col.$scope;
 				});
 				$tbody.append(trNode);
 			});
@@ -241,7 +242,9 @@ class Core {
 	bindEvent($table) {
         jTool('[gm-click]', $table).bind('click', function (event) {
             const row = Cache.getRowData($table, this.parentNode.parentNode);
-            Base.runStr(this.getAttribute('gm-click'), row);
+            const scope = Cache.getScope($table);
+            const fun = scope[this.getAttribute('gm-click')];
+            typeof fun === 'function' && fun.call(scope, row);
         });
     }
 

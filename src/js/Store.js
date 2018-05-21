@@ -7,8 +7,8 @@ const Store = {
 	// 版本号
 	version: GM_VERSION,
 
-	// GM实例 TODO 并没有用到
-	// gridManager: {},
+    // GM所在的域
+    scope: {},
 
 	// GM使用的数据
 	responseData: {},

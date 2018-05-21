@@ -21,6 +21,24 @@ class Cache {
     }
 
     /**
+     * 获取当前GM所在的域
+     * @param $table
+     * @returns {*}
+     */
+    getScope($table) {
+        return store.scope[Base.getKey($table)];
+    }
+
+    /**
+     * 存储当前GM所在的域, 当前
+     * @param $table
+     * @param scope
+     */
+    setScope($table, scope) {
+        store.scope[Base.getKey($table)] = scope;
+    }
+
+    /**
      * 获取当前行使用的数据
      * @param $table 当前操作的grid,由插件自动传入
      * @param target 将要获取数据所对应的tr[Element or NodeList]
@@ -47,6 +65,7 @@ class Cache {
         }
     }
 
+    // TODO 暂时没有使用到，该方法可以处理双向数据变更后 GM对于数据的更新
     /**
      * 设置当前行使用的数据
      * @param $table

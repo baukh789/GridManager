@@ -1,4 +1,5 @@
 'use strict';
+import { jTool } from '../src/js/Base';
 import Cache from '../src/js/Cache';
 
 /**
@@ -22,7 +23,7 @@ describe('Cache 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Cache)))).toBe(17 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Cache)))).toBe(19 + 1);
 	});
 });
 
@@ -35,6 +36,53 @@ describe('Cache.getVersion()', function() {
 	it('验证返回值', function(){
 		expect(typeof(Cache.getVersion())).toBe('string');
 	});
+});
+
+describe('Cache.getScope($table)', function() {
+    var $table = null;
+    beforeEach(function() {
+        document.body.innerHTML = '<table grid-manager="test-getScope"></table>';
+        $table = jTool('table[grid-manager="test-getScope"]');
+    });
+    afterEach(function(){
+        document.body.innerHTML = '';
+    });
+
+    it('基础验证', function(){
+        expect(Cache.getScope).toBeDefined();
+        expect(Cache.getScope.length).toBe(1);
+    });
+
+    it('验证值', function(){
+        expect(Cache.getScope($table)).toBeUndefined();
+    });
+});
+
+describe('Cache.setScope($table, scope)', function() {
+    var $table = null;
+    var scope = null;
+    beforeEach(function() {
+        document.body.innerHTML = '<table grid-manager="test-setScope"></table>';
+        $table = jTool('table[grid-manager="test-setScope"]');
+    });
+    afterEach(function(){
+        document.body.innerHTML = '';
+        scope = null;
+    });
+
+    it('基础验证', function(){
+        expect(Cache.setScope).toBeDefined();
+        expect(Cache.setScope.length).toBe(2);
+    });
+
+    it('验证值', function(){
+        expect(Cache.getScope($table)).toBeUndefined();
+        scope = {
+            name: 'ccc'
+        };
+        Cache.setScope($table, scope);
+        expect(Cache.getScope($table)).toEqual(scope);
+    });
 });
 
 describe('Cache.getRowData($table, target)', function() {

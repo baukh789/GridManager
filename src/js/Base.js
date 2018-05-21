@@ -271,18 +271,6 @@ class BaseClass {
 	getVisibleForColumn(col) {
 		return col.isShow ? 'visible' : 'none';
 	}
-
-    /**
-     * 执行字符串形式的方法
-     * @param strFnBody
-     */
-	runStr(strFnBody, row) {
-        // fun = Function 是未了规避 报Function调用eval的错误
-        const fun = Function;
-        // 'row': 实例化函数时指定参数, str + '(row)': 函数体，并指定形参， (row): 实参
-        // 等同于 (function(row){eval('str(row)')})(row)
-        new fun('row', `${strFnBody}(row)`)(row);
-    }
 }
 const Base = new BaseClass();
 export {jTool, $, Base};

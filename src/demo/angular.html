@@ -13,7 +13,7 @@
 <body ng-app="myApp">
 
 <div ng-controller="gm">
-	<angular-grid-manager option="option"></angular-grid-manager>
+	<angular-grid-manager gm-option="option" gm-scope="this"></angular-grid-manager>
 </div>
 
 <script type="text/javascript">
@@ -41,7 +41,7 @@
 			text: '创建时间',
 			sorting: 'DESC',
 			template: function(createDate, rowObject){
-				return new Date(createDate);
+				return new Date(createDate).toLocaleDateString();
 			}
 		},{
 			key: 'lastDate',
@@ -50,7 +50,7 @@
 			text: '最后修改时间',
 			sorting: '',
 			template: function(lastDate, rowObject){
-				return new Date(lastDate);
+				return new Date(lastDate).toLocaleDateString();
 			}
 		},{
 			key: 'action',
@@ -58,8 +58,7 @@
 			width: '100px',
 			text: '操作',
 			template: function(action, rowObject){
-				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+                return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'" gm-click="testGM">删除</span>';
 			}
 		}];
 		var queryInfo = {pluginId: 1};
@@ -82,6 +81,16 @@
 				console.log('pagingAfter');
 			}
 		};
+
+        $scope.testGM = function(row){
+            console.log('testGM=>', bb);
+            console.log('testGM=>', this.option);
+        }
+
+        function bb(){
+            console.log(1111);
+        }
+
 	});
 
 	// 添加一个指令
@@ -89,19 +98,19 @@
 		return {
 			restrict : 'E',
 			scope: {
-				option: '='
+                gmOption: '=',
+                gmScope: '='
 			},
 			template : '<table></table>',
 			compile: function(element, arg){
 				return function($scope){
 					var table = element[0].querySelector('angular-grid-manager table');
-					table.GM($scope.option);
+					table.GM('init', $scope.gmOption);
+                    GM.setScope(table, $scope.gmScope);
 				}
 			}
 		};
 	});
-
-
 
 </script>
 </body>
