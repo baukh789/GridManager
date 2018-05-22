@@ -1,7 +1,7 @@
 /*
  * Base: 基础方法
  * */
-import {} from '../../node_modules/jTool/jTool.min';
+import {} from '../../node_modules/jtool/jTool.min';
 let $ = window.jTool;
 let jTool = window.jTool;
 class BaseClass {

@@ -63,6 +63,6 @@
     "build": "webpack --config webpack-config.js"
   },
   "dependencies": {
-    "jTool": "^1.2.23"
+    "jtool": "^1.2.23"
   }
 }

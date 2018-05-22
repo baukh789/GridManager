@@ -154,15 +154,14 @@
 					text: '分类',
 					isShow: false,
 					template: function(type, rowObject){
-						return `
-							<select>
-								<option value="1" ${type === 1 ? 'selected="selected"' : ''}>前端框架、插件</option>
-								<option value="2" ${type === 2 ? 'selected="selected"' : ''}>javaScript相关链接</option>
-								<option value="3" ${type === 3 ? 'selected="selected"' : ''}>css相关链接</option>
-								<option value="4" ${type === 4 ? 'selected="selected"' : ''}>html相关链接</option>
-								<option value="4" ${type === 5 ? 'selected="selected"' : ''}>工具类相关链接</option>
-								<option value="4" ${type === 6 ? 'selected="selected"' : ''}>其它链接</option>
-							</select>`;
+						return '<select>'
+								+ '<option value="1" ' + type === 1 ? 'selected="selected"' : '' + '>前端框架、插件</option>'
+								+ '<option value="2" ' + type === 2 ? 'selected="selected"' : '' + '>javaScript相关链接</option>'
+								+ '<option value="3" ' + type === 3 ? 'selected="selected"' : '' + '>css相关链接</option>'
+								+ '<option value="4" ' + type === 4 ? 'selected="selected"' : '' + '>html相关链接</option>'
+								+ '<option value="5" ' + type === 5 ? 'selected="selected"' : '' + '>工具类相关链接</option>'
+								+ '<option value="6" ' + type === 6 ? 'selected="selected"' : '' + '>其它链接</option>'
+							+'</select>';
 					}
 				},{
 					key: 'info',
@@ -207,7 +206,7 @@
 					remind: 'the action',
 					width: '10%',
                     align: 'center',
-					text: `<span style="color: red">操作</span>`,
+					text: '<span style="color: red">操作</span>',
 					// 直接返回 htmlString
                     template: '<span class="plugin-action del-action" onclick="delectRowData(this)">删除</span>'
 				}
