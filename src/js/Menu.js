@@ -6,6 +6,7 @@ import Cache from './Cache';
 import I18n from './I18n';
 import Export from './Export';
 import AjaxPage from './AjaxPage';
+import Config from './Config';
 class Menu {
 	// 唯一标识名
 	get keyName() {
@@ -192,8 +193,7 @@ class Menu {
 				}
 				const _gridMenu = jTool(this).closest('.grid-menu');
 				const _table = jTool(`table[grid-manager="${_gridMenu.attr(_this.keyName)}"]`);
-				const configArea = jTool('.config-area', _table.closest('.table-wrap'));
-				jTool('.config-action', configArea).trigger('click');
+				Config.toggle(_table.closest('.table-wrap'));
 				_body.off('mousedown.gridMenu');
 				_gridMenu.hide();
 			});

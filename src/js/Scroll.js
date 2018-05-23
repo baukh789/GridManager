@@ -61,6 +61,7 @@ class Scroll {
 				_setTopHead.removeAttr('grid-manager-thead');
 				_setTopHead.removeClass('scrolling');
 				_setTopHead.css({
+					// TODO IE10下 _thead.width() = 'auto'
 					width: _thead.width(),
 					left: -$table.closest('.table-div').scrollLeft() + 'px'
 				});

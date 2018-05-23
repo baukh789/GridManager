@@ -32,6 +32,7 @@ class Config {
 	 * @param $table
      */
 	__bindConfigEvent($table) {
+		const _this = this;
 		// GM容器
 		const tableWarp = $table.closest('div.table-wrap');
 
@@ -41,50 +42,11 @@ class Config {
 		// 事件: 打开 关闭
 		configAction.unbind('click');
 		configAction.bind('click', function () {
-			const settings = Cache.getSettings($table);
 			// 展示事件源
 			const _configAction = jTool(this);
 
-			const _tableWrap = _configAction.closest('.table-wrap');
-
-			// 设置区域
-			const _configArea = _tableWrap.find('.config-area');
-
-			// 关闭配置区域
-			if (_configArea.css('display') === 'block') {
-				_configArea.hide();
-				return false;
-			}
-
-			// 选中状态的li
-			let checkLi = null;
-
-			// 选中状态的input
-			let checkInput = null;
-
-			// 可视列计数
-			let showNum = 0;
-
-			// 重置列的可视操作
-			jTool.each(settings.columnMap, (key, col) => {
-				checkLi = jTool(`li[th-name="${col.key}"]`, _configArea);
-				checkInput = jTool('input[type="checkbox"]', checkLi);
-				if (col.isShow) {
-					checkLi.addClass('checked-li');
-					checkInput.prop('checked', true);
-					showNum++;
-					return;
-				}
-				checkLi.removeClass('checked-li');
-				checkInput.prop('checked', false);
-			});
-
-			// 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示
-			const checkedLi = jTool('.checked-li', _configArea);
-			showNum === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
-
-			// 打开配置区域
-			_configArea.show();
+			const $tableWrap = _configAction.closest('.table-wrap');
+			_this.toggle($tableWrap);
 		});
 
 		// 事件: 设置
@@ -175,6 +137,55 @@ class Config {
 				_tableDiv.trigger('scroll');
 			}
 		});
+	}
+
+	/**
+	 * 切换可视状态
+	 * @param $tableWrap
+	 * @returns {boolean}
+	 */
+	toggle($tableWrap) {
+		const $table = jTool('table[grid-manager]', $tableWrap);
+		const settings = Cache.getSettings($table);
+
+		// 设置区域
+		const $configArea = jTool('.config-area', $tableWrap);
+
+		// 关闭配置区域
+		if ($configArea.css('display') === 'block') {
+			$configArea.hide();
+			return false;
+		}
+
+		// 选中状态的li
+		let checkLi = null;
+
+		// 选中状态的input
+		let checkInput = null;
+
+		// 可视列计数
+		let showNum = 0;
+
+		// 重置列的可视操作
+		jTool.each(settings.columnMap, (key, col) => {
+			checkLi = jTool(`li[th-name="${col.key}"]`, $configArea);
+			checkInput = jTool('input[type="checkbox"]', checkLi);
+			if (col.isShow) {
+				checkLi.addClass('checked-li');
+				checkInput.prop('checked', true);
+				showNum++;
+				return;
+			}
+			checkLi.removeClass('checked-li');
+			checkInput.prop('checked', false);
+		});
+
+		// 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示
+		const checkedLi = jTool('.checked-li', $configArea);
+		showNum === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
+
+		// 打开配置区域
+		$configArea.show();
 	}
 
 	/**
