@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>GridManager: React 示例</title>
 	<!--引入 GridManager 依赖-->
 	<link rel="stylesheet" type="text/css" href="../css/gm.css">
 	<script type="text/javascript" src="../js/gm.js"></script>
@@ -9,14 +10,13 @@
 	<script src="https://cdn.bootcss.com/react/15.4.2/react.min.js"></script>
 	<script src="https://cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
 	<script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
-	<title>GridManager: React环境下渲染</title>
 	<style>
 		html, body{
 			width: 100%;
 			height: 100%;
 			overflow-x:hidden;
-			margin: 0px;
-			padding: 0px;
+			margin: 0;
+			padding: 0;
 		}
 		h2{
 			font-size:22px;
@@ -28,13 +28,17 @@
 			padding:10px 30px;
 			color:#333;
 			text-indent:2em;
-			margin: 0px;
+			margin: 0;
 		}
 		hr{
 			margin-top: 18px;
 			margin-bottom: 18px;
 			border: 0;
 			border-top: 1px solid #eee;
+		}
+		.plugin-action{
+			color: #0f88eb;
+			cursor: pointer;
 		}
 	</style>
 </head>
@@ -96,7 +100,7 @@
 		width: '100px',
 		text: '操作',
 		template: function(action, rowObject){
-            return '<span class="plugin-action edit-action" gm-click="testGM">删除</span>';
+            return '<span class="plugin-action" gm-click="testGM">删除</span>';
 		}
 	}];
 	var queryInfo = {pluginId: 1};

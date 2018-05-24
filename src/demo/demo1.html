@@ -25,6 +25,7 @@
 			padding: 10px 20px;
 			border: 1px solid #ccc;
 			background: #efefef;
+			margin-bottom: 15px;
 		}
 		.search-area .sa-ele{
 			display: inline-block;
@@ -72,7 +73,7 @@
 </head>
 
 <body>
-	<div class="search-area">
+	<section class="search-area">
 		<div class="sa-ele">
 			<label class="se-title">名称:</label>
 			<input class="se-con" name="name"/>
@@ -89,14 +90,16 @@
 			<button class="search-action">搜索</button>
 			<button class="reset-action">重置</button>
 		</div>
-	</div>
-	<br/>
-	<table></table>
+	</section>
 
-	<div class="bottom-bar">
+	<section class="grid-main">
+		<table></table>
+	</section>
+
+	<section class="bottom-bar">
 		<button id="init-gm" disabled>init</button>
 		<button id="destroy-gm" disabled>destroy</button>
-	</div>
+	</section>
 
 	<script type="text/javascript">
 		var table = document.querySelector('table');
