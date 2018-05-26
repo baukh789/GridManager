@@ -157,9 +157,8 @@ class Core {
 
 		// 数据为空时
 		if (!_data || _data.length === 0) {
-			let visibleNum = jTool('th[th-visible="visible"]', $table).length;
-			parseRes.totals = 0;
-			$tbody.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
+			this.insertEmptyTemplate($table, settings);
+			parseRes[settings.totalsKey] = 0;
 		} else {
 			// add order
 			if (settings.supportAutoOrder) {
@@ -234,6 +233,16 @@ class Core {
 		}
 		typeof callback === 'function' ? callback() : '';
 	};
+
+	/**
+	 * 插入空数据模版
+	 * @param $table
+	 * @param settings
+	 */
+	insertEmptyTemplate($table, settings) {
+		let visibleNum = jTool('th[th-visible="visible"]', $table).length;
+		jTool('tbody', $table).html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
+	}
 
     /**
      * 为新增的单元格绑定事件

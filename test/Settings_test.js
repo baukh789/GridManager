@@ -144,6 +144,10 @@ describe('Settings', function() {
 		expect(settings.gridManagerName).toBe('');
 	});
 
+	it('验证属性[firstLoading]初始值', function() {
+		expect(settings.firstLoading).toBe(true);
+	});
+
 	it('验证属性[ajax_url]初始值', function() {
 		expect(settings.ajax_url).toBe('');
 	});
@@ -193,7 +197,7 @@ describe('Settings', function() {
 	});
 
 	it('验证属性[emptyTemplate]初始值', function() {
-		expect(settings.emptyTemplate).toBe('<div class="gm-emptyTemplate">数据为空</div>');
+		expect(settings.emptyTemplate).toBe('<div class="gm-emptyTemplate">暂无数据</div>');
 	});
 
 	it('验证属性[supportExport]初始值', function() {

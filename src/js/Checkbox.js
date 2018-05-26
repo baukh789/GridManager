@@ -68,8 +68,7 @@ class Checkbox {
 	}
 
 	/**
-	 *
-	 * 重置选择框相关数据
+	 * 重置当前渲染数据中的选择状态
 	 * @param $table
 	 * @param status
 	 * @param isAllCheck

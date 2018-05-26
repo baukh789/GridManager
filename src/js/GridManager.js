@@ -375,6 +375,6 @@ export default class GridManager {
 		}
 
 		// 渲染tbodyDOM
-		Core.refresh($table);
+		settings.firstLoading ? Core.refresh($table) : Core.insertEmptyTemplate($table, settings);
 	}
 }

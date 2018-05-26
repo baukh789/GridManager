@@ -3,6 +3,7 @@
   "version": "2.5.7",
   "description": "表格管理插件",
   "author": "baukh",
+  "main": "js/gm.js",
   "license": "MIT",
   "repository": {
     "type": "git",

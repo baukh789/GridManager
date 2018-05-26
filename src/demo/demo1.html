@@ -69,6 +69,13 @@
 			padding: 5px 20px;
 			margin-right: 10px;
 		}
+		.void-template{
+			height:300px;
+			line-height: 300px;
+			text-align: center;
+			font-size: 24px;
+			color: #ccc;
+		}
     </style>
 </head>
 
@@ -113,8 +120,10 @@
 				,isCombSorting: false
 				,disableCache: false
 				,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+				,firstLoading: false // 初始渲染时是否加载数据
 				,ajax_type: 'POST'
 				,supportMenu: true
+				// ,emptyTemplate: '<div class="void-template">通过 emptyTemplate 配置的空数据提示</div>'
 				// 配置 request header, 非xhr自带的头信息将会触发非简单请求, 需要在后端进行对应的配置
 				// 参考链接: http://www.lovejavascript.com/#!zone/blog/content.html?id=53
 //				,ajax_headers: {

@@ -319,17 +319,23 @@ $font-family: arial !important;
 						/* 空模板样式 */
 						.gm-emptyTemplate {
 							width: 100%;
-							height: 100px;
-							line-height: 100px;
+							height: 80px;
+							line-height: 80px;
 							text-align: center;
-							font-size: 24px;
+							font-size: 16px;
 							color: #ddd;
-							background-color: #f8f8f8;
 						}
 					}
 					&[row-hover="true"] td {
 						background-color: #f3f3f3;
 						color: #000;
+					}
+					// 为空提示特殊处理, hover状态不高亮
+					&[emptytemplate] {
+						border: none;
+						&[row-hover] td {
+							background-color: #fff;
+						}
 					}
 				}
 			}

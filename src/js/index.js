@@ -98,3 +98,5 @@ import { PublishMethod, publishMethodArray } from './Publish';
 (jQuery => {
 	window.$ = jQuery || undefined;
 })(window.jQuery);
+
+export default GridManager;

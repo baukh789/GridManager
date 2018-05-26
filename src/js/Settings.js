@@ -214,6 +214,9 @@ class Settings {
 			// 获取表格数据地址，配置该参数后，将会动态获取数据
 			ajax_url: '',
 
+			// 初次渲染时是否加载数据
+			firstLoading: true,
+
 			// ajax请求类型['GET', 'POST']默认GET
 			ajax_type: 'GET',
 
@@ -253,7 +256,7 @@ class Settings {
 			totalsKey: 'totals',
 
 			// 为空时显示的html
-			emptyTemplate: '<div class="gm-emptyTemplate">数据为空</div>'
+			emptyTemplate: '<div class="gm-emptyTemplate">暂无数据</div>'
 		};
 
 		/**

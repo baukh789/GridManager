@@ -24,7 +24,9 @@ const config = {
 	// 文件导出的配置
 	output:{
 		path: buildPath ,
-		filename: "js/gm.js"
+		filename: "js/gm.js",
+		library: 'GridManager',
+		libraryTarget: "umd"
 	},
 	// 以插件形式定制webpack构建过程
 	plugins: [
