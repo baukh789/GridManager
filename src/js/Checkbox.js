@@ -101,7 +101,7 @@ class Checkbox {
      */
 	resetDOM($table, tableData) {
 		// 当前是否为全选
-		let checkedAll = true;
+		let checkedAll = tableData && tableData.length > 0;
 
 		// 更改DOM
 		// update td checkbox DOM
