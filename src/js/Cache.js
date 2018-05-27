@@ -306,17 +306,27 @@ class Cache {
 
             // 与用户记忆项不匹配
             isUsable && jTool.each(_settings.columnMap, (key, col) => {
-                if (!columnCache[key]) {
-                    isUsable = false;
-                    return false;
-                }
-				jTool.each(col, (name, attr) => {
-					const cacheValue = columnCache[key][name];
-	            	if (jTool.type(attr) !== 'function' && cacheValue !== attr) {
-			            isUsable = false;
-			            return false;
-		            }
-	            });
+	            if (!columnCache[key]
+		            // 显示文本
+		            || columnCache[key].text !== col.text
+
+		            // 可视状态
+		            || columnCache[key].isShow !== col.isShow
+
+		            // 文本排列方向
+		            || columnCache[key].align !== col.align
+
+		            // 数据排序
+		            || columnCache[key].sorting !== col.sorting
+
+		            // 字段描述
+	                || columnCache[key].remind !== col.remind
+
+		            // 字段模版
+		            || (columnCache[key].template && columnCache[key].template !== col.template)) {
+		            isUsable = false;
+		            return false;
+	            }
             });
 
             // 将用户记忆并入 columnMap 内
@@ -324,7 +334,7 @@ class Cache {
                 jTool.extend(true, _settings.columnMap, columnCache);
             } else {
                 // 清除用户记忆
-                this.delUserMemory($table, '与配置项[columnData]不匹配');
+                this.delUserMemory($table, '存储记忆项与配置项[columnData]不匹配');
             }
         };
         // 合并用户记忆至配置项
