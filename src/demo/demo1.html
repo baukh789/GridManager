@@ -12,14 +12,15 @@
 			margin: 0;
 			padding: 0;
 		}
-        .plugin-action{
-            display: inline-block;
-            color: steelblue;
-            margin-right: 10px;
-            cursor: pointer;
+		.plugin-action{
+			display: inline-block;
+			color: steelblue;
+			margin-right: 10px;
+			cursor: pointer;
+			text-decoration: none;
         }
         .plugin-action:hover{
-            text-decoration:underline;
+            text-decoration: underline;
         }
 		.search-area{
 			padding: 10px 20px;
@@ -77,21 +78,37 @@
 			color: #ccc;
 		}
     </style>
+	<script>
+		// 博文类型
+		const TYPE_MAP = {
+			'1': 'HTML/CSS',
+			'2': 'nodeJS',
+			'3': 'javaScript',
+			'4': '前端鸡汤',
+			'5': 'PM Coffee',
+			'6': '前端框架',
+			'7': '前端相关'
+		};
+
+	</script>
 </head>
 
 <body>
 	<section class="search-area">
 		<div class="sa-ele">
-			<label class="se-title">名称:</label>
-			<input class="se-con" name="name"/>
+			<label class="se-title">标题:</label>
+			<input class="se-con" name="title"/>
 		</div>
 		<div class="sa-ele">
-			<label class="se-title">使用说明:</label>
-			<input class="se-con" name="info"/>
+			<label class="se-title">博文分类:</label>
+			<select class="se-con" name="type">
+				<option value="-1">请选择</option>
+				<!--通过js增加-->
+			</select>
 		</div>
 		<div class="sa-ele">
-			<label class="se-title">url:</label>
-			<input class="se-con" name="url"/>
+			<label class="se-title">内容:</label>
+			<input class="se-con" name="content"/>
 		</div>
 		<div class="sa-ele">
 			<button class="search-action">搜索</button>
@@ -109,6 +126,7 @@
 	</section>
 
 	<script type="text/javascript">
+		// GridManager 渲染
 		var table = document.querySelector('table');
 		function init() {
 			table.GM({
@@ -119,8 +137,8 @@
 				,supportSorting: true
 				,isCombSorting: false
 				,disableCache: false
-				,ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-				,firstLoading: false // 初始渲染时是否加载数据
+				,ajax_url: 'http://www.lovejavascript.com/blogManager/getBlogList'
+				// ,firstLoading: false // 初始渲染时是否加载数据
 				,ajax_type: 'POST'
 				,supportMenu: true
 				// ,emptyTemplate: '<div class="void-template">通过 emptyTemplate 配置的空数据提示</div>'
@@ -149,111 +167,111 @@
 				}
 				// 可以通过该方法修改返回的数据
 				,responseHandler: function(response){
-					console.log(response);
+
+					// 数据本身返回为data, 通过responseHandler更改为与dataKey匹配的值
 					response.list = response.data;
 				}
-				,columnData: [{
-					key: 'name',
-					remind: 'the name',
-					width: '100px',
-					align: 'right',
-					text: '名称',
-					sorting: '',
-                    isShow: false
-				},{
-					key: 'type',
-					remind: 'the type',
-					text: '分类',
-					isShow: false,
-					template: function(type, rowObject){
-						return '<select>'
-								+ '<option value="1" ' + type === 1 ? 'selected="selected"' : '' + '>前端框架、插件</option>'
-								+ '<option value="2" ' + type === 2 ? 'selected="selected"' : '' + '>javaScript相关链接</option>'
-								+ '<option value="3" ' + type === 3 ? 'selected="selected"' : '' + '>css相关链接</option>'
-								+ '<option value="4" ' + type === 4 ? 'selected="selected"' : '' + '>html相关链接</option>'
-								+ '<option value="5" ' + type === 5 ? 'selected="selected"' : '' + '>工具类相关链接</option>'
-								+ '<option value="6" ' + type === 6 ? 'selected="selected"' : '' + '>其它链接</option>'
-							+'</select>';
+				,columnData: [
+					{
+						key: 'pic',
+						remind: 'the pic',
+						width: '110px',
+						align: 'center',
+						text: '缩略图',
+						// 使用函数返回 dom node
+						template: function(pic, rowObject) {
+							var picNode = document.createElement('a');
+							picNode.setAttribute('href', `http://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
+							picNode.setAttribute('title', rowObject.title);
+							picNode.setAttribute('target', '_blank');
+							picNode.title = `点击阅读[${rowObject.title}]`;
+							picNode.style.display = 'block';
+							picNode.style.height = '68.5px';
+
+							var imgNode = document.createElement('img');
+							imgNode.style.width = '100px';
+							imgNode.style.padding = '5px';
+							imgNode.style.margin = '0 auto';
+							imgNode.alt = rowObject.title;
+							imgNode.src = `http://www.lovejavascript.com/${pic}`;
+
+							picNode.appendChild(imgNode);
+							return picNode;
+						}
+					},{
+						key: 'title',
+						remind: 'the title',
+						width: '300px',
+						align: 'left',
+						text: '标题',
+						sorting: '',
+						// 使用函数返回 dom node
+						template: function(title, rowObject) {
+							var titleNode = document.createElement('a');
+							titleNode.setAttribute('href', `http://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
+							titleNode.setAttribute('title', title);
+							titleNode.setAttribute('target', '_blank');
+							titleNode.innerText = title;
+							titleNode.title = `点击阅读[${rowObject.title}]`;
+							titleNode.classList.add('plugin-action');
+
+							return titleNode;
+						}
+					},{
+						key: 'type',
+						remind: 'the type',
+						text: '博文分类',
+						align: 'center',
+						template: function(type, rowObject){
+							return TYPE_MAP[type];
+						}
+					},{
+						key: 'info',
+						remind: 'the info',
+						text: '简介',
+						isShow: false
+					},{
+						key: 'username',
+						remind: 'the username',
+						width: '100px',
+						align: 'center',
+						text: '作者',
+						template: function(username){
+							return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
+						}
+					},{
+						key: 'createDate',
+						remind: 'the createDate',
+						width: '100px',
+						text: '创建时间',
+						sorting: 'DESC',
+						// 使用函数返回 htmlString
+						template: function(createDate, rowObject){
+							return new Date(createDate).toLocaleDateString();
+						}
+					},{
+						key: 'lastDate',
+						remind: 'the lastDate',
+						width: '100px',
+						text: '最后修改时间',
+						sorting: '',
+						// 使用函数返回 htmlString
+						template: function(lastDate, rowObject){
+							return new Date(lastDate).toLocaleDateString();
+						}
+					},{
+						key: 'action',
+						remind: 'the action',
+						width: '10%',
+						align: 'center',
+						text: '<span style="color: red">操作</span>',
+						// 直接返回 htmlString
+						template: '<span class="plugin-action" gm-click="delectRowData">删除</span>'
 					}
-				},{
-					key: 'info',
-					remind: 'the info',
-					text: '使用说明',
-                    isShow: false
-				},{
-					key: 'url',
-					remind: 'the url',
-					text: 'url',
-                    // 使用函数返回 dom node
-                    template: function(url) {
-					    var urlNode = document.createElement('a');
-                        urlNode.setAttribute('href', url);
-                        urlNode.setAttribute('title', url);
-                        urlNode.setAttribute('target', '_blank');
-                        urlNode.innerText = url;
-					    return urlNode;
-					}
-				},{
-					key: 'createDate',
-					remind: 'the createDate',
-					width: '100px',
-					text: '创建时间',
-					sorting: 'DESC',
-                    // 使用函数返回 htmlString
-					template: function(createDate, rowObject){
-						return new Date(createDate).toLocaleDateString();
-					}
-				},{
-					key: 'lastDate',
-					remind: 'the lastDate',
-					width: '100px',
-					text: '最后修改时间',
-					sorting: '',
-					// 使用函数返回 htmlString
-					template: function(lastDate, rowObject){
-						return new Date(lastDate).toLocaleDateString();
-					}
-				},{
-					key: 'action',
-					remind: 'the action',
-					width: '10%',
-                    align: 'center',
-					text: '<span style="color: red">操作</span>',
-					// 直接返回 htmlString
-                    template: '<span class="plugin-action del-action" onclick="delectRowData(this)">删除</span>'
-				}
 				]
-				// 分页前事件
-				,pagingBefore: function(query){
-					console.log('pagingBefore', query);
-				}
-				// 分页后事件
-				,pagingAfter: function(data){
-					console.log('pagingAfter', data);
-				}
-				// 排序前事件
-				,sortingBefore: function (data) {
-					console.log('sortBefore', data);
-				}
 				// 排序后事件
 				,sortingAfter: function (data) {
 					console.log('sortAfter', data);
-				}
-				// 宽度调整前事件
-				,adjustBefore: function (event) {
-					console.log('adjustBefore', event);
-				}
-				// 宽度调整后事件
-				,adjustAfter: function (event) {
-					console.log('adjustAfter', event);
-				}
-				// 拖拽前事件
-				,dragBefore: function (event) {
-					console.log('dragBefore', event);
-				}
-				// 拖拽后事件
-				,dragAfter: function (event) {
-					console.log('dragAfter', event);
 				}
 			}, function(query){
 				// 渲染完成后的回调函数
@@ -262,18 +280,29 @@
 		}
 
 		// 删除功能
-		function delectRowData(node){
-			// 获取到当前的tr node
-			var tr = node.parentNode.parentNode;
-			// 获取到当前渲染tr 所使用的数据
-			var rowData = document.querySelector('table').GM('getRowData', tr);
+		function delectRowData(rowData){
 			// 执行删除操作
-			if(window.confirm('确认要删除['+rowData.name+']?')){
+			if(window.confirm('确认要删除['+rowData.title+']?')){
 				window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
 			}
 		}
 
 		/**
+		 * 渲染博文类型
+		 */
+		(function () {
+			// 渲染下拉框
+			var typeSelect = document.querySelector('.search-area select[name="type"]');
+
+			for(var key in TYPE_MAP){
+				var option = document.createElement('option');
+				option.value = key;
+				option.innerText = TYPE_MAP[key];
+				typeSelect.appendChild(option);
+			}
+		})();
+
+		 /**
 		 * 提供demo中的搜索, 重置
 		 */
 		(function(){
@@ -281,9 +310,9 @@
 			// 绑定搜索事件
 			document.querySelector('.search-action').addEventListener('click', function () {
 				var _query = {
-					name: document.querySelector('[name="name"]').value,
-					info: document.querySelector('[name="info"]').value,
-					url: document.querySelector('[name="url"]').value,
+					title: document.querySelector('[name="title"]').value,
+					type: document.querySelector('[name="type"]').value,
+					content: document.querySelector('[name="content"]').value,
 					cPage: 1
 				};
 				table.GM('setQuery', _query, function(){
@@ -293,9 +322,9 @@
 
 			// 绑定重置
 			document.querySelector('.reset-action').addEventListener('click', function () {
-				document.querySelector('[name="name"]').value = '';
-				document.querySelector('[name="info"]').value = '';
-				document.querySelector('[name="url"]').value = '';
+				document.querySelector('[name="title"]').value = '';
+				document.querySelector('[name="type"]').value = '-1';
+				document.querySelector('[name="content"]').value = '';
 			});
 		})();
 

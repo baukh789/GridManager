@@ -41,7 +41,7 @@ class Drag {
 			let _tr = _th.parent();
 
 			// 事件源同层级下的所有可视th
-			let _allTh = _tr.find('th[th-visible="visible"]');
+			let _allTh = jTool('th[th-visible="visible"]', _tr);
 
 			// 事件源所在的table
 			const _table = _tr.closest('table');
@@ -134,10 +134,11 @@ class Drag {
 				if (_th.closest(`thead[${Base.getSetTopAttr()}]`).length === 1) {
 					haveMockThead = true;
 				}
+
 				_this.updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV, haveMockThead);
 
 				// 重置TH对象数据
-				_allTh = _tr.find('th');
+				_allTh = jTool('th[th-visible="visible"]', _tr);
 			});
 
 			// 绑定拖拽停止事件

@@ -193,6 +193,9 @@ class Core {
 			jTool.each(_data, (index, row) => {
 				const trNode = document.createElement('tr');
 				trNode.setAttribute('cache-key', index);
+
+				// 与当前位置信息匹配的td列表
+				const tdList = [];
 				jTool.each(settings.columnMap, (key, col) => {
 					tdTemplate = col.template;
 					// td 模板
@@ -209,9 +212,14 @@ class Core {
 
 					// td 文本对齐方向
 					col.align && tdNode.setAttribute('align', col.align);
-					trNode.appendChild(tdNode);
-                    // trNode.$scope = col.$scope;
+
+					tdList[col.index] = tdNode;
 				});
+
+				tdList.forEach(td => {
+					trNode.appendChild(td);
+				});
+
 				$tbody.append(trNode);
 			});
 
@@ -251,7 +259,7 @@ class Core {
 	bindEvent($table) {
         jTool('[gm-click]', $table).bind('click', function (event) {
             const row = Cache.getRowData($table, this.parentNode.parentNode);
-            const scope = Cache.getScope($table);
+            const scope = Cache.getScope($table) || window;
             const fun = scope[this.getAttribute('gm-click')];
             typeof fun === 'function' && fun.call(scope, row);
         });
@@ -349,9 +357,6 @@ class Core {
 		if (settings.supportCheckbox) {
 			Checkbox.bindCheckboxEvent($table);
 		}
-
-		// 存储原始th DOM
-		Cache.setOriginalThDOM($table);
 
 		// 是否为插件自动生成的序号列
 		let	isLmOrder = null;

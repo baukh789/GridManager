@@ -52,14 +52,6 @@
 			key: 'url',
 			remind: '网站地址',
 			text: '地址'
-		},{
-			key: 'action',
-			remind: '信息操作',
-			text: '操作',
-			template: function(action, rowObject){
-				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-			}
 		}
 		]
 		,ajax_success: function () {
@@ -92,14 +84,6 @@
 			key: 'url',
 			remind: 'the url',
 			text: 'url'
-		},{
-			key: 'action',
-			remind: 'the action',
-			text: 'action',
-			template: function(action, rowObject){
-				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-			}
 		}
 		]
 		,ajax_success: function (data) {
@@ -131,14 +115,6 @@
 			key: 'url',
 			remind: '網站地址',
 			text: '地址'
-		},{
-			key: 'action',
-			remind: '信息操作',
-			text: '操作',
-			template: function(action, rowObject){
-				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-					+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-			}
 		}
 		]
 		,ajax_success: function (data) {

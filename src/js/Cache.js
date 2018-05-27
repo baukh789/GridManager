@@ -349,7 +349,6 @@ class Cache {
         store.settings[Base.getKey($table)] = jTool.extend(true, {}, settings);
     }
 
-    // TODO 新增的方法， 未使用。 需要确认
     /**
      * 更新Cache, 包含[更新表格列Map, 重置settings, 存储用户记忆]
      * @param $table
@@ -412,35 +411,6 @@ class Cache {
             this.delUserMemory(null, '版本已升级,原全部缓存被自动清除');
             window.localStorage.setItem('GridManagerVersion', store.version);
         }
-    }
-
-    /**
-     * 存储原Th DOM至table data
-     * @param $table
-     */
-    setOriginalThDOM($table) {
-        const _thList = [];
-        const _thDOM = jTool('thead[grid-manager-thead] th', $table);
-
-        jTool.each(_thDOM, (i, v) => {
-            _thList.push(v.getAttribute('th-name'));
-        });
-        store.originalTh[Base.getKey($table)] = _thList;
-        $table.data('originalThList', _thList);
-    }
-
-    /**
-     * 获取原Th DOM至table data
-     * @param $table
-     * @returns {*|HTMLElement|jTool}
-     */
-    getOriginalThDOM($table) {
-        const _thArray = [];
-        const _thList = store.originalTh[Base.getKey($table)];
-        jTool.each(_thList, (i, v) => {
-            _thArray.push(jTool(`thead[grid-manager-thead] th[th-name="${v}"]`, $table).get(0));
-        });
-        return jTool(_thArray);
     }
 }
 

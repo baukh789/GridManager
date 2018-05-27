@@ -28,8 +28,8 @@
 - Context Menu: frequently used functions can be find in the context menu
 
 ## GridManager by frameworks
-- [GridManager by Angular 1.x](https://github.com/baukh789/GridManager-Angular-1.x)
 - [GridManager by Vue](https://github.com/baukh789/GridManager-Vue)
+- [GridManager by Angular 1.x](https://github.com/baukh789/GridManager-Angular-1.x)
 - [GridManager by React](https://github.com/baukh789/GridManager-React)
 
 ## Version Information
