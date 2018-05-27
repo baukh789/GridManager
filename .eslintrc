@@ -125,10 +125,10 @@
     //禁止使用没有必要的嵌套代码块
     "no-lone-blocks": 2,
     //不要把空格和tab混用
-    "no-mixed-spaces-and-tabs": 2,
+    "no-mixed-spaces-and-tabs": 0,
     //顾名思义，该规则保证了在逻辑表达式、条件表达式、
     //申明语句、数组元素、对象属性、sequences、函数参数中不使用超过一个的空白符。
-    "no-multi-spaces": 2,
+    "no-multi-spaces": 0,
     //该规则保证了字符串不分两行书写。
     "no-multi-str": 2,
     //空行不能够超过2行

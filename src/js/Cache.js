@@ -299,16 +299,24 @@ class Cache {
             // 是否为有效的用户记忆
             let isUsable = true;
 
-            // 列数量不匹配
+            // 与用户记忆数量不匹配
             if (columnCacheKeys.length !== columnMapKeys.length) {
                 isUsable = false;
             }
-            // 列的key 或 text 不匹配
+
+            // 与用户记忆项不匹配
             isUsable && jTool.each(_settings.columnMap, (key, col) => {
-                if (!columnCache[key] || columnCache[key].text !== col.text) {
+                if (!columnCache[key]) {
                     isUsable = false;
                     return false;
                 }
+				jTool.each(col, (name, attr) => {
+					const cacheValue = columnCache[key][name];
+	            	if (jTool.type(attr) !== 'function' && cacheValue !== attr) {
+			            isUsable = false;
+			            return false;
+		            }
+	            });
             });
 
             // 将用户记忆并入 columnMap 内
@@ -396,7 +404,7 @@ class Cache {
     }
 
     /**
-     * 验证版本号清除列表缓存
+     * 验证版本号, 如果版本号变更清除用户记忆
      * @param $table
      * @param version 版本号
      */

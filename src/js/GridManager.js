@@ -268,6 +268,7 @@ export default class GridManager {
 	 * @returns {*}
 	 */
 	init(table, arg, callback) {
+		console.log(arg);
 		const $table = jTool(table);
 		// 校验: 初始参
 		if (!arg || jTool.isEmptyObject(arg)) {

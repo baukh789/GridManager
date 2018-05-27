@@ -54,7 +54,8 @@
     "url-loader": "^0.5.9",
     "watchify": "^3.7.0",
     "webpack": "^2.0.0",
-    "webpack-dev-middleware": "^1.10.1"
+    "webpack-dev-middleware": "^1.10.1",
+    "jtool": "^1.2.25"
   },
   "scripts": {
     "report-coverage": "codecov",
@@ -62,8 +63,5 @@
     "lint": "eslint src/js/",
     "test": "NODE_ENV=test karma start",
     "build": "webpack --config webpack-config.js"
-  },
-  "dependencies": {
-    "jtool": "^1.2.25"
   }
 }
