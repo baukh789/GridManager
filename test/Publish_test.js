@@ -217,7 +217,6 @@ describe('PublishMethod 非init方法验证', function() {
 			]
 		};
 		PublishMethod.init(table, arg);
-		trList = document.querySelectorAll('tbody tr');
 	});
 
 	afterAll(function () {
@@ -300,8 +299,12 @@ describe('PublishMethod 非init方法验证', function() {
 		});
 
 		it('参数完整', function () {
-			expect(PublishMethod.getRowData(table, trList[0])).toEqual(testData.data[0]);
-			expect(PublishMethod.getRowData(table, trList[2])).toEqual(testData.data[2]);
+			jasmine.clock().install();
+			jasmine.clock().tick(1000);
+			trList = document.querySelectorAll('tbody tr');
+			expect(PublishMethod.getRowData(table, trList[0]).name).toEqual('baukh');
+			expect(PublishMethod.getRowData(table, trList[1]).name).toEqual('kouzi');
+			jasmine.clock().uninstall();
 		});
 	});
 
@@ -327,29 +330,41 @@ describe('PublishMethod 非init方法验证', function() {
 			expect(PublishMethod.setSort.length).toBe(4);
 		});
 
-		it('执行', function () {
+		it('执行1', function () {
+			jasmine.clock().install();
 			sortJson = {
 				name: 'DESC'
 			};
 			PublishMethod.setSort(table, sortJson, callback1);
+			jasmine.clock().tick(1000);
 			expect(callback1).toHaveBeenCalled();
 			expect(PublishMethod.get(table).sortData.name).toBe('DESC');
+			jasmine.clock().uninstall();
+		});
 
+		it('执行2', function () {
+
+			jasmine.clock().install();
 			sortJson = {
 				name: 'ASC'
 			};
 			PublishMethod.setSort(table, sortJson, callback2, false);
+			jasmine.clock().tick(1000);
 			expect(callback2).toHaveBeenCalled();
 			expect(PublishMethod.get(table).sortData.name).toBe('ASC');
-
+			jasmine.clock().uninstall();
+		});
+		it('执行3', function () {
+			jasmine.clock().install();
 			// 传递无效的值
 			sortJson = {
 				name: undefined
 			};
 			PublishMethod.setSort(table, sortJson, callback3, false);
+			jasmine.clock().tick(1000);
 			expect(callback3).toHaveBeenCalled();
 			expect(PublishMethod.get(table).sortData.name).toBe(undefined);
-
+			jasmine.clock().uninstall();
 		});
 	});
 
@@ -455,49 +470,68 @@ describe('PublishMethod 非init方法验证', function() {
 			expect(PublishMethod.setQuery.length).toBe(4);
 		});
 
-		it('执行', function () {
+		it('执行1', function () {
 			// query 为 init 时传递的参数值
 			expect(PublishMethod.get(table).query).toEqual(queryValue);
 
+			jasmine.clock().install();
 			// query值为空, 不指定 isGotoFirstPage
 			PublishMethod.setQuery(table, {}, callback1);
+			jasmine.clock().tick(1000);
 			expect(callback1).toHaveBeenCalled();
 			expect(PublishMethod.get(table).query).toEqual({});
+			jasmine.clock().uninstall();
+		});
 
+		it('执行2', function () {
 			// query值不为空, 指定 isGotoFirstPage = true
+			jasmine.clock().install();
 			PublishMethod.setQuery(table, {cc: 1}, true, callback2);
+			jasmine.clock().tick(1000);
 			expect(callback2).toHaveBeenCalled();
 			expect(PublishMethod.get(table).query).toEqual({cc: 1});
-
+			jasmine.clock().uninstall();
+		});
+		it('执行3', function () {
+			jasmine.clock().install();
 			// query值为空对象, 指定 isGotoFirstPage = false
 			PublishMethod.setQuery(table, {}, false, callback3);
+			jasmine.clock().tick(1000);
 			expect(callback3).toHaveBeenCalled();
 			expect(PublishMethod.get(table).query).toEqual({});
+			jasmine.clock().uninstall();
 
+		});
+		it('执行4', function () {
+			jasmine.clock().install();
 			// 不传递query, 不指定 isGotoFirstPage
 			PublishMethod.setQuery(table, undefined, false, callback3);
+			jasmine.clock().tick(1000);
 			expect(callback3).toHaveBeenCalled();
 			expect(PublishMethod.get(table).query).toBeUndefined();
-
+			jasmine.clock().uninstall();
 		});
 	});
 
-	describe('PublishMethod.setAjaxData(table, ajaxData)', function() {
+	describe('PublishMethod.setAjaxData(table, ajaxData, callback)', function() {
 		let checkAllTh = null;
 		let checkOneTh = null;
+		let callback = jasmine.createSpy('callback');
 		beforeAll(() => {
 			checkAllTh = table.querySelector('thead th[gm-checkbox="true"] input');
 			checkOneTh = table.querySelector('tbody td[gm-checkbox="true"] input');
+			callback = jasmine.createSpy('callback');
 		});
 
 		afterAll(() => {
 			checkAllTh = null;
 			checkOneTh = null;
+			callback = null;
 		});
 
 		it('基础验证', function () {
 			expect(PublishMethod.setAjaxData).toBeDefined();
-			expect(PublishMethod.setAjaxData.length).toBe(2);
+			expect(PublishMethod.setAjaxData.length).toBe(3);
 		});
 
 		it('执行', function () {
@@ -510,7 +544,8 @@ describe('PublishMethod 非init方法验证', function() {
 			expect(PublishMethod.getCheckedTr(table).length).toBe(0);
 
 			// 将静态数据更换为 testData2
-			PublishMethod.setAjaxData(table, testData2);
+			PublishMethod.setAjaxData(table, testData2, callback);
+			expect(callback).toHaveBeenCalled();
 
 			// 全选
 			checkAllTh.click();

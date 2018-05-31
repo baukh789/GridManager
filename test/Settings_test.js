@@ -12,6 +12,10 @@ describe('Settings', function() {
 		settings = null;
 	});
 
+	it('验证属性[compileVue]初始值', function() {
+		expect(settings.compileVue).toBe(false);
+	});
+
 	it('验证属性[supportDrag]初始值', function() {
 		expect(settings.supportDrag).toBe(true);
 	});
@@ -132,6 +136,26 @@ describe('Settings', function() {
 		expect(settings.supportCheckbox).toBe(true);
 	});
 
+	it('验证属性[checkedBefore]初始值', function() {
+		expect(typeof settings.checkedBefore).toBe('function');
+	});
+
+
+	it('验证属性[checkedAfter]初始值', function() {
+		expect(typeof settings.checkedAfter).toBe('function');
+	});
+
+
+	it('验证属性[checkedAllBefore]初始值', function() {
+		expect(typeof settings.checkedAllBefore).toBe('function');
+	});
+
+
+	it('验证属性[checkedAllAfter]初始值', function() {
+		expect(typeof settings.checkedAllAfter).toBe('function');
+	});
+
+
 	it('验证属性[i18n]初始值', function() {
 		expect(settings.i18n).toBe('zh-cn');
 	});
@@ -148,8 +172,8 @@ describe('Settings', function() {
 		expect(settings.firstLoading).toBe(true);
 	});
 
-	it('验证属性[ajax_url]初始值', function() {
-		expect(settings.ajax_url).toBe('');
+	it('验证属性[ajax_data]初始值', function() {
+		expect(settings.ajax_data).toBeUndefined();
 	});
 
 	it('验证属性[ajax_type]初始值', function() {
@@ -174,10 +198,6 @@ describe('Settings', function() {
 
 	it('验证属性[ajax_error]初始值', function() {
 		expect(typeof settings.ajax_error).toBe('function');
-	});
-
-	it('验证属性[ajax_data]初始值', function() {
-		expect(settings.ajax_data).toBeUndefined();
 	});
 
 	it('验证属性[requestHandler]初始值', function() {

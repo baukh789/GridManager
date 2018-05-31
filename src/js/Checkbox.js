@@ -12,6 +12,24 @@ class Checkbox {
 	}
 
 	/**
+	 * 获取当前选中的行
+	 * @param table
+	 * @returns {NodeListOf<SVGElementTagNameMap[string]> | NodeListOf<HTMLElementTagNameMap[string]> | NodeListOf<Element>}
+	 */
+	getCheckedTr($table) {
+		return $table.get(0).querySelectorAll('tbody tr[checked="true"]');
+	}
+
+	/**
+	 * 获取当前选中行渲染时使用的数据
+	 * @param table
+	 * @returns {{}|*}
+	 */
+	getCheckedData($table) {
+		return Cache.getRowData($table, this.getCheckedTr($table));
+	};
+
+	/**
 	 * 获取 全选字符串
 	 * @param settings
 	 * @returns {string}
@@ -52,18 +70,25 @@ class Checkbox {
      */
 	bindCheckboxEvent($table) {
 		const _this = this;
+		const settings = Cache.getSettings($table);
 		// th内的全选
 		$table.off('click', 'th[gm-checkbox="true"] input[type="checkbox"]');
 		$table.on('click', 'th[gm-checkbox="true"] input[type="checkbox"]', function () {
+			settings.checkedBefore(_this.getCheckedData($table));
+			settings.checkedAllBefore(_this.getCheckedData($table));
 			const tableData = _this.resetData($table, this.checked, true);
 			_this.resetDOM($table, tableData);
+			settings.checkedAfter(_this.getCheckedData($table));
+			settings.checkedAllAfter(_this.getCheckedData($table));
 		});
 
 		// td内的单选
 		$table.off('click', 'td[gm-checkbox="true"] input[type="checkbox"]');
 		$table.on('click', 'td[gm-checkbox="true"] input[type="checkbox"]', function () {
+			settings.checkedBefore(_this.getCheckedData($table));
 			const tableData = _this.resetData($table, this.checked, false, jTool(this).closest('tr').attr('cache-key'));
 			_this.resetDOM($table, tableData);
+			settings.checkedAfter(_this.getCheckedData($table));
 		});
 	}
 
@@ -105,7 +130,7 @@ class Checkbox {
 
 		// 更改DOM
 		// update td checkbox DOM
-		tableData.forEach((row, index) => {
+		tableData && tableData.forEach((row, index) => {
 			const $tr = jTool(`tbody tr[cache-key="${index}"]`, $table);
 			const $input = jTool(`td[gm-checkbox="true"] input[type="checkbox"]`, $tr);
 			$tr.attr('checked', row[this.key]);

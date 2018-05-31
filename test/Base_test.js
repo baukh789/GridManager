@@ -21,7 +21,7 @@ describe('Base 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(13 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(14 + 1);
 	});
 });
 
@@ -424,5 +424,30 @@ describe('Base.getVisibleForColumn(col)', function() {
 	it('isShow= false', function(){
 		col = {isShow: false};
 		expect(Base.getVisibleForColumn(col)).toBe('none');
+	});
+});
+
+describe('Base.cloneObject(object)', function() {
+	let o1 = null;
+	let o2 = null;
+	beforeEach(function(){
+	});
+
+	afterEach(function(){
+		o1 = null;
+		o2 = null;
+	});
+
+	it('基础验证', function () {
+		expect(Base.cloneObject).toBeDefined();
+		expect(Base.cloneObject.length).toBe(1);
+	});
+
+	it('执行结果', function(){
+		o1 = {name: 'cc', ename: 'baukh'};
+		o2 = o1;
+		expect(o2 === o1).toBe(true);
+		expect(Base.cloneObject(o2).name === o1.name).toBe(true);
+		expect(Base.cloneObject(o2) === o1).toBe(false);
 	});
 });

@@ -176,12 +176,12 @@ export default class GridManager {
 	 * @param ajaxData: 配置的数据
 	 */
 	static
-	setAjaxData(table, ajaxData) {
+	setAjaxData(table, ajaxData, callback) {
 		const $table = jTool(table);
 		const settings = Cache.getSettings($table);
 		jTool.extend(settings, {ajax_data: ajaxData});
 		Cache.setSettings($table, settings);
-		Core.refresh($table);
+		Core.refresh($table, callback);
 	}
 
 	/**
@@ -214,7 +214,7 @@ export default class GridManager {
      */
 	static
 	getCheckedTr(table) {
-		return table.querySelectorAll('tbody tr[checked="true"]');
+		return Checkbox.getCheckedTr(jTool(table));
 	};
 
 	/**
@@ -225,8 +225,7 @@ export default class GridManager {
      */
 	static
 	getCheckedData(table) {
-		const $table = jTool(table);
-		return Cache.getRowData($table, this.getCheckedTr(table));
+		return Checkbox.getCheckedData(jTool(table));
 	};
 
 	/**

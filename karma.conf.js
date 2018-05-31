@@ -3,6 +3,7 @@
  * phantomjs: 模拟的浏览器环境
  *
  */
+const webpack = require('webpack');
 const path = require('path');
 module.exports = function (config) {
 	// karma config: http://karma-runner.github.io/1.0/config/configuration-file.html
@@ -97,6 +98,11 @@ module.exports = function (config) {
 			resolve:{
 				extensions: [".js"] //当requrie的模块找不到时,添加这些后缀
 			},
+			plugins: [
+				new webpack.ProvidePlugin({
+					'Promise': 'es6-promise'
+				})
+			],
 			module: {
 				rules: [
 					{

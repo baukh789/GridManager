@@ -271,6 +271,15 @@ class BaseClass {
 	getVisibleForColumn(col) {
 		return col.isShow ? 'visible' : 'none';
 	}
+
+	/**
+	 * clone 对象, 对 JSON.stringify 存在丢失情为的类型(如function)不作处理。因为GM中不存在这种情况
+	 * @param object
+	 * @returns {any}
+	 */
+	cloneObject(object) {
+		return JSON.parse(JSON.stringify(object));
+	}
 }
 const Base = new BaseClass();
 export {jTool, $, Base};

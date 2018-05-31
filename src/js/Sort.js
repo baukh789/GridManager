@@ -55,12 +55,12 @@ class Sort {
 
 		// 执行更新
 		if (refresh) {
-			Core.refresh($table, () => {
+			Core.refresh($table, response => {
 				// 更新排序样式
 				this.updateSortStyle($table);
 
 				// 执行回调函数
-				callback();
+				callback(response);
 			});
 		} else {
 			// 执行回调函数

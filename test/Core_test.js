@@ -25,7 +25,7 @@ describe('Core 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(7 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(8 + 1);
 	});
 });
 
@@ -33,6 +33,13 @@ describe('Core.refresh($table, callback)', function() {
 	it('基础验证', function () {
 		expect(Core.refresh).toBeDefined();
 		expect(Core.refresh.length).toBe(2);
+	});
+});
+
+describe('Core.transformToPromise($table, settings)', function() {
+	it('基础验证', function () {
+		expect(Core.transformToPromise).toBeDefined();
+		expect(Core.transformToPromise.length).toBe(2);
 	});
 });
 
@@ -95,7 +102,7 @@ describe('Core.driveDomForSuccessAfter($table, settings, response, callback)', f
 
 	it('数据错误提示文本', function () {
 		Core.driveDomForSuccessAfter(null, null, null, null);
-		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '请求数据失败！请查看配置参数[ajax_url或ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确');
+		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '请求数据失败！请查看配置参数[ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确');
 	});
 });
 

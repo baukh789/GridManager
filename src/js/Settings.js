@@ -1,9 +1,18 @@
 /**
  * Settings: 配置项
  */
-import { $ } from './Base';
+import {$} from './Base';
+
 class Settings {
 	constructor() {
+		/**
+		 * 框架相关配置
+		 */
+		const frameworks = {
+			// 是否需要解析Vue模版
+			compileVue: false
+		};
+
 		/**
 		 * 拖拽
 		 */
@@ -34,7 +43,7 @@ class Settings {
 
 		/**
 		 * 右键菜单
-         */
+		 */
 		const menu = {
 			supportMenu: true
 		};
@@ -148,7 +157,19 @@ class Settings {
 		 */
 		const checkbox = {
 			// 是否支持选择与反选
-			supportCheckbox: true
+			supportCheckbox: true,
+
+			// 选择事件执行前事件
+			checkedBefore: $.noop,
+
+			// 选择事件执行后事件
+			checkedAfter: $.noop,
+
+			// 全选事件执行前事件
+			checkedAllBefore: $.noop,
+
+			// 全选事件执行后事件
+			checkedAllAfter: $.noop
 		};
 
 		/**
@@ -166,6 +187,9 @@ class Settings {
 			// 表格列数据配置项
 			/* columnData示例
 			columnData: [{
+			 // 当前列是否使用框架解析
+			 useCompile: false,
+
 			 // 列的唯一索引。字符串类型，必设项
 			 key: 'url',
 
@@ -211,11 +235,11 @@ class Settings {
 			// 表格grid-manager所对应的值[可在html中配置]
 			gridManagerName: '',
 
-			// 获取表格数据地址，配置该参数后，将会动态获取数据
-			ajax_url: '',
-
 			// 初次渲染时是否加载数据
 			firstLoading: true,
+
+			// ajax请求参数, [string url | function {retrun string url | promise | data}] @v2.6.0
+			ajax_data: undefined,
 
 			// ajax请求类型['GET', 'POST']默认GET
 			ajax_type: 'GET',
@@ -240,14 +264,11 @@ class Settings {
 			// ajax失败后,与jTool的error使用方法相同
 			ajax_error: $.noop,
 
-			// ajax静态数据,配置后ajax_url将无效
-			ajax_data: undefined,
-
 			// 请求前处理程序, 可以通过该方法修改全部的请求参数 @v2.3.14
-			requestHandler: $.noop,
+			requestHandler: request => request,
 
 			// 执行请求后执行程序, 通过该程序可以修改返回值格式. 仅有成功后该函数才会执行 @v2.3.14
-			responseHandler: $.noop,
+			responseHandler: response => response,
 
 			// ajax请求返回的列表数据key键值,默认为data
 			dataKey: 'data',
@@ -268,6 +289,7 @@ class Settings {
 		};
 
 		const settings = {
+			...frameworks,
 			...drag,
 			...adjust,
 			...menu,
@@ -357,4 +379,5 @@ class TextSettings {
 		};
 	}
 }
-export { Settings, TextSettings };
+
+export {Settings, TextSettings};

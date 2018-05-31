@@ -122,10 +122,10 @@ describe('GridManager.setQuery(table, query, isGotoFirstPage, callback)', functi
 	});
 });
 
-describe('GridManager.setAjaxData(table, ajaxData)', function() {
+describe('GridManager.setAjaxData(table, ajaxData, callback)', function() {
 	it('基础验证', function() {
 		expect(GridManager.setAjaxData).toBeDefined();
-		expect(GridManager.setAjaxData.length).toBe(2);
+		expect(GridManager.setAjaxData.length).toBe(3);
 	});
 });
 

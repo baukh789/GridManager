@@ -88,8 +88,8 @@ class PublishMethodClass {
 	/**
 	 * 配置静态数ajaxData
 	 */
-	setAjaxData(table, ajaxData) {
-		GridManager.setAjaxData(table, ajaxData);
+	setAjaxData(table, ajaxData, callback) {
+		GridManager.setAjaxData(table, ajaxData, callback);
 	}
 
 	/*

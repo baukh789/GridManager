@@ -303,7 +303,7 @@ $font-family: arial !important;
 						background-color: #fff;
 						color: #3d3d3d;
 						padding: 4px;
-						vertical-align: top;
+						vertical-align: middle; // TODO 20180528以前为top, 修正为middle
 						&[td-visible="none"] {
 							display: none;
 						}

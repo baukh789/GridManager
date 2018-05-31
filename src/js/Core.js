@@ -32,89 +32,113 @@ class Core {
 
 		// 增加刷新中标识
 		refreshAction.addClass('refreshing');
-
-		// 使用配置数据
-		// 如果存在配置数据ajax_data,将不再通过ajax_rul进行数据请求
-		// 且ajax_beforeSend、ajax_error、ajax_complete将失效，仅有ajax_success会被执行
-		if (settings.ajax_data) {
-			this.driveDomForSuccessAfter($table, settings, settings.ajax_data, callback);
-			settings.ajax_success(settings.ajax_data);
-			this.removeRefreshingClass(tableWrap);
-			return;
-		}
-		if (typeof (settings.ajax_url) !== 'string' || settings.ajax_url === '') {
-			settings.outLog('请求表格数据失败！参数[ajax_url]配制错误', 'error');
-			this.removeRefreshingClass(tableWrap);
-			typeof callback === 'function' ? callback() : '';
-			return;
-		}
-		let pram = jTool.extend(true, {}, settings.query);
-
-		// 合并分页信息至请求参
-		if (settings.supportAjaxPage) {
-			jTool.extend(pram, settings.pageData);
-		}
-
-		// 合并排序信息至请求参
-		if (settings.supportSorting) {
-			jTool.each(settings.sortData, (key, value) => {
-				// 增加sort_前缀,防止与搜索时的条件重叠
-				pram[`${settings.sortKey}${key}`] = value;
-			});
-		}
-
-		// 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
-		// 说明|备注:
-		// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
-		// 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
-		if (settings.ajax_type.toUpperCase() === 'POST' && !settings.ajax_headers['Content-Type']) {
-			settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
-		}
-
-		// 请求前处理程序, 可以通过该方法增加 或 修改全部的请求参数
-		// requestHandler方法内更改方式示例: pram.cPage = 1;
-		settings.requestHandler(pram);
-
-		// 将 requestHandler 内修改的分页参数合并至 settings.pageData
-		if (settings.supportAjaxPage) {
-			jTool.each(settings.pageData, (key, value) => {
-				settings.pageData[key] = pram[key] || value;
-			});
-		}
-
-		// 将 requestHandler 内修改的排序参数合并至 settings.sortData
-		if (settings.supportSorting) {
-			jTool.each(settings.sortData, (key, value) => {
-				settings.sortData[key] = pram[`${settings.sortKey}${key}`] || value;
-			});
-		}
-		Cache.setSettings($table, settings);
-
 		Base.showLoading(tableWrap);
-		// 执行ajax
-		jTool.ajax({
-			url: settings.ajax_url,
-			type: settings.ajax_type,
-			data: pram,
-			headers: settings.ajax_headers,
-			xhrFields: settings.ajax_xhrFields,
-			cache: true,
-			beforeSend: XMLHttpRequest => {
-				settings.ajax_beforeSend(XMLHttpRequest);
-			},
-			success: response => {
+
+		let ajaxPromise = this.transformToPromise($table, settings);
+
+		settings.ajax_beforeSend(ajaxPromise);
+		ajaxPromise
+			.then(response => {
 				this.driveDomForSuccessAfter($table, settings, response, callback);
 				settings.ajax_success(response);
-			},
-			error: (XMLHttpRequest, textStatus, errorThrown) => {
-				settings.ajax_error(XMLHttpRequest, textStatus, errorThrown);
-			},
-			complete: (XMLHttpRequest, textStatus) => {
-				settings.ajax_complete(XMLHttpRequest, textStatus);
-				this.removeRefreshingClass(tableWrap);
+				settings.ajax_complete(response);
 				Base.hideLoading(tableWrap);
+				this.removeRefreshingClass(tableWrap);
+			})
+			.catch(error => {
+				settings.ajax_error(error);
+				settings.ajax_complete(error);
+				Base.hideLoading(tableWrap);
+				this.removeRefreshingClass(tableWrap);
+			});
+	}
+
+	/**
+	 * 将不同类型的ajax_data转换为promise
+	 * @param $table
+	 * @param settings
+	 * @returns promise
+	 */
+	transformToPromise($table, settings) {
+		let ajaxData = typeof settings.ajax_data === 'function' ? settings.ajax_data(settings) : settings.ajax_data;
+
+		// ajaxData === string url
+		if (typeof ajaxData === 'string') {
+			return getPromiseByUrl($table, settings, ajaxData);
+		}
+
+		// ajaxData === Promise
+		if (typeof ajaxData.then === 'function') {
+			return ajaxData;
+		}
+
+		// 	ajaxData === 静态数据
+		if (jTool.type(ajaxData) === 'object' || jTool.type(ajaxData) === 'array') {
+			return new Promise(resolve => {
+				resolve(ajaxData);
+			});
+		}
+
+		function getPromiseByUrl() {
+			let pram = jTool.extend(true, {}, settings.query);
+
+			// 合并分页信息至请求参
+			if (settings.supportAjaxPage) {
+				jTool.extend(pram, settings.pageData);
 			}
-		});
+
+			// 合并排序信息至请求参
+			if (settings.supportSorting) {
+				jTool.each(settings.sortData, (key, value) => {
+					// 增加sort_前缀,防止与搜索时的条件重叠
+					pram[`${settings.sortKey}${key}`] = value;
+				});
+			}
+
+			// 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
+			// 说明|备注:
+			// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
+			// 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
+			if (settings.ajax_type.toUpperCase() === 'POST' && !settings.ajax_headers['Content-Type']) {
+				settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
+			}
+
+			// 请求前处理程序, 可以通过该方法增加 或 修改全部的请求参数
+			// requestHandler方法内需返回修改后的参数
+			pram = settings.requestHandler(Base.cloneObject(pram));
+
+			// 将 requestHandler 内修改的分页参数合并至 settings.pageData
+			if (settings.supportAjaxPage) {
+				jTool.each(settings.pageData, (key, value) => {
+					settings.pageData[key] = pram[key] || value;
+				});
+			}
+
+			// 将 requestHandler 内修改的排序参数合并至 settings.sortData
+			if (settings.supportSorting) {
+				jTool.each(settings.sortData, (key, value) => {
+					settings.sortData[key] = pram[`${settings.sortKey}${key}`] || value;
+				});
+			}
+			Cache.setSettings($table, settings);
+
+			return new Promise((resolve, reject) => {
+				jTool.ajax({
+					url: ajaxData,
+					type: settings.ajax_type,
+					data: pram,
+					headers: settings.ajax_headers,
+					xhrFields: settings.ajax_xhrFields,
+					cache: true,
+					success: response => {
+						resolve(response);
+					},
+					error: (XMLHttpRequest, textStatus, errorThrown) => {
+						reject(XMLHttpRequest, textStatus, errorThrown);
+					}
+				});
+			});
+		}
 	}
 
 	/**
@@ -138,17 +162,14 @@ class Core {
      */
 	driveDomForSuccessAfter($table, settings, response, callback) {
 		if (!response) {
-			Base.outLog('请求数据失败！请查看配置参数[ajax_url或ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
+			Base.outLog('请求数据失败！请查看配置参数[ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
 			return;
 		}
-
-		const $tbody = jTool('tbody', $table);
-		// const gmName = Base.getKey($table);
 
 		let parseRes = typeof (response) === 'string' ? JSON.parse(response) : response;
 
 		// 执行请求后执行程序, 通过该程序可以修改返回值格式
-		settings.responseHandler(parseRes);
+		parseRes = settings.responseHandler(Base.cloneObject(parseRes));
 
 		let _data = parseRes[settings.dataKey];
 
@@ -186,10 +207,14 @@ class Core {
 			// 存储表格数据
 			Cache.setTableData($table, _data);
 
+			// tbody dom
+			const _tbody = jTool('tbody', $table).get(0);
+
 			// 清空 tbody
-			$tbody.html('');
+			_tbody.innerHTML = '';
 
             // 组装 tbody
+			const compileList = []; // 需要通过框架解析td
 			jTool.each(_data, (index, row) => {
 				const trNode = document.createElement('tr');
 				trNode.setAttribute('cache-key', index);
@@ -214,19 +239,36 @@ class Core {
 					col.align && tdNode.setAttribute('align', col.align);
 
 					tdList[col.index] = tdNode;
+
+					col.useCompile && compileList.push({td: tdNode, row: row});
 				});
 
 				tdList.forEach(td => {
 					trNode.appendChild(td);
 				});
 
-				$tbody.append(trNode);
+				_tbody.appendChild(trNode);
 			});
 
-			// 为新生成的tbody 的内容绑定事件
+			// 为新生成的tbody 的内容绑定 gm-事件
 			this.bindEvent($table);
 
 			this.initVisible($table);
+
+			try {
+				// 解析框架: Vue
+				if (typeof settings.compileVue === 'function' && compileList.length > 0) {
+					settings.compileVue(compileList);
+				}
+
+				// 解析框架: Angular
+				// ....
+
+				// 解析框架: React
+				// ...
+			} catch (e) {
+				Base.outLog('框架模板解析异常, 请查看template配置项', 'error');
+			}
 		}
 
 		// 渲染选择框
@@ -239,7 +281,8 @@ class Core {
 			AjaxPage.resetPageData($table, settings, parseRes[settings.totalsKey]);
 			Menu.updateMenuPageStatus(settings.gridManagerName, settings.pageData);
 		}
-		typeof callback === 'function' ? callback() : '';
+
+		typeof callback === 'function' ? callback(parseRes) : '';
 	};
 
 	/**
@@ -257,7 +300,8 @@ class Core {
      * @param $table
      */
 	bindEvent($table) {
-        jTool('[gm-click]', $table).bind('click', function (event) {
+	    jTool('[gm-click]', $table).unbind('click');
+        jTool('[gm-click]', $table).bind('click', function () {
             const row = Cache.getRowData($table, this.parentNode.parentNode);
             const scope = Cache.getScope($table) || window;
             const fun = scope[this.getAttribute('gm-click')];

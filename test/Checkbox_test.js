@@ -25,7 +25,7 @@ describe('Checkbox 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Checkbox)))).toBe(7 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Checkbox)))).toBe(9 + 1);
 	});
 });
 
@@ -33,6 +33,20 @@ describe('Checkbox.key', function() {
 	it('基础验证', function() {
 		expect(Checkbox.key).toBeDefined();
 		expect(Checkbox.key).toBe('gm_checkbox');
+	});
+});
+
+describe('Checkbox.getCheckedTr($table)', function() {
+	it('基础验证', function() {
+		expect(Checkbox.getCheckedTr).toBeDefined();
+		expect(Checkbox.getCheckedTr.length).toBe(1);
+	});
+});
+
+describe('Checkbox.getCheckedData($table)', function() {
+	it('基础验证', function() {
+		expect(Checkbox.getCheckedData).toBeDefined();
+		expect(Checkbox.getCheckedData.length).toBe(1);
 	});
 });
 
