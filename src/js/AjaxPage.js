@@ -400,7 +400,6 @@ class AjaxPage {
 		const pSizeArea = jTool('select[name="pSizeArea"]', toolBar);
 		const pSizeInfo = jTool('.dataTables_info', toolBar);
 		if (!pSizeArea || pSizeArea.length === 0) {
-			Base.outLog('未找到条数切换区域，停止该事件绑定', 'info');
 			return false;
 		}
 
