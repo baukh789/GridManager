@@ -168,7 +168,7 @@
 			,disableCache: false
 			,ajax_data: function (setting) {
 				// 传入分页及排序的配置项
-				return getBlogList(Object.assign(setting.pageData, setting.sortData));
+				return getBlogList(Object.assign({}, setting.pageData, setting.sortData));
 			}
 			,ajax_type: 'POST'
 			,supportMenu: true
