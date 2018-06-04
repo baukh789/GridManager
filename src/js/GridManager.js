@@ -280,6 +280,12 @@ export default class GridManager {
 			return;
 		}
 
+		// 参数变更提醒 @2.6.0
+		if (arg.ajax_url) {
+			Base.outLog('ajax_url在v2.6.0以后将被废弃, 请使用ajax_data替代', 'error');
+			return;
+		}
+
 		// 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
 		if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
 			// 存储gridManagerName值

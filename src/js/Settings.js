@@ -238,7 +238,10 @@ class Settings {
 			// 初次渲染时是否加载数据
 			firstLoading: true,
 
-			// ajax请求参数, [string url | function {retrun string url | promise | data}] @v2.6.0
+			// 后端API调用地址, @2.6.0中已废弃
+			// ajax_url: '',
+
+			// 后端API调用, [string url | function {retrun string url | promise | data}] @v2.6.0
 			ajax_data: undefined,
 
 			// ajax请求类型['GET', 'POST']默认GET
