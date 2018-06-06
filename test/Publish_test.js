@@ -7,6 +7,7 @@ import {PublishMethod, publishMethodArray} from '../src/js/Publish';
 import testData from '../src/data/testData';
 import testData2 from '../src/data/testData2';
 import { GM_VERSION, GM_PUBLISH_METHOD_LIST } from '../src/common/constants';
+import GridManager from "../src/js/GridManager";
 
 describe('publishMethodArray', function() {
 	it('公开方法列表', function () {
@@ -35,7 +36,7 @@ describe('Publish 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(16 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(17 + 1);
 	});
 });
 
@@ -696,6 +697,13 @@ describe('PublishMethod 非init方法验证', function() {
 		});
 	});
 
+});
+
+describe('PublishMethod.cleanData(table)', function() {
+	it('基础验证', function() {
+		expect(PublishMethod.cleanData).toBeDefined();
+		expect(PublishMethod.cleanData.length).toBe(1);
+	});
 });
 
 describe('PublishMethod.destroy(table)', function() {

@@ -113,6 +113,10 @@ class PublishMethodClass {
 		return GridManager.getCheckedData(table);
 	}
 
+	cleanData(table) {
+		return GridManager.cleanData(table);
+	}
+
 	/*
 	 * 消毁当前实例
 	 * */

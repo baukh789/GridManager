@@ -228,6 +228,11 @@ export default class GridManager {
 		return Checkbox.getCheckedData(jTool(table));
 	};
 
+	static
+	cleanData(table) {
+		return Core.cleanData(jTool(table));
+	}
+
 	/**
 	 * @静态方法
 	 * 消毁当前实例

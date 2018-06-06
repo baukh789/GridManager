@@ -25,7 +25,7 @@ describe('Core 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(8 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(9 + 1);
 	});
 });
 
@@ -81,6 +81,13 @@ describe('Core.removeRefreshingClass($tableWrap)', function() {
 		jasmine.clock().tick(2000);
 		expect($refreshAction.hasClass('refreshing')).toBe(false);
 		jasmine.clock().uninstall();
+	});
+});
+
+describe('Core.cleanData($table)', function() {
+	it('基础验证', function () {
+		expect(Core.cleanData).toBeDefined();
+		expect(Core.cleanData.length).toBe(1);
 	});
 });
 

@@ -432,12 +432,20 @@ class AjaxPage {
      */
 	__getPageData(settings, totals) {
 		const _pSize = settings.pageData.pSize || settings.pageSize;
+		const _tPage = Math.ceil(totals / _pSize);
 		const _cPage = settings.pageData.cPage || 1;
 		return {
-			tPage: Math.ceil(totals / _pSize),		// 总页数
-			cPage: _cPage,							// 当前页
-			pSize: _pSize,							// 每页显示条数
-			tSize: totals							// 总条路
+			// 总页数
+			tPage: _tPage,
+
+			// 当前页
+			cPage: _cPage > _tPage ? 1 : _cPage,
+
+			// 每页显示条数
+			pSize: _pSize,
+
+			// 总条路
+			tSize: totals
 		};
 	}
 

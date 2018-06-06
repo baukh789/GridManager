@@ -6,6 +6,7 @@
 'use strict';
 import GridManager from '../src/js/GridManager';
 import { GM_VERSION } from '../src/common/constants';
+import Core from "../src/js/Core";
 /**
  * 验证类的属性及方法总量
  */
@@ -147,6 +148,13 @@ describe('GridManager.getCheckedData(table)', function() {
 	it('基础验证', function() {
 		expect(GridManager.getCheckedData).toBeDefined();
 		expect(GridManager.getCheckedData.length).toBe(1);
+	});
+});
+
+describe('GridManager.cleanData(table)', function() {
+	it('基础验证', function() {
+		expect(GridManager.cleanData).toBeDefined();
+		expect(GridManager.cleanData.length).toBe(1);
 	});
 });
 

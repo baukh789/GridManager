@@ -154,6 +154,28 @@ class Core {
 	}
 
 	/**
+	 * 清空当前表格数据
+	 * @param $table
+	 */
+	cleanData($table) {
+		const settings = Cache.getSettings($table);
+		this.insertEmptyTemplate($table, settings);
+
+		// 渲染选择框
+		if (settings.supportCheckbox) {
+			Checkbox.resetDOM($table, []);
+		}
+
+		// 渲染分页
+		if (settings.supportAjaxPage) {
+			AjaxPage.resetPageData($table, settings, 0);
+			Menu.updateMenuPageStatus(settings.gridManagerName, settings.pageData);
+		}
+
+		// this.driveDomForSuccessAfter($table, settings, response, callbakc);
+	}
+
+	/**
 	 * 执行ajax成功后重新渲染DOM
 	 * @param $table
 	 * @param settings

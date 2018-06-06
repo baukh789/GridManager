@@ -22,6 +22,7 @@ export const GM_PUBLISH_METHOD_LIST = [
 	'refreshGrid',
 	'getCheckedTr',
 	'getCheckedData',
+	'cleanData',
 	'destroy'
 ];
 
