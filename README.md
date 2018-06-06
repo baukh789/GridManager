@@ -9,16 +9,6 @@
 - [English](readme/README-EN.md)
 - [中文](readme/README-CN.md)
 
-## API
-- [API](http://gridmanager.lovejavascript.com/api/index.html)
-
-## Demo
-- [base grid](http://runjs.cn/code/dkxyyzim)
-- [use I18N grid](http://runjs.cn/code/tho0nht5)
-- [use search grid](http://runjs.cn/code/eoxfjqgc)
-- [use export grid](http://runjs.cn/code/iqixtlhw)
-- [use template grid](http://runjs.cn/code/rcyn61v1)
-
 ## Implementation Function 
 ### GridManager.js can make the tag of table into real cases. And after that ,these functions are accessed:
 - Width control: you can control the width of your grid easily
@@ -37,6 +27,16 @@
 - [GridManager by Vue](https://github.com/baukh789/GridManager-Vue)
 - [GridManager by Angular 1.x](https://github.com/baukh789/GridManager-Angular-1.x) 
 - [GridManager by React](https://github.com/baukh789/GridManager-React)
+
+## API
+- [API](http://gridmanager.lovejavascript.com/api/index.html)
+
+## Demo
+- [base grid](http://runjs.cn/code/dkxyyzim)
+- [use I18N grid](http://runjs.cn/code/tho0nht5)
+- [use search grid](http://runjs.cn/code/eoxfjqgc)
+- [use export grid](http://runjs.cn/code/iqixtlhw)
+- [use template grid](http://runjs.cn/code/rcyn61v1)
 
 ## Version Information
 - [v2.5.x.md](/version/v2.5.x.md)
