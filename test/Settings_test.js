@@ -216,6 +216,14 @@ describe('Settings', function() {
 		expect(settings.totalsKey).toBe('totals');
 	});
 
+	it('验证属性[currentPageKey]初始值', function() {
+		expect(settings.currentPageKey).toBe('cPage');
+	});
+
+	it('验证属性[pageSizeKey]初始值', function() {
+		expect(settings.pageSizeKey).toBe('pSize');
+	});
+
 	it('验证属性[emptyTemplate]初始值', function() {
 		expect(settings.emptyTemplate).toBe('<div class="gm-emptyTemplate">暂无数据</div>');
 	});

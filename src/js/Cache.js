@@ -122,7 +122,7 @@ class Cache {
         GridManagerMemory = JSON.parse(GridManagerMemory);
 
         // 指定删除的table, 则定点清除
-        const _key = this.getMemoryKey($table);
+        const _key = this.getMemoryKey(settings);
         delete GridManagerMemory[_key];
 
         // 清除后, 重新存储
@@ -132,28 +132,10 @@ class Cache {
 
     /**
      * 获取表格的用户记忆标识码
-     * @param $table
+     * @param settings
      * @returns {*}
      */
-    getMemoryKey($table) {
-        const settings = this.getSettings($table);
-        // 验证table是否有效
-        if (!$table || $table.length === 0) {
-            Base.outLog('getUserMemory:无效的table', 'error');
-            return false;
-        }
-
-        // TODO baukh@20180608: no-cache已经不存在了
-        // 当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-        // const noCache = $table.attr('no-cache');
-        // if (noCache && noCache === 'true') {
-        //     Base.outLog('缓存已被禁用：当前表缺失必要html标签属性[grid-manager或th-name]', 'info');
-        //     return false;
-        // }
-        // if (!window.localStorage) {
-        //     Base.outLog('当前浏览器不支持：localStorage，缓存功能失效', 'info');
-        //     return false;
-        // }
+    getMemoryKey(settings) {
         return window.location.pathname + window.location.hash + '-' + settings.gridManagerName;
     }
 
@@ -166,7 +148,7 @@ class Cache {
         if (!$table || $table.length === 0) {
             return {};
         }
-        const _key = this.getMemoryKey($table);
+        const _key = this.getMemoryKey(this.getSettings($table));
         if (!_key) {
             return {};
         }
@@ -191,30 +173,11 @@ class Cache {
      * @returns {boolean}
      */
     saveUserMemory($table, settings) {
-        const _this = this;
         // 当前为禁用缓存模式，直接跳出
         if (settings.disableCache) {
             return false;
         }
 
-        // TODO baukh@20180608: 这里没有必要进行验证
-        // 当前表是否存在
-        // if (!$table || $table.length === 0) {
-        //     Base.outLog('saveUserMemory:无效的table', 'error');
-        //     return false;
-        // }
-
-        // TODO baukh@20180608: no-cache已经不存在了
-        // 当前表是否禁用缓存  被禁用原因是用户缺失了必要的参数
-        // const noCache = $table.attr('no-cache');
-        // if (noCache && noCache === 'true') {
-        //     Base.outLog('缓存功能已被禁用：当前表缺失必要参数', 'info');
-        //     return false;
-        // }
-        // if (!window.localStorage) {
-        //     Base.outLog('当前浏览器不支持：localStorage，缓存功能失效。', 'error');
-        //     return false;
-        // }
         const thList = jTool('thead[grid-manager-thead] th', $table);
         if (!thList || thList.length === 0) {
             Base.outLog('saveUserMemory:无效的thList,请检查是否正确配置table,thead,th', 'error');
@@ -222,24 +185,24 @@ class Cache {
         }
 
         let _cache = {};
-        let _pageCache = {};
         _cache.column = settings.columnMap;
 
         // 存储分页
         if (settings.supportAjaxPage) {
-            _pageCache.pSize = parseInt(jTool('select[name="pSizeArea"]', $table.closest('.table-wrap')).val(), 10);
+	        const _pageCache = {};
+            _pageCache[settings.pageSizeKey] = settings.pageData[settings.pageSizeKey];
             _cache.page = _pageCache;
         }
-        const _cacheString = JSON.stringify(_cache);
+        const cacheString = JSON.stringify(_cache);
         let GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
         if (!GridManagerMemory) {
             GridManagerMemory = {};
         } else {
             GridManagerMemory = JSON.parse(GridManagerMemory);
         }
-        GridManagerMemory[_this.getMemoryKey($table)] = _cacheString;
+        GridManagerMemory[this.getMemoryKey(settings)] = cacheString;
         window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
-        return _cacheString;
+        return cacheString;
     }
 
     /**
@@ -253,7 +216,7 @@ class Cache {
         _settings.textConfig = new TextSettings();
         jTool.extend(true, _settings, arg);
 
-        // 存储配置项
+        // 存储初始配置项
         this.setSettings($table, _settings);
 
         // 为 columnData 增加 序号列
@@ -280,7 +243,8 @@ class Cache {
             _settings.columnMap[col.key].index = index;
         });
 
-        const mergeColumn = () => {
+	    // 合并用户记忆至 settings, 每页显示条数记忆不在此处
+        const mergeUserMemory = () => {
             // 当前为禁用状态
             if (_settings.disableCache) {
                 return;
@@ -337,8 +301,9 @@ class Cache {
                 this.delUserMemory($table, '存储记忆项与配置项[columnData]不匹配');
             }
         };
-        // 合并用户记忆至配置项
-        mergeColumn();
+
+        // 合并用户记忆
+        mergeUserMemory();
 
         // 更新存储配置项
         this.setSettings($table, _settings);

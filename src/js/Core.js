@@ -84,7 +84,8 @@ class Core {
 
 			// 合并分页信息至请求参
 			if (settings.supportAjaxPage) {
-				jTool.extend(pram, settings.pageData);
+				pram[settings.currentPageKey] = settings.pageData[settings.currentPageKey];
+				pram[settings.pageSizeKey] = settings.pageData[settings.pageSizeKey];
 			}
 
 			// 合并排序信息至请求参
@@ -169,7 +170,7 @@ class Core {
 		// 渲染分页
 		if (settings.supportAjaxPage) {
 			AjaxPage.resetPageData($table, settings, 0);
-			Menu.updateMenuPageStatus(settings.gridManagerName, settings.pageData);
+			Menu.updateMenuPageStatus(settings.gridManagerName, settings);
 		}
 
 		// this.driveDomForSuccessAfter($table, settings, response, callbakc);
@@ -209,8 +210,8 @@ class Core {
 				let	_orderBaseNumber = 1;
 
 				// 验证是否存在分页数据
-				if (_pageData && _pageData['pSize'] && _pageData['cPage']) {
-					_orderBaseNumber = _pageData.pSize * (_pageData.cPage - 1) + 1;
+				if (_pageData && _pageData[settings.pageSizeKey] && _pageData[settings.currentPageKey]) {
+					_orderBaseNumber = _pageData[settings.pageSizeKey] * (_pageData[settings.currentPageKey] - 1) + 1;
 				}
 				_data = _data.map((item, index) => {
 					item[Order.key] = _orderBaseNumber + index;
@@ -301,7 +302,7 @@ class Core {
 		// 渲染分页
 		if (settings.supportAjaxPage) {
 			AjaxPage.resetPageData($table, settings, parseRes[settings.totalsKey]);
-			Menu.updateMenuPageStatus(settings.gridManagerName, settings.pageData);
+			Menu.updateMenuPageStatus(settings.gridManagerName, settings);
 		}
 
 		typeof callback === 'function' ? callback(parseRes) : '';

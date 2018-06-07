@@ -145,17 +145,17 @@ class Menu {
 			const _table = jTool(`table[grid-manager="${_gridMenu.attr(_this.keyName)}"]`);
 			const refreshType = this.getAttribute('refresh-type');
 			let settings = Cache.getSettings(_table);
-			let cPage = settings.pageData.cPage;
+			let cPage = settings.pageData[settings.currentPageKey];
 
 			// 上一页
-			if (refreshType === 'previous' && settings.pageData.cPage > 1) {
-				cPage = settings.pageData.cPage - 1;
+			if (refreshType === 'previous' && cPage > 1) {
+				cPage = cPage - 1;
 				// 下一页
-			} else if (refreshType === 'next' && settings.pageData.cPage < settings.pageData.tPage) {
-				cPage = settings.pageData.cPage + 1;
+			} else if (refreshType === 'next' && cPage < settings.pageData.tPage) {
+				cPage = cPage + 1;
 				// 重新加载
 			} else if (refreshType === 'refresh') {
-				cPage = settings.pageData.cPage;
+				cPage = cPage;
 			}
 
 			AjaxPage.gotoPage(_table, settings, cPage);
@@ -203,9 +203,9 @@ class Menu {
 	/**
 	 * 更新菜单区域分页相关操作可用状态
 	 * @param gridManagerName
-	 * @param pageData
+	 * @param settings
 	 */
-	updateMenuPageStatus(gridManagerName, pageData) {
+	updateMenuPageStatus(gridManagerName, settings) {
 		// 右键菜单区上下页限制
 		const gridMenu = jTool(`.grid-menu[${this.keyName}="${gridManagerName}"]`);
 		if (!gridMenu || gridMenu.length === 0) {
@@ -213,12 +213,14 @@ class Menu {
 		}
 		const previousPage = jTool('[refresh-type="previous"]', gridMenu);
 		const nextPage = jTool('[refresh-type="next"]', gridMenu);
-		if (pageData.cPage === 1 || pageData.tPage === 0) {
+		const cPage = settings.pageData[settings.currentPageKey];
+		const tPage = settings.pageData.tPage;
+		if (cPage === 1 || tPage === 0) {
 			previousPage.addClass('disabled');
 		} else {
 			previousPage.removeClass('disabled');
 		}
-		if (pageData.cPage === pageData.tPage || pageData.tPage === 0) {
+		if (cPage === tPage || tPage === 0) {
 			nextPage.addClass('disabled');
 		} else {
 			nextPage.removeClass('disabled');

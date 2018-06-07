@@ -110,8 +110,8 @@ class AjaxPage {
 		}
 
 		// 替换被更改的值
-		settings.pageData.cPage = toPage;
-		settings.pageData.pSize = settings.pageData.pSize || settings.pageSize;
+		settings.pageData[settings.currentPageKey] = toPage;
+		settings.pageData[settings.pageSizeKey] = settings.pageData[settings.pageSizeKey] || settings.pageSize;
 
 		// 更新缓存
 		Cache.setSettings($table, settings);
@@ -122,30 +122,6 @@ class AjaxPage {
 		Core.refresh($table, () => {
 			settings.pagingAfter(query);
 		});
-	}
-
-	/**
-	 * 消毁
-	 * @param $table
-	 */
-	destroy($table) {
-		const tableWarp = $table.closest('.table-wrap');
-		const pageToolbar = jTool('.page-toolbar', tableWarp);
-		const gp_input = jTool('.gp-input', pageToolbar);
-		const refreshAction	= jTool('.refresh-action', pageToolbar);
-		const sizeArea = jTool('select[name=pSizeArea]', pageToolbar);
-
-		// 清理: 分页点击事件
-		pageToolbar.off('click', 'li');
-
-		// 清理: 快捷跳转事件
-		gp_input.unbind('keyup');
-
-		// 清理: 刷新界面事件
-		refreshAction.unbind('click');
-
-		// 清理: 设置当前页显示数事件
-		sizeArea.unbind('change');
 	}
 
 	/**
@@ -175,7 +151,7 @@ class AjaxPage {
      */
 	__joinPagination(settings, pageData) {
 		// 当前页
-		let cPage = Number(pageData.cPage || 0);
+		let cPage = Number(pageData[settings.currentPageKey] || 0);
 
 		// 总页数
 		let tPage = Number(pageData.tPage || 0);
@@ -367,10 +343,9 @@ class AjaxPage {
 			const _tableWarp = _size.closest('.table-wrap');
 			const _table = jTool('table[grid-manager]', _tableWarp);
 			const settings = Cache.getSettings($table);
-			settings.pageData = {
-				cPage: 1,
-				pSize: window.parseInt(_size.val())
-			};
+			settings.pageData = {};
+			settings.pageData[settings.currentPageKey] = 1;
+			settings.pageData[settings.pageSizeKey] = window.parseInt(_size.val());
 
 			Cache.saveUserMemory(_table, settings);
 
@@ -390,11 +365,11 @@ class AjaxPage {
 	 * 重置每页显示条数, 重置条数文字信息 [注: 这个方法只做显示更新, 不操作Cache 数据]
 	 * @param $table
 	 * @param settings
-	 * @param _pageData_ 分页数据格式
+	 * @param pageData 分页数据格式
 	 * @returns {boolean}
 	 * @private
      */
-	__resetPSize($table, settings, _pageData_) {
+	__resetPSize($table, settings, pageData) {
 		const tableWarp = $table.closest('.table-wrap');
 		const toolBar = jTool('.page-toolbar', tableWarp);
 		const pSizeArea = jTool('select[name="pSizeArea"]', toolBar);
@@ -404,18 +379,18 @@ class AjaxPage {
 		}
 
 		// 从多少开始
-		const fromNum = _pageData_.cPage === 1 ? 1 : (_pageData_.cPage - 1) * _pageData_.pSize + 1;
+		const fromNum = pageData[settings.currentPageKey] === 1 ? 1 : (pageData[settings.currentPageKey] - 1) * pageData[settings.pageSizeKey] + 1;
 
 		// 到多少结束
-		const toNum = _pageData_.cPage * _pageData_.pSize;
+		const toNum = pageData[settings.currentPageKey] * pageData[settings.pageSizeKey];
 
 		// 总共条数
-		const totalNum = _pageData_.tSize;
+		const totalNum = pageData.tSize;
 
 		const tmpHtml = I18n.i18nText(settings, 'dataTablesInfo', [fromNum, toNum, totalNum]);
 
 		// 根据返回值修正单页条数显示值
-		pSizeArea.val(_pageData_.pSize || 10);
+		pSizeArea.val(pageData[settings.pageSizeKey] || 10);
 
 		// 修改条数文字信息
 		pSizeInfo.html(tmpHtml);
@@ -431,22 +406,24 @@ class AjaxPage {
 	 * @private
      */
 	__getPageData(settings, totals) {
-		const _pSize = settings.pageData.pSize || settings.pageSize;
+		const _pSize = settings.pageData[settings.pageSizeKey] || settings.pageSize;
 		const _tPage = Math.ceil(totals / _pSize);
-		const _cPage = settings.pageData.cPage || 1;
-		return {
-			// 总页数
-			tPage: _tPage,
+		const _cPage = settings.pageData[settings.currentPageKey] || 1;
+		const pageData = {};
 
-			// 当前页
-			cPage: _cPage > _tPage ? 1 : _cPage,
+		// 总页数
+		pageData['tPage'] = _tPage;
 
-			// 每页显示条数
-			pSize: _pSize,
+		// 当前页
+		pageData[settings.currentPageKey] = _cPage > _tPage ? 1 : _cPage;
 
-			// 总条路
-			tSize: totals
-		};
+		// 每页显示条数
+		pageData[settings.pageSizeKey] = _pSize;
+
+		// 总条路
+		pageData['tSize'] = totals;
+
+		return pageData;
 	}
 
 	/**
@@ -465,17 +442,40 @@ class AjaxPage {
 		let	_pSize = null;
 
 		// 验证是否存在每页显示条数缓存数据
-		if (!_cache || !_cache.page || !_cache.page.pSize) {
+		if (!_cache || !_cache.page || !_cache.page[settings.pageSizeKey]) {
 			_pSize = settings.pageSize || 10;
 		} else {
-			_pSize = _cache.page.pSize;
+			_pSize = _cache.page[settings.pageSizeKey];
 		}
-		const pageData = {
-			pSize: _pSize,
-			cPage: 1
-		};
+		const pageData = {};
+		pageData[settings.pageSizeKey] = _pSize;
+		pageData[settings.currentPageKey] = 1;
 		jTool.extend(settings, {pageData: pageData});
 		Cache.setSettings($table, settings);
+	}
+
+	/**
+	 * 消毁
+	 * @param $table
+	 */
+	destroy($table) {
+		const tableWarp = $table.closest('.table-wrap');
+		const pageToolbar = jTool('.page-toolbar', tableWarp);
+		const gp_input = jTool('.gp-input', pageToolbar);
+		const refreshAction	= jTool('.refresh-action', pageToolbar);
+		const sizeArea = jTool('select[name=pSizeArea]', pageToolbar);
+
+		// 清理: 分页点击事件
+		pageToolbar.off('click', 'li');
+
+		// 清理: 快捷跳转事件
+		gp_input.unbind('keyup');
+
+		// 清理: 刷新界面事件
+		refreshAction.unbind('click');
+
+		// 清理: 设置当前页显示数事件
+		sizeArea.unbind('change');
 	}
 }
 export default new AjaxPage();

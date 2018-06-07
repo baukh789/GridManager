@@ -259,6 +259,9 @@ describe('AjaxPage.__getPageData(settings, totals)', function() {
 	var totals = null;
 	var pageData = null;
 	beforeEach(function() {
+		settings = new Settings();
+		settings.textConfig = new TextSettings();
+		settings.gridManagerName = 'test-createMenuDOM';
 	});
 	afterEach(function(){
 		settings = null;
@@ -273,11 +276,9 @@ describe('AjaxPage.__getPageData(settings, totals)', function() {
 
 	it('返回值-> 使用 pageData.pSize', function () {
 		totals = 95;
-		settings = {
-			pageData: {
-				pSize: 20,
-				cPage: 2
-			}
+		settings.pageData = {
+			pSize: 20,
+			cPage: 2
 		};
 		pageData = {tPage: 5, cPage: 2, pSize: 20, tSize: 95};
 		expect(AjaxPage.__getPageData(settings, totals)).toEqual(pageData);
@@ -285,11 +286,9 @@ describe('AjaxPage.__getPageData(settings, totals)', function() {
 
 	it('返回值-> 使用 settings.pageSize', function () {
 		totals = 95;
-		settings = {
-			pageSize: 30,
-			pageData: {
-				cPage: 2
-			}
+		settings.pageSize = 30;
+		settings.pageData = {
+			cPage: 2
 		};
 		pageData = {tPage: 4, cPage: 2, pSize: 30, tSize: 95};
 		expect(AjaxPage.__getPageData(settings, totals)).toEqual(pageData);
@@ -297,12 +296,10 @@ describe('AjaxPage.__getPageData(settings, totals)', function() {
 
 	it('返回值-> 使用 settings.pageSize 和 pageData.pSize', function () {
 		totals = 95;
-		settings = {
-			pageSize: 30,
-			pageData: {
-				pSize: 20,
-				cPage: 2
-			}
+		settings.pageSize = 30;
+		settings.pageData = {
+			pSize: 20,
+			cPage: 2
 		};
 		pageData = {tPage: 5, cPage: 2, pSize: 20, tSize: 95};
 		expect(AjaxPage.__getPageData(settings, totals)).toEqual(pageData);

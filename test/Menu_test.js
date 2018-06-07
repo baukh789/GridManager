@@ -177,9 +177,9 @@ describe('Menu.bindRightMenuEvent($table, settings)', () => {
 	});
 });
 
-describe('Menu.updateMenuPageStatus(gridManagerName, pageData)', () => {
+describe('Menu.updateMenuPageStatus(gridManagerName, settings)', () => {
 	let menuHtml = null;
-	let pageData = null;
+	let settings = null;
 	beforeEach(() => {
 		menuHtml = `<div class="grid-menu" ${Menu.keyName}="test-updateMenuPageStatus">
 						<span grid-action="refresh-page" refresh-type="previous">
@@ -191,12 +191,15 @@ describe('Menu.updateMenuPageStatus(gridManagerName, pageData)', () => {
 							<i class="iconfont icon-down"></i>
 						</span>;
 					</div>`;
+		settings = new Settings();
+		settings.textConfig = new TextSettings();
+		settings.gridManagerName = 'test-createMenuDOM';
 	});
 
 	afterEach(() => {
 		document.body.innerHTML = '';
 		menuHtml = null;
-		pageData = null;
+		settings = null;
 	});
 	it('基础验证', () => {
 		expect(Menu.updateMenuPageStatus).toBeDefined();
@@ -209,22 +212,22 @@ describe('Menu.updateMenuPageStatus(gridManagerName, pageData)', () => {
 
 	it('当前处于第一页', () => {
 		document.body.innerHTML = menuHtml;
-		pageData = {
-			cPage: 1,
-			tPage: 3
-		};
-		Menu.updateMenuPageStatus('test-updateMenuPageStatus', pageData);
+		settings.pageData = {
+					cPage: 1,
+					tPage: 3
+				};
+		Menu.updateMenuPageStatus('test-updateMenuPageStatus', settings);
 		expect(jTool('[refresh-type="previous"]').hasClass('disabled')).toBe(true);
 		expect(jTool('[refresh-type="next"]').hasClass('disabled')).toBe(false);
 	});
 
 	it('当前处于最后一页', () => {
 		document.body.innerHTML = menuHtml;
-		pageData = {
+		settings.pageData = {
 			cPage: 3,
 			tPage: 3
 		};
-		Menu.updateMenuPageStatus('test-updateMenuPageStatus', pageData);
+		Menu.updateMenuPageStatus('test-updateMenuPageStatus', settings);
 		expect(jTool('[refresh-type="previous"]').hasClass('disabled')).toBe(false);
 		expect(jTool('[refresh-type="next"]').hasClass('disabled')).toBe(true);
 	});

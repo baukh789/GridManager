@@ -120,7 +120,7 @@ describe('Cache.delUserMemory($table, cleanText)', function() {
 	});
 });
 
-describe('Cache.(getMemoryKey($table)', function() {
+describe('Cache.(getMemoryKey(settings)', function() {
 	it('基础验证', function(){
 		expect(Cache.getMemoryKey).toBeDefined();
 		expect(Cache.getMemoryKey.length).toBe(1);

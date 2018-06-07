@@ -134,8 +134,14 @@ class Settings {
 			// 存储分页数据[不对外公开参数]
 			pageData: {},
 
-			// 其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
-			query: {},
+			// 返回数据中数据总条数的key键值,默认为totals
+			totalsKey: 'totals',
+
+			// 请求参数中当前页的key键值,默认为cPage
+			currentPageKey: 'cPage',
+
+			// 请求参数中每页显示条数的key健值, 默认为pSize
+			pageSizeKey: 'pSize',
 
 			// 分页事件发生前
 			pagingBefore: $.noop,
@@ -247,6 +253,9 @@ class Settings {
 			// ajax请求类型['GET', 'POST']默认GET
 			ajax_type: 'GET',
 
+			// 其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
+			query: {},
+
 			// ajax请求头信息
 			ajax_headers: {},
 
@@ -273,11 +282,8 @@ class Settings {
 			// 执行请求后执行程序, 通过该程序可以修改返回值格式. 仅有成功后该函数才会执行 @v2.3.14
 			responseHandler: response => response,
 
-			// ajax请求返回的列表数据key键值,默认为data
+			// 返回数据中列表数据的key键值,默认为data
 			dataKey: 'data',
-
-			// ajax请求返回的数据总条数key键值,默认为totals
-			totalsKey: 'totals',
 
 			// 为空时显示的html
 			emptyTemplate: '<div class="gm-emptyTemplate">暂无数据</div>'
