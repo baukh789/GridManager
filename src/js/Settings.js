@@ -9,6 +9,7 @@ class Settings {
 		 * 框架相关配置
 		 */
 		const frameworks = {
+			// @2.6.0
 			// 是否需要解析Vue模版
 			compileVue: false
 		};
@@ -137,9 +138,11 @@ class Settings {
 			// 返回数据中数据总条数的key键值,默认为totals
 			totalsKey: 'totals',
 
+			// @2.6.0
 			// 请求参数中当前页的key键值,默认为cPage
 			currentPageKey: 'cPage',
 
+			// @2.6.0
 			// 请求参数中每页显示条数的key健值, 默认为pSize
 			pageSizeKey: 'pSize',
 
@@ -165,15 +168,19 @@ class Settings {
 			// 是否支持选择与反选
 			supportCheckbox: true,
 
+			// @2.6.0
 			// 选择事件执行前事件
 			checkedBefore: $.noop,
 
+			// @2.6.0
 			// 选择事件执行后事件
 			checkedAfter: $.noop,
 
+			// @2.6.0
 			// 全选事件执行前事件
 			checkedAllBefore: $.noop,
 
+			// @2.6.0
 			// 全选事件执行后事件
 			checkedAllAfter: $.noop
 		};
@@ -193,6 +200,7 @@ class Settings {
 			// 表格列数据配置项
 			/* columnData示例
 			columnData: [{
+			 // @2.6.0
 			 // 当前列是否使用框架解析
 			 useCompile: false,
 
@@ -241,10 +249,12 @@ class Settings {
 			// 表格grid-manager所对应的值[可在html中配置]
 			gridManagerName: '',
 
+			// @2.5.8
 			// 初次渲染时是否加载数据
 			firstLoading: true,
 
-			// 后端API调用地址, @2.6.0中已废弃
+			// @2.6.0 不再建议使用且在外续版本中会被移除
+			// 后端API调用地址
 			// ajax_url: '',
 
 			// 后端API调用, [string url | function {retrun string url | promise | data}] @v2.6.0

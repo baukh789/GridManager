@@ -142,9 +142,7 @@
 				,supportSorting: true
 				,isCombSorting: false
 				,disableCache: false
-				// TODO 用于测试中
-				,currentPageKey: 'cPage'
-				,pageSizeKey: 'pSize'
+				// ajax_url 将在v2.6.0以上版本废弃，请不要再使用
 				// ,ajax_url: 'http://www.lovejavascript.com/blogManager/getBlogList'
 				,ajax_data: function () {
 					return 'http://www.lovejavascript.com/blogManager/getBlogList';
@@ -154,23 +152,23 @@
 				,supportMenu: true
 
 				// 选择事件执行前事件
-				,checkedBefore: function(row){
-					console.log('checkedBefore==', row);
+				,checkedBefore: function(checkedList){
+					console.log('checkedBefore==', checkedList);
 				}
 
 				// 选择事件执行后事件
-				,checkedAfter: function(row){
-					console.log('checkedAfter==', row);
+				,checkedAfter: function(checkedList){
+					console.log('checkedAfter==', checkedList);
 				}
 
 				// 全选事件执行前事件
-				,checkedAllBefore: function(row){
-					console.log('checkedAllBefore==', row);
+				,checkedAllBefore: function(checkedList){
+					console.log('checkedAllBefore==', checkedList);
 				}
 
 				// 全选事件执行后事件
-				,checkedAllAfter: function(row){
-					console.log('checkedAllAfter==', row);
+				,checkedAllAfter: function(checkedList){
+					console.log('checkedAllAfter==', checkedList);
 				}
 
 				// AJAX请求前事件函数

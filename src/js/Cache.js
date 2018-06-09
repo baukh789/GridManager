@@ -274,9 +274,6 @@ class Cache {
 		            // 显示文本
 		            || columnCache[key].text !== col.text
 
-		            // 可视状态
-		            || columnCache[key].isShow !== col.isShow
-
 		            // 文本排列方向
 		            || columnCache[key].align !== col.align
 
