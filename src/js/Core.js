@@ -470,7 +470,6 @@ class Core {
 		// 单个TH所占宽度
 		let onlyWidth = 0;
 
-		// TODO baukh20171216: 这个操作应该考虑下前置到生成th时
 		// 单个TH下的上层DIV
 		const onlyThWarp = jTool('<div class="th-wrap"></div>');
 		jTool.each(onlyThList, (index, item) => {

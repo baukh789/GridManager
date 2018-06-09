@@ -40,6 +40,11 @@
 			padding: 5px 20px;
 			margin-right: 10px;
 		}
+		.bottom-bar a{
+			font-size: 12px;
+			padding: 5px 20px;
+			margin-right: 10px;
+		}
     </style>
 </head>
 
@@ -49,6 +54,7 @@
 		<button id="init-gm" disabled>init</button>
 		<button id="destroy-gm" disabled>destroy</button>
 		<button id="reset-gm" disabled>reset data</button>
+		<a href="https://github.com/baukh789/GridManager/blob/master/src/demo/demo2.html" target="_blank">查看源码</a>
 	</div>
 
 	<script>
@@ -251,8 +257,12 @@
 		};
 
 		// 绑定修改数据方法事件
+		let newData = ajaxData1;
 		resetDOM.onclick = function(){
-			table.GM('setAjaxData', ajaxData2);
+			newData = newData === ajaxData2 ? ajaxData1 : ajaxData2;
+			table.GM('setAjaxData', newData, function(data){
+				console.log('setAjaxData', data);
+			});
 		};
 
 		// 初始进入时, 执行init 方法

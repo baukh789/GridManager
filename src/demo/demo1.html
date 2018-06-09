@@ -67,6 +67,10 @@
 			margin-top: 10px;
 		}
 		.bottom-bar button{
+			margin-right: 10px;
+		}
+		.bottom-bar a{
+			font-size: 12px;
 			padding: 5px 20px;
 			margin-right: 10px;
 		}
@@ -123,6 +127,7 @@
 	<section class="bottom-bar">
 		<button id="init-gm" disabled>init</button>
 		<button id="destroy-gm" disabled>destroy</button>
+		<a href="https://github.com/baukh789/GridManager/blob/master/src/demo/demo1.html" target="_blank">查看源码</a>
 	</section>
 
 	<script type="text/javascript">
@@ -140,6 +145,7 @@
 				// TODO 用于测试中
 				,currentPageKey: 'cPage'
 				,pageSizeKey: 'pSize'
+				// ,ajax_url: 'http://www.lovejavascript.com/blogManager/getBlogList'
 				,ajax_data: function () {
 					return 'http://www.lovejavascript.com/blogManager/getBlogList';
 				}

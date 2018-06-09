@@ -99,7 +99,6 @@ export default class GridManager {
 		Sort.__setSort(jTool(table), sortJson, callback, refresh);
 	}
 
-	// TODO 这个方法名称起的不规范, 按作用应该更名为showCol
 	/**
 	 * @静态方法
 	 * 显示Th及对应的TD项
@@ -113,7 +112,6 @@ export default class GridManager {
         Cache.update(jTool(table));
 	}
 
-	// TODO 这个方法名称起的不规范, 按作用应该更名为hideCol
 	/**
 	 * @静态方法
 	 * 隐藏Th及对应的TD项
@@ -287,8 +285,8 @@ export default class GridManager {
 
 		// 参数变更提醒 @2.6.0
 		if (arg.ajax_url) {
-			Base.outLog('ajax_url在v2.6.0以后将被废弃, 请使用ajax_data替代', 'error');
-			return;
+			Base.outLog('ajax_url在v2.6.0以后将被废弃, 请使用ajax_data替代', 'warn');
+			arg.ajax_data = arg.ajax_url;
 		}
 
 		// 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
