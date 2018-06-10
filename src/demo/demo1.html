@@ -252,7 +252,6 @@
 					},{
 						key: 'title',
 						remind: 'the title',
-						width: '300px',
 						align: 'left',
 						text: '标题',
 						sorting: '',
@@ -272,7 +271,7 @@
 						key: 'type',
 						remind: 'the type',
 						text: '博文分类',
-						width: '100',
+						width: '100px',
 						align: 'center',
 						template: function(type, rowObject){
 							return TYPE_MAP[type];
@@ -285,8 +284,8 @@
 					},{
 						key: 'username',
 						remind: 'the username',
-						width: '100px',
 						align: 'center',
+						width: '100px',
 						text: '作者',
 						template: function(username){
 							return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
@@ -294,7 +293,7 @@
 					},{
 						key: 'createDate',
 						remind: 'the createDate',
-						width: '100px',
+						width: '130px',
 						text: '创建时间',
 						sorting: 'DESC',
 						// 使用函数返回 htmlString
@@ -304,7 +303,7 @@
 					},{
 						key: 'lastDate',
 						remind: 'the lastDate',
-						width: '100px',
+						width: '130px',
 						text: '最后修改时间',
 						sorting: '',
 						// 使用函数返回 htmlString
@@ -314,7 +313,7 @@
 					},{
 						key: 'action',
 						remind: 'the action',
-						width: '10%',
+						width: '100px',
 						align: 'center',
 						text: '<span style="color: red">操作</span>',
 						// 直接返回 htmlString
