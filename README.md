@@ -46,5 +46,56 @@
 ## License
 - [License](/LICENSE)
 
-## Participate In Development
-- [Developer Documentation](readme/DEVELOP-README.md)
+## Init
+### demo-baseCode
+```html
+<table></table>
+```
+```javascript
+document.querySelector('table').GM({
+	gridManagerName: 'demo-baseCode',
+    ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
+    ajax_type: 'POST',
+    query: {pluginId: 1},
+    columnData: [
+        {
+            key: 'name',
+            text: '名称'
+        },{
+            key: 'info',
+            text: '使用说明'
+        },{
+            key: 'url',
+            text: 'url'
+        }
+    ]
+});
+```
+
+### demo-ajaxPageCode
+```html
+<table></table>
+```
+```javascript
+document.querySelector('table').GM({
+	gridManagerName: 'demo-ajaxPageCode',
+    ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
+    ajax_type: 'POST'
+    query: {pluginId: 1},
+    supportAjaxPage: true,
+    columnData: [
+        {
+            key: 'name',
+            text: 'name'
+        },{
+            key: 'info',
+            text: 'info'
+        },{
+            key: 'url',
+            text: 'url'
+        }
+    ]
+});
+```
+
+[more dome](http://gridmanager.lovejavascript.com/demo/index.html)
