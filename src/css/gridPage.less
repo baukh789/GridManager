@@ -1,14 +1,14 @@
-@import "./mixins.scss";
+@import "./mixins";
 
-$font-normal-color: #000;
-$font-active-color: #0083ba;
+@font-normal-color: #000;
+@font-active-color: #0083ba;
 /* 表格分页 */
 .table-wrap {
 	.page-toolbar {
 		width: 100%;
 		position: relative;
 		padding: 5px 0;
-		@include bg-image();
+		.bg-image;
 		.refresh-action {
 			display: inline-block;
 			width: 30px;
@@ -16,7 +16,7 @@ $font-active-color: #0083ba;
 			padding: 7.5px;
 			vertical-align: middle;
 			&:hover {
-				color: $font-normal-color;
+				color: @font-normal-color;
 			}
 			i {
 				display: block;
@@ -25,7 +25,7 @@ $font-active-color: #0083ba;
 				cursor: pointer;
 				line-height: 15px;
 				font-size: 16px;
-				color: $font-active-color;
+				color: @font-active-color;
 				font-weight: bold;
 			}
 			&.refreshing {
@@ -78,7 +78,7 @@ $font-active-color: #0083ba;
 					background-color: #fff;
 					border: 1px solid #ddd;
 					border-left: none;
-					color: $font-normal-color;
+					color: @font-normal-color;
 					position: relative;
 					text-align: center;
 					cursor: pointer;
@@ -94,14 +94,14 @@ $font-active-color: #0083ba;
 						cursor: not-allowed;
 					}
 					&.active, &.active:focus, &.active:hover {
-						background-color: $font-active-color;
+						background-color: @font-active-color;
 						color: #fff;
 						z-index: 2;
 					}
 					&:focus, &:hover {
 						background-color: #eee;
 						border-color: #ddd;
-						color: $font-active-color;
+						color: @font-active-color;
 					}
 				}
 			}

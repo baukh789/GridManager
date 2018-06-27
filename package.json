@@ -37,6 +37,7 @@
     "jasmine-ajax": "^3.2.0",
     "jasmine-core": "^2.6.4",
     "jquery": "^3.2.1",
+    "jtool": "^1.2.25",
     "karma": "^0.13.22",
     "karma-babel-preprocessor": "^7.0.0",
     "karma-chrome-launcher": "^2.0.0",
@@ -46,16 +47,14 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.8.1",
-    "node-sass": "^4.5.3",
+    "less": "^3.0.4",
+    "less-loader": "^4.1.0",
     "resolve-url-loader": "^2.1.0",
-    "sass-loader": "^6.0.6",
     "sinon": "^1.17.2",
-    "style-loader": "^0.16.1",
     "url-loader": "^0.5.9",
     "watchify": "^3.7.0",
     "webpack": "^2.0.0",
-    "webpack-dev-middleware": "^1.10.1",
-    "jtool": "^1.2.25"
+    "webpack-dev-middleware": "^1.10.1"
   },
   "scripts": {
     "report-coverage": "codecov",

@@ -21,7 +21,7 @@ module.exports = (srcCodeDir, idDev) => {
 			include: [path.join(__dirname, srcCodeDir)]
 		},
 		{
-			test: /\.(sc|c)ss$/,
+			test: /\.less$/,
 			exclude: /(node_modules|bower_components)/,
 			include: [path.join(__dirname, srcCodeDir + '/css')],
 			use: ExtractTextWebpackPlugin.extract({
@@ -37,7 +37,7 @@ module.exports = (srcCodeDir, idDev) => {
 						loader: 'resolve-url-loader'
 					},
 					{
-						loader: 'sass-loader',
+						loader: 'less-loader',
 						options: {
 							sourceMap: false // 启用/禁用 Sourcemaps
 						}

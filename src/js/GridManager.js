@@ -2,7 +2,7 @@
  * Created by baukh on 17/10/26.
  * 构造类
  */
-import '../css/index.scss';
+import '../css/index.less';
 import { jTool, Base } from './Base';
 import Adjust from './Adjust';
 import AjaxPage from './AjaxPage';

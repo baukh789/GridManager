@@ -112,8 +112,8 @@ module.exports = function (config) {
 						include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')]
 					},
 					{
-						test:/.css$/,
-						loader:'style-loader!css-loader'
+						test:/.less/,
+						loader:'css-loader!less-loader'
 					},
 					{
 						test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,

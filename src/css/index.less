@@ -1,21 +1,21 @@
 @import '../fonts/iconfont.css';
-@import "./animation.scss";
-@import "./gridMenu.scss";
-@import "./gridBase.scss";
-@import "./gridLoading.scss";
-@import "./gridPage.scss";
-@import "./gridConfig.scss";
-@import "./mixins.scss";
+@import "./animation";
+@import "./gridMenu";
+@import "./gridBase";
+@import "./gridLoading";
+@import "./gridPage";
+@import "./gridConfig";
+@import "./mixins";
 
-$table-border: 1px solid #e8e8e8;
-$font-normal-size: 12px;
-$font-family: arial !important;
+@table-border: 1px solid #e8e8e8;
+@font-normal-size: 12px;
+@font-family: arial !important;
 /* table所在的DIV */
 .table-wrap {
 	position: relative;
 	overflow: hidden;
 	background-color: #fff;
-	border: $table-border;
+	border: @table-border;
 	.table-div {
 		overflow: auto;
 		/* 自定义滚动条样式 */
@@ -50,9 +50,9 @@ $font-family: arial !important;
 			text-align: center;
 			width: 100%;
 			border-collapse: collapse;
-			font-family: $font-family;
+			font-family: @font-family;
 			tr {
-				border-bottom: $table-border;
+				border-bottom: @table-border;
 				th:last-child,
 				td:last-child {
 					border-right: none;
@@ -61,8 +61,8 @@ $font-family: arial !important;
 			th {
 				text-align: center;
 				color: #000;
-				border-right: $table-border;
-				@include bg-image();
+				border-right: @table-border;
+				.bg-image();
 				&:hover {
 					background-color: #e0e0e0;
 				}
@@ -94,7 +94,7 @@ $font-family: arial !important;
 						display: block;
 						width: 100%;
 						height: 100%;
-						@include text-overflow();
+						.text-overflow();
 					}
 					/* 宽度调整事件源 */
 					.adjust-action {
@@ -138,7 +138,7 @@ $font-family: arial !important;
 								font-weight: 600;
 								font-size: 1.1em;
 								color: #FF6;
-								@include text-overflow();
+								.text-overflow();
 							}
 							.ra-con {
 								display: block;
@@ -152,7 +152,7 @@ $font-family: arial !important;
 							display: block;
 							width: 16px;
 							height: 16px;
-							font-size: $font-normal-size;
+							font-size: @font-normal-size;
 							line-height: 18px;
 							color: #666;
 						}
@@ -196,7 +196,7 @@ $font-family: arial !important;
 							display: block;
 							height: 10px;
 							position: absolute;
-							font-size: $font-normal-size;
+							font-size: @font-normal-size;
 							line-height: 10px;
 						}
 						.sa-up {
@@ -216,7 +216,7 @@ $font-family: arial !important;
 			}
 			td {
 				text-align: left;
-				border-right: $table-border;
+				border-right: @table-border;
 			}
 			th, td {
 				&[th-visible="none"] {
@@ -299,7 +299,7 @@ $font-family: arial !important;
 			tbody {
 				tr {
 					td {
-						@include text-overflow();
+						.text-overflow();
 						background-color: #fff;
 						color: #3d3d3d;
 						padding: 4px;
@@ -381,8 +381,8 @@ $font-family: arial !important;
 			background-color: #d8d8d8;
 			border-collapse: separate;
 			border-spacing: 1px;
-			font-size: $font-normal-size !important;
-			font-family: $font-family;
+			font-size: @font-normal-size !important;
+			font-family: @font-family;
 			tr {
 				th {
 					background-color: #f3f3f3;
@@ -397,7 +397,7 @@ $font-family: arial !important;
 					padding: 4px;
 					vertical-align: top;
 					text-align: left;
-					@include text-overflow();
+					.text-overflow();
 				}
 			}
 		}
