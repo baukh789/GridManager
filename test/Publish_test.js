@@ -124,8 +124,6 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 		arg = {
 			ajax_data: testData,
 			gridManagerName: 'test-publish',
-			supportSorting: true,
-			supportRemind: true,
 			columnData: [
 				{
 					key: 'name',
@@ -713,8 +711,6 @@ describe('PublishMethod.destroy(table)', function() {
 		arg = {
 			ajax_data: testData,
 			gridManagerName: 'test-publish',
-			supportSorting: true,
-			supportRemind: true,
 			supportAjaxPage: true,
 			columnData: [
 				{
@@ -732,7 +728,8 @@ describe('PublishMethod.destroy(table)', function() {
 					text: '创建时间'
 				},{
 					key: 'lastDate',
-					text: '最后修改时间'
+					text: '最后修改时间',
+                    sorting: ''
 				},{
 					key: 'action',
 					text: '操作',

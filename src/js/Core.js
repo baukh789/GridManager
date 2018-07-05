@@ -89,12 +89,10 @@ class Core {
 			}
 
 			// 合并排序信息至请求参
-			if (settings.supportSorting) {
-				jTool.each(settings.sortData, (key, value) => {
-					// 增加sort_前缀,防止与搜索时的条件重叠
-					pram[`${settings.sortKey}${key}`] = value;
-				});
-			}
+            jTool.each(settings.sortData, (key, value) => {
+                // 增加sort_前缀,防止与搜索时的条件重叠
+                pram[`${settings.sortKey}${key}`] = value;
+            });
 
 			// 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
 			// 说明|备注:
@@ -116,11 +114,9 @@ class Core {
 			}
 
 			// 将 requestHandler 内修改的排序参数合并至 settings.sortData
-			if (settings.supportSorting) {
-				jTool.each(settings.sortData, (key, value) => {
-					settings.sortData[key] = pram[`${settings.sortKey}${key}`] || value;
-				});
-			}
+            jTool.each(settings.sortData, (key, value) => {
+                settings.sortData[key] = pram[`${settings.sortKey}${key}`] || value;
+            });
 			Cache.setSettings($table, settings);
 
 			return new Promise((resolve, reject) => {
@@ -369,16 +365,25 @@ class Core {
 			});
 		}
 
+		// 将表头提醒启用状态重置
+        Remind.enable = false;
+
+        // 将排序启用状态重置
+        Sort.enable = false;
+
 		// thList 生成thead
 		jTool.each(thList, (index, col) => {
 			// 表头提醒
-			if (settings.supportRemind && typeof (col.remind) === 'string' && col.remind !== '') {
+            remindHtml = '';
+			if (typeof (col.remind) === 'string' && col.remind !== '') {
 				remindHtml = `remind="${col.remind}"`;
+                Remind.enable = true;
 			}
 
 			// 排序
 			sortingHtml = '';
-			if (settings.supportSorting && typeof (col.sorting) === 'string') {
+			if (typeof (col.sorting) === 'string') {
+                Sort.enable = true;
 				if (col.sorting === settings.sortDownText) {
 					sortingHtml = `sorting="${settings.sortDownText}"`;
 					settings.sortData[col.key] = settings.sortDownText;
@@ -511,7 +516,7 @@ class Core {
 
 			// 嵌入表头提醒事件源
 			// 插件自动生成的排序与选择列不做事件绑定
-			if (settings.supportRemind && onlyTH.attr('remind') !== undefined && !isLmOrder && !isLmCheckbox) {
+			if (onlyTH.attr('remind') !== undefined && !isLmOrder && !isLmCheckbox) {
 				const remindDOM = jTool(Remind.html);
 				remindDOM.find('.ra-title').text(onlyTH.text());
 				remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
@@ -522,7 +527,7 @@ class Core {
 			// 插件自动生成的排序与选择列不做事件绑定
 			// 排序类型
 			const sortType = onlyTH.attr('sorting');
-			if (settings.supportSorting && sortType !== undefined && !isLmOrder && !isLmCheckbox) {
+			if (sortType !== undefined && !isLmOrder && !isLmCheckbox) {
 				const sortingDom = jTool(Sort.html);
 
 				// 依据 sortType 进行初始显示

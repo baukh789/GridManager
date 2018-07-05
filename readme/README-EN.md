@@ -51,7 +51,6 @@ npm install gridmanager
 
 ```javascript    
     document.querySelector('table[grid-manager="test"]').GM({
-        supportRemind: true
         ,i18n:'zh-cn'
         ,textConfig:{
             'page-go': {
@@ -61,7 +60,6 @@ npm install gridmanager
         }
         ,disableCache:false
         ,disableOrder:false
-        ,supportSorting: true
         ,isCombSorting: true
         ,sortDownText: 'up'
         ,sortUpText: 'down'

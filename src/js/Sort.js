@@ -5,6 +5,9 @@ import { $, Base } from './Base';
 import Core from './Core';
 import Cache from './Cache';
 class Sort {
+    // 启用状态
+    enable = false;
+
 	/**
 	 * 获取排序所需HTML
 	 * @returns {string}

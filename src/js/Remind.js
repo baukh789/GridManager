@@ -1,8 +1,11 @@
 /*
  * Remind: 表头提醒
  * */
-import { $ } from './Base';
+import { jTool } from './Base';
 class Remind {
+    // 启用状态
+    enable = false;
+
 	/**
 	 * 获取表头提醒所需HTML
 	 * @returns {string}
@@ -31,13 +34,14 @@ class Remind {
 	 * @param table
      */
 	__bindRemindEvent($table) {
-		const remindAction = $('.remind-action', $table);
+		const remindAction = jTool('.remind-action', $table);
 		remindAction.unbind('mouseenter');
 		remindAction.bind('mouseenter', function () {
-			let raArea = $(this).find('.ra-area');
-			let tableDiv = $(this).closest('.table-div');
+		    let _onlyRemind = jTool(this);
+			let raArea = _onlyRemind.find('.ra-area');
+			let tableDiv = _onlyRemind.closest('.table-div');
 			raArea.show();
-			let theLeft = (tableDiv.get(0).offsetWidth - ($(this).offset().left - tableDiv.offset().left)) > raArea.get(0).offsetWidth;
+			let theLeft = (tableDiv.get(0).offsetWidth - (_onlyRemind.offset().left - tableDiv.offset().left)) > raArea.get(0).offsetWidth;
 			raArea.css({
 				left: theLeft ? '0px' : 'auto',
 				right: theLeft ? 'auto' : '0px'
@@ -45,7 +49,7 @@ class Remind {
 		});
 		remindAction.unbind('mouseleave');
 		remindAction.bind('mouseleave', function () {
-			let raArea = $(this).find('.ra-area');
+			let raArea = jTool(this).find('.ra-area');
 			raArea.hide();
 		});
 	}
@@ -55,7 +59,7 @@ class Remind {
 	 * @param $table
 	 */
 	destroy($table) {
-		const remindAction = $('.remind-action', $table);
+		const remindAction = jTool('.remind-action', $table);
 
 		// 清理: 表头提醒移入事件
 		remindAction.unbind('mouseenter');

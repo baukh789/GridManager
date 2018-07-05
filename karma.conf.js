@@ -107,7 +107,7 @@ module.exports = function (config) {
 				rules: [
 					{
 						test: /\.js?$/,
-						use: ['babel-loader?{"presets":["es2015"]}'],
+						use: ['babel-loader'],
 						exclude: /(node_modules|bower_components)/,
 						include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')]
 					},

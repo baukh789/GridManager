@@ -135,16 +135,15 @@
 		var table = document.querySelector('table');
 		function init() {
 			table.GM({
-				supportRemind: true
-				,gridManagerName: 'test'
-				,height: '400px'
-				,supportAjaxPage:true
-				,supportSorting: true
-				,isCombSorting: false
-				,disableCache: false
+				gridManagerName: 'test',
+				height: '400px',
+				supportAjaxPage:true,
+				isCombSorting: true,
+				disableCache: false,
+				disableLine: true,
 				// ajax_url 将在v2.6.0以上版本废弃，请不要再使用
 				// ,ajax_url: 'http://www.lovejavascript.com/blogManager/getBlogList'
-				,ajax_data: function () {
+				ajax_data: function () {
 					return 'http://www.lovejavascript.com/blogManager/getBlogList';
 				}
 				// ,firstLoading: false // 初始渲染时是否加载数据
@@ -292,7 +291,6 @@
 						}
 					},{
 						key: 'createDate',
-						remind: 'the createDate',
 						width: '130px',
 						text: '创建时间',
 						sorting: 'DESC',
@@ -302,7 +300,6 @@
 						}
 					},{
 						key: 'lastDate',
-						remind: 'the lastDate',
 						width: '130px',
 						text: '最后修改时间',
 						sorting: '',

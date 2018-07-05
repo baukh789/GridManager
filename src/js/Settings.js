@@ -50,14 +50,6 @@ class Settings {
 		};
 
 		/**
-		 * 表头提醒
-		 */
-		const remind = {
-			// 是否支持表头提示信息[需在地应的TH上增加属性remind]
-			supportRemind: false
-		};
-
-		/**
 		 * 配置列表
 		 */
 		const config = {
@@ -79,7 +71,10 @@ class Settings {
 			// textAlign: '',       // v2.3.15弃用
 
 			// 动画效果时长
-			animateTime: 300
+			animateTime: 300,
+
+            // 禁用单元格分割线
+            disableLine: false  // v2.6.1新增
 		};
 
 		/**
@@ -94,9 +89,6 @@ class Settings {
 		 * 排序
 		 */
 		const sort = {
-			// 排序：是否支持排序功能
-			supportSorting: false,
-
 			// 是否为组合排序[只有在支持排序的情况下生效
 			isCombSorting: false,
 
@@ -225,14 +217,12 @@ class Settings {
 			 align: '',
 
 			 // 列的排序类型，字符串类型，非必设项
-			 // 在初始化参数supportSorting=true时生效。有三种值:
 			 // 1、'': 该列支持排序，但初始化时不指定排序类型
 			 // 2、'DESC': 该列支持排序，并在初始化时指定排序类型为降序。可通过参数[sortDownText]来指定降序所使用的字符串
 			 // 3、'ASC': 该列支持排序，并在初始化时指定排序类型为升序。可通过参数[sortUpText]来指定升序所使用的字符串
 			 sorting: 'DESC',
 
 			 // 列的表头提醒内容,字符串类型，非必设项
-			 // 在初始化参数supportRemind=true时生效
 			 remind: '文本介绍',
 
 			 // 自定义列模板，函数类型，非必设项
@@ -312,7 +302,6 @@ class Settings {
 			...drag,
 			...adjust,
 			...menu,
-			...remind,
 			...config,
 			...gridStyle,
 			...cache,

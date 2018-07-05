@@ -16,7 +16,7 @@ module.exports = (srcCodeDir, idDev) => {
 		},
 		{
 			test: /\.js?$/,
-			loaders: ['babel-loader?{"presets":["es2015"]}'],
+			loaders: ['babel-loader'],
 			exclude: /(node_modules|bower_components)/,
 			include: [path.join(__dirname, srcCodeDir)]
 		},

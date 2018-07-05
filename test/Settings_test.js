@@ -44,10 +44,6 @@ describe('Settings', function() {
 		expect(settings.supportMenu).toBe(true);
 	});
 
-	it('验证属性[supportRemind]初始值', function() {
-		expect(settings.supportRemind).toBe(false);
-	});
-
 	it('验证属性[supportConfig]初始值', function() {
 		expect(settings.supportConfig).toBe(true);
 	});
@@ -66,10 +62,6 @@ describe('Settings', function() {
 
 	it('验证属性[disableCache]初始值', function() {
 		expect(settings.disableCache).toBe(false);
-	});
-
-	it('验证属性[supportSorting]初始值', function() {
-		expect(settings.supportSorting).toBe(false);
 	});
 
 	it('验证属性[isCombSorting]初始值', function() {

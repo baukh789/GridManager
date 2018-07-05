@@ -78,8 +78,6 @@ describe('index.js jQuery', () => {
 		arg = {
 			ajax_data: testData,
 			gridManagerName: 'test-index',
-			supportSorting: true,
-			supportRemind: true,
 			columnData: [
 				{
 					key: 'name',

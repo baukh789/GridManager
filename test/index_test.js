@@ -74,8 +74,6 @@ describe('index.js Element.prototype.GM', function() {
 		arg = {
 			ajax_data: testData,
 			gridManagerName: 'test-index',
-			supportSorting: true,
-			supportRemind: true,
 			columnData: [
 				{
 					key: 'name',

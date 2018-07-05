@@ -5,6 +5,10 @@
 import { jTool, Base } from './Base';
 import Cache from './Cache';
 class Scroll {
+    /**
+     * 初始化
+     * @param $table
+     */
 	init($table) {
 		this.bindResizeToTable($table);
 		this.bindScrollToTableDiv($table);

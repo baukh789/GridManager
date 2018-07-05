@@ -319,7 +319,12 @@ export default class GridManager {
 		// 增加渲染中标注
 		$table.addClass('GridManager-loading');
 
-		// 初始化表格
+		// 根据参数增加禁用单元格分割线标识
+        if (settings.disableLine) {
+            $table.addClass('disable-line');
+        }
+
+        // 初始化表格
 		this.initTable($table, settings);
 
 		// 如果初始获取缓存失败，在渲染完成后首先存储一次数据
@@ -357,12 +362,12 @@ export default class GridManager {
 		}
 
 		// init Sort
-		if (settings.supportSorting) {
+		if (Sort.enable) {
 			Sort.init($table);
 		}
 
 		// init Remind
-		if (settings.supportRemind) {
+		if (Remind.enable) {
 			Remind.init($table);
 		}
 

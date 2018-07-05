@@ -158,12 +158,9 @@
 	// GridManager 渲染
 	var table = document.querySelector('table');
 	function init() {
-		table.GM({
-			supportRemind: true
-			,gridManagerName: 'test'
+		table.GM({gridManagerName: 'test'
 			,height: '400px'
 			,supportAjaxPage:true
-			,supportSorting: true
 			,isCombSorting: false
 			,disableCache: false
 			,ajax_data: function (setting) {
