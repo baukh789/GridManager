@@ -60,6 +60,10 @@ describe('Settings', function() {
 		expect(settings.animateTime).toBe(300);
 	});
 
+    it('验证属性[disableLine]初始值', function() {
+        expect(settings.disableLine).toBe(false);
+    });
+
 	it('验证属性[disableCache]初始值', function() {
 		expect(settings.disableCache).toBe(false);
 	});
