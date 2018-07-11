@@ -74,7 +74,13 @@ class Settings {
 			animateTime: 300,
 
             // 禁用单元格分割线
-            disableLine: false  // v2.6.1新增
+            disableLine: false,  // v2.6.1新增
+
+            // 是否支持hover选中样式
+            supportHover: true, // v2.6.1新增
+
+            // 禁用边框线
+            disableBorder: false  // v2.6.1新增
 		};
 
 		/**
@@ -192,46 +198,63 @@ class Settings {
 			// 表格列数据配置项
 			/* columnData示例
 			columnData: [{
-			 // @2.6.0
-			 // 当前列是否使用框架解析
-			 useCompile: false,
+                // @2.6.0
+                // 当前列是否使用框架解析
+                useCompile: false,
 
-			 // 列的唯一索引。字符串类型，必设项
-			 key: 'url',
+                // 列的唯一索引。字符串类型，必设项
+                key: 'url',
 
-			 // 列的显示文本。字符串类型，必设项
-			 text: 'url',
+                // 列的显示文本。字符串类型，必设项
+                text: 'url',
 
-			 // @2.4.0
-			 // 是否显示, 默认值 true
-			 isShow: true,
+                // @2.4.0
+                // 是否显示, 默认值 true
+                isShow: true,
 
-			 // 列所占宽度, 字符串类型，非必设项
-			 // 需要注意的是:
-			 // 1.如果当前列的th内文本实际占用宽度大于该参数指定的宽度时， GridManager会自动进行适配。
-			 // 2.建议不要将所有的列都进行宽度设置，而留一个进行自动适应
-			 width: '100px',
+                // 列所占宽度, 字符串类型，非必设项
+                // 需要注意的是:
+                // 1.如果当前列的th内文本实际占用宽度大于该参数指定的宽度时， GridManager会自动进行适配。
+                // 2.建议不要将所有的列都进行宽度设置，而留一个进行自动适应
+                width: '100px',
 
-			 // 列文本对齐信息，字符串类型，非必设项
-			 // 三种值: 'left', 'center', 'right'
-			 align: '',
+                // 列文本对齐信息，字符串类型，非必设项
+                // 三种值: 'left', 'center', 'right'
+                align: '',
 
-			 // 列的排序类型，字符串类型，非必设项
-			 // 1、'': 该列支持排序，但初始化时不指定排序类型
-			 // 2、'DESC': 该列支持排序，并在初始化时指定排序类型为降序。可通过参数[sortDownText]来指定降序所使用的字符串
-			 // 3、'ASC': 该列支持排序，并在初始化时指定排序类型为升序。可通过参数[sortUpText]来指定升序所使用的字符串
-			 sorting: 'DESC',
+                // 列的排序类型，字符串类型，非必设项
+                // 1、'': 该列支持排序，但初始化时不指定排序类型
+                // 2、'DESC': 该列支持排序，并在初始化时指定排序类型为降序。可通过参数[sortDownText]来指定降序所使用的字符串
+                // 3、'ASC': 该列支持排序，并在初始化时指定排序类型为升序。可通过参数[sortUpText]来指定升序所使用的字符串
+                sorting: 'DESC',
 
-			 // 列的表头提醒内容,字符串类型，非必设项
-			 remind: '文本介绍',
+                // 列的表头提醒内容,字符串类型，非必设项
+                remind: '文本介绍',
 
-			 // 自定义列模板，函数类型，非必设项
-			 // 通过返回的字符串对列进行重绘
-			 // nodeData: 当前单元格的渲染数据
-			 // rowData: 当前单元格所在行的渲染数据, 本例中: 参数nodeData=== rowData.url
-			 template: function(nodeData, rowData){
-			 return '<a href="'+nodeData+'">'+rowData.url+'</a>';
-			 }
+                // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。
+                filter: {
+                    // 筛选条件列表
+                    option: [
+                        {value: '1', text: 'HTML/CSS'},
+                        {value: '2', text: 'nodeJS'},
+                        {value: '3', text: 'javaScript'},
+                        {value: '4', text: '前端鸡汤'},
+                        {value: '5', text: 'PM Coffee'},
+                        {value: '6', text: '前端框架'},
+                        {value: '7', text: '前端相关'}
+                    ],
+                    // 筛选选中项，选中的过滤条件将会覆盖query
+                    selected: '3',
+                    // 否为多选
+                    isMultiple: false
+                },
+                // 自定义列模板，函数类型，非必设项
+                // 通过返回的字符串对列进行重绘
+                // nodeData: 当前单元格的渲染数据
+                // rowData: 当前单元格所在行的渲染数据, 本例中: 参数nodeData=== rowData.url
+                template: function(nodeData, rowData){
+                r   eturn '<a href="'+nodeData+'">'+rowData.url+'</a>';
+                }
 			 }]
 			*/
 			columnData: [],
@@ -254,6 +277,7 @@ class Settings {
 			ajax_type: 'GET',
 
 			// 其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
+            // 过滤中的选中值将会覆盖query参数
 			query: {},
 
 			// ajax请求头信息

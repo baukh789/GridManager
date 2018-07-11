@@ -31,7 +31,7 @@ describe('Remind 验证类的属性及方法总量', function() {
 describe('Remind.html', function() {
 	it('基础验证', function() {
 		let RemindHtml = `<div class="remind-action">
-						<i class="ra-help iconfont icon-help"></i>
+						<i class="ra-icon iconfont icon-help"></i>
 						<div class="ra-area">
 							<span class="ra-title"></span>
 							<span class="ra-con"></span>

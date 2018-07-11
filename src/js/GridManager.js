@@ -17,6 +17,7 @@ import Remind from './Remind';
 import Scroll from './Scroll';
 import Sort from './Sort';
 import Hover from './Hover';
+import Filter from './Filter';
 export default class GridManager {
 	/**
 	 * @静态方法
@@ -371,13 +372,20 @@ export default class GridManager {
 			Remind.init($table);
 		}
 
+        // init Filter
+        if (Filter.enable) {
+            Filter.init($table);
+        }
+
 		// init Config
 		if (settings.supportConfig) {
 			Config.init($table);
 		}
 
 		// 绑定$table区域hover事件
-		Hover.onTbodyHover($table);
+        if (settings.supportHover) {
+            Hover.onTbodyHover($table);
+        }
 
 		// 初始化表格卷轴
 		Scroll.init($table);

@@ -15,6 +15,7 @@ import Export from './Export';
 import Order from './Order';
 import Remind from './Remind';
 import Sort from './Sort';
+import Filter from './Filter';
 class Core {
 	/**
 	 * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
@@ -349,6 +350,9 @@ class Core {
 		// 排序对应的html片段
 		let	sortingHtml	= '';
 
+		// 过滤对应的html片段
+		let	filterHtml	= '';
+
 		// th显示状态
 		let thVisible = '';
 
@@ -371,6 +375,9 @@ class Core {
         // 将排序启用状态重置
         Sort.enable = false;
 
+        // 将筛选条件重置
+        Filter.enable = false;
+
 		// thList 生成thead
 		jTool.each(thList, (index, col) => {
 			// 表头提醒
@@ -387,15 +394,25 @@ class Core {
 				if (col.sorting === settings.sortDownText) {
 					sortingHtml = `sorting="${settings.sortDownText}"`;
 					settings.sortData[col.key] = settings.sortDownText;
-					Cache.setSettings($table, settings);
 				} else if (col.sorting === settings.sortUpText) {
 					sortingHtml = `sorting="${settings.sortUpText}"`;
 					settings.sortData[col.key] = settings.sortUpText;
-					Cache.setSettings($table, settings);
 				} else {
 					sortingHtml = 'sorting=""';
 				}
 			}
+
+			// 过滤
+            filterHtml = '';
+            if (jTool.type(col.filter) === 'object') {
+                Filter.enable = true;
+                filterHtml = `filter`;
+                if (typeof (col.filter.selected) === 'undefined') {
+                    col.filter.selected = settings.query[col.key];
+                } else {
+                    settings.query[col.key] = col.filter.selected;
+                }
+            }
 
 			// 宽度文本
 			widthInfo = col.width ? `width="${col.width}"` : '';
@@ -418,10 +435,13 @@ class Core {
 					break;
 				// 普通列
 				default:
-					theadHtml += `<th gm-create="false" th-name="${col.key}" th-visible="${thVisible}" ${remindHtml} ${sortingHtml} ${widthInfo} ${alignAttr}>${col.text}</th>`;
+					theadHtml += `<th gm-create="false" th-name="${col.key}" th-visible="${thVisible}" ${remindHtml} ${sortingHtml} ${filterHtml} ${widthInfo} ${alignAttr}>${col.text}</th>`;
 					break;
 			}
 		});
+		// TODO 20180711将排序及过滤的setSettings移到了这里，原因是这两项都在each内。
+        Cache.setSettings($table, settings);
+
 		theadHtml += '</thead>';
 		$table.html(theadHtml + tbodyHtml);
 
@@ -451,6 +471,11 @@ class Core {
 
 		// 单个table所在的DIV容器
 		const tableWarp = $table.closest('.table-wrap');
+
+        // 根据参数增加禁用禁用边框线标识
+        if (settings.disableBorder) {
+            tableWarp.addClass('disable-border');
+        }
 
 		// 嵌入配置列表DOM
 		if (settings.supportConfig) {
@@ -524,7 +549,7 @@ class Core {
 			}
 
 			// 嵌入排序事件源
-			// 插件自动生成的排序与选择列不做事件绑定
+			// 插件自动生成的序号列与选择列不做事件绑定
 			// 排序类型
 			const sortType = onlyTH.attr('sorting');
 			if (sortType !== undefined && !isLmOrder && !isLmCheckbox) {
@@ -543,6 +568,16 @@ class Core {
 				}
 				onlyThWarp.append(sortingDom);
 			}
+
+			// 嵌入表头的筛选事件源
+            // 插件自动生成的序号列与选择列不做事件绑定
+            const filterType = onlyTH.attr('filter');
+			const column = settings.columnMap[onlyTH.attr('th-name')];
+            if (filterType !== undefined && !isLmOrder && !isLmCheckbox && column && column.filter) {
+                const filterDom = jTool(Filter.createHtml(column.filter));
+                onlyThWarp.append(filterDom);
+            }
+
 			// 嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
 			if (settings.supportAdjust && !isLmOrder && !isLmCheckbox) {
 				const adjustDOM = jTool(Adjust.html);

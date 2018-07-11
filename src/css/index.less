@@ -16,6 +16,9 @@
     overflow: hidden;
     background-color: #fff;
     border: @table-border;
+    &.disable-border {
+        border: none;
+    }
     .table-div {
         overflow: auto;
         /* 自定义滚动条样式 */
@@ -74,10 +77,19 @@
                     display: table-cell;
                 }
                 &[remind] .th-wrap {
-                    padding-left: 24px;
+                    padding-left: 20px;
                 }
                 &[sorting] .th-wrap {
-                    padding-right: 24px;
+                    padding-right: 20px;
+                }
+                &[filter] .th-wrap {
+                    padding-right: 20px;
+                }
+                &[sorting][filter] .th-wrap { /*排序与表头筛选同时存在时，需要将样式重置*/
+                    padding-right: 45px;
+                    .sorting-action{
+                        right: 25px;
+                    }
                 }
                 &[gm-create="true"] {
                     background-color: #f3f3f3;
@@ -96,6 +108,13 @@
                         width: 100%;
                         height: 100%;
                         .text-overflow();
+                    }
+                    .iconfont{
+                        opacity: 0.7;
+                        cursor: pointer;
+                        &:hover{
+                            opacity: 1;
+                        }
                     }
                     /* 宽度调整事件源 */
                     .adjust-action {
@@ -149,7 +168,7 @@
                                 color: #fff;
                             }
                         }
-                        .ra-help {
+                        .ra-icon {
                             display: block;
                             width: 16px;
                             height: 16px;
@@ -158,7 +177,7 @@
                             color: #666;
                         }
                         &:hover {
-                            .ra-help {
+                            .ra-icon {
                                 color: #2b669a;
                             }
                         }
@@ -166,7 +185,7 @@
                     /* 排序 */
                     .sorting-action {
                         display: block;
-                        width: 20px;
+                        width: 14px;
                         height: 18px;
                         position: absolute;
                         top: 6px;
@@ -207,6 +226,69 @@
                         .sa-down {
                             bottom: 0;
                             right: 0;
+                        }
+                    }
+                    /*表头的筛选菜单*/
+                    .filter-action{
+                        display: block;
+                        width: 14px;
+                        height: 18px;
+                        position: absolute;
+                        top: 6px;
+                        right: 5px;
+                        cursor: default;
+                        z-index: 2;
+                        color: #444;
+                        .sa-icon {
+                            display: block;
+                            height: 10px;
+                            position: absolute;
+                            font-size: @font-normal-size;
+                            line-height: 10px;
+                        }
+                        .fa-con{
+                            display: none;
+                            position: absolute;
+                            top: 100%;
+                            left: 0;
+                            background: #fff;
+                            border: 1px solid #ccc;
+                            .filter-list{
+                                li{
+                                    padding: 5px 12px;
+                                    > label{
+                                        cursor: pointer;
+                                        display: flex;
+                                        .filter-value{
+                                            vertical-align: middle;
+                                            .input-checkbox();
+                                        }
+                                        .filter-text{
+                                            vertical-align: middle;
+                                            padding-left: 8px;
+                                            color: rgba(0,0,0,.65);
+                                        }
+                                    }
+                                    &:hover{
+                                        background: #e6f7ff;
+                                    }
+                                }
+                            }
+                            .filter-bottom{
+                                border-top: 1px solid #e8e8e8;
+                                padding: 7px 8px;
+                                text-align: center;
+                                .filter-button{
+                                    cursor: pointer;
+                                    color: #1890ff;
+                                    &:hover{
+                                        color: #40a9ff;
+                                    }
+                                    &:first-child{
+                                        margin-right: 10px;
+                                    }
+                                }
+                            }
                         }
                     }
                     /* 拖拽换位 */
@@ -262,6 +344,7 @@
                     cursor: default;
                     &[gm-checkbox="true"] input[type=checkbox] {
                         vertical-align: middle;
+                        .input-checkbox();
                     }
                 }
             }

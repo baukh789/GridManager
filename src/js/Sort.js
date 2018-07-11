@@ -1,7 +1,7 @@
 /*
 * Sort: 排序
 * */
-import { $, Base } from './Base';
+import { jTool, Base } from './Base';
 import Core from './Core';
 import Cache from './Cache';
 class Sort {
@@ -13,11 +13,10 @@ class Sort {
 	 * @returns {string}
      */
 	get html() {
-		const html = `<div class="sorting-action">
-						<i class="sa-icon sa-up iconfont icon-up"></i>
-						<i class="sa-icon sa-down iconfont icon-down"></i>
-					</div>`;
-		return html;
+		return `<div class="sorting-action">
+                    <i class="sa-icon sa-up iconfont icon-up"></i>
+                    <i class="sa-icon sa-down iconfont icon-down"></i>
+                </div>`;
 	}
 
 	/**
@@ -39,11 +38,11 @@ class Sort {
 	 * */
 	__setSort($table, sortJson, callback, refresh) {
 		let settings = Cache.getSettings($table);
-		if (!sortJson || $.type(sortJson) !== 'object' || $.isEmptyObject(sortJson)) {
+		if (!sortJson || jTool.type(sortJson) !== 'object' || jTool.isEmptyObject(sortJson)) {
 			Base.outLog('排序数据不可用', 'warn');
 			return false;
 		}
-		$.extend(settings.sortData, sortJson);
+        jTool.extend(settings.sortData, sortJson);
 		Cache.setSettings($table, settings);
 
 		// 回调函数为空时赋值空方法
@@ -82,7 +81,7 @@ class Sort {
 		$table.off('mouseup', '.sorting-action');
 		$table.on('mouseup', '.sorting-action', function () {
 			// 向上或向下事件源
-			const action = $(this);
+			const action = jTool(this);
 
 			// 事件源所在的th
 			const th = action.closest('th');
@@ -94,7 +93,7 @@ class Sort {
 			const thName = th.attr('th-name');
 			const settings = Cache.getSettings(_$table);
 
-			if (!thName || $.trim(thName) === '') {
+			if (!thName || jTool.trim(thName) === '') {
 				Base.outLog('排序必要的参数丢失', 'error');
 				return false;
 			}
@@ -112,7 +111,7 @@ class Sort {
 			Cache.setSettings(_$table, settings);
 
 			// 合并排序请求
-			const query = $.extend({}, settings.query, settings.sortData, settings.pageData);
+			const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
 
 			// 执行排序前事件
 			settings.sortingBefore(query);
@@ -136,15 +135,15 @@ class Sort {
 		let $sortAction = null;
 
 		// 重置排序样式
-		$.each($('.sorting-action', $table), (i, v) => {
-			$(v).removeClass('sorting-up sorting-down');
-			$(v).closest('th').attr('sorting', '');
+        jTool.each(jTool('.sorting-action', $table), (i, v) => {
+            jTool(v).removeClass('sorting-up sorting-down');
+            jTool(v).closest('th').attr('sorting', '');
 		});
 
 		// 根据排序数据更新排序
-		$.each(settings.sortData, (key, value) => {
-			$th = $(`thead th[th-name="${key}"]`, $table);
-			$sortAction = $('.sorting-action', $th);
+        jTool.each(settings.sortData, (key, value) => {
+			$th = jTool(`thead th[th-name="${key}"]`, $table);
+			$sortAction = jTool('.sorting-action', $th);
 
 			// 排序操作：升序
 			if (value === settings.sortUpText) {

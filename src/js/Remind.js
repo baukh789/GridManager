@@ -11,14 +11,13 @@ class Remind {
 	 * @returns {string}
      */
 	get html() {
-		const html = `<div class="remind-action">
-						<i class="ra-help iconfont icon-help"></i>
-						<div class="ra-area">
-							<span class="ra-title"></span>
-							<span class="ra-con"></span>
-						</div>
-					</div>`;
-		return html;
+		return `<div class="remind-action">
+                    <i class="ra-icon iconfont icon-help"></i>
+                    <div class="ra-area">
+                        <span class="ra-title"></span>
+                        <span class="ra-con"></span>
+                    </div>
+                </div>`;
 	}
 
 	/**

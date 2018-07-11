@@ -2,7 +2,7 @@
  * Created by baukh on 17/3/3.
  * 鼠标hover 高亮
  */
-import { $, Base } from './Base';
+import { jTool, Base } from './Base';
 class Hover {
 	onTbodyHover($table) {
 		const _this = this;
@@ -17,7 +17,7 @@ class Hover {
 	 * @param td
      */
 	updateHover(td) {
-		const $td = $(td);
+		const $td = jTool(td);
 		const $tr = $td.parent();
 		const $table = $td.closest('table[grid-manager]');
 
@@ -28,13 +28,13 @@ class Hover {
 
 		// row 发生变化
 		if ($tr.attr('row-hover') !== 'true') {
-			$('tr[row-hover="true"]', $table).removeAttr('row-hover');
+            jTool('tr[row-hover="true"]', $table).removeAttr('row-hover');
 			$tr.attr('row-hover', 'true');
 		}
 
 		// col 发生变化
 		if ($td.attr('col-hover') !== 'true') {
-			$('td[col-hover="true"]', $table).removeAttr('col-hover');
+            jTool('td[col-hover="true"]', $table).removeAttr('col-hover');
 			Base.getColTd($td).attr('col-hover', 'true');
 		}
 	}
