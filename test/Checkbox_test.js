@@ -124,10 +124,10 @@ describe('Checkbox.resetData($table, status, isAllCheck, cacheKey)', function() 
 	});
 });
 
-describe('Checkbox.resetDOM($table, tableData)', function() {
+describe('Checkbox.resetDOM($table, settings, tableData)', function() {
 	it('基础验证', function () {
 		expect(Checkbox.resetDOM).toBeDefined();
-		expect(Checkbox.resetDOM.length).toBe(2);
+		expect(Checkbox.resetDOM.length).toBe(3);
 	});
 });
 

@@ -97,16 +97,16 @@ describe('i18nText(settings, key, v1, v2, v3)', function() {
 		expect(I18n.i18nText(settings, 'order-text')).toBe('序号');
 
 		// 指定1个{}内容的
-		expect(I18n.i18nText(settings, 'dataTablesInfo', 1)).toBe('此页显示 1- 共条');
+		expect(I18n.i18nText(settings, 'checked-info', 1)).toBe('已选 1 条');
 
 		// 指定2个{}内容的
-		expect(I18n.i18nText(settings, 'dataTablesInfo', 1, 2)).toBe('此页显示 1-2 共条');
+		expect(I18n.i18nText(settings, 'page-info', 1, 2)).toBe('此页显示 1-2 共条');
 
 		// 指定3个{}内容的
-		expect(I18n.i18nText(settings, 'dataTablesInfo', 1, 2, 3)).toBe('此页显示 1-2 共3条');
+		expect(I18n.i18nText(settings, 'page-info', 1, 2, 3)).toBe('此页显示 1-2 共3条');
 
 		// 指定1个{}内容的- 数组
-		expect(I18n.i18nText(settings, 'dataTablesInfo', [1, 2, 3])).toBe('此页显示 1-2 共3条');
+		expect(I18n.i18nText(settings, 'page-info', [1, 2, 3])).toBe('此页显示 1-2 共3条');
 
 		// 指定错误的, 并验证错误打印信息
 		expect(I18n.i18nText(settings, 'undefinedKey', [1, 2, 3])).toBe('');

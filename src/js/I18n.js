@@ -27,9 +27,9 @@ class I18n {
 	 * 获取与当前配置国际化匹配的文本
 	 * @param settings
 	 * @param key 指向的文本索引
-	 * @param v1 可为空，也存在一至3项，只存在一项时可为数组
-	 * @param v2 可为空，也存在一至3项，只存在一项时可为数组
-	 * @param v3 可为空，也存在一至3项，只存在一项时可为数组
+	 * @param v1 可为空，也存在1至3项，只存在1项时可为数组
+	 * @param v2 可为空，也存在1至3项，只存在1项时可为数组
+	 * @param v3 可为空，也存在1至3项，只存在1项时可为数组
      * @returns {string}
      */
 	i18nText(settings, key, v1, v2, v3) {
@@ -54,7 +54,8 @@ class I18n {
 
 			// 更换包含{}的文本
 			_text = _text.replace(/{\d+}/g, word => {
-				return intrusion[word.match(/\d+/)] || '';
+			    const _v = intrusion[word.match(/\d+/)];
+				return typeof _v === 'undefined' ? '' : _v;
 			});
 			return _text;
 		} catch (e) {

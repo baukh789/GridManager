@@ -50,7 +50,7 @@ describe('Core.removeRefreshingClass($tableWrap)', function() {
 	beforeEach(function() {
 		tableWrap = `
 					<div class="table-wrap">
-						<div class="page-toolbar">
+						<div class="footer-toolbar">
 							<div class="refresh-action"><i class="iconfont icon-refresh"></i></div>
 						</div>
 					</div>`;

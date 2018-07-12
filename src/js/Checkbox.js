@@ -77,7 +77,8 @@ class Checkbox {
 			settings.checkedBefore(_this.getCheckedData($table));
 			settings.checkedAllBefore(_this.getCheckedData($table));
 			const tableData = _this.resetData($table, this.checked, true);
-			_this.resetDOM($table, tableData);
+			// _this.resetDOM($table, tableData);
+			_this.resetDOM($table, settings, tableData);
 			settings.checkedAfter(_this.getCheckedData($table));
 			settings.checkedAllAfter(_this.getCheckedData($table));
 		});
@@ -87,7 +88,8 @@ class Checkbox {
 		$table.on('click', 'td[gm-checkbox="true"] input[type="checkbox"]', function () {
 			settings.checkedBefore(_this.getCheckedData($table));
 			const tableData = _this.resetData($table, this.checked, false, jTool(this).closest('tr').attr('cache-key'));
-			_this.resetDOM($table, tableData);
+			// _this.resetDOM($table, tableData);
+            _this.resetDOM($table, settings, tableData);
 			settings.checkedAfter(_this.getCheckedData($table));
 		});
 	}
@@ -124,7 +126,7 @@ class Checkbox {
 	 * @param $table
 	 * @param tableData
      */
-	resetDOM($table, tableData) {
+	resetDOM($table, settings, tableData) {
 		// 当前是否为全选
 		let checkedAll = tableData && tableData.length > 0;
 
@@ -140,8 +142,16 @@ class Checkbox {
 			}
 		});
 
-		// reset th checkbox DOM
+		// 更新th选中状态
 		jTool(`thead tr th[gm-checkbox="true"] input[type="checkbox"]`, $table).prop('checked', checkedAll);
+
+		// 更新底部工具条选中描述信息
+        const checkedInfo = jTool('.footer-toolbar .toolbar-info.checked-info', $table.closest('.table-wrap'));
+        let checkedNum = 0;
+        tableData.forEach(row => {
+            row[this.key] && checkedNum++;
+        });
+        checkedInfo.html(I18n.i18nText(settings, 'checked-info', checkedNum));
 	}
 
 	/**

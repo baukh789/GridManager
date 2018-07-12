@@ -12,16 +12,35 @@ class AjaxPage {
 	 * @returns {string}
      */
 	createHtml(settings) {
-		const html = `<div class="page-toolbar">
-						<div class="refresh-action"><i class="iconfont icon-refresh"></i></div>
-						<div class="goto-page">
+	    // 刷新按纽
+	    const refreshHtml = settings.showFooterRefresh ? '<div class="refresh-action"><i class="iconfont icon-refresh"></i></div>' : '';
+
+	    // 快捷跳转
+	    const gotoHtml = settings.showFooterGoTo ? `<div class="goto-page">
 							${ I18n.i18nText(settings, 'goto-first-text') }
 							<input type="text" class="gp-input"/>
 							${ I18n.i18nText(settings, 'goto-last-text') }
-						</div>
-						<div class="change-size"><select name="pSizeArea"></select></div>
-						<div class="dataTables_info"></div>
-						<div class="ajax-page"><ul class="pagination"></ul></div>
+						</div>` : '';
+
+	    // 每页显示条数
+	    const pageSizeHtml = settings.showFooterPageSize ? this.__getPageSizeHtml(settings) : '';
+
+	    // 选中项描述信息
+        const checkedInfoHtml = settings.showFooterCheckedInfo ? `<div class="toolbar-info checked-info"></div>` : '';
+
+	    // 分页描述信息
+	    const pageInfoHtml = settings.showFooterPageInfo ? `<div class="toolbar-info page-info"></div>` : '';
+
+	    // 页码
+	    const paginationHtml = `<div class="ajax-page"><ul class="pagination"></ul></div>`;
+
+		const html = `<div class="footer-toolbar">
+						${refreshHtml}
+						${gotoHtml}
+						${pageSizeHtml}
+						${checkedInfoHtml}
+						${pageInfoHtml}
+						${paginationHtml}
 					</div>`;
 		return html;
 	}
@@ -32,30 +51,18 @@ class AjaxPage {
 	 * @param settings
      */
 	initAjaxPage($table, settings) {
-		const sizeData = settings.sizeData;
-		// error
-		if (!sizeData || sizeData.length === 0) {
-			Base.outLog('渲染失败：参数[sizeData]配置错误', 'error');
-			return;
-		}
 
 		// 根据本地缓存配置每页显示条数
 		if (!settings.disableCache) {
 			this.__configPageForCache($table, settings);
 		}
 
-		const tableWarp = $table.closest('.table-wrap');
+		// const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
-		const pageToolbar = jTool('.page-toolbar', tableWarp);
+		// const footerToolbar = jTool('.footer-toolbar', tableWarp);
 
-		// 分页区域
-		const pSizeArea	= jTool('select[name="pSizeArea"]', pageToolbar);
-
-		pageToolbar.hide();
-
-		// 生成每页显示条数选择框
-		pSizeArea.html(this.__getPageSizeHtml(sizeData));
+		// footerToolbar.hide();
 
 		// 绑定页面跳转事件
 		this.__bindPageJumpEvent($table);
@@ -83,14 +90,17 @@ class AjaxPage {
 		// 重置当前页显示条数
 		_this.__resetPSize($table, settings, _pageData);
 
+		// 修改分页描述信息
+		_this.__resetPageInfo($table, settings, _pageData);
+
 		// 更新Cache
 		Cache.setSettings($table, jTool.extend(true, settings, {pageData: _pageData}));
 
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
-		const pageToolbar = jTool('.page-toolbar', tableWarp);
-		pageToolbar.show();
+		const footerToolbar = jTool('.footer-toolbar', tableWarp);
+        footerToolbar.css('visibility', 'visible');
 	}
 
 	/**
@@ -135,10 +145,10 @@ class AjaxPage {
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
-		const pageToolbar = jTool('.page-toolbar', tableWarp);
+		const footerToolbar = jTool('.footer-toolbar', tableWarp);
 
 		// 分页区域
-		const pagination = jTool('.pagination', pageToolbar);
+		const pagination = jTool('.pagination', footerToolbar);
 
 		pagination.html(this.__joinPagination(settings, pageData));
 	}
@@ -230,14 +240,21 @@ class AjaxPage {
 
 	/**
 	 * 生成每页显示条数选择框据
-	 * @param sizeData 选择框自定义条数
+	 * @param settings
 	 * @private
      */
-	__getPageSizeHtml(sizeData) {
-		let pageSizeHtml = '';
+	__getPageSizeHtml(settings) {
+        const sizeData = settings.sizeData;
+        // error
+        if (!sizeData || sizeData.length === 0) {
+            Base.outLog('渲染失败：参数[sizeData]配置错误', 'error');
+            return '';
+        }
+		let pageSizeHtml = '<div class="change-size"><select name="pSizeArea">';
 		jTool.each(sizeData, (index, value) => {
 			pageSizeHtml += `<option value="${value}">${value}</option>`;
 		});
+        pageSizeHtml = `${pageSizeHtml}</select></div>`;
 		return pageSizeHtml;
 	}
 
@@ -250,24 +267,23 @@ class AjaxPage {
 		const tableWarp	= $table.closest('.table-wrap');
 
 		// 分页工具条
-		const pageToolbar = jTool('.page-toolbar', tableWarp);
+		const footerToolbar = jTool('.footer-toolbar', tableWarp);
 
-		this.__bindPageClick($table, pageToolbar);
-		this.__bindInputEvent($table, pageToolbar);
-		this.__bindRefreshEvent(pageToolbar);
-
+		this.__bindPageClick($table, footerToolbar);
+		this.__bindInputEvent($table, footerToolbar);
+		this.__bindRefreshEvent(footerToolbar);
 	}
 
 	/**
 	 * 绑定分页点击事件
 	 * @param $table
-	 * @param pageToolbar
+	 * @param footerToolbar
 	 * @private
      */
-	__bindPageClick($table, pageToolbar) {
+	__bindPageClick($table, footerToolbar) {
 		const _this = this;
-		pageToolbar.off('click', 'li');
-		pageToolbar.on('click', 'li', function () {
+		footerToolbar.off('click', 'li');
+		footerToolbar.on('click', 'li', function () {
 			const pageAction = jTool(this);
 
 			// 分页页码
@@ -284,12 +300,12 @@ class AjaxPage {
 	/**
 	 * 绑定快捷跳转事件
 	 * @param $table
-	 * @param pageToolbar
+	 * @param footerToolbar
 	 * @private
      */
-	__bindInputEvent($table, pageToolbar) {
+	__bindInputEvent($table, footerToolbar) {
 		const _this = this;
-		const gp_input = jTool('.gp-input', pageToolbar);
+		const gp_input = jTool('.gp-input', footerToolbar);
 
 		gp_input.unbind('keyup');
 		gp_input.bind('keyup', function () {
@@ -304,11 +320,11 @@ class AjaxPage {
 
 	/**
 	 * 绑定刷新界面事件
-	 * @param pageToolbar
+	 * @param footerToolbar
 	 * @private
      */
-	__bindRefreshEvent(pageToolbar) {
-		const refreshAction	= jTool('.refresh-action', pageToolbar);
+	__bindRefreshEvent(footerToolbar) {
+		const refreshAction	= jTool('.refresh-action', footerToolbar);
 
 		refreshAction.unbind('click');
 		refreshAction.bind('click', event => {
@@ -328,10 +344,10 @@ class AjaxPage {
 		const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
-		const pageToolbar = jTool('.page-toolbar', tableWarp);
+		const footerToolbar = jTool('.footer-toolbar', tableWarp);
 
 		// 切换条数区域
-		const sizeArea = jTool('select[name=pSizeArea]', pageToolbar);
+		const sizeArea = jTool('select[name=pSizeArea]', footerToolbar);
 
 		if (!sizeArea || sizeArea.length === 0) {
 			Base.outLog('未找到单页显示数切换区域，停止该事件绑定', 'info');
@@ -371,32 +387,41 @@ class AjaxPage {
      */
 	__resetPSize($table, settings, pageData) {
 		const tableWarp = $table.closest('.table-wrap');
-		const toolBar = jTool('.page-toolbar', tableWarp);
+		const toolBar = jTool('.footer-toolbar', tableWarp);
 		const pSizeArea = jTool('select[name="pSizeArea"]', toolBar);
-		const pSizeInfo = jTool('.dataTables_info', toolBar);
 		if (!pSizeArea || pSizeArea.length === 0) {
 			return false;
 		}
 
-		// 从多少开始
-		const fromNum = pageData[settings.currentPageKey] === 1 ? 1 : (pageData[settings.currentPageKey] - 1) * pageData[settings.pageSizeKey] + 1;
-
-		// 到多少结束
-		const toNum = pageData[settings.currentPageKey] * pageData[settings.pageSizeKey];
-
-		// 总共条数
-		const totalNum = pageData.tSize;
-
-		const tmpHtml = I18n.i18nText(settings, 'dataTablesInfo', [fromNum, toNum, totalNum]);
 
 		// 根据返回值修正单页条数显示值
 		pSizeArea.val(pageData[settings.pageSizeKey] || 10);
 
-		// 修改条数文字信息
-		pSizeInfo.html(tmpHtml);
 		pSizeArea.show();
 		return true;
 	}
+
+    /**
+     * 修改分页描述信息
+     * @param $table
+     * @param settings
+     * @param pageData
+     * @private
+     */
+	__resetPageInfo($table, settings, pageData) {
+        const pageInfo = jTool('.footer-toolbar .page-info', $table.closest('.table-wrap'));
+        // 从多少开始
+        const fromNum = pageData[settings.currentPageKey] === 1 ? 1 : (pageData[settings.currentPageKey] - 1) * pageData[settings.pageSizeKey] + 1;
+
+        // 到多少结束
+        const toNum = pageData[settings.currentPageKey] * pageData[settings.pageSizeKey];
+
+        // 总共条数
+        const totalNum = pageData.tSize;
+
+        const tmpHtml = I18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum]);
+        pageInfo.html(tmpHtml);
+    }
 
 	/**
 	 * 计算并返回分页数据
@@ -460,13 +485,13 @@ class AjaxPage {
 	 */
 	destroy($table) {
 		const tableWarp = $table.closest('.table-wrap');
-		const pageToolbar = jTool('.page-toolbar', tableWarp);
-		const gp_input = jTool('.gp-input', pageToolbar);
-		const refreshAction	= jTool('.refresh-action', pageToolbar);
-		const sizeArea = jTool('select[name=pSizeArea]', pageToolbar);
+		const footerToolbar = jTool('.footer-toolbar', tableWarp);
+		const gp_input = jTool('.gp-input', footerToolbar);
+		const refreshAction	= jTool('.refresh-action', footerToolbar);
+		const sizeArea = jTool('select[name=pSizeArea]', footerToolbar);
 
 		// 清理: 分页点击事件
-		pageToolbar.off('click', 'li');
+		footerToolbar.off('click', 'li');
 
 		// 清理: 快捷跳转事件
 		gp_input.unbind('keyup');

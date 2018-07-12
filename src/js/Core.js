@@ -29,7 +29,7 @@ class Core {
 		const tableWrap = $table.closest('.table-wrap');
 
 		// 刷新按纽
-		const refreshAction = jTool('.page-toolbar .refresh-action', tableWrap);
+		const refreshAction = jTool('.footer-toolbar .refresh-action', tableWrap);
 
 		// 增加刷新中标识
 		refreshAction.addClass('refreshing');
@@ -145,7 +145,7 @@ class Core {
      */
 	removeRefreshingClass($tableWrap) {
 		// 刷新按纽
-		const refreshAction = jTool('.page-toolbar .refresh-action', $tableWrap);
+		const refreshAction = jTool('.footer-toolbar .refresh-action', $tableWrap);
 		window.setTimeout(() => {
 			refreshAction.removeClass('refreshing');
 		}, 2000);
@@ -161,7 +161,7 @@ class Core {
 
 		// 渲染选择框
 		if (settings.supportCheckbox) {
-			Checkbox.resetDOM($table, []);
+			Checkbox.resetDOM($table, settings, []);
 		}
 
 		// 渲染分页
@@ -293,7 +293,7 @@ class Core {
 
 		// 渲染选择框
 		if (settings.supportCheckbox) {
-			Checkbox.resetDOM($table, _data);
+            Checkbox.resetDOM($table, settings, _data);
 		}
 
 		// 渲染分页
@@ -492,7 +492,8 @@ class Core {
 		if (settings.supportExport) {
 			tableWarp.append(Export.html);
 		}
-		const configList = jTool('.config-list', tableWarp);
+
+        const configList = jTool('.config-list', tableWarp);
 
 		// 单个TH
 		let onlyTH = null;
@@ -574,7 +575,7 @@ class Core {
             const filterType = onlyTH.attr('filter');
 			const column = settings.columnMap[onlyTH.attr('th-name')];
             if (filterType !== undefined && !isLmOrder && !isLmCheckbox && column && column.filter) {
-                const filterDom = jTool(Filter.createHtml(column.filter));
+                const filterDom = jTool(Filter.createHtml(settings, column.filter));
                 onlyThWarp.append(filterDom);
             }
 

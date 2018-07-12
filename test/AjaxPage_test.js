@@ -1,6 +1,7 @@
 'use strict';
 import AjaxPage from '../src/js/AjaxPage';
 import { Settings, TextSettings } from '../src/js/Settings';
+import I18n from "../src/js/I18n";
 /**
  * 验证类的属性及方法总量
  */
@@ -22,7 +23,7 @@ describe('AjaxPage 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(AjaxPage)))).toBe(16 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(AjaxPage)))).toBe(17 + 1);
 	});
 });
 
@@ -43,16 +44,36 @@ describe('AjaxPage.createHtml($table)', function() {
 	});
 
 	it('返回值', function () {
-		let ajaxPageHtml = `<div class="page-toolbar">
-						<div class="refresh-action"><i class="iconfont icon-refresh"></i></div>
-						<div class="goto-page">
-							跳转至
+
+        // 刷新按纽
+        const refreshHtml = '<div class="refresh-action"><i class="iconfont icon-refresh"></i></div>';
+
+        // 快捷跳转
+        const gotoHtml = `<div class="goto-page">
+							${ I18n.i18nText(settings, 'goto-first-text') }
 							<input type="text" class="gp-input"/>
-							页
-						</div>
-						<div class="change-size"><select name="pSizeArea"></select></div>
-						<div class="dataTables_info"></div>
-						<div class="ajax-page"><ul class="pagination"></ul></div>
+							${ I18n.i18nText(settings, 'goto-last-text') }
+						</div>`;
+
+        // 每页显示条数
+        const pageSizeHtml = AjaxPage.__getPageSizeHtml(settings);
+
+        // 选中项描述信息
+        const checkedInfoHtml = `<div class="toolbar-info checked-info"></div>`;
+
+        // 分页描述信息
+        const pageInfoHtml = `<div class="toolbar-info page-info"></div>`;
+
+        // 页码
+        const paginationHtml = `<div class="ajax-page"><ul class="pagination"></ul></div>`;
+
+        let ajaxPageHtml = `<div class="footer-toolbar">
+						${refreshHtml}
+						${gotoHtml}
+						${pageSizeHtml}
+						${checkedInfoHtml}
+						${pageInfoHtml}
+						${paginationHtml}
 					</div>`;
 		expect(AjaxPage.createHtml(settings).replace(/\s/g, '')).toBe(ajaxPageHtml.replace(/\s/g, ''));
 
@@ -182,20 +203,24 @@ describe('AjaxPage.__getPageSizeHtml(sizeData)', function() {
 	});
 
 	it('返回值->[10, 30, 50]', function () {
-		sizeData = [10, 30, 50];
-		pageSizeHtml = `<option value="10">10</option>
-						<option value="30">30</option>
-						<option value="50">50</option>`;
+		sizeData = {sizeData: [10, 30, 50]};
+		pageSizeHtml = `<div class="change-size"><select name="pSizeArea">
+                            <option value="10">10</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                        </select></div>`;
 		expect(AjaxPage.__getPageSizeHtml(sizeData).replace(/\s/g, '')).toBe(pageSizeHtml.replace(/\s/g, ''));
 	});
 
 	it('返回值->[10, 20, 30, 50, 100]', function () {
-		sizeData = [10, 20, 30, 50, 100];
-		pageSizeHtml = `<option value="10">10</option>
-						<option value="20">20</option>
-						<option value="30">30</option>
-						<option value="50">50</option>
-						<option value="100">100</option>`;
+		sizeData = {sizeData:[10, 20, 30, 50, 100]};
+		pageSizeHtml = `<div class="change-size"><select name="pSizeArea">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select></div>`;
 		expect(AjaxPage.__getPageSizeHtml(sizeData).replace(/\s/g, '')).toBe(pageSizeHtml.replace(/\s/g, ''));
 	});
 });
@@ -245,6 +270,13 @@ describe('AjaxPage.__resetPSize($table, settings, _pageData_)', function() {
 		expect(AjaxPage.__resetPSize).toBeDefined();
 		expect(AjaxPage.__resetPSize.length).toBe(3);
 	});
+});
+
+describe('AjaxPage.__resetPageInfo($table, settings, _pageData_)', function() {
+    it('基础验证', function () {
+        expect(AjaxPage.__resetPageInfo).toBeDefined();
+        expect(AjaxPage.__resetPageInfo.length).toBe(3);
+    });
 });
 
 describe('AjaxPage.resetPageData($table, settings, totals)', function() {

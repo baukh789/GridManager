@@ -1,20 +1,22 @@
 /**
  * Created by baukh on 18/7/11.
- * 表头的筛选菜单
+ * 表头的筛选菜单  TODO no test
  */
 import { jTool } from './Base';
 import Core from './Core';
 import Cache from './Cache';
+import I18n from './I18n';
 class Filter {
     // 启用状态
     enable = false;
 
     /**
      * 表头的筛选菜单HTML
+     * @param settings
      * @param filter: 当前列的筛选条件对象
      * @returns {string}
      */
-    createHtml(filter) {
+    createHtml(settings, filter) {
         let listHtml = '';
         filter.option.forEach(item => {
             listHtml += `<li>
@@ -32,8 +34,8 @@ class Filter {
                             ${listHtml}
                         </ul>
                         <div class="filter-bottom">
-                            <span class="filter-button filter-submit">确定</span>
-                            <span class="filter-button filter-reset">重置</span>
+                            <span class="filter-button filter-submit">${I18n.i18nText(settings, 'filter-ok')}</span>
+                            <span class="filter-button filter-reset">${I18n.i18nText(settings, 'filter-cancel')}</span>
                         </div>
                     </div>
                 </div>`;
@@ -123,6 +125,8 @@ class Filter {
     destroy($table) {
         // 清理: 排序事件
         $table.off('mouseup', '.filter-action');
+        $table.off('mouseup', '.filter-submit');
+        $table.off('mouseup', '.filter-reset');
     }
 }
 export default new Filter();

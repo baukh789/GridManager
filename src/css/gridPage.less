@@ -1,13 +1,16 @@
 @import "./mixins";
 
 @font-normal-color: #000;
-@font-active-color: #0083ba;
+@font-active-color: #1890ff;
 /* 表格分页 */
 .table-wrap {
-	.page-toolbar {
+	.footer-toolbar {
+        visibility: hidden;
 		width: 100%;
+        height: 40px;
 		position: relative;
 		padding: 5px 0;
+        color: #666;
 		.bg-image;
 		.refresh-action {
 			display: inline-block;
@@ -27,6 +30,10 @@
 				font-size: 16px;
 				color: @font-active-color;
 				font-weight: bold;
+                opacity: .7;
+                &:hover{
+                    opacity: 1;
+                }
 			}
 			&.refreshing {
 				animation: rotationMedia 2s ease-in-out infinite;
@@ -51,9 +58,10 @@
 			select[name="pSizeArea"] {
 				height: 25px;
 				padding: 0 4px;
+                color: #333;
 			}
 		}
-		.dataTables_info {
+		.toolbar-info {
 			display: inline-block;
 			padding: 6px 5px;
 			vertical-align: middle;

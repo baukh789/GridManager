@@ -124,6 +124,21 @@ class Settings {
 			// 是否支持配置列表ajxa分页
 			supportAjaxPage: false,
 
+            // 是否显示底部工具: 刷新按纽
+            showFooterRefresh: true,
+
+            // 是否显示底部工具: 快捷跳转
+            showFooterGoTo: true,
+
+            // 是否显示底部工具: 切换每页显示条数
+            showFooterPageSize: true,
+
+            // 是否显示底部工具: 选中项描述信息
+            showFooterCheckedInfo: true,
+
+            // 是否显示底部工具: 分页描述信息
+            showFooterPageInfo: true,
+
 			// 用于配置列表每页展示条数选择框
 			sizeData: [10, 20, 30, 50, 100],
 
@@ -369,11 +384,16 @@ class TextSettings {
 			'zh-tw': '尾頁',
 			'en-us': 'last'
 		};
-		this['dataTablesInfo'] = {
+		this['page-info'] = {
 			'zh-cn': '此页显示 {0}-{1} 共{2}条',
 			'zh-tw': '此頁顯示 {0}-{1} 共{2}條',
 			'en-us': 'this page show {0}-{1} count {2}'
 		};
+        this['checked-info'] = {
+            'zh-cn': '已选 {0} 条',
+            'zh-tw': '已選 {0} 條',
+            'en-us': 'selected {0}'
+        };
 		this['goto-first-text'] = {
 			'zh-cn': '跳转至',
 			'zh-tw': '跳轉至',
@@ -409,6 +429,16 @@ class TextSettings {
 			'zh-tw': '全選',
 			'en-us': 'All'
 		};
+        this['filter-ok'] = {
+            'zh-cn': '确定',
+            'zh-tw': '確定',
+            'en-us': 'OK'
+        };
+        this['filter-cancel'] = {
+            'zh-cn': '取消',
+            'zh-tw': '取消',
+            'en-us': 'Cancel'
+        };
 	}
 }
 
