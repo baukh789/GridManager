@@ -58,7 +58,7 @@ class AjaxPage {
 		} else {
             const pageData = {
                 [settings.pageSizeKey]: settings.pageSize || 10,
-                [settings.currentPageKey] : 1
+                [settings.currentPageKey]: 1
             };
             jTool.extend(settings, {pageData: pageData});
             Cache.setSettings($table, settings);
