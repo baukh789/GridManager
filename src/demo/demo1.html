@@ -81,6 +81,9 @@
 			font-size: 24px;
 			color: #ccc;
 		}
+        .grid-main {
+            height: calc(100vh - 64px - 57px);
+        }
     </style>
 	<script>
 		// 博文类型
@@ -137,7 +140,7 @@
 			table.GM({
 				gridManagerName: 'test',
                 width: '100%',
-				height: '400px',
+				height: '100%',
 				supportAjaxPage:true,
 				isCombSorting: true,
 				// disableCache: true,

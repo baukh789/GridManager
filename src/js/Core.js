@@ -463,7 +463,7 @@ class Core {
 		const onlyThList = jTool('th', onlyThead);
 
 		// 外围的html片段
-		const wrapHtml = `<div class="table-wrap" style="width: ${settings.width}">
+		const wrapHtml = `<div class="table-wrap" style="width: calc(${settings.width}); height: calc(${settings.height})">
 						<div class="table-div" style="height:calc(${settings.height} - 40px)"></div>
 						<span class="text-dreamland"></span>
 					</div>`;

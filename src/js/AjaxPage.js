@@ -64,14 +64,6 @@ class AjaxPage {
             Cache.setSettings($table, settings);
         }
 
-		console.log(JSON.stringify(settings.pageData));
-		// const tableWarp = $table.closest('.table-wrap');
-
-		// 分页工具条
-		// const footerToolbar = jTool('.footer-toolbar', tableWarp);
-
-		// footerToolbar.hide();
-
 		// 绑定页面跳转事件
 		this.__bindPageJumpEvent($table);
 
