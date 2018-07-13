@@ -283,6 +283,8 @@ class Cache {
 		            // 字段描述
 	                || columnCache[key].remind !== col.remind
 
+	                || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)
+
 		            // 字段模版
 		            || (columnCache[key].template && columnCache[key].template !== col.template)) {
 		            isUsable = false;

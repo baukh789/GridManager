@@ -55,8 +55,16 @@ class AjaxPage {
 		// 根据本地缓存配置每页显示条数
 		if (!settings.disableCache) {
 			this.__configPageForCache($table, settings);
-		}
+		} else {
+            const pageData = {
+                [settings.pageSizeKey]: settings.pageSize || 10,
+                [settings.currentPageKey] : 1
+            };
+            jTool.extend(settings, {pageData: pageData});
+            Cache.setSettings($table, settings);
+        }
 
+		console.log(JSON.stringify(settings.pageData));
 		// const tableWarp = $table.closest('.table-wrap');
 
 		// 分页工具条
@@ -349,8 +357,8 @@ class AjaxPage {
 		// 切换条数区域
 		const sizeArea = jTool('select[name=pSizeArea]', footerToolbar);
 
+		// 未找到单页显示数切换区域，停止该事件绑定
 		if (!sizeArea || sizeArea.length === 0) {
-			Base.outLog('未找到单页显示数切换区域，停止该事件绑定', 'info');
 			return false;
 		}
 		sizeArea.unbind('change');

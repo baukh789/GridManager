@@ -19,9 +19,13 @@ class Filter {
     createHtml(settings, filter) {
         let listHtml = '';
         filter.option.forEach(item => {
+            let selectedList = filter.selected.split(',');
+            selectedList = selectedList.map(item => {
+                return item.trim();
+            });
             listHtml += `<li>
                             <label>
-                                <input class="filter-value" name="filter-value" type="${filter.isMultiple ? 'checkbox' : 'radio'}" ${filter.selected === item.value ? 'checked="true"' : ''} value="${item.value}"/>
+                                <input class="filter-value" name="filter-value" type="${filter.isMultiple ? 'checkbox' : 'radio'}" ${selectedList.indexOf(item.value) !== -1 ? 'checked="true"' : ''} value="${item.value}"/>
                                 <span class="filter-text">${item.text}</span>
                             </label>
                         </li>`;
@@ -35,7 +39,7 @@ class Filter {
                         </ul>
                         <div class="filter-bottom">
                             <span class="filter-button filter-submit">${I18n.i18nText(settings, 'filter-ok')}</span>
-                            <span class="filter-button filter-reset">${I18n.i18nText(settings, 'filter-cancel')}</span>
+                            <span class="filter-button filter-reset">${I18n.i18nText(settings, 'filter-reset')}</span>
                         </div>
                     </div>
                 </div>`;

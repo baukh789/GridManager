@@ -136,19 +136,13 @@
 		function init() {
 			table.GM({
 				gridManagerName: 'test',
+                width: '100%',
 				height: '400px',
 				supportAjaxPage:true,
 				isCombSorting: true,
-				disableCache: false,
+				// disableCache: true,
 				disableLine: true,
 				disableBorder: true,
-                textConfig: {
-				    'checked-info': {
-                        'zh-cn': '已选 <span style="color: red">{0}</span> 条',
-                        'zh-tw': '已選 {0} 條',
-                        'en-us': 'selected {0}'
-                    }
-                },
 				// ajax_url 将在v2.6.0以上版本废弃，请不要再使用
 				// ,ajax_url: 'http://www.lovejavascript.com/blogManager/getBlogList'
 				ajax_data: function () {
@@ -211,7 +205,6 @@
 				//		}
 				,query: {test: 22, type: '3'}
 				,dataKey: 'list'  // 注意: 这里是用来测试responseHandler 是否生效; 数据本身返回为data, 而在这里我把数据名模拟为list, 再通过responseHandler去更改
-				,pageSize:30
 
 				// 通过该方法修改全部的请求参数
 				,requestHandler: function(request){
@@ -292,8 +285,8 @@
 						        {value: '7', text: '前端相关'}
                             ],
                             // 选中的过滤条件将会覆盖query
-                            // selected: '4',
-                            isMultiple: false
+                            selected: '1, 4',
+                            isMultiple: true
                         },
 						template: function(type, rowObject){
 							return TYPE_MAP[type];

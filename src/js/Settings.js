@@ -434,10 +434,10 @@ class TextSettings {
             'zh-tw': '確定',
             'en-us': 'OK'
         };
-        this['filter-cancel'] = {
-            'zh-cn': '取消',
-            'zh-tw': '取消',
-            'en-us': 'Cancel'
+        this['filter-reset'] = {
+            'zh-cn': '重置',
+            'zh-tw': '重置',
+            'en-us': 'Reset'
         };
 	}
 }
