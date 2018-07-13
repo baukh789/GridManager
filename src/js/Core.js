@@ -61,11 +61,25 @@ class Core {
 	 * @returns promise
 	 */
 	transformToPromise($table, settings) {
-		let ajaxData = typeof settings.ajax_data === 'function' ? settings.ajax_data(settings) : settings.ajax_data;
+	    const params = getParams();
+        // 将 requestHandler 内修改的分页参数合并至 settings.pageData
+        if (settings.supportAjaxPage) {
+            jTool.each(settings.pageData, (key, value) => {
+                settings.pageData[key] = params[key] || value;
+            });
+        }
+
+        // 将 requestHandler 内修改的排序参数合并至 settings.sortData
+        jTool.each(settings.sortData, (key, value) => {
+            settings.sortData[key] = params[`${settings.sortKey}${key}`] || value;
+        });
+        Cache.setSettings($table, settings);
+
+		let ajaxData = typeof settings.ajax_data === 'function' ? settings.ajax_data(settings, params) : settings.ajax_data;
 
 		// ajaxData === string url
 		if (typeof ajaxData === 'string') {
-			return getPromiseByUrl($table, settings, ajaxData);
+			return getPromiseByUrl(params);
 		}
 
 		// ajaxData === Promise
@@ -80,51 +94,43 @@ class Core {
 			});
 		}
 
-		function getPromiseByUrl() {
-			let pram = jTool.extend(true, {}, settings.query);
+		// 获取参数信息
+		function getParams() {
+            let _params = jTool.extend(true, {}, settings.query);
 
-			// 合并分页信息至请求参
-			if (settings.supportAjaxPage) {
-				pram[settings.currentPageKey] = settings.pageData[settings.currentPageKey];
-				pram[settings.pageSizeKey] = settings.pageData[settings.pageSizeKey];
-			}
+            // 合并分页信息至请求参
+            if (settings.supportAjaxPage) {
+                _params[settings.currentPageKey] = settings.pageData[settings.currentPageKey];
+                _params[settings.pageSizeKey] = settings.pageData[settings.pageSizeKey];
+            }
 
-			// 合并排序信息至请求参
+            // 合并排序信息至请求参
             jTool.each(settings.sortData, (key, value) => {
                 // 增加sort_前缀,防止与搜索时的条件重叠
-                pram[`${settings.sortKey}${key}`] = value;
+                _params[`${settings.sortKey}${key}`] = value;
             });
 
-			// 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
-			// 说明|备注:
-			// 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
-			// 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
-			if (settings.ajax_type.toUpperCase() === 'POST' && !settings.ajax_headers['Content-Type']) {
-				settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
-			}
+            // 请求前处理程序, 可以通过该方法增加 或 修改全部的请求参数
+            // requestHandler方法内需返回修改后的参数
+            _params = settings.requestHandler(Base.cloneObject(_params));
+            return _params;
+        }
 
-			// 请求前处理程序, 可以通过该方法增加 或 修改全部的请求参数
-			// requestHandler方法内需返回修改后的参数
-			pram = settings.requestHandler(Base.cloneObject(pram));
+        // 获取Promise, 条件: ajax_data 为 url
+		function getPromiseByUrl(Params) {
+            // 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
+            // 说明|备注:
+            // 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
+            // 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
+            if (settings.ajax_type.toUpperCase() === 'POST' && !settings.ajax_headers['Content-Type']) {
+                settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            }
 
-			// 将 requestHandler 内修改的分页参数合并至 settings.pageData
-			if (settings.supportAjaxPage) {
-				jTool.each(settings.pageData, (key, value) => {
-					settings.pageData[key] = pram[key] || value;
-				});
-			}
-
-			// 将 requestHandler 内修改的排序参数合并至 settings.sortData
-            jTool.each(settings.sortData, (key, value) => {
-                settings.sortData[key] = pram[`${settings.sortKey}${key}`] || value;
-            });
-			Cache.setSettings($table, settings);
-
-			return new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
 				jTool.ajax({
 					url: ajaxData,
 					type: settings.ajax_type,
-					data: pram,
+					data: Params,
 					headers: settings.ajax_headers,
 					xhrFields: settings.ajax_xhrFields,
 					cache: true,
@@ -464,9 +470,9 @@ class Core {
 
 		// 外围的html片段
 		const wrapHtml = `<div class="table-wrap" style="width: calc(${settings.width}); height: calc(${settings.height})">
-						<div class="table-div" style="height:calc(100% - 40px)"></div>
-						<span class="text-dreamland"></span>
-					</div>`;
+                            <div class="table-div" style="height:calc(100% - 40px)"></div>
+                            <span class="text-dreamland"></span>
+                        </div>`;
 		$table.wrap(wrapHtml);
 
 		// 单个table所在的DIV容器
