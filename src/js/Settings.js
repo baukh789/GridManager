@@ -98,7 +98,13 @@ class Settings {
 			// 是否为组合排序[只有在支持排序的情况下生效
 			isCombSorting: false,
 
-			// 排序字段前缀, 示例: 列名='date', sortKey='sort_', 排序参数则为sort_date
+            // 是否合并排序字段
+            // false: {sort_createDate: 'DESC', sort_title: 'ASC'}
+            // true: sort: 'createDate: "DESC"'
+            mergeSort: false,
+
+            // mergeSort=true: 排序所使用的字段名, 示例: 列名='createDate', sortKey='orderBys', 排序参数为: orderBys: 'createDate:"DESC"'
+            // mergeSort=false: 排序所使用的字段名前缀, 示例: 列名='createDate', sortKey='sort_', 排序参数为: sort_createDate: 'DESC'
 			sortKey: 'sort_',
 
 			// 存储排序数据[不对外公开参数]

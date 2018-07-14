@@ -81,6 +81,10 @@ describe('Settings', function() {
 		expect(settings.isCombSorting).toBe(false);
 	});
 
+    it('验证属性[mergeSort]初始值', function() {
+        expect(settings.mergeSort).toBe(false);
+    });
+
 	it('验证属性[sortKey]初始值', function() {
 		expect(settings.sortKey).toBe('sort_');
 	});

@@ -105,10 +105,20 @@ class Core {
             }
 
             // 合并排序信息至请求参
-            jTool.each(settings.sortData, (key, value) => {
-                // 增加sort_前缀,防止与搜索时的条件重叠
-                _params[`${settings.sortKey}${key}`] = value;
-            });
+            // settings.mergeSort: 是否合并排序字段
+            // false: {sort_createDate: 'DESC', sort_title: 'ASC'}
+            // true: sort: {createDate: 'DESC'}
+            if (settings.mergeSort) {
+                _params[settings.sortKey] = '';
+                jTool.each(settings.sortData, (key, value) => {
+                    _params[settings.sortKey] = `${_params[settings.sortKey]}${_params[settings.sortKey] ? ',' : ''}${key}:${value}`;
+                });
+            } else {
+                jTool.each(settings.sortData, (key, value) => {
+                    // 增加sort_前缀,防止与搜索时的条件重叠
+                   _params[`${settings.sortKey}${key}`] = value;
+                });
+            }
 
             // 请求前处理程序, 可以通过该方法增加 或 修改全部的请求参数
             // requestHandler方法内需返回修改后的参数
