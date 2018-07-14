@@ -383,7 +383,7 @@ export default class GridManager {
 		}
 
 		// 绑定$table区域hover事件
-        if (settings.supportHover) {
+        if (!settings.disableHover) {
             Hover.onTbodyHover($table);
         }
 

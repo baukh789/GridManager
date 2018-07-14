@@ -144,8 +144,6 @@
 				supportAjaxPage:true,
 				isCombSorting: true,
 				// disableCache: true,
-				disableLine: true,
-				disableBorder: true,
 				// ajax_url 将在v2.6.0以上版本废弃，请不要再使用
 				// ,ajax_url: 'http://www.lovejavascript.com/blogManager/getBlogList'
 				ajax_data: function () {
@@ -267,7 +265,6 @@
 							titleNode.innerText = title;
 							titleNode.title = `点击阅读[${rowObject.title}]`;
 							titleNode.classList.add('plugin-action');
-
 							return titleNode;
 						}
 					},{
@@ -297,8 +294,7 @@
 					},{
 						key: 'info',
 						remind: 'the info',
-						text: '简介',
-						isShow: false
+						text: '简介'
 					},{
 						key: 'username',
 						remind: 'the username',

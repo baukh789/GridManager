@@ -64,8 +64,8 @@ describe('Settings', function() {
         expect(settings.disableLine).toBe(false);
     });
 
-    it('验证属性[supportHover]初始值', function() {
-        expect(settings.supportHover).toBe(true);
+    it('验证属性[disableHover]初始值', function() {
+        expect(settings.disableHover).toBe(false);
     });
 
     it('验证属性[disableBorder]初始值', function() {

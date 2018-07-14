@@ -76,8 +76,8 @@ class Settings {
             // 禁用单元格分割线
             disableLine: false,  // v2.6.1新增
 
-            // 是否支持hover选中样式
-            supportHover: true, // v2.6.1新增
+            // 是否禁用hover选中样式
+            disableHover: false, // v2.6.1新增
 
             // 禁用边框线
             disableBorder: false  // v2.6.1新增
