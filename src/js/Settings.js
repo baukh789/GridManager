@@ -73,13 +73,13 @@ class Settings {
 			// 动画效果时长
 			animateTime: 300,
 
-            // 禁用单元格分割线
+            // 配置是否禁用单元格分割线
             disableLine: false,  // v2.6.1新增
 
-            // 是否禁用hover选中样式
+            // 配置是否禁用hover选中样式
             disableHover: false, // v2.6.1新增
 
-            // 禁用边框线
+            // 配置是否禁用边框线
             disableBorder: false  // v2.6.1新增
 		};
 
@@ -98,7 +98,7 @@ class Settings {
 			// 是否为组合排序[只有在支持排序的情况下生效
 			isCombSorting: false,
 
-            // 是否合并排序字段
+            // 配置是否合并排序字段
             // false: {sort_createDate: 'DESC', sort_title: 'ASC'}
             // true: sort: 'createDate: "DESC"'
             mergeSort: false,
@@ -252,21 +252,13 @@ class Settings {
                 // 列的表头提醒内容,字符串类型，非必设项
                 remind: '文本介绍',
 
-                // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。
+                // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。非必设项
                 filter: {
-                    // 筛选条件列表
-                    option: [
-                        {value: '1', text: 'HTML/CSS'},
-                        {value: '2', text: 'nodeJS'},
-                        {value: '3', text: 'javaScript'},
-                        {value: '4', text: '前端鸡汤'},
-                        {value: '5', text: 'PM Coffee'},
-                        {value: '6', text: '前端框架'},
-                        {value: '7', text: '前端相关'}
-                    ],
-                    // 筛选选中项，选中的过滤条件将会覆盖query
+                    // 筛选条件列表, 数组对象。格式: [{value: '1', text: 'HTML/CSS'}],在使用filter时该参数为必设项。
+                    option: [],
+                    // 筛选选中项，字符串, 默认为''。 非必设项，选中的过滤条件将会覆盖query
                     selected: '3',
-                    // 否为多选
+                    // 否为多选, 布尔值, 默认为false。非必设项
                     isMultiple: false
                 },
                 // 自定义列模板，函数类型，非必设项
