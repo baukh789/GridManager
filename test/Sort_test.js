@@ -28,6 +28,13 @@ describe('Sort 验证类的属性及方法总量', function() {
 	});
 });
 
+describe('Sort.enable', function() {
+    it('初始值验证', function() {
+        expect(Sort.enable).toBeDefined();
+        expect(Sort.enable).toBe(false);
+    });
+});
+
 describe('Sort.init($table)', function() {
 	it('基础验证', function() {
 		expect(Sort.init).toBeDefined();

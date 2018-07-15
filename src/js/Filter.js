@@ -18,6 +18,7 @@ class Filter {
      */
     createHtml(settings, filter) {
         let listHtml = '';
+        filter.selected = filter.selected || '';
         filter.option.forEach(item => {
             let selectedList = filter.selected.split(',');
             selectedList = selectedList.map(item => {

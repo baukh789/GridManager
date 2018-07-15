@@ -169,6 +169,10 @@ describe('Settings', function() {
 		expect(settings.i18n).toBe('zh-cn');
 	});
 
+    it('验证属性[topFullColumn]初始值', function() {
+        expect(settings.topFullColumn).toEqual({});
+    });
+
 	it('验证属性[columnData]初始值', function() {
 		expect(settings.columnData).toEqual([]);
 	});

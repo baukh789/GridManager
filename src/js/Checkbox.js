@@ -30,7 +30,7 @@ class Checkbox {
 	};
 
 	/**
-	 * 获取 全选字符串
+	 * 获取Th: 全选字符串
 	 * @param settings
 	 * @returns {string}
      */
@@ -45,7 +45,7 @@ class Checkbox {
 	}
 
 	/**
-	 * 获取选择列对象
+	 * 获取TD: 选择列对象
 	 * @param settings
 	 * @param language
 	 * @returns {{key: string, name: (*|string), isShow: boolean, width: string, align: string}}

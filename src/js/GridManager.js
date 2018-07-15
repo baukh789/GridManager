@@ -290,6 +290,27 @@ export default class GridManager {
 			arg.ajax_data = arg.ajax_url;
 		}
 
+		// 相互冲突的参数项处理 TODO 这个功能为试点功能，现在与被禁用项冲突，后期还是想把这些冲突点解决掉
+        if (arg.topFullColumn && arg.topFullColumn.template) {
+		    // 是否禁用hover选中样式
+            arg.disableHover = true;
+
+            // 不使用配置功能
+            arg.supportConfig = false;
+
+            // 不使用自动序号
+            arg.supportAutoOrder = false;
+
+            // 不使用全选功能
+            arg.supportCheckbox = false;
+
+            // 不使用拖拽功能
+            arg.supportDrag = false;
+
+            // 不使用宽度调整功能
+            arg.supportAdjust = false;
+        }
+
 		// 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
 		if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
 			// 存储gridManagerName值

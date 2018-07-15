@@ -42,6 +42,13 @@ describe('Remind.html', function() {
 	});
 });
 
+describe('Remind.enable', function() {
+    it('初始值验证', function() {
+        expect(Remind.enable).toBeDefined();
+        expect(Remind.enable).toBe(false);
+    });
+});
+
 describe('Remind.init($table)', function() {
 	it('基础验证', function() {
 		expect(Remind.init).toBeDefined();

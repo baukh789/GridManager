@@ -278,6 +278,11 @@ class Settings {
                 }
 			 }]
 			*/
+
+			// tr区域顶部通栏
+            topFullColumn: {},
+
+            // 列配置
 			columnData: [],
 
 			// 表格grid-manager所对应的值[可在html中配置]

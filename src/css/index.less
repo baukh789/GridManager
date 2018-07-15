@@ -276,7 +276,7 @@
                                 }
                             }
                             .filter-bottom{
-                                border-top: 1px solid #e8e8e8;
+                                border-top: @table-border;
                                 padding: 7px 8px;
                                 text-align: center;
                                 .filter-button{
@@ -383,6 +383,30 @@
             }
             tbody {
                 tr {
+                    /*顶部通栏*/
+                    &[top-full-column="true"]{
+                        border-bottom: none;
+                        td{
+                            padding: 0;
+                            .full-column-td{
+                                .bg-image();
+                                margin-top: 10px;
+                                //border-top: @table-border;
+                                //border-left: @table-border;
+                                //border-right: @table-border;
+                            }
+                        }
+                    }
+                    &[top-full-column="false"]{
+                        td{
+                            &:first-child{
+                                //border-left: @table-border;
+                            }
+                            &:last-child{
+                                //border-right: @table-border;
+                            }
+                        }
+                    }
                     td {
                         .text-overflow();
                         background-color: #fff;

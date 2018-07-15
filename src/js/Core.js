@@ -255,6 +255,20 @@ class Core {
 				const trNode = document.createElement('tr');
 				trNode.setAttribute('cache-key', index);
 
+				// 插入通栏: 头部区域
+                if (typeof settings.topFullColumn.template !== 'undefined') {
+                    const topTrNode = document.createElement('tr');
+                    topTrNode.setAttribute('top-full-column', 'true');
+                    trNode.setAttribute('top-full-column', 'false');
+
+                    let _template = settings.topFullColumn.template;
+                    _template = typeof _template === 'function' ? _template(row) : _template;
+
+                    topTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div class="full-column-td">${_template}</div></td>`;
+                    settings.topFullColumn.useCompile && compileList.push({td: topTrNode, row: row});
+                    _tbody.appendChild(topTrNode);
+                }
+
 				// 与当前位置信息匹配的td列表
 				const tdList = [];
 				jTool.each(settings.columnMap, (key, col) => {
