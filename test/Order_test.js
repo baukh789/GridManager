@@ -34,7 +34,7 @@ describe('Order.key', function() {
 	});
 });
 
-describe('Order.getThString(settings, thVisible)', function() {
+describe('Order.getThString(settings)', function() {
 	let settings = null;
 	beforeEach(() => {
 		settings = new Settings();
@@ -52,12 +52,11 @@ describe('Order.getThString(settings, thVisible)', function() {
 	});
 	it('基础验证', function() {
 		expect(Order.getThString).toBeDefined();
-		expect(Order.getThString.length).toBe(2);
+		expect(Order.getThString.length).toBe(1);
 	});
 
 	it('返回值', function() {
-		expect(Order.getThString(settings, true)).toBe('<th th-name="gm_order" th-visible="true" gm-order="true" gm-create="true">序号</th>');
-		expect(Order.getThString(settings, false)).toBe('<th th-name="gm_order" th-visible="false" gm-order="true" gm-create="true">序号</th>');
+		expect(Order.getThString(settings)).toBe('序号');
 	});
 });
 

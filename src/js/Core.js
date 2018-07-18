@@ -252,7 +252,7 @@ class Core {
 			_tbody.innerHTML = '';
 
             // 组装 tbody
-			const compileList = []; // 需要通过框架解析td
+			const compileList = []; // 需要通过框架解析td数据
 			jTool.each(_data, (index, row) => {
 				const trNode = document.createElement('tr');
 				trNode.setAttribute('cache-key', index);
@@ -267,7 +267,7 @@ class Core {
                     _template = typeof _template === 'function' ? _template(row) : _template;
 
                     topTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div class="full-column-td">${_template}</div></td>`;
-                    settings.topFullColumn.useCompile && compileList.push({td: topTrNode, row: row});
+                    settings.topFullColumn.useCompile && compileList.push({el: topTrNode, row: row});
                     _tbody.appendChild(topTrNode);
                 }
 
@@ -292,7 +292,7 @@ class Core {
 
 					tdList[col.index] = tdNode;
 
-					col.useCompile && compileList.push({td: tdNode, row: row});
+					col.useCompile && compileList.push({el: tdNode, row: row});
 				});
 
 				tdList.forEach(td => {
@@ -366,38 +366,33 @@ class Core {
 	 * @param $table
      */
 	createDOM($table) {
-		let settings = Cache.getSettings($table);
-		let theadHtml = '<thead grid-manager-thead>';
-		let	tbodyHtml = '<tbody></tbody>';
+        let settings = Cache.getSettings($table);
+        // 外围的html片段
+        const wrapHtml = `<div class="table-wrap" style="width: calc(${settings.width}); height: calc(${settings.height})">
+                            <div class="table-div" style="height:calc(100% - 40px)"></div>
+                            <span class="text-dreamland"></span>
+                        </div>`;
+        $table.wrap(wrapHtml);
 
-		// 文本对齐属性
-		let	alignAttr = '';
-
-		// 宽度信息
-		let	widthInfo = '';
-
-		// 提醒对应的html片段
-		let	remindHtml = '';
-
-		// 排序对应的html片段
-		let	sortingHtml	= '';
-
-		// 过滤对应的html片段
-		let	filterHtml	= '';
+        const thead = document.createElement('thead');
+        thead.setAttribute('grid-manager-thead', '');
+        thead.appendChild(document.createElement('tr'));
+        $table.append(thead);
+        const $tr = $table.find('thead[grid-manager-thead] tr');
 
 		// th显示状态
 		let thVisible = '';
 
 		// 将 columnMap 转换为 数组
 		// 转换的原因是为了处理用户记忆
-		const thList = [];
+		const columnList = [];
 		if (settings.disableCache) {
 			jTool.each(settings.columnMap, (key, col) => {
-				thList.push(col);
+				columnList.push(col);
 			});
 		} else {
 			jTool.each(settings.columnMap, (key, col) => {
-				thList[col.index] = col;
+				columnList[col.index] = col;
 			});
 		}
 
@@ -410,35 +405,38 @@ class Core {
         // 将筛选条件重置
         Filter.enable = false;
 
-		// thList 生成thead
-		jTool.each(thList, (index, col) => {
+		// columnList 生成thead
+		jTool.each(columnList, (index, col) => {
+		    const th = document.createElement('th');
+		    const thWrap = document.createElement('div');
+            thWrap.className = 'th-wrap';
+            const thText = document.createElement('span');
+            thText.className = 'th-text';
+
 			// 表头提醒
-            remindHtml = '';
 			if (typeof (col.remind) === 'string' && col.remind !== '') {
-				remindHtml = `remind="${col.remind}"`;
+                th.setAttribute('remind', col.remind);
                 Remind.enable = true;
 			}
 
 			// 排序
-			sortingHtml = '';
 			if (typeof (col.sorting) === 'string') {
                 Sort.enable = true;
 				if (col.sorting === settings.sortDownText) {
-					sortingHtml = `sorting="${settings.sortDownText}"`;
+                    th.setAttribute('sorting', settings.sortDownText);
 					settings.sortData[col.key] = settings.sortDownText;
 				} else if (col.sorting === settings.sortUpText) {
-					sortingHtml = `sorting="${settings.sortUpText}"`;
+                    th.setAttribute('sorting', settings.sortUpText);
 					settings.sortData[col.key] = settings.sortUpText;
 				} else {
-					sortingHtml = 'sorting=""';
+                    th.setAttribute('sorting', '');
 				}
 			}
 
 			// 过滤
-            filterHtml = '';
             if (jTool.type(col.filter) === 'object') {
                 Filter.enable = true;
-                filterHtml = `filter`;
+                th.setAttribute('filter', '');
                 if (typeof (col.filter.selected) === 'undefined') {
                     col.filter.selected = settings.query[col.key];
                 } else {
@@ -447,10 +445,10 @@ class Core {
             }
 
 			// 宽度文本
-			widthInfo = col.width ? `width="${col.width}"` : '';
+            col.width && th.setAttribute('width', col.width);
 
 			// 文本对齐
-			alignAttr = col.align ? `align="${col.align}"` : '';
+            col.align && th.setAttribute('align', col.align);
 
 			// th可视状态值
 			thVisible = Base.getVisibleForColumn(col);
@@ -459,23 +457,44 @@ class Core {
 			switch (col.key) {
 				// 插件自动生成序号列
 				case Order.key:
-					theadHtml += Order.getThString(settings, thVisible);
+                    // thWrap
+                    th.setAttribute('gm-create', 'true');
+                    th.setAttribute('th-name', Order.key);
+                    th.setAttribute('th-visible', thVisible);
+                    th.setAttribute('gm-order', 'true');
+                    thText.innerHTML = Order.getThString(settings);
 					break;
 				// 插件自动生成选择列
 				case Checkbox.key:
-					theadHtml += Checkbox.getThString(settings, thVisible);
+                    th.setAttribute('gm-create', 'true');
+                    th.setAttribute('th-name', Checkbox.key);
+                    th.setAttribute('th-visible', thVisible);
+                    th.setAttribute('gm-checkbox', 'true');
+                    thText.innerHTML = Checkbox.getThString(settings);
 					break;
 				// 普通列
 				default:
-					theadHtml += `<th gm-create="false" th-name="${col.key}" th-visible="${thVisible}" ${remindHtml} ${sortingHtml} ${filterHtml} ${widthInfo} ${alignAttr}>${col.text}</th>`;
+                    th.setAttribute('gm-create', 'false');
+                    th.setAttribute('th-name', col.key);
+                    th.setAttribute('th-visible', thVisible);
+                    thText.innerHTML = col.text;
 					break;
 			}
-		});
-		// TODO 20180711将排序及过滤的setSettings移到了这里，原因是这两项都在each内。
-        Cache.setSettings($table, settings);
 
-		theadHtml += '</thead>';
-		$table.html(theadHtml + tbodyHtml);
+            // 嵌入拖拽事件标识
+            if (settings.supportDrag && !isLmOrder && !isLmCheckbox) {
+                thText.classList.add('drag-action');
+            }
+
+            thWrap.appendChild(thText);
+            th.appendChild(thWrap);
+            $tr.append(th);
+		});
+
+        const tbody = document.createElement('tbody');
+        $table.append(tbody);
+
+        Cache.setSettings($table, settings);
 
 		// 绑定选择框事件
 		if (settings.supportCheckbox) {
@@ -493,13 +512,6 @@ class Core {
 
 		// 单个table下的TH
 		const onlyThList = jTool('th', onlyThead);
-
-		// 外围的html片段
-		const wrapHtml = `<div class="table-wrap" style="width: calc(${settings.width}); height: calc(${settings.height})">
-                            <div class="table-div" style="height:calc(100% - 40px)"></div>
-                            <span class="text-dreamland"></span>
-                        </div>`;
-		$table.wrap(wrapHtml);
 
 		// 单个table所在的DIV容器
 		const tableWarp = $table.closest('.table-wrap');
@@ -533,10 +545,19 @@ class Core {
 		// 单个TH所占宽度
 		let onlyWidth = 0;
 
+
+        // 需要通过框架解析th数据
+        const compileList = [];
+
+		// 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
 		// 单个TH下的上层DIV
-		const onlyThWarp = jTool('<div class="th-wrap"></div>');
 		jTool.each(onlyThList, (index, item) => {
 			onlyTH = jTool(item);
+            const onlyThWarp = jTool('.th-wrap', onlyTH);
+            const thName = onlyTH.attr('th-name');
+            // TODO 需要将下列中从dom中获取的信息修正为从 columnMap中获取
+            const col = settings.columnMap[thName];
+            col.useCompile && compileList.push({el: onlyTH.find('.th-text').get(0)});
 
 			// 是否为自动生成的序号列
 			if (settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
@@ -562,14 +583,6 @@ class Core {
 									${onlyTH.text()}
 								</label>
 							</li>`);
-			}
-
-			// 嵌入拖拽事件源
-			// 插件自动生成的排序与选择列不做事件绑定
-			if (settings.supportDrag && !isLmOrder && !isLmCheckbox) {
-				onlyThWarp.html(`<span class="th-text drag-action">${onlyTH.html()}</span>`);
-			} else {
-				onlyThWarp.html(`<span class="th-text">${onlyTH.html()}</span>`);
 			}
 
 			// 嵌入表头提醒事件源
@@ -620,7 +633,6 @@ class Core {
 				}
 				onlyThWarp.append(adjustDOM);
 			}
-			onlyTH.html(onlyThWarp);
 
 			// 宽度配置: GM自动创建为固定宽度
 			if (isLmOrder || isLmCheckbox) {
@@ -638,6 +650,21 @@ class Core {
 			onlyTH.removeAttr('width');
 			onlyTH.width(onlyWidth);
 		});
+
+        try {
+            // 解析框架: Vue
+            if (typeof settings.compileVue === 'function' && compileList.length > 0) {
+                settings.compileVue(compileList);
+            }
+
+            // 解析框架: Angular
+            // ....
+
+            // 解析框架: React
+            // ...
+        } catch (e) {
+            Base.outLog('框架模板解析异常, 请查看template配置项', 'error');
+        }
 
 		// 删除渲染中标识、增加渲染完成标识
 		$table.removeClass('GridManager-loading');

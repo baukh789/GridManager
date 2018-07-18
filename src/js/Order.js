@@ -12,8 +12,8 @@ class Order {
 	 * @param settings
 	 * @returns {string}
 	 */
-	getThString(settings, thVisible) {
-		return `<th th-name="${this.key}" th-visible="${thVisible}" gm-order="true" gm-create="true">${I18n.i18nText(settings, 'order-text')}</th>`;
+	getThString(settings) {  // TODO getThString要改名
+		return I18n.i18nText(settings, 'order-text');
 	}
 
 	/**

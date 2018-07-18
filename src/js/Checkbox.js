@@ -34,14 +34,11 @@ class Checkbox {
 	 * @param settings
 	 * @returns {string}
      */
-	getThString(settings, thVisible) {
-		let checkboxHtml = `<th th-name="${this.key}" th-visible="${thVisible}" gm-checkbox="true" gm-create="true">
-								<input type="checkbox"/>
-								<span style="display: none">
-									${ I18n.i18nText(settings, 'checkall-text') }
-								</span>
-							</th>`;
-		return checkboxHtml;
+	getThString(settings) {
+        return `<input type="checkbox"/>
+                <span style="display: none">
+                    ${ I18n.i18nText(settings, 'checkall-text') }
+                </span>`;
 	}
 
 	/**

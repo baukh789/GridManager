@@ -50,7 +50,7 @@ describe('Checkbox.getCheckedData($table)', function() {
 	});
 });
 
-describe('Checkbox.getThString($table, thVisible)', function() {
+describe('Checkbox.getThString($table)', function() {
 	let settings = null;
 	let checkboxHtml = null;
 	beforeEach(() => {
@@ -66,16 +66,14 @@ describe('Checkbox.getThString($table, thVisible)', function() {
 
 	it('基础验证', function () {
 		expect(Checkbox.getThString).toBeDefined();
-		expect(Checkbox.getThString.length).toBe(2);
+		expect(Checkbox.getThString.length).toBe(1);
 	});
 
 	it('返回值验证', function () {
-		checkboxHtml = `<th th-name="gm_checkbox" th-visible="true" gm-checkbox="true" gm-create="true">
-							<input type="checkbox"/>
+		checkboxHtml = `<input type="checkbox"/>
 							<span style="display: none">
 								全选
-							</span>
-						</th>`;
+						</span>`;
 		expect(Checkbox.getThString(settings, true).replace(/\s/g, '')).toBe(checkboxHtml.replace(/\s/g, ''));
 	});
 });
