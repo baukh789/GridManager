@@ -190,9 +190,10 @@ class BaseClass {
 	/**
 	 * 显示加载中动画
 	 * @param dom[jTool] 加载动画的容器
+	 * @param loadingTemplate 加载动画模板
 	 * @param cb 回调函数
      */
-	showLoading(dom, cb) {
+	showLoading(dom, loadingTemplate, cb) {
 		if (!dom || dom.length === 0) {
 			return false;
 		}
@@ -200,14 +201,8 @@ class BaseClass {
 		if (loading.length > 0) {
 			loading.remove();
 		}
-		const loadingDom = $(`<div class="load-area loading"><div class="loadInner kernel"></div></div>`);
+		const loadingDom = $(loadingTemplate || `<div class="load-area loading"><div class="loadInner kernel"></div></div>`);
 		dom.append(loadingDom);
-
-		// 进行loading图标居中显示
-		const loadInner = jTool('.load-area .loadInner', dom);
-		const domHeight = dom.height();
-		const loadInnerHeight = loadInner.height();
-		loadInner.css('margin-top', (domHeight - loadInnerHeight) / 2);
 		window.setTimeout(() => {
 			typeof cb === 'function' ? cb() : '';
 		}, 100);

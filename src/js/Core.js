@@ -33,7 +33,7 @@ class Core {
 
 		// 增加刷新中标识
 		refreshAction.addClass('refreshing');
-		Base.showLoading(tableWrap);
+		Base.showLoading(tableWrap, settings.loadingTemplate);
 
 		let ajaxPromise = this.transformToPromise($table, settings);
 

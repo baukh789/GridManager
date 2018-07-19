@@ -80,7 +80,10 @@ class Settings {
             disableHover: false, // v2.6.1新增
 
             // 配置是否禁用边框线
-            disableBorder: false  // v2.6.1新增
+            disableBorder: false,  // v2.6.1新增
+
+            // 数据加载中模板
+            loadingTemplate: undefined // v2.6.2新增
 		};
 
 		/**
@@ -266,7 +269,7 @@ class Settings {
                 // nodeData: 当前单元格的渲染数据
                 // rowData: 当前单元格所在行的渲染数据, 本例中: 参数nodeData=== rowData.url
                 template: function(nodeData, rowData){
-                r   eturn '<a href="'+nodeData+'">'+rowData.url+'</a>';
+                    return '<a href="'+nodeData+'">'+rowData.url+'</a>';
                 }
 			 }]
 			*/

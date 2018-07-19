@@ -269,7 +269,7 @@ describe('Base.getTextWidth(th)', function() {
 	});
 });
 
-describe('Base.showLoading(dom, cb)', function() {
+describe('Base.showLoading(dom, loadingTemplate, cb)', function() {
 	beforeEach(function(){
 	});
 
@@ -278,7 +278,7 @@ describe('Base.showLoading(dom, cb)', function() {
 	});
 	it('基础验证', function () {
 		expect(Base.showLoading).toBeDefined();
-		expect(Base.showLoading.length).toBe(2);
+		expect(Base.showLoading.length).toBe(3);
 	});
 
 	it('并不存在的dom', function () {
@@ -300,7 +300,7 @@ describe('Base.showLoading(dom, cb)', function() {
 	it('回调函数是否执行', function () {
 		jasmine.clock().install();
 		let callback = jasmine.createSpy('callback');
-		expect(Base.showLoading(jTool('body'), callback)).toBe(true);
+		expect(Base.showLoading(jTool('body'), undefined, callback)).toBe(true);
 		jasmine.clock().tick(100);
 		expect(callback).toHaveBeenCalled();
 		jasmine.clock().uninstall();

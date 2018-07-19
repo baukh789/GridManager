@@ -149,13 +149,12 @@
 				// ,ajax_url: 'http://www.lovejavascript.com/blogManager/getBlogList'
 				ajax_data: function () {
 					return 'http://www.lovejavascript.com/blogManager/getBlogList';
-				}
+				},
 				// ,firstLoading: false // 初始渲染时是否加载数据
-				,ajax_type: 'POST'
-				,supportMenu: true
+				ajax_type: 'POST',
 
 				// 选择事件执行前事件
-				,checkedBefore: function(checkedList){
+				checkedBefore: function(checkedList){
 					console.log('checkedBefore==', checkedList);
 				}
 
