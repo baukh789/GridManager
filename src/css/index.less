@@ -9,7 +9,7 @@
 
 @table-border: 1px solid #e8e8e8;
 @font-normal-size: 12px;
-@font-family: arial !important;
+//@font-family: arial !important;
 /* table所在的DIV */
 .table-wrap {
     position: relative;
@@ -53,7 +53,7 @@
             text-align: center;
             width: 100%;
             border-collapse: collapse;
-            font-family: @font-family;
+            //font-family: @font-family;
             tr {
                 border-bottom: @table-border;
                 th:last-child,
@@ -387,23 +387,32 @@
                     &[top-full-column="true"]{
                         border-bottom: none;
                         td{
+                            border-left: @table-border;
+                            border-right: @table-border;
                             padding: 0;
                             .full-column-td{
+                                border-top: @table-border;
                                 .bg-image();
-                                margin-top: 10px;
-                                //border-top: @table-border;
-                                //border-left: @table-border;
-                                //border-right: @table-border;
+                            }
+                        }
+                    }
+                    &[top-full-column-interval="true"]{
+                        border: none;
+                        td{
+                            padding: 0;
+                            >div{
+                                height: 10px;
                             }
                         }
                     }
                     &[top-full-column="false"]{
+                        border-bottom: @table-border;
                         td{
                             &:first-child{
-                                //border-left: @table-border;
+                                border-left: @table-border;
                             }
                             &:last-child{
-                                //border-right: @table-border;
+                                border-right: @table-border;
                             }
                         }
                     }
@@ -495,7 +504,7 @@
             border-collapse: separate;
             border-spacing: 1px;
             font-size: @font-normal-size !important;
-            font-family: @font-family;
+            //font-family: @font-family;
             tr {
                 th {
                     background-color: #f3f3f3;

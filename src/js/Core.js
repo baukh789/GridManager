@@ -259,8 +259,17 @@ class Core {
 
 				// 插入通栏: 头部区域
                 if (typeof settings.topFullColumn.template !== 'undefined') {
+                    // 通栏tr
                     const topTrNode = document.createElement('tr');
                     topTrNode.setAttribute('top-full-column', 'true');
+
+                    // 通栏用于向上的间隔的tr
+                    const intervalTrNode = document.createElement('tr');
+                    intervalTrNode.setAttribute('top-full-column-interval', 'true');
+                    intervalTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div></div></td>`;
+                    _tbody.appendChild(intervalTrNode);
+
+                    // 为非通栏tr的添加标识
                     trNode.setAttribute('top-full-column', 'false');
 
                     let _template = settings.topFullColumn.template;

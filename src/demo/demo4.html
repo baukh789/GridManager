@@ -4,13 +4,15 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="../css/gm.css">
     <script type="text/javascript" src="../js/gm.js"></script>
-    <title>GridManager:使用动态数据渲染</title>
+    <title>GridManager:顶部通栏</title>
     <style>
         html, body{
-            width: 100%;
             overflow-x:hidden;
             margin: 0;
             padding: 0;
+        }
+        body{
+            padding: 40px;
         }
         .plugin-action{
             display: inline-block;
@@ -142,7 +144,7 @@
             height: '100%',
             supportAjaxPage:true,
             isCombSorting: true,
-            // disableLine:true,
+            disableLine:true,
             // disableHover:true,
             disableBorder: true,
 

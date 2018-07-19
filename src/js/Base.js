@@ -197,11 +197,12 @@ class BaseClass {
 		if (!dom || dom.length === 0) {
 			return false;
 		}
-		const loading = dom.find('.load-area');
+		const loading = dom.find('.gm-load-area');
 		if (loading.length > 0) {
 			loading.remove();
 		}
-		const loadingDom = $(loadingTemplate || `<div class="load-area loading"><div class="loadInner kernel"></div></div>`);
+		const loadingDom = $(loadingTemplate || `<div class="loading"><div class="loadInner kernel"></div></div>`);
+        loadingDom.addClass('gm-load-area');
 		dom.append(loadingDom);
 		window.setTimeout(() => {
 			typeof cb === 'function' ? cb() : '';
@@ -220,7 +221,7 @@ class BaseClass {
 			return false;
 		}
 		window.setTimeout(() => {
-			$('.load-area', dom).remove();
+			$('.gm-load-area', dom).remove();
 			typeof cb === 'function' ? cb() : '';
 		}, 500);
 		return true;
