@@ -6,16 +6,18 @@ class Remind {
     // 启用状态
     enable = false;
 
-	/**
-	 * 获取表头提醒所需HTML
-	 * @returns {string}
+    /**
+     * 获取表头提醒所需HTML
+     * @param title
+     * @param content
+     * @returns {string}
      */
-	get html() {
+	createHtml(title, content) {
 		return `<div class="remind-action">
                     <i class="ra-icon iconfont icon-help"></i>
                     <div class="ra-area">
-                        <span class="ra-title"></span>
-                        <span class="ra-con"></span>
+                        <span class="ra-title">${title}</span>
+                        <span class="ra-con">${content || title}</span>
                     </div>
                 </div>`;
 	}

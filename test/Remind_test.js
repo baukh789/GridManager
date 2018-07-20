@@ -28,16 +28,16 @@ describe('Remind 验证类的属性及方法总量', function() {
 	});
 });
 
-describe('Remind.html', function() {
+describe('Remind.createHtml(title, content)', function() {
 	it('基础验证', function() {
 		let RemindHtml = `<div class="remind-action">
 						<i class="ra-icon iconfont icon-help"></i>
 						<div class="ra-area">
-							<span class="ra-title"></span>
-							<span class="ra-con"></span>
+							<span class="ra-title">title</span>
+							<span class="ra-con">content</span>
 						</div>
 					</div>`;
-		expect(Remind.html.replace(/\s/g, '')).toBe(RemindHtml.replace(/\s/g, ''));
+		expect(Remind.createHtml('title', 'content').replace(/\s/g, '')).toBe(RemindHtml.replace(/\s/g, ''));
 		RemindHtml = null;
 	});
 });

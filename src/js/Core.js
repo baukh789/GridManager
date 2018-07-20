@@ -564,54 +564,32 @@ class Core {
 			onlyTH = jTool(item);
             const onlyThWarp = jTool('.th-wrap', onlyTH);
             const thName = onlyTH.attr('th-name');
-            // TODO 需要将下列中从dom中获取的信息修正为从 columnMap中获取
-            const col = settings.columnMap[thName];
-            col.useCompile && compileList.push({el: onlyTH.find('.th-text').get(0)});
+            const onlyThText = onlyTH.text();
+            const column = settings.columnMap[onlyTH.attr('th-name')];
+            column.useCompile && compileList.push({el: onlyTH.find('.th-text').get(0)});
 
-			// 是否为自动生成的序号列
-			if (settings.supportAutoOrder && onlyTH.attr('gm-order') === 'true') {
-				isLmOrder = true;
-			} else {
-				isLmOrder = false;
-			}
-
-			// 是否为自动生成的选择列
-			if (settings.supportCheckbox && onlyTH.attr('gm-checkbox') === 'true') {
-				isLmCheckbox = true;
-			} else {
-				isLmCheckbox = false;
-			}
+            // 是否为GM自动添加的列
+            const isAutoCol = column.isAutoCreate || column.isAutoCreate;
 
 			// 嵌入配置列表项
 			if (settings.supportConfig) {
-				configList
-					.append(`<li th-name="${onlyTH.attr('th-name')}">
-								<input type="checkbox"/>
-								<label>
-									<span class="fake-checkbox"></span>
-									${onlyTH.text()}
-								</label>
-							</li>`);
+				configList.append(Config.createColumn(thName, onlyThText));
 			}
 
 			// 嵌入表头提醒事件源
-			// 插件自动生成的排序与选择列不做事件绑定
-			if (onlyTH.attr('remind') !== undefined && !isLmOrder && !isLmCheckbox) {
-				const remindDOM = jTool(Remind.html);
-				remindDOM.find('.ra-title').text(onlyTH.text());
-				remindDOM.find('.ra-con').text(onlyTH.attr('remind') || onlyTH.text());
-				onlyThWarp.append(remindDOM);
+			// 插件自动生成的序号与选择列不做事件绑定
+			if (!isAutoCol && jTool.type(column.remind) === 'string') {
+				onlyThWarp.append(jTool(Remind.createHtml(onlyThText, column.remind)));
 			}
 
 			// 嵌入排序事件源
 			// 插件自动生成的序号列与选择列不做事件绑定
 			// 排序类型
-			const sortType = onlyTH.attr('sorting');
-			if (sortType !== undefined && !isLmOrder && !isLmCheckbox) {
+			if (!isAutoCol && jTool.type(column.sorting) === 'string') {
 				const sortingDom = jTool(Sort.html);
 
-				// 依据 sortType 进行初始显示
-				switch (sortType) {
+				// 依据 column.sorting 进行初始显示
+				switch (column.sorting) {
 					case settings.sortUpText:
 						sortingDom.addClass('sorting-up');
 						break;
@@ -626,15 +604,13 @@ class Core {
 
 			// 嵌入表头的筛选事件源
             // 插件自动生成的序号列与选择列不做事件绑定
-            const filterType = onlyTH.attr('filter');
-			const column = settings.columnMap[onlyTH.attr('th-name')];
-            if (filterType !== undefined && !isLmOrder && !isLmCheckbox && column && column.filter) {
+            if (!isAutoCol && column.filter && jTool.type(column.filter) === 'object') {
                 const filterDom = jTool(Filter.createHtml(settings, column.filter));
                 onlyThWarp.append(filterDom);
             }
 
 			// 嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
-			if (settings.supportAdjust && !isLmOrder && !isLmCheckbox) {
+			if (settings.supportAdjust && !isAutoCol) {
 				const adjustDOM = jTool(Adjust.html);
 				// 最后一列不支持调整宽度
 				if (index === onlyThList.length - 1) {
@@ -644,7 +620,7 @@ class Core {
 			}
 
 			// 宽度配置: GM自动创建为固定宽度
-			if (isLmOrder || isLmCheckbox) {
+			if (isAutoCol) {
 				onlyWidth = 50;
 
 				// 宽度配置: 非GM自动创建的列

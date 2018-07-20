@@ -19,6 +19,22 @@ class Config {
 		return html;
 	}
 
+    /**
+     * 生成配置列HTML
+     * @param thName
+     * @param content
+     * @returns {string}
+     */
+    createColumn(thName, content) {
+	    return `<li th-name="${thName}">
+                    <input type="checkbox"/>
+                    <label>
+                        <span class="fake-checkbox"></span>
+                        ${content}
+                    </label>
+                </li>`;
+    }
+
 	/**
 	 * 初始化配置列
 	 * @param $table

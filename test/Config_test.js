@@ -1,5 +1,6 @@
 'use strict';
 import Config from '../src/js/Config';
+import AjaxPage from "../src/js/AjaxPage";
 /**
  * 验证类的属性及方法总量
  */
@@ -21,7 +22,7 @@ describe('Config 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Config)))).toBe(5 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Config)))).toBe(6 + 1);
 	});
 });
 
@@ -36,6 +37,37 @@ describe('Config.html', function() {
 						</div>`;
 		expect(Config.html.replace(/\s/g, '')).toBe(configHtml.replace(/\s/g, ''));
 	});
+});
+
+describe('Config.createColumn(thName, content)', function() {
+    let thName = null;
+    let content = null;
+    let columnHtml = null;
+    beforeEach(function(){
+    });
+
+    afterEach(function(){
+        let thName = null;
+        let content = null;
+        let columnHtml = null;
+    });
+    it('基础验证', function () {
+        expect(Config.createColumn).toBeDefined();
+        expect(Config.createColumn.length).toBe(2);
+    });
+
+    it('返回值验证', function () {
+        thName = 'test-config';
+        content ='测试配置功能，创建列的返回值';
+        columnHtml = `<li th-name="test-config">
+                    <input type="checkbox"/>
+                    <label>
+                        <span class="fake-checkbox"></span>
+                        测试配置功能，创建列的返回值
+                    </label>
+                </li>`;
+        expect(Config.createColumn(thName, content).replace(/\s/g, '')).toBe(columnHtml.replace(/\s/g, ''));
+    });
 });
 
 describe('Config.init($table)', function() {
