@@ -253,64 +253,67 @@ class Core {
 
             // 组装 tbody
 			const compileList = []; // 需要通过框架解析td数据
-			jTool.each(_data, (index, row) => {
-				const trNode = document.createElement('tr');
-				trNode.setAttribute('cache-key', index);
+            try {
+			    jTool.each(_data, (index, row) => {
+                    const trNode = document.createElement('tr');
+                    trNode.setAttribute('cache-key', index);
 
-				// 插入通栏: 头部区域
-                if (typeof settings.topFullColumn.template !== 'undefined') {
-                    // 通栏tr
-                    const topTrNode = document.createElement('tr');
-                    topTrNode.setAttribute('top-full-column', 'true');
+                    // 插入通栏: 头部区域
+                    if (typeof settings.topFullColumn.template !== 'undefined') {
+                        // 通栏tr
+                        const topTrNode = document.createElement('tr');
+                        topTrNode.setAttribute('top-full-column', 'true');
 
-                    // 通栏用于向上的间隔的tr
-                    const intervalTrNode = document.createElement('tr');
-                    intervalTrNode.setAttribute('top-full-column-interval', 'true');
-                    intervalTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div></div></td>`;
-                    _tbody.appendChild(intervalTrNode);
+                        // 通栏用于向上的间隔的tr
+                        const intervalTrNode = document.createElement('tr');
+                        intervalTrNode.setAttribute('top-full-column-interval', 'true');
+                        intervalTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div></div></td>`;
+                        _tbody.appendChild(intervalTrNode);
 
-                    // 为非通栏tr的添加标识
-                    trNode.setAttribute('top-full-column', 'false');
+                        // 为非通栏tr的添加标识
+                        trNode.setAttribute('top-full-column', 'false');
 
-                    let _template = settings.topFullColumn.template;
-                    _template = typeof _template === 'function' ? _template(row) : _template;
+                        let _template = settings.topFullColumn.template;
+                        _template = typeof _template === 'function' ? _template(row) : _template;
 
-                    topTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div class="full-column-td">${_template}</div></td>`;
-                    settings.topFullColumn.useCompile && compileList.push({el: topTrNode, row: row});
-                    _tbody.appendChild(topTrNode);
-                }
+                        topTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div class="full-column-td">${_template}</div></td>`;
+                        settings.topFullColumn.useCompile && compileList.push({el: topTrNode, row: row});
+                        _tbody.appendChild(topTrNode);
+                    }
 
-				// 与当前位置信息匹配的td列表
-				const tdList = [];
-				jTool.each(settings.columnMap, (key, col) => {
-					tdTemplate = col.template;
-					// td 模板
-					tdTemplate = typeof tdTemplate === 'function' ? tdTemplate(row[col.key], row) : (typeof tdTemplate === 'string' ? tdTemplate : row[col.key]);
+                    // 与当前位置信息匹配的td列表
+                    const tdList = [];
+                    jTool.each(settings.columnMap, (key, col) => {
+                        tdTemplate = col.template;
+                        // td 模板
+                        tdTemplate = typeof tdTemplate === 'function' ? tdTemplate(row[col.key], row) : (typeof tdTemplate === 'string' ? tdTemplate : row[col.key]);
 
-					// 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
-					let tdNode = null;
-					if (col.isAutoCreate) {
-						tdNode = jTool(tdTemplate).get(0);
-					} else {
-						tdNode = jTool('<td gm-create="false"></td>').get(0);
-						jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = tdTemplate || '';
-					}
+                        // 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
+                        let tdNode = null;
+                        if (col.isAutoCreate) {
+                            tdNode = jTool(tdTemplate).get(0);
+                        } else {
+                            tdNode = jTool('<td gm-create="false"></td>').get(0);
+                            jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = tdTemplate || '';
+                        }
 
-					// td 文本对齐方向
-					col.align && tdNode.setAttribute('align', col.align);
+                        // td 文本对齐方向
+                        col.align && tdNode.setAttribute('align', col.align);
 
-					tdList[col.index] = tdNode;
+                        tdList[col.index] = tdNode;
 
-					col.useCompile && compileList.push({el: tdNode, row: row});
-				});
+                        col.useCompile && compileList.push({el: tdNode, row: row});
+                    });
 
-				tdList.forEach(td => {
-					trNode.appendChild(td);
-				});
+                    tdList.forEach(td => {
+                        trNode.appendChild(td);
+                    });
 
-				_tbody.appendChild(trNode);
-			});
-
+                    _tbody.appendChild(trNode);
+                });
+            } catch (e) {
+                Base.outLog(e, 'error');
+            }
 			// 为新生成的tbody 的内容绑定 gm-事件
 			this.bindEvent($table);
 
