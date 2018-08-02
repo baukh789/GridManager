@@ -51,7 +51,6 @@ class AjaxPage {
 	 * @param settings
      */
 	initAjaxPage($table, settings) {
-
 		// 根据本地缓存配置每页显示条数
 		if (!settings.disableCache) {
 			this.__configPageForCache($table, settings);

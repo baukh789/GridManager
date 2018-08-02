@@ -162,7 +162,7 @@ export default class GridManager {
 		}
 		jTool.extend(settings, {query: query});
 		if (isGotoFirstPage) {
-			settings.pageData.cPage = 1;
+			settings.pageData[settings.currentPageKey] = 1;
 		}
 		Cache.setSettings($table, settings);
 		Core.refresh($table, callback);
