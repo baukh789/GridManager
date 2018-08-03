@@ -21,7 +21,7 @@ describe('Base 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(14 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(15 + 1);
 	});
 });
 
@@ -451,3 +451,11 @@ describe('Base.cloneObject(object)', function() {
 		expect(Base.cloneObject(o2) === o1).toBe(false);
 	});
 });
+
+describe('Base.compileFramework(settings, compileList)', function() {
+    it('基础验证', function () {
+        expect(Base.compileFramework).toBeDefined();
+        expect(Base.compileFramework.length).toBe(2);
+    });
+});
+

@@ -276,6 +276,28 @@ class BaseClass {
 	cloneObject(object) {
 		return JSON.parse(JSON.stringify(object));
 	}
+
+    /**
+     * 根据不同的框架解析指定节点
+     * @param settings:
+     * @param compileList: 将要解析的节点
+     */
+    compileFramework(settings, compileList) {
+        try {
+            // 解析框架: Vue
+            if (typeof settings.compileVue === 'function' && compileList.length > 0) {
+                settings.compileVue(compileList);
+            }
+
+            // 解析框架: Angular
+            // ....
+
+            // 解析框架: React
+            // ...
+        } catch (e) {
+            this.outLog('框架模板解析异常, 请查看template配置项', 'error');
+        }
+    }
 }
 const Base = new BaseClass();
 export {jTool, $, Base};
