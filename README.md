@@ -32,13 +32,6 @@ npm install gridmanager --save
 - [Version](http://gridmanager.lovejavascript.com/version/index.html)
 - [GridManager by Vue](https://github.com/baukh789/GridManager-Vue)
 
-## 在线demo
-- [base grid](http://runjs.cn/code/dkxyyzim)
-- [use I18N grid](http://runjs.cn/code/tho0nht5)
-- [use search grid](http://runjs.cn/code/eoxfjqgc)
-- [use export grid](http://runjs.cn/code/iqixtlhw)
-- [use template grid](http://runjs.cn/code/rcyn61v1)
-
 ## 浏览器兼容
 - Firefox, Chrome
 - 这里提一下为什么不支持IE: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
