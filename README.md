@@ -92,31 +92,31 @@ document.querySelector('table').GM({
 > 这是标准格式, 如果返回格式不同。可以通过参数或responseHandler进行修改。 具体请参考[API](http://gridmanager.lovejavascript.com/api/index.html#responseHandler)
 
 ```javascript
-   {
-   	"data":[{
-   			"name": "baukh",
-   			"age": "28",
-   			"createDate": "2015-03-12",
-   			"info": "野生前端程序",
-   			"operation": "修改"
-   		},
-   		{
-   			"name": "baukh",
-   			"age": "28",
-   			"createDate": "2015-03-12",
-   			"info": "野生前端程序",
-   			"operation": "修改"
-   		},
-   		{
-   			"name": "baukh",
-   			"age": "28",
-   			"createDate": "2015-03-12",
-   			"info": "野生前端程序",
-   			"operation": "修改"
-   		}
-   	],
-   	"totals": 1682
-   }
+{
+"data":[{
+        "name": "baukh",
+        "age": "28",
+        "createDate": "2015-03-12",
+        "info": "野生前端程序",
+        "operation": "修改"
+    },
+    {
+        "name": "baukh",
+        "age": "28",
+        "createDate": "2015-03-12",
+        "info": "野生前端程序",
+        "operation": "修改"
+    },
+    {
+        "name": "baukh",
+        "age": "28",
+        "createDate": "2015-03-12",
+        "info": "野生前端程序",
+        "operation": "修改"
+    }
+],
+"totals": 1682
+}
 ```
 
 ## License
