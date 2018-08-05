@@ -93,7 +93,7 @@ document.querySelector('table').GM({
 
 ```javascript
 {
-"data":[{
+    "data":[{
         "name": "baukh",
         "age": "28",
         "createDate": "2015-03-12",
@@ -113,9 +113,8 @@ document.querySelector('table').GM({
         "createDate": "2015-03-12",
         "info": "野生前端程序",
         "operation": "修改"
-    }
-],
-"totals": 1682
+    }],
+    "totals": 1682
 }
 ```
 
