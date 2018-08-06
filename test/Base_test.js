@@ -21,7 +21,7 @@ describe('Base 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(15 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(16 + 1);
 	});
 });
 
@@ -456,6 +456,59 @@ describe('Base.compileFramework(settings, compileList)', function() {
     it('基础验证', function () {
         expect(Base.compileFramework).toBeDefined();
         expect(Base.compileFramework.length).toBe(2);
+    });
+});
+
+describe('Base.calcLayout($table, width, height, supportAjaxPage)', function() {
+    let $table = null;
+    let $tableWrap = null;
+    let $tableDiv = null;
+    let style = null;
+    beforeEach(function(){
+        document.body.innerHTML = ` <div class="table-wrap">
+                                        <div class="table-div">
+                                            <table id="test-calcLayout"></table>
+                                        </div>
+                                        <span class="text-dreamland"></span>
+                                    </div>`;
+
+        $table = jTool('#test-calcLayout');
+        $tableWrap = $table.closest('.table-wrap');
+        $tableDiv = jTool('.table-div', $tableWrap);
+    });
+
+    afterEach(function(){
+        $table = null;
+        $tableWrap = null;
+        $tableDiv = null;
+        style = null;
+        document.body.innerHTML = '';
+    });
+
+    it('基础验证', function () {
+        expect(Base.calcLayout).toBeDefined();
+        expect(Base.calcLayout.length).toBe(1); // 应该是4个实参，height = '100%'不被认为是一个有效实参
+    });
+
+    it('验证百分比', function () {
+        Base.calcLayout($table, '100%', '100%');
+        style = $tableWrap.get(0).style;
+        expect(style.width).toBe('calc(100%)');
+        expect(style.height).toBe('calc(100%)');
+    });
+
+    it('验证像素', function () {
+        Base.calcLayout($table, '1000px', '500px');
+        style = $tableWrap.get(0).style;
+        expect(style.width).toBe('calc(1000px)');
+        expect(style.height).toBe('calc(500px)');
+    });
+
+    it('验证calc()', function () {
+        Base.calcLayout($table, '100% - 100px', '100% + 100px');
+        style = $tableWrap.get(0).style;
+        expect(style.width).toBe('calc(100% - 100px)');
+        expect(style.height).toBe('calc(100% + 100px)');
     });
 });
 

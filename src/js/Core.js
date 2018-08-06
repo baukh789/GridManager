@@ -378,11 +378,14 @@ class Core {
 	createDOM($table) {
         let settings = Cache.getSettings($table);
         // 外围的html片段
-        const wrapHtml = `<div class="table-wrap" style="width: calc(${settings.width}); height: calc(${settings.height})">
-                            <div class="table-div" style="height:calc(100% - ${settings.supportAjaxPage ? '40px' : '0px'})"></div>
+        const wrapHtml = `<div class="table-wrap">
+                            <div class="table-div"></div>
                             <span class="text-dreamland"></span>
                         </div>`;
         $table.wrap(wrapHtml);
+
+        // 计算布局
+        Base.calcLayout($table, settings.width, settings.height, settings.supportAjaxPage);
 
         const thead = document.createElement('thead');
         thead.setAttribute('grid-manager-thead', '');

@@ -8,6 +8,7 @@ import testData from '../src/data/testData';
 import testData2 from '../src/data/testData2';
 import { GM_VERSION, GM_PUBLISH_METHOD_LIST } from '../src/common/constants';
 import GridManager from "../src/js/GridManager";
+import {Base, jTool} from "../src/js/Base";
 
 describe('publishMethodArray', function() {
 	it('公开方法列表', function () {
@@ -36,7 +37,7 @@ describe('Publish 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(17 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(18 + 1);
 	});
 });
 
@@ -273,6 +274,63 @@ describe('PublishMethod 非init方法验证', function() {
 			expect(PublishMethod.getLocalStorage(table)).toEqual({});
 		});
 	});
+
+    describe('PublishMethod.resetLayout(table, width, height)', function() {
+        let $table = null;
+        let $tableWrap = null;
+        let $tableDiv = null;
+        let style = null;
+        let overflowX = null;
+        beforeEach(function(){
+            $table = jTool(table);
+            $tableWrap = $table.closest('.table-wrap');
+            $tableDiv = jTool('.table-div', $tableWrap);
+        });
+
+        afterEach(function(){
+            $table = null;
+            $tableWrap = null;
+            $tableDiv = null;
+            style = null;
+            overflowX = null;
+        });
+
+        it('基础验证', function () {
+            expect(PublishMethod.resetLayout).toBeDefined();
+            expect(PublishMethod.resetLayout.length).toBe(3);
+        });
+
+        it('验证百分比', function () {
+            overflowX = PublishMethod.resetLayout(table, '100%', '100%');
+            expect(overflowX).toBe('hidden');
+            style = $tableWrap.get(0).style;
+            expect(style.width).toBe('calc(100%)');
+            expect(style.height).toBe('calc(100%)');
+        });
+
+        it('验证像素', function () {
+            PublishMethod.resetLayout(table, '1000px', '500px');
+            style = $tableWrap.get(0).style;
+            expect(style.width).toBe('calc(1000px)');
+            expect(style.height).toBe('calc(500px)');
+        });
+
+        it('验证calc()', function () {
+            overflowX = PublishMethod.resetLayout(table, '100% - 100px', '100% + 100px');
+            expect(overflowX).toBe('hidden');
+            style = $tableWrap.get(0).style;
+            expect(style.width).toBe('calc(100% - 100px)');
+            expect(style.height).toBe('calc(100% + 100px)');
+        });
+
+        it('验证calc()', function () {
+            overflowX = PublishMethod.resetLayout(table, '100% + 100px', '100% + 100px');
+            expect(overflowX).toBe('auto');
+            style = $tableWrap.get(0).style;
+            expect(style.width).toBe('calc(100% + 100px)');
+            expect(style.height).toBe('calc(100% + 100px)');
+        });
+    });
 
 	describe('PublishMethod.clear(table)', function() {
 		it('基础验证', function () {

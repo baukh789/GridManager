@@ -74,6 +74,13 @@ describe('GridManager.getLocalStorage(table)', function() {
 	});
 });
 
+describe('GridManager.resetLayout(table, width, height)', function() {
+    it('基础验证', function() {
+        expect(GridManager.resetLayout).toBeDefined();
+        expect(GridManager.resetLayout.length).toBe(3);
+    });
+});
+
 describe('GridManager.clear(table)', function() {
 	it('基础验证', function() {
 		expect(GridManager.clear).toBeDefined();

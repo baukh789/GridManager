@@ -64,6 +64,22 @@ export default class GridManager {
 		return Cache.getUserMemory(jTool(table));
 	}
 
+    /**
+     * @静态方法
+     * 重置表格布局
+     * @param table
+     * @param width
+     * @param height
+     * @returns {string}
+     */
+	static
+    resetLayout(table, width, height) {
+	    const $table = jTool(table);
+        const settings = Cache.getSettings($table);
+        Base.calcLayout(jTool(table), width, height, settings.supportAjaxPage);
+        return Base.updateScrollStatus($table);
+    }
+
 	/**
 	 * @静态方法
 	 * 清除指定表的表格记忆数据, 如果未指定删除的table, 则全部清除
@@ -369,6 +385,9 @@ export default class GridManager {
 
 		// 渲染HTML，嵌入所需的事件源DOM
 		Core.createDOM($table);
+
+        // 更新滚动轴状态
+        Base.updateScrollStatus($table);
 
 		// 通过缓存配置成功后, 重置宽度调整事件源dom
 		settings.supportAdjust ? Adjust.resetAdjust($table) : '';

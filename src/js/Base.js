@@ -298,6 +298,21 @@ class BaseClass {
             this.outLog('框架模板解析异常, 请查看template配置项', 'error');
         }
     }
+
+    /**
+     * 计算表格布局
+     * @param $table
+     * @param width
+     * @param height
+     * @param supportAjaxPage
+     */
+    calcLayout($table, width = '100%', height = '100%', supportAjaxPage = true) {
+        const tableWrap = $table.closest('.table-wrap').get(0);
+        const tableDiv = tableWrap.querySelector('.table-div');
+        tableWrap.style.width = `calc(${width})`;
+        tableWrap.style.height = `calc(${height})`;
+        tableDiv.style.height = `calc(100% - ${supportAjaxPage ? '40px' : '0px'})`;
+    }
 }
 const Base = new BaseClass();
 export {jTool, $, Base};
