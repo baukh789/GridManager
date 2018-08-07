@@ -239,20 +239,29 @@
                         cursor: default;
                         z-index: 2;
                         color: #444;
-                        .sa-icon {
+                        .fa-icon {
                             display: block;
                             height: 10px;
                             position: absolute;
                             font-size: @font-normal-size;
-                            line-height: 10px;
+                            line-height: 18px;
+                            &.filter-selected{
+                                color: @font-active-color;
+                            }
                         }
                         .fa-con{
                             display: none;
+                            min-width: 100px;
                             position: absolute;
                             top: 100%;
-                            left: 0;
                             background: #fff;
                             border: 1px solid #ccc;
+                            &.direction-left{
+                                left: 0;
+                            }
+                            &.direction-right{
+                                right: 0;
+                            }
                             .filter-list{
                                 li{
                                     padding: 5px 12px;

@@ -33,7 +33,7 @@ class Filter {
         });
 
         return `<div class="filter-action">
-                    <i class="fa-icon iconfont icon-filter"></i>
+                    <i class="fa-icon iconfont icon-filter ${filter.selected && 'filter-selected'}"></i>
                     <div class="fa-con">
                         <ul class="filter-list">
                             ${listHtml}
@@ -67,17 +67,24 @@ class Filter {
             e.preventDefault();
             const $action = jTool(this);
             const $filterAction = $action.closest('.filter-action');
-            const $falterCon = $filterAction.find('.fa-con');
-            const isShow = $falterCon.css('display') !== 'none';
-            isShow ? $falterCon.hide() : $falterCon.show();
+            const $filterCon = $filterAction.find('.fa-con');
+            const isShow = $filterCon.css('display') !== 'none';
+            isShow ? $filterCon.hide() : $filterCon.show();
+            if ($filterCon.offset().left + $filterCon.width() > $action.closest('.table-div').width()) {
+                $filterCon.addClass('direction-right');
+                $filterCon.removeClass('direction-left');
+            } else {
+                $filterCon.addClass('direction-left');
+                $filterCon.removeClass('direction-right');
+            }
             const $body = jTool('body');
             $body.unbind('mousedown');
             $body.bind('mousedown', function (e) {
                 if (e.target.className === 'fa-con' || jTool(e.target).closest('.fa-con').length === 1) {
                     return false;
                 }
-                const $falterCon = $body.find('.fa-con');
-                $falterCon.hide();
+                const $filterCon = $body.find('.fa-con');
+                $filterCon.hide();
             });
         });
 
@@ -85,30 +92,32 @@ class Filter {
         $table.off('mouseup', '.filter-submit');
         $table.on('mouseup', '.filter-submit', function () {
             const $action = jTool(this);
-            const $falterCon = $action.closest('.fa-con');
-            const $filters = jTool('.filter-value', $falterCon);
-            const $th = $falterCon.closest('th');
+            const $filterCon = $action.closest('.fa-con');
+            const $filterIcon = jTool('.fa-icon', $filterCon.closest('.filter-action'));
+            const $filters = jTool('.filter-value', $filterCon);
+            const $th = $filterCon.closest('th');
             const thName = $th.attr('th-name');
             const checkedList = [];
             jTool.each($filters, (index, item) => {
                 item.checked && checkedList.push(item.value);
             });
-
+            checkedList.length ? $filterIcon.addClass('filter-selected') : $filterIcon.removeClass('filter-selected');
             const settings = Cache.getSettings($table);
             jTool.extend(settings.query, {[thName]: checkedList.join(',')});
             Cache.setSettings($table, settings);
 
             Core.refresh($table);
-            $falterCon.hide();
+            $filterCon.hide();
         });
 
         // 事件: 重置选中结果
         $table.off('mouseup', '.filter-reset');
         $table.on('mouseup', '.filter-reset', function () {
             const $action = jTool(this);
-            const $falterCon = $action.closest('.fa-con');
-            const $filters = jTool('.filter-value', $falterCon);
-            const $th = $falterCon.closest('th');
+            const $filterCon = $action.closest('.fa-con');
+            const $filterIcon = jTool('.fa-icon', $filterCon.closest('.filter-action'));
+            const $filters = jTool('.filter-value', $filterCon);
+            const $th = $filterCon.closest('th');
             const thName = $th.attr('th-name');
             jTool.each($filters, (index, item) => {
                 item.checked = false;
@@ -117,9 +126,9 @@ class Filter {
             const settings = Cache.getSettings($table);
             delete settings.query[thName];
             Cache.setSettings($table, settings);
-
+            $filterIcon.removeClass('filter-selected');
             Core.refresh($table);
-            $falterCon.hide();
+            $filterCon.hide();
         });
 
     }
