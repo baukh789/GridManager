@@ -61,7 +61,7 @@ describe('Filter.createHtml(settings, filter)', function() {
             isMultiple: true
         };
         let FilterHtml = `<div class="filter-action">
-                    <i class="fa-icon iconfont icon-filter"></i>
+                    <i class="fa-icon iconfont icon-filter filter-selected"></i>
                     <div class="fa-con">
                         <ul class="filter-list">
                             <li>
