@@ -320,7 +320,7 @@ class Core {
                 jTool.each(settings.columnMap, (key, col) => {
                     tdTemplate = col.template;
                     // td 模板
-                    tdTemplate = typeof tdTemplate === 'function' ? tdTemplate(row[col.key], row) : (typeof tdTemplate === 'string' ? tdTemplate : row[col.key]);
+                    tdTemplate = typeof tdTemplate === 'function' ? tdTemplate(row[col.key], row, index) : (typeof tdTemplate === 'string' ? tdTemplate : row[col.key]);
 
                     // 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
                     let tdNode = null;
