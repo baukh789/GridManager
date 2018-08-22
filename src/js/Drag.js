@@ -31,6 +31,11 @@ class Drag {
 			// 事件源th
 			let _th = jTool(this).closest('th');
 
+			// gm自动创建的项不允许移动
+			if (_th.attr('gm-create') === 'true') {
+			    return;
+            }
+
 			// 事件源的上一个th
 			let prevTh = null;
 

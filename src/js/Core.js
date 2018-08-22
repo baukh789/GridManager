@@ -457,7 +457,7 @@ class Core {
                 }
             }
 
-			// 宽度文本
+			// th宽度
             col.width && th.setAttribute('width', col.width);
 
 			// 文本对齐
@@ -609,7 +609,7 @@ class Core {
 			// 嵌入表头的筛选事件源
             // 插件自动生成的序号列与选择列不做事件绑定
             if (!isAutoCol && column.filter && jTool.type(column.filter) === 'object') {
-                const filterDom = jTool(Filter.createHtml(settings, column.filter));
+                const filterDom = jTool(Filter.createHtml(settings, column.filter, tableWarp.height()));
                 onlyThWarp.append(filterDom);
             }
 
@@ -623,7 +623,7 @@ class Core {
 				onlyThWarp.append(adjustDOM);
 			}
 
-			// 宽度配置: GM自动创建为固定宽度
+			// 宽度配置: GM自动创建项为固定宽度
 			if (isAutoCol) {
 				onlyWidth = 50;
 

@@ -2,7 +2,7 @@
  * Created by baukh on 18/7/11.
  * 表头的筛选菜单  TODO no test
  */
-import { jTool } from './Base';
+import { jTool, Base } from './Base';
 import Core from './Core';
 import Cache from './Cache';
 import I18n from './I18n';
@@ -14,9 +14,10 @@ class Filter {
      * 表头的筛选菜单HTML
      * @param settings
      * @param filter: 当前列的筛选条件对象
+     * @param tableWarpHeight: tableWarp的高度
      * @returns {string}
      */
-    createHtml(settings, filter) {
+    createHtml(settings, filter, tableWarpHeight) {
         let listHtml = '';
         filter.selected = filter.selected || '';
         filter.option.forEach(item => {
@@ -24,18 +25,17 @@ class Filter {
             selectedList = selectedList.map(item => {
                 return item.trim();
             });
-            listHtml += `<li>
-                            <label>
-                                <input class="filter-value" name="filter-value" type="${filter.isMultiple ? 'checkbox' : 'radio'}" ${selectedList.indexOf(item.value) !== -1 ? 'checked="true"' : ''} value="${item.value}"/>
-                                <span class="filter-text">${item.text}</span>
-                            </label>
-                        </li>`;
+            if (filter.isMultiple) {
+                listHtml += `<li class="filter-checkbox">${Base.getCheckboxString(selectedList.indexOf(item.value) !== -1 ? 'checked' : 'unchecked', item.text, item.value)}</li>`;
+            } else {
+                listHtml += `<li class="filter-radio">${Base.getRadioString(selectedList.indexOf(item.value) !== -1, item.text, item.value)}</li>`;
+            }
         });
 
         return `<div class="filter-action">
                     <i class="fa-icon iconfont icon-filter ${filter.selected && 'filter-selected'}"></i>
                     <div class="fa-con">
-                        <ul class="filter-list">
+                        <ul class="filter-list" style="max-height: ${tableWarpHeight - 100 + 'px'}">
                             ${listHtml}
                         </ul>
                         <div class="filter-bottom">
@@ -94,7 +94,7 @@ class Filter {
             const $action = jTool(this);
             const $filterCon = $action.closest('.fa-con');
             const $filterIcon = jTool('.fa-icon', $filterCon.closest('.filter-action'));
-            const $filters = jTool('.filter-value', $filterCon);
+            const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
             const $th = $filterCon.closest('th');
             const thName = $th.attr('th-name');
             const checkedList = [];
@@ -116,11 +116,15 @@ class Filter {
             const $action = jTool(this);
             const $filterCon = $action.closest('.fa-con');
             const $filterIcon = jTool('.fa-icon', $filterCon.closest('.filter-action'));
-            const $filters = jTool('.filter-value', $filterCon);
+            const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
             const $th = $filterCon.closest('th');
             const thName = $th.attr('th-name');
             jTool.each($filters, (index, item) => {
-                item.checked = false;
+                if (item.type === 'radio') {
+                    Base.updateRadioState(jTool(item).closest('.gm-radio-checkbox'), false);
+                } else {
+                    Base.updateCheckboxState(jTool(item).closest('.gm-radio-checkbox'), 'unchecked');
+                }
             });
 
             const settings = Cache.getSettings($table);
@@ -131,6 +135,21 @@ class Filter {
             $filterCon.hide();
         });
 
+        // 事件: 复选框事件
+        $table.off('click', '.gm-checkbox-input');
+        $table.on('click', '.gm-checkbox-input', function () {
+            const $checkbox = jTool(this).closest('.filter-checkbox').find('.gm-checkbox');
+            Base.updateCheckboxState($checkbox, this.checked ? 'checked' : 'unchecked');
+        });
+
+        // 事件: 单选框事件
+        $table.off('click', '.gm-radio-input');
+        $table.on('click', '.gm-radio-input', function (e) {
+            const $filterRadio = jTool(this).closest('.filter-list').find('.filter-radio');
+            jTool.each($filterRadio, (index, item) => {
+                Base.updateRadioState(jTool(item).find('.gm-radio'), this === item.querySelector('.gm-radio-input'));
+            });
+        });
     }
     /**
      * 消毁

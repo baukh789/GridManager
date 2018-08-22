@@ -1,7 +1,7 @@
 /*
  * Checkbox: 数据选择/全选/返选
  * */
-import { jTool } from './Base';
+import { jTool, Base } from './Base';
 import I18n from './I18n';
 import Cache from './Cache';
 
@@ -35,7 +35,7 @@ class Checkbox {
 	 * @returns {string}
      */
 	getThString(settings) {
-        return `<input type="checkbox"/>
+        return `${Base.getCheckboxString()}
                 <span style="display: none">
                     ${ I18n.i18nText(settings, 'checkall-text') }
                 </span>`;
@@ -55,8 +55,8 @@ class Checkbox {
 			isShow: true,
 			width: '50px',
 			align: 'center',
-			template: nodeData => {
-				return `<td gm-checkbox="true" gm-create="true"><input type="checkbox" ${nodeData ? 'checked="checked"' : ''}/></td>`;
+			template: checked => {
+				return `<td gm-checkbox="true" gm-create="true">${Base.getCheckboxString(checked ? 'checked' : 'unchecked')}</td>`;
 			}
 		};
 	}
@@ -70,11 +70,10 @@ class Checkbox {
 		const settings = Cache.getSettings($table);
 		// th内的全选
 		$table.off('click', 'th[gm-checkbox="true"] input[type="checkbox"]');
-		$table.on('click', 'th[gm-checkbox="true"] input[type="checkbox"]', function () {
+		$table.on('click', 'th[gm-checkbox="true"] input[type="checkbox"]', function (e) {
 			settings.checkedBefore(_this.getCheckedData($table));
 			settings.checkedAllBefore(_this.getCheckedData($table));
 			const tableData = _this.resetData($table, this.checked, true);
-			// _this.resetDOM($table, tableData);
 			_this.resetDOM($table, settings, tableData);
 			settings.checkedAfter(_this.getCheckedData($table));
 			settings.checkedAllAfter(_this.getCheckedData($table));
@@ -85,7 +84,6 @@ class Checkbox {
 		$table.on('click', 'td[gm-checkbox="true"] input[type="checkbox"]', function () {
 			settings.checkedBefore(_this.getCheckedData($table));
 			const tableData = _this.resetData($table, this.checked, false, jTool(this).closest('tr').attr('cache-key'));
-			// _this.resetDOM($table, tableData);
             _this.resetDOM($table, settings, tableData);
 			settings.checkedAfter(_this.getCheckedData($table));
 		});
@@ -121,33 +119,28 @@ class Checkbox {
 	/**
 	 * 重置选择框DOM
 	 * @param $table
+	 * @param settings
 	 * @param tableData
      */
 	resetDOM($table, settings, tableData) {
-		// 当前是否为全选
-		let checkedAll = tableData && tableData.length > 0;
-
-		// 更改DOM
-		// update td checkbox DOM
+		// 更改th区域选中状态
+        let checkedNum = 0;
 		tableData && tableData.forEach((row, index) => {
 			const $tr = jTool(`tbody tr[cache-key="${index}"]`, $table);
-			const $input = jTool(`td[gm-checkbox="true"] input[type="checkbox"]`, $tr);
+            const $checkSpan = jTool(`td[gm-checkbox="true"] .gm-checkbox`, $tr);
 			$tr.attr('checked', row[this.key]);
-			$input.prop('checked', row[this.key]);
-			if (!row[this.key]) {
-				checkedAll = false;
-			}
+            Base.updateCheckboxState($checkSpan, row[this.key] ? 'checked' : 'unchecked');
+            row[this.key] && checkedNum++;
 		});
 
-		// 更新th选中状态
-		jTool(`thead tr th[gm-checkbox="true"] input[type="checkbox"]`, $table).prop('checked', checkedAll);
+		// 更新th区域选中状态
+        const $allCheckSpan = jTool(`thead tr th[gm-checkbox="true"] .gm-checkbox `, $table);
+
+        // [checked: 选中, indeterminate: 半选中, unchecked: 未选中]
+        Base.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === tableData.length ? 'checked' : 'indeterminate'));
 
 		// 更新底部工具条选中描述信息
         const checkedInfo = jTool('.footer-toolbar .toolbar-info.checked-info', $table.closest('.table-wrap'));
-        let checkedNum = 0;
-        tableData.forEach(row => {
-            row[this.key] && checkedNum++;
-        });
         checkedInfo.html(I18n.i18nText(settings, 'checked-info', checkedNum));
 	}
 

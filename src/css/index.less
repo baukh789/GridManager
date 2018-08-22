@@ -5,6 +5,8 @@
 @import "./gridLoading";
 @import "./gridPage";
 @import "./gridConfig";
+@import "./checkbox";
+@import "./radio";
 @import "./mixins";
 
 @table-border: 1px solid #e8e8e8;
@@ -263,16 +265,18 @@
                                 right: 0;
                             }
                             .filter-list{
+                                overflow-y: auto;
                                 li{
                                     padding: 5px 12px;
                                     > label{
                                         cursor: pointer;
                                         display: flex;
                                         word-break: keep-all;
+                                        // TODO 这里需要清掉
                                         .filter-value{
                                             cursor: pointer;
                                             margin: 3px 0;
-                                            .input-checkbox();
+                                            //.input-checkbox();
                                         }
                                         .filter-text{
                                             padding-left: 8px;
@@ -354,7 +358,7 @@
                     cursor: default;
                     &[gm-checkbox="true"] input[type=checkbox] {
                         vertical-align: middle;
-                        .input-checkbox();
+                        //.input-checkbox();
                     }
                 }
             }
