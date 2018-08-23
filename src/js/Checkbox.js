@@ -132,7 +132,7 @@ class Checkbox {
 		// 单选
         if (isRadio) {
             tableData.forEach((row, index) => {
-                row[this.key] = index === parseInt(cacheKey);
+                row[this.key] = index === parseInt(cacheKey, 10);
             });
         }
 
