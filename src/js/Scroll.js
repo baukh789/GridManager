@@ -81,6 +81,7 @@ class Scroll {
 			// 删除表头置顶
 			if (_scrollDOMTop === 0) {
 				_thead.removeClass('scrolling');
+				// TODO 表头考虑下永久吸顶，看看是否可以清除非吸顶的元素以达到滚动轴不被盖住
 				_setTopHead.remove();
 				// 显示表头置顶
 			} else {

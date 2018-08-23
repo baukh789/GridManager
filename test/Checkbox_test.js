@@ -52,17 +52,12 @@ describe('Checkbox.getCheckedData($table)', function() {
 	});
 });
 
-describe('Checkbox.getThString(settings)', function() {
-	let settings = null;
+describe('Checkbox.getThString(useRadio)', function() {
 	let checkboxHtml = null;
 	beforeEach(() => {
-		settings = new Settings();
-		settings.textConfig = new TextSettings();
-		settings.gridManagerName = 'checkbox-getThString';
 	});
 
 	afterEach(() => {
-		settings = null;
 		checkboxHtml = null;
 	});
 
@@ -72,12 +67,14 @@ describe('Checkbox.getThString(settings)', function() {
 	});
 
 	it('返回值验证', function () {
-		checkboxHtml = `${Base.getCheckboxString()}
-                        <span style="display: none">
-                            ${ I18n.i18nText(settings, 'checkall-text') }
-                        </span>`;
-		expect(Checkbox.getThString(settings).replace(/\s/g, '')).toBe(checkboxHtml.replace(/\s/g, ''));
+		checkboxHtml = Base.getCheckboxString();
+		expect(Checkbox.getThString(false).replace(/\s/g, '')).toBe(checkboxHtml.replace(/\s/g, ''));
 	});
+
+    it('返回值验证', function () {
+        checkboxHtml = Base.getCheckboxString();
+        expect(Checkbox.getThString(true)).toBe('');
+    });
 });
 
 describe('Checkbox.getColumn(settings)', function() {
@@ -110,24 +107,24 @@ describe('Checkbox.getColumn(settings)', function() {
 	});
 });
 
-describe('Checkbox.bindCheckboxEvent($table)', function() {
+describe('Checkbox.bindCheckboxEvent($table, settings)', function() {
 	it('基础验证', function () {
 		expect(Checkbox.bindCheckboxEvent).toBeDefined();
-		expect(Checkbox.bindCheckboxEvent.length).toBe(1);
+		expect(Checkbox.bindCheckboxEvent.length).toBe(2);
 	});
 });
 
-describe('Checkbox.resetData($table, status, isAllCheck, cacheKey)', function() {
+describe('Checkbox.resetData($table, status, isAllCheck, cacheKey, isRadio)', function() {
 	it('基础验证', function () {
 		expect(Checkbox.resetData).toBeDefined();
-		expect(Checkbox.resetData.length).toBe(4);
+		expect(Checkbox.resetData.length).toBe(5);
 	});
 });
 
-describe('Checkbox.resetDOM($table, settings, tableData)', function() {
+describe('Checkbox.resetDOM($table, settings, tableData, isRadio)', function() {
 	it('基础验证', function () {
 		expect(Checkbox.resetDOM).toBeDefined();
-		expect(Checkbox.resetDOM.length).toBe(3);
+		expect(Checkbox.resetDOM.length).toBe(4);
 	});
 });
 

@@ -263,7 +263,7 @@ describe('textConfig', function() {
 		for(key in textConfig){
 			count++;
 		}
-		expect(count).toBe(16);
+		expect(count).toBe(15);
 	});
 	it('验证国际化文本[order-text]初始值', function(){
 		expect(textConfig['order-text']['zh-cn']).toBe('序号');
@@ -341,11 +341,5 @@ describe('textConfig', function() {
 		expect(textConfig['config-grid']['zh-cn']).toBe('配置表');
 		expect(textConfig['config-grid']['zh-tw']).toBe('配置表');
 		expect(textConfig['config-grid']['en-us']).toBe('Setting Grid');
-	});
-
-	it('验证国际化文本[checkall-text]初始值', function(){
-		expect(textConfig['checkall-text']['zh-cn']).toBe('全选');
-		expect(textConfig['checkall-text']['zh-tw']).toBe('全選');
-		expect(textConfig['checkall-text']['en-us']).toBe('All');
 	});
 });

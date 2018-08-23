@@ -190,19 +190,21 @@ class Settings {
 			// 是否支持选择与反选
 			supportCheckbox: true,
 
-			// @2.6.0
+            // 使用行选中
+            useRowCheck: true,
+
+            // 使用单选
+            useRadio: false,
+
 			// 选择事件执行前事件
 			checkedBefore: $.noop,
 
-			// @2.6.0
 			// 选择事件执行后事件
 			checkedAfter: $.noop,
 
-			// @2.6.0
 			// 全选事件执行前事件
 			checkedAllBefore: $.noop,
 
-			// @2.6.0
 			// 全选事件执行后事件
 			checkedAllAfter: $.noop
 		};
@@ -429,11 +431,6 @@ class TextSettings {
 			'zh-cn': '配置表',
 			'zh-tw': '配置表',
 			'en-us': 'Setting Grid'
-		};
-		this['checkall-text'] = {
-			'zh-cn': '全选',
-			'zh-tw': '全選',
-			'en-us': 'All'
 		};
         this['filter-ok'] = {
             'zh-cn': '确定',

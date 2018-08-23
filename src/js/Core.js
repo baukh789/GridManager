@@ -483,7 +483,7 @@ class Core {
                     th.setAttribute('th-name', Checkbox.key);
                     th.setAttribute('th-visible', thVisible);
                     th.setAttribute('gm-checkbox', 'true');
-                    thText.innerHTML = Checkbox.getThString(settings);
+                    thText.innerHTML = Checkbox.getThString(settings.useRadio);
 					break;
 				// 普通列
 				default:
@@ -511,7 +511,7 @@ class Core {
 
 		// 绑定选择框事件
 		if (settings.supportCheckbox) {
-			Checkbox.bindCheckboxEvent($table);
+			Checkbox.bindCheckboxEvent($table, settings);
 		}
 
 		// 是否为插件自动生成的序号列
