@@ -33,7 +33,7 @@ class Filter {
         });
 
         return `<div class="filter-action">
-                    <i class="fa-icon iconfont icon-filter ${filter.selected && 'filter-selected'}"></i>
+                    <i class="fa-icon iconfont icon-filter${filter.selected && ' filter-selected'}"></i>
                     <div class="fa-con">
                         <ul class="filter-list" style="max-height: ${tableWarpHeight - 100 + 'px'}">
                             ${listHtml}

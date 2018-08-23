@@ -4,6 +4,8 @@
 'use strict';
 import Checkbox from '../src/js/Checkbox';
 import {Settings, TextSettings} from '../src/js/Settings';
+import {Base} from "../src/js/Base";
+import I18n from "../src/js/I18n";
 /**
  * 验证类的属性及方法总量
  */
@@ -50,7 +52,7 @@ describe('Checkbox.getCheckedData($table)', function() {
 	});
 });
 
-describe('Checkbox.getThString($table)', function() {
+describe('Checkbox.getThString(settings)', function() {
 	let settings = null;
 	let checkboxHtml = null;
 	beforeEach(() => {
@@ -70,11 +72,11 @@ describe('Checkbox.getThString($table)', function() {
 	});
 
 	it('返回值验证', function () {
-		checkboxHtml = `<input type="checkbox"/>
-							<span style="display: none">
-								全选
-						</span>`;
-		expect(Checkbox.getThString(settings, true).replace(/\s/g, '')).toBe(checkboxHtml.replace(/\s/g, ''));
+		checkboxHtml = `${Base.getCheckboxString()}
+                        <span style="display: none">
+                            ${ I18n.i18nText(settings, 'checkall-text') }
+                        </span>`;
+		expect(Checkbox.getThString(settings).replace(/\s/g, '')).toBe(checkboxHtml.replace(/\s/g, ''));
 	});
 });
 

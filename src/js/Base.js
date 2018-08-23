@@ -323,8 +323,8 @@ class BaseClass {
      */
     getRadioString(checked, label, value) {
         return `<label class="gm-radio-wrapper">
-                    <span class="gm-radio-checkbox gm-radio ${checked ? 'gm-radio-checked' : ''}">
-                        <input type="radio" class="gm-radio-checkbox-input gm-radio-input" value="${value}" ${checked ? 'checked="true"' : ''}/>
+                    <span class="gm-radio-checkbox gm-radio${checked ? ' gm-radio-checked' : ''}">
+                        <input type="radio" class="gm-radio-checkbox-input gm-radio-input"${value? ' value="' + value + '"' : ''}${checked ? ' checked="true"' : ''}/>
                         <span class="gm-radio-inner"></span>
                     </span>
                     ${label ? '<span>' + label + '</span>' : ''}
@@ -334,7 +334,7 @@ class BaseClass {
     /**
      * 更新单选框状态
      * @param $radio
-     * @param state
+     * @param state Boolean
      */
     updateRadioState($radio, state) {
         const $input = jTool(`input[type="radio"]`, $radio);
@@ -376,7 +376,7 @@ class BaseClass {
         }
         return `<label class="gm-checkbox-wrapper">
                     <span class="gm-radio-checkbox gm-checkbox ${stateStr}">
-                        <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input" value="${value}" ${state === 'checked' ? 'checked="true"' : ''}/>
+                        <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"${value ? ' value="' + value + '"' : ''}${state === 'checked' ? ' checked="true"' : ''}/>
                         <span class="gm-checkbox-inner"></span>
                     </span>
                     ${label ? '<span>' + label + '</span>' : ''}

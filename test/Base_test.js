@@ -21,7 +21,7 @@ describe('Base 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(16 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(20 + 1);
 	});
 });
 
@@ -453,9 +453,41 @@ describe('Base.cloneObject(object)', function() {
 });
 
 describe('Base.compileFramework(settings, compileList)', function() {
+    let settings = null;
+    let compileList = null;
+    beforeEach(function(){
+        compileList = [document.body];
+        console._error = console.error;
+        console.error = jasmine.createSpy("error");
+    });
+
+    afterEach(function(){
+        settings = null;
+        compileList = null;
+        console.error = console._error;
+    });
+
     it('基础验证', function () {
         expect(Base.compileFramework).toBeDefined();
         expect(Base.compileFramework.length).toBe(2);
+    });
+
+    it('执行验证', function () {
+        settings = {
+            compileVue: jasmine.createSpy('callback')
+        };
+        Base.compileFramework(settings, compileList);
+        expect(settings.compileVue).toHaveBeenCalled();
+    });
+
+    it('异常验证', function () {
+        settings = {
+            compileVue: function() {
+                throw new Error('返回一个错误');
+            }
+        };
+        Base.compileFramework(settings, compileList);
+        expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '框架模板解析异常, 请查看template配置项');
     });
 });
 
@@ -512,3 +544,226 @@ describe('Base.calcLayout($table, width, height, supportAjaxPage)', function() {
     });
 });
 
+
+describe('Base.getRadioString(checked, label, value)', function() {
+    let expectStr = null;
+    beforeEach(function(){
+    });
+
+    afterEach(function(){
+        expectStr = null;
+    });
+    it('基础验证', function () {
+        expect(Base.getRadioString).toBeDefined();
+        expect(Base.getRadioString.length).toBe(3);
+    });
+
+    it('getRadioString(true)', function () {
+        expectStr = `<label class="gm-radio-wrapper">
+                        <span class="gm-radio-checkbox gm-radio gm-radio-checked">
+                            <input type="radio" class="gm-radio-checkbox-input gm-radio-input" checked="true"/>
+                            <span class="gm-radio-inner"></span>
+                        </span>
+                    </label>`;
+        expect(Base.getRadioString(true).replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+
+    it('getRadioString(false)', function () {
+        expectStr = `<label class="gm-radio-wrapper">
+                        <span class="gm-radio-checkbox gm-radio">
+                            <input type="radio" class="gm-radio-checkbox-input gm-radio-input"/>
+                            <span class="gm-radio-inner"></span>
+                        </span>
+                    </label>`;
+        expect(Base.getRadioString(false).replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+
+    it('getRadioString(false, "baukh")', function () {
+        expectStr = `<label class="gm-radio-wrapper">
+                        <span class="gm-radio-checkbox gm-radio">
+                            <input type="radio" class="gm-radio-checkbox-input gm-radio-input"/>
+                            <span class="gm-radio-inner"></span>
+                        </span>
+                        <span>baukh</span>
+                    </label>`;
+        expect(Base.getRadioString(false, 'baukh').replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+
+    it('getRadioString(true, "baukh", "baukh")', function () {
+        expectStr = `<label class="gm-radio-wrapper">
+                        <span class="gm-radio-checkbox gm-radio gm-radio-checked">
+                            <input type="radio" class="gm-radio-checkbox-input gm-radio-input" value="baukh" checked="true"/>
+                            <span class="gm-radio-inner"></span>
+                        </span>
+                        <span>baukh</span>
+                    </label>`;
+        expect(Base.getRadioString(true, 'baukh', 'baukh').replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+});
+
+
+describe('updateRadioState($radio, state)', function() {
+    let $radio = null;
+    beforeEach(function(){
+        document.body.innerHTML = `<label class="gm-radio-wrapper">
+                                    <span class="gm-radio-checkbox gm-radio" id="gm-radio">
+                                        <input type="radio" class="gm-radio-checkbox-input gm-radio-input"/>
+                                        <span class="gm-radio-inner"></span>
+                                    </span>
+                                </label>`;
+        $radio = jTool('#gm-radio');
+    });
+
+    afterEach(function(){
+        document.body.innerHTML = '';
+        $radio = null;
+    });
+    it('基础验证', function () {
+        expect(Base.updateRadioState).toBeDefined();
+        expect(Base.updateRadioState.length).toBe(2);
+    });
+
+    it('执行updateRadioState($radio, true)', function () {
+        Base.updateRadioState($radio, true);
+        expect($radio.find('.gm-radio-input').get(0).checked).toBe(true);
+        expect($radio.hasClass('gm-radio-checked')).toBe(true);
+    });
+
+    it('执行updateRadioState($radio, false)', function () {
+        Base.updateRadioState($radio, false);
+        expect($radio.find('.gm-radio-input').get(0).checked).toBe(false);
+        expect($radio.hasClass('gm-radio-checked')).toBe(false);
+    });
+});
+
+
+describe('Base.getCheckboxString(state, label, value)', function() {
+    let expectStr = null;
+    beforeEach(function(){
+    });
+
+    afterEach(function(){
+        expectStr = null;
+    });
+    it('基础验证', function () {
+        expect(Base.getCheckboxString).toBeDefined();
+        expect(Base.getCheckboxString.length).toBe(3);
+    });
+
+    it('getCheckboxString("checked")', function () {
+        expectStr = `<label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input" checked="true"/>
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
+                    </label>`;
+        expect(Base.getCheckboxString('checked').replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+
+    it('getCheckboxString("indeterminate")', function () {
+        expectStr = `<label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox gm-checkbox-indeterminate">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"/>
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
+                    </label>`;
+        expect(Base.getCheckboxString('indeterminate').replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+
+    it('getCheckboxString("unchecked")', function () {
+        expectStr = `<label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"/>
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
+                    </label>`;
+        expect(Base.getCheckboxString('unchecked').replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+
+    it('getCheckboxString("unchecked, "baukh")', function () {
+        expectStr = `<label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"/>
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
+                        <span>baukh</span>
+                    </label>`;
+        expect(Base.getCheckboxString('unchecked', 'baukh').replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+
+    it('getCheckboxString("unchecked, "baukh", "baukh")', function () {
+        expectStr = `<label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input" value="baukh"/>
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
+                        <span>baukh</span>
+                    </label>`;
+        expect(Base.getCheckboxString('unchecked', 'baukh', 'baukh').replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+
+    it('getCheckboxString("checked, "baukh", "baukh")', function () {
+        expectStr = `<label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input" value="baukh" checked="true"/>
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
+                        <span>baukh</span>
+                    </label>`;
+        expect(Base.getCheckboxString('checked', 'baukh', 'baukh').replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+
+    it('getCheckboxString("indeterminate, "baukh", "baukh")', function () {
+        expectStr = `<label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox gm-checkbox-indeterminate">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input" value="baukh"/>
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
+                        <span>baukh</span>
+                    </label>`;
+        expect(Base.getCheckboxString('indeterminate', 'baukh', 'baukh').replace(/\s/g, '')).toBe(expectStr.replace(/\s/g, ''));
+    });
+});
+
+describe('updateCheckboxState($checkbox, state)', function() {
+    let $checkbox = null;
+    beforeEach(function(){
+        document.body.innerHTML = `<label class="gm-checkbox-wrapper">
+                                    <span class="gm-radio-checkbox gm-checkbox" id="gm-checkbox">
+                                        <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"/>
+                                        <span class="gm-checkbox-inner"></span>
+                                    </span>
+                                </label>`;
+        $checkbox = jTool('#gm-checkbox');
+    });
+
+    afterEach(function(){
+        document.body.innerHTML = '';
+        $checkbox = null;
+    });
+    it('基础验证', function () {
+        expect(Base.updateCheckboxState).toBeDefined();
+        expect(Base.updateCheckboxState.length).toBe(2);
+    });
+
+    it('执行 updateCheckboxState($checkbox, "checked")', function () {
+        Base.updateCheckboxState($checkbox, 'checked');
+        expect($checkbox.find('.gm-checkbox-input').get(0).checked).toBe(true);
+        expect($checkbox.hasClass('gm-checkbox-checked')).toBe(true);
+        expect($checkbox.hasClass('gm-checkbox-indeterminate')).toBe(false);
+    });
+
+    it('执行 updateCheckboxState($checkbox, "indeterminate")', function () {
+        Base.updateCheckboxState($checkbox, 'indeterminate');
+        expect($checkbox.find('.gm-checkbox-input').get(0).checked).toBe(false);
+        expect($checkbox.hasClass('gm-checkbox-checked')).toBe(false);
+        expect($checkbox.hasClass('gm-checkbox-indeterminate')).toBe(true);
+    });
+
+    it('执行 updateCheckboxState($checkbox, "unchecked")', function () {
+        Base.updateCheckboxState($checkbox, 'unchecked');
+        expect($checkbox.find('.gm-checkbox-input').get(0).checked).toBe(false);
+        expect($checkbox.hasClass('gm-checkbox-checked')).toBe(false);
+        expect($checkbox.hasClass('gm-checkbox-indeterminate')).toBe(false);
+    });
+});
