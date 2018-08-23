@@ -145,7 +145,16 @@ describe('Settings', function() {
 		expect(settings.supportCheckbox).toBe(true);
 	});
 
-	it('验证属性[checkedBefore]初始值', function() {
+    it('验证属性[useRowCheck]初始值', function() {
+        expect(settings.useRowCheck).toBe(false);
+    });
+
+    it('验证属性[useRadio]初始值', function() {
+        expect(settings.useRadio).toBe(false);
+    });
+
+
+    it('验证属性[checkedBefore]初始值', function() {
 		expect(typeof settings.checkedBefore).toBe('function');
 	});
 

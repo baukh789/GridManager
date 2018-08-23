@@ -191,7 +191,7 @@ class Settings {
 			supportCheckbox: true,
 
             // 使用行选中
-            useRowCheck: true,
+            useRowCheck: false,
 
             // 使用单选
             useRadio: false,
