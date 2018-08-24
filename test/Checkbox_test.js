@@ -102,7 +102,7 @@ describe('Checkbox.getColumn(settings)', function() {
 		expect(column.key).toBe('gm_checkbox');
 		expect(column.isAutoCreate).toBe(true);
 		expect(column.isShow).toBe(true);
-		expect(column.width).toBe('50px');
+		expect(column.width).toBe('40px');
 		expect(column.align).toBe('center');
 	});
 });

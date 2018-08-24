@@ -17,14 +17,6 @@ class Order {
 	}
 
 	/**
-	 * 获取 td 的字符串节点
-	 * @param orderText
-     */
-	// getTdString(orderText) {
-	// 	return `<td gm-order="true" gm-create="true">${orderText}</td>`;
-	// }
-
-	/**
 	 * 获取序号列对象
 	 * @param $table
 	 * @param language
@@ -43,19 +35,5 @@ class Order {
 			}
 		};
 	}
-
-	/**
-	 * 生成序号DOM
-	 * @param $table
-	 * @returns {boolean}
-     */
-	// initDOM($table) {
-	// 	const orderHtml = `<th th-name="${Order.key}" gm-order="true" gm-create="true">${I18n.i18nText($table, 'order-text')}</th>`;
-	// 	jTool('thead tr', $table).prepend(orderHtml);
-	// 	if (jTool(`th[th-name="${Order.key}"]`, $table).length === 0) {
-	// 		return false;
-	// 	}
-	// 	return true;
-	// }
 }
 export default new Order();

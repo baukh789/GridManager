@@ -495,7 +495,7 @@ class Core {
 			}
 
             // 嵌入拖拽事件标识
-            if (settings.supportDrag && !isLmOrder && !isLmCheckbox) {
+            if (!col.isAutoCreate && settings.supportDrag && !isLmOrder && !isLmCheckbox) {
                 thText.classList.add('drag-action');
             }
 
@@ -573,7 +573,7 @@ class Core {
             column.useCompile && compileList.push({el: onlyTH.find('.th-text').get(0)});
 
             // 是否为GM自动添加的列
-            const isAutoCol = column.isAutoCreate || column.isAutoCreate;
+            const isAutoCol = column.isAutoCreate;
 
 			// 嵌入配置列表项
 			if (settings.supportConfig) {
@@ -623,17 +623,9 @@ class Core {
 				onlyThWarp.append(adjustDOM);
 			}
 
-			// 宽度配置: GM自动创建项为固定宽度
-			if (isAutoCol) {
-				onlyWidth = 50;
-
-				// 宽度配置: 非GM自动创建的列
-			} else {
-				// 当前th文本所占宽度大于设置的宽度
-				let _minWidth = Base.getTextWidth(onlyTH);
-				let _oldWidth = onlyTH.width();
-				onlyWidth = _oldWidth > _minWidth ? _oldWidth : _minWidth;
-			}
+            let _minWidth = Base.getTextWidth(onlyTH);
+            let _oldWidth = onlyTH.width();
+            onlyWidth = _oldWidth > _minWidth ? _oldWidth : _minWidth;
 
 			// 清除width属性, 使用style.width进行宽度控制
 			onlyTH.removeAttr('width');

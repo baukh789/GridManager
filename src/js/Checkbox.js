@@ -50,7 +50,7 @@ class Checkbox {
 			text: '',
 			isAutoCreate: true,
 			isShow: true,
-			width: '50px',
+			width: '40px',
 			align: 'center',
 			template: checked => {
 				return `<td gm-checkbox="true" gm-create="true">${settings.useRadio ? Base.getRadioString(checked) : Base.getCheckboxString(checked ? 'checked' : 'unchecked')}</td>`;
