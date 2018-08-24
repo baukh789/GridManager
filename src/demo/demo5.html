@@ -4,15 +4,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="../css/gm.css">
     <script type="text/javascript" src="../js/gm.js"></script>
-    <title>GridManager:顶部通栏</title>
+    <title>GridManager:点击行单选</title>
     <style>
         html, body{
+            width: 100%;
             overflow-x:hidden;
             margin: 0;
             padding: 0;
-        }
-        body{
-            padding: 40px;
         }
         .plugin-action{
             display: inline-block;
@@ -98,6 +96,7 @@
             '6': '前端框架',
             '7': '前端相关'
         };
+
     </script>
 </head>
 
@@ -125,18 +124,18 @@
 </section>
 
 <section class="grid-main">
-    <table id="test"></table>
+    <table></table>
 </section>
 
 <section class="bottom-bar">
     <button id="init-gm" disabled>init</button>
     <button id="destroy-gm" disabled>destroy</button>
-    <a href="https://github.com/baukh789/GridManager/blob/master/src/demo/demo4.html" target="_blank">查看源码</a>
+    <a href="https://github.com/baukh789/GridManager/blob/master/src/demo/demo5.html" target="_blank">查看源码</a>
 </section>
 
 <script type="text/javascript">
     // GridManager 渲染
-    var table = document.querySelector('#test');
+    var table = document.querySelector('table');
     function init() {
         table.GM({
             gridManagerName: 'test',
@@ -144,98 +143,17 @@
             height: '100%',
             supportAjaxPage:true,
             isCombSorting: true,
-            disableLine:true,
-            // disableHover:true,
+            useRowCheck: true,
+            useRadio: true,
             disableBorder: true,
-
-            topFullColumn: {
-                template: function(row){
-                    return `<div style="padding: 12px; text-align: center;">
-                                    快速、灵活的对Table标签进行实例化，让Table标签充满活力。该项目已开源, <a target="_blank" href="https://github.com/baukh789/GridManager">点击进入</a>github
-                                </div>`;
-                }
-            },
-            // supportAutoOrder: false,
-            // supportCheckbox: false,
-            // disableCache: true,
-            // ajax_url 将在v2.6.0以上版本废弃，请不要再使用
-            // ,ajax_url: 'http://www.lovejavascript.com/blogManager/getBlogList'
+            disableLine: true,
+            disableHover: true,
             ajax_data: function () {
                 return 'http://www.lovejavascript.com/blogManager/getBlogList';
-            }
-            // ,firstLoading: false // 初始渲染时是否加载数据
-            ,ajax_type: 'POST'
-            ,supportMenu: true
-
-            // 选择事件执行前事件
-            ,checkedBefore: function(checkedList){
-                console.log('checkedBefore==', checkedList);
-            }
-
-            // 选择事件执行后事件
-            ,checkedAfter: function(checkedList){
-                console.log('checkedAfter==', checkedList);
-            }
-
-            // 全选事件执行前事件
-            ,checkedAllBefore: function(checkedList){
-                console.log('checkedAllBefore==', checkedList);
-            }
-
-            // 全选事件执行后事件
-            ,checkedAllAfter: function(checkedList){
-                console.log('checkedAllAfter==', checkedList);
-            }
-
-            // AJAX请求前事件函数
-            ,ajax_beforeSend: function(promise){
-                console.log('ajax_beforeSend');
-            }
-            // AJAX成功事件函数
-            ,ajax_success: function(response){
-                console.log('ajax_success');
-            }
-
-            // AJAX失败事件函数
-            ,ajax_error: function(error){
-                console.log('ajax_error');
-            }
-
-            // AJAX结束事件函数
-            ,ajax_complete: function(complete){
-                console.log('ajax_complete');
-            }
-
-            // ,emptyTemplate: '<div class="void-template">通过 emptyTemplate 配置的空数据提示</div>'
-            // 配置 request header, 非xhr自带的头信息将会触发非简单请求, 需要在后端进行对应的配置
-            // 参考链接: http://www.lovejavascript.com/#!zone/blog/content.html?id=53
-//				,ajax_headers: {
-//					'header-test': 'this is test request header'
-//					'Content-Type': 'application/json'
-//				}
-            // 配置xhr, 如: withCredentials -> 跨域情况使用cookie等证书. 需要在后端进行对应的配置
-            // 参考链接: http://www.lovejavascript.com/#!zone/blog/content.html?id=59
-            //		,ajax_xhrFields: {
-            //			withCredentials: true
-            //		}
-            ,query: {test: 22, type: '3'}
-            ,dataKey: 'list'  // 注意: 这里是用来测试responseHandler 是否生效; 数据本身返回为data, 而在这里我把数据名模拟为list, 再通过responseHandler去更改
-
-            // 通过该方法修改全部的请求参数
-            ,requestHandler: function(request){
-                request.newParams = '这个参数是通过 requestHandler 函数新增的';
-                // 更改这个参数后, 将会强制createDate字段使用 降序排序.
-                // 'sort_' 通过 配置项 sortKey 进行配置
-                // 'DESC' 通过 配置项 sortDownText 进行配置
-                //			request.sort_createDate = 'DESC';
-                return request;
-            }
-            // 可以通过该方法修改返回的数据
-            ,responseHandler: function(response){
-
-                // 数据本身返回为data, 通过responseHandler更改为与dataKey匹配的值
-                response.list = response.data;
-                return response;
+            },
+            ajax_type: 'POST',
+            checkedAfter: function(checkedList) {
+                console.log('当前选中的行数据=>', checkedList);
             }
 
             ,columnData: [
@@ -286,7 +204,7 @@
                     key: 'type',
                     remind: 'the type',
                     text: '博文分类',
-                    width: '130px',
+                    width: '120px',
                     align: 'center',
                     sorting: '',
                     // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。非必设项
@@ -312,6 +230,7 @@
                 },{
                     key: 'info',
                     remind: 'the info',
+                    width: '100px',
                     text: '简介'
                 },{
                     key: 'username',
@@ -319,7 +238,7 @@
                     align: 'center',
                     width: '100px',
                     text: '作者',
-                    template: function(username, row, index){
+                    template: function(username){
                         return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
                     }
                 },{
@@ -350,18 +269,12 @@
                     template: '<span class="plugin-action" gm-click="delectRowData">删除</span>'
                 }
             ]
-            // 排序后事件
-            ,sortingAfter: function (data) {
-                console.log('sortAfter', data);
-            }
-        }, function(query){
-            // 渲染完成后的回调函数
-            console.log('渲染完成后的回调函数:', query);
         });
     }
 
     // 删除功能
     function delectRowData(rowData){
+        window.event.stopPropagation();
         // 执行删除操作
         if(window.confirm('确认要删除['+rowData.title+']?')){
             window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
