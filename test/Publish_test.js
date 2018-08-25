@@ -301,8 +301,7 @@ describe('PublishMethod 非init方法验证', function() {
         });
 
         it('验证百分比', function () {
-            overflowX = PublishMethod.resetLayout(table, '100%', '100%');
-            // expect(overflowX).toBe('hidden'); // TODO 本地通过，但是在 Travis CI 上不通过
+            PublishMethod.resetLayout(table, '100%', '100%');
             style = $tableWrap.get(0).style;
             expect(style.width).toBe('calc(100%)');
             expect(style.height).toBe('calc(100%)');
@@ -316,16 +315,14 @@ describe('PublishMethod 非init方法验证', function() {
         });
 
         it('验证calc()', function () {
-            overflowX = PublishMethod.resetLayout(table, '100% - 100px', '100% + 100px');
-            expect(overflowX).toBe('hidden');
+            PublishMethod.resetLayout(table, '100% - 100px', '100% + 100px');
             style = $tableWrap.get(0).style;
             expect(style.width).toBe('calc(100% - 100px)');
             expect(style.height).toBe('calc(100% + 100px)');
         });
 
         it('验证calc()', function () {
-            overflowX = PublishMethod.resetLayout(table, '100% + 100px', '100% + 100px');
-            expect(overflowX).toBe('auto');
+            PublishMethod.resetLayout(table, '100% + 100px', '100% + 100px');
             style = $tableWrap.get(0).style;
             expect(style.width).toBe('calc(100% + 100px)');
             expect(style.height).toBe('calc(100% + 100px)');

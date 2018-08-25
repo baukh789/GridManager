@@ -249,13 +249,13 @@ class BaseClass {
 	 */
 	updateScrollStatus($table) {
 		const $tableDiv = $table.closest('.table-div');
-		// 宽度: table === tableDiv 隐藏横向滚动轴. 反之 显示
-		if ($table.width() === $tableDiv.width()) {
-			$tableDiv.css('overflow-x', 'hidden');
-			return 'hidden';
+		// 宽度: table的宽度大于 tableDiv的宽度时，显示滚动条
+		if ($table.width() > $tableDiv.width()) {
+            $tableDiv.css('overflow-x', 'auto');
+            return 'auto';
 		} else {
-			$tableDiv.css('overflow-x', 'auto');
-			return 'auto';
+            $tableDiv.css('overflow-x', 'hidden');
+            return 'hidden';
 		}
 	}
 

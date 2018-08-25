@@ -397,8 +397,14 @@ describe('Base.updateScrollStatus($table)', function() {
 	it('90%宽度', function () {
 		document.body.innerHTML = '<div class="table-div"><table style="width: 90%"></table></div>';
 		$table = jTool('table');
-		expect(Base.updateScrollStatus($table)).toBe('auto');
+		expect(Base.updateScrollStatus($table)).toBe('hidden');
 	});
+
+    it('110%宽度', function () {
+        document.body.innerHTML = '<div class="table-div"><table style="width:110%"></table></div>';
+        $table = jTool('table');
+        expect(Base.updateScrollStatus($table)).toBe('auto');
+    });
 });
 
 describe('Base.getVisibleForColumn(col)', function() {
