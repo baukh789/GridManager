@@ -25,7 +25,7 @@ describe('Scroll 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Scroll)))).toBe(4 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Scroll)))).toBe(6 + 1);
 	});
 });
 
@@ -34,6 +34,20 @@ describe('Scroll.init($table)', function() {
 		expect(Scroll.init).toBeDefined();
 		expect(Scroll.init.length).toBe(1);
 	});
+});
+
+describe('Scroll.render($table)', function() {
+    it('基础验证', function() {
+        expect(Scroll.render).toBeDefined();
+        expect(Scroll.render.length).toBe(1);
+    });
+});
+
+describe('Scroll.update($table)', function() {
+    it('基础验证', function() {
+        expect(Scroll.update).toBeDefined();
+        expect(Scroll.update.length).toBe(1);
+    });
 });
 
 describe('Scroll.bindResizeToTable($table)', function() {

@@ -18,6 +18,7 @@
     overflow: hidden;
     background-color: #fff;
     border: @table-border;
+    padding-top: 40px;
     &.disable-border {
         border: none;
     }
@@ -55,6 +56,7 @@
             text-align: center;
             width: 100%;
             border-collapse: collapse;
+            margin-top: -40px;
             //font-family: @font-family;
             tr {
                 border-bottom: @table-border;
@@ -364,7 +366,8 @@
                     height: 40px;
                     line-height: 40px;
                 }
-                &.scrolling {
+                //&.scrolling {
+                &[grid-manager-thead]{
                     visibility: hidden;
                 }
                 /* 表头置顶 */

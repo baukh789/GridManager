@@ -176,6 +176,16 @@ export default class GridManager {
 			callback = isGotoFirstPage;
 			isGotoFirstPage = true;
 		}
+
+		// 更新过滤相关字段
+        Filter.enable && jTool.each(settings.columnMap, (index, column) => {
+            if (typeof query[column.key] === 'string' && column.filter) {
+                column.filter.selected = query[column.key];
+                Filter.update(jTool(`th[th-name=${column.key}]`, $table), column.filter);
+            }
+        });
+
+		// 更新settings.query
 		jTool.extend(settings, {query: query});
 		if (isGotoFirstPage) {
 			settings.pageData[settings.currentPageKey] = 1;

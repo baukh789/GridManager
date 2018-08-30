@@ -11,6 +11,14 @@ class Filter {
     enable = false;
 
     /**
+     * 初始化
+     * @param $table
+     */
+    init($table) {
+        this.__bindFilterEvent($table);
+    }
+
+    /**
      * 表头的筛选菜单HTML
      * @param settings
      * @param filter: 当前列的筛选条件对象
@@ -47,11 +55,24 @@ class Filter {
     }
 
     /**
-     * 初始化
-     * @param $table
+     * 更新filter选中状态
+     * @param $th
+     * @param filter
      */
-    init($table) {
-        this.__bindFilterEvent($table);
+    update($th, filter) {
+        const $filterCon = jTool('.fa-con', $th);
+        const $filterIcon = jTool('.fa-icon', $th);
+        const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
+        jTool.each($filters, (index, item) => {
+            let $radioOrCheckbox = jTool(item).closest('.gm-radio-checkbox');
+            if (filter.isMultiple) {
+                Base.updateCheckboxState($radioOrCheckbox, filter.selected.indexOf(item.value)  >= 0 ? 'checked' : 'unchecked');
+            } else {
+                Base.updateRadioState($radioOrCheckbox, item.value === filter.selected);
+            }
+        });
+
+        filter.selected ? $filterIcon.addClass('filter-selected') : $filterIcon.removeClass('filter-selected');
     }
 
     /**
@@ -61,13 +82,27 @@ class Filter {
      */
     __bindFilterEvent($table) {
         // 事件: 显示筛选区域
+        const _this = this;
         $table.off('mousedown', '.fa-icon');
         $table.on('mousedown', '.fa-icon', function (e) {
             e.stopPropagation();
             e.preventDefault();
+            const $allFilterCon = jTool('.fa-con', $table);
             const $action = jTool(this);
             const $filterAction = $action.closest('.filter-action');
+            const $th = $action.closest('th[th-name]');
+            const thName = $th.attr('th-name');
             const $filterCon = $filterAction.find('.fa-con');
+
+            // 清除事件源的其它过滤体
+            jTool.each($allFilterCon, (index, item) => {
+                $filterCon.get(0) !== item ? item.style.display = 'none' : '';
+            });
+
+            // 更新当前表格下所有表过滤体的状态
+            const settings = Cache.getSettings($table);
+            _this.update($th, settings.columnMap[thName].filter);
+
             const isShow = $filterCon.css('display') !== 'none';
             isShow ? $filterCon.hide() : $filterCon.show();
             if ($filterCon.offset().left + $filterCon.width() > $action.closest('.table-div').width()) {
@@ -93,7 +128,6 @@ class Filter {
         $table.on('mouseup', '.filter-submit', function () {
             const $action = jTool(this);
             const $filterCon = $action.closest('.fa-con');
-            const $filterIcon = jTool('.fa-icon', $filterCon.closest('.filter-action'));
             const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
             const $th = $filterCon.closest('th');
             const thName = $th.attr('th-name');
@@ -101,36 +135,32 @@ class Filter {
             jTool.each($filters, (index, item) => {
                 item.checked && checkedList.push(item.value);
             });
-            checkedList.length ? $filterIcon.addClass('filter-selected') : $filterIcon.removeClass('filter-selected');
+
             const settings = Cache.getSettings($table);
-            jTool.extend(settings.query, {[thName]: checkedList.join(',')});
+            const checkedStr = checkedList.join(',');
+            settings.columnMap[thName].filter.selected = checkedStr;
+            jTool.extend(settings.query, {[thName]: checkedStr});
             Cache.setSettings($table, settings);
 
+            _this.update($th, settings.columnMap[thName].filter);
             Core.refresh($table);
             $filterCon.hide();
         });
 
-        // 事件: 重置选中结果
+        // 事件: 清空选中结果
         $table.off('mouseup', '.filter-reset');
         $table.on('mouseup', '.filter-reset', function () {
             const $action = jTool(this);
             const $filterCon = $action.closest('.fa-con');
-            const $filterIcon = jTool('.fa-icon', $filterCon.closest('.filter-action'));
-            const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
-            const $th = $filterCon.closest('th');
+            const $th = jTool(this).closest('th[th-name]');
             const thName = $th.attr('th-name');
-            jTool.each($filters, (index, item) => {
-                if (item.type === 'radio') {
-                    Base.updateRadioState(jTool(item).closest('.gm-radio-checkbox'), false);
-                } else {
-                    Base.updateCheckboxState(jTool(item).closest('.gm-radio-checkbox'), 'unchecked');
-                }
-            });
 
             const settings = Cache.getSettings($table);
             delete settings.query[thName];
+            settings.columnMap[thName].filter.selected = '';
             Cache.setSettings($table, settings);
-            $filterIcon.removeClass('filter-selected');
+
+            _this.update($th, settings.columnMap[thName].filter);
             Core.refresh($table);
             $filterCon.hide();
         });

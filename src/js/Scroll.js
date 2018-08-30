@@ -10,9 +10,56 @@ class Scroll {
      * @param $table
      */
 	init($table) {
+	    this.render($table);
 		this.bindResizeToTable($table);
 		this.bindScrollToTableDiv($table);
 	}
+
+    /**
+     * 生成表头置顶DOM
+     * @param $table
+     */
+    render($table) {
+        let $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
+        $setTopHead.remove();
+        const $thead = jTool('thead[grid-manager-thead]', $table);
+        $table.append($thead.clone(true).attr(Base.getSetTopAttr(), ''));
+
+        $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
+        $setTopHead.removeAttr('grid-manager-thead');
+        this.update($table);
+    }
+
+    /**
+     * 更新表头置顶
+     * @param $table
+     * @returns {boolean}
+     */
+    update($table) {
+        const $thead = jTool('thead[grid-manager-thead]', $table);
+
+        // 列表body
+        const $tbody = jTool('tbody', $table);
+
+        // 吸顶元素
+        const $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
+
+        // 当前列表数据为空
+        if (jTool('tr', $tbody).length === 0) {
+            return true;
+        }
+
+        $setTopHead.css({
+            width: $thead.width(),
+            left: -$table.closest('.table-div').scrollLeft() + 'px'
+        });
+
+        // TODO 触发resize之后，thead宽度会将滚动轴减去，需要处理
+        // 防止window.resize事件后导致的吸顶宽度错误. 可以优化
+        jTool.each(jTool('th', $thead), (i, th) => {
+            jTool('th', $setTopHead).eq(i).width(jTool(th).width());
+        });
+    }
 
 	/**
 	 * 为单个table绑定resize事件
@@ -24,11 +71,13 @@ class Scroll {
 		// 绑定resize事件: 对表头吸顶的列宽度进行修正
 		jTool(window).bind(`resize.${settings.gridManagerName}`, () => {
 			// 吸顶元素
-			const _setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
-			if (_setTopHead && _setTopHead.length === 1) {
-				_setTopHead.remove();
-				$table.closest('.table-div').trigger('scroll');
-			}
+			// const _setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
+			// if (_setTopHead && _setTopHead.length === 1) {
+			// 	_setTopHead.remove();
+			// 	$table.closest('.table-div').trigger('scroll');
+			// }
+            Base.updateScrollStatus($table);
+            this.render($table);
 		});
 	}
 
@@ -41,56 +90,8 @@ class Scroll {
 
 		// 绑定滚动条事件
 		tableDIV.unbind('scroll');
-		tableDIV.bind('scroll', function (e, _isWindowResize_) {
-			const _scrollDOMTop = jTool(this).scrollTop();
-
-			// 列表head
-			const _thead = jTool('thead[grid-manager-thead]', $table);
-
-			// 列表body
-			const _tbody = jTool('tbody', $table);
-
-			// 吸顶元素
-			let _setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
-
-			// 当前列表数据为空
-			if (jTool('tr', _tbody).length === 0) {
-				return true;
-			}
-
-			// 配置吸顶区的宽度
-			if (_setTopHead.length === 0 || _isWindowResize_) {
-				_setTopHead.length === 0 ? $table.append(_thead.clone(true).attr(Base.getSetTopAttr(), '')) : '';
-				_setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
-				_setTopHead.removeAttr('grid-manager-thead');
-				_setTopHead.removeClass('scrolling');
-				_setTopHead.css({
-					width: _thead.width(),
-					left: -$table.closest('.table-div').scrollLeft() + 'px'
-				});
-
-				// 防止window.resize事件后导致的吸顶宽度错误. 可以优化
-				jTool.each(jTool('th', _thead), (i, v) => {
-					jTool('th', _setTopHead).eq(i).width(jTool(v).width());
-				});
-			}
-			if (_setTopHead.length === 0) {
-				return;
-			}
-
-			// 删除表头置顶
-			if (_scrollDOMTop === 0) {
-				_thead.removeClass('scrolling');
-				// TODO 表头考虑下永久吸顶，看看是否可以清除非吸顶的元素以达到滚动轴不被盖住
-				_setTopHead.remove();
-				// 显示表头置顶
-			} else {
-				_thead.addClass('scrolling');
-				_setTopHead.css({
-					left: -$table.closest('.table-div').scrollLeft() + 'px'
-				});
-			}
-			return true;
+		tableDIV.bind('scroll', () => {
+		    this.update($table);
 		});
 	}
 

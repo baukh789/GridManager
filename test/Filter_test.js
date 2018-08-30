@@ -24,7 +24,7 @@ describe('Filter 验证类的属性及方法总量', function() {
     });
     it('Function count', function() {
         // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Filter)))).toBe(4 + 1);
+        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Filter)))).toBe(5 + 1);
     });
 });
 
@@ -112,6 +112,13 @@ describe('Filter.createHtml(settings, filter, tableWarpHeight)', function() {
         settings = null;
         filter = null;
         FilterHtml = null;
+    });
+});
+
+describe('Filter.update($table)', function() {
+    it('基础验证', function() {
+        expect(Filter.update).toBeDefined();
+        expect(Filter.update.length).toBe(2);
     });
 });
 
