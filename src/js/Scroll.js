@@ -13,6 +13,7 @@ class Scroll {
 	    this.render($table);
 		this.bindResizeToTable($table);
 		this.bindScrollToTableDiv($table);
+		this.update($table);
 	}
 
     /**
@@ -21,13 +22,12 @@ class Scroll {
      */
     render($table) {
         let $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
-        $setTopHead.remove();
+        $setTopHead.length && $setTopHead.remove();
         const $thead = jTool('thead[grid-manager-thead]', $table);
         $table.append($thead.clone(true).attr(Base.getSetTopAttr(), ''));
 
         $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
         $setTopHead.removeAttr('grid-manager-thead');
-        this.update($table);
     }
 
     /**
@@ -36,23 +36,22 @@ class Scroll {
      * @returns {boolean}
      */
     update($table) {
+        const $tableDiv = $table.closest('.table-div');
+        if ($tableDiv.length === 0) {
+            return;
+        }
         const $thead = jTool('thead[grid-manager-thead]', $table);
-
-        // 列表body
-        const $tbody = jTool('tbody', $table);
 
         // 吸顶元素
         const $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
 
-        // 当前列表数据为空
-        if (jTool('tr', $tbody).length === 0) {
-            return true;
-        }
-
+        // 隐藏$tableDiv的y轴滚动轴，以确保置顶区域宽度的准确性
+        $tableDiv.css({'overflow-y': 'hidden'});
         $setTopHead.css({
             width: $thead.width(),
-            left: -$table.closest('.table-div').scrollLeft() + 'px'
+            left: -$tableDiv.scrollLeft() + 'px'
         });
+        $tableDiv.css({'overflow-y': 'auto'});
 
         // TODO 触发resize之后，thead宽度会将滚动轴减去，需要处理
         // 防止window.resize事件后导致的吸顶宽度错误. 可以优化
@@ -69,15 +68,12 @@ class Scroll {
 	bindResizeToTable($table) {
 		const settings = Cache.getSettings($table);
 		// 绑定resize事件: 对表头吸顶的列宽度进行修正
+        jTool(window).unbind(`resize.${settings.gridManagerName}`);
 		jTool(window).bind(`resize.${settings.gridManagerName}`, () => {
-			// 吸顶元素
-			// const _setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
-			// if (_setTopHead && _setTopHead.length === 1) {
-			// 	_setTopHead.remove();
-			// 	$table.closest('.table-div').trigger('scroll');
-			// }
-            Base.updateScrollStatus($table);
-            this.render($table);
+            if ($table.closest('.table-div').length) {
+                Base.updateScrollStatus($table);
+                this.render($table);
+            }
 		});
 	}
 
@@ -100,13 +96,12 @@ class Scroll {
 	 * @param $table
 	 */
 	destroy($table) {
-		const tableDIV = $table.closest('.table-div');
 		const settings = Cache.getSettings($table);
 		// 清理: resize事件. 该事件并不干扰其它resize事件
 		jTool(window).unbind(`resize.${settings.gridManagerName}`);
 
 		// 清理: 表格滚动轴功能
-		tableDIV.unbind('scroll');
+        $table.closest('.table-div').unbind('scroll');
 	}
 }
 export default new Scroll();

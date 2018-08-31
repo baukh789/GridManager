@@ -396,7 +396,7 @@ export default class GridManager {
 		// 渲染HTML，嵌入所需的事件源DOM
 		Core.createDOM($table);
 
-        // 更新滚动轴状态
+        // 更新滚动轴显示状态
         Base.updateScrollStatus($table);
 
 		// 通过缓存配置成功后, 重置宽度调整事件源dom

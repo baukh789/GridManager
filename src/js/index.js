@@ -29,12 +29,12 @@ import { PublishMethod, publishMethodArray } from './Publish';
 		// 格式化参数
 		// ex: document.querySelector('table').GridManager()
 		if (arguments.length === 0) {
-			name	= 'init';
+			name = 'init';
 			arg = {};
 			callback = undefined;
 		} else if (jTool.type(arguments[0]) !== 'string') {
 			// ex: document.querySelector('table').GridManager({arg}, callback)
-			name	 = 'init';
+			name = 'init';
 			arg = arguments[0];
 			callback = arguments[1];
 		} else {
@@ -47,6 +47,11 @@ import { PublishMethod, publishMethodArray } from './Publish';
 			condition = arguments[3];
 		}
 
+        if (name === 'init' && (!arg.columnData || (!arg.ajax_data && !arg.ajax_url))) {
+            Base.outLog(`方法调用错误，缺失必要参数:[columnData、(ajax_data || ajax_url)]`, 'error');
+            return;
+        }
+
 		if (publishMethodArray.indexOf(name) === -1) {
 			Base.outLog(`方法调用错误，请确定方法名[${name}]是否正确`, 'error');
 			return;
@@ -58,6 +63,7 @@ import { PublishMethod, publishMethodArray } from './Publish';
 			Base.outLog(`方法调用错误，请确定表格已实例化`, 'error');
 			return;
 		}
+
 		return PublishMethod[name](this, arg, callback, condition) || this;
 	};
 })(jTool);
