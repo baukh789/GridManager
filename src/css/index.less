@@ -70,10 +70,6 @@
                 margin: 0;
                 padding: 0;
                 line-height: 18px;
-                .bg-image();
-                &:hover {
-                    background-color: #e0e0e0;
-                }
                 &[th-visible="none"] {
                     display: none;
                 }
@@ -376,7 +372,8 @@
                     left: 0;
                     top: 0;
                     z-index: 2;
-                    background-color: #ddd;
+                    //background-color: #ddd;
+                    .bg-image();
                     tr {
                         th {
                             /* 表头提醒 */
@@ -503,7 +500,6 @@
     .dreamland-div {
         display: none;
         position: absolute;
-        border: 1px solid #ccc;
         padding: 0;
         background: #fff;
         cursor: all-scroll;
@@ -517,21 +513,14 @@
             border-collapse: separate;
             border-spacing: 1px;
             font-size: @font-normal-size !important;
-            //font-family: @font-family;
+            thead{
+                .bg-image();
+            }
             tr {
-                th {
-                    background-color: #f3f3f3;
-                    text-align: center;
-                    &:hover {
-                        background-color: #e0e0e0;
-                    }
-                }
                 td {
                     background-color: #fff;
                     color: #3d3d3d;
                     padding: 4px;
-                    vertical-align: top;
-                    text-align: left;
                     .text-overflow();
                 }
             }

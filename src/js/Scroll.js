@@ -1,6 +1,5 @@
 /*
  * Scroll: 滚动轴
- * #001: 存在多次渲染时, 将会存在多个resize事件. 每个事件对应处理一个table. 这样做的好处是, 多个表之间无关联. 保持了相对独立性
  * */
 import { jTool, Base } from './Base';
 import Cache from './Cache';
@@ -45,16 +44,13 @@ class Scroll {
         // 吸顶元素
         const $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
 
-        // 隐藏$tableDiv的y轴滚动轴，以确保置顶区域宽度的准确性
-        $tableDiv.css({'overflow-y': 'hidden'});
+        // 重置thead的宽度和位置
         $setTopHead.css({
-            width: $thead.width(),
+            width: $tableDiv.width() < $thead.width() ? $thead.width() + 10 : $thead.width(),
             left: -$tableDiv.scrollLeft() + 'px'
         });
-        $tableDiv.css({'overflow-y': 'auto'});
 
-        // TODO 触发resize之后，thead宽度会将滚动轴减去，需要处理
-        // 防止window.resize事件后导致的吸顶宽度错误. 可以优化
+        // 重置th的宽度
         jTool.each(jTool('th', $thead), (i, th) => {
             jTool('th', $setTopHead).eq(i).width(jTool(th).width());
         });
@@ -62,8 +58,8 @@ class Scroll {
 
 	/**
 	 * 为单个table绑定resize事件
-	 * #001
 	 * @param $table
+     * 存在多次渲染时, 将会存在多个resize事件. 每个事件对应处理一个table. 这样做的好处是, 多个表之间无关联. 保持了相对独立性
      */
 	bindResizeToTable($table) {
 		const settings = Cache.getSettings($table);
@@ -83,11 +79,10 @@ class Scroll {
      */
 	bindScrollToTableDiv($table) {
 		const tableDIV = $table.closest('.table-div');
-
 		// 绑定滚动条事件
 		tableDIV.unbind('scroll');
 		tableDIV.bind('scroll', () => {
-		    this.update($table);
+            this.update($table);
 		});
 	}
 
