@@ -3,6 +3,7 @@
  * */
 import { jTool, Base } from './Base';
 import Cache from './Cache';
+import { Bind } from '../common/tools';
 class Adjust {
 	/**
 	 * 宽度调整HTML
@@ -61,50 +62,49 @@ class Adjust {
 	 * 绑定宽度调整事件
 	 * @param: table [jTool object]
 	 */
-	__bindAdjustEvent($table) {
-		const _this = this;
-		// 监听鼠标调整列宽度
-		$table.off('mousedown', '.adjust-action');
-		$table.on('mousedown', '.adjust-action', function (event) {
-			const _dragAction = jTool(this);
-			// 事件源所在的th
-			let $th = _dragAction.closest('th');
+    @Bind({
+        event: 'mousedown',
+        target: '.adjust-action'
+    })
+	__bindAdjustEvent(dom, event) {
+        const _dragAction = jTool(dom);
+        // 事件源所在的th
+        let $th = _dragAction.closest('th');
 
-			// 事件源所在的tr
-			let $tr = $th.parent();
+        // 事件源所在的tr
+        let $tr = $th.parent();
 
-			// 事件源所在的table
-			let	_$table = $tr.closest('table');
+        // 事件源所在的table
+        let	_$table = $tr.closest('table');
 
-			// 当前存储属性
-			const settings = Cache.getSettings(_$table);
+        // 当前存储属性
+        const settings = Cache.getSettings(_$table);
 
-			// 事件源同层级下的所有th
-			let	_allTh = $tr.find('th[th-visible="visible"]');
+        // 事件源同层级下的所有th
+        let	_allTh = $tr.find('th[th-visible="visible"]');
 
-			// 事件源下一个可视th
-			let	$nextTh = _allTh.eq($th.index(_allTh) + 1);
+        // 事件源下一个可视th
+        let	$nextTh = _allTh.eq($th.index(_allTh) + 1);
 
-			// 存储与事件源同列的所有td
-			let	$td = Base.getColTd($th);
+        // 存储与事件源同列的所有td
+        let	$td = Base.getColTd($th);
 
-			// 宽度调整触发回调事件
-			settings.adjustBefore(event);
+        // 宽度调整触发回调事件
+        settings.adjustBefore(event);
 
-			// 增加宽度调整中样式
-			$th.addClass('adjust-selected');
-			$td.addClass('adjust-selected');
+        // 增加宽度调整中样式
+        $th.addClass('adjust-selected');
+        $td.addClass('adjust-selected');
 
-			// 更新界面交互标识
-			Base.updateInteractive(_$table, 'Adjust');
+        // 更新界面交互标识
+        Base.updateInteractive(_$table, 'Adjust');
 
-			// 执行移动事件
-			_this.__runMoveEvent(_$table, $th, $nextTh);
+        // 执行移动事件
+        this.__runMoveEvent(_$table, $th, $nextTh);
 
-			// 绑定停止事件
-			_this.__runStopEvent(_$table, $th, $td);
-			return false;
-		});
+        // 绑定停止事件
+        this.__runStopEvent(_$table, $th, $td);
+        return false;
 	}
 
 	/**
