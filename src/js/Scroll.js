@@ -69,13 +69,14 @@ class Scroll {
             if ($table.closest('.table-div').length) {
                 Base.updateScrollStatus($table);
                 this.render($table);
+                this.update($table);
             }
 		});
 	}
 
 	/**
 	 * 绑定表格滚动轴功能
-	 * @param table
+	 * @param $table
      */
 	bindScrollToTableDiv($table) {
 		const tableDIV = $table.closest('.table-div');
