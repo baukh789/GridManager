@@ -12,8 +12,8 @@ export function BindEvent(option){
             const _arguments = arguments;
             $dom.unbind(option.event);
             $dom.bind(option.event, function (event) {
-                oldValue.call(_this, ..._arguments, this, event);
                 option.once && $dom.unbind(option.event);
+                oldValue.call(_this, ..._arguments)(this, event);
             });
         };
     }
@@ -26,7 +26,7 @@ export function BindEvent(option){
  * @constructor
  */
 export function OnEvent(option){
-    return function (target, key, descriptor) {
+    return (target, key, descriptor) => {
         const oldValue = descriptor.value;
         descriptor.value = function($dom) {
             const _this = this;
@@ -34,7 +34,7 @@ export function OnEvent(option){
             $dom.off(option.event, option.target);
             $dom.on(option.event, option.target, function (event) {
                 option.once && $dom.off(option.event, option.target);
-                oldValue.call(_this, ..._arguments, this, event);
+                oldValue.call(_this, ..._arguments)(this, event);
             });
         };
     }

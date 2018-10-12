@@ -40,13 +40,14 @@ class Scroll {
             return;
         }
         const $thead = jTool('thead[grid-manager-thead]', $table);
-
+        const theadWidth = $thead.width();
+        const tableDivWidth = $tableDiv.width();
         // 吸顶元素
         const $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
 
         // 重置thead的宽度和位置
         $setTopHead.css({
-            width: $tableDiv.width() < $thead.width() ? $thead.width() + 10 : $thead.width(),
+            width: tableDivWidth < theadWidth ? theadWidth + 10 : tableDivWidth,
             left: -$tableDiv.scrollLeft() + 'px'
         });
 

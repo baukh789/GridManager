@@ -186,6 +186,7 @@ class Cache {
 
         let _cache = {};
         _cache.column = settings.columnMap;
+        console.log(_cache.column);
 
         // 存储分页
         if (settings.supportAjaxPage) {
@@ -193,7 +194,10 @@ class Cache {
             _pageCache[settings.pageSizeKey] = settings.pageData[settings.pageSizeKey];
             _cache.page = _pageCache;
         }
+
+        // TODO 这行代码会将函数类型的模板，和值为undefined的 key值都清除掉
         const cacheString = JSON.stringify(_cache);
+        console.log(JSON.parse(cacheString));
         let GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
         if (!GridManagerMemory) {
             GridManagerMemory = {};
@@ -241,6 +245,9 @@ class Cache {
 
             // 为列Map 增加索引
             _settings.columnMap[col.key].index = index;
+
+            // 存储由用户配置的列宽度值, 该值不随着之后的操作变更
+            _settings.columnMap[col.key].__width = col.width;
         });
 
 	    // 合并用户记忆至 settings, 每页显示条数记忆不在此处
@@ -273,6 +280,9 @@ class Cache {
 	            if (!columnCache[key]
 		            // 显示文本
 		            || columnCache[key].text !== col.text
+
+                    // 宽度
+                    || columnCache[key].__width !== col.width
 
 		            // 文本排列方向
 		            || columnCache[key].align !== col.align
