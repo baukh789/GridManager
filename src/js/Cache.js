@@ -186,7 +186,6 @@ class Cache {
 
         let _cache = {};
         _cache.column = settings.columnMap;
-        console.log(_cache.column);
 
         // 存储分页
         if (settings.supportAjaxPage) {
@@ -195,9 +194,10 @@ class Cache {
             _cache.page = _pageCache;
         }
 
-        // TODO 这行代码会将函数类型的模板，和值为undefined的 key值都清除掉
+        // 注意: 这行代码会将columnMap中以下情况的字段清除:
+        // 1.函数类型的模板
+        // 2.值为undefined
         const cacheString = JSON.stringify(_cache);
-        console.log(JSON.parse(cacheString));
         let GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
         if (!GridManagerMemory) {
             GridManagerMemory = {};

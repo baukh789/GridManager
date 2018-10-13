@@ -64,7 +64,6 @@ describe('Adjust.__bindAdjustEvent($table)', function() {
 
 describe('Adjust.__runMoveEvent($table, $th, $nextTh)', function() {
 	it('基础验证', function(){
-	    console.log(Adjust.__runMoveEvent);
 		expect(Adjust.__runMoveEvent).toBeDefined();
 		expect(Adjust.__runMoveEvent.length).toBe(3);
 	});
