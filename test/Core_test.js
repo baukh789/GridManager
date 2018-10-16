@@ -113,10 +113,10 @@ describe('Core.driveDomForSuccessAfter($table, settings, response, callback)', f
 	});
 });
 
-describe('Core.createDOM($table)', function() {
+describe('Core.createDOM($table, settings)', function() {
 	it('基础验证', function () {
 		expect(Core.createDOM).toBeDefined();
-		expect(Core.createDOM.length).toBe(1);
+		expect(Core.createDOM.length).toBe(2);
 	});
 });
 

@@ -7,6 +7,12 @@ class Order {
 	get key() {
 		return 'gm_order';
 	}
+
+	// 序号的列宽
+	get width() {
+	    return '50px';
+    }
+
 	/**
 	 * 获取 序号字符串
 	 * @param settings
@@ -28,7 +34,7 @@ class Order {
 			text: I18n.getText(settings, 'order-text'),
 			isAutoCreate: true,
 			isShow: true,
-			width: '50px',
+			width: this.width,
 			align: 'center',
 			template: nodeData => {
 				return `<td gm-order="true" gm-create="true">${nodeData}</td>`;

@@ -374,9 +374,9 @@ class Core {
 	/**
 	 * 渲染HTML，根据配置嵌入所需的事件源DOM
 	 * @param $table
+	 * @param settings
      */
-	createDOM($table) {
-        let settings = Cache.getSettings($table);
+	createDOM($table, settings) {
         // 外围的html片段
         const wrapHtml = `<div class="table-wrap">
                             <div class="table-div"></div>
@@ -558,7 +558,6 @@ class Core {
 		// 单个TH所占宽度
 		let onlyWidth = 0;
 
-
         // 需要通过框架解析th数据
         const compileList = [];
 
@@ -569,7 +568,7 @@ class Core {
             const onlyThWarp = jTool('.th-wrap', onlyTH);
             const thName = onlyTH.attr('th-name');
             const onlyThText = onlyTH.text();
-            const column = settings.columnMap[onlyTH.attr('th-name')];
+            const column = settings.columnMap[thName];
             column.useCompile && compileList.push({el: onlyTH.find('.th-text').get(0)});
 
             // 是否为GM自动添加的列
@@ -626,7 +625,6 @@ class Core {
             let _minWidth = Base.getTextWidth(onlyTH);
             let _oldWidth = onlyTH.width();
             onlyWidth = _oldWidth > _minWidth ? _oldWidth : _minWidth;
-
 			// 清除width属性, 使用style.width进行宽度控制
 			onlyTH.removeAttr('width');
 			onlyTH.width(onlyWidth);

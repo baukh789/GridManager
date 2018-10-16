@@ -11,6 +11,11 @@ class Checkbox {
 		return 'gm_checkbox';
 	}
 
+	// 全选的列宽
+	get width() {
+	    return '40px';
+    }
+
 	/**
 	 * 获取当前选中的行
 	 * @param table
@@ -50,7 +55,7 @@ class Checkbox {
 			text: '',
 			isAutoCreate: true,
 			isShow: true,
-			width: '40px',
+			width: this.width,
 			align: 'center',
 			template: checked => {
 				return `<td gm-checkbox="true" gm-create="true">${settings.useRadio ? Base.getRadioString(checked) : Base.getCheckboxString(checked ? 'checked' : 'unchecked')}</td>`;

@@ -4,6 +4,9 @@
 import { jTool, Base } from './Base';
 import Cache from './Cache';
 import Adjust from './Adjust';
+import Checkbox from './Checkbox';
+import Order from './Order';
+import Scroll from './Scroll';
 class Config {
 	/**
 	 * 表格配置区域HTML
@@ -86,10 +89,16 @@ class Config {
 			// 所对应的table
 			const _$table = jTool('[grid-manager]', _tableWarp);
 
+			// thead
+			const $thead = jTool('thead[grid-manager-thead]', _$table);
+
+			// 存储原宽度，用于校正重新生成后的宽度
+			const theadWidth = $thead.width();
+
             const settings = Cache.getSettings(_$table);
 
 			// 所对应的th
-			const _th = jTool(`thead[grid-manager-thead] th[th-name="${_thName}"]`, _$table);
+			const _th = jTool(`th[th-name="${_thName}"]`, $thead);
 
 			// 最后一项显示列不允许隐藏
 			if (_only.hasClass('no-click')) {
@@ -121,37 +130,50 @@ class Config {
 			jTool('.sa-inner', _tableWarp).width('100%');
 
 			// 重置当前可视th的宽度
-			const _visibleTh = jTool('thead[grid-manager-thead] th[th-visible="visible"]', _$table);
+			const _visibleTh = jTool('th[th-visible="visible"]', $thead);
+
 			jTool.each(_visibleTh, (i, v) => {
-				// 特殊处理: GM自动创建的列使终为50px
-				if (v.getAttribute('gm-create') === 'true') {
-					v.style.width = '50px';
-				} else {
-					v.style.width = 'auto';
+				// 全选列
+				if (v.getAttribute('gm-checkbox') === 'true') {
+					v.style.width = Checkbox.width;
+                    return;
 				}
+
+                // 序号列
+				if (v.getAttribute('gm-order') === 'true') {
+                    v.style.width = Order.width;
+                    return;
+                }
+
+                v.style.width = 'auto';
 			});
 
 			// 当前th文本所占宽度大于设置的宽度
-			// 需要在上一个each执行完后才可以获取到准确的值
+			// 需要在上一个each执行完后,才可以获取到准确的值
+            let widthTotal = 0;
+            let _minWidth = null;
+            let _thWidth = null;
+            let _newWidth = null;
 			jTool.each(_visibleTh, (i, v) => {
-				const _realWidthForThText = Base.getTextWidth(v);
-				const	_thWidth = jTool(v).width();
-				if (_thWidth < _realWidthForThText) {
-					jTool(v).width(_realWidthForThText);
-				} else {
-					jTool(v).width(_thWidth);
-				}
+                _thWidth = jTool(v).width();
+				_minWidth = Base.getTextWidth(v);
+                _newWidth = _thWidth < _minWidth ? _minWidth : _thWidth;
+				// 最后一列使用剩余的宽度
+				if (i === _visibleTh.length - 1) {
+                    _newWidth = _tableDiv.width() > widthTotal + _newWidth ? _tableDiv.width() - widthTotal : _newWidth;
+                }
+
+                jTool(v).width(_newWidth);
+                widthTotal += _newWidth;
 			});
 
             // 更新存储信息
             Cache.update(_$table, settings);
 
 			// 处理置顶表头
-			const topThead = jTool(`thead[${Base.getSetTopAttr()}]`, _$table);
-			if (topThead.length === 1) {
-				topThead.remove();
-				_tableDiv.trigger('scroll');
-			}
+            Scroll.render(_$table);
+            Scroll.update(_$table);
+            Base.updateScrollStatus(_$table);
 		});
 	}
 

@@ -135,7 +135,6 @@ class BaseClass {
 			if (isVisible) {
 				_th.attr('th-visible', 'visible');
 				$.each(_tdList, (i2, v2) => {
-					// $(v2).show();
 					v2.setAttribute('td-visible', 'visible');
 				});
 				_checkLi.addClass('checked-li');
@@ -144,7 +143,6 @@ class BaseClass {
 				// 隐藏
 				_th.attr('th-visible', 'none');
 				$.each(_tdList, (i2, v2) => {
-					// $(v2).hide();
 					v2.setAttribute('td-visible', 'none');
 				});
 				_checkLi.removeClass('checked-li');

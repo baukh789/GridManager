@@ -310,9 +310,9 @@ export default class GridManager {
 			return;
 		}
 
-		// 参数变更提醒 @2.6.0
+		// 参数变更提醒
 		if (arg.ajax_url) {
-			Base.outLog('ajax_url在v2.6.0以后将被废弃, 请使用ajax_data替代', 'warn');
+			Base.outLog('ajax_url在之后将被废弃, 请使用ajax_data替代', 'warn');
 			arg.ajax_data = arg.ajax_url;
 		}
 
@@ -394,7 +394,7 @@ export default class GridManager {
 	initTable($table, settings) {
 
 		// 渲染HTML，嵌入所需的事件源DOM
-		Core.createDOM($table);
+		Core.createDOM($table, settings);
 
         // 更新滚动轴显示状态
         Base.updateScrollStatus($table);
