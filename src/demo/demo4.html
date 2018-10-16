@@ -159,9 +159,9 @@
             // supportCheckbox: false,
             // disableCache: true,
             // ajax_url 将在v2.6.0以上版本废弃，请不要再使用
-            // ,ajax_url: 'http://www.lovejavascript.com/blogManager/getBlogList'
+            // ,ajax_url: 'https://www.lovejavascript.com/blogManager/getBlogList'
             ajax_data: function () {
-                return 'http://www.lovejavascript.com/blogManager/getBlogList';
+                return 'https://www.lovejavascript.com/blogManager/getBlogList';
             }
             // ,firstLoading: false // 初始渲染时是否加载数据
             ,ajax_type: 'POST'
@@ -208,13 +208,13 @@
 
             // ,emptyTemplate: '<div class="void-template">通过 emptyTemplate 配置的空数据提示</div>'
             // 配置 request header, 非xhr自带的头信息将会触发非简单请求, 需要在后端进行对应的配置
-            // 参考链接: http://www.lovejavascript.com/#!zone/blog/content.html?id=53
+            // 参考链接: https://www.lovejavascript.com/#!zone/blog/content.html?id=53
 //				,ajax_headers: {
 //					'header-test': 'this is test request header'
 //					'Content-Type': 'application/json'
 //				}
             // 配置xhr, 如: withCredentials -> 跨域情况使用cookie等证书. 需要在后端进行对应的配置
-            // 参考链接: http://www.lovejavascript.com/#!zone/blog/content.html?id=59
+            // 参考链接: https://www.lovejavascript.com/#!zone/blog/content.html?id=59
             //		,ajax_xhrFields: {
             //			withCredentials: true
             //		}
@@ -248,19 +248,18 @@
                     // 使用函数返回 dom node
                     template: function(pic, rowObject) {
                         var picNode = document.createElement('a');
-                        picNode.setAttribute('href', `http://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
+                        picNode.setAttribute('href', `https://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
                         picNode.setAttribute('title', rowObject.title);
                         picNode.setAttribute('target', '_blank');
                         picNode.title = `点击阅读[${rowObject.title}]`;
                         picNode.style.display = 'block';
-                        picNode.style.height = '68.5px';
+                        picNode.style.height = '58.5px';
 
                         var imgNode = document.createElement('img');
-                        imgNode.style.width = '100px';
-                        imgNode.style.padding = '5px';
+                        imgNode.style.width = '90px';
                         imgNode.style.margin = '0 auto';
                         imgNode.alt = rowObject.title;
-                        imgNode.src = `http://www.lovejavascript.com/${pic}`;
+                        imgNode.src = `https://www.lovejavascript.com/${pic}`;
 
                         picNode.appendChild(imgNode);
                         return picNode;
@@ -274,7 +273,7 @@
                     // 使用函数返回 dom node
                     template: function(title, rowObject) {
                         var titleNode = document.createElement('a');
-                        titleNode.setAttribute('href', `http://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
+                        titleNode.setAttribute('href', `https://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
                         titleNode.setAttribute('title', title);
                         titleNode.setAttribute('target', '_blank');
                         titleNode.innerText = title;

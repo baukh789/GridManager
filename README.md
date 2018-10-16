@@ -44,7 +44,7 @@ npm install gridmanager --save
 ```javascript
 document.querySelector('table').GM({
 	gridManagerName: 'demo-baseCode',
-    ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
+    ajax_url: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
     ajax_type: 'POST',
     query: {pluginId: 1},
     columnData: [
@@ -69,7 +69,7 @@ document.querySelector('table').GM({
 ```javascript
 document.querySelector('table').GM({
 	gridManagerName: 'demo-ajaxPageCode',
-    ajax_url: 'http://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
+    ajax_url: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
     ajax_type: 'POST'
     query: {pluginId: 1},
     supportAjaxPage: true,

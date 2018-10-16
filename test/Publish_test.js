@@ -188,6 +188,7 @@ describe('PublishMethod 非init方法验证', function() {
 		arg = {
 			ajax_data: testData,
 			gridManagerName: gridManagerName,
+            disableCache: true,
 			query: queryValue,
 			columnData: [
 				{

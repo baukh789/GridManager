@@ -1,6 +1,7 @@
 /*
  * Checkbox: 数据选择/全选/返选
  * */
+import { CHECKBOX_WIDTH } from '../common/constants';
 import { jTool, Base } from './Base';
 import I18n from './I18n';
 import Cache from './Cache';
@@ -10,11 +11,6 @@ class Checkbox {
 	get key() {
 		return 'gm_checkbox';
 	}
-
-	// 全选的列宽
-	get width() {
-	    return '40px';
-    }
 
 	/**
 	 * 获取当前选中的行
@@ -55,7 +51,7 @@ class Checkbox {
 			text: '',
 			isAutoCreate: true,
 			isShow: true,
-			width: this.width,
+			width: CHECKBOX_WIDTH,
 			align: 'center',
 			template: checked => {
 				return `<td gm-checkbox="true" gm-create="true">${settings.useRadio ? Base.getRadioString(checked) : Base.getCheckboxString(checked ? 'checked' : 'unchecked')}</td>`;

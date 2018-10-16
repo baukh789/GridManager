@@ -2,6 +2,7 @@
  * Base: 基础方法
  * */
 import {} from '../../node_modules/jtool/jTool.min';
+import { ORDER_WIDTH, CHECKBOX_WIDTH } from '../common/constants';
 let $ = window.jTool;
 let jTool = window.jTool;
 class BaseClass {
@@ -152,6 +153,50 @@ class BaseClass {
 			typeof cb === 'function' ? cb() : '';
 		});
 	}
+
+    /**
+     * 更新列宽
+     * @param $table
+     */
+	updateThWidth($table) {
+        const $tableDiv = $table.closest('.table-div');
+        const $thead = jTool('thead[grid-manager-thead]', $table);
+        const $visibleThList = jTool('th[th-visible="visible"]', $thead);
+        jTool.each($visibleThList, (i, v) => {
+            // 全选列
+            if (v.getAttribute('gm-checkbox') === 'true') {
+                v.style.width = CHECKBOX_WIDTH;
+                return;
+            }
+
+            // 序号列
+            if (v.getAttribute('gm-order') === 'true') {
+                v.style.width = ORDER_WIDTH;
+                return;
+            }
+
+            v.style.width = 'auto';
+        });
+
+        // 当前th文本所占宽度大于设置的宽度
+        // 需要在上一个each执行完后,才可以获取到准确的值
+        let widthTotal = 0;
+        let minWidth = null;
+        let thWidth = null;
+        let newWidth = null;
+        jTool.each($visibleThList, (i, v) => {
+            thWidth = jTool(v).width();
+            minWidth = Base.getTextWidth(v);
+            newWidth = thWidth < minWidth ? minWidth : thWidth;
+            // 最后一列使用剩余的宽度
+            if (i === $visibleThList.length - 1) {
+                newWidth = $tableDiv.width() > widthTotal + newWidth ? $tableDiv.width() - widthTotal : newWidth;
+            }
+
+            jTool(v).width(newWidth);
+            widthTotal += newWidth;
+        });
+    }
 
 	/**
 	 * 获取TH中文本的宽度. 该宽度指的是文本所实际占用的宽度

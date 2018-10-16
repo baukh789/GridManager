@@ -130,7 +130,7 @@
 	const getBlogList = function(paramse) {
 		return new Promise((resolve, reject) => {
 			const xhr = new XMLHttpRequest();
-			xhr.open('POST', 'http://www.lovejavascript.com/blogManager/getBlogList');
+			xhr.open('POST', 'https://www.lovejavascript.com/blogManager/getBlogList');
 			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState !== 4) {
@@ -181,19 +181,18 @@
 					// 使用函数返回 dom node
 					template: function(pic, rowObject) {
 						var picNode = document.createElement('a');
-						picNode.setAttribute('href', `http://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
+						picNode.setAttribute('href', `https://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
 						picNode.setAttribute('title', rowObject.title);
 						picNode.setAttribute('target', '_blank');
 						picNode.title = `点击阅读[${rowObject.title}]`;
 						picNode.style.display = 'block';
-						picNode.style.height = '68.5px';
+                        picNode.style.height = '58.5px';
 
 						var imgNode = document.createElement('img');
-						imgNode.style.width = '100px';
-						imgNode.style.padding = '5px';
+						imgNode.style.width = '90px';
 						imgNode.style.margin = '0 auto';
 						imgNode.alt = rowObject.title;
-						imgNode.src = `http://www.lovejavascript.com/${pic}`;
+						imgNode.src = `https://www.lovejavascript.com/${pic}`;
 
 						picNode.appendChild(imgNode);
 						return picNode;
@@ -208,7 +207,7 @@
 					// 使用函数返回 dom node
 					template: function(title, rowObject) {
 						var titleNode = document.createElement('a');
-						titleNode.setAttribute('href', `http://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
+						titleNode.setAttribute('href', `https://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
 						titleNode.setAttribute('title', title);
 						titleNode.setAttribute('target', '_blank');
 						titleNode.innerText = title;

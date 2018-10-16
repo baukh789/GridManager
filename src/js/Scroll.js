@@ -67,11 +67,14 @@ class Scroll {
 		// 绑定resize事件: 对表头吸顶的列宽度进行修正
         jTool(window).unbind(`resize.${settings.gridManagerName}`);
 		jTool(window).bind(`resize.${settings.gridManagerName}`, () => {
-            if ($table.closest('.table-div').length) {
-                Base.updateScrollStatus($table);
-                this.render($table);
-                this.update($table);
+            if ($table.closest('.table-div').length !== 1) {
+                return;
             }
+            Base.updateThWidth($table);
+            Base.updateScrollStatus($table);
+            Cache.update($table, settings);
+            this.render($table);
+            this.update($table);
 		});
 	}
 

@@ -4,8 +4,6 @@
 import { jTool, Base } from './Base';
 import Cache from './Cache';
 import Adjust from './Adjust';
-import Checkbox from './Checkbox';
-import Order from './Order';
 import Scroll from './Scroll';
 class Config {
 	/**
@@ -92,9 +90,6 @@ class Config {
 			// thead
 			const $thead = jTool('thead[grid-manager-thead]', _$table);
 
-			// 存储原宽度，用于校正重新生成后的宽度
-			const theadWidth = $thead.width();
-
             const settings = Cache.getSettings(_$table);
 
 			// 所对应的th
@@ -130,42 +125,7 @@ class Config {
 			jTool('.sa-inner', _tableWarp).width('100%');
 
 			// 重置当前可视th的宽度
-			const _visibleTh = jTool('th[th-visible="visible"]', $thead);
-
-			jTool.each(_visibleTh, (i, v) => {
-				// 全选列
-				if (v.getAttribute('gm-checkbox') === 'true') {
-					v.style.width = Checkbox.width;
-                    return;
-				}
-
-                // 序号列
-				if (v.getAttribute('gm-order') === 'true') {
-                    v.style.width = Order.width;
-                    return;
-                }
-
-                v.style.width = 'auto';
-			});
-
-			// 当前th文本所占宽度大于设置的宽度
-			// 需要在上一个each执行完后,才可以获取到准确的值
-            let widthTotal = 0;
-            let _minWidth = null;
-            let _thWidth = null;
-            let _newWidth = null;
-			jTool.each(_visibleTh, (i, v) => {
-                _thWidth = jTool(v).width();
-				_minWidth = Base.getTextWidth(v);
-                _newWidth = _thWidth < _minWidth ? _minWidth : _thWidth;
-				// 最后一列使用剩余的宽度
-				if (i === _visibleTh.length - 1) {
-                    _newWidth = _tableDiv.width() > widthTotal + _newWidth ? _tableDiv.width() - widthTotal : _newWidth;
-                }
-
-                jTool(v).width(_newWidth);
-                widthTotal += _newWidth;
-			});
+            Base.updateThWidth(_$table);
 
             // 更新存储信息
             Cache.update(_$table, settings);
