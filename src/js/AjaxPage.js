@@ -307,7 +307,7 @@ class AjaxPage {
 		const gp_input = jTool('.gp-input', footerToolbar);
 
 		gp_input.unbind('keyup');
-		gp_input.bind('keyup', function () {
+		gp_input.bind('keyup', function (event) {
 			if (event.which !== 13) {
 				return;
 			}
