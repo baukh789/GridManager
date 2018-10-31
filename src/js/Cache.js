@@ -1,9 +1,8 @@
 /*
-* @Cache: 本地缓存
-* 缓存分为三部分:
-* 1.GridData: 渲染表格时所使用的json数据 [存储在GM实例]
-* 2.Cache: 核心缓存数据 [存储在DOM上]
-* 3.UserMemory: 用户记忆 [存储在localStorage]
+* @Cache: 数据存储
+* 缓存类型分为:
+* 1.Store: 渲染表格时所使用的json数据 [存储在GM实例]
+* 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import {jTool, Base} from './Base';
 import {Settings, TextSettings} from './Settings';
@@ -159,11 +158,7 @@ class Cache {
             return {};
         }
         GridManagerMemory = JSON.parse(GridManagerMemory);
-        const _data = {
-            key: _key,
-            cache: JSON.parse(GridManagerMemory[_key] || '{}')
-        };
-        return _data;
+        return JSON.parse(GridManagerMemory[_key] || '{}');
     }
 
     /**
@@ -258,7 +253,7 @@ class Cache {
             }
 
             const userMemory = this.getUserMemory($table);
-            const columnCache = userMemory.cache && userMemory.cache.column ? userMemory.cache.column : {};
+            const columnCache = userMemory.column || {};
             const columnCacheKeys = Object.keys(columnCache);
             const columnMapKeys = Object.keys(_settings.columnMap);
 

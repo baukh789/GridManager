@@ -457,19 +457,17 @@ class AjaxPage {
 	 * @private
      */
 	__configPageForCache($table, settings) {
-		let _data = Cache.getUserMemory($table);
-
 		// 缓存对应
-		let	_cache = _data.cache;
+		let	userMemory = Cache.getUserMemory($table);
 
 		// 每页显示条数
 		let	_pSize = null;
 
 		// 验证是否存在每页显示条数缓存数据
-		if (!_cache || !_cache.page || !_cache.page[settings.pageSizeKey]) {
+		if (!userMemory || !userMemory.page || !userMemory.page[settings.pageSizeKey]) {
 			_pSize = settings.pageSize || 10;
 		} else {
-			_pSize = _cache.page[settings.pageSizeKey];
+			_pSize = userMemory.page[settings.pageSizeKey];
 		}
 		const pageData = {};
 		pageData[settings.pageSizeKey] = _pSize;
