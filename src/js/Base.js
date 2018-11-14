@@ -324,6 +324,7 @@ class BaseClass {
      * 根据不同的框架解析指定节点
      * @param settings:
      * @param compileList: 将要解析的节点
+     * @returns {boolean}
      */
     compileFramework(settings, compileList) {
         try {
@@ -333,12 +334,16 @@ class BaseClass {
             }
 
             // 解析框架: Angular
-            // ....
+            if (typeof settings.compileAngularjs === 'function' && compileList.length > 0) {
+                settings.compileAngularjs(compileList);
+            }
 
             // 解析框架: React
             // ...
+            return true;
         } catch (e) {
-            this.outLog('框架模板解析异常, 请查看template配置项', 'error');
+            this.outLog(`框架模板解析异常。详细原因:\\n${e}`, 'error');
+            return false;
         }
     }
 

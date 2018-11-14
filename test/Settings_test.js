@@ -13,10 +13,14 @@ describe('Settings', function() {
 	});
 
 	it('验证属性[compileVue]初始值', function() {
-		expect(settings.compileVue).toBe(false);
+		expect(settings.compileVue).toBe(null);
 	});
 
-	it('验证属性[supportDrag]初始值', function() {
+    it('验证属性[compileAngularjs]初始值', function() {
+        expect(settings.compileAngularjs).toBe(null);
+    });
+
+    it('验证属性[supportDrag]初始值', function() {
 		expect(settings.supportDrag).toBe(true);
 	});
 
@@ -112,6 +116,10 @@ describe('Settings', function() {
 	it('验证属性[supportAjaxPage]初始值', function() {
 		expect(settings.supportAjaxPage).toBe(false);
 	});
+
+    it('验证属性[useNoTotalsMode]初始值', function() {
+        expect(settings.useNoTotalsMode).toBe(false);
+    });
 
 	it('验证属性[sizeData]初始值', function() {
 		expect(settings.sizeData).toEqual([10,20,30,50,100]);
@@ -272,7 +280,7 @@ describe('textConfig', function() {
 		for(key in textConfig){
 			count++;
 		}
-		expect(count).toBe(15);
+		expect(count).toBe(16);
 	});
 	it('验证国际化文本[order-text]初始值', function(){
 		expect(textConfig['order-text']['zh-cn']).toBe('序号');
@@ -316,7 +324,14 @@ describe('textConfig', function() {
 		expect(textConfig['page-info']['en-us']).toBe('this page show {0}-{1} count {2}');
 	});
 
-	it('验证国际化文本[goto-first-text]初始值', function(){
+    it('验证国际化文本[page-info-no-totals]初始值', function(){
+        expect(textConfig['page-info-no-totals']['zh-cn']).toBe('此页显示 {0}-{1}');
+        expect(textConfig['page-info-no-totals']['zh-tw']).toBe('此頁顯示 {0}-{1}');
+        expect(textConfig['page-info-no-totals']['en-us']).toBe('this page show {0}-{1}');
+    });
+
+
+    it('验证国际化文本[goto-first-text]初始值', function(){
 		expect(textConfig['goto-first-text']['zh-cn']).toBe('跳转至');
 		expect(textConfig['goto-first-text']['zh-tw']).toBe('跳轉至');
 		expect(textConfig['goto-first-text']['en-us']).toBe('goto');

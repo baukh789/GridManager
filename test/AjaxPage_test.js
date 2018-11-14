@@ -279,14 +279,14 @@ describe('AjaxPage.__resetPageInfo($table, settings, _pageData_)', function() {
     });
 });
 
-describe('AjaxPage.resetPageData($table, settings, totals)', function() {
+describe('AjaxPage.resetPageData($table, settings, totals, len)', function() {
 	it('基础验证', function () {
 		expect(AjaxPage.resetPageData).toBeDefined();
-		expect(AjaxPage.resetPageData.length).toBe(3);
+		expect(AjaxPage.resetPageData.length).toBe(4);
 	});
 });
 
-describe('AjaxPage.__getPageData(settings, totals)', function() {
+describe('AjaxPage.__getPageData(settings, totals, len)', function() {
 	var settings = null;
 	var totals = null;
 	var pageData = null;
@@ -303,7 +303,7 @@ describe('AjaxPage.__getPageData(settings, totals)', function() {
 
 	it('基础验证', function () {
 		expect(AjaxPage.__getPageData).toBeDefined();
-		expect(AjaxPage.__getPageData.length).toBe(2);
+		expect(AjaxPage.__getPageData.length).toBe(3);
 	});
 
 	it('返回值-> 使用 pageData.pSize', function () {

@@ -489,7 +489,7 @@ describe('Base.compileFramework(settings, compileList)', function() {
         settings = {
             compileVue: jasmine.createSpy('callback')
         };
-        Base.compileFramework(settings, compileList);
+        expect(Base.compileFramework(settings, compileList)).toBe(true);
         expect(settings.compileVue).toHaveBeenCalled();
     });
 
@@ -499,8 +499,7 @@ describe('Base.compileFramework(settings, compileList)', function() {
                 throw new Error('返回一个错误');
             }
         };
-        Base.compileFramework(settings, compileList);
-        expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '框架模板解析异常, 请查看template配置项');
+        expect(Base.compileFramework(settings, compileList)).toBe(false);
     });
 });
 

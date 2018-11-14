@@ -75,13 +75,17 @@ class AjaxPage {
 	 * @param $table
 	 * @param settings
 	 * @param totals 总条数
+	 * @param len 本次请求返回的总条数，该参数仅在totals为空时使用
 	 */
-	resetPageData($table, settings, totals) {
+	resetPageData($table, settings, totals, len) {
 		const _this = this;
-		if (isNaN(parseInt(totals, 10))) {
+
+		// 未使用无总条数模式 且 总条数无效时直接跳出
+		if (!settings.useNoTotalsMode && isNaN(parseInt(totals, 10))) {
+		    Base.outLog('分页错误，请确认返回数据中是否存在totals字段(或配置项totalsKey所指定的字段)。', 'error');
 			return;
 		}
-		const _pageData = this.__getPageData(settings, totals);
+		const _pageData = this.__getPageData(settings, totals, len);
 
 		// 生成页码DOM节点
 		_this.__createPaginationDOM($table, settings, _pageData);
@@ -113,8 +117,8 @@ class AjaxPage {
 			toPage = 1;
 		}
 
-		// 跳转的指定页大于总页数
-		if (toPage > settings.pageData.tPage) {
+		// 未使用使用无总条数模式 且 跳转的指定页大于总页数时，强制跳转至最后一页
+		if (!settings.useNoTotalsMode && toPage > settings.pageData.tPage) {
 			toPage = settings.pageData.tPage;
 		}
 
@@ -211,14 +215,17 @@ class AjaxPage {
 						${ tPage }
 					</li>`;
 		}
+
 		// 配置页码
-		for (i; i <= maxI; i++) {
-			if (i === cPage) {
-				tHtml += `<li class="active">${ cPage }</li>`;
-				continue;
-			}
-			tHtml += `<li c-page="${ i }">${ i }</li>`;
-		}
+        if (!settings.useNoTotalsMode) {
+            for (i; i <= maxI; i++) {
+                if (i === cPage) {
+                    tHtml += `<li class="active">${ cPage }</li>`;
+                    continue;
+                }
+                tHtml += `<li c-page="${ i }">${ i }</li>`;
+            }
+        }
 		tHtml += lHtml;
 
 		// 配置下一页与尾页
@@ -418,7 +425,7 @@ class AjaxPage {
         // 总共条数
         const totalNum = pageData.tSize;
 
-        const tmpHtml = I18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum]);
+        const tmpHtml = I18n.i18nText(settings, settings.useNoTotalsMode ? 'page-info-no-totals' : 'page-info', [fromNum, toNum, totalNum]);
         pageInfo.html(tmpHtml);
     }
 
@@ -426,13 +433,20 @@ class AjaxPage {
 	 * 计算并返回分页数据
 	 * @param settings
 	 * @param totals
+     * @param len 本次请求返回的总条数，该参数仅在totals为空时使用
 	 * @returns {{tPage: number, cPage: *, pSize: *, tSize: *}}
 	 * @private
      */
-	__getPageData(settings, totals) {
+	__getPageData(settings, totals, len) {
 		const _pSize = settings.pageData[settings.pageSizeKey] || settings.pageSize;
-		const _tPage = Math.ceil(totals / _pSize);
 		const _cPage = settings.pageData[settings.currentPageKey] || 1;
+
+        let _tPage = null;
+        if (settings.useNoTotalsMode) {
+            _tPage = len < _pSize ? _cPage : _cPage + 1;
+        } else {
+            _tPage = Math.ceil(totals / _pSize);
+        }
 		const pageData = {};
 
 		// 总页数

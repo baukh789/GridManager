@@ -227,7 +227,7 @@ class Core {
 
 		// 渲染分页
 		if (settings.supportAjaxPage) {
-			AjaxPage.resetPageData($table, settings, parseRes[settings.totalsKey]);
+			AjaxPage.resetPageData($table, settings, parseRes[settings.totalsKey], _data.length);
 			Menu.updateMenuPageStatus(settings.gridManagerName, settings);
 		}
 
@@ -336,12 +336,14 @@ class Core {
 
                     tdList[col.index] = tdNode;
 
-                    col.useCompile && compileList.push({el: tdNode, row: row});
+                    // col.useCompile && compileList.push({el: tdNode, row: row});
                 });
 
                 tdList.forEach(td => {
                     trNode.appendChild(td);
                 });
+
+                compileList.push({el: trNode, row: row});
 
                 _tbody.appendChild(trNode);
             });

@@ -30,7 +30,7 @@ const config = {
 	},
 	// 以插件形式定制webpack构建过程
 	plugins: [
-		// 将样式文件 抽取至独立文件内
+        // 将样式文件 抽取至独立文件内
 		new ExtractTextWebpackPlugin({
 			// 生成文件的文件名
 			filename: 'css/gm.css',

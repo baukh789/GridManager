@@ -64,15 +64,23 @@ class Scroll {
      */
 	bindResizeToTable($table) {
 		const settings = Cache.getSettings($table);
+		let oldBodyWidth = document.querySelector('body').offsetWidth;
+
 		// 绑定resize事件: 对表头吸顶的列宽度进行修正
         jTool(window).unbind(`resize.${settings.gridManagerName}`);
 		jTool(window).bind(`resize.${settings.gridManagerName}`, () => {
             if ($table.closest('.table-div').length !== 1) {
                 return;
             }
-            Base.updateThWidth($table);
+
+            // 当可视宽度变化时，更新表头宽度
+            const _bodyWidth = document.querySelector('body').offsetWidth;
+            if (_bodyWidth !== oldBodyWidth) {
+                Base.updateThWidth($table);
+                oldBodyWidth = _bodyWidth;
+                Cache.update($table, settings);
+            }
             Base.updateScrollStatus($table);
-            Cache.update($table, settings);
             this.render($table);
             this.update($table);
 		});

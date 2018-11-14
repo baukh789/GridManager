@@ -10,8 +10,12 @@ class Settings {
 		 */
 		const frameworks = {
 			// @2.6.0
-			// 是否需要解析Vue模版
-			compileVue: false
+			// vue框架解析器，在gridmanager-vue项目中使用
+			compileVue: null,
+
+            // @2.6.13
+            // angularjs框架解析器，在gridmanager-angularjs项目中使用
+            compileAngularjs: null
 		};
 
 		/**
@@ -132,6 +136,9 @@ class Settings {
 		const ajaxPage = {
 			// 是否支持配置列表ajxa分页
 			supportAjaxPage: false,
+
+            // 是否使用无总条数模式
+            useNoTotalsMode: false,
 
             // 是否显示底部工具: 刷新按纽
             showFooterRefresh: true,
@@ -397,6 +404,11 @@ class TextSettings {
 			'zh-tw': '此頁顯示 {0}-{1} 共{2}條',
 			'en-us': 'this page show {0}-{1} count {2}'
 		};
+        this['page-info-no-totals'] = {
+            'zh-cn': '此页显示 {0}-{1}',
+            'zh-tw': '此頁顯示 {0}-{1}',
+            'en-us': 'this page show {0}-{1}'
+        };
         this['checked-info'] = {
             'zh-cn': '已选 {0} 条',
             'zh-tw': '已選 {0} 條',
