@@ -311,7 +311,7 @@ class Core {
                     _template = typeof _template === 'function' ? _template(row) : _template;
 
                     topTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div class="full-column-td">${_template}</div></td>`;
-                    settings.topFullColumn.useCompile && compileList.push({el: topTrNode, row: row});
+                    compileList.push({el: topTrNode, row: row});
                     _tbody.appendChild(topTrNode);
                 }
 
@@ -335,8 +335,6 @@ class Core {
                     col.align && tdNode.setAttribute('align', col.align);
 
                     tdList[col.index] = tdNode;
-
-                    // col.useCompile && compileList.push({el: tdNode, row: row});
                 });
 
                 tdList.forEach(td => {
@@ -560,9 +558,6 @@ class Core {
 		// 单个TH所占宽度
 		let onlyWidth = 0;
 
-        // 需要通过框架解析th数据
-        const compileList = [];
-
 		// 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
 		// 单个TH下的上层DIV
 		jTool.each(onlyThList, (index, item) => {
@@ -571,7 +566,6 @@ class Core {
             const thName = onlyTH.attr('th-name');
             const onlyThText = onlyTH.text();
             const column = settings.columnMap[thName];
-            column.useCompile && compileList.push({el: onlyTH.find('.th-text').get(0)});
 
             // 是否为GM自动添加的列
             const isAutoCol = column.isAutoCreate;
@@ -631,9 +625,6 @@ class Core {
 			onlyTH.removeAttr('width');
 			onlyTH.width(onlyWidth);
 		});
-
-		// 解析框架
-        Base.compileFramework(settings, compileList);
 
 		// 删除渲染中标识、增加渲染完成标识
 		$table.removeClass('GridManager-loading');

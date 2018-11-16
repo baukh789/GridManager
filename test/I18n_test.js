@@ -4,6 +4,7 @@
 'use strict';
 import I18n from '../src/js/I18n';
 import { Settings, TextSettings } from '../src/js/Settings';
+import { CONSOLE_STYLE } from '../src/common/constants';
 /**
  * 验证类的属性及方法总量
  */
@@ -76,15 +77,15 @@ describe('i18nText(settings, key, v1, v2, v3)', function() {
 		settings.textConfig = new TextSettings();
 
 		// 存储console, 用于在测方式完成后原还console对象
-		console._warn = console.warn;
-		console.warn = jasmine.createSpy("warn");
+		console._log = console.log;
+		console.log = jasmine.createSpy("log");
 	});
 
 	afterEach(function(){
 		settings = null;
 
 		// 还原console
-		console.warn = console._warn;
+		console.log = console._log;
 	});
 	it('基础验证', function() {
 		expect(I18n.i18nText).toBeDefined();
@@ -110,7 +111,8 @@ describe('i18nText(settings, key, v1, v2, v3)', function() {
 
 		// 指定错误的, 并验证错误打印信息
 		expect(I18n.i18nText(settings, 'undefinedKey', [1, 2, 3])).toBe('');
-		expect(console.warn).toHaveBeenCalledWith('GridManager Warn: ', '未找到与undefinedKey相匹配的zh-cn语言');
+		expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 未找到与undefinedKey相匹配的zh-cn语言 ', ...CONSOLE_STYLE.WARN);
+
 	});
 });
 

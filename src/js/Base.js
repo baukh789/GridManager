@@ -2,7 +2,7 @@
  * Base: 基础方法
  * */
 import {} from '../../node_modules/jtool/jTool.min';
-import { ORDER_WIDTH, CHECKBOX_WIDTH } from '../common/constants';
+import { ORDER_WIDTH, CHECKBOX_WIDTH, CONSOLE_STYLE } from '../common/constants';
 let $ = window.jTool;
 let jTool = window.jTool;
 class BaseClass {
@@ -58,17 +58,17 @@ class BaseClass {
 	outLog(msg, type) {
 		switch (type) {
 			case 'info':
-				console.info('GridManager Info: ', msg);
-				break;
+			    console.log(`%c GridManager Info %c ${msg} `, ...CONSOLE_STYLE.INFO);
+                break;
 			case 'warn':
-				console.warn('GridManager Warn: ', msg);
+                console.log(`%c GridManager Warn %c ${msg} `, ...CONSOLE_STYLE.WARN);
 				break;
 			case 'error':
-				console.error('GridManager Error: ', msg);
-				break;
+			    console.log(`%c GridManager Error %c ${msg} `, ...CONSOLE_STYLE.ERROR);
+                break;
 			default:
-				console.log('GridManager: ', msg);
-				break;
+                console.log(`%c GridManager Log %c ${msg} `, ...CONSOLE_STYLE.INFO);
+                break;
 		}
 	}
 
@@ -333,7 +333,7 @@ class BaseClass {
                 settings.compileVue(compileList);
             }
 
-            // 解析框架: Angular
+            // 解析框架: Angular 1.x
             if (typeof settings.compileAngularjs === 'function' && compileList.length > 0) {
                 settings.compileAngularjs(compileList);
             }

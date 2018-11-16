@@ -23,10 +23,16 @@ class Scroll {
         let $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
         $setTopHead.length && $setTopHead.remove();
         const $thead = jTool('thead[grid-manager-thead]', $table);
+
+        const settings = Cache.getSettings($table);
+
         $table.append($thead.clone(true).attr(Base.getSetTopAttr(), ''));
 
         $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
+        // 解析框架
+        Base.compileFramework(settings, [{el: $setTopHead.get(0).querySelector('tr')}]);
         $setTopHead.removeAttr('grid-manager-thead');
+
     }
 
     /**

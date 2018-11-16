@@ -3,6 +3,7 @@
  */
 import testData from '../src/data/testData';
 import {jTool} from "../src/js/Base";
+import { CONSOLE_STYLE } from '../src/common/constants';
 require('../src/js/index');
 
 describe('index.js Element.prototype.GM', function() {
@@ -18,8 +19,8 @@ describe('index.js Element.prototype.GM', function() {
 	beforeEach(function(){
 
         // 存储console, 用于在测方式完成后原还console对象
-        console._error = console.error;
-        console.error = jasmine.createSpy("error");
+        console._log = console.log;
+        console.log = jasmine.createSpy("log");
 		table = document.createElement('table');
 		div = document.createElement('div');
 		document.body.appendChild(table);
@@ -58,7 +59,7 @@ describe('index.js Element.prototype.GM', function() {
 
 	afterEach(function(){
 		// 还原console
-		console.error = console._error;
+		console.log = console._log;
 
 		table = null;
 		div = null;
@@ -84,17 +85,17 @@ describe('index.js Element.prototype.GM', function() {
 
 	it('非 table 的Element', function(){
 		expect(div.GM()).toBeUndefined();
-		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '不支持对非table标签实例化');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 不支持对非table标签实例化 ', ...CONSOLE_STYLE.ERROR);
 	});
 
     it('非init方法, 且当前并未实例化', function(){
         expect(table.GM('get')).toBeUndefined();
-        expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '方法调用错误，请确定表格已实例化');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 方法调用错误，请确定表格已实例化 ', ...CONSOLE_STYLE.ERROR);
     });
 
     it('GM() 参数为空', function(){
         expect(table.GM()).toBeUndefined();
-        expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '方法调用错误，缺失必要参数:[columnData、(ajax_data || ajax_url)]');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 方法调用错误，缺失必要参数:[columnData、(ajax_data || ajax_url)] ', ...CONSOLE_STYLE.ERROR);
     });
 
 	it('未传递方法名参数', function(){
@@ -113,6 +114,6 @@ describe('index.js Element.prototype.GM', function() {
 
         // 错误的方法名
         expect(table.GM('errorFnName', {'name': 'cc'})).toBeUndefined();
-        expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '方法调用错误，请确定方法名[errorFnName]是否正确');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 方法调用错误，请确定方法名[errorFnName]是否正确 ', ...CONSOLE_STYLE.ERROR);
 	});
 });

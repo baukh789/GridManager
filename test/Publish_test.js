@@ -9,6 +9,7 @@ import testData2 from '../src/data/testData2';
 import { GM_VERSION, GM_PUBLISH_METHOD_LIST } from '../src/common/constants';
 import GridManager from "../src/js/GridManager";
 import {Base, jTool} from "../src/js/Base";
+import { CONSOLE_STYLE } from '../src/common/constants';
 
 describe('publishMethodArray', function() {
 	it('公开方法列表', function () {
@@ -46,10 +47,8 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 	let arg = null;
 	beforeAll(function(){
 		// 存储console, 用于在测方式完成后原还console对象
-		console._error = console.error;
-		console._warn = console.warn;
-		console.error = jasmine.createSpy("error");
-		console.warn = jasmine.createSpy("error");
+		console._log = console.log;
+		console.log = jasmine.createSpy("log");
 
 		table = document.createElement('table');
 		document.body.appendChild(table);
@@ -57,8 +56,7 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 	});
 
 	afterAll(function(){
-		console.error = console._error;
-		console.warn = console._warn;
+		console.log = console._log;
 		document.body.innerHTML = '';
 		table = null;
 		arg = null;
@@ -71,7 +69,7 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 
 	it('配置参为空', function () {
 		PublishMethod.init(table);
-		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', 'init()方法中未发现有效的参数');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c init()方法中未发现有效的参数 ', ...CONSOLE_STYLE.ERROR);
 	});
 
 	it('columnData 为空', function () {
@@ -79,7 +77,7 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 			gridManagerName: 'test-publish'
 		};
 		PublishMethod.init(table, arg);
-		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '请对参数columnData进行有效的配置');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 请对参数columnData进行有效的配置 ', ...CONSOLE_STYLE.ERROR);
 	});
 
 	// gridManagerName 为空
@@ -91,7 +89,7 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 			}]
 		};
 		PublishMethod.init(table, arg);
-		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName ', ...CONSOLE_STYLE.ERROR);
 	});
 
 	it('当前表格已经渲染', function () {
@@ -104,7 +102,7 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 		};
 		table.className = 'GridManager-ready';
 		PublishMethod.init(table, arg);
-		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '渲染失败,可能该表格已经渲染或正在渲染');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 渲染失败,可能该表格已经渲染或正在渲染 ', ...CONSOLE_STYLE.ERROR);
 	});
 
 	it('当前表格正在渲染', function () {
@@ -117,7 +115,7 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 		};
 		table.className = 'GridManager-loading';
 		PublishMethod.init(table, arg);
-		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '渲染失败,可能该表格已经渲染或正在渲染');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 渲染失败,可能该表格已经渲染或正在渲染 ', ...CONSOLE_STYLE.ERROR);
 	});
 
 	it('回调函数是否调用', function () {
@@ -177,8 +175,8 @@ describe('PublishMethod 非init方法验证', function() {
 	let queryValue = null;
 	beforeAll(function () {
 		// 存储console, 用于在测方式完成后原还console对象
-		console._warn = console.warn;
-		console.warn = jasmine.createSpy("warn");
+		console._log = console.log;
+		console.log = jasmine.createSpy("log");
 
 		gridManagerName = 'test-publish';
 		queryValue = {'ccname': 'baukh'};
@@ -226,7 +224,7 @@ describe('PublishMethod 非init方法验证', function() {
 		trList = null;
 		gridManagerName = null;
 		queryValue = null;
-		console.warn = console._warn;
+		console.log = console._log;
 		document.body.innerHTML = '';
 	});
 
@@ -338,7 +336,7 @@ describe('PublishMethod 非init方法验证', function() {
 
 		it('console提示文本', function () {
 			PublishMethod.clear();
-			expect(console.warn).toHaveBeenCalledWith('GridManager Warn: ', '用户记忆被全部清除: 通过clear()方法清除');
+            expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 用户记忆被全部清除: 通过clear()方法清除 ', ...CONSOLE_STYLE.WARN);
 		});
 	});
 

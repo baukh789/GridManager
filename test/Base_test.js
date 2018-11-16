@@ -1,5 +1,6 @@
 'use strict';
 import { jTool, Base } from '../src/js/Base';
+import { CONSOLE_STYLE } from '../src/common/constants';
 /**
  * 验证类的属性及方法总量
  */
@@ -166,13 +167,7 @@ describe('Base.outLog(msg, type)', function() {
 	let arg = null;
 	beforeEach(function(){
 		// 存储console, 用于在测方式完成后原还console对象
-		console._info = console.info;
-		console._warn = console.warn;
-		console._error = console.error;
 		console._log = console.log;
-		console.info = jasmine.createSpy("info");
-		console.warn = jasmine.createSpy("warn");
-		console.error = jasmine.createSpy("error");
 		console.log = jasmine.createSpy("log");
 
 		table = document.createElement('table');
@@ -182,9 +177,6 @@ describe('Base.outLog(msg, type)', function() {
 
 	afterEach(function(){
 		// 还原console
-		console.info = console._info;
-		console.warn = console._warn;
-		console.error = console._error;
 		console.log = console._log;
 
 		document.body.innerHTML = '';
@@ -199,27 +191,27 @@ describe('Base.outLog(msg, type)', function() {
 
 	it('info', function(){
 		Base.outLog('hello GridManager', 'info');
-		expect(console.info).toHaveBeenCalledWith('GridManager Info: ', 'hello GridManager');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c hello GridManager ', ...CONSOLE_STYLE.INFO);
 	});
 
 	it('warn', function(){
 		Base.outLog('hello GridManager', 'warn');
-		expect(console.warn).toHaveBeenCalledWith('GridManager Warn: ', 'hello GridManager');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c hello GridManager ', ...CONSOLE_STYLE.WARN);
 	});
 
 	it('error', function(){
 		Base.outLog('hello GridManager', 'error');
-		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', 'hello GridManager');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c hello GridManager ', ...CONSOLE_STYLE.ERROR);
 	});
 
 	it('log', function(){
 		Base.outLog('hello GridManager', 'log');
-		expect(console.log).toHaveBeenCalledWith('GridManager: ', 'hello GridManager');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Log %c hello GridManager ', ...CONSOLE_STYLE.LOG);
 	});
 
 	it('undefined', function(){
 		Base.outLog('hello GridManager');
-		expect(console.log).toHaveBeenCalledWith('GridManager: ', 'hello GridManager');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Log %c hello GridManager ', ...CONSOLE_STYLE.LOG);
 	});
 });
 

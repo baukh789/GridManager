@@ -231,9 +231,6 @@ class Settings {
 			// 表格列数据配置项
 			/* columnData示例
 			columnData: [{
-                // @2.6.0
-                // 当前列是否使用框架解析
-                useCompile: false,
 
                 // 列的唯一索引。字符串类型，必设项
                 key: 'url',

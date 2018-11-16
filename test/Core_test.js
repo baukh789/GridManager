@@ -2,8 +2,9 @@
  * Created by baukh on 17/4/19.
  */
 'use strict';
-import {Base, jTool} from '../src/js/Base';
+import {jTool} from '../src/js/Base';
 import Core from '../src/js/Core';
+import { CONSOLE_STYLE } from "../src/common/constants";
 /**
  * 验证类的属性及方法总量
  */
@@ -94,12 +95,12 @@ describe('Core.cleanData($table)', function() {
 describe('Core.driveDomForSuccessAfter($table, settings, response, callback)', function() {
 	beforeEach(function() {
 		// 存储console, 用于在测方式完成后原还console对象
-		console._error = console.error;
-		console.error = jasmine.createSpy("error");
+		console._log = console.log;
+		console.log = jasmine.createSpy("log");
 	});
 	afterEach(function(){
-		console.error = console._error;
-		console._error = null;
+		console.log = console._log;
+		console._log = null;
 	});
 
 	it('基础验证', function () {
@@ -109,7 +110,7 @@ describe('Core.driveDomForSuccessAfter($table, settings, response, callback)', f
 
 	it('数据错误提示文本', function () {
 		Core.driveDomForSuccessAfter(null, null, null, null);
-		expect(console.error).toHaveBeenCalledWith('GridManager Error: ', '请求数据失败！请查看配置参数[ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 请求数据失败！请查看配置参数[ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确 ', ...CONSOLE_STYLE.ERROR);
 	});
 });
 
