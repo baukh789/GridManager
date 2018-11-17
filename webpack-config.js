@@ -26,6 +26,7 @@ const config = {
 		path: buildPath ,
 		filename: "js/gm.js",
 		library: 'GridManager',
+        // 允许与CommonJS，AMD和全局变量一起使用
 		libraryTarget: "umd"
 	},
 	// 以插件形式定制webpack构建过程
