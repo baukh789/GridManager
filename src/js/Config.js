@@ -56,14 +56,15 @@ class Config {
 		// 打开/关闭设置事件源
 		const configAction = jTool('.config-action', tableWarp);
 
-		// 事件: 打开 关闭
+		// 事件: 关闭
 		configAction.unbind('click');
 		configAction.bind('click', function () {
 			// 展示事件源
 			const _configAction = jTool(this);
 
 			const $tableWrap = _configAction.closest('.table-wrap');
-			_this.toggle($tableWrap);
+            const $table = $tableWrap.find('table[grid-manager]');
+			_this.hide($table);
 		});
 
 		// 事件: 设置
@@ -125,7 +126,7 @@ class Config {
 			jTool('.sa-inner', _tableWarp).width('100%');
 
 			// 重置当前可视th的宽度
-            Base.updateThWidth(_$table);
+            Base.updateThWidth(_$table, settings);
 
             // 更新存储信息
             Cache.update(_$table, settings);
@@ -139,52 +140,66 @@ class Config {
 
 	/**
 	 * 切换可视状态
-	 * @param $tableWrap
+	 * @param $table
 	 * @returns {boolean}
 	 */
-	toggle($tableWrap) {
-		const $table = jTool('table[grid-manager]', $tableWrap);
-		const settings = Cache.getSettings($table);
-
+	toggle($table) {
 		// 设置区域
-		const $configArea = jTool('.config-area', $tableWrap);
+		const $configArea = jTool('.config-area', $table.closest('.table-wrap'));
+        const settings = Cache.getSettings($table);
 
-		// 关闭配置区域
-		if ($configArea.css('display') === 'block') {
-			$configArea.hide();
-			return false;
-		}
-
-		// 选中状态的li
-		let checkLi = null;
-
-		// 选中状态的input
-		let checkInput = null;
-
-		// 可视列计数
-		let showNum = 0;
-
-		// 重置列的可视操作
-		jTool.each(settings.columnMap, (key, col) => {
-			checkLi = jTool(`li[th-name="${col.key}"]`, $configArea);
-			checkInput = jTool('input[type="checkbox"]', checkLi);
-			if (col.isShow) {
-				checkLi.addClass('checked-li');
-				checkInput.prop('checked', true);
-				showNum++;
-				return;
-			}
-			checkLi.removeClass('checked-li');
-			checkInput.prop('checked', false);
-		});
-
-		// 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示
-		const checkedLi = jTool('.checked-li', $configArea);
-		showNum === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
-
-		// 打开配置区域
-		$configArea.show();
+        $configArea.css('display') === 'block' ?  this.hide($table) : this.show($table, settings);
 	}
+
+    /**
+     * 显示
+     * @param $table
+     * @param settings
+     */
+	show($table, settings) {
+        const $tableWrap = $table.closest('.table-wrap');
+        const $configArea = jTool('.config-area', $tableWrap);
+
+        // 选中状态的li
+        let checkLi = null;
+
+        // 选中状态的input
+        let checkInput = null;
+
+        // 可视列计数
+        let showNum = 0;
+
+        // 重置列的可视操作
+        jTool.each(settings.columnMap, (key, col) => {
+            checkLi = jTool(`li[th-name="${col.key}"]`, $configArea);
+            checkInput = jTool('input[type="checkbox"]', checkLi);
+            if (col.isShow) {
+                checkLi.addClass('checked-li');
+                checkInput.prop('checked', true);
+                showNum++;
+                return;
+            }
+            checkLi.removeClass('checked-li');
+            checkInput.prop('checked', false);
+        });
+
+        // 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示
+        const checkedLi = jTool('.checked-li', $configArea);
+        showNum === 1 ? checkedLi.addClass('no-click') : checkedLi.removeClass('no-click');
+
+        // 打开配置区域
+        $configArea.show();
+    }
+
+    /**
+     * 隐藏
+     * @param $table
+     */
+    hide($table) {
+        const $tableWrap = $table.closest('.table-wrap');
+        const $configArea = jTool('.config-area', $tableWrap);
+        $configArea.hide();
+    }
 
 	/**
 	 * 消毁

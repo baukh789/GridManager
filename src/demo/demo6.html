@@ -280,7 +280,16 @@
 						text: '<span style="color: red">操作</span>',
 						// 直接返回 htmlString
 						template: '<span class="plugin-action" gm-click="delectRowData">删除</span>'
-					}
+					},{
+                        key: 'config',
+                        text: '<i class="iconfont icon-config" onclick="onShowConfig()"></i>',
+                        width: '50px',
+                        disableCustomize: true,
+                        align: 'center',
+                        template: () => {
+                            return '';
+                        }
+                    }
 				],
 				// 排序后事件
 				sortingAfter: function (data) {
@@ -291,6 +300,10 @@
 				console.log('渲染完成后的回调函数:', query);
 			});
 		}
+
+		function onShowConfig() {
+            document.querySelector('table[grid-manager="test"]').GM('showConfig');
+        }
 
 		// 删除功能
 		function delectRowData(rowData){

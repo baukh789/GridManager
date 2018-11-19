@@ -242,6 +242,10 @@ class Settings {
                 // 是否显示, 默认值 true
                 isShow: true,
 
+                // @2.6.13
+                // 该列是否禁止使用配置功能
+                disableCustomize: false
+
                 // 列所占宽度, 字符串类型，非必设项
                 // 需要注意的是:
                 // 1.如果当前列的th内文本实际占用宽度大于该参数指定的宽度时， GridManager会自动进行适配。

@@ -116,6 +116,38 @@ export default class GridManager {
 		Sort.__setSort(jTool(table), sortJson, callback, refresh);
 	}
 
+    /**
+     * @静态方法
+     * 显示配置区域
+     * @param table
+     */
+    static
+    showConfig(table) {
+        const $table = jTool(table);
+        const settings = Cache.getSettings($table);
+        if (!settings.supportConfig) {
+            Base.outLog('supportConfig未配置，showConfig不可用', 'error');
+            return;
+        }
+        Config.show($table, settings);
+    }
+
+    /**
+     * @静态方法
+     * 隐藏配置区域
+     * @param table
+     */
+    static
+    hideConfig(table) {
+        const $table = jTool(table);
+        const settings = Cache.getSettings($table);
+        if (!settings.supportConfig) {
+            Base.outLog('supportConfig未配置，hideConfig不可用', 'error');
+            return;
+        }
+        Config.hide($table);
+    }
+
 	/**
 	 * @静态方法
 	 * 显示Th及对应的TD项

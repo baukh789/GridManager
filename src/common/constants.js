@@ -15,6 +15,8 @@ export const GM_PUBLISH_METHOD_LIST = [
 	'clear',
 	'getRowData',
 	'setSort',
+    'showConfig',
+    'hideConfig',
 	'showTh',
 	'hideTh',
 	'exportGridToXls',

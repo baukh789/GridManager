@@ -494,8 +494,10 @@ class Core {
 					break;
 			}
 
-            // 嵌入拖拽事件标识
-            if (!col.isAutoCreate && settings.supportDrag && !isLmOrder && !isLmCheckbox) {
+            // 嵌入拖拽事件标识, 以下情况除外
+            // 1.插件自动生成列
+            // 2.禁用操作列
+            if (settings.supportDrag && !col.isAutoCreate && !col.disableCustomize) {
                 thText.classList.add('drag-action');
             }
 
@@ -513,12 +515,6 @@ class Core {
 		if (settings.supportCheckbox) {
 			Checkbox.bindCheckboxEvent($table, settings);
 		}
-
-		// 是否为插件自动生成的序号列
-		let	isLmOrder = null;
-
-		// 是否为插件自动生成的选择列
-		let	isLmCheckbox = null;
 
 		// 单个table下的thead
 		const onlyThead = jTool('thead[grid-manager-thead]', $table);
@@ -571,7 +567,7 @@ class Core {
             const isAutoCol = column.isAutoCreate;
 
 			// 嵌入配置列表项
-			if (settings.supportConfig) {
+			if (settings.supportConfig && !column.disableCustomize) {
 				configList.append(Config.createColumn(thName, onlyThText));
 			}
 
@@ -608,8 +604,10 @@ class Core {
                 onlyThWarp.append(filterDom);
             }
 
-			// 嵌入宽度调整事件源,插件自动生成的选择列不做事件绑定
-			if (settings.supportAdjust && !isAutoCol) {
+			// 嵌入宽度调整事件源,以下情况除外
+            // 1.插件自动生成的选择列不做事件绑定
+            // 2.禁止操作项
+			if (settings.supportAdjust && !isAutoCol && !column.disableCustomize) {
 				const adjustDOM = jTool(Adjust.html);
 				// 最后一列不支持调整宽度
 				if (index === onlyThList.length - 1) {

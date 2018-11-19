@@ -86,6 +86,22 @@ class PublishMethodClass {
 	}
 
     /**
+     * 显示配置区域
+     * @param table
+     */
+    showConfig(table) {
+        GridManager.showConfig(table);
+    }
+
+    /**
+     * 隐藏配置区域
+     * @param table
+     */
+    hideConfig(table) {
+        GridManager.hideConfig(table);
+    }
+
+    /**
      * 显示Th及对应的TD项
      * @param table
      * @param target

@@ -22,7 +22,7 @@ describe('Config 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Config)))).toBe(6 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Config)))).toBe(8 + 1);
 	});
 });
 
@@ -89,6 +89,20 @@ describe('Config.toggle($table)', function() {
 		expect(Config.toggle).toBeDefined();
 		expect(Config.toggle.length).toBe(1);
 	});
+});
+
+describe('Config.show($table, settings)', function() {
+    it('基础验证', function () {
+        expect(Config.show).toBeDefined();
+        expect(Config.show.length).toBe(2);
+    });
+});
+
+describe('Config.hide($table)', function() {
+    it('基础验证', function () {
+        expect(Config.hide).toBeDefined();
+        expect(Config.hide.length).toBe(1);
+    });
 });
 
 describe('Config.destroy($table)', function() {

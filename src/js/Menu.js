@@ -193,7 +193,7 @@ class Menu {
 				}
 				const _gridMenu = jTool(this).closest('.grid-menu');
 				const _table = jTool(`table[grid-manager="${_gridMenu.attr(_this.keyName)}"]`);
-				Config.toggle(_table.closest('.table-wrap'));
+				Config.toggle(_table);
 				_body.off('mousedown.gridMenu');
 				_gridMenu.hide();
 			});

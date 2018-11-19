@@ -143,7 +143,7 @@ describe('Menu.createMenuDOM(settings)', () => {
 		expect(jTool(`[grid-action="config-grid"]`).length).toBe(1);
 	});
 
-	it('禁用配置功能', () => {
+	it('禁止操作功能', () => {
 		settings.supportConfig = false;
 		Menu.createMenuDOM(settings);
 

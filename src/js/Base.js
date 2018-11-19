@@ -158,7 +158,7 @@ class BaseClass {
      * 更新列宽
      * @param $table
      */
-	updateThWidth($table) {
+	updateThWidth($table, settings) {
         const $tableDiv = $table.closest('.table-div');
         const $thead = jTool('thead[grid-manager-thead]', $table);
         const $visibleThList = jTool('th[th-visible="visible"]', $thead);
@@ -175,6 +175,11 @@ class BaseClass {
                 return;
             }
 
+            // 禁止配置的列
+            if (settings.columnMap[v.getAttribute('th-name')].disableCustomize) {
+                v.style.width = settings.columnMap[v.getAttribute('th-name')].__width;
+                return;
+            }
             v.style.width = 'auto';
         });
 

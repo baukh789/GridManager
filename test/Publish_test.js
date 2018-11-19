@@ -38,7 +38,7 @@ describe('Publish 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(18 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(20 + 1);
 	});
 });
 
@@ -415,6 +415,43 @@ describe('PublishMethod 非init方法验证', function() {
 			expect(PublishMethod.get(table).sortData.name).toBe(undefined);
 		});
 	});
+
+
+    describe('PublishMethod.showConfig(table) or PublishMethod.hideConfig(table)', function() {
+        let $table = null;
+        let $tableWrap = null;
+        let $configArea = null;
+        beforeEach(function(){
+            $table = jTool(table);
+            $tableWrap = $table.closest('.table-wrap');
+            $configArea = jTool('.config-area', $tableWrap);
+        });
+
+        afterEach(function(){
+            $table = null;
+            $tableWrap = null;
+            $configArea = null;
+        });
+
+        it('基础验证', function () {
+            expect(PublishMethod.showConfig).toBeDefined();
+            expect(PublishMethod.showConfig.length).toBe(1);
+
+            expect(PublishMethod.hideConfig).toBeDefined();
+            expect(PublishMethod.hideConfig.length).toBe(1);
+        });
+
+        it('执行 showConfig', function () {
+            PublishMethod.showConfig(table);
+            expect($configArea.css('display')).toBe('block');
+        });
+
+        it('执行 hideConfig', function () {
+            expect($configArea.css('display')).toBe('block');
+            PublishMethod.hideConfig(table);
+            expect($configArea.css('display')).toBe('none');
+        });
+    });
 
 	describe('PublishMethod.showTh(table, target) or PublishMethod.hideTh(table, target)', function() {
 		let firstTh = null;

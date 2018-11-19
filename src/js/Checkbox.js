@@ -51,6 +51,7 @@ class Checkbox {
 			text: '',
 			isAutoCreate: true,
 			isShow: true,
+            disableCustomize: true,
 			width: CHECKBOX_WIDTH,
 			align: 'center',
 			template: checked => {

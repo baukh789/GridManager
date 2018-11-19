@@ -243,6 +243,9 @@ class Cache {
 
             // 存储由用户配置的列宽度值, 该值不随着之后的操作变更
             _settings.columnMap[col.key].__width = col.width;
+
+            // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
+            _settings.columnMap[col.key].__isShow = col.isShow;
         });
 
 	    // 合并用户记忆至 settings, 每页显示条数记忆不在此处
@@ -279,6 +282,9 @@ class Cache {
                     // 宽度
                     || columnCache[key].__width !== col.width
 
+                    // 显示状态
+                    || columnCache[key].__isShow !== col.isShow
+
 		            // 文本排列方向
 		            || columnCache[key].align !== col.align
 
@@ -287,6 +293,9 @@ class Cache {
 
 		            // 字段描述
 	                || columnCache[key].remind !== col.remind
+
+                    // 禁止操作功能
+                    || columnCache[key].disableCustomize !== col.disableCustomize
 
 	                || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)
 

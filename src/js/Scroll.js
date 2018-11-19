@@ -82,7 +82,7 @@ class Scroll {
             // 当可视宽度变化时，更新表头宽度
             const _bodyWidth = document.querySelector('body').offsetWidth;
             if (_bodyWidth !== oldBodyWidth) {
-                Base.updateThWidth($table);
+                Base.updateThWidth($table, settings);
                 oldBodyWidth = _bodyWidth;
                 Cache.update($table, settings);
             }

@@ -254,10 +254,10 @@ describe('Base.setAreVisible($thList, isVisible, cb)', function() {
 	});
 });
 
-describe('Base.updateThWidth($table)', function() {
+describe('Base.updateThWidth($table, settings)', function() {
     it('基础验证', function () {
         expect(Base.updateThWidth).toBeDefined();
-        expect(Base.updateThWidth.length).toBe(1);
+        expect(Base.updateThWidth.length).toBe(2);
     });
 });
 
