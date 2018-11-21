@@ -60,6 +60,14 @@ describe('GridManager.version', function() {
 	});
 });
 
+describe('GridManager.defaultOption', function() {
+    it('基础验证', function() {
+        expect(GridManager.defaultOption).toEqual({});
+        GridManager.defaultOption = {currentPageKey: 'cPage'};
+        expect(GridManager.defaultOption).toEqual({currentPageKey: 'cPage'});
+    });
+});
+
 describe('GridManager.get(table)', function() {
 	it('基础验证', function() {
 		expect(GridManager.get).toBeDefined();

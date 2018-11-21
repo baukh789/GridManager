@@ -3,12 +3,27 @@
  * 鼠标hover 高亮
  */
 import { jTool, Base } from './Base';
+import Cache from './Cache';
 class Hover {
 	onTbodyHover($table) {
 		const _this = this;
+		// mouseenter在预绑定模式下不生效，所以用mousemove替代
+        let hoverTd = null;
 		$table.off('mousemove', 'td');
 		$table.on('mousemove', 'td', function () {
-			_this.updateHover(this);
+		    if (hoverTd === this) {
+		        return;
+            }
+            const settings = Cache.getSettings($table);
+            hoverTd = this;
+		    const tr = hoverTd.parentNode;
+		    const colIndex = hoverTd.cellIndex;
+		    const rowIndex = parseInt(tr.getAttribute('cache-key'), 10);
+
+		    // cellHover: 单个td的hover事件
+            settings.cellHover(Cache.getRowData($table, tr), rowIndex, colIndex);
+
+			_this.updateHover(hoverTd);
 		});
 	}
 

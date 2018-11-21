@@ -18,6 +18,9 @@ import Scroll from './Scroll';
 import Sort from './Sort';
 import Hover from './Hover';
 import Filter from './Filter';
+
+// 存储默认配置
+let defaultOption = {};
 export default class GridManager {
 	/**
 	 * @静态方法
@@ -29,6 +32,26 @@ export default class GridManager {
 	get version() {
 		return Cache.getVersion();
 	}
+
+    /**
+     * 获取默认配置项
+     */
+    static
+    get defaultOption() {
+	    return defaultOption;
+    }
+
+    /**
+     * 配置默认配置项
+     */
+	static
+    set defaultOption(conf) {
+	    if (jTool.type(conf) !== 'object') {
+	        Base.outLog('defaultOption配置失败，配置的值只允许为object', 'error');
+	        return;
+        }
+        defaultOption = conf;
+    }
 
 	/**
 	 * @静态方法
@@ -330,6 +353,8 @@ export default class GridManager {
 	 */
 	init(table, arg, callback) {
 		const $table = jTool(table);
+		arg = jTool.extend({}, GridManager.defaultOption, arg);
+
 		// 校验: 初始参
 		if (!arg || jTool.isEmptyObject(arg)) {
 			Base.outLog('init()方法中未发现有效的参数', 'error');

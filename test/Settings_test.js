@@ -72,6 +72,10 @@ describe('Settings', function() {
         expect(settings.disableHover).toBe(false);
     });
 
+    it('验证属性[cellHover]初始值', function() {
+        expect(typeof settings.cellHover).toBe('function');
+    });
+
     it('验证属性[disableBorder]初始值', function() {
         expect(settings.disableBorder).toBe(false);
     });

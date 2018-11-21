@@ -80,15 +80,24 @@ class Settings {
             // 配置是否禁用单元格分割线
             disableLine: false,  // v2.6.1新增
 
-            // 配置是否禁用hover选中样式
-            disableHover: false, // v2.6.1新增
-
             // 配置是否禁用边框线
             disableBorder: false,  // v2.6.1新增
 
             // 数据加载中模板
             loadingTemplate: undefined // v2.6.2新增
 		};
+
+        /**
+         * hover选中
+         * @type {{disableHover: boolean}}
+         */
+		const hover = {
+            // 配置是否禁用hover选中样式
+            disableHover: false, // v2.6.1新增
+
+            // 单个td的hover事件
+            cellHover: $.noop
+        };
 
 		/**
 		 * 本地缓存
@@ -366,7 +375,8 @@ class Settings {
 			...checkbox,
 			...i18n,
 			...gridData,
-			...gridExport
+			...gridExport,
+            ...hover
 		};
 		$.extend(true, this, settings);
 	}
