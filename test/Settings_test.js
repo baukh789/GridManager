@@ -284,7 +284,7 @@ describe('textConfig', function() {
 		for(key in textConfig){
 			count++;
 		}
-		expect(count).toBe(16);
+		expect(count).toBe(15);
 	});
 	it('验证国际化文本[order-text]初始值', function(){
 		expect(textConfig['order-text']['zh-cn']).toBe('序号');
@@ -323,17 +323,10 @@ describe('textConfig', function() {
     });
 
     it('验证国际化文本[page-info]初始值', function(){
-		expect(textConfig['page-info']['zh-cn']).toBe('此页显示 {0}-{1} 共{2}条');
-		expect(textConfig['page-info']['zh-tw']).toBe('此頁顯示 {0}-{1} 共{2}條');
-		expect(textConfig['page-info']['en-us']).toBe('this page show {0}-{1} count {2}');
+		expect(textConfig['page-info']['zh-cn']).toBe('此页显示 {0}-{1}<span class="page-info-totals"> 共{2}条</span>');
+		expect(textConfig['page-info']['zh-tw']).toBe('此頁顯示 {0}-{1}<span class="page-info-totals"> 共{2}條</span>');
+		expect(textConfig['page-info']['en-us']).toBe('this page show {0}-{1}<span class="page-info-totals"> count {2}</span>');
 	});
-
-    it('验证国际化文本[page-info-no-totals]初始值', function(){
-        expect(textConfig['page-info-no-totals']['zh-cn']).toBe('此页显示 {0}-{1}');
-        expect(textConfig['page-info-no-totals']['zh-tw']).toBe('此頁顯示 {0}-{1}');
-        expect(textConfig['page-info-no-totals']['en-us']).toBe('this page show {0}-{1}');
-    });
-
 
     it('验证国际化文本[goto-first-text]初始值', function(){
 		expect(textConfig['goto-first-text']['zh-cn']).toBe('跳转至');

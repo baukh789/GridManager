@@ -149,6 +149,7 @@ class AjaxPage {
 
 		// 分页工具条
 		const footerToolbar = jTool('.footer-toolbar', tableWarp);
+        settings.useNoTotalsMode && footerToolbar.attr('no-totals-mode', 'true');
 
 		// 分页区域
 		const pagination = jTool('.pagination', footerToolbar);
@@ -311,10 +312,8 @@ class AjaxPage {
      */
 	__bindInputEvent($table, footerToolbar) {
 		const _this = this;
-		const gp_input = jTool('.gp-input', footerToolbar);
-
-		gp_input.unbind('keyup');
-		gp_input.bind('keyup', function (event) {
+        footerToolbar.off('keyup', '.gp-input');
+        footerToolbar.on('keyup', '.gp-input', function (event) {
 			if (event.which !== 13) {
 				return;
 			}
@@ -425,7 +424,7 @@ class AjaxPage {
         // 总共条数
         const totalNum = pageData.tSize;
 
-        const tmpHtml = I18n.i18nText(settings, settings.useNoTotalsMode ? 'page-info-no-totals' : 'page-info', [fromNum, toNum, totalNum]);
+        const tmpHtml = I18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum, pageData[settings.currentPageKey], pageData.tPage]);
         pageInfo.html(tmpHtml);
     }
 

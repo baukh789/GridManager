@@ -410,16 +410,18 @@ class TextSettings {
 			'zh-tw': '尾頁',
 			'en-us': 'last'
 		};
+
+		// page-info 会传入五个值
+        // 0: 当前页从多少条开始显示
+        // 1: 当前页到多少条结束显示
+        // 2: 总条数
+        // 3: 当前页
+        // 4: 总页数
 		this['page-info'] = {
-			'zh-cn': '此页显示 {0}-{1} 共{2}条',
-			'zh-tw': '此頁顯示 {0}-{1} 共{2}條',
-			'en-us': 'this page show {0}-{1} count {2}'
+			'zh-cn': '此页显示 {0}-{1}<span class="page-info-totals"> 共{2}条</span>',
+			'zh-tw': '此頁顯示 {0}-{1}<span class="page-info-totals"> 共{2}條</span>',
+			'en-us': 'this page show {0}-{1}<span class="page-info-totals"> count {2}</span>'
 		};
-        this['page-info-no-totals'] = {
-            'zh-cn': '此页显示 {0}-{1}',
-            'zh-tw': '此頁顯示 {0}-{1}',
-            'en-us': 'this page show {0}-{1}'
-        };
         this['checked-info'] = {
             'zh-cn': '已选 {0} 条',
             'zh-tw': '已選 {0} 條',
