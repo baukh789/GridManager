@@ -292,7 +292,7 @@ class Core {
                 const trNode = document.createElement('tr');
                 trNode.setAttribute('cache-key', index);
 
-                // 插入通栏: 头部区域
+                // 插入通栏: top-full-column
                 if (typeof settings.topFullColumn.template !== 'undefined') {
                     // 通栏tr
                     const topTrNode = document.createElement('tr');
@@ -311,7 +311,7 @@ class Core {
                     _template = typeof _template === 'function' ? _template(row) : _template;
 
                     topTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div class="full-column-td">${_template}</div></td>`;
-                    compileList.push({el: topTrNode, row: row});
+                    compileList.push({el: topTrNode, row: row, index: index});
                     _tbody.appendChild(topTrNode);
                 }
 
@@ -341,7 +341,7 @@ class Core {
                     trNode.appendChild(td);
                 });
 
-                compileList.push({el: trNode, row: row});
+                compileList.push({el: trNode, row: row, index: index});
 
                 _tbody.appendChild(trNode);
             });

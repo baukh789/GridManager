@@ -155,9 +155,6 @@ class AjaxPage {
 		const pagination = jTool('.pagination', footerToolbar);
 
 		pagination.html(this.__joinPagination(settings, pageData));
-
-        // 解析框架: 底部区域
-        Base.compileFramework(settings, [{el: footerToolbar.get(0)}]);
 	}
 
 	/**
