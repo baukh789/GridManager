@@ -13,7 +13,7 @@ class AjaxPage {
      */
 	createHtml(settings) {
 	    // 刷新按纽
-	    const refreshHtml = settings.showFooterRefresh ? '<div class="refresh-action"><i class="iconfont icon-refresh"></i></div>' : '';
+	    const refreshHtml = settings.showFooterRefresh ? `<span class="refresh-action">${ I18n.i18nText(settings, 'refresh-action') }</span>` : '';
 
 	    // 快捷跳转
 	    const gotoHtml = settings.showFooterGoTo ? `<div class="goto-page">
@@ -155,6 +155,9 @@ class AjaxPage {
 		const pagination = jTool('.pagination', footerToolbar);
 
 		pagination.html(this.__joinPagination(settings, pageData));
+
+        // 解析框架: 底部区域
+        Base.compileFramework(settings, [{el: footerToolbar.get(0)}]);
 	}
 
 	/**

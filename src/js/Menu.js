@@ -35,18 +35,18 @@ class Menu {
 		// 分页类操作
 		if (settings.supportAjaxPage) {
 			menuHTML += `<span grid-action="refresh-page" refresh-type="previous">
-							${I18n.i18nText(settings, 'previous-page')}
+							${I18n.i18nText(settings, 'menu-previous-page')}
 							<i class="iconfont icon-up"></i>
 						</span>
 						<span grid-action="refresh-page" refresh-type="next">
-							${I18n.i18nText(settings, 'next-page')}
+							${I18n.i18nText(settings, 'menu-next-page')}
 							<i class="iconfont icon-down"></i>
 						</span>`;
 		}
 
 		// 重新加载当前页
 		menuHTML += `<span grid-action="refresh-page" refresh-type="refresh">
-						${I18n.i18nText(settings, 'refresh')}
+						${I18n.i18nText(settings, 'menu-refresh')}
 						<i class="iconfont icon-refresh"></i>
 					</span>`;
 
@@ -54,11 +54,11 @@ class Menu {
 		if (settings.supportExport) {
 			menuHTML += `<span class="grid-line"></span>
 						<span grid-action="export-excel" only-checked="false">
-							${I18n.i18nText(settings, 'save-as-excel')}
+							${I18n.i18nText(settings, 'menu-save-as-excel')}
 							<i class="iconfont icon-xls"></i>
 						</span>
 						<span grid-action="export-excel" only-checked="true">
-							${I18n.i18nText(settings, 'save-as-excel-for-checked')}
+							${I18n.i18nText(settings, 'menu-save-as-excel-for-checked')}
 							<i class="iconfont icon-xls"></i>
 						</span>`;
 		}
@@ -67,7 +67,7 @@ class Menu {
 		if (settings.supportConfig) {
 			menuHTML += `<span class="grid-line"></span>
 						<span grid-action="config-grid">
-							${I18n.i18nText(settings, 'config-grid')}
+							${I18n.i18nText(settings, 'menu-config-grid')}
 							<i class="iconfont icon-config"></i>
 						</span>`;
 		}

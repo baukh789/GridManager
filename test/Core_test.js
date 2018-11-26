@@ -79,7 +79,7 @@ describe('Core.removeRefreshingClass($tableWrap)', function() {
 
 		jasmine.clock().install();
 		Core.removeRefreshingClass($tableWrap);
-		jasmine.clock().tick(2000);
+		jasmine.clock().tick(3000);
 		expect($refreshAction.hasClass('refreshing')).toBe(false);
 		jasmine.clock().uninstall();
 	});

@@ -84,7 +84,10 @@ class Settings {
             disableBorder: false,  // v2.6.1新增
 
             // 数据加载中模板
-            loadingTemplate: undefined // v2.6.2新增
+            loadingTemplate: undefined, // v2.6.2新增
+
+            //  皮肤样式所使用的className
+            skinClassName: '' // v2.6.13 新增
 		};
 
         /**
@@ -385,11 +388,19 @@ class Settings {
 // 表格中使用到的国际化文本信息
 class TextSettings {
 	constructor() {
+	    // order
 		this['order-text'] = {
 			'zh-cn': '序号',
 			'zh-tw': '序號',
 			'en-us': 'order'
 		};
+
+		// ajax page
+        this['refresh-action'] = {
+            'zh-cn': '<i class="iconfont icon-refresh"></i>',
+            'zh-tw': '<i class="iconfont icon-refresh"></i>',
+            'en-us': '<i class="iconfont icon-refresh"></i>'
+        };
 		this['first-page'] = {
 			'zh-cn': '首页',
 			'zh-tw': '首頁',
@@ -437,26 +448,40 @@ class TextSettings {
 			'zh-tw': '頁',
 			'en-us': 'page'
 		};
-		this['refresh'] = {
+
+		// menu
+        this['menu-previous-page'] = {
+            'zh-cn': '上一页',
+            'zh-tw': '上一頁',
+            'en-us': 'previous'
+        };
+        this['menu-next-page'] = {
+            'zh-cn': '下一页',
+            'zh-tw': '下一頁',
+            'en-us': 'next'
+        };
+		this['menu-refresh'] = {
 			'zh-cn': '重新加载',
 			'zh-tw': '重新加載',
 			'en-us': 'Refresh'
 		};
-		this['save-as-excel'] = {
+		this['menu-save-as-excel'] = {
 			'zh-cn': '另存为Excel',
 			'zh-tw': '另存為Excel',
 			'en-us': 'Save as Excel'
 		};
-		this['save-as-excel-for-checked'] = {
+		this['menu-save-as-excel-for-checked'] = {
 			'zh-cn': '已选中项另存为Excel',
 			'zh-tw': '已選中項另存為Excel',
 			'en-us': 'Save selected as Excel'
 		};
-		this['config-grid'] = {
+		this['menu-config-grid'] = {
 			'zh-cn': '配置表',
 			'zh-tw': '配置表',
 			'en-us': 'Setting Grid'
 		};
+
+		// filter
         this['filter-ok'] = {
             'zh-cn': '确定',
             'zh-tw': '確定',

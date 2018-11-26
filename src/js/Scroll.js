@@ -29,10 +29,10 @@ class Scroll {
         $table.append($thead.clone(true).attr(Base.getSetTopAttr(), ''));
 
         $setTopHead = jTool(`thead[${Base.getSetTopAttr()}]`, $table);
-        // 解析框架
+
+        // 解析框架: thead区域
         Base.compileFramework(settings, [{el: $setTopHead.get(0).querySelector('tr')}]);
         $setTopHead.removeAttr('grid-manager-thead');
-
     }
 
     /**

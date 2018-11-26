@@ -158,7 +158,7 @@ class Core {
 	}
 
 	/**
-	 * tableWrap
+	 * 移除刷新中class
 	 * @param tableWrap
      */
 	removeRefreshingClass($tableWrap) {
@@ -166,7 +166,7 @@ class Core {
 		const refreshAction = jTool('.footer-toolbar .refresh-action', $tableWrap);
 		window.setTimeout(() => {
 			refreshAction.removeClass('refreshing');
-		}, 2000);
+		}, 3000);
 	}
 
 	/**
@@ -524,6 +524,11 @@ class Core {
 
 		// 单个table所在的DIV容器
 		const tableWarp = $table.closest('.table-wrap');
+
+        // 根据参数增加皮肤标识
+        if (settings.skinClassName && typeof settings.skinClassName === 'string' && settings.skinClassName.trim()) {
+            tableWarp.addClass(settings.skinClassName);
+        }
 
         // 根据参数增加禁用禁用边框线标识
         if (settings.disableBorder) {

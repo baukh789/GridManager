@@ -14,29 +14,27 @@
 		.bg-image;
 		.refresh-action {
 			display: inline-block;
-			width: 30px;
 			height: 30px;
-			padding: 7.5px;
+			padding: 7px;
 			vertical-align: middle;
-			&:hover {
-				color: @font-normal-color;
-			}
-			i {
-				display: block;
-				width: 15px;
-				height: 15px;
-				cursor: pointer;
-				line-height: 15px;
-				font-size: 16px;
-				color: @font-active-color;
-				font-weight: bold;
-                opacity: .7;
-                &:hover{
-                    opacity: 1;
-                }
-			}
+            cursor: pointer;
+            text-align: center;
+            opacity: .7;
+            color: @font-active-color;
+            > i {
+                display: inline-block;
+                font-weight: bold;
+                line-height: 16px;
+                font-size: 16px;
+                vertical-align: text-bottom;
+            }
+            &:hover{
+                opacity: 1;
+            }
 			&.refreshing {
-				animation: rotationMedia 2s ease-in-out infinite;
+                > i{
+                    animation: rotationMedia 3s ease-in-out infinite;
+                }
 			}
 		}
 		.goto-page {

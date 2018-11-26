@@ -80,6 +80,13 @@ describe('Settings', function() {
         expect(settings.disableBorder).toBe(false);
     });
 
+    it('验证属性[skinClassName]初始值', function() {
+        expect(settings.skinClassName).toBe('');
+    });
+
+    it('验证属性[loadingTemplate]初始值', function() {
+        expect(settings.loadingTemplate).toBeUndefined();
+    });
 
     it('验证属性[disableCache]初始值', function() {
 		expect(settings.disableCache).toBe(false);
@@ -284,7 +291,7 @@ describe('textConfig', function() {
 		for(key in textConfig){
 			count++;
 		}
-		expect(count).toBe(15);
+		expect(count).toBe(18);
 	});
 	it('验证国际化文本[order-text]初始值', function(){
 		expect(textConfig['order-text']['zh-cn']).toBe('序号');
@@ -292,7 +299,13 @@ describe('textConfig', function() {
 		expect(textConfig['order-text']['en-us']).toBe('order');
 	});
 
-	it('验证国际化文本[first-page]初始值', function(){
+    it('验证国际化文本[refresh-action]初始值', function(){
+        expect(textConfig['refresh-action']['zh-cn']).toBe('<i class="iconfont icon-refresh"></i>');
+        expect(textConfig['refresh-action']['zh-tw']).toBe('<i class="iconfont icon-refresh"></i>');
+        expect(textConfig['refresh-action']['en-us']).toBe('<i class="iconfont icon-refresh"></i>');
+    });
+
+    it('验证国际化文本[first-page]初始值', function(){
 		expect(textConfig['first-page']['zh-cn']).toBe('首页');
 		expect(textConfig['first-page']['zh-tw']).toBe('首頁');
 		expect(textConfig['first-page']['en-us']).toBe('first');
@@ -340,27 +353,51 @@ describe('textConfig', function() {
 		expect(textConfig['goto-last-text']['en-us']).toBe('page');
 	});
 
-	it('验证国际化文本[refresh]初始值', function(){
-		expect(textConfig['refresh']['zh-cn']).toBe('重新加载');
-		expect(textConfig['refresh']['zh-tw']).toBe('重新加載');
-		expect(textConfig['refresh']['en-us']).toBe('Refresh');
+    it('验证国际化文本[menu-previous-page]初始值', function(){
+        expect(textConfig['menu-previous-page']['zh-cn']).toBe('上一页');
+        expect(textConfig['menu-previous-page']['zh-tw']).toBe('上一頁');
+        expect(textConfig['menu-previous-page']['en-us']).toBe('previous');
+    });
+
+    it('验证国际化文本[menu-next-page]初始值', function(){
+        expect(textConfig['menu-next-page']['zh-cn']).toBe('下一页');
+        expect(textConfig['menu-next-page']['zh-tw']).toBe('下一頁');
+        expect(textConfig['menu-next-page']['en-us']).toBe('next');
+    });
+
+	it('验证国际化文本[menu-refresh]初始值', function(){
+		expect(textConfig['menu-refresh']['zh-cn']).toBe('重新加载');
+		expect(textConfig['menu-refresh']['zh-tw']).toBe('重新加載');
+		expect(textConfig['menu-refresh']['en-us']).toBe('Refresh');
 	});
 
-	it('验证国际化文本[save-as-excel]初始值', function(){
-		expect(textConfig['save-as-excel']['zh-cn']).toBe('另存为Excel');
-		expect(textConfig['save-as-excel']['zh-tw']).toBe('另存為Excel');
-		expect(textConfig['save-as-excel']['en-us']).toBe('Save as Excel');
+	it('验证国际化文本[menu-save-as-excel]初始值', function(){
+		expect(textConfig['menu-save-as-excel']['zh-cn']).toBe('另存为Excel');
+		expect(textConfig['menu-save-as-excel']['zh-tw']).toBe('另存為Excel');
+		expect(textConfig['menu-save-as-excel']['en-us']).toBe('Save as Excel');
 	});
 
-	it('验证国际化文本[save-as-excel-for-checked]初始值', function(){
-		expect(textConfig['save-as-excel-for-checked']['zh-cn']).toBe('已选中项另存为Excel');
-		expect(textConfig['save-as-excel-for-checked']['zh-tw']).toBe('已選中項另存為Excel');
-		expect(textConfig['save-as-excel-for-checked']['en-us']).toBe('Save selected as Excel');
+	it('验证国际化文本[menu-save-as-excel-for-checked]初始值', function(){
+		expect(textConfig['menu-save-as-excel-for-checked']['zh-cn']).toBe('已选中项另存为Excel');
+		expect(textConfig['menu-save-as-excel-for-checked']['zh-tw']).toBe('已選中項另存為Excel');
+		expect(textConfig['menu-save-as-excel-for-checked']['en-us']).toBe('Save selected as Excel');
 	});
 
-	it('验证国际化文本[config-grid]初始值', function(){
-		expect(textConfig['config-grid']['zh-cn']).toBe('配置表');
-		expect(textConfig['config-grid']['zh-tw']).toBe('配置表');
-		expect(textConfig['config-grid']['en-us']).toBe('Setting Grid');
+	it('验证国际化文本[menu-config-grid]初始值', function(){
+		expect(textConfig['menu-config-grid']['zh-cn']).toBe('配置表');
+		expect(textConfig['menu-config-grid']['zh-tw']).toBe('配置表');
+		expect(textConfig['menu-config-grid']['en-us']).toBe('Setting Grid');
 	});
+
+    it('验证国际化文本[filter-ok]初始值', function(){
+        expect(textConfig['filter-ok']['zh-cn']).toBe('确定');
+        expect(textConfig['filter-ok']['zh-tw']).toBe('確定');
+        expect(textConfig['filter-ok']['en-us']).toBe('OK');
+    });
+
+    it('验证国际化文本[filter-reset]初始值', function(){
+        expect(textConfig['filter-reset']['zh-cn']).toBe('重置');
+        expect(textConfig['filter-reset']['zh-tw']).toBe('重置');
+        expect(textConfig['filter-reset']['en-us']).toBe('Reset');
+    });
 });

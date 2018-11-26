@@ -46,7 +46,7 @@ describe('AjaxPage.createHtml($table)', function() {
 	it('返回值', function () {
 
         // 刷新按纽
-        const refreshHtml = '<div class="refresh-action"><i class="iconfont icon-refresh"></i></div>';
+        const refreshHtml = '<span class="refresh-action"><i class="iconfont icon-refresh"></i></span>';
 
         // 快捷跳转
         const gotoHtml = `<div class="goto-page">
