@@ -373,10 +373,11 @@ class Core {
 
 	/**
 	 * 渲染HTML，根据配置嵌入所需的事件源DOM
-	 * @param $table
-	 * @param settings
+     * @param $table
+     * @param settings
+     * @returns {Promise<any>}
      */
-	createDOM($table, settings) {
+    createDOM($table, settings) {
         // 外围的html片段
         const wrapHtml = `<div class="table-wrap">
                             <div class="table-div"></div>
@@ -517,52 +518,71 @@ class Core {
 		}
 
 		// 单个table下的thead
-		const onlyThead = jTool('thead[grid-manager-thead]', $table);
+		const $thead = jTool('thead[grid-manager-thead]', $table);
 
 		// 单个table下的TH
-		const onlyThList = jTool('th', onlyThead);
+		const $thList = jTool('th', $thead);
 
 		// 单个table所在的DIV容器
-		const tableWarp = $table.closest('.table-wrap');
+		const $tableWarp = $table.closest('.table-wrap');
 
         // 根据参数增加皮肤标识
         if (settings.skinClassName && typeof settings.skinClassName === 'string' && settings.skinClassName.trim()) {
-            tableWarp.addClass(settings.skinClassName);
+            $tableWarp.addClass(settings.skinClassName);
         }
 
         // 根据参数增加禁用禁用边框线标识
         if (settings.disableBorder) {
-            tableWarp.addClass('disable-border');
+            $tableWarp.addClass('disable-border');
         }
 
 		// 嵌入配置列表DOM
 		if (settings.supportConfig) {
-			tableWarp.append(Config.html);
+			$tableWarp.append(Config.html);
 		}
 
 		// 嵌入Ajax分页DOM
 		if (settings.supportAjaxPage) {
-			tableWarp.append(AjaxPage.createHtml(settings));
+			$tableWarp.append(AjaxPage.createHtml(settings));
 			AjaxPage.initAjaxPage($table, settings);
 		}
 
 		// 嵌入导出表格数据事件源
 		if (settings.supportExport) {
-			tableWarp.append(Export.html);
+			$tableWarp.append(Export.html);
 		}
 
-        const configList = jTool('.config-list', tableWarp);
+		return new Promise(resolve => {
+            // 解析框架: thead区域
+            Base.compileFramework(settings, [{el: $thead.get(0).querySelector('tr')}], () => {
+                this.redrawThead($tableWarp, $thList, settings);
+                // 删除渲染中标识、增加渲染完成标识
+                $table.removeClass('GridManager-loading');
+                $table.addClass('GridManager-ready');
+                resolve();
+            });
+        });
+	}
 
-		// 单个TH
-		let onlyTH = null;
+    /**
+     * 重绘thead
+     * @param $tableWarp
+     * @param $thList
+     * @param settings
+     */
+    redrawThead($tableWarp, $thList, settings) {
+        const configList = jTool('.config-list', $tableWarp);
 
-		// 单个TH所占宽度
-		let onlyWidth = 0;
+        // 单个TH
+        let onlyTH = null;
 
-		// 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
-		// 单个TH下的上层DIV
-		jTool.each(onlyThList, (index, item) => {
-			onlyTH = jTool(item);
+        // 单个TH所占宽度
+        let onlyWidth = 0;
+
+        // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
+        // 单个TH下的上层DIV
+        jTool.each($thList, (index, item) => {
+            onlyTH = jTool(item);
             const onlyThWarp = jTool('.th-wrap', onlyTH);
             const thName = onlyTH.attr('th-name');
             const onlyThText = onlyTH.text();
@@ -571,68 +591,65 @@ class Core {
             // 是否为GM自动添加的列
             const isAutoCol = column.isAutoCreate;
 
-			// 嵌入配置列表项
-			if (settings.supportConfig && !column.disableCustomize) {
-				configList.append(Config.createColumn(thName, onlyThText));
-			}
+            // 嵌入配置列表项
+            if (settings.supportConfig && !column.disableCustomize) {
+                configList.append(Config.createColumn(thName, onlyThText));
+            }
 
-			// 嵌入表头提醒事件源
-			// 插件自动生成的序号与选择列不做事件绑定
-			if (!isAutoCol && jTool.type(column.remind) === 'string') {
-				onlyThWarp.append(jTool(Remind.createHtml(onlyThText, column.remind)));
-			}
+            // 嵌入表头提醒事件源
+            // 插件自动生成的序号与选择列不做事件绑定
+            if (!isAutoCol && jTool.type(column.remind) === 'string') {
+                onlyThWarp.append(jTool(Remind.createHtml(onlyThText, column.remind)));
+            }
 
-			// 嵌入排序事件源
-			// 插件自动生成的序号列与选择列不做事件绑定
-			// 排序类型
-			if (!isAutoCol && jTool.type(column.sorting) === 'string') {
-				const sortingDom = jTool(Sort.html);
+            // 嵌入排序事件源
+            // 插件自动生成的序号列与选择列不做事件绑定
+            // 排序类型
+            if (!isAutoCol && jTool.type(column.sorting) === 'string') {
+                const sortingDom = jTool(Sort.html);
 
-				// 依据 column.sorting 进行初始显示
-				switch (column.sorting) {
-					case settings.sortUpText:
-						sortingDom.addClass('sorting-up');
-						break;
-					case settings.sortDownText:
-						sortingDom.addClass('sorting-down');
-						break;
-					default :
-						break;
-				}
-				onlyThWarp.append(sortingDom);
-			}
+                // 依据 column.sorting 进行初始显示
+                switch (column.sorting) {
+                    case settings.sortUpText:
+                        sortingDom.addClass('sorting-up');
+                        break;
+                    case settings.sortDownText:
+                        sortingDom.addClass('sorting-down');
+                        break;
+                    default :
+                        break;
+                }
+                onlyThWarp.append(sortingDom);
+            }
 
-			// 嵌入表头的筛选事件源
+            // 嵌入表头的筛选事件源
             // 插件自动生成的序号列与选择列不做事件绑定
             if (!isAutoCol && column.filter && jTool.type(column.filter) === 'object') {
-                const filterDom = jTool(Filter.createHtml(settings, column.filter, tableWarp.height()));
+                const filterDom = jTool(Filter.createHtml(settings, column.filter, $tableWarp.height()));
                 onlyThWarp.append(filterDom);
             }
 
-			// 嵌入宽度调整事件源,以下情况除外
+            // 嵌入宽度调整事件源,以下情况除外
             // 1.插件自动生成的选择列不做事件绑定
             // 2.禁止操作项
-			if (settings.supportAdjust && !isAutoCol && !column.disableCustomize) {
-				const adjustDOM = jTool(Adjust.html);
-				// 最后一列不支持调整宽度
-				if (index === onlyThList.length - 1) {
-					adjustDOM.hide();
-				}
-				onlyThWarp.append(adjustDOM);
-			}
+            if (settings.supportAdjust && !isAutoCol && !column.disableCustomize) {
+                const adjustDOM = jTool(Adjust.html);
+                // 最后一列不支持调整宽度
+                if (index === $thList.length - 1) {
+                    adjustDOM.hide();
+                }
+                onlyThWarp.append(adjustDOM);
+            }
 
             let _minWidth = Base.getTextWidth(onlyTH);
             let _oldWidth = onlyTH.width();
             onlyWidth = _oldWidth > _minWidth ? _oldWidth : _minWidth;
-			// 清除width属性, 使用style.width进行宽度控制
-			onlyTH.removeAttr('width');
-			onlyTH.width(onlyWidth);
-		});
+            // 清除width属性, 使用style.width进行宽度控制
+            onlyTH.removeAttr('width');
+            onlyTH.width(onlyWidth);
+        });
 
-		// 删除渲染中标识、增加渲染完成标识
-		$table.removeClass('GridManager-loading');
-		$table.addClass('GridManager-ready');
-	}
+    }
 
 	/**
 	 * 根据配置项初始化列显示|隐藏 (th 和 td)

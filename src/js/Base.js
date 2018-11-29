@@ -221,8 +221,8 @@ class BaseClass {
 		const tableWrap = $th.closest('.table-wrap');
 		const textDreamland	= $('.text-dreamland', tableWrap);
 
-		// 将th文本嵌入文本镜象 用于获取文本实时宽度
-		textDreamland.text(thText.text());
+		// 将th-text内容嵌入文本镜象 用于获取文本实时宽度
+		textDreamland.html(thText.html());
 		textDreamland.css({
 			fontSize: thText.css('font-size'),
 			fontWeight: thText.css('font-weight'),
@@ -230,6 +230,7 @@ class BaseClass {
 		});
 		const thPaddingLeft = thWarp.css('padding-left');
 		const thPaddingRight = thWarp.css('padding-right');
+
 		// 返回宽度值
 		// 文本所占宽度 + 左内间距 + 右内间距 + (由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错) + th-wrap减去的1px
 		return textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1;
@@ -329,27 +330,39 @@ class BaseClass {
      * 根据不同的框架解析指定节点
      * @param settings:
      * @param compileList: 将要解析的节点
+     * @param callback: 回调函数
      * @returns {boolean}
      */
-    compileFramework(settings, compileList) {
-        try {
-            // 解析框架: Vue
-            if (typeof settings.compileVue === 'function' && compileList.length > 0) {
-                settings.compileVue(compileList);
-            }
-
-            // 解析框架: Angular 1.x
-            if (typeof settings.compileAngularjs === 'function' && compileList.length > 0) {
-                settings.compileAngularjs(compileList);
-            }
-
-            // 解析框架: React
-            // ...
+    compileFramework(settings, compileList, callback) {
+        // 解析框架: Vue
+        if (typeof settings.compileVue === 'function' && compileList.length > 0) {
+            settings.compileVue(compileList)
+            .then(() => {
+                typeof callback === 'function' && callback();
+            })
+            .catch(err => {
+                this.outLog(`Vue 框架模板解析异常。详细原因:\\n${err}`, 'error');
+            });
             return true;
-        } catch (e) {
-            this.outLog(`框架模板解析异常。详细原因:\\n${e}`, 'error');
-            return false;
         }
+
+        // 解析框架: Angular 1.x
+        if (typeof settings.compileAngularjs === 'function' && compileList.length > 0) {
+            settings.compileAngularjs(compileList)
+            .then(() => {
+                typeof callback === 'function' && callback();
+            })
+            .catch(err => {
+                this.outLog(`Angular 框架模板解析异常。详细原因:\\n${err}`, 'error');
+            });
+            return true;
+        }
+
+        // 解析框架: React
+        // ...
+
+        typeof callback === 'function' && callback();
+        return false;
     }
 
     /**

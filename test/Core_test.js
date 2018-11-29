@@ -26,7 +26,7 @@ describe('Core 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(10 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(11 + 1);
 	});
 });
 
@@ -119,6 +119,13 @@ describe('Core.createDOM($table, settings)', function() {
 		expect(Core.createDOM).toBeDefined();
 		expect(Core.createDOM.length).toBe(2);
 	});
+});
+
+describe('redrawThead($tableWarp, $thList, settings)', function() {
+    it('基础验证', function () {
+        expect(Core.createDOM).toBeDefined();
+        expect(Core.createDOM.length).toBe(3);
+    });
 });
 
 describe('Core.insertEmptyTemplate($table, settings)', function() {
