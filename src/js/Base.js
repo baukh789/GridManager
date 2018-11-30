@@ -330,39 +330,25 @@ class BaseClass {
      * 根据不同的框架解析指定节点
      * @param settings:
      * @param compileList: 将要解析的节点
-     * @param callback: 回调函数
-     * @returns {boolean}
+     * @returns {promise}
      */
-    compileFramework(settings, compileList, callback) {
-        // 解析框架: Vue
-        if (typeof settings.compileVue === 'function' && compileList.length > 0) {
-            settings.compileVue(compileList)
-            .then(() => {
-                typeof callback === 'function' && callback();
-            })
-            .catch(err => {
-                this.outLog(`Vue 框架模板解析异常。详细原因:\\n${err}`, 'error');
-            });
-            return true;
+    async compileFramework(settings, compileList) {
+        try {
+            // 解析框架: Vue
+            if (typeof settings.compileVue === 'function' && compileList.length > 0) {
+                await settings.compileVue(compileList);
+            }
+
+            // 解析框架: Angular 1.x
+            if (typeof settings.compileAngularjs === 'function' && compileList.length > 0) {
+                await settings.compileAngularjs(compileList);
+            }
+
+            // 解析框架: React
+            // ...
+        } catch (err) {
+            this.outLog(`框架模板解析异常。${err}`, 'error');
         }
-
-        // 解析框架: Angular 1.x
-        if (typeof settings.compileAngularjs === 'function' && compileList.length > 0) {
-            settings.compileAngularjs(compileList)
-            .then(() => {
-                typeof callback === 'function' && callback();
-            })
-            .catch(err => {
-                this.outLog(`Angular 框架模板解析异常。详细原因:\\n${err}`, 'error');
-            });
-            return true;
-        }
-
-        // 解析框架: React
-        // ...
-
-        typeof callback === 'function' && callback();
-        return false;
     }
 
     /**

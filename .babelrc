@@ -1,19 +1,17 @@
 {
-  "presets": [
-    [
-      "env",
-      {
-        "modules": false
-      }
+    "presets": [
+        "env"
     ],
-    "stage-0"
-  ],
-  "plugins": [
-    "transform-decorators-legacy"
-  ],
-  "env": {
-    "test": {
-      "plugins": ["istanbul"]
+    "plugins": [
+        "transform-decorators-legacy",
+        "transform-class-properties",
+        "transform-object-rest-spread",
+        "transform-function-bind",
+        "transform-runtime"
+    ],
+    "env": {
+        "test": {
+            "plugins": ["istanbul"]
+        }
     }
-  }
 }

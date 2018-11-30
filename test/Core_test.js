@@ -123,8 +123,8 @@ describe('Core.createDOM($table, settings)', function() {
 
 describe('redrawThead($tableWarp, $thList, settings)', function() {
     it('基础验证', function () {
-        expect(Core.createDOM).toBeDefined();
-        expect(Core.createDOM.length).toBe(3);
+        expect(Core.redrawThead).toBeDefined();
+        expect(Core.redrawThead.length).toBe(3);
     });
 });
 

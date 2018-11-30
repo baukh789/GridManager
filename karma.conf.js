@@ -19,10 +19,11 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-			'test/*_test.js',
+            // 'src/**/*.js',
+			// 'test/*_test.js',
 			// 'test/Adjust_test.js',
 			// 'test/AjaxPage_test.js',
-			// 'test/Base_test.js',
+			'test/Base_test.js',
 			// 'test/Cache_test.js',
 			// 'test/Checkbox_test.js',
 			// 'test/Config_test.js',

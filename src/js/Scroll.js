@@ -40,6 +40,7 @@ class Scroll {
         if ($tableDiv.length === 0) {
             return;
         }
+        console.log('update');
         const $thead = jTool('thead[grid-manager-thead]', $table);
         const theadWidth = $thead.width();
         const tableDivWidth = $tableDiv.width();

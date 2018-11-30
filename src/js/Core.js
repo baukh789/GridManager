@@ -241,7 +241,9 @@ class Core {
 	 */
 	insertEmptyTemplate($table, settings) {
 		let visibleNum = jTool('th[th-visible="visible"]', $table).length;
-		jTool('tbody', $table).html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
+		const $tbody = jTool('tbody', $table);
+        $tbody.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
+		Base.compileFramework(settings, [{el: $tbody.get(0).querySelector('tr[emptyTemplate]')}]);
 	}
 
     /**
@@ -377,7 +379,7 @@ class Core {
      * @param settings
      * @returns {Promise<any>}
      */
-    createDOM($table, settings) {
+    async createDOM($table, settings) {
         // 外围的html片段
         const wrapHtml = `<div class="table-wrap">
                             <div class="table-div"></div>
@@ -552,16 +554,18 @@ class Core {
 			$tableWarp.append(Export.html);
 		}
 
-		return new Promise(resolve => {
-            // 解析框架: thead区域
-            Base.compileFramework(settings, [{el: $thead.get(0).querySelector('tr')}], () => {
-                this.redrawThead($tableWarp, $thList, settings);
-                // 删除渲染中标识、增加渲染完成标识
-                $table.removeClass('GridManager-loading');
-                $table.addClass('GridManager-ready');
-                resolve();
-            });
-        });
+		console.log('compileFramework 开始');
+        // 解析框架: thead区域
+        await Base.compileFramework(settings, [{el: $thead.get(0).querySelector('tr')}]);
+
+        console.log('compileFramework 解析完成');
+        // 重绘thead
+        this.redrawThead($tableWarp, $thList, settings);
+        console.log('compileFramework 重绘thead完成');
+
+        // 删除渲染中标识、增加渲染完成标识
+        $table.removeClass('GridManager-loading');
+        $table.addClass('GridManager-ready');
 	}
 
     /**

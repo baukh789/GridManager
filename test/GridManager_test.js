@@ -43,10 +43,10 @@ describe('new GridManager().init(table, arg, callback)', function() {
 	});
 });
 
-describe('new GridManager().initTable($table, settings, callback)', function() {
+describe('new GridManager().initTable($table, settings)', function() {
 	it('基础验证', function() {
 		expect(new GridManager().initTable).toBeDefined();
-		expect(new GridManager().initTable.length).toBe(3);
+		expect(new GridManager().initTable.length).toBe(2);
 	});
 });
 

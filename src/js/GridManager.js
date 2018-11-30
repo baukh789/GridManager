@@ -430,81 +430,78 @@ export default class GridManager {
         }
 
         // 初始化表格
-		this.initTable($table, settings, () => {
-            // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
-            if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
-                window.setTimeout(() => {
-                    Cache.saveUserMemory($table, settings);
-                    $table.removeAttr('grid-manager-cache-error');
-                }, 1000);
-            }
-            // 启用回调
-            typeof (callback) === 'function' ? callback(settings.query) : '';
-        });
+        this.initTable($table, settings);
+
+        // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
+        if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
+            window.setTimeout(() => {
+                Cache.saveUserMemory($table, settings);
+                $table.removeAttr('grid-manager-cache-error');
+            }, 1000);
+        }
+        // 启用回调
+        typeof (callback) === 'function' ? callback(settings.query) : '';
 	}
 
 	/**
 	 * 初始化列表
 	 * @param $table
 	 * @param settings
-	 * @param callback
      */
-	initTable($table, settings, callback) {
+	async initTable($table, settings) {
 		// 渲染HTML，嵌入所需的事件源DOM
-		Core.createDOM($table, settings).then(() => {
-            // 更新滚动轴显示状态
-            Base.updateScrollStatus($table);
+        await Core.createDOM($table, settings);
 
-            // 通过缓存配置成功后, 重置宽度调整事件源dom
-            settings.supportAdjust ? Adjust.resetAdjust($table) : '';
+        // 更新滚动轴显示状态
+        Base.updateScrollStatus($table);
 
-            // init Adjust
-            if (settings.supportAdjust) {
-                Adjust.init($table);
-            }
+        // 通过缓存配置成功后, 重置宽度调整事件源dom
+        settings.supportAdjust ? Adjust.resetAdjust($table) : '';
 
-            // init Drag
-            if (settings.supportDrag) {
-                Drag.init($table);
-            }
+        // init Adjust
+        if (settings.supportAdjust) {
+            Adjust.init($table);
+        }
 
-            // init Sort
-            if (Sort.enable) {
-                Sort.init($table);
-            }
+        // init Drag
+        if (settings.supportDrag) {
+            Drag.init($table);
+        }
 
-            // init Remind
-            if (Remind.enable) {
-                Remind.init($table);
-            }
+        // init Sort
+        if (Sort.enable) {
+            Sort.init($table);
+        }
 
-            // init Filter
-            if (Filter.enable) {
-                Filter.init($table);
-            }
+        // init Remind
+        if (Remind.enable) {
+            Remind.init($table);
+        }
 
-            // init Config
-            if (settings.supportConfig) {
-                Config.init($table);
-            }
+        // init Filter
+        if (Filter.enable) {
+            Filter.init($table);
+        }
 
-            // 绑定$table区域hover事件
-            if (!settings.disableHover) {
-                Hover.onTbodyHover($table);
-            }
+        // init Config
+        if (settings.supportConfig) {
+            Config.init($table);
+        }
 
-            // 初始化表格卷轴
-            Scroll.init($table);
+        // 绑定$table区域hover事件
+        if (!settings.disableHover) {
+            Hover.onTbodyHover($table);
+        }
 
-            // 初始化右键菜单事件
-            if (settings.supportMenu) {
-                Menu.init($table);
-            }
+        // 初始化表格卷轴
+        Scroll.init($table);
 
-            // 渲染tbodyDOM
-            settings.firstLoading ? Core.refresh($table) : Core.insertEmptyTemplate($table, settings);
+        // 初始化右键菜单事件
+        if (settings.supportMenu) {
+            Menu.init($table);
+        }
 
-            callback();
-        });
+        // 渲染tbodyDOM
+        settings.firstLoading ? Core.refresh($table) : Core.insertEmptyTemplate($table, settings);
 	}
 }
