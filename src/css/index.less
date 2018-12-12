@@ -11,7 +11,7 @@
 
 @table-border: 1px solid #e8e8e8;
 @font-normal-size: 12px;
-//@font-family: arial !important;
+
 /* table所在的DIV */
 .table-wrap {
     position: relative;
@@ -60,8 +60,7 @@
             //font-family: @font-family;
             tr {
                 border-bottom: @table-border;
-                th:last-child,
-                td:last-child {
+                [last-visible="true"]{
                     border-right: none;
                 }
             }
@@ -92,7 +91,6 @@
                     }
                 }
                 &[gm-create="true"] {
-                    background-color: #f3f3f3;
                     .th-wrap {
                         padding: 6px 4px;
                     }
@@ -431,15 +429,15 @@
                         background-color: #fff;
                         color: #3d3d3d;
                         padding: 11px;
+                        &[gm-create="true"]{
+                            padding: 0;
+                        }
                         vertical-align: middle;
                         &[td-visible="none"] {
                             display: none;
                         }
                         &[td-visible="visible"] {
                             display: table-cell;
-                        }
-                        &[col-hover="true"] {
-                            background-color: #f3f3f3;
                         }
                         &td[gm-create="true"] {
                             background-color: #f8f8f8;
@@ -454,15 +452,23 @@
                             color: #ddd;
                         }
                     }
-                    &[row-hover="true"] td {
-                        background-color: #f3f3f3;
-                        color: #000;
-                    }
+
                     // 为空提示特殊处理, hover状态不高亮
                     &[emptytemplate] {
                         border: none;
                         &[row-hover] td {
                             background-color: #fff;
+                        }
+                    }
+                }
+                &:hover{
+                    tr{
+                        &[row-hover="true"] td {
+                            background-color: #f3f3f3;
+                            color: #000;
+                        }
+                        td[col-hover="true"] {
+                            background-color: #f3f3f3;
                         }
                     }
                 }

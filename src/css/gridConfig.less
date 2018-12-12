@@ -33,30 +33,22 @@
 			padding: 2px 30px 0 2px;
 			list-style-type: none;
 			font-size: 12px;
-			background: #f8f8f8;
 			border: 1px solid #ddd;
+            background-color: #fff;
 			border-radius: 3px;
 			margin: 0;
+            user-select: none;
 			>li{
 				display: inline-block;
 				padding: 4px 10px;
 				line-height: 20px;
-				background-color: #e8e8e8;
 				margin-right: 2px;
 				margin-bottom: 2px;
-				>label{
-					margin: 0;
-					cursor: pointer;
-					color: #666;
-					font-weight: 500;
-				}
+                .gm-checkbox-input{
+                    pointer-events: none;
+                }
 				&:hover{
-					>label{
-						color: #09f;
-					}
-					.fake-checkbox{
-						border-color: #09f;
-					}
+                    color: #09f;
 				}
 				&.no-click{
 					cursor: not-allowed;
@@ -64,38 +56,8 @@
 						cursor: not-allowed;
 					}
 					&:hover{
-						>label{
-							color:#666;
-						}
+                        color:#666;
 					}
-				}
-				input[type="checkbox"]{
-					display: none;
-				}
-				.fake-checkbox{
-					display: inline-block;
-					width: 14px;
-					height: 14px;
-					position: relative;
-					border: 1px solid #999;
-					border-radius: 50%;
-					box-shadow: 0 0 1px 1px #e8e8e8;
-					margin-right: 5px;
-                    vertical-align: sub;
-					&:after{
-						display: block;
-						width: 8px;
-						height: 8px;
-						position: absolute;
-						top: 2px;
-						left: 2px;
-						content: "";
-						background: #e8e8e8;
-						border-radius: 50%;
-					}
-				}
-				&.checked-li .fake-checkbox:after{
-					background: #09f;
 				}
 			}
 		}
