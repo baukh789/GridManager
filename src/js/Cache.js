@@ -89,11 +89,66 @@ class Cache {
      * @param data
      */
     setTableData($table, data) {
+        store.responseData[Base.getKey($table)] = data;
+        this.updateCheckedData($table, data);
+    }
+
+    /**
+     * 获取选中的数据
+     * @param $table
+     * @returns {*|Array}
+     */
+    getCheckedData($table) {
+        return store.checkedData[Base.getKey($table)] || [];
+    }
+
+    /**
+     * 更新选中的数据
+     * @param $table
+     * @param dataList
+     */
+    updateCheckedData($table, dataList) {
         const gmName = Base.getKey($table);
-        if (!store.responseData[gmName]) {
-            store.responseData[gmName] = {};
+        if (!store.checkedData[gmName]) {
+            store.checkedData[gmName] = [];
         }
-        store.responseData[gmName] = data;
+        let tableCheckedList = store.checkedData[gmName];
+
+        dataList.forEach(item => {
+            let cloneObj = jTool.extend({}, item, {[`${Checkbox.key}`]: true});
+            let checked = item[Checkbox.key];
+            let index = Base.getObjectIndexToArray(tableCheckedList, cloneObj);
+
+            // 新增: 已选中 且 未存储
+            if (checked && index === -1) {
+                tableCheckedList.push(cloneObj);
+                return;
+            }
+
+            // 删除: 未选中 且 已存储
+            if (!checked && index !== -1) {
+                tableCheckedList.splice(index, 1);
+            }
+        });
+    }
+
+    /**
+     * 更新列数据
+     * @param $table
+     * @param key: 列数据的主键
+     * @param rowDataList: 需要更新的数据列表
+     * @returns tableData: 更新后的表格数据
+     */
+    updateRowData($table, key, rowDataList) {
+        const tableData = this.getTableData($table);
+        tableData.forEach(item => {
+            rowDataList.forEach(newItem => {
+                if (newItem[key] === item[key]) {
+                    Object.assign(item, newItem);
+                }
+            });
+        });
+        return tableData;
     }
 
     /**
@@ -294,7 +349,7 @@ class Cache {
 		            // 字段描述
 	                || columnCache[key].remind !== col.remind
 
-                    // 禁止操作功能
+                    // 禁止使用个性配置功能
                     || columnCache[key].disableCustomize !== col.disableCustomize
 
 	                || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)

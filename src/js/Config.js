@@ -28,9 +28,11 @@ class Config {
      */
     createColumn(thName, content) {
 	    return `<li th-name="${thName}">
-                    <input type="checkbox"/>
-                    <label>
-                        <span class="fake-checkbox"></span>
+                    <label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input">
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
                         ${content}
                     </label>
                 </li>`;
@@ -69,9 +71,18 @@ class Config {
 
 		// 事件: 设置
 		jTool('.config-list li', tableWarp).unbind('click');
-		jTool('.config-list li', tableWarp).bind('click', function () {
+		jTool('.config-list li', tableWarp).bind('click', function (e) {
+            e.preventDefault();
+
 			// 单个的设置项
 			const _only = jTool(this);
+
+            // 最后一项显示列不允许隐藏
+            if (_only.hasClass('no-click')) {
+                return false;
+            }
+
+            const checkbox = _only.find('.gm-checkbox');
 
 			// 单个设置项的thName
 			const _thName = _only.attr('th-name');
@@ -88,33 +99,36 @@ class Config {
 			// 所对应的table
 			const _$table = jTool('[grid-manager]', _tableWarp);
 
-			// thead
-			const $thead = jTool('thead[grid-manager-thead]', _$table);
-
             const settings = Cache.getSettings(_$table);
 
-			// 所对应的th
-			const _th = jTool(`th[th-name="${_thName}"]`, $thead);
+			// thead fackThead
+			const $thead = jTool('thead[grid-manager-thead]', _$table);
+			const $fakeThead = jTool(`thead[${Base.fakeTheadAttr}]`, _$table);
 
-			// 最后一项显示列不允许隐藏
-			if (_only.hasClass('no-click')) {
-				return false;
-			}
+			// 所对应的th fackTh
+			const _th = jTool(`th[th-name="${_thName}"]`, $thead);
+			const _fakeTh = jTool(`th[th-name="${_thName}"]`, $fakeThead);
+
 			_only.closest('.config-list').find('.no-click').removeClass('no-click');
 			let isVisible = !_checkbox.prop('checked');
 
+            isVisible ? checkbox.addClass('gm-checkbox-checked') : checkbox.removeClass('gm-checkbox-checked');
+
 			// 设置与当前td同列的td是否可见
 			_tableDiv.addClass('config-editing');
-			Base.setAreVisible(_th, isVisible, () => {
+			Base.setAreVisible([_th, _fakeTh], isVisible, () => {
 				_tableDiv.removeClass('config-editing');
 			});
 
+            // 更新存储信息
+            Cache.update(_$table, settings);
+
 			// 当前处于选中状态的展示项
-			const _checkedList = jTool('.config-area input[type="checkbox"]:checked', _tableWarp);
+			const _checkedList = jTool('.config-area .checked-li', _tableWarp);
 
 			// 限制最少显示一列
 			if (_checkedList.length === 1) {
-				_checkedList.parent().addClass('no-click');
+				_checkedList.addClass('no-click');
 			}
 
 			// 重置调整宽度事件源
@@ -125,21 +139,25 @@ class Config {
 			// 重置镜像滚动条的宽度
 			jTool('.sa-inner', _tableWarp).width('100%');
 
-			// 重置当前可视th的宽度
+            // 重置当前可视th的宽度
             Base.updateThWidth(_$table, settings);
 
             // 更新存储信息
             Cache.update(_$table, settings);
 
 			// 处理置顶表头
-            Scroll.render(_$table);
             Scroll.update(_$table);
+
+            // 更新最后一项可视列的标识
+            Base.updateVisibleLast($table);
+
+            // 更新滚动轴显示状态
             Base.updateScrollStatus(_$table);
 		});
 	}
 
 	/**
-	 * 切换可视状态
+	 * 切换配置区域可视状态
 	 * @param $table
 	 * @returns {boolean}
 	 */
@@ -152,7 +170,7 @@ class Config {
 	}
 
     /**
-     * 显示
+     * 显示配置区域
      * @param $table
      * @param settings
      */
@@ -165,6 +183,7 @@ class Config {
 
         // 选中状态的input
         let checkInput = null;
+        let checkbox = null;
 
         // 可视列计数
         let showNum = 0;
@@ -172,15 +191,18 @@ class Config {
         // 重置列的可视操作
         jTool.each(settings.columnMap, (key, col) => {
             checkLi = jTool(`li[th-name="${col.key}"]`, $configArea);
-            checkInput = jTool('input[type="checkbox"]', checkLi);
+            checkbox = checkLi.find('.gm-checkbox');
+            checkInput = jTool('input[type="checkbox"]', checkbox);
             if (col.isShow) {
                 checkLi.addClass('checked-li');
                 checkInput.prop('checked', true);
+                checkbox.addClass('gm-checkbox-checked');
                 showNum++;
                 return;
             }
             checkLi.removeClass('checked-li');
             checkInput.prop('checked', false);
+            checkbox.removeClass('gm-checkbox-checked');
         });
 
         // 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示
@@ -192,7 +214,7 @@ class Config {
     }
 
     /**
-     * 隐藏
+     * 隐藏配置区域
      * @param $table
      */
     hide($table) {

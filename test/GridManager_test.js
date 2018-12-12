@@ -180,6 +180,13 @@ describe('GridManager.getCheckedData(table)', function() {
 	});
 });
 
+describe('GridManager.updateRowData(table, key, rowData)', function() {
+    it('基础验证', function() {
+        expect(GridManager.updateRowData).toBeDefined();
+        expect(GridManager.updateRowData.length).toBe(3);
+    });
+});
+
 describe('GridManager.cleanData(table)', function() {
 	it('基础验证', function() {
 		expect(GridManager.cleanData).toBeDefined();

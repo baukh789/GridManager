@@ -84,7 +84,7 @@ class Settings {
             disableBorder: false,  // v2.6.1新增
 
             // 数据加载中模板
-            loadingTemplate: undefined, // v2.6.2新增
+            loadingTemplate: '<div class="loading"><div class="loadInner kernel"></div></div>', // v2.6.2新增
 
             //  皮肤样式所使用的className
             skinClassName: '' // v2.6.13 新增
@@ -107,7 +107,7 @@ class Settings {
 		 */
 		const cache = {
 			// 是否禁用本地缓存
-			disableCache: false
+			disableCache: true
 		};
 
 		/**
@@ -255,7 +255,7 @@ class Settings {
                 isShow: true,
 
                 // @2.6.13
-                // 该列是否禁止使用配置功能
+                // 该列是否禁止使用个性配置功能(宽度调整、位置更换、列的显示隐藏)
                 disableCustomize: false
 
                 // 列所占宽度, 字符串类型，非必设项
@@ -361,7 +361,21 @@ class Settings {
 		 */
 		const gridExport = {
 			// 支持导出表格数据
-			supportExport: true
+			supportExport: true,
+
+            // 导出相关配置
+            exportConfig: {
+			    // 导出的方式: 默认为static
+                // 1.static: 使用静态导出
+                // 2.blob: 需要配置exportAPI函数，该函数返回 resolve(blob) 的promise。blob为二进制大对像
+                mode: 'static',
+
+                // 导出的后缀名 , 默认为`xls`
+                suffix: 'xls',
+
+                // 导出处理器函数,该函数需要返回一个promise。当`exportType`为`static`时，该参数不生效。
+                handler: $.noop
+            }
 		};
 
 		const settings = {

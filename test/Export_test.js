@@ -24,14 +24,7 @@ describe('Export 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Export)))).toBe(6 + 1);
-	});
-});
-
-describe('Export.html', function() {
-	it('基础验证', function() {
-		expect(Export.html).toBeDefined();
-		expect(Export.html).toBe('<a href="" download="" id="gm-export-action"></a>');
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Export)))).toBe(10 + 1);
 	});
 });
 
@@ -57,19 +50,25 @@ describe('Export.getHref(exportHTML)', function() {
 	});
 });
 
-describe('Export.getDownload($table, fileName)', function() {
-	var fileName = null;
-	beforeEach(function() {
-		fileName = 'filename';
-	});
-	afterEach(function(){
-		fileName = null;
-	});
+describe('Export.dispatchDownload(fileName, href)', function() {
 	it('基础验证', function() {
-		expect(Export.getDownload).toBeDefined();
-		expect(Export.getDownload.length).toBe(2);
-		expect(Export.getDownload(undefined, fileName)).toBe(`${fileName}.xls`);
+		expect(Export.dispatchDownload).toBeDefined();
+		expect(Export.dispatchDownload.length).toBe(2);
 	});
+});
+
+describe('Export.addSuffix(gridManagerName, fileName, suffix)', function() {
+    it('基础验证', function() {
+        expect(Export.addSuffix).toBeDefined();
+        expect(Export.addSuffix.length).toBe(3);
+    });
+
+    it('执行验证', function() {
+        expect(Export.addSuffix('test-table', undefined, 'xls')).toBe('test-table.xls');
+        expect(Export.addSuffix('test-table', 'fileName', 'xls')).toBe('fileName.xls');
+        expect(Export.addSuffix('test-table', 'fileName', 'xls')).toBe('fileName.xls');
+        expect(Export.addSuffix('test-table', 'fileName', 'xlsx')).toBe('fileName.xlsx');
+    });
 });
 
 describe('Export.createExportHTML(theadHTML, tbodyHTML)', function() {

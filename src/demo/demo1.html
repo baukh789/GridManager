@@ -143,12 +143,7 @@
 				height: '100%',
 				supportAjaxPage:true,
 				isCombSorting: true,
-                // supportAutoOrder: false,
-                // supportCheckbox: false,
-                // mergeSort:true,
-                // disableCache: true,
-				// ajax_url 将在v2.6.0以上版本废弃，请不要再使用
-				// ,ajax_url: 'https://www.lovejavascript.com/blogManager/getBlogList'
+                disableCache: false,
 				ajax_data: function () {
 					return 'https://www.lovejavascript.com/blogManager/getBlogList';
 				},
@@ -289,7 +284,7 @@
                             // 筛选选中项，字符串, 默认为''。 非必设项，选中的过滤条件将会覆盖query
                             selected: '3',
                             // 否为多选, 布尔值, 默认为false。非必设项
-                            isMultiple: true
+                            isMultiple: false
                         },
 						template: function(type, rowObject){
 							return TYPE_MAP[type];
@@ -331,6 +326,7 @@
 						remind: 'the action',
                         width: '100px',
 						align: 'center',
+                        disableCustomize: true,
 						text: '<span style="color: red">操作</span>',
 						// 直接返回 htmlString
 						template: '<span class="plugin-action" gm-click="delectRowData">删除</span>'
@@ -379,8 +375,7 @@
 				var _query = {
 					title: document.querySelector('[name="title"]').value,
 					type: document.querySelector('[name="type"]').value,
-					content: document.querySelector('[name="content"]').value,
-					cPage: 1
+					content: document.querySelector('[name="content"]').value
 				};
 				table.GM('setQuery', _query, function(){
 					console.log('setQuery执行成功');

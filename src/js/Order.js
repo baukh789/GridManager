@@ -30,6 +30,7 @@ class Order {
 			text: I18n.getText(settings, 'order-text'),
 			isAutoCreate: true,
 			isShow: true,
+            disableCustomize: true,
 			width: ORDER_WIDTH,
 			align: 'center',
 			template: nodeData => {

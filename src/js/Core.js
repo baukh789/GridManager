@@ -11,11 +11,11 @@ import AjaxPage from './AjaxPage';
 import Cache from './Cache';
 import Config from './Config';
 import Checkbox from './Checkbox';
-import Export from './Export';
 import Order from './Order';
 import Remind from './Remind';
 import Sort from './Sort';
 import Filter from './Filter';
+import Scroll from './Scroll';
 class Core {
 	/**
 	 * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
@@ -187,8 +187,6 @@ class Core {
 			AjaxPage.resetPageData($table, settings, 0);
 			Menu.updateMenuPageStatus(settings.gridManagerName, settings);
 		}
-
-		// this.driveDomForSuccessAfter($table, settings, response, callbakc);
 	}
 
 	/**
@@ -211,7 +209,6 @@ class Core {
 
 		let _data = parseRes[settings.dataKey];
 
-
 		// 数据为空时
 		if (!_data || _data.length === 0) {
 			this.insertEmptyTemplate($table, settings);
@@ -222,7 +219,7 @@ class Core {
 
 		// 渲染选择框
 		if (settings.supportCheckbox) {
-            Checkbox.resetDOM($table, settings, _data);
+            Checkbox.resetDOM($table, settings, _data, settings.useRadio);
 		}
 
 		// 渲染分页
@@ -235,15 +232,21 @@ class Core {
 	};
 
 	/**
-	 * 插入空数据模版
+	 * 插入空数据模板
 	 * @param $table
 	 * @param settings
+	 * @param isInit: 是否为初始化时调用
 	 */
-	insertEmptyTemplate($table, settings) {
+	insertEmptyTemplate($table, settings, isInit) {
+	    // 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
+        // 用于解决容器为不可见时，触发了setQuery的情况
+	    if (isInit && Cache.getTableData($table).length !== 0) {
+	        return;
+        }
 		let visibleNum = jTool('th[th-visible="visible"]', $table).length;
 		const $tbody = jTool('tbody', $table);
         $tbody.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
-		Base.compileFramework(settings, [{el: $tbody.get(0).querySelector('tr[emptyTemplate]')}]);
+        Base.compileFramework(settings, {el: $tbody.get(0).querySelector('tr[emptyTemplate]')});
 	}
 
     /**
@@ -255,6 +258,7 @@ class Core {
 	renderTableBody($table, settings, data) {
         // td模板
         let	tdTemplate = null;
+
         // add order
         if (settings.supportAutoOrder) {
             let _pageData = settings.pageData;
@@ -272,8 +276,12 @@ class Core {
 
         // add checkbox
         if (settings.supportCheckbox) {
+            const checkedData = Cache.getCheckedData($table);
             data = data.map(rowData => {
-                rowData[Checkbox.key] = false;
+                let checked = checkedData.some(item => {
+                    return Base.equal(item, jTool.extend({}, rowData, {[`${Checkbox.key}`]: true}));
+                });
+                rowData[Checkbox.key] = checked || Boolean(rowData[Checkbox.key]);
                 return rowData;
             });
         }
@@ -499,7 +507,7 @@ class Core {
 
             // 嵌入拖拽事件标识, 以下情况除外
             // 1.插件自动生成列
-            // 2.禁用操作列
+            // 2.禁止使用个性配置功能的列
             if (settings.supportDrag && !col.isAutoCreate && !col.disableCustomize) {
                 thText.classList.add('drag-action');
             }
@@ -549,19 +557,17 @@ class Core {
 			AjaxPage.initAjaxPage($table, settings);
 		}
 
-		// 嵌入导出表格数据事件源
-		if (settings.supportExport) {
-			$tableWarp.append(Export.html);
-		}
+		// 等待容器可用
+        await this.waitContainerAvailable($tableWarp.get(0));
 
-		console.log('compileFramework 开始');
+        // 重绘thead
+        this.redrawThead($table, $tableWarp, $thList, settings);
+
+        // 初始化fake thead
+        Scroll.init($table);
+
         // 解析框架: thead区域
         await Base.compileFramework(settings, [{el: $thead.get(0).querySelector('tr')}]);
-
-        console.log('compileFramework 解析完成');
-        // 重绘thead
-        this.redrawThead($tableWarp, $thList, settings);
-        console.log('compileFramework 重绘thead完成');
 
         // 删除渲染中标识、增加渲染完成标识
         $table.removeClass('GridManager-loading');
@@ -569,24 +575,35 @@ class Core {
 	}
 
     /**
+     * 等待容器可用
+     * @param tableWarp
+     */
+    waitContainerAvailable(tableWarp) {
+        return new Promise(resolve => {
+            const siv = setInterval(() => {
+                let tableWarpWidth = window.getComputedStyle(tableWarp).width;
+                if (tableWarpWidth !== '100%') {
+                    clearInterval(siv);
+                    resolve();
+                }
+            }, 50);
+        });
+    }
+
+    /**
      * 重绘thead
+     * @param $table
      * @param $tableWarp
      * @param $thList
      * @param settings
      */
-    redrawThead($tableWarp, $thList, settings) {
+    redrawThead($table, $tableWarp, $thList, settings) {
         const configList = jTool('.config-list', $tableWarp);
-
-        // 单个TH
-        let onlyTH = null;
-
-        // 单个TH所占宽度
-        let onlyWidth = 0;
 
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
         jTool.each($thList, (index, item) => {
-            onlyTH = jTool(item);
+            let onlyTH = jTool(item);
             const onlyThWarp = jTool('.th-wrap', onlyTH);
             const thName = onlyTH.attr('th-name');
             const onlyThText = onlyTH.text();
@@ -635,24 +652,21 @@ class Core {
 
             // 嵌入宽度调整事件源,以下情况除外
             // 1.插件自动生成的选择列不做事件绑定
-            // 2.禁止操作项
+            // 2.禁止使用个性配置功能的列
             if (settings.supportAdjust && !isAutoCol && !column.disableCustomize) {
                 const adjustDOM = jTool(Adjust.html);
+
                 // 最后一列不支持调整宽度
                 if (index === $thList.length - 1) {
                     adjustDOM.hide();
                 }
+
                 onlyThWarp.append(adjustDOM);
             }
-
-            let _minWidth = Base.getTextWidth(onlyTH);
-            let _oldWidth = onlyTH.width();
-            onlyWidth = _oldWidth > _minWidth ? _oldWidth : _minWidth;
-            // 清除width属性, 使用style.width进行宽度控制
-            onlyTH.removeAttr('width');
-            onlyTH.width(onlyWidth);
         });
 
+        // 更新列宽
+        Base.updateThWidth($table, settings, true);
     }
 
 	/**

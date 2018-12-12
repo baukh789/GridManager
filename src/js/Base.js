@@ -2,7 +2,7 @@
  * Base: 基础方法
  * */
 import {} from '../../node_modules/jtool/jTool.min';
-import { ORDER_WIDTH, CHECKBOX_WIDTH, CONSOLE_STYLE } from '../common/constants';
+import { CONSOLE_STYLE } from '../common/constants';
 let $ = window.jTool;
 let jTool = window.jTool;
 class BaseClass {
@@ -19,7 +19,7 @@ class BaseClass {
 	 * 获取表头吸顶所使用的attr
 	 * @returns {string}
      */
-	getSetTopAttr() {
+	get fakeTheadAttr() {
 		return 'grid-manager-mock-thead';
 	}
 
@@ -155,51 +155,120 @@ class BaseClass {
 	}
 
     /**
-     * 更新列宽
+     * 验证两个Object是否相同
+     * @param obj1
+     * @param obj2
+     * @returns {boolean}
+     */
+    equal(obj1, obj2) {
+	    return JSON.stringify(obj1) === JSON.stringify(obj2);
+    }
+
+    /**
+     * 获取Array中Object的索引
+     * @param arr
+     * @param obj
+     * @returns {number}
+     */
+    getObjectIndexToArray(arr, obj) {
+        let index = -1;
+        let isInclude = false;
+        arr.some((item, i) => {
+            isInclude = this.equal(item, obj);
+            if (isInclude) {
+                index = i;
+            }
+            return this.equal(item, obj);
+        });
+        return index;
+    }
+
+    /**
+     * 更新最后一项可视列的标识
      * @param $table
      */
-	updateThWidth($table, settings) {
-        const $tableDiv = $table.closest('.table-div');
-        const $thead = jTool('thead[grid-manager-thead]', $table);
-        const $visibleThList = jTool('th[th-visible="visible"]', $thead);
-        jTool.each($visibleThList, (i, v) => {
-            // 全选列
-            if (v.getAttribute('gm-checkbox') === 'true') {
-                v.style.width = CHECKBOX_WIDTH;
+	updateVisibleLast($table) {
+        const $visibleThList = $table.find('thead[grid-manager-thead] tr th[th-visible="visible"]');
+        const $fakeVisibleThList = $table.find(`thead[${this.fakeTheadAttr}] tr th[th-visible="visible"]`);
+        const lastIndex = $fakeVisibleThList.length - 1;
+        let isLastVisible = null;
+        jTool.each($fakeVisibleThList, (index, item) => {
+            isLastVisible = index === lastIndex;
+            item.setAttribute('last-visible', isLastVisible);
+            $visibleThList.get(index).setAttribute('last-visible', isLastVisible);
+            this.getColTd(jTool(item)).attr('last-visible', isLastVisible);
+        });
+    }
+
+    /**
+     * 更新列宽
+     * @param $table
+     * @param settings
+     * @param isInit: 是否为init调用
+     */
+	updateThWidth($table, settings, isInit) {
+        const columnMap = settings.columnMap;
+        const updateColumnList = [];
+        let toltalWidth = $table.closest('.table-div').width();
+
+        jTool.each(columnMap, (index, col) => {
+            // 需要更新宽度的列
+            if (col.isShow && !col.disableCustomize) {
+                updateColumnList.push(col);
+            }
+
+            // 汇总不可更新但可见的列宽
+            if (col.isShow && col.disableCustomize) {
+                toltalWidth += col.__width;
+            }
+        });
+
+        const $thead = jTool(`thead[grid-manager-thead]`, $table);
+        let autoLen = 0;
+        let lastIndex = updateColumnList.length - 1;
+
+        // 通过 th.style.width 来进行表格宽度 设置
+        jTool.each(updateColumnList, (i, col) => {
+            const {__width, width} = col;
+            const th = $thead.find(`th[th-name="${col.key}"]`).get(0);
+
+            // 非init情况下，设置自动适应列，并统计当前可视项中自动宽度列的总数
+            if (!isInit && (!__width || __width === 'auto')) {
+                autoLen++;
+                th.style.width = 'auto';
                 return;
             }
 
-            // 序号列
-            if (v.getAttribute('gm-order') === 'true') {
-                v.style.width = ORDER_WIDTH;
+            // 当设置至最后一列 且 已经设置的列未存在自动适应列
+            if (i === lastIndex && autoLen === 0) {
+                th.style.width = 'auto';
                 return;
             }
 
-            // 禁止配置的列
-            if (settings.columnMap[v.getAttribute('th-name')].disableCustomize) {
-                v.style.width = settings.columnMap[v.getAttribute('th-name')].__width;
-                return;
+            // 非init的情况下，清除缓存使用原始宽度
+            if (!isInit) {
+                th.style.width = __width;
+            } else {
+                th.style.width = width;
             }
-            v.style.width = 'auto';
         });
 
         // 当前th文本所占宽度大于设置的宽度
         // 需要在上一个each执行完后,才可以获取到准确的值
-        let widthTotal = 0;
-        let minWidth = null;
-        let thWidth = null;
-        let newWidth = null;
-        jTool.each($visibleThList, (i, v) => {
-            thWidth = jTool(v).width();
-            minWidth = Base.getTextWidth(v);
-            newWidth = thWidth < minWidth ? minWidth : thWidth;
+        let usedTotalWidth = 0;
+        jTool.each(updateColumnList, (i, col) => {
+            const $th = $thead.find(`th[th-name="${col.key}"]`);
+            let thWidth = jTool($th).width();
+            let minWidth = this.getTextWidth($th);
+            let newWidth = thWidth < minWidth ? minWidth : thWidth;
+
             // 最后一列使用剩余的宽度
-            if (i === $visibleThList.length - 1) {
-                newWidth = $tableDiv.width() > widthTotal + newWidth ? $tableDiv.width() - widthTotal : newWidth;
+            if (i === lastIndex) {
+                newWidth = toltalWidth > usedTotalWidth + newWidth ? toltalWidth - usedTotalWidth : newWidth;
             }
 
-            jTool(v).width(newWidth);
-            widthTotal += newWidth;
+            $th.width(newWidth);
+            usedTotalWidth += newWidth;
         });
     }
 
@@ -238,21 +307,22 @@ class BaseClass {
 
 	/**
 	 * 显示加载中动画
-	 * @param dom[jTool] 加载动画的容器
-	 * @param loadingTemplate 加载动画模板
+     * @param $dom 加载动画的容器
+	 * @param loadingTemplate
 	 * @param cb 回调函数
      */
-	showLoading(dom, loadingTemplate, cb) {
-		if (!dom || dom.length === 0) {
+	showLoading($dom, loadingTemplate, cb) {
+		if (!$dom || $dom.length === 0) {
 			return false;
 		}
-		const loading = dom.find('.gm-load-area');
+		const loading = $dom.find('.gm-load-area');
 		if (loading.length > 0) {
 			loading.remove();
 		}
-		const loadingDom = $(loadingTemplate || `<div class="loading"><div class="loadInner kernel"></div></div>`);
+
+		const loadingDom = $(loadingTemplate);
         loadingDom.addClass('gm-load-area');
-		dom.append(loadingDom);
+        $dom.append(loadingDom);
 		window.setTimeout(() => {
 			typeof cb === 'function' ? cb() : '';
 		}, 100);
@@ -318,7 +388,7 @@ class BaseClass {
 	}
 
 	/**
-	 * clone 对象, 对 JSON.stringify 存在丢失情为的类型(如function)不作处理。因为GM中不存在这种情况
+	 * clone 对象, 对 JSON.stringify 存在丢失的类型(如function)不作处理。因为GM中不存在这种情况
 	 * @param object
 	 * @returns {any}
 	 */
@@ -329,11 +399,13 @@ class BaseClass {
     /**
      * 根据不同的框架解析指定节点
      * @param settings:
-     * @param compileList: 将要解析的节点
+     * @param compile: 将要解析的节点, 对象或对象数组
      * @returns {promise}
      */
-    async compileFramework(settings, compileList) {
+    async compileFramework(settings, compile) {
         try {
+            const compileList = Array.isArray(compile) ? compile : [compile];
+
             // 解析框架: Vue
             if (typeof settings.compileVue === 'function' && compileList.length > 0) {
                 await settings.compileVue(compileList);

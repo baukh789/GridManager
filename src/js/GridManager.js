@@ -19,6 +19,40 @@ import Sort from './Sort';
 import Hover from './Hover';
 import Filter from './Filter';
 
+/**
+ * 通过不同的形式获取 jTool table
+ * @param table
+ * @returns {*}
+ */
+const __jTable = table => {
+    let $table = null;
+    // undefined
+    if (!table) {
+        return undefined;
+    }
+
+    // dom
+    if (table.nodeType) {
+        return jTool(table);
+    }
+
+    // talbe[grid-manager="gridManagerName"]
+    if (jTool.type(table) === 'string') {
+        $table = jTool(table);
+    }
+
+    // gridManagerName
+    if ($table.length === 0) {
+        $table = jTool(`table[grid-manager="${table}"]`);
+    }
+
+    // undefined
+    if ($table.length === 0) {
+        Base.outLog(`未能找到对应的DOM节点，${table}`, 'error');
+    }
+    return $table;
+};
+
 // 存储默认配置
 let defaultOption = {};
 export default class GridManager {
@@ -61,7 +95,7 @@ export default class GridManager {
 	 */
 	static
 	get(table) {
-		return Cache.getSettings(jTool(table));
+		return Cache.getSettings(__jTable(table));
 	}
 
     /**
@@ -72,7 +106,7 @@ export default class GridManager {
      */
     static
     setScope(table, scope) {
-        return Cache.setScope(jTool(table), scope);
+        return Cache.setScope(__jTable(table), scope);
     }
 
 	/**
@@ -84,7 +118,7 @@ export default class GridManager {
      */
 	static
 	getLocalStorage(table) {
-		return Cache.getUserMemory(jTool(table));
+		return Cache.getUserMemory(__jTable(table));
 	}
 
     /**
@@ -97,9 +131,9 @@ export default class GridManager {
      */
 	static
     resetLayout(table, width, height) {
-	    const $table = jTool(table);
+	    const $table = __jTable(table);
         const settings = Cache.getSettings($table);
-        Base.calcLayout(jTool(table), width, height, settings.supportAjaxPage);
+        Base.calcLayout($table, width, height, settings.supportAjaxPage);
         return Base.updateScrollStatus($table);
     }
 
@@ -111,7 +145,7 @@ export default class GridManager {
      */
 	static
 	clear(table) {
-		return Cache.delUserMemory(jTool(table), '通过clear()方法清除');
+		return Cache.delUserMemory(__jTable(table), '通过clear()方法清除');
 	}
 
 	/**
@@ -123,7 +157,7 @@ export default class GridManager {
      */
 	static
 	getRowData(table, target) {
-		return Cache.getRowData(jTool(table), target);
+		return Cache.getRowData(__jTable(table), target);
 	}
 
 	/**
@@ -136,7 +170,7 @@ export default class GridManager {
      */
 	static
 	setSort(table, sortJson, callback, refresh) {
-		Sort.__setSort(jTool(table), sortJson, callback, refresh);
+		Sort.__setSort(__jTable(table), sortJson, callback, refresh);
 	}
 
     /**
@@ -146,7 +180,7 @@ export default class GridManager {
      */
     static
     showConfig(table) {
-        const $table = jTool(table);
+        const $table = __jTable(table);
         const settings = Cache.getSettings($table);
         if (!settings.supportConfig) {
             Base.outLog('supportConfig未配置，showConfig不可用', 'error');
@@ -162,7 +196,7 @@ export default class GridManager {
      */
     static
     hideConfig(table) {
-        const $table = jTool(table);
+        const $table = __jTable(table);
         const settings = Cache.getSettings($table);
         if (!settings.supportConfig) {
             Base.outLog('supportConfig未配置，hideConfig不可用', 'error');
@@ -181,7 +215,7 @@ export default class GridManager {
 	showTh(table, target) {
 		Base.setAreVisible(jTool(target), true);
         // 更新存储信息
-        Cache.update(jTool(table));
+        Cache.update(__jTable(table));
 	}
 
 	/**
@@ -194,7 +228,7 @@ export default class GridManager {
 	hideTh(table, target) {
 		Base.setAreVisible(jTool(target), false);
         // 更新存储信息
-        Cache.update(jTool(table));
+        Cache.update(__jTable(table));
 	}
 
 	/**
@@ -207,7 +241,7 @@ export default class GridManager {
      */
 	static
 	exportGridToXls(table, fileName, onlyChecked) {
-		return Export.__exportGridToXls(jTool(table), fileName, onlyChecked);
+		return Export.__exportGridToXls(__jTable(table), fileName, onlyChecked);
 	}
 
 	/**
@@ -225,7 +259,7 @@ export default class GridManager {
 	 */
 	static
 	setQuery(table, query, isGotoFirstPage, callback) {
-		const $table = jTool(table);
+		const $table = __jTable(table);
 		const settings = Cache.getSettings($table);
 		if (typeof (isGotoFirstPage) !== 'boolean') {
 			callback = isGotoFirstPage;
@@ -257,7 +291,7 @@ export default class GridManager {
 	 */
 	static
 	setAjaxData(table, ajaxData, callback) {
-		const $table = jTool(table);
+		const $table = __jTable(table);
 		const settings = Cache.getSettings($table);
 		jTool.extend(settings, {ajax_data: ajaxData});
 		Cache.setSettings($table, settings);
@@ -273,7 +307,7 @@ export default class GridManager {
 	 */
 	static
 	refreshGrid(table, isGotoFirstPage, callback) {
-		const $table = jTool(table);
+		const $table = __jTable(table);
 		const settings = Cache.getSettings($table);
 		if (typeof (isGotoFirstPage) !== 'boolean') {
 			callback = isGotoFirstPage;
@@ -294,7 +328,7 @@ export default class GridManager {
      */
 	static
 	getCheckedTr(table) {
-		return Checkbox.getCheckedTr(jTool(table));
+		return Checkbox.getCheckedTr(__jTable(table));
 	};
 
 	/**
@@ -305,12 +339,42 @@ export default class GridManager {
      */
 	static
 	getCheckedData(table) {
-		return Checkbox.getCheckedData(jTool(table));
+		return Checkbox.getCheckedData(__jTable(table));
 	};
 
+    /**
+     * @静态方法
+     * 更新列数据
+     * @param table
+     * @param key: 列数据的主键
+     * @param rowData: 需要更新的数据列表
+     * @returns tableData: 更新后的表格数据
+     */
+    static
+    updateRowData(table, key, rowData) {
+        const $table = __jTable(table);
+        const settings = Cache.getSettings($table);
+        const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
+        const tableData = Cache.updateRowData($table, key, rowDataList);
+
+        // 更新选中数据
+        Cache.updateCheckedData($table, Array.isArray(rowData) ? rowData : [rowData]);
+
+        // 更新选中状态
+        settings.supportCheckbox && Checkbox.resetDOM($table, settings, tableData, settings.useRadio);
+
+        return tableData;
+    }
+
+    /**
+     * @静态方法
+     * 清空表格数据
+     * @param table
+     * @returns {*|void}
+     */
 	static
 	cleanData(table) {
-		return Core.cleanData(jTool(table));
+		return Core.cleanData(__jTable(table));
 	}
 
 	/**
@@ -320,7 +384,7 @@ export default class GridManager {
 	 */
 	static
 	destroy(table) {
-		const $table = jTool(table);
+		const $table = __jTable(table);
 		// 清除各模块中的事件及部分DOM
 		Adjust.destroy($table);
 		AjaxPage.destroy($table);
@@ -351,8 +415,8 @@ export default class GridManager {
 	 * @param callback: 回调
 	 * @returns {*}
 	 */
-	init(table, arg, callback) {
-		const $table = jTool(table);
+    async init(table, arg, callback) {
+		const $table = __jTable(table);
 		arg = jTool.extend({}, GridManager.defaultOption, arg);
 
 		// 校验: 初始参
@@ -430,7 +494,7 @@ export default class GridManager {
         }
 
         // 初始化表格
-        this.initTable($table, settings);
+        await this.initTable($table, settings);
 
         // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
         if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
@@ -493,15 +557,18 @@ export default class GridManager {
             Hover.onTbodyHover($table);
         }
 
-        // 初始化表格卷轴
-        Scroll.init($table);
-
         // 初始化右键菜单事件
         if (settings.supportMenu) {
             Menu.init($table);
         }
 
+        // 更新fake header
+        Scroll.update($table);
+
+        // 更新最后一项可视列的标识
+        Base.updateVisibleLast($table);
+
         // 渲染tbodyDOM
-        settings.firstLoading ? Core.refresh($table) : Core.insertEmptyTemplate($table, settings);
+        settings.firstLoading ? Core.refresh($table) : Core.insertEmptyTemplate($table, settings, true);
 	}
 }

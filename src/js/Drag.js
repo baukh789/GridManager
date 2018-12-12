@@ -28,14 +28,10 @@ class Drag {
 			// 获取设置项
 			let settings = Cache.getSettings($table);
 
+            const {columnMap, dragBefore} = settings;
+
 			// 事件源th
 			let _th = jTool(this).closest('th');
-
-			// 事件源的上一个th
-			let prevTh = null;
-
-			// 事件源的下一个th
-			let nextTh = null;
 
 			// 事件源所在的tr
 			let _tr = _th.parent();
@@ -56,7 +52,7 @@ class Drag {
 			const colTd = Base.getColTd(_th);
 
 			// 列拖拽触发回调事件
-			settings.dragBefore(event);
+            dragBefore(event);
 
 			// 禁用文字选中效果
 			$body.addClass('no-select-text');
@@ -102,22 +98,30 @@ class Drag {
 			$body.unbind('mousemove');
 			$body.bind('mousemove', function (e2) {
 				_thIndex = _th.index(_allTh);
-				prevTh = undefined;
+                // 事件源的上一个th
+				let prevTh = null;
+				let prevThName = null;
 
 				// 当前移动的非第一列
 				if (_thIndex > 0) {
 					prevTh = _allTh.eq(_thIndex - 1);
+                    prevThName = prevTh.attr('th-name');
 				}
-				nextTh = undefined;
+
+                // 事件源的下一个th
+				let nextTh = null;
+				let nextThName = null;
 
 				// 当前移动的非最后一列
 				if (_thIndex < _allTh.length) {
 					nextTh = _allTh.eq(_thIndex + 1);
+                    nextThName = nextTh.attr('th-name');
 				}
-				// 插件自动创建的项,不允许移动
-				if (prevTh && prevTh.length !== 0 && prevTh.attr('gm-create') === 'true') {
+
+				// 禁用配置的列,不允许移动
+				if (prevTh && prevTh.length !== 0 && columnMap[prevThName].disableCustomize) {
 					prevTh = undefined;
-				} else if (nextTh && nextTh.length !== 0 && nextTh.attr('gm-create') === 'true') {
+				} else if (nextTh && nextTh.length !== 0 && columnMap[nextThName].disableCustomize) {
 					nextTh = undefined;
 				}
 
@@ -131,11 +135,14 @@ class Drag {
 
 				// 当前触发项为置顶表头时, 同步更新至原样式
 				let haveMockThead = false;  // 当前是否包含置顶表头
-				if (_th.closest(`thead[${Base.getSetTopAttr()}]`).length === 1) {
+				if (_th.closest(`thead[${Base.fakeTheadAttr}]`).length === 1) {
 					haveMockThead = true;
 				}
 
 				_this.updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV, haveMockThead);
+
+                // 更新最后一项可视列的标识
+                Base.updateVisibleLast(_table);
 
 				// 重置TH对象数据
 				_allTh = jTool('th[th-visible="visible"]', _tr);
@@ -171,6 +178,7 @@ class Drag {
 				if (settings.supportAdjust) {
 					Adjust.resetAdjust(_table);
 				}
+
 				// 开启文字选中效果
 				$body.removeClass('no-select-text');
 

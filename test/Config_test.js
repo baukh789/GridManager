@@ -60,9 +60,11 @@ describe('Config.createColumn(thName, content)', function() {
         thName = 'test-config';
         content ='测试配置功能，创建列的返回值';
         columnHtml = `<li th-name="test-config">
-                    <input type="checkbox"/>
-                    <label>
-                        <span class="fake-checkbox"></span>
+                    <label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input">
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
                         测试配置功能，创建列的返回值
                     </label>
                 </li>`;

@@ -22,7 +22,7 @@ describe('Base 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(21 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Base)))).toBe(24 + 1);
 	});
 });
 
@@ -49,14 +49,10 @@ describe('Base.getKey($table)', function() {
 });
 
 
-describe('Base.getSetTopAttr()', function() {
+describe('Base.fakeTheadAttr', function() {
 	it('基础验证', function () {
-		expect(Base.getSetTopAttr).toBeDefined();
-		expect(Base.getSetTopAttr.length).toBe(0);
-	});
-
-	it('返回值验证', function () {
-		expect(Base.getSetTopAttr()).toBe('grid-manager-mock-thead');
+		expect(Base.fakeTheadAttr).toBeDefined();
+        expect(Base.fakeTheadAttr).toBe('grid-manager-mock-thead');
 	});
 });
 
@@ -254,10 +250,50 @@ describe('Base.setAreVisible($thList, isVisible, cb)', function() {
 	});
 });
 
-describe('Base.updateThWidth($table, settings)', function() {
+describe('Base.equal(obj1, obj2)', function() {
+    it('基础验证', function () {
+        expect(Base.equal).toBeDefined();
+        expect(Base.equal.length).toBe(2);
+    });
+
+    it('返回值验证', function () {
+        let obj1 = {a: 1, b: 2};
+        let obj2 = {a: 1, b: 2};
+        let obj3 = {a: 11, b: 22};
+        expect(Base.equal(obj1, obj2)).toBe(true);
+        expect(Base.equal(obj2, obj3)).toBe(false);
+        expect(Base.equal(obj1, obj3)).toBe(false);
+
+        obj1 = null;
+        obj2 = null;
+        obj3 = null;
+    });
+});
+
+describe('Base.getObjectIndexToArray(arr, obj)', function() {
+    it('基础验证', function () {
+        expect(Base.getObjectIndexToArray).toBeDefined();
+        expect(Base.getObjectIndexToArray.length).toBe(2);
+    });
+
+    it('返回值验证', function () {
+        let arr = [{a:1, b:2}, {name:'baukh', age:31}, {name:'kouzi', age:28}];
+        let obj = {name:'baukh', age:31};
+        expect(Base.getObjectIndexToArray(arr, obj)).toBe(1);
+    });
+});
+
+describe('Base.updateVisibleLast($table)', function() {
+    it('基础验证', function () {
+        expect(Base.updateVisibleLast).toBeDefined();
+        expect(Base.updateVisibleLast.length).toBe(1);
+    });
+});
+
+describe('Base.updateThWidth($table, settings, isInit)', function() {
     it('基础验证', function () {
         expect(Base.updateThWidth).toBeDefined();
-        expect(Base.updateThWidth.length).toBe(2);
+        expect(Base.updateThWidth.length).toBe(3);
     });
 });
 
@@ -268,7 +304,7 @@ describe('Base.getTextWidth(th)', function() {
 	});
 });
 
-describe('Base.showLoading(dom, loadingTemplate, cb)', function() {
+describe('Base.showLoading($table, loadingTemplate, cb)', function() {
 	beforeEach(function(){
 	});
 
@@ -478,18 +514,18 @@ describe('Base.compileFramework(settings, compileList)', function() {
     });
 
     it('执行验证', function () {
-        settings = {
-            compileVue: jasmine.createSpy('callback')
-        };
+        // settings = {
+        //     compileVue: jasmine.createSpy('callback')
+        // };
         // expect(settings.compileVue).toHaveBeenCalled();
     });
 
     it('异常验证', function () {
-        settings = {
-            compileVue: function() {
-                throw new Error('返回一个错误');
-            }
-        };
+        // settings = {
+        //     compileVue: function() {
+        //         throw new Error('返回一个错误');
+        //     }
+        // };
         // expect(Base.compileFramework(settings, compileList)).toEqual(new Promise());
     });
 });

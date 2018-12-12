@@ -64,7 +64,14 @@ import { PublishMethod, publishMethodArray } from './Publish';
 			return;
 		}
 
-		return PublishMethod[name](this, arg, callback, condition) || this;
+        const siv = setInterval(() => {
+            let thisWidth = window.getComputedStyle(this).width;
+            if (thisWidth.indexOf('px') !== -1) {
+                clearInterval(siv);
+                console.log(this, window.getComputedStyle(this).width);
+                return PublishMethod[name](this, arg, callback, condition) || this;
+            }
+        }, 50);
 	};
 })(jTool);
 

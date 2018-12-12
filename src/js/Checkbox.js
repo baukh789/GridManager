@@ -13,9 +13,9 @@ class Checkbox {
 	}
 
 	/**
-	 * 获取当前选中的行
+	 * 获取当前页选中的行
 	 * @param table
-	 * @returns {NodeListOf<SVGElementTagNameMap[string]> | NodeListOf<HTMLElementTagNameMap[string]> | NodeListOf<Element>}
+	 * @returns {NodeListOf<Element>}
 	 */
 	getCheckedTr($table) {
 		return $table.get(0).querySelectorAll('tbody tr[checked="true"]');
@@ -27,8 +27,8 @@ class Checkbox {
 	 * @returns {{}|*}
 	 */
 	getCheckedData($table) {
-		return Cache.getRowData($table, this.getCheckedTr($table));
-	};
+	    return Cache.getCheckedData($table);
+	}
 
 	/**
 	 * 获取Th: 全选字符串
@@ -111,9 +111,9 @@ class Checkbox {
 	/**
 	 * 重置当前渲染数据中的选择状态
 	 * @param $table
-	 * @param status
-	 * @param isAllCheck
-	 * @param cacheKey
+	 * @param status: 要变更的状态
+	 * @param isAllCheck: 触发源是否为全选操作
+	 * @param cacheKey: 所在行的key
 	 * @param isRadio: 当前事件源为单选
      * @returns {*}
      */
@@ -169,7 +169,7 @@ class Checkbox {
 
 		// 更新底部工具条选中描述信息
         const checkedInfo = jTool('.footer-toolbar .toolbar-info.checked-info', $table.closest('.table-wrap'));
-        checkedInfo.html(I18n.i18nText(settings, 'checked-info', checkedNum));
+        checkedInfo.html(I18n.i18nText(settings, 'checked-info', Cache.getCheckedData($table).length));
 	}
 
 	/**

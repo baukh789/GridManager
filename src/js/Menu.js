@@ -96,7 +96,6 @@ class Menu {
 
 			// 验证：如果不是tbdoy或者是tbody的子元素，直接跳出
 			if (e.target.nodeName !== 'TBODY' && jTool(e.target).closest('tbody').length === 0) {
-				console.log('contextmenu    !TBODY');
 				return;
 			}
 

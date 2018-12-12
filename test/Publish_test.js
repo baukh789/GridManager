@@ -38,7 +38,7 @@ describe('Publish 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(20 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(21 + 1);
 	});
 });
 
@@ -119,6 +119,7 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 	});
 
 	it('回调函数是否调用', function () {
+        jasmine.clock().install();
 		table.className = '';
 		arg = {
 			ajax_data: testData,
@@ -163,7 +164,9 @@ describe('PublishMethod.init(table, settings, callback)', function() {
 
 		let callback = jasmine.createSpy('callback');
 		PublishMethod.init(table, arg, callback);
+        jasmine.clock().tick(1000);
 		expect(callback).toHaveBeenCalled();
+        jasmine.clock().uninstall();
 	});
 });
 
@@ -215,7 +218,9 @@ describe('PublishMethod 非init方法验证', function() {
 				}
 			]
 		};
+        jasmine.clock().install();
 		PublishMethod.init(table, arg);
+        jasmine.clock().tick(1000);
 	});
 
 	afterAll(function () {
@@ -226,6 +231,7 @@ describe('PublishMethod 非init方法验证', function() {
 		queryValue = null;
 		console.log = console._log;
 		document.body.innerHTML = '';
+        jasmine.clock().uninstall();
 	});
 
 
@@ -352,12 +358,9 @@ describe('PublishMethod 非init方法验证', function() {
 		});
 
 		it('参数完整', function () {
-			jasmine.clock().install();
-			jasmine.clock().tick(1000);
 			trList = document.querySelectorAll('tbody tr');
 			expect(PublishMethod.getRowData(table, trList[0]).name).toEqual('baukh');
 			expect(PublishMethod.getRowData(table, trList[1]).name).toEqual('kouzi');
-			jasmine.clock().uninstall();
 		});
 	});
 
@@ -367,18 +370,19 @@ describe('PublishMethod 非init方法验证', function() {
 		let callback3 = null;
 		let sortJson = null;
 		beforeEach(() => {
-			jasmine.clock().install();
-			callback1 = jasmine.createSpy('callback');
-			callback2 = jasmine.createSpy('callback');
-			callback3 = jasmine.createSpy('callback');
+            jasmine.clock().uninstall();
+            callback1 = jasmine.createSpy('callback');
+            callback2 = jasmine.createSpy('callback');
+            callback3 = jasmine.createSpy('callback');
+            jasmine.clock().install();
 		});
 
 		afterEach(() => {
-			callback1 = null;
-			callback2 = null;
-			callback3 = null;
 			sortJson = null;
-			jasmine.clock().uninstall();
+            callback1 = null;
+            callback2 = null;
+            callback3 = null;
+            jasmine.clock().uninstall();
 		});
 		it('基础验证', function () {
 			expect(PublishMethod.setSort).toBeDefined();
@@ -527,10 +531,6 @@ describe('PublishMethod 非init方法验证', function() {
 		it('基础验证', function () {
 			expect(PublishMethod.exportGridToXls).toBeDefined();
 			expect(PublishMethod.exportGridToXls.length).toBe(3);
-		});
-
-		it('执行', function () {
-			expect(PublishMethod.exportGridToXls(table)).toBe(true);
 		});
 	});
 
@@ -788,6 +788,13 @@ describe('PublishMethod 非init方法验证', function() {
 
 });
 
+describe('PublishMethod.updateRowData(table, key, rowData)', function() {
+    it('基础验证', function() {
+        expect(PublishMethod.updateRowData).toBeDefined();
+        expect(PublishMethod.updateRowData.length).toBe(3);
+    });
+});
+
 describe('PublishMethod.cleanData(table)', function() {
 	it('基础验证', function() {
 		expect(PublishMethod.cleanData).toBeDefined();
@@ -798,49 +805,16 @@ describe('PublishMethod.cleanData(table)', function() {
 describe('PublishMethod.destroy(table)', function() {
 	let table = null;
 	let arg = null;
-	beforeEach(() => {
-		arg = {
-			ajax_data: testData,
-			gridManagerName: 'test-publish',
-			supportAjaxPage: true,
-			columnData: [
-				{
-					key: 'name',
-					width: '100px',
-					text: '名称'
-				},{
-					key: 'info',
-					text: '使用说明'
-				},{
-					key: 'url',
-					text: 'url'
-				},{
-					key: 'createDate',
-					text: '创建时间'
-				},{
-					key: 'lastDate',
-					text: '最后修改时间',
-                    sorting: ''
-				},{
-					key: 'action',
-					text: '操作',
-					template: function(action, rowObject){
-						return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-							+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-					}
-				}
-			]
-		};
+    beforeAll(() => {
 		table = document.createElement('table');
 		document.body.appendChild(table);
-		PublishMethod.init(table, arg);
         jasmine.clock().install();
 	});
 
-	afterEach(() => {
+    afterAll(() => {
 		table = null;
 		arg = null;
-		document.body.innerHTML = '';
+        document.body.innerHTML = '';
         jasmine.clock().uninstall();
 	});
 
@@ -850,23 +824,59 @@ describe('PublishMethod.destroy(table)', function() {
 	});
 
 	it('验证移除效果', function () {
-        jasmine.clock().tick(1000);
+        arg = {
+            ajax_data: testData,
+            gridManagerName: 'test-publish',
+            supportAjaxPage: true,
+            supportAdjust: true,
+            columnData: [
+                {
+                    key: 'name',
+                    width: '100px',
+                    text: '名称'
+                },{
+                    key: 'info',
+                    text: '使用说明'
+                },{
+                    key: 'url',
+                    text: 'url'
+                },{
+                    key: 'createDate',
+                    text: '创建时间'
+                },{
+                    key: 'lastDate',
+                    text: '最后修改时间',
+                    sorting: ''
+                },{
+                    key: 'action',
+                    text: '操作',
+                    template: function(action, rowObject){
+                        return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
+                            +'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
+                    }
+                }
+            ]
+        };
+        // TODO jToolEvent 部分事件是存在异步的情况了，
+        // TODO 应该改成验证settings中的值是否正确，而不是去验证事件。 其它的测试也应该考虑一下
+        PublishMethod.init(table, arg);
+        jasmine.clock().tick(10000);
 		// 全选
-		// expect(table.jToolEvent['clickth[gm-checkbox="true"] input[type="checkbox"]']).toBeDefined();
-		// expect(table.jToolEvent['clicktd[gm-checkbox="true"] input[type="checkbox"]']).toBeDefined();
-        //
-		// // 宽度调整
+		expect(table.jToolEvent['clickth[gm-checkbox="true"] input[type="checkbox"]']).toBeDefined();
+		expect(table.jToolEvent['clicktd[gm-checkbox="true"] input[type="checkbox"]']).toBeDefined();
+
+		// 宽度调整
 		// expect(table.jToolEvent['mousedown.adjust-action']).toBeDefined();
-        //
-		// // 排序
+
+		// 排序
 		// expect(table.jToolEvent['mouseup.sorting-action']).toBeDefined();
-        //
-		// // Hover
+
+		// Hover
 		// expect(table.jToolEvent['mousemovetd']).toBeDefined();
-		// PublishMethod.destroy(table);
-		// expect(table.jToolEvent['clickth[gm-checkbox="true"] input[type="checkbox"]']).toBeUndefined();
-		// expect(table.jToolEvent['mousedown.adjust-action']).toBeUndefined();
-		// expect(table.jToolEvent['mouseup.sorting-action']).toBeUndefined();
-		// expect(table.jToolEvent['mousemovetd']).toBeUndefined();
+		PublishMethod.destroy(table);
+		expect(table.jToolEvent['clickth[gm-checkbox="true"] input[type="checkbox"]']).toBeUndefined();
+		expect(table.jToolEvent['mousedown.adjust-action']).toBeUndefined();
+		expect(table.jToolEvent['mouseup.sorting-action']).toBeUndefined();
+		expect(table.jToolEvent['mousemovetd']).toBeUndefined();
 	});
 });

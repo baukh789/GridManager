@@ -26,7 +26,7 @@ describe('Core 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(11 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Core)))).toBe(12 + 1);
 	});
 });
 
@@ -121,17 +121,24 @@ describe('Core.createDOM($table, settings)', function() {
 	});
 });
 
-describe('redrawThead($tableWarp, $thList, settings)', function() {
+describe('Core.waitContainerAvailable(tableWarp)', function() {
     it('基础验证', function () {
-        expect(Core.redrawThead).toBeDefined();
-        expect(Core.redrawThead.length).toBe(3);
+        expect(Core.waitContainerAvailable).toBeDefined();
+        expect(Core.waitContainerAvailable.length).toBe(1);
     });
 });
 
-describe('Core.insertEmptyTemplate($table, settings)', function() {
+describe('Core.redrawThead($table, $tableWarp, $thList, settings)', function() {
+    it('基础验证', function () {
+        expect(Core.redrawThead).toBeDefined();
+        expect(Core.redrawThead.length).toBe(4);
+    });
+});
+
+describe('Core.insertEmptyTemplate($table, settings, isInit)', function() {
 	it('基础验证', function () {
 		expect(Core.insertEmptyTemplate).toBeDefined();
-		expect(Core.insertEmptyTemplate.length).toBe(2);
+		expect(Core.insertEmptyTemplate.length).toBe(3);
 	});
 });
 

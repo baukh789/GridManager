@@ -85,11 +85,11 @@ describe('Settings', function() {
     });
 
     it('验证属性[loadingTemplate]初始值', function() {
-        expect(settings.loadingTemplate).toBeUndefined();
+        expect(settings.loadingTemplate).toBe('<div class="loading"><div class="loadInner kernel"></div></div>');
     });
 
     it('验证属性[disableCache]初始值', function() {
-		expect(settings.disableCache).toBe(false);
+		expect(settings.disableCache).toBe(true);
 	});
 
 	it('验证属性[isCombSorting]初始值', function() {
@@ -269,10 +269,16 @@ describe('Settings', function() {
 		expect(settings.emptyTemplate).toBe('<div class="gm-emptyTemplate">暂无数据</div>');
 	});
 
-	it('验证属性[supportExport]初始值', function() {
-		expect(settings.supportExport).toBe(true);
-	});
+    it('验证属性[supportExport]初始值', function() {
+        expect(settings.supportExport).toBe(true);
+    });
 
+    it('验证属性[exportConfig]初始值', function() {
+        expect(typeof settings.exportConfig).toBe('object');
+        expect(settings.exportConfig.mode).toBe('static');
+        expect(settings.exportConfig.suffix).toBe('xls');
+        expect(typeof settings.exportConfig.handler).toBe('function');
+    });
 });
 describe('textConfig', function() {
 	let count = null;

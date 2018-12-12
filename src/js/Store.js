@@ -13,6 +13,9 @@ const Store = {
 	// GM使用的数据
 	responseData: {},
 
+    // 当前选中的数据列表
+    checkedData: {},
+
 	// 表渲染前的th
 	originalTh: {},
 
