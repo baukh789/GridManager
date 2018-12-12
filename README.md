@@ -118,6 +118,11 @@ document.querySelector('table').GM({
 }
 ```
 
+## 皮肤
+> 以下皮肤为第三方提供，如果你也有过好的实现，请提交至 [issues](https://github.com/baukh789/GridManager/issues)
+
+- [ccms-skin](https://github.com/BoWang816/GridManager-ccms-skin)
+
 ## License
 - [License](/LICENSE)
 
