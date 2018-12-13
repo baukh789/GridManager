@@ -469,7 +469,8 @@ class Core {
             }
 
 			// th宽度
-            col.width && th.setAttribute('width', col.width);
+            // col.width && th.setAttribute('width', col.width);
+            th.style.width = col.width || 'auto';
 
 			// 文本对齐
             col.align && th.setAttribute('align', col.align);

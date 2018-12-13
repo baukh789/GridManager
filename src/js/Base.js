@@ -239,6 +239,13 @@ class BaseClass {
                 return;
             }
 
+            // 当前为init情况，需要使用在core.js中配置的width
+            if (isInit && (!width || width === 'auto')) {
+                autoLen++;
+                th.style.width = 'auto';
+                return;
+            }
+
             // 当设置至最后一列 且 已经设置的列未存在自动适应列
             if (i === lastIndex && autoLen === 0) {
                 th.style.width = 'auto';
