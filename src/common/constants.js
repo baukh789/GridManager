@@ -2,10 +2,8 @@
  * Created by baukh on 17/12/23.
  * 常量
  */
-import { version } from '../../package.json';
-
 // 版本号
-export const GM_VERSION = version;
+export const GM_VERSION = process.env.VERSION;
 
 // 公开方法列表
 export const GM_PUBLISH_METHOD_LIST = [

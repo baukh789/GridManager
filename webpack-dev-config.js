@@ -1,6 +1,8 @@
+const webpack = require('webpack');
 const path = require('path');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const genRules = require('./webpack-common.loader');
+const { version } = require('./package.json');
 
 // API: http://www.css88.com/doc/webpack2/guides/development/
 const config = {
@@ -36,7 +38,12 @@ const config = {
 			filename: 'css/gm.css',
 			disable: false,
 			allChunks: true
-		})
+		}),
+        new webpack.DefinePlugin({
+            'process.env': {
+                VERSION: JSON.stringify(version),
+            }
+        })
 	],
 
 	// 处理项目中的不同类型的模块

@@ -4,6 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const genRules = require('./webpack-common.loader');
 const buildPath = path.join(__dirname, "dist");
+const { version } = require('./package.json');
 
 // API: http://www.css88.com/doc/webpack2/guides/development/
 const config = {
@@ -51,6 +52,12 @@ const config = {
 			{from: path.join(__dirname, '/package.json'), to: '', toType: 'file'},
 			{from: path.join(__dirname, '/README.md'), to: '', toType: 'file'}
 		]),
+
+        new webpack.DefinePlugin({
+            'process.env': {
+                VERSION: JSON.stringify(version),
+            }
+        }),
 
 		// 使用webpack内置插件压缩js
 		new webpack.optimize.UglifyJsPlugin({
