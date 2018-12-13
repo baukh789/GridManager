@@ -53,6 +53,7 @@ const config = {
 			{from: path.join(__dirname, '/README.md'), to: '', toType: 'file'}
 		]),
 
+        // 配置环境变量
         new webpack.DefinePlugin({
             'process.env': {
                 VERSION: JSON.stringify(version),
