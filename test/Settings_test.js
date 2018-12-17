@@ -84,6 +84,10 @@ describe('Settings', function() {
         expect(settings.skinClassName).toBe('');
     });
 
+    it('验证属性[isIconFollowText]初始值', function() {
+        expect(settings.isIconFollowText).toBe(false);
+    });
+
     it('验证属性[loadingTemplate]初始值', function() {
         expect(settings.loadingTemplate).toBe('<div class="loading"><div class="loadInner kernel"></div></div>');
     });

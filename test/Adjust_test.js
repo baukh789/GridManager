@@ -62,10 +62,10 @@ describe('Adjust.__bindAdjustEvent($table)', function() {
 	});
 });
 
-describe('Adjust.__runMoveEvent($table, $th, $nextTh)', function() {
+describe('Adjust.__runMoveEvent($table, $th, $nextTh, isIconFollowText)', function() {
 	it('基础验证', function(){
 		expect(Adjust.__runMoveEvent).toBeDefined();
-		expect(Adjust.__runMoveEvent.length).toBe(3);
+		expect(Adjust.__runMoveEvent.length).toBe(4);
 	});
 });
 

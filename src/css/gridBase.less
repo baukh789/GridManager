@@ -4,19 +4,21 @@
 //	height: auto !important;
 //}
 /* 基本样式, 默认样式清除 */
-*, *::before, *::after {
-    box-sizing: border-box;
-}
 .table-wrap, .grid-menu{
+    //font-family: "Microsoft Yahei", Tahoma, sans-serif;
+    font: 12px/1.5 "Microsoft YaHei", Arial, Helvetica, sans-serif;
     box-sizing: border-box !important;
 	* {
 		box-sizing: border-box !important;
         //color: #000;
-        font-size: 12px;
+        //font-size: 12px;
 		//line-height: 18px;
 		//margin: 0;
 		//padding: 0;
 	}
+    *, *::before, *::after {
+        box-sizing: border-box !important;
+    }
 	fieldset, img{
 		border-style: none;
 		border-color: inherit;
@@ -40,6 +42,6 @@
 table[grid-manager]{
 	visibility: hidden;
 	&.GridManager-ready{
-		visibility: visible;
+		visibility: inherit;
 	}
 }

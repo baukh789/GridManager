@@ -87,7 +87,10 @@ class Settings {
             loadingTemplate: '<div class="loading"><div class="loadInner kernel"></div></div>', // v2.6.2新增
 
             //  皮肤样式所使用的className
-            skinClassName: '' // v2.6.13 新增
+            skinClassName: '', // v2.7.0 新增
+
+            // 表头的icon图标是否跟随文本
+            isIconFollowText: false // v2.7.0 新增
 		};
 
         /**

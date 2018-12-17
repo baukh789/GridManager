@@ -99,7 +99,10 @@ class Cache {
      * @returns {*|Array}
      */
     getCheckedData($table) {
-        return store.checkedData[Base.getKey($table)] || [];
+        const checkedList = store.checkedData[Base.getKey($table)] || [];
+
+        // 返回clone后的数组，以防止在外部操作导致数据错误。
+        return checkedList.map(item => jTool.extend(true, {}, item));
     }
 
     /**
@@ -115,7 +118,7 @@ class Cache {
         let tableCheckedList = store.checkedData[gmName];
 
         dataList.forEach(item => {
-            let cloneObj = jTool.extend({}, item, {[`${Checkbox.key}`]: true});
+            let cloneObj = jTool.extend(true, {}, item, {[`${Checkbox.key}`]: true});
             let checked = item[Checkbox.key];
             let index = Base.getObjectIndexToArray(tableCheckedList, cloneObj);
 
@@ -130,6 +133,7 @@ class Cache {
                 tableCheckedList.splice(index, 1);
             }
         });
+        store.checkedData[gmName] = tableCheckedList;
     }
 
     /**
@@ -148,6 +152,7 @@ class Cache {
                 }
             });
         });
+        this.setTableData($table, tableData);
         return tableData;
     }
 

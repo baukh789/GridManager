@@ -207,7 +207,7 @@ class BaseClass {
      * @param isInit: 是否为init调用
      */
 	updateThWidth($table, settings, isInit) {
-        const columnMap = settings.columnMap;
+        const { columnMap, isIconFollowText } = settings;
         const updateColumnList = [];
         let toltalWidth = $table.closest('.table-div').width();
 
@@ -266,7 +266,7 @@ class BaseClass {
         jTool.each(updateColumnList, (i, col) => {
             const $th = $thead.find(`th[th-name="${col.key}"]`);
             let thWidth = jTool($th).width();
-            let minWidth = this.getTextWidth($th);
+            let minWidth = this.getTextWidth($th, isIconFollowText);
             let newWidth = thWidth < minWidth ? minWidth : thWidth;
 
             // 最后一列使用剩余的宽度
@@ -282,9 +282,10 @@ class BaseClass {
 	/**
 	 * 获取TH中文本的宽度. 该宽度指的是文本所实际占用的宽度
 	 * @param th
+	 * @param isIconFollowText: 表头的icon图标是否跟随文本, 如果根随则需要加上两个icon所占的空间
 	 * @returns {*}
      */
-	getTextWidth(th) {
+	getTextWidth(th, isIconFollowText) {
 		const $th = $(th);
 
 		// th下的GridManager包裹容器
@@ -307,9 +308,23 @@ class BaseClass {
 		const thPaddingLeft = thWarp.css('padding-left');
 		const thPaddingRight = thWarp.css('padding-right');
 
+		// 计算icon所占的空间
+        // 仅在isIconFollowText === true时进行计算。
+        // isIconFollowText === false时，icon使用的是padding-right，所以无需进行计算
+		let iconWidth = 0;
+		if (isIconFollowText) {
+		    // 排序
+		    const sortingAction = $('.sorting-action', $th);
+            sortingAction.length !== 0 ? iconWidth += sortingAction.width() : '';
+
+            // 筛选
+            const filterAction = $('.filter-action', $th);
+            filterAction.length !== 0 ? iconWidth += filterAction.width() : '';
+        }
+
 		// 返回宽度值
-		// 文本所占宽度 + 左内间距 + 右内间距 + (由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错) + th-wrap减去的1px
-		return textDreamland.width() + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1;
+		// 文本所占宽度 + icon所占的空间 + 左内间距 + 右内间距 + (由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错) + th-wrap减去的1px
+		return textDreamland.width() + iconWidth + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1;
 	}
 
 	/**

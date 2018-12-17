@@ -297,10 +297,10 @@ describe('Base.updateThWidth($table, settings, isInit)', function() {
     });
 });
 
-describe('Base.getTextWidth(th)', function() {
+describe('Base.getTextWidth(th, isIconFollowText)', function() {
 	it('基础验证', function () {
 		expect(Base.getTextWidth).toBeDefined();
-		expect(Base.getTextWidth.length).toBe(1);
+		expect(Base.getTextWidth.length).toBe(2);
 	});
 });
 

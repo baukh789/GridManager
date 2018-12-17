@@ -142,7 +142,9 @@
                 width: '100%',
 				height: '100%',
 				supportAjaxPage:true,
-				isCombSorting: true,
+				// isCombSorting: true,
+                // mergeSort: true,
+                isIconFollowText: true,
                 disableCache: false,
 				ajax_data: function () {
 					return 'https://www.lovejavascript.com/blogManager/getBlogList';
@@ -169,6 +171,16 @@
 				,checkedAllAfter: function(checkedList){
 					console.log('checkedAllAfter==', checkedList);
 				}
+
+				// 执行排序前事件
+				,sortingBefore: function(query){
+				    console.log('sortingBefore', query);
+                }
+
+                // 排行排序后事件
+                ,sortingAfter: function(query){
+                    console.log('sortingAfter', query);
+                }
 
 				// AJAX请求前事件函数
 				,ajax_beforeSend: function(promise){

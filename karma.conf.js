@@ -5,6 +5,7 @@
  */
 const webpack = require('webpack');
 const path = require('path');
+const { version } = require('./package.json');
 module.exports = function (config) {
 	// karma config: http://karma-runner.github.io/1.0/config/configuration-file.html
 	// karma-coverage: https://www.npmjs.com/package/karma-coverage
@@ -101,7 +102,12 @@ module.exports = function (config) {
 			plugins: [
 				new webpack.ProvidePlugin({
 					'Promise': 'es6-promise'
-				})
+				}),
+                new webpack.DefinePlugin({
+                    'process.env': {
+                        VERSION: JSON.stringify(version)
+                    }
+                })
 			],
 			module: {
 				rules: [

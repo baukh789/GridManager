@@ -19,8 +19,36 @@
     background-color: #fff;
     border: @table-border;
     padding-top: 40px;
+    // 配置是否禁用边框线
     &.disable-border {
         border: none;
+    }
+    // 表头的icon图标是否跟随文本
+    &.icon-follow-text{
+        .table-div table[grid-manager] thead th[th-name]{
+            .th-wrap{
+                display: inline-block;
+                vertical-align: middle;
+                padding-right: 11px;
+                .th-text{
+                    display: inline-block;
+                    width: auto;
+                    vertical-align: middle;
+                }
+                .sorting-action, .filter-action{
+                    display: inline-block;
+                    width: 20px;
+                    position: relative;
+                    top: 0;
+                    left: 0;
+                    vertical-align: middle;
+                    text-align: center;
+                    .sa-icon, .fa-icon{
+                        right: 4px;
+                    }
+                }
+            }
+        }
     }
     .table-div {
         overflow: auto;
@@ -123,7 +151,7 @@
                         top: 0;
                         right: -4px;
                         cursor: col-resize;
-                        z-index: 2;
+                        //z-index: 2;
                     }
                     /* 表头提醒 */
                     .remind-action {
@@ -189,7 +217,7 @@
                         top: 6px;
                         right: 5px;
                         cursor: default;
-                        z-index: 2;
+                        //z-index: 2;
                         color: #444;
                         &:hover {
                             color: #000;
@@ -235,11 +263,10 @@
                         top: 6px;
                         right: 5px;
                         cursor: default;
-                        z-index: 2;
+                        //z-index: 2;
                         color: #444;
                         .fa-icon {
                             display: block;
-                            height: 10px;
                             position: absolute;
                             font-size: @font-normal-size;
                             line-height: 18px;
@@ -369,7 +396,7 @@
                     position: absolute;
                     left: 0;
                     top: 0;
-                    z-index: 2;
+                    //z-index: 2;
                     //background-color: #ddd;
                     .bg-image();
                     tr {

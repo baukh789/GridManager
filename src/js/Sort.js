@@ -42,6 +42,12 @@ class Sort {
 			Base.outLog('排序数据不可用', 'warn');
 			return false;
 		}
+
+        // 单例排序: 清空原有排序数据
+        if (!settings.isCombSorting) {
+            settings.sortData = {};
+        }
+
         jTool.extend(settings.sortData, sortJson);
 		Cache.setSettings($table, settings);
 
@@ -55,6 +61,12 @@ class Sort {
 			refresh = true;
 		}
 
+        // 合并排序请求
+        const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
+
+        // 执行排序前事件
+        settings.sortingBefore(query);
+
 		// 执行更新
 		if (refresh) {
 			Core.refresh($table, response => {
@@ -63,10 +75,16 @@ class Sort {
 
 				// 执行回调函数
 				callback(response);
+
+                // 排行排序后事件
+                settings.sortingAfter(query);
 			});
 		} else {
 			// 执行回调函数
 			callback();
+
+            // 排行排序后事件
+            settings.sortingAfter(query);
 		}
 	}
 
@@ -98,30 +116,13 @@ class Sort {
 				return false;
 			}
 
-			const oldSort = settings.sortData[th.attr('th-name')];
+			const oldSort = settings.sortData[thName];
 
-			// 单例排序: 清空原有排序数据
-			if (!settings.isCombSorting) {
-				settings.sortData = {};
-			}
+			const sortJson = {
+                [thName]: oldSort === settings.sortDownText ? settings.sortUpText : settings.sortDownText
+            };
 
-			settings.sortData[th.attr('th-name')] = oldSort === settings.sortDownText ? settings.sortUpText : settings.sortDownText;
-
-			// 调用事件、渲染tbody
-			Cache.setSettings(_$table, settings);
-
-			// 合并排序请求
-			const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
-
-			// 执行排序前事件
-			settings.sortingBefore(query);
-			Core.refresh(_$table, () => {
-				// 更新排序样式
-				_this.updateSortStyle(_$table);
-
-				// 排行排序后事件
-				settings.sortingAfter(query, th);
-			});
+			_this.__setSort($table, sortJson);
 		});
 	}
 

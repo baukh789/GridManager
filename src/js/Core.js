@@ -542,6 +542,11 @@ class Core {
             $tableWarp.addClass(settings.skinClassName);
         }
 
+        // 根据参数，增加表头的icon图标是否跟随文本class
+        if (settings.isIconFollowText) {
+            $tableWarp.addClass('icon-follow-text');
+        }
+
         // 根据参数增加禁用禁用边框线标识
         if (settings.disableBorder) {
             $tableWarp.addClass('disable-border');

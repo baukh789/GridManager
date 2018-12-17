@@ -77,7 +77,7 @@ class Adjust {
             let	_$table = $tr.closest('table');
 
             // 当前存储属性
-            const settings = Cache.getSettings(_$table);
+            const { adjustBefore, isIconFollowText } = Cache.getSettings(_$table);
 
             // 事件源同层级下的所有th
             let	_allTh = $tr.find('th[th-visible="visible"]');
@@ -89,7 +89,7 @@ class Adjust {
             let	$td = Base.getColTd($th);
 
             // 宽度调整触发回调事件
-            settings.adjustBefore(event);
+            adjustBefore(event);
 
             // 增加宽度调整中样式
             $th.addClass('adjust-selected');
@@ -99,7 +99,7 @@ class Adjust {
             Base.updateInteractive(_$table, 'Adjust');
 
             // 执行移动事件
-            _this.__runMoveEvent(_$table, $th, $nextTh);
+            _this.__runMoveEvent(_$table, $th, $nextTh, isIconFollowText);
 
             // 绑定停止事件
             _this.__runStopEvent(_$table, $th, $td);
@@ -112,13 +112,14 @@ class Adjust {
      * @param $table
      * @param $th
      * @param $nextTh
+     * @param isIconFollowText: 表头的icon图标是否跟随文本
      * @private
      */
-    __runMoveEvent($table, $th, $nextTh) {
+    __runMoveEvent($table, $th, $nextTh, isIconFollowText) {
         let _thWidth = null;
         let	_NextWidth = null;
-        let _thMinWidth = Base.getTextWidth($th);
-        let	_NextThMinWidth = Base.getTextWidth($nextTh);
+        let _thMinWidth = Base.getTextWidth($th, isIconFollowText);
+        let	_NextThMinWidth = Base.getTextWidth($nextTh, isIconFollowText);
         $table.unbind('mousemove');
         $table.bind('mousemove', event => {
             $table.addClass('no-select-text');

@@ -41,7 +41,7 @@ const config = {
 		}),
         new webpack.DefinePlugin({
             'process.env': {
-                VERSION: JSON.stringify(version),
+                VERSION: JSON.stringify(version)
             }
         })
 	],

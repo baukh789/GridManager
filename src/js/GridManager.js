@@ -357,9 +357,6 @@ export default class GridManager {
         const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
         const tableData = Cache.updateRowData($table, key, rowDataList);
 
-        // 更新选中数据
-        Cache.updateCheckedData($table, Array.isArray(rowData) ? rowData : [rowData]);
-
         // 更新选中状态
         settings.supportCheckbox && Checkbox.resetDOM($table, settings, tableData, settings.useRadio);
 

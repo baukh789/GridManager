@@ -140,6 +140,7 @@ class Checkbox {
 
 		// 存储数据
 		Cache.setTableData($table, tableData);
+
 		return tableData;
 	}
 
