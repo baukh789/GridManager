@@ -90,7 +90,6 @@ class Cache {
      */
     setTableData($table, data) {
         store.responseData[Base.getKey($table)] = data;
-        this.updateCheckedData($table, data);
     }
 
     /**
@@ -106,19 +105,29 @@ class Cache {
     }
 
     /**
-     * 更新选中的数据
+     * 设置选中的数据: 覆盖操作，会将原有的选中值清除
      * @param $table
-     * @param dataList
+     * @param dataList: 数据列表， isClear===true时该项只能为选中的数据
+     * @param isClear: 是否清空原有的选中项
      */
-    updateCheckedData($table, dataList) {
+    setCheckedData($table, dataList, isClear) {
         const gmName = Base.getKey($table);
+        const { columnMap } = this.getSettings($table);
+
+        // 覆盖操作，清空原有的选中数据
+        if (isClear) {
+            store.checkedData[gmName] = dataList.map(item => Base.getDataForColumnMap(columnMap, item));
+            return;
+        }
+
+        // 合并操作，不清空原有的选中数据
         if (!store.checkedData[gmName]) {
             store.checkedData[gmName] = [];
         }
         let tableCheckedList = store.checkedData[gmName];
 
         dataList.forEach(item => {
-            let cloneObj = jTool.extend(true, {}, item, {[`${Checkbox.key}`]: true});
+            let cloneObj = Base.getDataForColumnMap(columnMap, item);
             let checked = item[Checkbox.key];
             let index = Base.getObjectIndexToArray(tableCheckedList, cloneObj);
 
@@ -145,6 +154,7 @@ class Cache {
      */
     updateRowData($table, key, rowDataList) {
         const tableData = this.getTableData($table);
+        const { supportCheckbox } = this.getSettings($table);
         tableData.forEach(item => {
             rowDataList.forEach(newItem => {
                 if (newItem[key] === item[key]) {
@@ -152,7 +162,11 @@ class Cache {
                 }
             });
         });
+        // 存储表格数据
         this.setTableData($table, tableData);
+
+        // 更新选中数据
+        supportCheckbox && this.setCheckedData($table, tableData);
         return tableData;
     }
 

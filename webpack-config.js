@@ -61,12 +61,12 @@ const config = {
         }),
 
 		// 使用webpack内置插件压缩js
-		new webpack.optimize.UglifyJsPlugin({
-			compress: {
-				warnings: false
-			},
-			sourceMap: false // 是否生成map文件
-		})
+		// new webpack.optimize.UglifyJsPlugin({
+		// 	compress: {
+		// 		warnings: false
+		// 	},
+		// 	sourceMap: false // 是否生成map文件
+		// })
 	],
 
 	// 处理项目中的不同类型的模块。

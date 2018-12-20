@@ -38,7 +38,7 @@ describe('Publish 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(21 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(PublishMethod)))).toBe(22 + 1);
 	});
 });
 
@@ -786,6 +786,13 @@ describe('PublishMethod 非init方法验证', function() {
 		});
 	});
 
+});
+
+describe('PublishMethod.setCheckedData(table, checkedList)', function() {
+    it('基础验证', function() {
+        expect(PublishMethod.checkedList).toBeDefined();
+        expect(PublishMethod.checkedList.length).toBe(2);
+    });
 });
 
 describe('PublishMethod.updateRowData(table, key, rowData)', function() {

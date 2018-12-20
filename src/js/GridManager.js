@@ -339,8 +339,37 @@ export default class GridManager {
      */
 	static
 	getCheckedData(table) {
-		return Checkbox.getCheckedData(__jTable(table));
+		return Cache.getCheckedData(__jTable(table));
 	};
+
+    /**
+     * @静态方法
+     * 设置选中的数据
+     * @param table
+     * @param checkedData: 选中的数据列表
+     * @returns {{}}
+     */
+    static
+    setCheckedData(table, checkedData) {
+        const $table = __jTable(table);
+        const checkedList = Array.isArray(checkedData) ? checkedData : [checkedData];
+        let tableData = Cache.getTableData($table);
+        const settings = Cache.getSettings($table);
+        const { columnMap, isRadio } = settings;
+
+        tableData = tableData.map(rowData => {
+            let checked = checkedList.some(item => {
+                let cloneRow = Base.getDataForColumnMap(columnMap, item);
+                let cloneItem = Base.getDataForColumnMap(columnMap, rowData);
+                return Base.equal(cloneRow, cloneItem);
+            });
+            rowData[Checkbox.key] = checked;
+            return rowData;
+        });
+        Cache.setTableData($table, tableData);
+        Cache.setCheckedData($table, checkedList, true);
+        return Checkbox.resetDOM($table, settings, tableData, isRadio);
+    };
 
     /**
      * @静态方法

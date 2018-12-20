@@ -279,11 +279,14 @@ class Core {
             const checkedData = Cache.getCheckedData($table);
             data = data.map(rowData => {
                 let checked = checkedData.some(item => {
-                    return Base.equal(item, jTool.extend({}, rowData, {[`${Checkbox.key}`]: true}));
+                    let cloneRow = Base.getDataForColumnMap(settings.columnMap, item);
+                    let cloneItem = Base.getDataForColumnMap(settings.columnMap, rowData);
+                    return Base.equal(cloneRow, cloneItem);
                 });
                 rowData[Checkbox.key] = checked || Boolean(rowData[Checkbox.key]);
                 return rowData;
             });
+            Cache.setCheckedData($table, data);
         }
 
         // 存储表格数据

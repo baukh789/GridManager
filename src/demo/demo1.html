@@ -136,6 +136,7 @@
 	<script type="text/javascript">
 		// GridManager 渲染
 		var table = document.querySelector('table');
+		let test1 = null;
 		function init() {
 			table.GM({
 				gridManagerName: 'test',
@@ -189,6 +190,7 @@
 				// AJAX成功事件函数
 				,ajax_success: function(response){
 					console.log('ajax_success');
+                    test1 = JSON.parse(response).data[1];
 				}
 
 				// AJAX失败事件函数

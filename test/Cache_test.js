@@ -119,11 +119,10 @@ describe('Cache.getCheckedData($table)', function() {
         expect(Cache.getCheckedData.length).toBe(1);
     });
 });
-
-describe('Cache.updateCheckedData($table, dataList)', function() {
+describe('Cache.setCheckedData($table, checkedList, isClear)', function() {
     it('基础验证', function(){
-        expect(Cache.updateCheckedData).toBeDefined();
-        expect(Cache.updateCheckedData.length).toBe(2);
+        expect(Cache.setCheckedData).toBeDefined();
+        expect(Cache.setCheckedData.length).toBe(3);
     });
 });
 

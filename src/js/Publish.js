@@ -180,6 +180,16 @@ class PublishMethodClass {
 	}
 
     /**
+     * 设置选中的数据
+     * @param table
+     * @param checkedList
+     * @returns {{}}
+     */
+    setCheckedData(table, checkedList) {
+        return GridManager.setCheckedData(table, checkedList);
+    }
+
+    /**
      * 更新列数据
      * @param table
      * @param key: 列数据的主键

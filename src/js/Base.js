@@ -165,6 +165,22 @@ class BaseClass {
     }
 
     /**
+     * 获取与ColumnMap匹配的clone数据
+     * @param columnMap
+     * @param obj
+     */
+    getDataForColumnMap(columnMap, obj) {
+        let cloneObj = jTool.extend(true, {}, obj);
+        let cloneData = {};
+        for (let key in columnMap) {
+            if (!columnMap[key].isAutoCreate) {
+                cloneData[key] = cloneObj[key];
+            }
+        }
+        return cloneData;
+    }
+
+    /**
      * 获取Array中Object的索引
      * @param arr
      * @param obj

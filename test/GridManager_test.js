@@ -180,6 +180,14 @@ describe('GridManager.getCheckedData(table)', function() {
 	});
 });
 
+describe('GridManager.setCheckedData(table, checkedList)', function() {
+    it('基础验证', function() {
+        expect(GridManager.setCheckedData).toBeDefined();
+        expect(GridManager.setCheckedData.length).toBe(2);
+    });
+});
+
+
 describe('GridManager.updateRowData(table, key, rowData)', function() {
     it('基础验证', function() {
         expect(GridManager.updateRowData).toBeDefined();

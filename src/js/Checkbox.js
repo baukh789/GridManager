@@ -22,15 +22,6 @@ class Checkbox {
 	}
 
 	/**
-	 * 获取当前选中行渲染时使用的数据
-	 * @param table
-	 * @returns {{}|*}
-	 */
-	getCheckedData($table) {
-	    return Cache.getCheckedData($table);
-	}
-
-	/**
 	 * 获取Th: 全选字符串
 	 * @param useRadio: 是否使用单选
 	 * @returns {string}
@@ -70,30 +61,30 @@ class Checkbox {
 		// th内的全选
 		$table.off('click', 'th[gm-checkbox="true"] input[type="checkbox"]');
 		$table.on('click', 'th[gm-checkbox="true"] input[type="checkbox"]', function () {
-			settings.checkedBefore(_this.getCheckedData($table));
-			settings.checkedAllBefore(_this.getCheckedData($table));
+			settings.checkedBefore(Cache.getCheckedData($table));
+			settings.checkedAllBefore(Cache.getCheckedData($table));
 			const tableData = _this.resetData($table, this.checked, true);
 			_this.resetDOM($table, settings, tableData);
-			settings.checkedAfter(_this.getCheckedData($table));
-			settings.checkedAllAfter(_this.getCheckedData($table));
+			settings.checkedAfter(Cache.getCheckedData($table));
+			settings.checkedAllAfter(Cache.getCheckedData($table));
 		});
 
 		// td内的多选
 		$table.off('click', 'td[gm-checkbox="true"] input[type="checkbox"]');
 		$table.on('click', 'td[gm-checkbox="true"] input[type="checkbox"]', function (e) {
-			settings.checkedBefore(_this.getCheckedData($table));
+			settings.checkedBefore(Cache.getCheckedData($table));
 			const tableData = _this.resetData($table, this.checked, false, jTool(this).closest('tr').attr('cache-key'));
             _this.resetDOM($table, settings, tableData);
-			settings.checkedAfter(_this.getCheckedData($table));
+			settings.checkedAfter(Cache.getCheckedData($table));
 		});
 
         // td内的单选
         $table.off('click', 'td[gm-checkbox="true"] input[type="radio"]');
         $table.on('click', 'td[gm-checkbox="true"] input[type="radio"]', function (e) {
-            settings.checkedBefore(_this.getCheckedData($table));
+            settings.checkedBefore(Cache.getCheckedData($table));
             const tableData = _this.resetData($table, undefined, false, jTool(this).closest('tr').attr('cache-key'), true);
             _this.resetDOM($table, settings, tableData, true);
-            settings.checkedAfter(_this.getCheckedData($table));
+            settings.checkedAfter(Cache.getCheckedData($table));
         });
 
         // tr点击选中
@@ -140,6 +131,9 @@ class Checkbox {
 
 		// 存储数据
 		Cache.setTableData($table, tableData);
+
+		// 更新选中数据
+		Cache.setCheckedData($table, tableData);
 
 		return tableData;
 	}
