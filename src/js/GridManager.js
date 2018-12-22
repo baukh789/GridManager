@@ -410,28 +410,45 @@ export default class GridManager {
 	 */
 	static
 	destroy(table) {
-		const $table = __jTable(table);
+        if (!table) {
+            return;
+        }
+
+        const gridManagerName = table.getAttribute('grid-manager');
+
+        // 清除setInterval
+        Base.SIV_waitTableAvailable[gridManagerName] && clearInterval(Base.SIV_waitTableAvailable[gridManagerName]);
+        Base.SIV_waitContainerAvailable[gridManagerName] && clearInterval(Base.SIV_waitContainerAvailable[gridManagerName]);
+        Base.SIV_waitTableAvailable[gridManagerName] = null;
+        Base.SIV_waitContainerAvailable[gridManagerName] = null;
+
+        const $table = __jTable(table);
+
 		// 清除各模块中的事件及部分DOM
-		Adjust.destroy($table);
-		AjaxPage.destroy($table);
-		Checkbox.destroy($table);
-		Config.destroy($table);
-		Drag.destroy($table);
-		Hover.destroy($table);
-		Menu.destroy($table);
-		Remind.destroy($table);
-		Scroll.destroy($table);
-		Sort.destroy($table);
+        try {
+            Adjust.destroy($table);
+            AjaxPage.destroy($table);
+            Checkbox.destroy($table);
+            Config.destroy($table);
+            Drag.destroy($table);
+            Hover.destroy($table);
+            Menu.destroy($table);
+            Remind.destroy($table);
+            Scroll.destroy($table);
+            Sort.destroy($table);
 
-		// 清除实例及数据
-		Cache.setSettings($table, {});
+            // 清除实例及数据
+            Cache.setSettings($table, {});
 
-		// 清除DOM属性及节点
-		const $tableWrap = $table.closest('.table-wrap');
-		$table.removeClass('GridManager-ready');
-		$table.html('');
-		$tableWrap.after($table);
-		$tableWrap.remove();
+            // 清除DOM属性及节点
+            const $tableWrap = $table.closest('.table-wrap');
+            $table.removeClass('GridManager-ready');
+            $table.html('');
+            $tableWrap.after($table);
+            $tableWrap.remove();
+        } catch (e) {
+            // '在清除GridManager实例的过程时, table被移除'
+        }
 	}
 
 	/**
@@ -483,15 +500,6 @@ export default class GridManager {
             // 不使用宽度调整功能
             arg.supportAdjust = false;
         }
-
-		// 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
-		if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
-			// 存储gridManagerName值
-			arg.gridManagerName = Base.getKey($table);
-		// 参数中存在配置项 gridManagerName: 更新table DOM 的 grid-manager属性
-		} else {
-			$table.attr('grid-manager', arg.gridManagerName);
-		}
 
 		// 通过版本较验 清理缓存
 		Cache.cleanTableCacheForVersion();

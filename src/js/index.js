@@ -69,11 +69,22 @@ import { PublishMethod, publishMethodArray } from './Publish';
         }
 
         // init
-        const siv = setInterval(() => {
+        const $table = jTool(this);
+        // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
+        if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
+            // 存储gridManagerName值
+            arg.gridManagerName = Base.getKey($table);
+            // 参数中存在配置项 gridManagerName: 更新table DOM 的 grid-manager属性
+        } else {
+            $table.attr('grid-manager', arg.gridManagerName);
+        }
+
+        Base.SIV_waitTableAvailable[arg.gridManagerName] = setInterval(() => {
             let thisWidth = window.getComputedStyle(this).width;
             if (thisWidth.indexOf('px') !== -1) {
-                clearInterval(siv);
-                PublishMethod[name](this, arg, callback, condition) || this;
+                clearInterval(Base.SIV_waitTableAvailable[arg.gridManagerName]);
+                Base.SIV_waitTableAvailable[arg.gridManagerName] = null;
+                PublishMethod[name](this, arg, callback, condition);
             }
         }, 50);
 	};

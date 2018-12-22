@@ -121,10 +121,10 @@ describe('Core.createDOM($table, settings)', function() {
 	});
 });
 
-describe('Core.waitContainerAvailable(tableWarp)', function() {
+describe('Core.waitContainerAvailable(gridManagerName, tableWarp)', function() {
     it('基础验证', function () {
         expect(Core.waitContainerAvailable).toBeDefined();
-        expect(Core.waitContainerAvailable.length).toBe(1);
+        expect(Core.waitContainerAvailable.length).toBe(2);
     });
 });
 

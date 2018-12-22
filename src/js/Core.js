@@ -567,7 +567,7 @@ class Core {
 		}
 
 		// 等待容器可用
-        await this.waitContainerAvailable($tableWarp.get(0));
+        await this.waitContainerAvailable(settings.gridManagerName, $tableWarp.get(0));
 
         // 重绘thead
         this.redrawThead($table, $tableWarp, $thList, settings);
@@ -585,14 +585,16 @@ class Core {
 
     /**
      * 等待容器可用
+     * @param gridManagerName
      * @param tableWarp
      */
-    waitContainerAvailable(tableWarp) {
+    waitContainerAvailable(gridManagerName, tableWarp) {
         return new Promise(resolve => {
-            const siv = setInterval(() => {
+            Base.SIV_waitContainerAvailable[gridManagerName] = setInterval(() => {
                 let tableWarpWidth = window.getComputedStyle(tableWarp).width;
                 if (tableWarpWidth !== '100%') {
-                    clearInterval(siv);
+                    clearInterval(Base.SIV_waitContainerAvailable[gridManagerName]);
+                    Base.SIV_waitContainerAvailable[gridManagerName] = null;
                     resolve();
                 }
             }, 50);

@@ -1,10 +1,14 @@
 /*
  * Base: 基础方法
  * */
-import {} from '../../node_modules/jtool/jTool.min';
+import '../../node_modules/jtool/jTool.min';
 import { CONSOLE_STYLE } from '../common/constants';
 let $ = window.jTool;
 let jTool = window.jTool;
+
+window.jTool === window.$ && delete window.$;
+delete window.jTool;
+
 class BaseClass {
 	/**
 	 * 获取表的GM 唯一标识
@@ -14,6 +18,12 @@ class BaseClass {
 	getKey($table) {
 		return $table.attr('grid-manager') || '';
 	}
+
+	// 定时器: 等待容器可用, 在core.js中使用
+    SIV_waitContainerAvailable = {};
+
+	// 定时器: 等待表格可用，在index.js中使用
+	SIV_waitTableAvailable = {};
 
 	/**
 	 * 获取表头吸顶所使用的attr
