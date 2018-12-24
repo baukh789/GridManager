@@ -284,6 +284,11 @@ class Cache {
      * @param arg
      */
     initSettings($table, arg) {
+        // TODO 在弱化 $table的使用范围操作时，可以使用getSetting方法进行替换。详情查看2.7.x.md
+        if (store.settings[Base.getKey($table)]) {
+            Base.outLog('gridManagerName已被占用。为防止异常发生, 请更换gridManagerName为不重复的值', 'warn');
+        }
+
         // 合并参数
         const _settings = new Settings();
         _settings.textConfig = new TextSettings();

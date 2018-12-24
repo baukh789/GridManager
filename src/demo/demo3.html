@@ -13,22 +13,23 @@
 <body>
 	<h3>简体中文: { i18n: 'zh-cn' }</h3>
 	<div>
-		<table grid-manager="test1"></table>
+		<table id="test1"></table>
 	</div>
 	<br/>
 	<h3>English: { i18n: 'en-us' }</h3>
 	<div>
-		<table grid-manager="test2"></table>
+		<table id="test2"></table>
 	</div>
 	<br/>
 	<h3>繁體中文: { i18n: zh-tw' }</h3>
 	<div>
-		<table grid-manager="test3"></table>
+		<table id="test3"></table>
 	</div>
 <script type="text/javascript">
 	// test1 demo
-	document.querySelector('table[grid-manager="test1"]').GM({
+	document.querySelector('#test1').GM({
 		height: '300px'
+        ,gridManagerName: 'test1'
 		,supportAjaxPage:true
 		,supportCheckbox: false
 		,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
@@ -58,8 +59,9 @@
 	});
 
 	// test 2demo
-	document.querySelector('table[grid-manager="test2"]').GM({
+	document.querySelector('#test2').GM({
 		height: '400px'
+        ,gridManagerName: 'test2'
 		,i18n: 'en-us'
 		,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
@@ -87,9 +89,11 @@
 			console.log('test2 ajax_success');
 		}
 	});
+
 	// test 3demo
-	document.querySelector('table[grid-manager="test3"]').GM({
+	document.querySelector('#test3').GM({
 		height: '300px'
+        ,gridManagerName: 'test3'
 		,i18n: 'zh-tw'
 		,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
 		,ajax_type: 'POST'
