@@ -205,7 +205,7 @@ describe('Cache.cleanTableCacheForVersion()', function() {
 
 describe('Cache.cleanTable(gridManagerName)', function() {
     it('基础验证', function(){
-        expect(Cache.destroy).toBeDefined();
-        expect(Cache.destroy.length).toBe(1);
+        expect(Cache.cleanTable).toBeDefined();
+        expect(Cache.cleanTable.length).toBe(1);
     });
 });
