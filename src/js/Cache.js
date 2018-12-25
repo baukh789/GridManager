@@ -471,7 +471,7 @@ class Cache {
     }
 
     /**
-     * 验证版本号, 如果版本号变更清除用户记忆
+     * 验证版本号,如果版本号变更清除用户记忆
      * @param $table
      * @param version 版本号
      */
@@ -489,11 +489,10 @@ class Cache {
     }
 
     /**
-     * 销毁当前实例的存储信息
-     * @param $table
+     * 销毁实例store
+     * @param gridManagerName
      */
-    destroy($table) {
-        const gridManagerName = $table.attr('grid-manager');
+    cleanTable(gridManagerName) {
         delete store.scope[gridManagerName];
         delete store.responseData[gridManagerName];
         delete store.checkedData[gridManagerName];

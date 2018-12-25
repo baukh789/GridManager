@@ -416,6 +416,9 @@ export default class GridManager {
 
         const gridManagerName = table.getAttribute('grid-manager');
 
+        // 清除实例及数据
+        Cache.cleanTable(gridManagerName);
+
         // 清除setInterval
         Base.SIV_waitTableAvailable[gridManagerName] && clearInterval(Base.SIV_waitTableAvailable[gridManagerName]);
         Base.SIV_waitContainerAvailable[gridManagerName] && clearInterval(Base.SIV_waitContainerAvailable[gridManagerName]);
@@ -424,6 +427,7 @@ export default class GridManager {
 
         const $table = __jTable(table);
 
+        // TODO 这里所有的消毁方法都应该使用gridManagerName，以防止$table在这里已经被消毁的问题
         try {
             // 清除各模块中的事件及部分DOM
             Adjust.destroy($table);
@@ -436,9 +440,6 @@ export default class GridManager {
             Remind.destroy($table);
             Scroll.destroy($table);
             Sort.destroy($table);
-
-            // 清除实例及数据
-            Cache.destroy($table);
 
             // 清除DOM属性及节点
             const $tableWrap = $table.closest('.table-wrap');
