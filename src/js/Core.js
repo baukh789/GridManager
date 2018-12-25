@@ -208,9 +208,22 @@ class Core {
 		parseRes = settings.responseHandler(Base.cloneObject(parseRes));
 
 		let _data = parseRes[settings.dataKey];
+		let totals = parseRes[settings.totalsKey];
+
+		// 数据校验: 数据异常
+		if (!_data || !Array.isArray(_data)) {
+            Base.outLog(`请求数据失败！response中的${settings.dataKey}必须为数组类型，可通过配置项[dataKey]修改字段名。`, 'error');
+            return;
+        }
+
+        // 数据校验: 未使用无总条数模式 且 总条数无效时直接跳出
+        if (!settings.useNoTotalsMode && isNaN(parseInt(totals, 10))) {
+            Base.outLog('分页错误，请确认返回数据中是否存在totals字段(或配置项totalsKey所指定的字段)。', 'error');
+            return;
+        }
 
 		// 数据为空时
-		if (!_data || _data.length === 0) {
+		if (_data.length === 0) {
 			this.insertEmptyTemplate($table, settings);
 			parseRes[settings.totalsKey] = 0;
 		} else {

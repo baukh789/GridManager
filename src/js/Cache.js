@@ -286,7 +286,7 @@ class Cache {
     initSettings($table, arg) {
         // TODO 在弱化 $table的使用范围操作时，可以使用getSetting方法进行替换。详情查看2.7.x.md
         if (store.settings[Base.getKey($table)]) {
-            Base.outLog('gridManagerName已被占用。为防止异常发生, 请更换gridManagerName为不重复的值', 'warn');
+            Base.outLog('gridManagerName在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值', 'warn');
         }
 
         // 合并参数
@@ -486,6 +486,18 @@ class Cache {
             this.delUserMemory(null, '版本已升级,原全部缓存被自动清除');
             window.localStorage.setItem('GridManagerVersion', store.version);
         }
+    }
+
+    /**
+     * 销毁当前实例的存储信息
+     * @param $table
+     */
+    destroy($table) {
+        const gridManagerName = $table.attr('grid-manager');
+        delete store.scope[gridManagerName];
+        delete store.responseData[gridManagerName];
+        delete store.checkedData[gridManagerName];
+        delete store.settings[gridManagerName];
     }
 }
 

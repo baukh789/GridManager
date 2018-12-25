@@ -17,7 +17,7 @@ const Store = {
     checkedData: {},
 
 	// 表渲染前的th
-	originalTh: {},
+	// originalTh: {},
 
 	// 表配置信息存储器
 	settings: {

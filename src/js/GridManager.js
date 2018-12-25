@@ -424,8 +424,8 @@ export default class GridManager {
 
         const $table = __jTable(table);
 
-		// 清除各模块中的事件及部分DOM
         try {
+            // 清除各模块中的事件及部分DOM
             Adjust.destroy($table);
             AjaxPage.destroy($table);
             Checkbox.destroy($table);
@@ -438,7 +438,7 @@ export default class GridManager {
             Sort.destroy($table);
 
             // 清除实例及数据
-            Cache.setSettings($table, {});
+            Cache.destroy($table);
 
             // 清除DOM属性及节点
             const $tableWrap = $table.closest('.table-wrap');

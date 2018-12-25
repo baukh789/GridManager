@@ -78,23 +78,16 @@ class AjaxPage {
 	 * @param len 本次请求返回的总条数，该参数仅在totals为空时使用
 	 */
 	resetPageData($table, settings, totals, len) {
-		const _this = this;
-
-		// 未使用无总条数模式 且 总条数无效时直接跳出
-		if (!settings.useNoTotalsMode && isNaN(parseInt(totals, 10))) {
-		    Base.outLog('分页错误，请确认返回数据中是否存在totals字段(或配置项totalsKey所指定的字段)。', 'error');
-			return;
-		}
 		const _pageData = this.__getPageData(settings, totals, len);
 
 		// 生成页码DOM节点
-		_this.__createPaginationDOM($table, settings, _pageData);
+		this.__createPaginationDOM($table, settings, _pageData);
 
 		// 重置当前页显示条数
-		_this.__resetPSize($table, settings, _pageData);
+        this.__resetPSize($table, settings, _pageData);
 
 		// 修改分页描述信息
-		_this.__resetPageInfo($table, settings, _pageData);
+        this.__resetPageInfo($table, settings, _pageData);
 
 		// 更新Cache
 		Cache.setSettings($table, jTool.extend(true, settings, {pageData: _pageData}));
