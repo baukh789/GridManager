@@ -217,7 +217,7 @@ class Core {
         }
 
         // 数据校验: 未使用无总条数模式 且 总条数无效时直接跳出
-        if (!settings.useNoTotalsMode && isNaN(parseInt(totals, 10))) {
+        if (settings.supportAjaxPage && !settings.useNoTotalsMode && isNaN(parseInt(totals, 10))) {
             Base.outLog('分页错误，请确认返回数据中是否存在totals字段(或配置项totalsKey所指定的字段)。', 'error');
             return;
         }
