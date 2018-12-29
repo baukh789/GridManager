@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const genRules = require('./webpack-common.loader');
 const { version } = require('./package.json');
 
@@ -39,10 +40,20 @@ const config = {
 			disable: false,
 			allChunks: true
 		}),
+
+        // 配置环境变量
         new webpack.DefinePlugin({
             'process.env': {
                 VERSION: JSON.stringify(version)
             }
+        }),
+
+        // 使用交互式可缩放树形图可视化webpack输出文件的大小
+        // https://www.npmjs.com/package/webpack-bundle-analyzer
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            defaultSizes: 'parsed',
+            openAnalyzer: false
         })
 	],
 
