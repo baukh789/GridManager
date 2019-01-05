@@ -99,6 +99,19 @@ export default class GridManager {
 	}
 
     /**
+     * 合并默认配置项，用于追加全局通用配置项
+     * @param conf
+     */
+    static
+    mergeDefaultOption(conf) {
+        if (jTool.type(conf) !== 'object') {
+            Base.outLog('mergeDefaultOption配置失败，配置的值只允许为object', 'error');
+            return;
+        }
+        defaultOption = Object.assign(defaultOption, conf);
+    }
+
+    /**
      * @静态方法
      * 存储表格渲染所在的域
      * @param table

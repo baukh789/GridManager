@@ -65,6 +65,25 @@ describe('GridManager.defaultOption', function() {
         expect(GridManager.defaultOption).toEqual({});
         GridManager.defaultOption = {currentPageKey: 'cPage'};
         expect(GridManager.defaultOption).toEqual({currentPageKey: 'cPage'});
+
+        GridManager.defaultOption = {};
+    });
+});
+
+describe('GridManager.mergeDefaultOption', function() {
+    it('基础验证', function() {
+        expect(GridManager.defaultOption).toEqual({});
+        GridManager.defaultOption = {currentPageKey: 'cPage'};
+        expect(GridManager.defaultOption).toEqual({currentPageKey: 'cPage'});
+
+        GridManager.mergeDefaultOption({disableCache: true});
+        expect(GridManager.defaultOption).toEqual({currentPageKey: 'cPage', disableCache: true});
+
+
+        GridManager.mergeDefaultOption({currentPageKey: 'currentPage'});
+        expect(GridManager.defaultOption).toEqual({currentPageKey: 'currentPage', disableCache: true});
+
+        GridManager.defaultOption = {};
     });
 });
 
