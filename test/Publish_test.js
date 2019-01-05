@@ -421,41 +421,42 @@ describe('PublishMethod 非init方法验证', function() {
 	});
 
 
-    describe('PublishMethod.showConfig(table) or PublishMethod.hideConfig(table)', function() {
-        let $table = null;
-        let $tableWrap = null;
-        let $configArea = null;
-        beforeEach(function(){
-            $table = jTool(table);
-            $tableWrap = $table.closest('.table-wrap');
-            $configArea = jTool('.config-area', $tableWrap);
-        });
-
-        afterEach(function(){
-            $table = null;
-            $tableWrap = null;
-            $configArea = null;
-        });
-
-        it('基础验证', function () {
-            expect(PublishMethod.showConfig).toBeDefined();
-            expect(PublishMethod.showConfig.length).toBe(1);
-
-            expect(PublishMethod.hideConfig).toBeDefined();
-            expect(PublishMethod.hideConfig.length).toBe(1);
-        });
-
-        it('执行 showConfig', function () {
-            PublishMethod.showConfig(table);
-            expect($configArea.css('display')).toBe('block');
-        });
-
-        it('执行 hideConfig', function () {
-            expect($configArea.css('display')).toBe('block');
-            PublishMethod.hideConfig(table);
-            expect($configArea.css('display')).toBe('none');
-        });
-    });
+	// showConfig 和 hideConfig 方法用 setConfigVisible方法替换了
+    // describe('PublishMethod.showConfig(table) or PublishMethod.hideConfig(table)', function() {
+    //     let $table = null;
+    //     let $tableWrap = null;
+    //     let $configArea = null;
+    //     beforeEach(function(){
+    //         $table = jTool(table);
+    //         $tableWrap = $table.closest('.table-wrap');
+    //         $configArea = jTool('.config-area', $tableWrap);
+    //     });
+    //
+    //     afterEach(function(){
+    //         $table = null;
+    //         $tableWrap = null;
+    //         $configArea = null;
+    //     });
+    //
+    //     it('基础验证', function () {
+    //         expect(PublishMethod.showConfig).toBeDefined();
+    //         expect(PublishMethod.showConfig.length).toBe(1);
+    //
+    //         expect(PublishMethod.hideConfig).toBeDefined();
+    //         expect(PublishMethod.hideConfig.length).toBe(1);
+    //     });
+    //
+    //     it('执行 showConfig', function () {
+    //         PublishMethod.showConfig(table);
+    //         expect($configArea.css('display')).toBe('block');
+    //     });
+    //
+    //     it('执行 hideConfig', function () {
+    //         expect($configArea.css('display')).toBe('block');
+    //         PublishMethod.hideConfig(table);
+    //         expect($configArea.css('display')).toBe('none');
+    //     });
+    // });
 
 	describe('PublishMethod.showTh(table, target) or PublishMethod.hideTh(table, target)', function() {
 		let firstTh = null;

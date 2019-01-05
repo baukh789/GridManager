@@ -174,38 +174,40 @@ export default class GridManager {
 	}
 
     /**
-     * @静态方法
-     * 显示配置区域
+     * 设置表头配置区域可视状态
      * @param table
+     * @param visible
      */
     static
-    showConfig(table) {
+    setConfigVisible(table, visible) {
         const $table = __jTable(table);
         const settings = Cache.getSettings($table);
         if (!settings.supportConfig) {
-            Base.outLog('supportConfig未配置，showConfig不可用', 'error');
+            Base.outLog('supportConfig未配置，setConfigVisible不可用', 'error');
             return;
         }
-        Config.show($table, settings);
+
+        switch (visible) {
+            case true: {
+                Config.show($table, settings);
+                break;
+            }
+            case false: {
+                Config.hide($table, settings);
+                break;
+            }
+            case undefined: {
+                Config.toggle($table);
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
     }
 
     /**
-     * @静态方法
-     * 隐藏配置区域
-     * @param table
-     */
-    static
-    hideConfig(table) {
-        const $table = __jTable(table);
-        const settings = Cache.getSettings($table);
-        if (!settings.supportConfig) {
-            Base.outLog('supportConfig未配置，hideConfig不可用', 'error');
-            return;
-        }
-        Config.hide($table);
-    }
-
-	/**
 	 * @静态方法
 	 * 显示Th及对应的TD项
 	 * @param table

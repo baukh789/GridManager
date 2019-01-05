@@ -86,19 +86,12 @@ class PublishMethodClass {
 	}
 
     /**
-     * 显示配置区域
+     * 设置表头配置区域可视状态
      * @param table
+     * @param visible
      */
-    showConfig(table) {
-        GridManager.showConfig(table);
-    }
-
-    /**
-     * 隐藏配置区域
-     * @param table
-     */
-    hideConfig(table) {
-        GridManager.hideConfig(table);
+    setConfigVisible(table, visible) {
+        GridManager.setConfigVisible(table, visible);
     }
 
     /**

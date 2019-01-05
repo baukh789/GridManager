@@ -6,7 +6,7 @@ const genRules = require('./webpack-common.loader');
 const buildPath = path.join(__dirname, "dist");
 const { version } = require('./package.json');
 
-// API: http://www.css88.com/doc/webpack2/guides/development/
+// API: https://www.css88.com/doc/webpack2/configuration/devtool/
 const config = {
 
 	// 入口文件所在的上下文

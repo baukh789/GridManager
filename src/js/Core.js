@@ -258,8 +258,11 @@ class Core {
         }
 		let visibleNum = jTool('th[th-visible="visible"]', $table).length;
 		const $tbody = jTool('tbody', $table);
+		const $tableDiv = $table.closest('.table-div');
         $tbody.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
-        Base.compileFramework(settings, {el: $tbody.get(0).querySelector('tr[emptyTemplate]')});
+        const emptyDOM = $tbody.get(0).querySelector('tr[emptyTemplate]');
+        emptyDOM.style.height = $tableDiv.height() + 'px';
+        Base.compileFramework(settings, {el: emptyDOM});
 	}
 
     /**

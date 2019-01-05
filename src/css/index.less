@@ -497,6 +497,14 @@
                         td[col-hover="true"] {
                             background-color: #f3f3f3;
                         }
+
+                        // 为空提示特殊处理, hover状态不高亮
+                        &[emptytemplate] {
+                            border: none;
+                            &[row-hover] td {
+                                background-color: #fff;
+                            }
+                        }
                     }
                 }
             }

@@ -110,17 +110,10 @@ describe('GridManager.setSort(table, sortJson, callback, refresh)', function() {
 	});
 });
 
-describe('GridManager.showConfig(table)', function() {
+describe('GridManager.setConfigVisible(table, visible)', function() {
     it('基础验证', function() {
-        expect(GridManager.showConfig).toBeDefined();
-        expect(GridManager.showConfig.length).toBe(1);
-    });
-});
-
-describe('GridManager.hideConfig(table)', function() {
-    it('基础验证', function() {
-        expect(GridManager.hideConfig).toBeDefined();
-        expect(GridManager.hideConfig.length).toBe(1);
+        expect(GridManager.setConfigVisible).toBeDefined();
+        expect(GridManager.setConfigVisible.length).toBe(2);
     });
 });
 
