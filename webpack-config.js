@@ -26,9 +26,13 @@ const config = {
 	output:{
 		path: buildPath ,
 		filename: "js/gm.js",
-		library: 'GridManager',
-        // 允许与CommonJS，AMD和全局变量一起使用
-		libraryTarget: "umd"
+
+        // 通过script标签引入时，由index.js中设置的window.GridManager将被覆盖为{default: {..gm object}}。原因是通过library设置所返回的值为{default: {..gm object}}
+        // library: 'GridManager', // 引入后可以通过全局变量GridManager来使用
+
+        // 允许与CommonJS，AMD和全局变量一起使用。
+        // 如: `import gridManager from 'gridmanager';` `const gridManager = require('gridmanager').default;`
+        libraryTarget: "umd"
 	},
 	// 以插件形式定制webpack构建过程
 	plugins: [

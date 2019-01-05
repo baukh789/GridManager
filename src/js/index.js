@@ -3,6 +3,7 @@
  * */
 import { jTool, Base } from './Base';
 import GridManager from './GridManager';
+// const GridManager = require('./GridManager').default;
 import { PublishMethod, publishMethodArray } from './Publish';
 /*
 *  捆绑至选择器对象
