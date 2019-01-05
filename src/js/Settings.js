@@ -369,11 +369,11 @@ class Settings {
             // 导出相关配置
             exportConfig: {
 			    // 导出的方式: 默认为static
-                // 1.static: 使用静态导出
-                // 2.blob: 需要配置exportAPI函数，该函数返回 resolve(blob) 的promise。blob为二进制大对像
+                // 1.static: 前端静态导出, 无需后端提供接口，该方式导出的文件并不完美。
+                // 2.blob: 通过后端接口返回二进制流。`nodejs`可使用`js-xlsx`, `java`可使用 `org.apache.poi`生成二进制流。
                 mode: 'static',
 
-                // 导出的后缀名 , 默认为`xls`
+                // 导出的后缀名, 默认为`xls`。
                 suffix: 'xls',
 
                 // 导出处理器函数,该函数需要返回一个promise。当`exportType`为`static`时，该参数不生效。

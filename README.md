@@ -88,6 +88,17 @@ document.querySelector('table').GM({
 });
 ```
 
+### 调用公开方法
+```javascript
+// 刷新
+GM.refreshGrid('demo-ajaxPageCode');
+
+// 更新查询条件
+GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
+
+// ...其它更多请直接访问[API](http://gridmanager.lovejavascript.com/api/index.html)
+```
+
 ## 数据格式
 > 这是标准格式, 如果返回格式不同。可以通过参数或responseHandler进行修改。 具体请参考[API](http://gridmanager.lovejavascript.com/api/index.html#responseHandler)
 

@@ -276,7 +276,12 @@ export default class GridManager {
 	setQuery(table, query, isGotoFirstPage, callback) {
 		const $table = __jTable(table);
 		const settings = Cache.getSettings($table);
-		if (typeof (isGotoFirstPage) !== 'boolean') {
+
+		if (jTool.type(query) !== 'object') {
+            query = {};
+        }
+
+        if (typeof (isGotoFirstPage) !== 'boolean') {
 			callback = isGotoFirstPage;
 			isGotoFirstPage = true;
 		}
@@ -401,9 +406,8 @@ export default class GridManager {
         const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
         const tableData = Cache.updateRowData($table, key, rowDataList);
 
-        // 更新选中状态
-        settings.supportCheckbox && Checkbox.resetDOM($table, settings, tableData, settings.useRadio);
-
+        // 更新DOM
+        Core.renderTableBody($table, settings, tableData);
         return tableData;
     }
 

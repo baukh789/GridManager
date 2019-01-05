@@ -183,7 +183,7 @@ class PublishMethodClass {
     }
 
     /**
-     * 更新列数据
+     * 更新列数据, 该操作为merge效果。
      * @param table
      * @param key: 列数据的主键
      * @param rowData: 需要更新的数据列表

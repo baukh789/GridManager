@@ -14,6 +14,7 @@ export const GM_PUBLISH_METHOD_LIST = [
     'resetLayout',
 	'clear',
 	'getRowData',
+    'updateRowData',
 	'setSort',
     'setConfigVisible',
 	'showTh',
@@ -25,7 +26,6 @@ export const GM_PUBLISH_METHOD_LIST = [
 	'getCheckedTr',
 	'getCheckedData',
 	'setCheckedData',
-    'updateRowData',
 	'cleanData',
 	'destroy'
 ];

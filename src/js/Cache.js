@@ -108,7 +108,7 @@ class Cache {
      * 设置选中的数据: 覆盖操作，会将原有的选中值清除
      * @param $table
      * @param dataList: 数据列表， isClear===true时该项只能为选中的数据
-     * @param isClear: 是否清空原有的选中项
+     * @param isClear: 是否清空原有的选中项 (该参数不公开)
      */
     setCheckedData($table, dataList, isClear) {
         const gmName = Base.getKey($table);
