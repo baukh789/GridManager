@@ -3,6 +3,7 @@
  * */
 import { jTool, Base } from './Base';
 import Cache from './Cache';
+import Config from './Config';
 class Scroll {
     /**
      * 初始化
@@ -87,6 +88,8 @@ class Scroll {
             Base.updateScrollStatus($table);
 
             this.update($table);
+
+            settings.supportConfig && Config.updateConfigListHeight($table);
 		});
 	}
 
