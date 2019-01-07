@@ -573,7 +573,7 @@ class Core {
 
 		// 嵌入配置列表DOM
 		if (settings.supportConfig) {
-			$tableWarp.append(Config.html);
+			$tableWarp.append(Config.createHtml(settings));
 		}
 
 		// 嵌入Ajax分页DOM

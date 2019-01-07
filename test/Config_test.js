@@ -22,7 +22,7 @@ describe('Config 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Config)))).toBe(8 + 1);
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Config)))).toBe(9 + 1);
 	});
 });
 
@@ -39,6 +39,36 @@ describe('Config.html', function() {
 	});
 });
 
+describe('Config.createHtml(settings)', function() {
+    let createHtml = null;
+    beforeEach(function(){
+    });
+
+    afterEach(function(){
+        createHtml = null;
+    });
+    it('基础验证', function () {
+        expect(Config.createHtml).toBeDefined();
+        expect(Config.createHtml.length).toBe(1);
+    });
+
+    it('返回值验证', function () {
+		let settings = {
+			gridManagerName: 'test',
+			configInfo: 'test config info'
+		};
+        createHtml = `<div class="config-area">
+						<span class="config-action">
+							<i class="iconfont icon-close"></i>
+						</span>
+						<div class="config-info">${settings.onfigInfo}</div>
+						<ul class="config-list"></ul>
+					</div>`;
+		expect(Config.createHtml(settings).replace(/\s/g, '')).toBe(createHtml.replace(/\s/g, ''));
+		settings = null;
+    });
+});
+
 describe('Config.createColumn(thName, content)', function() {
     let thName = null;
     let content = null;
@@ -47,9 +77,9 @@ describe('Config.createColumn(thName, content)', function() {
     });
 
     afterEach(function(){
-        let thName = null;
-        let content = null;
-        let columnHtml = null;
+        thName = null;
+        content = null;
+        columnHtml = null;
     });
     it('基础验证', function () {
         expect(Config.createColumn).toBeDefined();
