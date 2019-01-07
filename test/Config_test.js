@@ -56,7 +56,7 @@ describe('Config.createHtml(settings)', function() {
     });
 });
 
-describe('Config.createColumn(thName, content)', function() {
+describe('Config.createColumn(thName, content, isShow)', function() {
     let thName = null;
     let content = null;
     let columnHtml = null;
@@ -70,7 +70,7 @@ describe('Config.createColumn(thName, content)', function() {
     });
     it('基础验证', function () {
         expect(Config.createColumn).toBeDefined();
-        expect(Config.createColumn.length).toBe(2);
+        expect(Config.createColumn.length).toBe(3);
     });
 
     it('返回值验证', function () {
@@ -86,6 +86,18 @@ describe('Config.createColumn(thName, content)', function() {
                     </label>
                 </li>`;
         expect(Config.createColumn(thName, content).replace(/\s/g, '')).toBe(columnHtml.replace(/\s/g, ''));
+
+
+        columnHtml = `<li th-name="test-config" class="checked-li">
+                    <label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input">
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
+                        测试配置功能，创建列的返回值
+                    </label>
+                </li>`;
+        expect(Config.createColumn(thName, content, true).replace(/\s/g, '')).toBe(columnHtml.replace(/\s/g, ''));
     });
 });
 
@@ -124,10 +136,10 @@ describe('Config.hide($table)', function() {
     });
 });
 
-describe('Config.updateConfigList($table)', function() {
+describe('Config.updateConfigList($table, settings)', function() {
     it('基础验证', function () {
         expect(Config.updateConfigList).toBeDefined();
-        expect(Config.updateConfigList.length).toBe(1);
+        expect(Config.updateConfigList.length).toBe(2);
     });
 });
 
