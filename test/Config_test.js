@@ -22,20 +22,7 @@ describe('Config 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Config)))).toBe(9 + 1);
-	});
-});
-
-describe('Config.html', function() {
-	it('基础验证', function(){
-		expect(Config.html).toBeDefined();
-		var configHtml = `<div class="config-area">
-							<span class="config-action">
-								<i class="iconfont icon-close"></i>
-							</span>
-							<ul class="config-list"></ul>
-						</div>`;
-		expect(Config.html.replace(/\s/g, '')).toBe(configHtml.replace(/\s/g, ''));
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Config)))).toBe(8 + 1);
 	});
 });
 
@@ -61,7 +48,7 @@ describe('Config.createHtml(settings)', function() {
 						<span class="config-action">
 							<i class="iconfont icon-close"></i>
 						</span>
-						<div class="config-info">${settings.onfigInfo}</div>
+						<div class="config-info">${settings.configInfo}</div>
 						<ul class="config-list"></ul>
 					</div>`;
 		expect(Config.createHtml(settings).replace(/\s/g, '')).toBe(createHtml.replace(/\s/g, ''));
