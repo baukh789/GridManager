@@ -8,13 +8,15 @@ import Scroll from './Scroll';
 class Config {
 	/**
 	 * 表格配置区域HTML
+     * @param settings
 	 * @returns {string}
      */
-	get html() {
+	createHtml(settings) {
 		const html = `<div class="config-area">
 						<span class="config-action">
 							<i class="iconfont icon-close"></i>
 						</span>
+						<div class="config-info">${settings.configInfo}</div>
 						<ul class="config-list"></ul>
 					</div>`;
 		return html;

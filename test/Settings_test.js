@@ -52,6 +52,10 @@ describe('Settings', function() {
 		expect(settings.supportConfig).toBe(true);
 	});
 
+	it('验证属性[configInfo]初始值', function() {
+		expect(settings.configInfo).toBe('点击配置列的是否显示');
+	});
+
 	it('验证属性[width]初始值', function() {
 		expect(settings.width).toBe('100%');
 	});

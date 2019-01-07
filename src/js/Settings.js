@@ -58,7 +58,10 @@ class Settings {
 		 */
 		const config = {
 			// 是否支持配置列表功能[操作列是否可见]
-			supportConfig: true
+			supportConfig: true,
+
+			// 配置区域的介绍信息
+			configInfo: '点击配置列的是否显示'
 		};
 
 		/**
