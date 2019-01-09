@@ -27,8 +27,14 @@
 npm install gridmanager --save
 ```
 
-## 相关链接
+## API
 - [API](http://gridmanager.lovejavascript.com/api/index.html)
+
+## Demo
+- [简单的示例](http://gridmanager.lovejavascript.com/demo/index.html)
+- [复杂的示例](http://develop.lovejavascript.com/node_modules/gridmanager/demo/index.html)
+
+## 相关链接
 - [GridManager by Angular 1.x](https://github.com/baukh789/GridManager-Angular-1.x)
 - [GridManager by Vue](https://github.com/baukh789/GridManager-Vue)
 
