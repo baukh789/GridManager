@@ -109,7 +109,7 @@ describe('Base.updateEmptyCol($table)', function() {
 
 	it('当前数据为空', function () {
 		table = `<table grid-manager="test">
-					<thead>
+					<thead grid-manager-thead>
 						<tr>
 						<th th-name="th-one" th-visible="visible">th-one</th>
 						<th th-name="th-two" th-visible="visible">th-two</th>
