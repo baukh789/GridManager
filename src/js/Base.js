@@ -52,11 +52,12 @@ class BaseClass {
 	 * @param $table
      */
 	updateEmptyCol($table) {
-		const emptyDOM = jTool('tr[emptyTemplate]', $table);
+		const emptyDOM = jTool('tbody tr[emptyTemplate]', $table);
 		if (emptyDOM.length === 0) {
 			return;
 		}
-		jTool('td', emptyDOM).attr('colspan', jTool('th[th-visible="visible"]', $table).length);
+		const visibleNum = jTool('thead[grid-manager-thead] th[th-visible="visible"]', $table).length;
+		jTool('td', emptyDOM).attr('colspan', visibleNum);
 	}
 
 	/**

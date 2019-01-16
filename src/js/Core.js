@@ -256,7 +256,7 @@ class Core {
 	    if (isInit && Cache.getTableData($table).length !== 0) {
 	        return;
         }
-		let visibleNum = jTool('th[th-visible="visible"]', $table).length;
+		let visibleNum = jTool('thead[grid-manager-thead] th[th-visible="visible"]', $table).length;
 		const $tbody = jTool('tbody', $table);
 		const $tableDiv = $table.closest('.table-div');
         $tbody.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
