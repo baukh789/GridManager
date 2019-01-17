@@ -107,11 +107,6 @@ describe('Core.driveDomForSuccessAfter($table, settings, response, callback)', f
 		expect(Core.driveDomForSuccessAfter).toBeDefined();
 		expect(Core.driveDomForSuccessAfter.length).toBe(4);
 	});
-
-	it('数据错误提示文本', function () {
-		Core.driveDomForSuccessAfter(null, null, null, null);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 请求数据失败！请查看配置参数[ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确 ', ...CONSOLE_STYLE.ERROR);
-	});
 });
 
 describe('Core.createDOM($table, settings)', function() {
