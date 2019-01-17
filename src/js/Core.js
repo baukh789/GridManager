@@ -197,7 +197,12 @@ class Core {
 	 * @param callback
      */
 	driveDomForSuccessAfter($table, settings, response, callback) {
-		if (!response) {
+        // 用于防止在填tbody时，实例已经被消毁的情况。
+        if (!$table || $table.length === 0 || !$table.hasClass('GridManager-ready')) {
+            return;
+        }
+
+        if (!response) {
 			Base.outLog('请求数据失败！请查看配置参数[ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
 			return;
 		}
@@ -256,6 +261,7 @@ class Core {
 	    if (isInit && Cache.getTableData($table).length !== 0) {
 	        return;
         }
+
 		let visibleNum = jTool('thead[grid-manager-thead] th[th-visible="visible"]', $table).length;
 		const $tbody = jTool('tbody', $table);
 		const $tableDiv = $table.closest('.table-div');

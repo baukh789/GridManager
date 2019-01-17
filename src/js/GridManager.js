@@ -277,6 +277,11 @@ export default class GridManager {
 		const $table = __jTable(table);
 		const settings = Cache.getSettings($table);
 
+		if (!settings.pageData) {
+		    Base.outLog('setQuery失败，当前实例可能已被消毁', 'warn');
+		    return;
+        }
+
 		if (jTool.type(query) !== 'object') {
             query = {};
         }
@@ -444,10 +449,9 @@ export default class GridManager {
         Base.SIV_waitTableAvailable[gridManagerName] = null;
         Base.SIV_waitContainerAvailable[gridManagerName] = null;
 
-        const $table = __jTable(table);
-
         // TODO 这里所有的消毁方法都应该使用gridManagerName，以防止$table在这里已经被消毁的问题
         try {
+            const $table = __jTable(table);
             // 清除各模块中的事件及部分DOM
             Adjust.destroy($table);
             AjaxPage.destroy($table);
