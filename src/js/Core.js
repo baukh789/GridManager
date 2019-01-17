@@ -256,7 +256,7 @@ class Core {
 	    if (isInit && Cache.getTableData($table).length !== 0) {
 	        return;
         }
-		let visibleNum = jTool('th[th-visible="visible"]', $table).length;
+		let visibleNum = jTool('thead[grid-manager-thead] th[th-visible="visible"]', $table).length;
 		const $tbody = jTool('tbody', $table);
 		const $tableDiv = $table.closest('.table-div');
         $tbody.html(Base.getEmptyHtml(visibleNum, settings.emptyTemplate));
@@ -625,7 +625,7 @@ class Core {
      * @param settings
      */
     redrawThead($table, $tableWarp, $thList, settings) {
-        const configList = jTool('.config-list', $tableWarp);
+        // const configList = jTool('.config-list', $tableWarp);
 
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
@@ -640,9 +640,9 @@ class Core {
             const isAutoCol = column.isAutoCreate;
 
             // 嵌入配置列表项
-            if (settings.supportConfig && !column.disableCustomize) {
-                configList.append(Config.createColumn(thName, onlyThText));
-            }
+            // if (settings.supportConfig && !column.disableCustomize) {
+            //     configList.append(Config.createColumn(thName, onlyThText));
+            // }
 
             // 嵌入表头提醒事件源
             // 插件自动生成的序号与选择列不做事件绑定

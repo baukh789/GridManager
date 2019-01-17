@@ -53,7 +53,7 @@ describe('Settings', function() {
 	});
 
 	it('验证属性[configInfo]初始值', function() {
-		expect(settings.configInfo).toBe('点击配置列的是否显示');
+		expect(settings.configInfo).toBe('配置列的显示状态');
 	});
 
 	it('验证属性[width]初始值', function() {

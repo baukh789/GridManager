@@ -244,7 +244,7 @@ class Export {
             }
 
             // res.data === blob
-            if (Object.getPrototypeOf(res.data) === blobPrototype) {
+            if (res.data && Object.getPrototypeOf(res.data) === blobPrototype) {
                 blob = res.data;
             }
 

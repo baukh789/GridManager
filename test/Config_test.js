@@ -22,20 +22,7 @@ describe('Config 验证类的属性及方法总量', function() {
 	});
 	it('Function count', function() {
 		// es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Config)))).toBe(9 + 1);
-	});
-});
-
-describe('Config.html', function() {
-	it('基础验证', function(){
-		expect(Config.html).toBeDefined();
-		var configHtml = `<div class="config-area">
-							<span class="config-action">
-								<i class="iconfont icon-close"></i>
-							</span>
-							<ul class="config-list"></ul>
-						</div>`;
-		expect(Config.html.replace(/\s/g, '')).toBe(configHtml.replace(/\s/g, ''));
+		expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(Config)))).toBe(10 + 1);
 	});
 });
 
@@ -61,7 +48,7 @@ describe('Config.createHtml(settings)', function() {
 						<span class="config-action">
 							<i class="iconfont icon-close"></i>
 						</span>
-						<div class="config-info">${settings.onfigInfo}</div>
+						<div class="config-info">${settings.configInfo}</div>
 						<ul class="config-list"></ul>
 					</div>`;
 		expect(Config.createHtml(settings).replace(/\s/g, '')).toBe(createHtml.replace(/\s/g, ''));
@@ -69,7 +56,7 @@ describe('Config.createHtml(settings)', function() {
     });
 });
 
-describe('Config.createColumn(thName, content)', function() {
+describe('Config.createColumn(thName, content, isShow)', function() {
     let thName = null;
     let content = null;
     let columnHtml = null;
@@ -83,7 +70,7 @@ describe('Config.createColumn(thName, content)', function() {
     });
     it('基础验证', function () {
         expect(Config.createColumn).toBeDefined();
-        expect(Config.createColumn.length).toBe(2);
+        expect(Config.createColumn.length).toBe(3);
     });
 
     it('返回值验证', function () {
@@ -99,6 +86,18 @@ describe('Config.createColumn(thName, content)', function() {
                     </label>
                 </li>`;
         expect(Config.createColumn(thName, content).replace(/\s/g, '')).toBe(columnHtml.replace(/\s/g, ''));
+
+
+        columnHtml = `<li th-name="test-config" class="checked-li">
+                    <label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input">
+                            <span class="gm-checkbox-inner"></span>
+                        </span>
+                        测试配置功能，创建列的返回值
+                    </label>
+                </li>`;
+        expect(Config.createColumn(thName, content, true).replace(/\s/g, '')).toBe(columnHtml.replace(/\s/g, ''));
     });
 });
 
@@ -134,6 +133,20 @@ describe('Config.hide($table)', function() {
     it('基础验证', function () {
         expect(Config.hide).toBeDefined();
         expect(Config.hide.length).toBe(1);
+    });
+});
+
+describe('Config.updateConfigList($table, settings)', function() {
+    it('基础验证', function () {
+        expect(Config.updateConfigList).toBeDefined();
+        expect(Config.updateConfigList.length).toBe(2);
+    });
+});
+
+describe('Config.updateConfigListHeight($table)', function() {
+    it('基础验证', function () {
+        expect(Config.updateConfigListHeight).toBeDefined();
+        expect(Config.updateConfigListHeight.length).toBe(1);
     });
 });
 

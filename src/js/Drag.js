@@ -4,6 +4,7 @@
 import { jTool, Base } from './Base';
 import Adjust from './Adjust';
 import Cache from './Cache';
+import Config from './Config';
 class Drag {
 	/**
 	 * 初始化拖拽
@@ -178,6 +179,11 @@ class Drag {
 				if (settings.supportAdjust) {
 					Adjust.resetAdjust(_table);
 				}
+
+				// 重置配置区域
+                if (settings.supportConfig) {
+                    Config.updateConfigList(_table, settings);
+                }
 
 				// 开启文字选中效果
 				$body.removeClass('no-select-text');
