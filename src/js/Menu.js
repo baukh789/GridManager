@@ -5,7 +5,7 @@ import { jTool } from './Base';
 import Cache from './Cache';
 import I18n from './I18n';
 import Export from './Export';
-import AjaxPage from './AjaxPage';
+import ajaxPage from './ajaxPage';
 import Config from './Config';
 class Menu {
 	// 唯一标识名
@@ -157,7 +157,7 @@ class Menu {
 				cPage = cPage;
 			}
 
-			AjaxPage.gotoPage(_table, settings, cPage);
+			ajaxPage.gotoPage(_table, settings, cPage);
 			_body.off('mousedown.gridMenu');
 			_gridMenu.hide();
 		});

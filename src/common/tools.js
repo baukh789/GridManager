@@ -1,41 +1,31 @@
 /**
- * jTool bind
+ * 解析html模板
  * @param option
  * @returns {Function}
- * @constructor
  */
-export function BindEvent(option){
-    return function (target, key, descriptor) {
-        const oldValue = descriptor.value;
-        descriptor.value = function($dom) {
-            const _this = this;
-            const _arguments = arguments;
-            $dom.unbind(option.event);
-            $dom.bind(option.event, function (event) {
-                option.once && $dom.unbind(option.event);
-                oldValue.call(_this, ..._arguments)(this, event);
-            });
-        };
-    }
-}
+export function parseTpl(option) {
 
-/**
- * jTool on
- * @param option
- * @returns {Function}
- * @constructor
- */
-export function OnEvent(option){
     return (target, key, descriptor) => {
         const oldValue = descriptor.value;
-        descriptor.value = function($dom) {
-            const _this = this;
-            const _arguments = arguments;
-            $dom.off(option.event, option.target);
-            $dom.on(option.event, option.target, function (event) {
-                option.once && $dom.off(option.event, option.target);
-                oldValue.call(_this, ..._arguments)(this, event);
-            });
+        descriptor.value = (object) => {
+            // parseData 用于解析 模板
+            const parseData = object;
+            return eval('`' + oldValue(parseData) + '`');
+
+            // TODO eval需要替换
+            // return oldValue(object).replace(/\${([^}]+)}/g, (match, key) => {
+            //     // 解析三目表达式, 仅支持单层形式
+            //     if (/\?/.test(key)) {
+            //         const split1 = key.split('?');
+            //         const split2 = split1[1].split(':');
+            //         const expression = split1[0].trim();
+            //         const sentence1 = split2[0].trim().replace(/^[\'\"]/g, '').replace(/[\'\"]$/g, '');
+            //         const sentence2 = split2[1].trim().replace(/^[\'\"]/g, '').replace(/[\'\"]$/g, '');
+            //
+            //         return `${object[expression] ? sentence1 : sentence2}`;
+            //     }
+            //     return object[key];
+            // });
         };
     }
 }

@@ -6,11 +6,11 @@
 * */
 import { jTool, Base } from './Base';
 import Menu from './Menu';
-import Adjust from './Adjust';
-import AjaxPage from './AjaxPage';
+import adjust from './adjust';
+import ajaxPage from './ajaxPage';
 import Cache from './Cache';
 import Config from './Config';
-import Checkbox from './Checkbox';
+import checkbox from './checkbox';
 import Order from './Order';
 import Remind from './Remind';
 import Sort from './Sort';
@@ -179,12 +179,12 @@ class Core {
 
 		// 渲染选择框
 		if (settings.supportCheckbox) {
-			Checkbox.resetDOM($table, settings, []);
+			checkbox.resetDOM($table, settings, []);
 		}
 
 		// 渲染分页
 		if (settings.supportAjaxPage) {
-			AjaxPage.resetPageData($table, settings, 0);
+			ajaxPage.resetPageData($table, settings, 0);
 			Menu.updateMenuPageStatus(settings.gridManagerName, settings);
 		}
 	}
@@ -237,12 +237,12 @@ class Core {
 
 		// 渲染选择框
 		if (settings.supportCheckbox) {
-            Checkbox.resetDOM($table, settings, _data, settings.useRadio);
+            checkbox.resetDOM($table, settings, _data, settings.useRadio);
 		}
 
 		// 渲染分页
 		if (settings.supportAjaxPage) {
-			AjaxPage.resetPageData($table, settings, parseRes[settings.totalsKey], _data.length);
+			ajaxPage.resetPageData($table, settings, parseRes[settings.totalsKey], _data.length);
 			Menu.updateMenuPageStatus(settings.gridManagerName, settings);
 		}
 
@@ -305,7 +305,7 @@ class Core {
                     let cloneItem = Base.getDataForColumnMap(settings.columnMap, rowData);
                     return Base.equal(cloneRow, cloneItem);
                 });
-                rowData[Checkbox.key] = checked || Boolean(rowData[Checkbox.key]);
+                rowData[checkbox.key] = checked || Boolean(rowData[checkbox.key]);
                 return rowData;
             });
             Cache.setCheckedData($table, data);
@@ -515,12 +515,12 @@ class Core {
                     thText.innerHTML = Order.getThString(settings);
 					break;
 				// 插件自动生成选择列
-				case Checkbox.key:
+				case checkbox.key:
                     th.setAttribute('gm-create', 'true');
-                    th.setAttribute('th-name', Checkbox.key);
+                    th.setAttribute('th-name', checkbox.key);
                     th.setAttribute('th-visible', thVisible);
                     th.setAttribute('gm-checkbox', 'true');
-                    thText.innerHTML = Checkbox.getThString(settings.useRadio);
+                    thText.innerHTML = checkbox.getThString(settings.useRadio);
 					break;
 				// 普通列
 				default:
@@ -550,7 +550,7 @@ class Core {
 
 		// 绑定选择框事件
 		if (settings.supportCheckbox) {
-			Checkbox.bindCheckboxEvent($table, settings);
+			checkbox.bindCheckboxEvent($table, settings);
 		}
 
 		// 单个table下的thead
@@ -584,8 +584,8 @@ class Core {
 
 		// 嵌入Ajax分页DOM
 		if (settings.supportAjaxPage) {
-			$tableWarp.append(AjaxPage.createHtml(settings));
-			AjaxPage.initAjaxPage($table, settings);
+			$tableWarp.append(ajaxPage.createHtml(settings));
+			ajaxPage.initAjaxPage($table, settings);
 		}
 
 		// 等待容器可用
@@ -645,11 +645,6 @@ class Core {
             // 是否为GM自动添加的列
             const isAutoCol = column.isAutoCreate;
 
-            // 嵌入配置列表项
-            // if (settings.supportConfig && !column.disableCustomize) {
-            //     configList.append(Config.createColumn(thName, onlyThText));
-            // }
-
             // 嵌入表头提醒事件源
             // 插件自动生成的序号与选择列不做事件绑定
             if (!isAutoCol && jTool.type(column.remind) === 'string') {
@@ -687,7 +682,7 @@ class Core {
             // 1.插件自动生成的选择列不做事件绑定
             // 2.禁止使用个性配置功能的列
             if (settings.supportAdjust && !isAutoCol && !column.disableCustomize) {
-                const adjustDOM = jTool(Adjust.html);
+                const adjustDOM = jTool(adjust.html);
 
                 // 最后一列不支持调整宽度
                 if (index === $thList.length - 1) {

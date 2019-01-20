@@ -20,29 +20,30 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-            // 'test/*_test.js',
-			'test/Adjust_test.js',
-			'test/AjaxPage_test.js',
-			'test/Base_test.js',
-			'test/Cache_test.js',
-			'test/Checkbox_test.js',
-			'test/Config_test.js',
-			'test/Core_test.js',
-			'test/Drag_test.js',
-			'test/Export_test.js',
-			'test/GridManager_test.js',
-			'test/Hover_test.js',
-			'test/I18n_test.js',
-			// 'test/index_test.js',
-			// 'test/index_jQuery_test.js',
-			'test/Menu_test.js',
-			'test/Order_test.js',
-			// 'test/Publish_test.js',
-			'test/Remind_test.js',
-			'test/Scroll_test.js',
-			'test/Settings_test.js',
-			'test/Sort_test.js',
-			'test/Store_test.js'
+            'test/index_test.js',
+            // 'test/index_test.js',
+			// 'test/Adjust_test.js',
+			// 'test/AjaxPage_test.js',
+			// 'test/Base_test.js',
+			// 'test/Cache_test.js',
+			// 'test/Checkbox_test.js',
+			// 'test/Config_test.js',
+			// 'test/Core_test.js',
+			// 'test/Drag_test.js',
+			// 'test/Export_test.js',
+			// 'test/GridManager_test.js',
+			// 'test/Hover_test.js',
+			// 'test/I18n_test.js',
+			// // 'test/index_test.js',
+			// // 'test/index_jQuery_test.js',
+			// 'test/Menu_test.js',
+			// 'test/Order_test.js',
+			// // 'test/Publish_test.js',
+			// 'test/Remind_test.js',
+			// 'test/Scroll_test.js',
+			// 'test/Settings_test.js',
+			// 'test/Sort_test.js',
+			// 'test/Store_test.js'
 		],
 
 		// 使用端口
@@ -75,8 +76,8 @@ module.exports = function (config) {
 		// 预处理
 		preprocessors: {
 			// src/js/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/js/*.js 不需要通过 webpack 进行打.
-			'src/js/*.js': ['sourcemap', 'coverage'],
-			'test/*_test.js': ['webpack']
+			'src/module/**/*.js': ['sourcemap', 'coverage'],
+			'test/index_test.js': ['webpack']
 		},
 		// optionally, configure the reporter
 		coverageReporter: {
@@ -117,6 +118,12 @@ module.exports = function (config) {
 						exclude: /(node_modules|bower_components)/,
 						include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')]
 					},
+                    {
+                        test: /\.html?$/,
+                        loaders: ['html-loader'],
+                        exclude: /(node_modules|bower_components)/,
+                        include: [path.join(__dirname, 'src')]
+                    },
 					{
 						test:/.less/,
 						loader:'css-loader!less-loader'

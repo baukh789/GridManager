@@ -2,7 +2,7 @@
  * Drag: 拖拽
  * */
 import { jTool, Base } from './Base';
-import Adjust from './Adjust';
+import adjust from './adjust';
 import Cache from './Cache';
 import Config from './Config';
 class Drag {
@@ -177,7 +177,7 @@ class Drag {
 
 				// 重置调整宽度事件源
 				if (settings.supportAdjust) {
-					Adjust.resetAdjust(_table);
+					adjust.resetAdjust(_table);
 				}
 
 				// 重置配置区域

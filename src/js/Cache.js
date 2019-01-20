@@ -6,7 +6,7 @@
 * */
 import {jTool, Base} from './Base';
 import {Settings, TextSettings} from './Settings';
-import Checkbox from './Checkbox';
+import checkbox from './checkbox';
 import Order from './Order';
 import store from './Store';
 
@@ -128,7 +128,7 @@ class Cache {
 
         dataList.forEach(item => {
             let cloneObj = Base.getDataForColumnMap(columnMap, item);
-            let checked = item[Checkbox.key];
+            let checked = item[checkbox.key];
             let index = Base.getObjectIndexToArray(tableCheckedList, cloneObj);
 
             // 新增: 已选中 且 未存储
@@ -304,7 +304,7 @@ class Cache {
 
         // 为 columnData 增加 选择列
         if (_settings.supportCheckbox) {
-            _settings.columnData.unshift(Checkbox.getColumn(_settings));
+            _settings.columnData.unshift(checkbox.getColumn(_settings));
         }
 
         // 为 columnData 提供锚 => columnMap

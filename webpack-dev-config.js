@@ -16,7 +16,7 @@ const config = {
 
 	// 入口文件配置
 	entry: {
-		js: './js/index.js'
+		js: './module/index.js'
 	},
 
 	// 配置模块如何解析

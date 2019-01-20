@@ -26,7 +26,7 @@ app.use(/\/coverage$/, function (req, res) {
 });
 
 // 配置资源路径√
-app.use(express.static(path.join(__dirname, 'src')));
+app.use(express.static(path.join(__dirname)));
 app.use(express.static(__dirname));
 app.listen(2015, function (err) {
 	if (err) {

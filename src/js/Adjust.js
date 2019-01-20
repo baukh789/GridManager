@@ -1,9 +1,9 @@
 /*
- * Adjust: 宽度调整
+ * adjust: 宽度调整
  * */
 import { jTool, Base } from './Base';
 import Cache from './Cache';
-class Adjust {
+class adjust {
     /**
      * 宽度调整HTML
      * @returns {string}
@@ -96,7 +96,7 @@ class Adjust {
             $td.addClass('adjust-selected');
 
             // 更新界面交互标识
-            Base.updateInteractive(_$table, 'Adjust');
+            Base.updateInteractive(_$table, 'adjust');
 
             // 执行移动事件
             _this.__runMoveEvent(_$table, $th, $nextTh, isIconFollowText);
@@ -188,4 +188,4 @@ class Adjust {
         });
     }
 }
-export default new Adjust();
+export default new adjust();

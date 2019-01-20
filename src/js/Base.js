@@ -401,7 +401,7 @@ class BaseClass {
 	 * @param interactive: 如果不存在于interactiveList内, 将删除属性[user-interactive]
 	 */
 	updateInteractive($table, interactive) {
-		const interactiveList = ['Adjust', 'Drag'];
+		const interactiveList = ['adjust', 'Drag'];
 		// 事件源所在的容器
 		let	tableWrap = $table.closest('.table-wrap');
 		if (!interactive || interactiveList.indexOf(interactive) === -1) {

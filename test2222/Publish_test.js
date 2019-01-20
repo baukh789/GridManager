@@ -4,8 +4,8 @@
  */
 'use strict';
 import {PublishMethod, publishMethodArray} from '../src/js/Publish';
-import testData from '../src/data/testData';
-import testData2 from '../src/data/testData2';
+import testData from './data/testData';
+import testData2 from './data/testData2';
 import { GM_VERSION, GM_PUBLISH_METHOD_LIST } from '../src/common/constants';
 import GridManager from "../src/js/GridManager";
 import {Base, jTool} from "../src/js/Base";

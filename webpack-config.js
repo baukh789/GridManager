@@ -4,6 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const genRules = require('./webpack-common.loader');
 const buildPath = path.join(__dirname, "dist");
+// const { ParseTplPlugin } = require('./webpack-publish');
 const { version } = require('./package.json');
 
 // API: https://www.css88.com/doc/webpack2/configuration/devtool/
@@ -14,7 +15,7 @@ const config = {
 
 	// 入口文件配置
 	entry: {
-		js: './js/index.js'
+		js: './module/index.js'
 	},
 
 	// 配置模块如何解析
@@ -36,6 +37,9 @@ const config = {
 	},
 	// 以插件形式定制webpack构建过程
 	plugins: [
+	    // TODO 未完成，parseTpl应该考虑使用plugin进行替代
+        // new ParseTplPlugin({options: true}),
+
         // 将样式文件 抽取至独立文件内
 		new ExtractTextWebpackPlugin({
 			// 生成文件的文件名
@@ -51,7 +55,6 @@ const config = {
 		// 将文件复制到构建目录
 		// CopyWebpackPlugin-> https://github.com/webpack-contrib/copy-webpack-plugin
 		new CopyWebpackPlugin([
-			{from: __dirname + '/src/demo', to: 'demo'},
 			{from: __dirname + '/version', to: 'version'},
 			{from: path.join(__dirname, '/package.json'), to: '', toType: 'file'},
 			{from: path.join(__dirname, '/README.md'), to: '', toType: 'file'}

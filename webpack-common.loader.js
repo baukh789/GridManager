@@ -20,10 +20,16 @@ module.exports = (srcCodeDir, idDev) => {
 			exclude: /(node_modules|bower_components)/,
 			include: [path.join(__dirname, srcCodeDir)]
 		},
+        {
+            test: /\.html?$/,
+            loaders: ['html-loader'],
+            exclude: /(node_modules|bower_components)/,
+            include: [path.join(__dirname, srcCodeDir)]
+        },
 		{
 			test: /\.less$/,
 			exclude: /(node_modules|bower_components)/,
-			include: [path.join(__dirname, srcCodeDir + '/css')],
+			include: [path.join(__dirname, srcCodeDir)],
 			use: ExtractTextWebpackPlugin.extract({
 				use: [{
 						loader: 'css-loader',
@@ -32,9 +38,6 @@ module.exports = (srcCodeDir, idDev) => {
 							minimize: !idDev, // 启用/禁用 压缩
 							sourceMap: false // 启用/禁用 Sourcemaps
 						}
-					},
-					{
-						loader: 'resolve-url-loader'
 					},
 					{
 						loader: 'less-loader',

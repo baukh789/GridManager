@@ -1,12 +1,12 @@
 /*
- * Checkbox: 数据选择/全选/返选
+ * checkbox: 数据选择/全选/返选
  * */
 import { CHECKBOX_WIDTH } from '../common/constants';
 import { jTool, Base } from './Base';
 import I18n from './I18n';
 import Cache from './Cache';
 
-class Checkbox {
+class checkbox {
 	// 全选的唯一标识
 	get key() {
 		return 'gm_checkbox';
@@ -177,4 +177,4 @@ class Checkbox {
 		$table.off('click', 'td[gm-checkbox="true"] input[type="checkbox"]');
 	}
 }
-export default new Checkbox();
+export default new checkbox();

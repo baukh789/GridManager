@@ -3,42 +3,31 @@
  * */
 import { jTool, Base } from './Base';
 import Cache from './Cache';
-import Adjust from './Adjust';
+import adjust from './adjust';
 import Scroll from './Scroll';
+import configTpl from '../module/config/config.tpl.html';
+import configColumnTpl from '../module/config/config-column.tpl.html';
+import { parseTpl } from '../common/tools';
+
 class Config {
 	/**
 	 * 表格配置区域HTML
      * @param settings
 	 * @returns {string}
      */
+	@parseTpl()
 	createHtml(settings) {
-		const html = `<div class="config-area">
-						<span class="config-action">
-							<i class="iconfont icon-close"></i>
-						</span>
-						<div class="config-info">${settings.configInfo}</div>
-						<ul class="config-list"></ul>
-					</div>`;
-		return html;
+	    return configTpl;
 	}
 
     /**
      * 生成配置列HTML
-     * @param thName
-     * @param content
-     * @param isShow
+     * @param column{key, title, isShow}
      * @returns {string}
      */
-    createColumn(thName, content, isShow) {
-	    return `<li th-name="${thName}"${isShow ? 'class="checked-li"' : ''}>
-                    <label class="gm-checkbox-wrapper">
-                        <span class="gm-radio-checkbox gm-checkbox${isShow ? ' gm-checkbox-checked' : ''}">
-                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input">
-                            <span class="gm-checkbox-inner"></span>
-                        </span>
-                        ${content}
-                    </label>
-                </li>`;
+    @parseTpl()
+    createColumn(column) {
+	    return configColumnTpl;
     }
 
 	/**
@@ -137,7 +126,7 @@ class Config {
 
 			// 重置调整宽度事件源
 			if (settings.supportAdjust) {
-				Adjust.resetAdjust(_$table);
+				adjust.resetAdjust(_$table);
 			}
 
 			// 重置镜像滚动条的宽度
@@ -224,8 +213,9 @@ class Config {
                 return;
             }
 
-            let onlyText = $thead.find(`th[th-name="${key}"] .th-text`).text();
-            $configList.append(this.createColumn(key, onlyText, isShow));
+            // 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
+            let title = $thead.find(`th[th-name="${key}"] .th-text`).text();
+            $configList.append(this.createColumn({key, title, isShow}));
             if (isShow) {
                 showNum++;
             }

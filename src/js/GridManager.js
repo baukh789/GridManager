@@ -4,10 +4,10 @@
  */
 import '../css/index.less';
 import { jTool, Base } from './Base';
-import Adjust from './Adjust';
-import AjaxPage from './AjaxPage';
+import adjust from './adjust';
+import ajaxPage from './ajaxPage';
 import Cache from './Cache';
-import Checkbox from './Checkbox';
+import checkbox from './checkbox';
 import Config from './Config';
 import Core from './Core';
 import Drag from './Drag';
@@ -353,7 +353,7 @@ export default class GridManager {
      */
 	static
 	getCheckedTr(table) {
-		return Checkbox.getCheckedTr(__jTable(table));
+		return checkbox.getCheckedTr(__jTable(table));
 	};
 
 	/**
@@ -388,12 +388,12 @@ export default class GridManager {
                 let cloneItem = Base.getDataForColumnMap(columnMap, rowData);
                 return Base.equal(cloneRow, cloneItem);
             });
-            rowData[Checkbox.key] = checked;
+            rowData[checkbox.key] = checked;
             return rowData;
         });
         Cache.setTableData($table, tableData);
         Cache.setCheckedData($table, checkedList, true);
-        return Checkbox.resetDOM($table, settings, tableData, isRadio);
+        return checkbox.resetDOM($table, settings, tableData, isRadio);
     };
 
     /**
@@ -453,9 +453,9 @@ export default class GridManager {
         try {
             const $table = __jTable(table);
             // 清除各模块中的事件及部分DOM
-            Adjust.destroy($table);
-            AjaxPage.destroy($table);
-            Checkbox.destroy($table);
+            adjust.destroy($table);
+            ajaxPage.destroy($table);
+            checkbox.destroy($table);
             Config.destroy($table);
             Drag.destroy($table);
             Hover.destroy($table);
@@ -578,11 +578,11 @@ export default class GridManager {
         Base.updateScrollStatus($table);
 
         // 通过缓存配置成功后, 重置宽度调整事件源dom
-        settings.supportAdjust ? Adjust.resetAdjust($table) : '';
+        settings.supportAdjust ? adjust.resetAdjust($table) : '';
 
-        // init Adjust
+        // init adjust
         if (settings.supportAdjust) {
-            Adjust.init($table);
+            adjust.init($table);
         }
 
         // init Drag

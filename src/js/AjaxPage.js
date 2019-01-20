@@ -1,5 +1,5 @@
 /*
- * AjaxPage: 分页
+ * ajaxPage: 分页
  * */
 import { jTool, Base } from './Base';
 import Core from './Core';
