@@ -1,7 +1,7 @@
 <label class="gm-radio-wrapper">
-    <span class="gm-radio-checkbox gm-radio${parseData.checked ? ' gm-radio-checked' : ''}">
-        <input type="radio" class="gm-radio-checkbox-input gm-radio-input"${parseData.value ? ' value="' + parseData.value + '"' : ''}${parseData.checked ? ' checked="true"' : ''}/>
+    <span class="gm-radio-checkbox gm-radio{{parseData.checked ? ' gm-radio-checked' : ''}}">
+        <input type="radio" class="gm-radio-checkbox-input gm-radio-input"{{parseData.value ? ' value="' + parseData.value + '"' : ''}}{{parseData.checked ? ' checked="true"' : ''}}/>
         <span class="gm-radio-inner"></span>
     </span>
-    ${parseData.label ? '<span>' + parseData.label + '</span>' : ''}
+    {{parseData.label ? '<span>' + parseData.label + '</span>' : ''}}
 </label>

@@ -72,5 +72,9 @@
         "lint": "eslint src/js/",
         "test": "NODE_ENV=test karma start",
         "build": "webpack --config webpack-config.js"
-    }
+    },
+    "peerDependencies": {
+        "library": "^1.3.5"
+    },
+    "dependencies": {}
 }

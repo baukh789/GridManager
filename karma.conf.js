@@ -20,30 +20,7 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-            'test/index_test.js',
-            // 'test/index_test.js',
-			// 'test/Adjust_test.js',
-			// 'test/AjaxPage_test.js',
-			// 'test/Base_test.js',
-			// 'test/Cache_test.js',
-			// 'test/Checkbox_test.js',
-			// 'test/Config_test.js',
-			// 'test/Core_test.js',
-			// 'test/Drag_test.js',
-			// 'test/Export_test.js',
-			// 'test/GridManager_test.js',
-			// 'test/Hover_test.js',
-			// 'test/I18n_test.js',
-			// // 'test/index_test.js',
-			// // 'test/index_jQuery_test.js',
-			// 'test/Menu_test.js',
-			// 'test/Order_test.js',
-			// // 'test/Publish_test.js',
-			// 'test/Remind_test.js',
-			// 'test/Scroll_test.js',
-			// 'test/Settings_test.js',
-			// 'test/Sort_test.js',
-			// 'test/Store_test.js'
+            'test/index_test.js'
 		],
 
 		// 使用端口
@@ -68,16 +45,14 @@ module.exports = function (config) {
 
 		captureTimeout: 60000,
 
-		// test results reporter to use
-		// possible values: 'dots', 'progress'
-		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
+        // coverage reporter generates the coverage
 		reporters: ['progress', 'coverage'],
 
 		// 预处理
 		preprocessors: {
-			// src/js/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/js/*.js 不需要通过 webpack 进行打.
+			// src/module/**/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/**/*.js 不需要通过 webpack 进行打.
 			'src/module/**/*.js': ['sourcemap', 'coverage'],
-			'test/index_test.js': ['webpack']
+			'test/*_test.js': ['webpack']
 		},
 		// optionally, configure the reporter
 		coverageReporter: {

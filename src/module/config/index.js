@@ -7,7 +7,7 @@ import adjust from '../adjust';
 import scroll from '../scroll';
 import configTpl from './config.tpl.html';
 import configColumnTpl from './config-column.tpl.html';
-import { parseTpl } from '../../common/tools';
+import { parseTpl } from '../../common/parse';
 
 class Config {
 	/**

@@ -4,7 +4,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const genRules = require('./webpack-common.loader');
 const buildPath = path.join(__dirname, "dist");
-// const { ParseTplPlugin } = require('./webpack-publish');
 const { version } = require('./package.json');
 
 // API: https://www.css88.com/doc/webpack2/configuration/devtool/
@@ -37,9 +36,6 @@ const config = {
 	},
 	// 以插件形式定制webpack构建过程
 	plugins: [
-	    // TODO 未完成，parseTpl应该考虑使用plugin进行替代
-        // new ParseTplPlugin({options: true}),
-
         // 将样式文件 抽取至独立文件内
 		new ExtractTextWebpackPlugin({
 			// 生成文件的文件名

@@ -1,9 +1,9 @@
-<li th-name="${parseData.key}"${parseData.isShow ? 'class="checked-li"' : ''}>
+<li th-name="{{parseData.key}}" class="{{parseData.isShow ? 'checked-li' : ''}}">
     <label class="gm-checkbox-wrapper">
-        <span class="gm-radio-checkbox gm-checkbox${parseData.isShow ? ' gm-checkbox-checked' : ''}">
+        <span class="gm-radio-checkbox gm-checkbox{{parseData.isShow ? ' gm-checkbox-checked' : ''}}">
             <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input">
             <span class="gm-checkbox-inner"></span>
         </span>
-        ${parseData.title}
+        {{parseData.title}}
     </label>
 </li>

@@ -6,7 +6,7 @@ import { CHECKBOX_WIDTH } from '../../common/constants';
 import { jTool, base } from '../base';
 import i18n from '../i18n';
 import cache from '../cache';
-import { parseTpl } from '../../common/tools';
+import { parseTpl } from '../../common/parse';
 import columnTpl from './column.tpl.html';
 import checkboxTpl from './checkbox.tpl.html';
 import radioTpl from './radio.tpl.html';

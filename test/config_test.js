@@ -76,7 +76,7 @@ describe('config.createColumn(column)', function() {
             title: '测试配置功能，创建列的返回值',
             isShow: false
         };
-        columnHtml = `<li th-name="test-config">
+        columnHtml = `<li th-name="test-config" class="">
                     <label class="gm-checkbox-wrapper">
                         <span class="gm-radio-checkbox gm-checkbox">
                             <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input">
