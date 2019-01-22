@@ -10,16 +10,6 @@ import ajaxPageTpl from './ajax-page.tpl.html';
 import { parseTpl } from '../../common/parse';
 class AjaxPage {
 	/**
-	 * 分页所需HTML
-	 * @param parseData
-	 * @returns {string}
-     */
-	@parseTpl()
-	createHtml(parseData) {
-	    return ajaxPageTpl;
-	}
-
-	/**
 	 * 初始化分页
 	 * @param $table
 	 * @param $tableWarp
@@ -47,15 +37,25 @@ class AjaxPage {
                 [settings.currentPageKey]: 1
             };
             jTool.extend(settings, {pageData: pageData});
-            cache.setSettings($table, settings);
+            cache.setSettings(settings);
         }
 
 		// 绑定页面跳转事件
-		this.__bindPageJumpEvent($table);
+		this.__bindPageJumpEvent($table, $tableWarp);
 
 		// 绑定设置显示条数切换事件
-		this.__bindSetPageSizeEvent($table);
+		this.__bindSetPageSizeEvent($table, $tableWarp);
 	}
+
+    /**
+     * 分页所需HTML
+     * @param parseData
+     * @returns {string}
+     */
+    @parseTpl()
+    createHtml(parseData) {
+        return ajaxPageTpl;
+    }
 
 	/**
 	 * 重置分页数据
@@ -66,24 +66,23 @@ class AjaxPage {
 	 */
 	resetPageData($table, settings, totals, len) {
 		const _pageData = this.__getPageData(settings, totals, len);
+        const $tableWrap = $table.closest('.table-wrap');
+        const $footerToolbar = jTool('.footer-toolbar', $tableWrap);
 
-		// 生成页码DOM节点
-		this.__createPaginationDOM($table, settings, _pageData);
+		// 更新底部DOM节点
+		this.__updateFooterDOM($footerToolbar, settings, _pageData);
 
 		// 重置当前页显示条数
-        this.__resetPSize($table, settings, _pageData);
+        this.__resetPSize($footerToolbar, settings, _pageData);
 
 		// 修改分页描述信息
-        this.__resetPageInfo($table, settings, _pageData);
+        this.__resetPageInfo($footerToolbar, settings, _pageData);
 
 		// 更新Cache
-		cache.setSettings($table, jTool.extend(true, settings, {pageData: _pageData}));
+		cache.setSettings(jTool.extend(true, settings, {pageData: _pageData}));
 
-		const tableWarp = $table.closest('.table-wrap');
-
-		// 分页工具条
-		const footerToolbar = jTool('.footer-toolbar', tableWarp);
-        footerToolbar.css('visibility', 'visible');
+		// 显示底部工具条
+        $footerToolbar.css('visibility', 'visible');
 	}
 
 	/**
@@ -107,7 +106,7 @@ class AjaxPage {
 		settings.pageData[settings.pageSizeKey] = settings.pageData[settings.pageSizeKey] || settings.pageSize;
 
 		// 更新缓存
-		cache.setSettings($table, settings);
+		cache.setSettings(settings);
 
 		// 调用事件、渲染DOM
 		const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
@@ -118,27 +117,23 @@ class AjaxPage {
 	}
 
 	/**
-	 * 生成页码DOM节点
-	 * @param $table
+	 * 更新底部DOM节点
+	 * @param $footerToolbar
 	 * @param settings
 	 * @param pageData 分页数据格式
 	 * @private
      */
-	__createPaginationDOM($table, settings, pageData) {
-		const tableWarp = $table.closest('.table-wrap');
-
-		// 分页工具条
-		const footerToolbar = jTool('.footer-toolbar', tableWarp);
-        settings.useNoTotalsMode && footerToolbar.attr('no-totals-mode', 'true');
+    __updateFooterDOM($footerToolbar, settings, pageData) {
+        settings.useNoTotalsMode && $footerToolbar.attr('no-totals-mode', 'true');
 
 		// 分页码区域
-		const paginationNumber = jTool('.pagination[pagination-number]', footerToolbar);
+		const $paginationNumber = jTool('[pagination-number]', $footerToolbar);
 
 		// 重置分页码
-        paginationNumber.html(this.__joinPaginationNumber(settings, pageData));
+        $paginationNumber.html(this.__joinPaginationNumber(settings, pageData));
 
         // 更新分页禁用状态
-        this.__updatePageDisabledState(footerToolbar, pageData[settings.currentPageKey], pageData.tPage);
+        this.__updatePageDisabledState($footerToolbar, pageData[settings.currentPageKey], pageData.tPage);
 	}
 
 	/**
@@ -222,17 +217,16 @@ class AjaxPage {
 	/**
 	 * 绑定页面跳转事件
 	 * @param $table
+	 * @param $tableWarp
 	 * @private
      */
-	__bindPageJumpEvent($table) {
-		const tableWarp	= $table.closest('.table-wrap');
-
+	__bindPageJumpEvent($table, $tableWarp) {
 		// 分页工具条
-		const footerToolbar = jTool('.footer-toolbar', tableWarp);
+		const $footerToolbar = jTool('.footer-toolbar', $tableWarp);
 
-		this.__bindPageClick($table, footerToolbar);
-		this.__bindInputEvent($table, footerToolbar);
-		this.__bindRefreshEvent(footerToolbar);
+		this.__bindPageClick($table, $footerToolbar);
+		this.__bindInputEvent($table, $footerToolbar);
+		this.__bindRefreshEvent($table, $footerToolbar);
 	}
 
     /**
@@ -243,10 +237,10 @@ class AjaxPage {
      * @private
      */
 	__updatePageDisabledState($footerToolbar, toPage, tPage) {
-        const $firstPage = jTool('.pagination .first-page', $footerToolbar);
-        const $previousPage = jTool('.pagination .previous-page', $footerToolbar);
-        const $nextPage = jTool('.pagination .next-page', $footerToolbar);
-        const $lastPage = jTool('.pagination .last-page', $footerToolbar);
+        const $firstPage = jTool('[pagination-before] .first-page', $footerToolbar);
+        const $previousPage = jTool('[pagination-before] .previous-page', $footerToolbar);
+        const $nextPage = jTool('[pagination-after] .next-page', $footerToolbar);
+        const $lastPage = jTool('[pagination-after] .last-page', $footerToolbar);
 
         if (toPage === 1) {
             $firstPage.addClass('disabled');
@@ -273,49 +267,49 @@ class AjaxPage {
      */
 	__bindPageClick($table, $footerToolbar) {
 		const _this = this;
-
-        const $firstPage = jTool('.pagination .first-page', $footerToolbar);
-        const $previousPage = jTool('.pagination .previous-page', $footerToolbar);
-        const $nextPage = jTool('.pagination .next-page', $footerToolbar);
-        const $lastPage = jTool('.pagination .last-page', $footerToolbar);
+		const key = base.getKey($table);
+        const $firstPage = jTool('[pagination-before] .first-page', $footerToolbar);
+        const $previousPage = jTool('[pagination-before] .previous-page', $footerToolbar);
+        const $nextPage = jTool('[pagination-after] .next-page', $footerToolbar);
+        const $lastPage = jTool('[pagination-after] .last-page', $footerToolbar);
 
 		// 事件: 首页
         $firstPage.unbind('click');
         $firstPage.bind('click', () => {
-            _this.gotoPage($table, cache.getSettings($table), 1);
+            _this.gotoPage($table, cache.getSettings(key), 1);
         });
 
         // 事件: 上一页
         $previousPage.unbind('click');
         $previousPage.bind('click', () => {
-            const settings = cache.getSettings($table);
+            const settings = cache.getSettings(key);
             const cPage = settings.pageData[settings.currentPageKey];
             const toPage = cPage - 1;
-            _this.gotoPage($table, cache.getSettings($table), toPage < 1 ? 1 : toPage);
+            _this.gotoPage($table, settings, toPage < 1 ? 1 : toPage);
         });
 
         // 事件: 下一页
         $nextPage.unbind('click');
         $nextPage.bind('click', () => {
-            const settings = cache.getSettings($table);
+            const settings = cache.getSettings(key);
             const cPage = settings.pageData[settings.currentPageKey];
             const tPage = settings.pageData.tPage;
             const toPage = cPage + 1;
-            _this.gotoPage($table, cache.getSettings($table), toPage > tPage ? tPage : toPage);
+            _this.gotoPage($table, settings, toPage > tPage ? tPage : toPage);
         });
 
         // 事件: 尾页
         $lastPage.unbind('click');
         $lastPage.bind('click', () => {
-            const settings = cache.getSettings($table);
-            _this.gotoPage($table, cache.getSettings($table), settings.pageData.tPage);
+            const settings = cache.getSettings(key);
+            _this.gotoPage($table, settings, settings.pageData.tPage);
         });
 
         // 事件: 页码
-        const paginationNumber = jTool('.pagination[pagination-number]', $footerToolbar);
+        const paginationNumber = jTool('[pagination-number]', $footerToolbar);
         paginationNumber.off('click', 'li');
         paginationNumber.on('click', 'li', function () {
-            const settings = cache.getSettings($table);
+            const settings = cache.getSettings(key);
 			const pageAction = jTool(this);
 
 			// 分页页码
@@ -332,76 +326,68 @@ class AjaxPage {
 	/**
 	 * 绑定快捷跳转事件
 	 * @param $table
-	 * @param footerToolbar
+	 * @param $footerToolbar
 	 * @private
      */
-	__bindInputEvent($table, footerToolbar) {
+	__bindInputEvent($table, $footerToolbar) {
 		const _this = this;
-        footerToolbar.off('keyup', '.gp-input');
-        footerToolbar.on('keyup', '.gp-input', function (event) {
+        $footerToolbar.off('keyup', '.gp-input');
+        $footerToolbar.on('keyup', '.gp-input', function (event) {
 			if (event.which !== 13) {
 				return;
 			}
 			let _cPage = parseInt(this.value, 10);
-			_this.gotoPage($table, cache.getSettings($table), _cPage);
+			_this.gotoPage($table, cache.getSettings(base.getKey($table)), _cPage);
 			this.value = '';
 		});
 	}
 
 	/**
 	 * 绑定刷新界面事件
-	 * @param footerToolbar
+	 * @param $table
+	 * @param $footerToolbar
 	 * @private
      */
-	__bindRefreshEvent(footerToolbar) {
-		const refreshAction	= jTool('.refresh-action', footerToolbar);
+	__bindRefreshEvent($table, $footerToolbar) {
+		const refreshAction	= jTool('.refresh-action', $footerToolbar);
 
 		refreshAction.unbind('click');
-		refreshAction.bind('click', event => {
-			const _tableWarp = jTool(event.target).closest('.table-wrap');
-			const _table = jTool('table[grid-manager]', _tableWarp);
-
-			core.refresh(_table);
+		refreshAction.bind('click', () => {
+			core.refresh($table);
 		});
 	}
 
 	/**
 	 * 绑定设置当前页显示数事件
 	 * @param $table
+	 * @param $tableWarp
 	 * @private
      */
-	__bindSetPageSizeEvent($table) {
-		const tableWarp = $table.closest('.table-wrap');
-
-		// 分页工具条
-		const footerToolbar = jTool('.footer-toolbar', tableWarp);
-
+	__bindSetPageSizeEvent($table, $tableWarp) {
 		// 切换条数区域
-		const sizeArea = jTool('select[name=pSizeArea]', footerToolbar);
+		const $sizeArea = jTool('select[name=pSizeArea]', jTool('.footer-toolbar', $tableWarp));
 
 		// 未找到单页显示数切换区域，停止该事件绑定
-		if (!sizeArea || sizeArea.length === 0) {
+		if (!$sizeArea || $sizeArea.length === 0) {
 			return false;
 		}
-		sizeArea.unbind('change');
-		sizeArea.bind('change', event => {
+        $sizeArea.unbind('change');
+        $sizeArea.bind('change', event => {
 			const _size = jTool(event.target);
-			const _tableWarp = _size.closest('.table-wrap');
-			const _table = jTool('table[grid-manager]', _tableWarp);
 			const settings = cache.getSettings($table);
 			settings.pageData = {};
 			settings.pageData[settings.currentPageKey] = 1;
 			settings.pageData[settings.pageSizeKey] = window.parseInt(_size.val());
 
-			cache.saveUserMemory(_table, settings);
+			cache.saveUserMemory($table, settings);
 
 			// 更新缓存
-			cache.setSettings($table, settings);
+			cache.setSettings(settings);
 
 			// 调用事件、渲染tbody
 			const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
 			settings.pagingBefore(query);
-			core.refresh(_table, () => {
+			core.refresh($table, () => {
 				settings.pagingAfter(query);
 			});
 		});
@@ -409,20 +395,17 @@ class AjaxPage {
 
 	/**
 	 * 重置每页显示条数, 重置条数文字信息 [注: 这个方法只做显示更新, 不操作Cache 数据]
-	 * @param $table
+	 * @param $footerToolbar
 	 * @param settings
 	 * @param pageData 分页数据格式
 	 * @returns {boolean}
 	 * @private
      */
-	__resetPSize($table, settings, pageData) {
-		const tableWarp = $table.closest('.table-wrap');
-		const toolBar = jTool('.footer-toolbar', tableWarp);
-		const pSizeArea = jTool('select[name="pSizeArea"]', toolBar);
+	__resetPSize($footerToolbar, settings, pageData) {
+		const pSizeArea = jTool('select[name="pSizeArea"]', $footerToolbar);
 		if (!pSizeArea || pSizeArea.length === 0) {
 			return false;
 		}
-
 
 		// 根据返回值修正单页条数显示值
 		pSizeArea.val(pageData[settings.pageSizeKey] || 10);
@@ -433,13 +416,12 @@ class AjaxPage {
 
     /**
      * 修改分页描述信息
-     * @param $table
+     * @param $footerToolbar
      * @param settings
      * @param pageData
      * @private
      */
-	__resetPageInfo($table, settings, pageData) {
-        const pageInfo = jTool('.footer-toolbar .page-info', $table.closest('.table-wrap'));
+	__resetPageInfo($footerToolbar, settings, pageData) {
         // 从多少开始
         const fromNum = pageData[settings.currentPageKey] === 1 ? 1 : (pageData[settings.currentPageKey] - 1) * pageData[settings.pageSizeKey] + 1;
 
@@ -450,7 +432,9 @@ class AjaxPage {
         const totalNum = pageData.tSize;
 
         const tmpHtml = i18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum, pageData[settings.currentPageKey], pageData.tPage]);
-        pageInfo.html(tmpHtml);
+
+        const $pageInfo = jTool('.page-info', $footerToolbar);
+        $pageInfo.html(tmpHtml);
     }
 
 	/**
@@ -511,7 +495,7 @@ class AjaxPage {
 		pageData[settings.pageSizeKey] = _pSize;
 		pageData[settings.currentPageKey] = 1;
 		jTool.extend(settings, {pageData: pageData});
-		cache.setSettings($table, settings);
+		cache.setSettings(settings);
 	}
 
 	/**
@@ -519,23 +503,32 @@ class AjaxPage {
 	 * @param $table
 	 */
 	destroy($table) {
-		const tableWarp = $table.closest('.table-wrap');
-		const footerToolbar = jTool('.footer-toolbar', tableWarp);
-		const gp_input = jTool('.gp-input', footerToolbar);
-		const refreshAction	= jTool('.refresh-action', footerToolbar);
-		const sizeArea = jTool('select[name=pSizeArea]', footerToolbar);
-
-		// 清理: 分页点击事件
-		footerToolbar.off('click', 'li');
+		const $tableWarp = $table.closest('.table-wrap');
+		const $footerToolbar = jTool('.footer-toolbar', $tableWarp);
 
 		// 清理: 快捷跳转事件
-		gp_input.unbind('keyup');
+        jTool('.gp-input', $footerToolbar).unbind('keyup');
 
 		// 清理: 刷新界面事件
-		refreshAction.unbind('click');
+        jTool('.refresh-action', $footerToolbar).unbind('click');
 
 		// 清理: 设置当前页显示数事件
-		sizeArea.unbind('change');
+        jTool('select[name=pSizeArea]', $footerToolbar).unbind('change');
+
+		// 清理: 首页事件
+        jTool('[pagination-before] .first-page', $footerToolbar).unbind('click');
+
+        // 清理: 上一页事件
+        jTool('[pagination-before] .previous-page', $footerToolbar).unbind('click');
+
+        // 清理: 下一页事件
+        jTool('[pagination-after] .next-page', $footerToolbar).unbind('click');
+
+        // 清理: 尾页事件
+        jTool('[pagination-after] .last-page', $footerToolbar).unbind('click');
+
+        // 清理: 页码事件
+        jTool('[pagination-number]', $footerToolbar).off('click', 'li');
 	}
 }
 export default new AjaxPage();

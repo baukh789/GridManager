@@ -151,7 +151,7 @@ class Filter {
             const checkedStr = checkedList.join(',');
             settings.columnMap[thName].filter.selected = checkedStr;
             jTool.extend(settings.query, {[thName]: checkedStr});
-            cache.setSettings($table, settings);
+            cache.setSettings(settings);
 
             _this.update($th, settings.columnMap[thName].filter);
             core.refresh($table);
@@ -169,7 +169,7 @@ class Filter {
             const settings = cache.getSettings($table);
             delete settings.query[thName];
             settings.columnMap[thName].filter.selected = '';
-            cache.setSettings($table, settings);
+            cache.setSettings(settings);
 
             _this.update($th, settings.columnMap[thName].filter);
             core.refresh($table);

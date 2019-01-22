@@ -73,7 +73,7 @@ class Core {
         jTool.each(settings.sortData, (key, value) => {
             settings.sortData[key] = params[`${settings.sortKey}${key}`] || value;
         });
-        cache.setSettings($table, settings);
+        cache.setSettings(settings);
 
 		let ajaxData = typeof settings.ajax_data === 'function' ? settings.ajax_data(settings, params) : settings.ajax_data;
 
@@ -546,7 +546,7 @@ class Core {
         const tbody = document.createElement('tbody');
         $table.append(tbody);
 
-        cache.setSettings($table, settings);
+        cache.setSettings(settings);
 
 		// 绑定选择框事件
 		if (settings.supportCheckbox) {

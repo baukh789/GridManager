@@ -69,6 +69,7 @@
             }
         }
         .ajax-page {
+            display: flex;
             position: absolute;
             height: 30px;
             right: 5px;
@@ -77,7 +78,13 @@
                 clear: both;
             }
             .pagination {
-                display: inline-block;
+                display: block;
+                &[pagination-number] li:first-child{
+                    border-left: none;
+                }
+                &[pagination-number] li:last-child{
+                    border-right: none;
+                }
                 > li {
                     display: block;
                     min-width: 30px;

@@ -295,7 +295,7 @@ class Cache {
         jTool.extend(true, _settings, arg);
 
         // 存储初始配置项
-        this.setSettings($table, _settings);
+        this.setSettings(_settings);
 
         // 为 columnData 增加 序号列
         if (_settings.supportAutoOrder) {
@@ -398,7 +398,7 @@ class Cache {
         mergeUserMemory();
 
         // 更新存储配置项
-        this.setSettings($table, _settings);
+        this.setSettings(_settings);
         return _settings;
     }
 
@@ -408,6 +408,12 @@ class Cache {
      * @returns {*}
      */
     getSettings($table) {
+        if (typeof $table === 'string') {
+            // 返回的是 clone 对象 而非对象本身
+            return jTool.extend(true, {}, store.settings[$table] || {});
+        }
+
+        // TODO @baukh20190122: 以下通过$table的方式正在用gridManagerName的方式替换，替换完成之后就可以清除了
         if (!$table || $table.length === 0) {
             return {};
         }
@@ -417,11 +423,10 @@ class Cache {
 
     /**
      * 重置配置项
-     * @param $table
      * @param settings
      */
-    setSettings($table, settings) {
-        store.settings[base.getKey($table)] = jTool.extend(true, {}, settings);
+    setSettings(settings) {
+        store.settings[settings.gridManagerName] = jTool.extend(true, {}, settings);
     }
 
     /**
@@ -437,7 +442,7 @@ class Cache {
         settings.columnMap = this.reworkColumnMap($table, settings.columnMap);
 
         // 重置settings
-        this.setSettings($table, settings);
+        this.setSettings(settings);
 
         // 存储用户记忆
         this.saveUserMemory($table, settings);

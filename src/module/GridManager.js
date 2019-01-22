@@ -304,7 +304,7 @@ export default class GridManager {
 		if (isGotoFirstPage) {
 			settings.pageData[settings.currentPageKey] = 1;
 		}
-		cache.setSettings($table, settings);
+		cache.setSettings(settings);
 		core.refresh($table, callback);
 	}
 
@@ -319,7 +319,7 @@ export default class GridManager {
 		const $table = __jTable(table);
 		const settings = cache.getSettings($table);
 		jTool.extend(settings, {ajax_data: ajaxData});
-		cache.setSettings($table, settings);
+		cache.setSettings(settings);
 		core.refresh($table, callback);
 	}
 
@@ -340,7 +340,7 @@ export default class GridManager {
 		}
 		if (isGotoFirstPage) {
 			settings.pageData['cPage'] = 1;
-			cache.setSettings($table, settings);
+			cache.setSettings(settings);
 		}
 		core.refresh($table, callback);
 	};

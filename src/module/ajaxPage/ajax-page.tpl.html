@@ -14,7 +14,7 @@
     <div class="toolbar-info page-info"></div>
     <div class="ajax-page">
         <!--上一页、首页区-->
-        <ul class="pagination">
+        <ul class="pagination" pagination-before>
             <li class="first-page">
                 {{ vm.firstPageText }}
             </li>
@@ -25,7 +25,7 @@
         <!--页码区-->
         <ul class="pagination" pagination-number></ul>
         <!--下一页、尾页区-->
-        <ul class="pagination">
+        <ul class="pagination" pagination-after>
             <li class="next-page">
                 {{ vm.nextPageText }}
             </li>

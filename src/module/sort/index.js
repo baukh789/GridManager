@@ -49,7 +49,7 @@ class Sort {
         }
 
         jTool.extend(settings.sortData, sortJson);
-		cache.setSettings($table, settings);
+		cache.setSettings(settings);
 
 		// 回调函数为空时赋值空方法
 		if (typeof (callback) !== 'function') {

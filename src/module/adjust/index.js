@@ -3,14 +3,13 @@
  * */
 import { jTool, base } from '../base';
 import cache from '../cache';
-import adjustTpl from './adjust.tpl.html';
 class Adjust {
     /**
      * 宽度调整HTML
      * @returns {string}
      */
     get html() {
-        return adjustTpl;
+        return '<span class="adjust-action"></span>';
     }
 
     /**
