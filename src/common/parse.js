@@ -4,14 +4,17 @@
  * @returns {Function}
  */
 export function parseTpl(option) {
-
     return (target, key, descriptor) => {
         const oldValue = descriptor.value;
-        descriptor.value = (object) => {
-            // parseData 用于解析 模板
-            const parseData = object;
-            return oldValue(parseData).replace(/\{{([^}}]+)}}/g, (match, key) => {
-                return new Function('parseData', 'return ' + key)(parseData);
+        descriptor.value = object => {
+            // vm 用于解析 模板
+            const vm = object;
+
+            return oldValue().replace(/\{\{([^(\}\})]+)\}\}/g, (match, evalStr) => {
+                if (/return/.test(evalStr)) {
+                    return new Function('vm', evalStr)(vm) || '';
+                }
+                return new Function('vm', 'return ' + evalStr)(vm) || '';
             });
         };
     }

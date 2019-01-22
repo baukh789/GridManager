@@ -1,56 +1,43 @@
 /*
  * ajaxPage: 分页
  * */
+import './style.less';
 import { jTool, base } from '../base';
 import core from '../core';
 import cache from '../cache';
 import i18n from '../i18n';
+import ajaxPageTpl from './ajax-page.tpl.html';
+import { parseTpl } from '../../common/parse';
 class AjaxPage {
 	/**
 	 * 分页所需HTML
-	 * @param $table
+	 * @param parseData
 	 * @returns {string}
      */
-	createHtml(settings) {
-	    // 刷新按纽
-	    const refreshHtml = settings.showFooterRefresh ? `<span class="refresh-action">${ i18n.i18nText(settings, 'refresh-action') }</span>` : '';
-
-	    // 快捷跳转
-	    const gotoHtml = settings.showFooterGoTo ? `<div class="goto-page">
-							${ i18n.i18nText(settings, 'goto-first-text') }
-							<input type="text" class="gp-input"/>
-							${ i18n.i18nText(settings, 'goto-last-text') }
-						</div>` : '';
-
-	    // 每页显示条数
-	    const pageSizeHtml = settings.showFooterPageSize ? this.__getPageSizeHtml(settings) : '';
-
-	    // 选中项描述信息
-        const checkedInfoHtml = settings.showFooterCheckedInfo ? `<div class="toolbar-info checked-info"></div>` : '';
-
-	    // 分页描述信息
-	    const pageInfoHtml = settings.showFooterPageInfo ? `<div class="toolbar-info page-info"></div>` : '';
-
-	    // 页码
-	    const paginationHtml = `<div class="ajax-page"><ul class="pagination"></ul></div>`;
-
-		const html = `<div class="footer-toolbar">
-						${refreshHtml}
-						${gotoHtml}
-						${pageSizeHtml}
-						${checkedInfoHtml}
-						${pageInfoHtml}
-						${paginationHtml}
-					</div>`;
-		return html;
+	@parseTpl()
+	createHtml(parseData) {
+	    return ajaxPageTpl;
 	}
 
 	/**
 	 * 初始化分页
 	 * @param $table
+	 * @param $tableWarp
 	 * @param settings
      */
-	initAjaxPage($table, settings) {
+	initAjaxPage($table, $tableWarp, settings) {
+	    const parseData = {
+            refreshActionText: i18n.i18nText(settings, 'refresh-action'),
+            gotoFirstText: i18n.i18nText(settings, 'goto-first-text'),
+            gotoLastText: i18n.i18nText(settings, 'goto-last-text'),
+            firstPageText: i18n.i18nText(settings, 'first-page'),
+            previousPageText: i18n.i18nText(settings, 'previous-page'),
+            nextPageText: i18n.i18nText(settings, 'next-page'),
+            lastPageText: i18n.i18nText(settings, 'last-page'),
+            pageSizeOptionTpl: this.__getPageSizeOptionStr(settings.sizeData)
+        };
+        $tableWarp.append(this.createHtml(parseData));
+
 		// 根据本地缓存配置每页显示条数
 		if (!settings.disableCache) {
 			this.__configPageForCache($table, settings);
@@ -144,10 +131,14 @@ class AjaxPage {
 		const footerToolbar = jTool('.footer-toolbar', tableWarp);
         settings.useNoTotalsMode && footerToolbar.attr('no-totals-mode', 'true');
 
-		// 分页区域
-		const pagination = jTool('.pagination', footerToolbar);
+		// 分页码区域
+		const paginationNumber = jTool('.pagination[pagination-number]', footerToolbar);
 
-		pagination.html(this.__joinPagination(settings, pageData));
+		// 重置分页码
+        paginationNumber.html(this.__joinPaginationNumber(settings, pageData));
+
+        // 更新分页禁用状态
+        this.__updatePageDisabledState(footerToolbar, pageData[settings.currentPageKey], pageData.tPage);
 	}
 
 	/**
@@ -156,7 +147,7 @@ class AjaxPage {
 	 * @param pageData 分页数据格式
 	 * @private
      */
-	__joinPagination(settings, pageData) {
+    __joinPaginationNumber(settings, pageData) {
 		// 当前页
 		let cPage = Number(pageData[settings.currentPageKey] || 0);
 
@@ -168,21 +159,6 @@ class AjaxPage {
 
 		// 临时存储末尾页码THML片段
 		let	lHtml = '';
-
-		// 配置首页
-		let firstClassName = 'first-page';
-		let	previousClassName = 'previous-page';
-
-		if (cPage === 1) {
-			firstClassName += ' disabled';
-			previousClassName += ' disabled';
-		}
-		tHtml += `<li c-page="1" class="${firstClassName}">
-					${i18n.i18nText(settings, 'first-page')}
-				</li>
-				<li c-page="${cPage - 1}" class="${previousClassName}">
-					${i18n.i18nText(settings, 'previous-page')}
-				</li>`;
 		// 循环开始数
 		let i = 1;
 
@@ -191,7 +167,7 @@ class AjaxPage {
 
 		// 配置 first端省略符
 		if (cPage > 4) {
-			tHtml += `<li c-page="1">
+			tHtml += `<li to-page="1">
 						1
 					</li>
 					<li class="disabled">
@@ -205,7 +181,7 @@ class AjaxPage {
 			lHtml += `<li class="disabled">
 						...
 					</li>
-					<li c-page="${ tPage }">
+					<li to-page="${ tPage }">
 						${ tPage }
 					</li>`;
 		}
@@ -217,45 +193,30 @@ class AjaxPage {
                     tHtml += `<li class="active">${ cPage }</li>`;
                     continue;
                 }
-                tHtml += `<li c-page="${ i }">${ i }</li>`;
+                tHtml += `<li to-page="${ i }">${ i }</li>`;
             }
         }
 		tHtml += lHtml;
 
-		// 配置下一页与尾页
-		let nextClassName = 'next-page';
-		let	lastClassName = 'last-page';
-		if (cPage >= tPage) {
-			nextClassName += ' disabled';
-			lastClassName += ' disabled';
-		}
-		tHtml += `<li c-page="${ cPage + 1 }" class="${ nextClassName }">
-					${ i18n.i18nText(settings, 'next-page') }
-				</li>
-				<li c-page="${ tPage }" class="${ lastClassName }">
-					${ i18n.i18nText(settings, 'last-page') }
-				</li>`;
 		return tHtml;
 	}
 
 	/**
 	 * 生成每页显示条数选择框据
-	 * @param settings
+	 * @param sizeData
 	 * @private
      */
-	__getPageSizeHtml(settings) {
-        const sizeData = settings.sizeData;
+	__getPageSizeOptionStr(sizeData) {
         // error
         if (!sizeData || sizeData.length === 0) {
             base.outLog('渲染失败：参数[sizeData]配置错误', 'error');
             return '';
         }
-		let pageSizeHtml = '<div class="change-size"><select name="pSizeArea">';
+		let pageSizeOptionStr = '';
 		jTool.each(sizeData, (index, value) => {
-			pageSizeHtml += `<option value="${value}">${value}</option>`;
+            pageSizeOptionStr += `<option value="${value}">${value}</option>`;
 		});
-        pageSizeHtml = `${pageSizeHtml}</select></div>`;
-		return pageSizeHtml;
+		return pageSizeOptionStr;
 	}
 
 	/**
@@ -274,26 +235,97 @@ class AjaxPage {
 		this.__bindRefreshEvent(footerToolbar);
 	}
 
+    /**
+     * 更新分页禁用状态
+     * @param $footerToolbar
+     * @param toPage
+     * @param tPage
+     * @private
+     */
+	__updatePageDisabledState($footerToolbar, toPage, tPage) {
+        const $firstPage = jTool('.pagination .first-page', $footerToolbar);
+        const $previousPage = jTool('.pagination .previous-page', $footerToolbar);
+        const $nextPage = jTool('.pagination .next-page', $footerToolbar);
+        const $lastPage = jTool('.pagination .last-page', $footerToolbar);
+
+        if (toPage === 1) {
+            $firstPage.addClass('disabled');
+            $previousPage.addClass('disabled');
+        } else {
+            $firstPage.removeClass('disabled');
+            $previousPage.removeClass('disabled');
+        }
+
+        if (toPage >= tPage) {
+            $nextPage.addClass('disabled');
+            $lastPage.addClass('disabled');
+        } else {
+            $nextPage.removeClass('disabled');
+            $lastPage.removeClass('disabled');
+        }
+    }
+
 	/**
 	 * 绑定分页点击事件
 	 * @param $table
-	 * @param footerToolbar
+	 * @param $footerToolbar
 	 * @private
      */
-	__bindPageClick($table, footerToolbar) {
+	__bindPageClick($table, $footerToolbar) {
 		const _this = this;
-		footerToolbar.off('click', 'li');
-		footerToolbar.on('click', 'li', function () {
+
+        const $firstPage = jTool('.pagination .first-page', $footerToolbar);
+        const $previousPage = jTool('.pagination .previous-page', $footerToolbar);
+        const $nextPage = jTool('.pagination .next-page', $footerToolbar);
+        const $lastPage = jTool('.pagination .last-page', $footerToolbar);
+
+		// 事件: 首页
+        $firstPage.unbind('click');
+        $firstPage.bind('click', () => {
+            _this.gotoPage($table, cache.getSettings($table), 1);
+        });
+
+        // 事件: 上一页
+        $previousPage.unbind('click');
+        $previousPage.bind('click', () => {
+            const settings = cache.getSettings($table);
+            const cPage = settings.pageData[settings.currentPageKey];
+            const toPage = cPage - 1;
+            _this.gotoPage($table, cache.getSettings($table), toPage < 1 ? 1 : toPage);
+        });
+
+        // 事件: 下一页
+        $nextPage.unbind('click');
+        $nextPage.bind('click', () => {
+            const settings = cache.getSettings($table);
+            const cPage = settings.pageData[settings.currentPageKey];
+            const tPage = settings.pageData.tPage;
+            const toPage = cPage + 1;
+            _this.gotoPage($table, cache.getSettings($table), toPage > tPage ? tPage : toPage);
+        });
+
+        // 事件: 尾页
+        $lastPage.unbind('click');
+        $lastPage.bind('click', () => {
+            const settings = cache.getSettings($table);
+            _this.gotoPage($table, cache.getSettings($table), settings.pageData.tPage);
+        });
+
+        // 事件: 页码
+        const paginationNumber = jTool('.pagination[pagination-number]', $footerToolbar);
+        paginationNumber.off('click', 'li');
+        paginationNumber.on('click', 'li', function () {
+            const settings = cache.getSettings($table);
 			const pageAction = jTool(this);
 
 			// 分页页码
-			let cPage = pageAction.attr('c-page');
-			if (!cPage || !Number(cPage) || pageAction.hasClass('disabled')) {
+			let toPage = pageAction.attr('to-page');
+			if (!toPage || !Number(toPage) || pageAction.hasClass('disabled')) {
 				base.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
 				return false;
 			}
-			cPage = window.parseInt(cPage);
-			_this.gotoPage($table, cache.getSettings($table), cPage);
+            toPage = window.parseInt(toPage);
+			_this.gotoPage($table, settings, toPage);
 		});
 	}
 

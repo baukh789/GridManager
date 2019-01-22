@@ -584,8 +584,8 @@ class Core {
 
 		// 嵌入Ajax分页DOM
 		if (settings.supportAjaxPage) {
-			$tableWarp.append(ajaxPage.createHtml(settings));
-			ajaxPage.initAjaxPage($table, settings);
+			// $tableWarp.append(ajaxPage.createHtml(settings));
+			ajaxPage.initAjaxPage($table, $tableWarp, settings);
 		}
 
 		// 等待容器可用
