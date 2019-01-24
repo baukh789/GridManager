@@ -262,7 +262,7 @@ class Core {
 	        return;
         }
 
-		let visibleNum = jTool('thead[grid-manager-thead] th[th-visible="visible"]', $table).length;
+		let visibleNum = base.getVisibleTh($table).length;
 		const $tbody = jTool('tbody', $table);
 		const $tableDiv = $table.closest('.table-div');
         $tbody.html(base.getEmptyHtml(visibleNum, settings.emptyTemplate));
@@ -424,10 +424,10 @@ class Core {
         base.calcLayout($table, settings.width, settings.height, settings.supportAjaxPage);
 
         const thead = document.createElement('thead');
-        thead.setAttribute('grid-manager-thead', '');
+        thead.setAttribute(base.tableHeadKey, '');
         thead.appendChild(document.createElement('tr'));
         $table.append(thead);
-        const $tr = $table.find('thead[grid-manager-thead] tr');
+        const $tr = base.getHeadTr($table);
 
 		// th显示状态
 		let thVisible = '';
@@ -554,7 +554,7 @@ class Core {
 		}
 
 		// 单个table下的thead
-		const $thead = jTool('thead[grid-manager-thead]', $table);
+		const $thead = base.getHead($table);
 
 		// 单个table下的TH
 		const $thList = jTool('th', $thead);

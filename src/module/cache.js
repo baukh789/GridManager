@@ -247,7 +247,8 @@ class Cache {
             return false;
         }
 
-        const thList = jTool('thead[grid-manager-thead] th', $table);
+        // jTool(`thead[${base.tableHeadKey}] th`, $table)
+        const thList = base.getAllTh($table);
         if (!thList || thList.length === 0) {
             base.outLog('saveUserMemory:无效的thList,请检查是否正确配置table,thead,th', 'error');
             return false;
@@ -462,7 +463,7 @@ class Cache {
         }
         let th = null;
         jTool.each(columnMap, (key, col) => {
-            th = jTool(`thead[grid-manager-thead] th[th-name="${col.key}"]`, $table);
+            th = base.getTh($table, col.key);
             // 宽度
             col.width = th.width() + 'px';
 

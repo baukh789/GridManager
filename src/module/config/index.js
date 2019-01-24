@@ -1,13 +1,12 @@
 /*
  * config: th配置
  * */
-import { jTool, base } from '../base';
+import { jTool, base, parseTpl } from '../base';
 import cache from '../cache';
 import adjust from '../adjust';
 import scroll from '../scroll';
 import configTpl from './config.tpl.html';
 import configColumnTpl from './config-column.tpl.html';
-import { parseTpl } from '../../common/parse';
 
 class Config {
 	/**
@@ -58,7 +57,7 @@ class Config {
 			const _configAction = jTool(this);
 
 			const $tableWrap = _configAction.closest('.table-wrap');
-            const $table = $tableWrap.find('table[grid-manager]');
+            const $table = base.getTable($tableWrap);
 			_this.hide($table);
 		});
 
@@ -90,17 +89,13 @@ class Config {
 			const _tableDiv	= jTool('.table-div', _tableWarp);
 
 			// 所对应的table
-			const _$table = jTool('[grid-manager]', _tableWarp);
+			const _$table = base.getTable(_tableWarp);
 
             const settings = cache.getSettings(_$table);
 
-			// thead fackThead
-			const $thead = jTool('thead[grid-manager-thead]', _$table);
-			const $fakeThead = jTool(`thead[${base.fakeTheadAttr}]`, _$table);
-
 			// 所对应的th fackTh
-			const _th = jTool(`th[th-name="${_thName}"]`, $thead);
-			const _fakeTh = jTool(`th[th-name="${_thName}"]`, $fakeThead);
+			const _th = base.getTh(_$table, _thName);
+			const _fakeTh = base.getFakeTh(_$table, _thName);
 
 			_only.closest('.config-list').find('.no-click').removeClass('no-click');
 			let isVisible = !_checkbox.prop('checked');
@@ -195,7 +190,6 @@ class Config {
         const $tableWrap = $table.closest('.table-wrap');
         const $configArea = jTool('.config-area', $tableWrap);
         const $configList = jTool('.config-list', $tableWrap);
-        const $thead = jTool('thead[grid-manager-thead]', $table);
 
         // 可视列计数
         let showNum = 0;
@@ -214,7 +208,7 @@ class Config {
             }
 
             // 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
-            let title = $thead.find(`th[th-name="${key}"] .th-text`).text();
+            let title = base.getTh($table, key).find('.th-text').text();
             $configList.append(this.createColumn({key, title, isShow}));
             if (isShow) {
                 showNum++;

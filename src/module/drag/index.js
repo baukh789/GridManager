@@ -1,10 +1,11 @@
 /*
  * drag: 拖拽
  * */
-import { jTool, base } from '../base';
+import { jTool, base, parseTpl } from '../base';
 import adjust from '../adjust';
 import cache from '../cache';
 import config from '../config';
+import dreamlandTpl from './dreamland.tpl.html';
 class Drag {
 	/**
 	 * 初始化拖拽
@@ -13,6 +14,15 @@ class Drag {
 	init($table) {
 		this.__bindDragEvent($table);
 	}
+
+    /**
+     * 生成拖拽区域html片段
+     * @param parseData
+     */
+	@parseTpl()
+	createDreamlandHtml(parseData) {
+	    return dreamlandTpl;
+    }
 
 	/**
 	 * 绑定拖拽换位事件
@@ -29,7 +39,7 @@ class Drag {
 			// 获取设置项
 			let settings = cache.getSettings($table);
 
-            const {columnMap, dragBefore} = settings;
+            const { columnMap, dragBefore } = settings;
 
 			// 事件源th
 			let _th = jTool(this).closest('th');
@@ -37,11 +47,11 @@ class Drag {
 			// 事件源所在的tr
 			let _tr = _th.parent();
 
-			// 事件源同层级下的所有可视th
-			let _allTh = jTool('th[th-visible="visible"]', _tr);
-
 			// 事件源所在的table
-			const _table = _tr.closest('table');
+			const _table = base.getTable(_tr, true);
+
+            // 事件源同层级下的所有可视th
+            let _allTh = base.getFakeVisibleTh(_table);
 
 			// 事件源所在的DIV
 			const tableDiv = _table.closest('.table-div');
@@ -65,32 +75,26 @@ class Drag {
 			_th.addClass('drag-ongoing opacityChange');
 			colTd.addClass('drag-ongoing opacityChange');
 
+            // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
+            let tbodyHtml = '';
+            jTool.each(colTd, (i, v) => {
+                let _cloneTd = v.cloneNode(true);
+                _cloneTd.style.height = v.offsetHeight + 'px';
+                let _cloneTr = jTool(v).closest('tr').clone();
+                tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
+            });
+
 			// 增加临时展示DOM
+            const parseData = {
+                tableClassName: _table.attr('class'),
+                thOuterHtml: jTool('.drag-action', _th).get(0).outerHTML,
+                thStyle: `style="height:${_th.height()}px"`,
+                tbodyHtml: tbodyHtml
+            };
+
 			_tableWrap.append('<div class="dreamland-div"></div>');
 			let dreamlandDIV = jTool('.dreamland-div', _tableWrap);
-			dreamlandDIV.get(0).innerHTML = `<table class="dreamland-table ${_table.attr('class')}"></table>`;
-
-			// tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
-			let _tbodyHtml = '';
-			let _cloneTr = null;
-			let _cloneTd = null;
-			jTool.each(colTd, (i, v) => {
-				_cloneTd = v.cloneNode(true);
-				_cloneTd.style.height = v.offsetHeight + 'px';
-				_cloneTr = jTool(v).closest('tr').clone();
-				_tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
-			});
-			let tmpHtml = `<thead>
-								<tr>
-								<th style="height:${_th.height()}px">
-								${jTool('.drag-action', _th).get(0).outerHTML}
-								</th>
-								</tr>
-							</thead>
-							<tbody>
-								${_tbodyHtml}
-							</tbody>`;
-			jTool('.dreamland-table', dreamlandDIV).html(tmpHtml);
+			dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml(parseData);
 
 			// 存储移动时的th所处的位置
 			let _thIndex = 0;
@@ -134,13 +138,7 @@ class Drag {
 					top: e2.clientY - _tableWrap.offset().top + window.pageYOffset - dreamlandDIV.find('th').get(0).offsetHeight / 2
 				});
 
-				// 当前触发项为置顶表头时, 同步更新至原样式
-				let haveMockThead = false;  // 当前是否包含置顶表头
-				if (_th.closest(`thead[${base.fakeTheadAttr}]`).length === 1) {
-					haveMockThead = true;
-				}
-
-				_this.updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV, haveMockThead);
+				_this.updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV);
 
                 // 更新最后一项可视列的标识
                 base.updateVisibleLast(_table);
@@ -196,47 +194,41 @@ class Drag {
 
 	/**
 	 * 拖拽触发后更新DOM
-	 * @param _table
-	 * @param prevTh
-	 * @param nextTh
-	 * @param _th
-	 * @param colTd
-	 * @param dreamlandDIV
-	 * @param haveMockThead
+	 * @param $table
+	 * @param $prevTh
+	 * @param $nextTh
+	 * @param $th
+	 * @param $colTd
+	 * @param $dreamlandDIV
 	 */
-	updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV, haveMockThead) {
-		// 事件源对应的上一组td
-		let prevTd = null;
-
-		// 事件源对应的下一组td
-		let	nextTd = null;
-
+	updateDrag($table, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV) {
 		// 处理向左拖拽
-		if (prevTh && prevTh.length !== 0 && dreamlandDIV.offset().left < prevTh.offset().left) {
-			prevTd = base.getColTd(prevTh);
-			prevTh.before(_th);
-			jTool.each(colTd, (i, v) => {
+		if ($prevTh && $prevTh.length !== 0 && $dreamlandDIV.offset().left < $prevTh.offset().left) {
+            // 事件源对应的上一组td
+		    let prevTd = base.getColTd($prevTh);
+            $prevTh.before($th);
+			jTool.each($colTd, (i, v) => {
 				prevTd.eq(i).before(v);
 			});
 
-			if (haveMockThead) {
-				let _prevTh = jTool(`thead[grid-manager-thead] th[th-name="${prevTh.attr('th-name')}"]`, _table);
-				let __th = jTool(`thead[grid-manager-thead] th[th-name="${_th.attr('th-name')}"]`, _table);
-				_prevTh.before(__th);
-			}
+			// 同步 head
+            let _prevTh = base.getTh($table, $prevTh);
+            let __th = base.getTh($table, $th);
+            _prevTh.before(__th);
+
 			// 处理向右拖拽
-		} else if (nextTh && nextTh.length !== 0 && dreamlandDIV.offset().left + dreamlandDIV.width() > nextTh.offset().left) {
-			nextTd = base.getColTd(nextTh);
-			nextTh.after(_th);
-			jTool.each(colTd, (i, v) => {
+		} else if ($nextTh && $nextTh.length !== 0 && $dreamlandDIV.offset().left + $dreamlandDIV.width() > $nextTh.offset().left) {
+            // 事件源对应的下一组td
+		    let nextTd = base.getColTd($nextTh);
+			$nextTh.after($th);
+			jTool.each($colTd, (i, v) => {
 				nextTd.eq(i).after(v);
 			});
 
-			if (haveMockThead) {
-				let _nextTh = jTool(`thead[grid-manager-thead] th[th-name="${nextTh.attr('th-name')}"]`, _table);
-				let __th = jTool(`thead[grid-manager-thead] th[th-name="${_th.attr('th-name')}"]`, _table);
-				_nextTh.after(__th);
-			}
+            // 同步 head
+            let _nextTh = base.getTh($table, $nextTh);
+            let __th = base.getTh($table, $th);
+            _nextTh.after(__th);
 		}
 	}
 

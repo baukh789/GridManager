@@ -34,7 +34,7 @@ class Hover {
 	updateHover(td) {
 		const $td = jTool(td);
 		const $tr = $td.parent();
-		const $table = $td.closest('table[grid-manager]');
+		const $table = base.getTable($td, true);
 
 		// row col 并未发生变化
 		if ($td.attr('col-hover') === 'true' && $tr.attr('row-hover') === 'true') {

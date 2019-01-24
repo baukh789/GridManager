@@ -20,14 +20,14 @@ class Scroll {
      * @param $table
      */
     render($table) {
-        let $setTopHead = jTool(`thead[${base.fakeTheadAttr}]`, $table);
+        let $setTopHead = jTool(`thead[${base.fakeTableHeadKey}]`, $table);
         $setTopHead.length && $setTopHead.remove();
-        const $thead = jTool('thead[grid-manager-thead]', $table);
+        const $thead = base.getHead($table);
 
-        $table.append($thead.clone(true).attr(base.fakeTheadAttr, ''));
+        $table.append($thead.clone(true).attr(base.fakeTableHeadKey, ''));
 
-        $setTopHead = jTool(`thead[${base.fakeTheadAttr}]`, $table);
-        $setTopHead.removeAttr('grid-manager-thead');
+        $setTopHead = jTool(`thead[${base.fakeTableHeadKey}]`, $table);
+        $setTopHead.removeAttr(base.tableHeadKey);
 
         // 解析框架: fake thead区域
         base.compileFramework(cache.getSettings($table), {el: $setTopHead.get(0).querySelector('tr')});
@@ -43,12 +43,12 @@ class Scroll {
         if ($tableDiv.length === 0) {
             return;
         }
-        const $thead = jTool('thead[grid-manager-thead]', $table);
+        const $thead = base.getHead($table);
         const theadWidth = $thead.width();
         const tableDivWidth = $tableDiv.width();
 
         // 吸顶元素
-        const $setTopHead = jTool(`thead[${base.fakeTheadAttr}]`, $table);
+        const $setTopHead = base.getFakeHead($table);
 
         // 重置thead的宽度和位置
         $setTopHead.css({

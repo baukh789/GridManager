@@ -2,7 +2,9 @@
  * base: 基础方法
  * */
 import '../../node_modules/jtool/jTool.min';
-import { CONSOLE_STYLE } from '../common/constants';
+import { CONSOLE_STYLE, TABLE_KEY, TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '../common/constants';
+import { parseTpl } from '../common/parse';
+
 let $ = window.jTool;
 let jTool = window.jTool;
 
@@ -10,13 +12,37 @@ window.jTool === window.$ && delete window.$;
 delete window.jTool;
 
 class BaseClass {
+    /**
+     * 表格唯一key
+     * @returns {string}
+     */
+    get key() {
+        return TABLE_KEY;
+    }
+
+    /**
+     * 获取表头所使用的attr
+     * @returns {string}
+     */
+    get tableHeadKey() {
+        return TABLE_HEAD_KEY;
+    }
+
+    /**
+     * 获取表头吸顶所使用的attr
+     * @returns {string}
+     */
+    get fakeTableHeadKey() {
+        return FAKE_TABLE_HEAD_KEY;
+    }
+
 	/**
 	 * 获取表的GM 唯一标识
 	 * @param $table
 	 * @returns {*|string}
 	 */
 	getKey($table) {
-		return $table.attr('grid-manager') || '';
+		return $table.attr(this.key) || '';
 	}
 
 	// 定时器: 等待容器可用, 在core.js中使用
@@ -25,13 +51,138 @@ class BaseClass {
 	// 定时器: 等待表格可用，在index.js中使用
 	SIV_waitTableAvailable = {};
 
-	/**
-	 * 获取表头吸顶所使用的attr
-	 * @returns {string}
+    /**
+     * get table
+     * @param $dom: 父级或子级jTool对象，或者是gridManagerName
+     * @param noParent: 是否为非父级元素查找，如果不是将从下向上查找
+     * @returns {*}
      */
-	get fakeTheadAttr() {
-		return 'grid-manager-mock-thead';
-	}
+	getTable($dom, noParent) {
+	    if (typeof $dom === 'string') {
+	        return jTool(`table[${this.key}="${$dom}"]`);
+        }
+	    return noParent ? $dom.closest(`table[${this.key}]`) : jTool(`table[${this.key}]`, $dom);
+    }
+
+    /**
+     * get table head
+     * @param $table
+     * @returns {*}
+     */
+	getHead($table) {
+	    return jTool(`thead[${this.tableHeadKey}]`, $table);
+    }
+
+    /**
+     * get fake head
+     * @param $table
+     * @returns {*}
+     */
+    getFakeHead($table) {
+        return jTool(`thead[${this.fakeTableHeadKey}]`, $table);
+    }
+
+    /**
+     * get head tr
+     * @param $table
+     * @returns {*}
+     */
+    getHeadTr($table) {
+        return jTool(`thead[${this.tableHeadKey}] tr`, $table);
+    }
+
+    /**
+     * get fake head tr
+     * @param $table
+     * @returns {*}
+     */
+    getFakeHeadTr($table) {
+        return jTool(`thead[${this.tableHeadKey}] tr`, $table);
+    }
+
+    /**
+     * get head th
+     * @param $table
+     * @param thName: 1.thName 2.jTool object
+     * @returns {*}
+     */
+    getTh($table, thName) {
+        // jTool object
+	    if (thName.jTool === true) {
+            thName = this.getThName(thName);
+        }
+        return jTool(`thead[${this.tableHeadKey}] th[th-name="${thName}"]`, $table);
+    }
+
+    /**
+     * get all th
+     * @param $table
+     * @returns {*}
+     */
+    getAllTh($table) {
+        return jTool(`thead[${this.tableHeadKey}] th`, $table);
+    }
+
+    /**
+     * get visible th
+     * @param $table
+     * @param isGmCreate
+     * @returns {*}
+     */
+    getVisibleTh($table, isGmCreate) {
+	    let gmCreateStr = '';
+	    switch (isGmCreate) {
+            case true: {
+                gmCreateStr = '[gm-create="true"]';
+                break;
+            }
+            case false: {
+                gmCreateStr = '[gm-create="false"]';
+                break;
+            }
+            default: {
+                gmCreateStr = '';
+                break
+            }
+        }
+        return jTool(`thead[${this.tableHeadKey}] th[th-visible="visible"]${gmCreateStr}`, $table);
+    }
+
+    /**
+     * get fake all th
+     * @returns {*}
+     */
+    getFakeAllTh() {
+        return jTool(`thead[${this.fakeTableHeadKey}] th`, $table);
+    }
+
+    /**
+     * get fake th
+     * @param $table
+     * @param thName
+     * @returns {*}
+     */
+    getFakeTh($table, thName) {
+        return jTool(`thead[${this.fakeTableHeadKey}] th[th-name="${thName}"]`, $table);
+    }
+
+    /**
+     * get fake visible th
+     * @param $table
+     * @returns {*}
+     */
+    getFakeVisibleTh($table) {
+        return jTool(`thead[${this.fakeTableHeadKey}] th[th-visible="visible"]`, $table);
+    }
+
+    /**
+     * get th name
+     * @param $th
+     * @returns {*}
+     */
+    getThName($th) {
+	    return $th.attr('th-name');
+    }
 
 	/**
 	 * 获取数据为空时的html
@@ -56,7 +207,7 @@ class BaseClass {
 		if (emptyDOM.length === 0) {
 			return;
 		}
-		const visibleNum = jTool('thead[grid-manager-thead] th[th-visible="visible"]', $table).length;
+		const visibleNum = this.getVisibleTh($table).length;
 		jTool('td', emptyDOM).attr('colspan', visibleNum);
 	}
 
@@ -89,7 +240,7 @@ class BaseClass {
 	 * @returns {*|HTMLElement|jTool}
      */
 	getColTd($dom) {
-		const $table = $dom.closest('table[grid-manager]');
+		const $table = this.getTable($dom, true);
 		const domIndex = $dom.index();
 		const trList = $('tbody tr', $table);
 		let tdList = [];
@@ -215,8 +366,9 @@ class BaseClass {
      * @param $table
      */
 	updateVisibleLast($table) {
-        const $visibleThList = $table.find('thead[grid-manager-thead] tr th[th-visible="visible"]');
-        const $fakeVisibleThList = $table.find(`thead[${this.fakeTheadAttr}] tr th[th-visible="visible"]`);
+        const $visibleThList = this.getVisibleTh($table);
+
+        const $fakeVisibleThList = this.getFakeVisibleTh($table);
         const lastIndex = $fakeVisibleThList.length - 1;
         let isLastVisible = null;
         jTool.each($fakeVisibleThList, (index, item) => {
@@ -250,7 +402,8 @@ class BaseClass {
             }
         });
 
-        const $thead = jTool(`thead[grid-manager-thead]`, $table);
+        // jTool(`thead[grid-manager-thead]`, $table);
+        const $thead = this.getHead($table);
         let autoLen = 0;
         let lastIndex = updateColumnList.length - 1;
 
@@ -587,4 +740,4 @@ class BaseClass {
 
 }
 const base = new BaseClass();
-export {jTool, $, base};
+export {jTool, $, base, parseTpl};

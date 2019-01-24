@@ -1,7 +1,7 @@
 /*
  * GridManager: 右键菜单
  * */
-import { jTool } from '../base';
+import { jTool, base } from '../base';
 import cache from '../cache';
 import i18n from '../i18n';
 import exportFile from '../exportFile';
@@ -101,7 +101,7 @@ class Menu {
 
 			// 验证：当前是否存在已选中的项
 			const exportExcelOfChecked = jTool('[grid-action="export-excel"][only-checked="true"]');
-			if (jTool('tbody tr[checked="true"]', jTool(`table[grid-manager="${ settings.gridManagerName }"]`)).length === 0) {
+			if (jTool('tbody tr[checked="true"]', base.getTable(settings.gridManagerName)).length === 0) {
 				exportExcelOfChecked.addClass('disabled');
 			} else {
 				exportExcelOfChecked.removeClass('disabled');
@@ -141,7 +141,7 @@ class Menu {
 				return false;
 			}
 			const _gridMenu = jTool(this).closest('.grid-menu');
-			const _table = jTool(`table[grid-manager="${_gridMenu.attr(_this.keyName)}"]`);
+			const _table = base.getTable(_gridMenu.attr(_this.keyName));
 			const refreshType = this.getAttribute('refresh-type');
 			let settings = cache.getSettings(_table);
 			let cPage = settings.pageData[settings.currentPageKey];
@@ -171,7 +171,7 @@ class Menu {
 					return false;
 				}
 				const _gridMenu = jTool(this).closest('.grid-menu');
-				const _table = jTool(`table[grid-manager="${_gridMenu.attr(_this.keyName)}"]`);
+				const _table = base.getTable(_gridMenu.attr(_this.keyName));
 				let onlyChecked = false;
 				if (this.getAttribute('only-checked') === 'true') {
 					onlyChecked = true;
@@ -191,7 +191,7 @@ class Menu {
 					return false;
 				}
 				const _gridMenu = jTool(this).closest('.grid-menu');
-				const _table = jTool(`table[grid-manager="${_gridMenu.attr(_this.keyName)}"]`);
+				const _table = base.getTable(_gridMenu.attr(_this.keyName));
 				config.toggle(_table);
 				_body.off('mousedown.gridMenu');
 				_gridMenu.hide();

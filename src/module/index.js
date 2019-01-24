@@ -76,7 +76,7 @@ import { PublishMethod, publishMethodArray } from './publish';
             arg.gridManagerName = base.getKey($table);
             // 参数中存在配置项 gridManagerName: 更新table DOM 的 grid-manager属性
         } else {
-            $table.attr('grid-manager', arg.gridManagerName);
+            $table.attr(base.key, arg.gridManagerName);
         }
 
         base.SIV_waitTableAvailable[arg.gridManagerName] = setInterval(() => {

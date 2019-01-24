@@ -5,6 +5,15 @@
 // 版本号
 export const GM_VERSION = process.env.VERSION;
 
+// 表格唯一key
+export const TABLE_KEY = 'grid-manager';
+
+// table head key
+export const TABLE_HEAD_KEY = 'grid-manager-thead';
+
+// 吸顶head所使用的key
+export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
+
 // 公开方法列表
 export const GM_PUBLISH_METHOD_LIST = [
 	'init',

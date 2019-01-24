@@ -43,7 +43,7 @@ const __jTable = table => {
 
     // gridManagerName
     if ($table.length === 0) {
-        $table = jTool(`table[grid-manager="${table}"]`);
+        $table = jTool(`table[${base.key}="${table}"]`);
     }
 
     // undefined
@@ -438,7 +438,7 @@ export default class GridManager {
             return;
         }
 
-        const gridManagerName = table.getAttribute('grid-manager');
+        const gridManagerName = table.getAttribute(base.key);
 
         // 清除实例及数据
         cache.cleanTable(gridManagerName);
@@ -533,7 +533,7 @@ export default class GridManager {
 
 		// 校验: gridManagerName
 		if (settings.gridManagerName.trim() === '') {
-			base.outLog('请在html标签中为属性[grid-manager]赋值或在配置项中配置gridManagerName', 'error');
+			base.outLog(`请在html标签中为属性[${base.key}]赋值或在配置项中配置gridManagerName`, 'error');
 			return;
 		}
 

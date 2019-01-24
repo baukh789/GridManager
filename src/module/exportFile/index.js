@@ -1,8 +1,9 @@
 /*
  * exportFile: 数据导出
  * */
-import { jTool, base } from '../base';
+import { jTool, base, parseTpl } from '../base';
 import cache from '../cache';
+import staticTpl from './static.tpl.html';
 class ExportFile {
 	/**
 	 * uri type base64
@@ -57,25 +58,12 @@ class ExportFile {
 
 	/**
 	 * 拼接要导出html格式数据
-	 * @param theadHTML
-	 * @param tbodyHTML
+     * @param parseData
 	 * @returns {string}
      */
-	createExportHTML(theadHTML, tbodyHTML) {
-		const exportHTML = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-								<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
-								<body>
-									<table>
-										<thead>
-											${theadHTML}
-										</thead>
-										<tbody>
-											${tbodyHTML}
-										</tbody>
-									</table>
-								</body>
-							</html>`;
-		return exportHTML;
+	@parseTpl()
+	createExportHTML(parseData) {
+		return staticTpl;
 	}
 
 	/**
@@ -180,16 +168,8 @@ class ExportFile {
      * @returns {boolean}
      */
 	downStatic($table, fileName, onlyChecked) {
-        // 存储导出的thead
-        let	theadHTML = '';
-
-        // 存储导出的tbody
-        let	tbodyHTML = '';
-
-        const thDOM = jTool('thead[grid-manager-thead] th[th-visible="visible"][gm-create="false"]', $table);
+        const thDOM = base.getVisibleTh($table, false);
         let	trDOM = null;
-        let	tdDOM = null;
-
         // 验证：是否只导出已选中的表格
         if (onlyChecked) {
         	trDOM = jTool('tbody tr[checked="true"]', $table);
@@ -197,12 +177,16 @@ class ExportFile {
         	trDOM = jTool('tbody tr', $table);
         }
 
+        // 存储导出的thead
+        let	theadHTML = '';
         jTool.each(thDOM, (i, v) => {
         	theadHTML += `<th>${v.getElementsByClassName('th-text')[0].textContent}</th>`;
         });
 
+        // 存储导出的tbody
+        let	tbodyHTML = '';
         jTool.each(trDOM, (i, v) => {
-        	tdDOM = jTool('td[gm-create="false"][td-visible="visible"]', v);
+        	let tdDOM = jTool('td[gm-create="false"][td-visible="visible"]', v);
         	tbodyHTML += '<tr>';
             jTool.each(tdDOM, (i2, v2) => {
         		tbodyHTML += `<td>${v2.textContent}</td>`;
@@ -210,10 +194,7 @@ class ExportFile {
         	tbodyHTML += '</tr>';
         });
 
-        // 拼接要导出html格式数据
-        const exportHTML = this.createExportHTML(theadHTML, tbodyHTML);
-
-        this.dispatchDownload(fileName, this.getHref(exportHTML));
+        this.dispatchDownload(fileName, this.getHref(this.createExportHTML({theadHTML, tbodyHTML})));
     }
 
     /**
