@@ -674,7 +674,7 @@ class Core {
             // 嵌入表头的筛选事件源
             // 插件自动生成的序号列与选择列不做事件绑定
             if (!isAutoCol && column.filter && jTool.type(column.filter) === 'object') {
-                const filterDom = jTool(filter.createHtml(settings, column.filter, $tableWarp.height()));
+                const filterDom = jTool(filter.createHtml(filter.getParseData(settings, column.filter, $tableWarp.height())));
                 onlyThWarp.append(filterDom);
             }
 

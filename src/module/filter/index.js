@@ -2,11 +2,12 @@
  * Created by baukh on 18/7/11.
  * 表头的筛选菜单
  */
-import { jTool, base } from '../base';
+import { jTool, base, parseTpl } from '../base';
 import core from '../core';
 import checkbox from '../checkbox';
 import cache from '../cache';
 import i18n from '../i18n';
+import filterTpl from './filter.tpl.html';
 class Filter {
     // 启用状态
     enable = false;
@@ -21,12 +22,22 @@ class Filter {
 
     /**
      * 表头的筛选菜单HTML
+     * @param parseData
+     * @returns {string}
+     */
+    @parseTpl()
+    createHtml(parseData) {
+        return filterTpl;
+    }
+
+    /**
+     * 获取筛选区所需要的解析数据
      * @param settings
      * @param filter: 当前列的筛选条件对象
      * @param tableWarpHeight: tableWarp的高度
-     * @returns {string}
+     * @returns {}
      */
-    createHtml(settings, filter, tableWarpHeight) {
+    getParseData(settings, filter, tableWarpHeight) {
         let listHtml = '';
         filter.selected = filter.selected || '';
         filter.option.forEach(item => {
@@ -50,19 +61,13 @@ class Filter {
                 listHtml += `<li class="filter-radio">${checkbox.getRadioTpl(parseData)}</li>`;
             }
         });
-
-        return `<div class="filter-action">
-                    <i class="fa-icon iconfont icon-filter${filter.selected && ' filter-selected'}"></i>
-                    <div class="fa-con">
-                        <ul class="filter-list" style="max-height: ${tableWarpHeight - 100 + 'px'}">
-                            ${listHtml}
-                        </ul>
-                        <div class="filter-bottom">
-                            <span class="filter-button filter-submit">${i18n.i18nText(settings, 'filter-ok')}</span>
-                            <span class="filter-button filter-reset">${i18n.i18nText(settings, 'filter-reset')}</span>
-                        </div>
-                    </div>
-                </div>`;
+        return {
+            iconClass: filter.selected ? ' filter-selected' : '',
+            listStyle: `max-height: ${tableWarpHeight - 100 + 'px'}`,
+            okText: i18n.i18nText(settings, 'filter-ok'),
+            resetText: i18n.i18nText(settings, 'filter-reset'),
+            listHtml: listHtml
+        }
     }
 
     /**

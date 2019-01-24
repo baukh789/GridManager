@@ -566,7 +566,7 @@ export default class GridManager {
 	}
 
 	/**
-	 * 初始化列表
+	 * 初始化表格
 	 * @param $table
 	 * @param settings
      */
