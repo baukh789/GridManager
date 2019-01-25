@@ -454,6 +454,7 @@ class TextSettings {
 			'zh-tw': '此頁顯示 {0}-{1}<span class="page-info-totals"> 共{2}條</span>',
 			'en-us': 'this page show {0}-{1}<span class="page-info-totals"> count {2}</span>'
 		};
+
         this['checked-info'] = {
             'zh-cn': '已选 {0} 条',
             'zh-tw': '已選 {0} 條',

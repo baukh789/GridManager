@@ -471,10 +471,6 @@ class AjaxPage {
      * @private
      */
 	__resetPageInfo($footerToolbar, settings, pageData) {
-        const $pageInfo = jTool('.page-info', $footerToolbar);
-        if ($pageInfo.length === 0) {
-            return;
-        }
 
         // 从多少开始
         const fromNum = pageData[settings.currentPageKey] === 1 ? 1 : (pageData[settings.currentPageKey] - 1) * pageData[settings.pageSizeKey] + 1;
@@ -485,9 +481,41 @@ class AjaxPage {
         // 总共条数
         const totalNum = pageData.tSize;
 
-        const info = i18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum, pageData[settings.currentPageKey], pageData.tPage]);
+        const $pageInfo = jTool('.page-info', $footerToolbar);
+        if ($pageInfo.length) {
+            const info = i18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum, pageData[settings.currentPageKey], pageData.tPage]);
+            $pageInfo.html(info);
+        }
 
-        $pageInfo.html(info);
+        // 重置分页附属显示信息: 当前页从多少条开始显示
+        const $beginNumber = jTool('.begin-number-info', $footerToolbar);
+        if ($beginNumber.length) {
+            $beginNumber.text(fromNum);
+        }
+
+        // 重置分页附属显示信息: 当前页到多少条结束显示
+        const $endNumber = jTool('.end-number-info', $footerToolbar);
+        if ($endNumber.length) {
+            $endNumber.text(toNum);
+        }
+
+        // 重置分页附属显示信息: 当前页
+        const $currentPage = jTool('.current-page-info', $footerToolbar);
+        if ($currentPage.length) {
+            $currentPage.text(pageData[settings.currentPageKey]);
+        }
+
+        // 重置分页附属显示信息: 总条数
+        const $totalsNumber = jTool('.totals-number-info', $footerToolbar);
+        if ($totalsNumber.length) {
+            $totalsNumber.text(totalNum);
+        }
+
+        // 重置分页附属显示信息: 总页数
+        const $totalsPage = jTool('.totals-page-info', $footerToolbar);
+        if ($totalsPage.length) {
+            $totalsPage.text(pageData.tPage);
+        }
     }
 
 	/**
