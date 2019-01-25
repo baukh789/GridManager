@@ -481,40 +481,46 @@ class AjaxPage {
         // 总共条数
         const totalNum = pageData.tSize;
 
+        // 当前页
+        const cPage = pageData[settings.currentPageKey];
+
+        // 总页数
+        const tPage = pageData.tPage;
+
         const $pageInfo = jTool('.page-info', $footerToolbar);
         if ($pageInfo.length) {
-            const info = i18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum, pageData[settings.currentPageKey], pageData.tPage]);
+            const info = i18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum, cPage, tPage]);
             $pageInfo.html(info);
         }
 
         // 重置分页附属显示信息: 当前页从多少条开始显示
-        const $beginNumber = jTool('.begin-number-info', $footerToolbar);
+        const $beginNumber = jTool('[begin-number-info]', $footerToolbar);
         if ($beginNumber.length) {
-            $beginNumber.text(fromNum);
+            $beginNumber.text(fromNum).val(fromNum);
         }
 
         // 重置分页附属显示信息: 当前页到多少条结束显示
-        const $endNumber = jTool('.end-number-info', $footerToolbar);
+        const $endNumber = jTool('[end-number-info]', $footerToolbar);
         if ($endNumber.length) {
-            $endNumber.text(toNum);
+            $endNumber.text(toNum).val(toNum);
         }
 
         // 重置分页附属显示信息: 当前页
-        const $currentPage = jTool('.current-page-info', $footerToolbar);
+        const $currentPage = jTool('[current-page-info]', $footerToolbar);
         if ($currentPage.length) {
-            $currentPage.text(pageData[settings.currentPageKey]);
+            $currentPage.text(cPage).val(cPage);
         }
 
         // 重置分页附属显示信息: 总条数
-        const $totalsNumber = jTool('.totals-number-info', $footerToolbar);
+        const $totalsNumber = jTool('[totals-number-info]', $footerToolbar);
         if ($totalsNumber.length) {
-            $totalsNumber.text(totalNum);
+            $totalsNumber.text(totalNum).val(totalNum);
         }
 
         // 重置分页附属显示信息: 总页数
-        const $totalsPage = jTool('.totals-page-info', $footerToolbar);
+        const $totalsPage = jTool('[totals-page-info]', $footerToolbar);
         if ($totalsPage.length) {
-            $totalsPage.text(pageData.tPage);
+            $totalsPage.text(tPage).val(tPage);
         }
     }
 

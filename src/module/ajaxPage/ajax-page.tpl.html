@@ -5,7 +5,7 @@
     <!--跳转至-->
     <div class="goto-page">
         {{ vm.gotoFirstText }}
-        <input type="text" class="gp-input"/>
+        <input type="text" class="gp-input" current-page-info/>
         {{ vm.gotoLastText }}
     </div>
 
@@ -47,22 +47,16 @@
     </div>
 </div>
 
-
 <!--
-另外提供以下标签用于特殊处理，这些标签放至 .footer-toolbar 下将自动生效
+.footer-toolbar 存在以下属性的标签将存在一些特性，这些特性关系:
 
-当前页从多少条开始显示
-<span class="begin-number-info"></span>
+begin-number-info: 当前页从多少条开始显示
 
-当前页到多少条结束显示
-<span class="end-number-info"></span>
+end-number-info: 当前页到多少条结束显示
 
-当前页
-<span class="current-page-info"></span>
+current-page-info: 当前页
 
-总条数
-<span class="totals-number-info"></span>
+totals-number-info: 总条数
 
-总页数
-<span class="totals-page-info"></span>
+totals-page-info: 总页数
 -->
