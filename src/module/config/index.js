@@ -28,7 +28,7 @@ class Config {
      */
     @parseTpl(configColumnTpl)
     createColumn(params) {
-        const { $table, key, base, isShow } = params;
+        const { $table, key, isShow } = params;
 
         // 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
         let title = base.getTh($table, key).find('.th-text').text();
@@ -217,7 +217,7 @@ class Config {
                 return;
             }
 
-            $configList.append(this.createColumn({ $table, key, base, isShow }));
+            $configList.append(this.createColumn({ $table, key, isShow }));
             if (isShow) {
                 showNum++;
             }

@@ -590,6 +590,11 @@ export default class GridManager {
             drag.init($table);
         }
 
+        // init checkbox
+        if (settings.supportCheckbox) {
+            checkbox.init($table, settings.useRowCheck);
+        }
+
         // init sort
         if (sort.enable) {
             sort.init($table);

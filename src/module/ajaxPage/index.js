@@ -84,6 +84,47 @@ class AjaxPage {
         $footerToolbar.css('visibility', 'visible');
 	}
 
+    /**
+     * 更新刷新图标状态
+     * @param $table
+     * @param isRefresh: 是否刷新
+     */
+    updateRefreshIconState($table, isRefresh) {
+        const tableWrap = $table.closest('.table-wrap');
+
+        // 刷新按纽
+        const refreshAction = jTool('.footer-toolbar .refresh-action', tableWrap);
+
+        // 当前刷新图标不存在
+        if (refreshAction.length === 0) {
+            return;
+        }
+
+        // 启动刷新
+	    if (isRefresh) {
+            refreshAction.addClass('refreshing');
+            return;
+        }
+
+        // 停止刷新
+        window.setTimeout(() => {
+            refreshAction.removeClass('refreshing');
+        }, 3000);
+    }
+
+    /**
+     * 更新选中信息
+     * @param $table
+     * @param settings
+     */
+    updateCheckedInfo($table, settings) {
+        const checkedInfo = jTool('.footer-toolbar .toolbar-info.checked-info', $table.closest('.table-wrap'));
+        if (checkedInfo.length === 0) {
+            return;
+        }
+        checkedInfo.html(i18n.i18nText(settings, 'checked-info', cache.getCheckedData($table).length));
+    }
+
 	/**
 	 * 跳转至指定页
 	 * @param $table
@@ -241,20 +282,24 @@ class AjaxPage {
         const $nextPage = jTool('[pagination-after] .next-page', $footerToolbar);
         const $lastPage = jTool('[pagination-after] .last-page', $footerToolbar);
 
+        const firstUsable = Boolean($firstPage.length);
+        const previousUsable = Boolean($previousPage.length);
+        const nextUsable = Boolean($nextPage.length);
+        const lastUsable = Boolean($lastPage.length);
         if (toPage === 1) {
-            $firstPage.addClass('disabled');
-            $previousPage.addClass('disabled');
+            firstUsable && $firstPage.addClass('disabled');
+            previousUsable && $previousPage.addClass('disabled');
         } else {
-            $firstPage.removeClass('disabled');
-            $previousPage.removeClass('disabled');
+            firstUsable && $firstPage.removeClass('disabled');
+            previousUsable && $previousPage.removeClass('disabled');
         }
 
         if (toPage >= tPage) {
-            $nextPage.addClass('disabled');
-            $lastPage.addClass('disabled');
+            nextUsable && $nextPage.addClass('disabled');
+            lastUsable && $lastPage.addClass('disabled');
         } else {
-            $nextPage.removeClass('disabled');
-            $lastPage.removeClass('disabled');
+            nextUsable && $nextPage.removeClass('disabled');
+            lastUsable && $lastPage.removeClass('disabled');
         }
     }
 
@@ -267,59 +312,64 @@ class AjaxPage {
 	__bindPageClick($table, $footerToolbar) {
 		const _this = this;
 		const key = base.getKey($table);
-        const $firstPage = jTool('[pagination-before] .first-page', $footerToolbar);
-        const $previousPage = jTool('[pagination-before] .previous-page', $footerToolbar);
-        const $nextPage = jTool('[pagination-after] .next-page', $footerToolbar);
-        const $lastPage = jTool('[pagination-after] .last-page', $footerToolbar);
 
 		// 事件: 首页
-        $firstPage.unbind('click');
-        $firstPage.bind('click', () => {
-            _this.gotoPage($table, cache.getSettings(key), 1);
-        });
+        const $firstPage = jTool('[pagination-before] .first-page', $footerToolbar);
+        if ($firstPage.length) {
+            $firstPage.bind('click', () => {
+                _this.gotoPage($table, cache.getSettings(key), 1);
+            });
+        }
 
         // 事件: 上一页
-        $previousPage.unbind('click');
-        $previousPage.bind('click', () => {
-            const settings = cache.getSettings(key);
-            const cPage = settings.pageData[settings.currentPageKey];
-            const toPage = cPage - 1;
-            _this.gotoPage($table, settings, toPage < 1 ? 1 : toPage);
-        });
+        const $previousPage = jTool('[pagination-before] .previous-page', $footerToolbar);
+        if ($previousPage.length) {
+            $previousPage.bind('click', () => {
+                const settings = cache.getSettings(key);
+                const cPage = settings.pageData[settings.currentPageKey];
+                const toPage = cPage - 1;
+                _this.gotoPage($table, settings, toPage < 1 ? 1 : toPage);
+            });
+        }
 
         // 事件: 下一页
-        $nextPage.unbind('click');
-        $nextPage.bind('click', () => {
-            const settings = cache.getSettings(key);
-            const cPage = settings.pageData[settings.currentPageKey];
-            const tPage = settings.pageData.tPage;
-            const toPage = cPage + 1;
-            _this.gotoPage($table, settings, toPage > tPage ? tPage : toPage);
-        });
+        const $nextPage = jTool('[pagination-after] .next-page', $footerToolbar);
+        if ($nextPage.length) {
+            $nextPage.bind('click', () => {
+                const settings = cache.getSettings(key);
+                const cPage = settings.pageData[settings.currentPageKey];
+                const tPage = settings.pageData.tPage;
+                const toPage = cPage + 1;
+                _this.gotoPage($table, settings, toPage > tPage ? tPage : toPage);
+            });
+        }
 
         // 事件: 尾页
-        $lastPage.unbind('click');
-        $lastPage.bind('click', () => {
-            const settings = cache.getSettings(key);
-            _this.gotoPage($table, settings, settings.pageData.tPage);
-        });
+        const $lastPage = jTool('[pagination-after] .last-page', $footerToolbar);
+        if ($lastPage.length) {
+            $lastPage.bind('click', () => {
+                const settings = cache.getSettings(key);
+                _this.gotoPage($table, settings, settings.pageData.tPage);
+            });
+        }
 
         // 事件: 页码
-        const paginationNumber = jTool('[pagination-number]', $footerToolbar);
-        paginationNumber.off('click', 'li');
-        paginationNumber.on('click', 'li', function () {
-            const settings = cache.getSettings(key);
-			const pageAction = jTool(this);
+        const $paginationNumber = jTool('[pagination-number]', $footerToolbar);
+        if ($paginationNumber.length) {
+            $paginationNumber.on('click', 'li', function () {
+                const settings = cache.getSettings(key);
+                const pageAction = jTool(this);
 
-			// 分页页码
-			let toPage = pageAction.attr('to-page');
-			if (!toPage || !Number(toPage) || pageAction.hasClass('disabled')) {
-				base.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
-				return false;
-			}
-            toPage = window.parseInt(toPage);
-			_this.gotoPage($table, settings, toPage);
-		});
+                // 分页页码
+                let toPage = pageAction.attr('to-page');
+                if (!toPage || !Number(toPage) || pageAction.hasClass('disabled')) {
+                    base.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
+                    return false;
+                }
+                toPage = window.parseInt(toPage);
+                _this.gotoPage($table, settings, toPage);
+            });
+        }
 	}
 
 	/**
@@ -421,6 +471,11 @@ class AjaxPage {
      * @private
      */
 	__resetPageInfo($footerToolbar, settings, pageData) {
+        const $pageInfo = jTool('.page-info', $footerToolbar);
+        if ($pageInfo.length === 0) {
+            return;
+        }
+
         // 从多少开始
         const fromNum = pageData[settings.currentPageKey] === 1 ? 1 : (pageData[settings.currentPageKey] - 1) * pageData[settings.pageSizeKey] + 1;
 
@@ -430,10 +485,9 @@ class AjaxPage {
         // 总共条数
         const totalNum = pageData.tSize;
 
-        const tmpHtml = i18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum, pageData[settings.currentPageKey], pageData.tPage]);
+        const info = i18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum, pageData[settings.currentPageKey], pageData.tPage]);
 
-        const $pageInfo = jTool('.page-info', $footerToolbar);
-        $pageInfo.html(tmpHtml);
+        $pageInfo.html(info);
     }
 
 	/**

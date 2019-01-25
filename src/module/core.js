@@ -29,11 +29,9 @@ class Core {
 
 		const tableWrap = $table.closest('.table-wrap');
 
-		// 刷新按纽
-		const refreshAction = jTool('.footer-toolbar .refresh-action', tableWrap);
+		// 更新刷新图标状态
+		ajaxPage.updateRefreshIconState($table, true);
 
-		// 增加刷新中标识
-		refreshAction.addClass('refreshing');
 		base.showLoading(tableWrap, settings.loadingTemplate);
 
 		let ajaxPromise = this.transformToPromise($table, settings);
@@ -45,13 +43,13 @@ class Core {
 				settings.ajax_success(response);
 				settings.ajax_complete(response);
 				base.hideLoading(tableWrap);
-				this.removeRefreshingClass(tableWrap);
+				ajaxPage.updateRefreshIconState($table, false);
 			})
 			.catch(error => {
 				settings.ajax_error(error);
 				settings.ajax_complete(error);
 				base.hideLoading(tableWrap);
-				this.removeRefreshingClass(tableWrap);
+                ajaxPage.updateRefreshIconState($table, false);
 			});
 	}
 
@@ -156,18 +154,6 @@ class Core {
 				});
 			});
 		}
-	}
-
-	/**
-	 * 移除刷新中class
-	 * @param tableWrap
-     */
-	removeRefreshingClass($tableWrap) {
-		// 刷新按纽
-		const refreshAction = jTool('.footer-toolbar .refresh-action', $tableWrap);
-		window.setTimeout(() => {
-			refreshAction.removeClass('refreshing');
-		}, 3000);
 	}
 
 	/**
@@ -548,11 +534,6 @@ class Core {
         $table.append(tbody);
 
         cache.setSettings(settings);
-
-		// 绑定选择框事件
-		if (settings.supportCheckbox) {
-			checkbox.bindCheckboxEvent($table, settings);
-		}
 
 		// 单个table下的thead
 		const $thead = base.getHead($table);

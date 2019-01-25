@@ -1,0 +1,1220 @@
+<div class="table-wrap icon-follow-text" style="width: calc(100%); height: calc(100%);">
+    <div class="table-div" style="height: calc(100% - 40px); overflow-x: hidden;">
+        <table grid-manager="test" class="GridManager-ready">
+            <thead grid-manager-thead="">
+            <tr>
+                <th align="center" gm-create="true" th-name="gm_checkbox" th-visible="visible"
+                    gm-checkbox="true" style="width: 40px;" last-visible="false">
+                    <div class="th-wrap">
+                        <span class="th-text">
+                            <label class="gm-checkbox-wrapper">
+                                <span class="gm-radio-checkbox gm-checkbox">
+                                    <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                    />
+                                    <span class="gm-checkbox-inner">
+                                    </span>
+                                </span>
+                            </label>
+                        </span>
+                    </div>
+                </th>
+                <th align="center" gm-create="true" th-name="gm_order" th-visible="visible"
+                    gm-order="true" style="width: 50px;" last-visible="false">
+                    <div class="th-wrap">
+                        <span class="th-text">
+                            序号
+                        </span>
+                    </div>
+                </th>
+                <th remind="the title" sorting="" align="left" gm-create="false" th-name="title"
+                    th-visible="visible" style="width: 518px;" last-visible="false">
+                    <div class="th-wrap">
+                        <span class="th-text drag-action">
+                            标题
+                        </span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help">
+                            </i>
+                            <div class="ra-area">
+                                <span class="ra-title">
+                                    标题
+                                </span>
+                                <span class="ra-con">
+                                    the title
+                                </span>
+                            </div>
+                        </div>
+                        <div class="sorting-action">
+                            <i class="sa-icon sa-up iconfont icon-up"></i>
+                            <i class="sa-icon sa-down iconfont icon-down"></i>
+                        </div>
+                        <span class="adjust-action"></span>
+                    </div>
+                </th>
+                <th sorting="DESC" gm-create="false" th-name="createDate" th-visible="visible"
+                    style="width: 130px;" last-visible="false">
+                    <div class="th-wrap">
+                        <span class="th-text drag-action">
+                            创建时间
+                        </span>
+                        <div class="sorting-action sorting-down">
+                            <i class="sa-icon sa-up iconfont icon-up"></i>
+                            <i class="sa-icon sa-down iconfont icon-down"></i>
+                        </div>
+                        <span class="adjust-action"></span>
+                    </div>
+                </th>
+                <th remind="the pic" align="center" gm-create="false" th-name="pic" th-visible="visible"
+                    style="width: 110px;" last-visible="false">
+                    <div class="th-wrap">
+                        <span class="th-text drag-action">
+                            缩略图
+                        </span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help"></i>
+                            <div class="ra-area">
+                                <span class="ra-title">
+                                    缩略图
+                                </span>
+                                <span class="ra-con">
+                                    the pic
+                                </span>
+                            </div>
+                        </div>
+                        <span class="adjust-action"></span>
+                    </div>
+                </th>
+                <th sorting="" gm-create="false" th-name="lastDate" th-visible="visible"
+                    style="width: 139px;" last-visible="false">
+                    <div class="th-wrap">
+                        <span class="th-text drag-action">
+                            最后修改时间
+                        </span>
+                        <div class="sorting-action">
+                            <i class="sa-icon sa-up iconfont icon-up"></i>
+                            <i class="sa-icon sa-down iconfont icon-down"></i>
+                        </div>
+                        <span class="adjust-action"></span>
+                    </div>
+                </th>
+                <th remind="the type" sorting="" filter="" align="center" gm-create="false"
+                    th-name="type" th-visible="visible" style="width: 150px;" last-visible="false">
+                    <div class="th-wrap">
+                        <span class="th-text drag-action">
+                            博文分类
+                        </span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help"></i>
+                            <div class="ra-area">
+                                <span class="ra-title">
+                                    博文分类
+                                </span>
+                                <span class="ra-con">
+                                    the type
+                                </span>
+                            </div>
+                        </div>
+                        <div class="sorting-action">
+                            <i class="sa-icon sa-up iconfont icon-up">
+                            </i>
+                            <i class="sa-icon sa-down iconfont icon-down">
+                            </i>
+                        </div>
+                        <div class="filter-action">
+                            <i class="fa-icon iconfont icon-filter filter-selected">
+                            </i>
+                            <div class="fa-con">
+                                <ul class="filter-list" max-height:="" 187px="">
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+                                            <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                                                <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                       value="1" checked="true" />
+                                                <span class="gm-checkbox-inner">
+                                                </span>
+                                            </span>
+                                            <span>
+                                                HTML/CSS
+                                            </span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+                                            <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                                                <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                       value="2" checked="true" />
+                                                <span class="gm-checkbox-inner">
+                                                </span>
+                                            </span>
+                                            <span>
+                                                nodeJS
+                                            </span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+                                            <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                                                <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                       value="3" checked="true" />
+                                                <span class="gm-checkbox-inner">
+                                                </span>
+                                            </span>
+                                            <span>
+                                                javaScript
+                                            </span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+                                            <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                                                <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                       value="4" checked="true" />
+                                                <span class="gm-checkbox-inner">
+                                                </span>
+                                            </span>
+                                            <span>
+                                                前端鸡汤
+                                            </span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+                                            <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                                                <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                       value="5" checked="true" />
+                                                <span class="gm-checkbox-inner">
+                                                </span>
+                                            </span>
+                                            <span>
+                                                PM Coffee
+                                            </span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+                                            <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                                                <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                       value="6" checked="true" />
+                                                <span class="gm-checkbox-inner">
+                                                </span>
+                                            </span>
+                                            <span>
+                                                前端框架
+                                            </span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+                                            <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+                                                <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                       value="7" checked="true" />
+                                                <span class="gm-checkbox-inner">
+                                                </span>
+                                            </span>
+                                            <span>
+                                                前端相关
+                                            </span>
+                                        </label>
+                                    </li>
+                                </ul>
+                                <div class="filter-bottom">
+                                    <span class="filter-button filter-submit">
+                                        确定
+                                    </span>
+                                    <span class="filter-button filter-reset">
+                                        重置
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="adjust-action"></span>
+                    </div>
+                </th>
+                <th remind="the username" align="center" gm-create="false" th-name="username"
+                    th-visible="visible" style="width: 100px;" last-visible="false">
+                    <div class="th-wrap">
+							<span class="th-text drag-action">
+								作者
+							</span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help">
+                            </i>
+                            <div class="ra-area">
+                                <span class="ra-title">
+                                    作者
+                                </span>
+                                <span class="ra-con">
+                                    the username
+                                </span>
+                            </div>
+                        </div>
+                        <span class="adjust-action"></span>
+                    </div>
+                </th>
+                <th remind="the info" gm-create="false" th-name="info" th-visible="visible"
+                    style="width: 100px;" last-visible="false">
+                    <div class="th-wrap">
+                        <span class="th-text drag-action">
+                            简介
+                        </span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help">
+                            </i>
+                            <div class="ra-area">
+                                <span class="ra-title">
+                                    简介
+                                </span>
+                                <span class="ra-con">
+                                    the info
+                                </span>
+                            </div>
+                        </div>
+                        <span class="adjust-action"></span>
+                    </div>
+                </th>
+                <th remind="the action" align="center" gm-create="false" th-name="action"
+                    th-visible="visible" style="width: 100px;" last-visible="true">
+                    <div class="th-wrap">
+                        <span class="th-text">
+                            <span style="color: red">
+                                操作
+                            </span>
+                        </span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help">
+                            </i>
+                            <div class="ra-area">
+                                <span class="ra-title">
+                                    操作
+                                </span>
+                                <span class="ra-con">
+                                    the action
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr cache-key="0" checked="false">
+                <td gm-checkbox="true" gm-create="true" align="center" td-visible="visible">
+                    <label class="gm-checkbox-wrapper">
+                        <span class="gm-radio-checkbox gm-checkbox">
+                            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                   checked="true" />
+                            <span class="gm-checkbox-inner">
+                            </span>
+                        </span>
+                    </label>
+                </td>
+                <td gm-order="true" gm-create="true" align="center" td-visible="visible">
+                    1
+                </td>
+                <td gm-create="false" align="left" td-visible="visible" col-hover="true">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=92"
+                       title="点击阅读[Content-Type 对照表]" target="_blank" class="plugin-action">
+                        Content-Type 对照表
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2018/8/3
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=92"
+                       title="点击阅读[Content-Type 对照表]" target="_blank" style="display: block; height: 58.5px;">
+                        <img alt="Content-Type 对照表" src="https://www.lovejavascript.com//upload/blog/pic/9081_type.jpg"
+                             style="width: 90px; margin: 0px auto;" />
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2018/8/3
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    javaScript
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a class="plugin-action" href="https://github.com/baukh789" target="_blank"
+                       title="去看看拭目以待的github">
+                        拭目以待
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    Content-Type(Mime-Type)对照表, 有不全的会继续更新
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+						<span class="plugin-action" gm-click="delectRowData">
+							删除
+						</span>
+                </td>
+            </tr>
+            <tr cache-key="1" checked="false">
+                <td gm-checkbox="true" gm-create="true" align="center" td-visible="visible">
+                    <label class="gm-checkbox-wrapper">
+							<span class="gm-radio-checkbox gm-checkbox">
+								<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                       checked="true" />
+								<span class="gm-checkbox-inner">
+								</span>
+							</span>
+                    </label>
+                </td>
+                <td gm-order="true" gm-create="true" align="center" td-visible="visible">
+                    2
+                </td>
+                <td gm-create="false" align="left" td-visible="visible" col-hover="true">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=90"
+                       title="点击阅读[Vue框架内使用GridManager]" target="_blank" class="plugin-action">
+                        Vue框架内使用GridManager
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2018/6/4
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=90"
+                       title="点击阅读[Vue框架内使用GridManager]" target="_blank" style="display: block; height: 58.5px;">
+                        <img alt="Vue框架内使用GridManager" src="https://www.lovejavascript.com//upload/blog/pic/8764_vue-gridmanager.png"
+                             style="width: 90px; margin: 0px auto;" />
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2018/6/4
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    javaScript
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a class="plugin-action" href="https://github.com/baukh789" target="_blank"
+                       title="去看看拭目以待的github">
+                        拭目以待
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    GridManager对Vue很友好，发布了针对于Vue的npm包。
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+						<span class="plugin-action" gm-click="delectRowData">
+							删除
+						</span>
+                </td>
+            </tr>
+            <tr cache-key="2" checked="false" row-hover="true">
+                <td gm-checkbox="true" gm-create="true" align="center" td-visible="visible">
+                    <label class="gm-checkbox-wrapper">
+							<span class="gm-radio-checkbox gm-checkbox">
+								<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                       checked="true" />
+								<span class="gm-checkbox-inner">
+								</span>
+							</span>
+                    </label>
+                </td>
+                <td gm-order="true" gm-create="true" align="center" td-visible="visible">
+                    3
+                </td>
+                <td gm-create="false" align="left" td-visible="visible" col-hover="true">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=89"
+                       title="点击阅读[GridManager 导出]" target="_blank" class="plugin-action">
+                        GridManager 导出
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2018/5/14
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=89"
+                       title="点击阅读[GridManager 导出]" target="_blank" style="display: block; height: 58.5px;">
+                        <img alt="GridManager 导出" src="https://www.lovejavascript.com//upload/blog/pic/8813_%E5%AF%BC%E5%87%BA.png"
+                             style="width: 90px; margin: 0px auto;" />
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2018/5/14
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    javaScript
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a class="plugin-action" href="https://github.com/baukh789" target="_blank"
+                       title="去看看拭目以待的github">
+                        拭目以待
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    GridManager 具有表格数据导出功能，该功能为纯前端实现，对后端无依赖。
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+						<span class="plugin-action" gm-click="delectRowData">
+							删除
+						</span>
+                </td>
+            </tr>
+            <tr cache-key="3" checked="false">
+                <td gm-checkbox="true" gm-create="true" align="center" td-visible="visible">
+                    <label class="gm-checkbox-wrapper">
+							<span class="gm-radio-checkbox gm-checkbox">
+								<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                       checked="true" />
+								<span class="gm-checkbox-inner">
+								</span>
+							</span>
+                    </label>
+                </td>
+                <td gm-order="true" gm-create="true" align="center" td-visible="visible">
+                    4
+                </td>
+                <td gm-create="false" align="left" td-visible="visible" col-hover="true">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=88"
+                       title="点击阅读[GridManager 用户偏好记忆]" target="_blank" class="plugin-action">
+                        GridManager 用户偏好记忆
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2018/5/10
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=88"
+                       title="点击阅读[GridManager 用户偏好记忆]" target="_blank" style="display: block; height: 58.5px;">
+                        <img alt="GridManager 用户偏好记忆" src="https://www.lovejavascript.com//upload/blog/pic/9905_%E7%94%A8%E6%88%B7%E5%81%8F%E5%A5%BD%E8%AE%B0%E5%BF%86.png"
+                             style="width: 90px; margin: 0px auto;" />
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2018/5/10
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    javaScript
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a class="plugin-action" href="https://github.com/baukh789" target="_blank"
+                       title="去看看拭目以待的github">
+                        拭目以待
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    GridManager 会将用户的部分操作进行记忆，从而达到用户行为记忆的效果。
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+						<span class="plugin-action" gm-click="delectRowData">
+							删除
+						</span>
+                </td>
+            </tr>
+            <tr cache-key="4" checked="false">
+                <td gm-checkbox="true" gm-create="true" align="center" td-visible="visible">
+                    <label class="gm-checkbox-wrapper">
+							<span class="gm-radio-checkbox gm-checkbox">
+								<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                       checked="true" />
+								<span class="gm-checkbox-inner">
+								</span>
+							</span>
+                    </label>
+                </td>
+                <td gm-order="true" gm-create="true" align="center" td-visible="visible">
+                    5
+                </td>
+                <td gm-create="false" align="left" td-visible="visible" col-hover="true">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=87"
+                       title="点击阅读[GridManager 隐藏列]" target="_blank" class="plugin-action">
+                        GridManager 隐藏列
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2018/5/9
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=87"
+                       title="点击阅读[GridManager 隐藏列]" target="_blank" style="display: block; height: 58.5px;">
+                        <img alt="GridManager 隐藏列" src="https://www.lovejavascript.com//upload/blog/pic/3927_GridManager%E9%9A%90%E8%97%8F%E5%88%97.png"
+                             style="width: 90px; margin: 0px auto;" />
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2018/5/9
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    javaScript
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a class="plugin-action" href="https://github.com/baukh789" target="_blank"
+                       title="去看看拭目以待的github">
+                        拭目以待
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    GridManager 表格管理组件， 可以便捷的对列的显示状态进行操作。
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+						<span class="plugin-action" gm-click="delectRowData">
+							删除
+						</span>
+                </td>
+            </tr>
+            <tr cache-key="5" checked="false">
+                <td gm-checkbox="true" gm-create="true" align="center" td-visible="visible">
+                    <label class="gm-checkbox-wrapper">
+							<span class="gm-radio-checkbox gm-checkbox">
+								<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                       checked="true" />
+								<span class="gm-checkbox-inner">
+								</span>
+							</span>
+                    </label>
+                </td>
+                <td gm-order="true" gm-create="true" align="center" td-visible="visible">
+                    6
+                </td>
+                <td gm-create="false" align="left" td-visible="visible" col-hover="true">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=84"
+                       title="点击阅读[js捕获错误信息]" target="_blank" class="plugin-action">
+                        js捕获错误信息
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2017/11/30
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=84"
+                       title="点击阅读[js捕获错误信息]" target="_blank" style="display: block; height: 58.5px;">
+                        <img alt="js捕获错误信息" src="https://www.lovejavascript.com//upload/blog/pic/3533_buhuo.png"
+                             style="width: 90px; margin: 0px auto;" />
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2017/12/1
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    javaScript
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a class="plugin-action" href="https://github.com/baukh789" target="_blank"
+                       title="去看看拭目以待的github">
+                        拭目以待
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    这个不是很常用的功能， 但是想收集客户端的错误信息时却很有必要了解下。
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+						<span class="plugin-action" gm-click="delectRowData">
+							删除
+						</span>
+                </td>
+            </tr>
+            <tr cache-key="6" checked="false">
+                <td gm-checkbox="true" gm-create="true" align="center" td-visible="visible">
+                    <label class="gm-checkbox-wrapper">
+							<span class="gm-radio-checkbox gm-checkbox">
+								<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                       checked="true" />
+								<span class="gm-checkbox-inner">
+								</span>
+							</span>
+                    </label>
+                </td>
+                <td gm-order="true" gm-create="true" align="center" td-visible="visible">
+                    7
+                </td>
+                <td gm-create="false" align="left" td-visible="visible" col-hover="true">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=83"
+                       title="点击阅读[div绑定键盘事件]" target="_blank" class="plugin-action">
+                        div绑定键盘事件
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2017/11/26
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=83"
+                       title="点击阅读[div绑定键盘事件]" target="_blank" style="display: block; height: 58.5px;">
+                        <img alt="div绑定键盘事件" src="https://www.lovejavascript.com//upload/blog/pic/2279_div%E7%BB%91%E5%AE%9A%E9%94%AE%E7%9B%98%E4%BA%8B%E4%BB%B6.png"
+                             style="width: 90px; margin: 0px auto;" />
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2017/11/26
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    javaScript
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a class="plugin-action" href="https://github.com/baukh789" target="_blank"
+                       title="去看看拭目以待的github">
+                        拭目以待
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    在给如div等元素绑定键盘事件(如keydown)时， 会发现绑定是失效的。
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+						<span class="plugin-action" gm-click="delectRowData">
+							删除
+						</span>
+                </td>
+            </tr>
+            <tr cache-key="7" checked="false">
+                <td gm-checkbox="true" gm-create="true" align="center" td-visible="visible">
+                    <label class="gm-checkbox-wrapper">
+							<span class="gm-radio-checkbox gm-checkbox">
+								<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                       checked="true" />
+								<span class="gm-checkbox-inner">
+								</span>
+							</span>
+                    </label>
+                </td>
+                <td gm-order="true" gm-create="true" align="center" td-visible="visible">
+                    8
+                </td>
+                <td gm-create="false" align="left" td-visible="visible" col-hover="true">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=82"
+                       title="点击阅读[GridManager 调整数据格式]" target="_blank" class="plugin-action">
+                        GridManager 调整数据格式
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2017/11/14
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=82"
+                       title="点击阅读[GridManager 调整数据格式]" target="_blank" style="display: block; height: 58.5px;">
+                        <img alt="GridManager 调整数据格式" src="https://www.lovejavascript.com//upload/blog/pic/3185_%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F%E8%B0%83%E6%95%B4.png"
+                             style="width: 90px; margin: 0px auto;" />
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2017/11/15
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    javaScript
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a class="plugin-action" href="https://github.com/baukh789" target="_blank"
+                       title="去看看拭目以待的github">
+                        拭目以待
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    GridManager在处理数据时，需要使用规定的数据格式。而在实际场景中，或多或少存在一些格式差异。在这里将对这些差异的处理方式进行说明
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+						<span class="plugin-action" gm-click="delectRowData">
+							删除
+						</span>
+                </td>
+            </tr>
+            <tr cache-key="8" checked="false">
+                <td gm-checkbox="true" gm-create="true" align="center" td-visible="visible">
+                    <label class="gm-checkbox-wrapper">
+							<span class="gm-radio-checkbox gm-checkbox">
+								<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                       checked="true" />
+								<span class="gm-checkbox-inner">
+								</span>
+							</span>
+                    </label>
+                </td>
+                <td gm-order="true" gm-create="true" align="center" td-visible="visible">
+                    9
+                </td>
+                <td gm-create="false" align="left" td-visible="visible" col-hover="true">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=81"
+                       title="点击阅读[GridManager 实现搜索]" target="_blank" class="plugin-action">
+                        GridManager 实现搜索
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2017/11/13
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=81"
+                       title="点击阅读[GridManager 实现搜索]" target="_blank" style="display: block; height: 58.5px;">
+                        <img alt="GridManager 实现搜索" src="https://www.lovejavascript.com//upload/blog/pic/3726_%E6%90%9C%E7%B4%A2.png"
+                             style="width: 90px; margin: 0px auto;" />
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2017/11/13
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    javaScript
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a class="plugin-action" href="https://github.com/baukh789" target="_blank"
+                       title="去看看拭目以待的github">
+                        拭目以待
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    搜索功能在GridManager中的实现方式很简单，可通过setQuery方法实现。
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+						<span class="plugin-action" gm-click="delectRowData">
+							删除
+						</span>
+                </td>
+            </tr>
+            <tr cache-key="9" checked="false">
+                <td gm-checkbox="true" gm-create="true" align="center" td-visible="visible">
+                    <label class="gm-checkbox-wrapper">
+							<span class="gm-radio-checkbox gm-checkbox">
+								<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                       checked="true" />
+								<span class="gm-checkbox-inner">
+								</span>
+							</span>
+                    </label>
+                </td>
+                <td gm-order="true" gm-create="true" align="center" td-visible="visible">
+                    10
+                </td>
+                <td gm-create="false" align="left" td-visible="visible" col-hover="true">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=80"
+                       title="点击阅读[GridManager宽度配置不生效与出现滚动条]" target="_blank" class="plugin-action">
+                        GridManager宽度配置不生效与出现滚动条
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2017/10/22
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a href="https://www.lovejavascript.com/#!zone/blog/content.html?id=80"
+                       title="点击阅读[GridManager宽度配置不生效与出现滚动条]" target="_blank" style="display: block; height: 58.5px;">
+                        <img alt="GridManager宽度配置不生效与出现滚动条" src="https://www.lovejavascript.com//upload/blog/pic/3245_%E9%85%8D%E7%BD%AE.png"
+                             style="width: 90px; margin: 0px auto;" />
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    2017/11/15
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    javaScript
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+                    <a class="plugin-action" href="https://github.com/baukh789" target="_blank"
+                       title="去看看拭目以待的github">
+                        拭目以待
+                    </a>
+                </td>
+                <td gm-create="false" td-visible="visible">
+                    某一例配置的宽度为100px, 而生成的宽度却不是100px，并且出现了横向滚动条?
+                </td>
+                <td gm-create="false" align="center" td-visible="visible">
+						<span class="plugin-action" gm-click="delectRowData">
+							删除
+						</span>
+                </td>
+            </tr>
+            </tbody>
+            <thead grid-manager-mock-thead="" style="width: 1438px; left: 0px;">
+            <tr>
+                <th align="center" gm-create="true" th-name="gm_checkbox" th-visible="visible"
+                    gm-checkbox="true" style="width: 40px;" last-visible="false">
+                    <div class="th-wrap">
+							<span class="th-text">
+								<label class="gm-checkbox-wrapper">
+									<span class="gm-radio-checkbox gm-checkbox">
+										<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                        />
+										<span class="gm-checkbox-inner">
+										</span>
+									</span>
+								</label>
+							</span>
+                    </div>
+                </th>
+                <th align="center" gm-create="true" th-name="gm_order" th-visible="visible"
+                    gm-order="true" style="width: 50px;" last-visible="false">
+                    <div class="th-wrap">
+							<span class="th-text">
+								序号
+							</span>
+                    </div>
+                </th>
+                <th remind="the title" sorting="" align="left" gm-create="false" th-name="title"
+                    th-visible="visible" style="width: 518px;" last-visible="false">
+                    <div class="th-wrap">
+							<span class="th-text drag-action">
+								标题
+							</span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help">
+                            </i>
+                            <div class="ra-area">
+									<span class="ra-title">
+										标题
+									</span>
+                                <span class="ra-con">
+										the title
+									</span>
+                            </div>
+                        </div>
+                        <div class="sorting-action">
+                            <i class="sa-icon sa-up iconfont icon-up">
+                            </i>
+                            <i class="sa-icon sa-down iconfont icon-down">
+                            </i>
+                        </div>
+                        <span class="adjust-action" style="display: block;">
+							</span>
+                    </div>
+                </th>
+                <th sorting="DESC" gm-create="false" th-name="createDate" th-visible="visible"
+                    style="width: 130px;" last-visible="false">
+                    <div class="th-wrap">
+							<span class="th-text drag-action">
+								创建时间
+							</span>
+                        <div class="sorting-action sorting-down">
+                            <i class="sa-icon sa-up iconfont icon-up">
+                            </i>
+                            <i class="sa-icon sa-down iconfont icon-down">
+                            </i>
+                        </div>
+                        <span class="adjust-action" style="display: block;">
+							</span>
+                    </div>
+                </th>
+                <th remind="the pic" align="center" gm-create="false" th-name="pic" th-visible="visible"
+                    style="width: 110px;" last-visible="false">
+                    <div class="th-wrap">
+							<span class="th-text drag-action">
+								缩略图
+							</span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help">
+                            </i>
+                            <div class="ra-area">
+									<span class="ra-title">
+										缩略图
+									</span>
+                                <span class="ra-con">
+										the pic
+									</span>
+                            </div>
+                        </div>
+                        <span class="adjust-action" style="display: block;">
+							</span>
+                    </div>
+                </th>
+                <th sorting="" gm-create="false" th-name="lastDate" th-visible="visible"
+                    style="width: 139px;" last-visible="false">
+                    <div class="th-wrap">
+							<span class="th-text drag-action">
+								最后修改时间
+							</span>
+                        <div class="sorting-action">
+                            <i class="sa-icon sa-up iconfont icon-up">
+                            </i>
+                            <i class="sa-icon sa-down iconfont icon-down">
+                            </i>
+                        </div>
+                        <span class="adjust-action" style="display: block;">
+							</span>
+                    </div>
+                </th>
+                <th remind="the type" sorting="" filter="" align="center" gm-create="false"
+                    th-name="type" th-visible="visible" style="width: 150px;" last-visible="false">
+                    <div class="th-wrap">
+							<span class="th-text drag-action">
+								博文分类
+							</span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help">
+                            </i>
+                            <div class="ra-area">
+									<span class="ra-title">
+										博文分类
+									</span>
+                                <span class="ra-con">
+										the type
+									</span>
+                            </div>
+                        </div>
+                        <div class="sorting-action">
+                            <i class="sa-icon sa-up iconfont icon-up">
+                            </i>
+                            <i class="sa-icon sa-down iconfont icon-down">
+                            </i>
+                        </div>
+                        <div class="filter-action">
+                            <i class="fa-icon iconfont icon-filter filter-selected">
+                            </i>
+                            <div class="fa-con">
+                                <ul class="filter-list" max-height:="" 187px="">
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+												<span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+													<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                           value="1" checked="true" />
+													<span class="gm-checkbox-inner">
+													</span>
+												</span>
+                                            <span>
+													HTML/CSS
+												</span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+												<span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+													<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                           value="2" checked="true" />
+													<span class="gm-checkbox-inner">
+													</span>
+												</span>
+                                            <span>
+													nodeJS
+												</span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+												<span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+													<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                           value="3" checked="true" />
+													<span class="gm-checkbox-inner">
+													</span>
+												</span>
+                                            <span>
+													javaScript
+												</span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+												<span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+													<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                           value="4" checked="true" />
+													<span class="gm-checkbox-inner">
+													</span>
+												</span>
+                                            <span>
+													前端鸡汤
+												</span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+												<span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+													<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                           value="5" checked="true" />
+													<span class="gm-checkbox-inner">
+													</span>
+												</span>
+                                            <span>
+													PM Coffee
+												</span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+												<span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+													<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                           value="6" checked="true" />
+													<span class="gm-checkbox-inner">
+													</span>
+												</span>
+                                            <span>
+													前端框架
+												</span>
+                                        </label>
+                                    </li>
+                                    <li class="filter-checkbox">
+                                        <label class="gm-checkbox-wrapper">
+												<span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+													<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"
+                                                           value="7" checked="true" />
+													<span class="gm-checkbox-inner">
+													</span>
+												</span>
+                                            <span>
+													前端相关
+												</span>
+                                        </label>
+                                    </li>
+                                </ul>
+                                <div class="filter-bottom">
+										<span class="filter-button filter-submit">
+											确定
+										</span>
+                                    <span class="filter-button filter-reset">
+											重置
+										</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="adjust-action" style="display: block;">
+							</span>
+                    </div>
+                </th>
+                <th remind="the username" align="center" gm-create="false" th-name="username"
+                    th-visible="visible" style="width: 100px;" last-visible="false">
+                    <div class="th-wrap">
+							<span class="th-text drag-action">
+								作者
+							</span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help">
+                            </i>
+                            <div class="ra-area">
+									<span class="ra-title">
+										作者
+									</span>
+                                <span class="ra-con">
+										the username
+									</span>
+                            </div>
+                        </div>
+                        <span class="adjust-action" style="display: block;">
+							</span>
+                    </div>
+                </th>
+                <th remind="the info" gm-create="false" th-name="info" th-visible="visible"
+                    style="width: 100px;" last-visible="false">
+                    <div class="th-wrap">
+							<span class="th-text drag-action">
+								简介
+							</span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help">
+                            </i>
+                            <div class="ra-area">
+									<span class="ra-title">
+										简介
+									</span>
+                                <span class="ra-con">
+										the info
+									</span>
+                            </div>
+                        </div>
+                        <span class="adjust-action" style="display: none;">
+							</span>
+                    </div>
+                </th>
+                <th remind="the action" align="center" gm-create="false" th-name="action"
+                    th-visible="visible" style="width: 100px;" last-visible="true">
+                    <div class="th-wrap">
+							<span class="th-text">
+								<span style="color: red">
+									操作
+								</span>
+							</span>
+                        <div class="remind-action">
+                            <i class="ra-icon iconfont icon-help">
+                            </i>
+                            <div class="ra-area">
+									<span class="ra-title">
+										操作
+									</span>
+                                <span class="ra-con">
+										the action
+									</span>
+                            </div>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <span class="text-dreamland" style="font-size: 12px; font-weight: 400; font-family: &quot;Microsoft YaHei&quot;, Arial, Helvetica, sans-serif;">
+		最后修改时间
+	</span>
+    <div class="config-area">
+		<span class="config-action">
+			<i class="iconfont icon-close">
+			</i>
+		</span>
+        <div class="config-info">
+            配置列的显示状态
+        </div>
+        <ul class="config-list">
+        </ul>
+    </div>
+    <div class="footer-toolbar" style="visibility: visible;">
+        <!--刷新图标-->
+        <span class="refresh-action">
+			<i class="iconfont icon-refresh">
+			</i>
+		</span>
+        <!--跳转至-->
+        <div class="goto-page">
+            跳转至
+            <input type="text" class="gp-input" />
+            页
+        </div>
+        <!--每页显示条数-->
+        <div class="change-size">
+            <select name="pSizeArea" style="display: block;">
+                <option value="10">
+                    10
+                </option>
+                <option value="20">
+                    20
+                </option>
+                <option value="30">
+                    30
+                </option>
+                <option value="50">
+                    50
+                </option>
+                <option value="100">
+                    100
+                </option>
+            </select>
+        </div>
+        <!--选中信息-->
+        <div class="toolbar-info checked-info">
+            已选 0 条
+        </div>
+        <!--分页描述-->
+        <div class="toolbar-info page-info">
+            此页显示 1-10
+            <span class="page-info-totals">
+				共54条
+			</span>
+        </div>
+        <!--分页切换-->
+        <div class="ajax-page">
+            <!--上一页、首页区-->
+            <ul class="pagination" pagination-before="">
+                <li class="first-page disabled">
+                    首页
+                </li>
+                <li class="previous-page disabled">
+                    上一页
+                </li>
+            </ul>
+            <!--页码区-->
+            <ul class="pagination" pagination-number="">
+                <li class="active">
+                    1
+                </li>
+                <li to-page="2">
+                    2
+                </li>
+                <li to-page="3">
+                    3
+                </li>
+                <li class="disabled">
+                    ...
+                </li>
+                <li to-page="6">
+                    6
+                </li>
+            </ul>
+            <!--下一页、尾页区-->
+            <ul class="pagination" pagination-after="">
+                <li class="next-page">
+                    下一页
+                </li>
+                <li class="last-page">
+                    尾页
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

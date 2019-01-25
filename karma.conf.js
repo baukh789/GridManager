@@ -97,7 +97,7 @@ module.exports = function (config) {
                         test: /\.html?$/,
                         loaders: ['html-loader'],
                         exclude: /(node_modules|bower_components)/,
-                        include: [path.join(__dirname, 'src')]
+                        include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')]
                     },
 					{
 						test:/.less/,

@@ -4,7 +4,7 @@
 import './style.less';
 import { CHECKBOX_WIDTH } from '../../common/constants';
 import { jTool, base, parseTpl } from '../base';
-import i18n from '../i18n';
+import ajaxPage from '../ajaxPage';
 import cache from '../cache';
 import columnTpl from './column.tpl.html';
 import checkboxTpl from './checkbox.tpl.html';
@@ -15,6 +15,60 @@ class Checkbox {
 	get key() {
 		return 'gm_checkbox';
 	}
+
+    /**
+     * 初始化选择框事件
+     * @param $table
+     * @param useRowCheck: tr点击选中
+     */
+    init($table, useRowCheck) {
+        const _this = this;
+        // th内的全选
+        $table.off('click', 'th[gm-checkbox="true"] input[type="checkbox"]');
+        $table.on('click', 'th[gm-checkbox="true"] input[type="checkbox"]', function () {
+            const settings = cache.getSettings(base.getKey($table));
+
+            settings.checkedBefore(cache.getCheckedData($table));
+            settings.checkedAllBefore(cache.getCheckedData($table));
+            const tableData = _this.resetData($table, this.checked, true);
+            _this.resetDOM($table, settings, tableData);
+            settings.checkedAfter(cache.getCheckedData($table));
+            settings.checkedAllAfter(cache.getCheckedData($table));
+        });
+
+        // td内的多选
+        $table.off('click', 'td[gm-checkbox="true"] input[type="checkbox"]');
+        $table.on('click', 'td[gm-checkbox="true"] input[type="checkbox"]', function (e) {
+            const settings = cache.getSettings(base.getKey($table));
+
+            settings.checkedBefore(cache.getCheckedData($table));
+            const tableData = _this.resetData($table, this.checked, false, jTool(this).closest('tr').attr('cache-key'));
+            _this.resetDOM($table, settings, tableData);
+            settings.checkedAfter(cache.getCheckedData($table));
+        });
+
+        // td内的单选
+        $table.off('click', 'td[gm-checkbox="true"] input[type="radio"]');
+        $table.on('click', 'td[gm-checkbox="true"] input[type="radio"]', function (e) {
+            const settings = cache.getSettings(base.getKey($table));
+
+            settings.checkedBefore(cache.getCheckedData($table));
+            const tableData = _this.resetData($table, undefined, false, jTool(this).closest('tr').attr('cache-key'), true);
+            _this.resetDOM($table, settings, tableData, true);
+            settings.checkedAfter(cache.getCheckedData($table));
+        });
+
+        // tr点击选中
+        if (useRowCheck) {
+            $table.off('click', 'tbody > tr');
+            $table.on('click', 'tbody > tr', function (e) {
+                // 当前事件源为非单选框或多选框时，触发选中事件
+                if ([].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
+                    this.querySelector('td[gm-checkbox="true"] input.gm-radio-checkbox-input').click();
+                }
+            });
+        }
+    }
 
 	/**
 	 * 获取当前页选中的行
@@ -100,54 +154,6 @@ class Checkbox {
     }
 
 	/**
-	 * 绑定选择框事件
-	 * @param $table
-	 * @param settings
-     */
-	bindCheckboxEvent($table, settings) {
-		const _this = this;
-		// th内的全选
-		$table.off('click', 'th[gm-checkbox="true"] input[type="checkbox"]');
-		$table.on('click', 'th[gm-checkbox="true"] input[type="checkbox"]', function () {
-			settings.checkedBefore(cache.getCheckedData($table));
-			settings.checkedAllBefore(cache.getCheckedData($table));
-			const tableData = _this.resetData($table, this.checked, true);
-			_this.resetDOM($table, settings, tableData);
-			settings.checkedAfter(cache.getCheckedData($table));
-			settings.checkedAllAfter(cache.getCheckedData($table));
-		});
-
-		// td内的多选
-		$table.off('click', 'td[gm-checkbox="true"] input[type="checkbox"]');
-		$table.on('click', 'td[gm-checkbox="true"] input[type="checkbox"]', function (e) {
-			settings.checkedBefore(cache.getCheckedData($table));
-			const tableData = _this.resetData($table, this.checked, false, jTool(this).closest('tr').attr('cache-key'));
-            _this.resetDOM($table, settings, tableData);
-			settings.checkedAfter(cache.getCheckedData($table));
-		});
-
-        // td内的单选
-        $table.off('click', 'td[gm-checkbox="true"] input[type="radio"]');
-        $table.on('click', 'td[gm-checkbox="true"] input[type="radio"]', function (e) {
-            settings.checkedBefore(cache.getCheckedData($table));
-            const tableData = _this.resetData($table, undefined, false, jTool(this).closest('tr').attr('cache-key'), true);
-            _this.resetDOM($table, settings, tableData, true);
-            settings.checkedAfter(cache.getCheckedData($table));
-        });
-
-        // tr点击选中
-        if (settings.useRowCheck) {
-            $table.off('click', 'tbody > tr');
-            $table.on('click', 'tbody > tr', function (e) {
-                // 当前事件源为非单选框或多选框时，触发选中事件
-                if ([].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
-                    this.querySelector('td[gm-checkbox="true"] input.gm-radio-checkbox-input').click();
-                }
-            });
-        }
-	}
-
-	/**
 	 * 重置当前渲染数据中的选择状态
 	 * @param $table
 	 * @param status: 要变更的状态
@@ -211,8 +217,7 @@ class Checkbox {
         !isRadio && base.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === tableData.length ? 'checked' : 'indeterminate'));
 
 		// 更新底部工具条选中描述信息
-        const checkedInfo = jTool('.footer-toolbar .toolbar-info.checked-info', $table.closest('.table-wrap'));
-        checkedInfo.html(i18n.i18nText(settings, 'checked-info', cache.getCheckedData($table).length));
+        ajaxPage.updateCheckedInfo($table, settings);
 	}
 
 	/**

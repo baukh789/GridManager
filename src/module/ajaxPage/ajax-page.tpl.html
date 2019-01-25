@@ -1,17 +1,28 @@
 <div class="footer-toolbar">
+    <!--刷新图标-->
     <span class="refresh-action">{{ vm.refreshActionText }}</span>
+
+    <!--跳转至-->
     <div class="goto-page">
         {{ vm.gotoFirstText }}
         <input type="text" class="gp-input"/>
         {{ vm.gotoLastText }}
     </div>
+
+    <!--每页显示条数-->
     <div class="change-size">
         <select name="pSizeArea">
             {{ vm.pageSizeOptionTpl }}
         </select>
     </div>
+
+    <!--选中信息-->
     <div class="toolbar-info checked-info"></div>
+
+    <!--分页描述-->
     <div class="toolbar-info page-info"></div>
+
+    <!--分页切换-->
     <div class="ajax-page">
         <!--上一页、首页区-->
         <ul class="pagination" pagination-before>

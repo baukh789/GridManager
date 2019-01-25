@@ -1,5 +1,7 @@
 'use strict';
+import { jTool } from '../src/module/base';
 import config from '../src/module/config';
+import tableTpl from './table-test.tpl.html';
 /**
  * 验证类的属性及方法总量
  */
@@ -40,7 +42,6 @@ describe('config.createHtml(settings)', function() {
 
     it('返回值验证', function () {
         let settings = {
-            gridManagerName: 'test',
             configInfo: 'test config info'
         };
         createHtml = `<div class="config-area">
@@ -58,12 +59,17 @@ describe('config.createHtml(settings)', function() {
 describe('config.createColumn(column)', function() {
     let column = null;
     let columnHtml = null;
+    let $table = null;
     beforeEach(function(){
+        document.body.innerHTML = tableTpl;
+        $table = jTool('table[grid-manager="test"]')
     });
 
     afterEach(function(){
         column = null;
         columnHtml = null;
+        $table = null;
+        document.body.innerHTML = '';
     });
     it('基础验证', function () {
         expect(config.createColumn).toBeDefined();
@@ -72,33 +78,33 @@ describe('config.createColumn(column)', function() {
 
     it('返回值验证', function () {
         column = {
-            key: 'test-config',
-            title: '测试配置功能，创建列的返回值',
-            isShow: false
+            key: 'type',
+            isShow: false,
+            $table
         };
-        columnHtml = `<li th-name="test-config" class="">
+        columnHtml = `<li th-name="type" class="">
                     <label class="gm-checkbox-wrapper">
                         <span class="gm-radio-checkbox gm-checkbox">
                             <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input">
                             <span class="gm-checkbox-inner"></span>
                         </span>
-                        测试配置功能，创建列的返回值
+                        博文分类
                     </label>
                 </li>`;
         expect(config.createColumn(column).replace(/\s/g, '')).toBe(columnHtml.replace(/\s/g, ''));
 
         column = {
-            key: 'test-config',
-            title: '测试配置功能，创建列的返回值',
-            isShow: true
+            key: 'pic',
+            isShow: true,
+            $table
         };
-        columnHtml = `<li th-name="test-config" class="checked-li">
+        columnHtml = `<li th-name="pic" class="checked-li">
                     <label class="gm-checkbox-wrapper">
                         <span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
                             <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input">
                             <span class="gm-checkbox-inner"></span>
                         </span>
-                        测试配置功能，创建列的返回值
+                        缩略图
                     </label>
                 </li>`;
 
