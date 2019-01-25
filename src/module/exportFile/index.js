@@ -58,12 +58,41 @@ class ExportFile {
 
 	/**
 	 * 拼接要导出html格式数据
-     * @param parseData
-	 * @returns {string}
+     * @param params
+	 * @returns {parseData}
      */
-	@parseTpl()
-	createExportHTML(parseData) {
-		return staticTpl;
+	@parseTpl(staticTpl)
+	createExportHTML(params) {
+	    const { $table, base } = params;
+        const thDOM = base.getVisibleTh($table, false);
+        let	trDOM = null;
+        // 验证：是否只导出已选中的表格
+        if (onlyChecked) {
+            trDOM = jTool('tbody tr[checked="true"]', $table);
+        } else {
+            trDOM = jTool('tbody tr', $table);
+        }
+        // 存储导出的thead
+        let	theadHTML = '';
+        jTool.each(thDOM, (i, v) => {
+            theadHTML += `<th>${v.getElementsByClassName('th-text')[0].textContent}</th>`;
+        });
+
+        // 存储导出的tbody
+        let	tbodyHTML = '';
+        jTool.each(trDOM, (i, v) => {
+            let tdDOM = jTool('td[gm-create="false"][td-visible="visible"]', v);
+            tbodyHTML += '<tr>';
+            jTool.each(tdDOM, (i2, v2) => {
+                tbodyHTML += `<td>${v2.textContent}</td>`;
+            });
+            tbodyHTML += '</tr>';
+        });
+
+        return {
+            theadHTML,
+            tbodyHTML
+        };
 	}
 
 	/**
@@ -168,33 +197,7 @@ class ExportFile {
      * @returns {boolean}
      */
 	downStatic($table, fileName, onlyChecked) {
-        const thDOM = base.getVisibleTh($table, false);
-        let	trDOM = null;
-        // 验证：是否只导出已选中的表格
-        if (onlyChecked) {
-        	trDOM = jTool('tbody tr[checked="true"]', $table);
-        } else {
-        	trDOM = jTool('tbody tr', $table);
-        }
-
-        // 存储导出的thead
-        let	theadHTML = '';
-        jTool.each(thDOM, (i, v) => {
-        	theadHTML += `<th>${v.getElementsByClassName('th-text')[0].textContent}</th>`;
-        });
-
-        // 存储导出的tbody
-        let	tbodyHTML = '';
-        jTool.each(trDOM, (i, v) => {
-        	let tdDOM = jTool('td[gm-create="false"][td-visible="visible"]', v);
-        	tbodyHTML += '<tr>';
-            jTool.each(tdDOM, (i2, v2) => {
-        		tbodyHTML += `<td>${v2.textContent}</td>`;
-        	});
-        	tbodyHTML += '</tr>';
-        });
-
-        this.dispatchDownload(fileName, this.getHref(this.createExportHTML({theadHTML, tbodyHTML})));
+        this.dispatchDownload(fileName, this.getHref(this.createExportHTML({$table, base})));
     }
 
     /**

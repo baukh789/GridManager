@@ -158,6 +158,9 @@ class Settings {
             // 是否使用无总条数模式
             useNoTotalsMode: false,
 
+            // 分页区域自定义模板
+            ajaxPageTemplate: '',
+
             // 是否显示底部工具: 刷新按纽
             showFooterRefresh: true,
 
@@ -185,11 +188,9 @@ class Settings {
 			// 返回数据中数据总条数的key键值,默认为totals
 			totalsKey: 'totals',
 
-			// @2.6.0
 			// 请求参数中当前页的key键值,默认为cPage
 			currentPageKey: 'cPage',
 
-			// @2.6.0
 			// 请求参数中每页显示条数的key健值, 默认为pSize
 			pageSizeKey: 'pSize',
 

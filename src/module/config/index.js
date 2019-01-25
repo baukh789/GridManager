@@ -11,22 +11,32 @@ import configColumnTpl from './config-column.tpl.html';
 class Config {
 	/**
 	 * 表格配置区域HTML
-     * @param settings
-	 * @returns {string}
+     * @param params{configInfo}
+	 * @returns {parseData}
      */
-	@parseTpl()
-	createHtml(settings) {
-	    return configTpl;
+	@parseTpl(configTpl)
+	createHtml(params) {
+	    return {
+            configInfo: params.configInfo
+	    };
 	}
 
     /**
      * 生成配置列HTML
-     * @param column{key, title, isShow}
+     * @param params{key, title, isShow}
      * @returns {string}
      */
-    @parseTpl()
-    createColumn(column) {
-	    return configColumnTpl;
+    @parseTpl(configColumnTpl)
+    createColumn(params) {
+        const { $table, key, base, isShow } = params;
+
+        // 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
+        let title = base.getTh($table, key).find('.th-text').text();
+	    return {
+            key,
+            title,
+            isShow
+        };
     }
 
 	/**
@@ -207,9 +217,7 @@ class Config {
                 return;
             }
 
-            // 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
-            let title = base.getTh($table, key).find('.th-text').text();
-            $configList.append(this.createColumn({key, title, isShow}));
+            $configList.append(this.createColumn({ $table, key, base, isShow }));
             if (isShow) {
                 showNum++;
             }

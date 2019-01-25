@@ -15,17 +15,7 @@ class AjaxPage {
 	 * @param settings
      */
 	initAjaxPage($table, $tableWarp, settings) {
-	    const parseData = {
-            refreshActionText: i18n.i18nText(settings, 'refresh-action'),
-            gotoFirstText: i18n.i18nText(settings, 'goto-first-text'),
-            gotoLastText: i18n.i18nText(settings, 'goto-last-text'),
-            firstPageText: i18n.i18nText(settings, 'first-page'),
-            previousPageText: i18n.i18nText(settings, 'previous-page'),
-            nextPageText: i18n.i18nText(settings, 'next-page'),
-            lastPageText: i18n.i18nText(settings, 'last-page'),
-            pageSizeOptionTpl: this.__getPageSizeOptionStr(settings.sizeData)
-        };
-        $tableWarp.append(this.createHtml(parseData));
+        $tableWarp.append(this.createHtml({settings, i18n, tpl: settings.ajaxPageTemplate}));
 
 		// 根据本地缓存配置每页显示条数
 		if (!settings.disableCache) {
@@ -48,12 +38,22 @@ class AjaxPage {
 
     /**
      * 分页所需HTML
-     * @param parseData
-     * @returns {string}
+     * @param params
+     * @returns {parseData}
      */
-    @parseTpl()
-    createHtml(parseData) {
-        return ajaxPageTpl;
+    @parseTpl(ajaxPageTpl)
+    createHtml(params) {
+        const { settings, i18n } = params;
+        return {
+            refreshActionText: i18n.i18nText(settings, 'refresh-action'),
+            gotoFirstText: i18n.i18nText(settings, 'goto-first-text'),
+            gotoLastText: i18n.i18nText(settings, 'goto-last-text'),
+            firstPageText: i18n.i18nText(settings, 'first-page'),
+            previousPageText: i18n.i18nText(settings, 'previous-page'),
+            nextPageText: i18n.i18nText(settings, 'next-page'),
+            lastPageText: i18n.i18nText(settings, 'last-page'),
+            pageSizeOptionTpl: this.__getPageSizeOptionStr(settings.sizeData)
+        };
     }
 
 	/**

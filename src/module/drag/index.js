@@ -17,11 +17,28 @@ class Drag {
 
     /**
      * 生成拖拽区域html片段
-     * @param parseData
+     * @param params
+     * @returns {parseData}
      */
-	@parseTpl()
-	createDreamlandHtml(parseData) {
-	    return dreamlandTpl;
+	@parseTpl(dreamlandTpl)
+	createDreamlandHtml(params) {
+	    const { _table,  _th, colTd } = params;
+
+        // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
+        let tbodyHtml = '';
+        jTool.each(colTd, (i, v) => {
+            let _cloneTd = v.cloneNode(true);
+            _cloneTd.style.height = v.offsetHeight + 'px';
+            let _cloneTr = jTool(v).closest('tr').clone();
+            tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
+        });
+
+        return {
+            tableClassName: _table.attr('class'),
+            thOuterHtml: jTool('.drag-action', _th).get(0).outerHTML,
+            thStyle: `style="height:${_th.height()}px"`,
+            tbodyHtml: tbodyHtml
+        };
     }
 
 	/**
@@ -75,26 +92,9 @@ class Drag {
 			_th.addClass('drag-ongoing opacityChange');
 			colTd.addClass('drag-ongoing opacityChange');
 
-            // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
-            let tbodyHtml = '';
-            jTool.each(colTd, (i, v) => {
-                let _cloneTd = v.cloneNode(true);
-                _cloneTd.style.height = v.offsetHeight + 'px';
-                let _cloneTr = jTool(v).closest('tr').clone();
-                tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
-            });
-
-			// 增加临时展示DOM
-            const parseData = {
-                tableClassName: _table.attr('class'),
-                thOuterHtml: jTool('.drag-action', _th).get(0).outerHTML,
-                thStyle: `style="height:${_th.height()}px"`,
-                tbodyHtml: tbodyHtml
-            };
-
 			_tableWrap.append('<div class="dreamland-div"></div>');
 			let dreamlandDIV = jTool('.dreamland-div', _tableWrap);
-			dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml(parseData);
+			dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({_table,  _th, colTd});
 
 			// 存储移动时的th所处的位置
 			let _thIndex = 0;

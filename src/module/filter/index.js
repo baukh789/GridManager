@@ -4,8 +4,8 @@
  */
 import { jTool, base, parseTpl } from '../base';
 import core from '../core';
-import checkbox from '../checkbox';
 import cache from '../cache';
+import checkbox from '../checkbox';
 import i18n from '../i18n';
 import filterTpl from './filter.tpl.html';
 class Filter {
@@ -22,30 +22,21 @@ class Filter {
 
     /**
      * 表头的筛选菜单HTML
-     * @param parseData
-     * @returns {string}
+     * @param params
+     * @returns {parseData}
      */
-    @parseTpl()
-    createHtml(parseData) {
-        return filterTpl;
-    }
-
-    /**
-     * 获取筛选区所需要的解析数据
-     * @param settings
-     * @param filter: 当前列的筛选条件对象
-     * @param tableWarpHeight: tableWarp的高度
-     * @returns {}
-     */
-    getParseData(settings, filter, tableWarpHeight) {
+    @parseTpl(filterTpl)
+    createHtml(params) {
+        const { settings, columnFilter, $tableWarp } = params;
+        const tableWarpHeight = $tableWarp.height();
         let listHtml = '';
-        filter.selected = filter.selected || '';
-        filter.option.forEach(item => {
-            let selectedList = filter.selected.split(',');
+        columnFilter.selected = columnFilter.selected || '';
+        columnFilter.option.forEach(item => {
+            let selectedList = columnFilter.selected.split(',');
             selectedList = selectedList.map(item => {
                 return item.trim();
             });
-            if (filter.isMultiple) {
+            if (columnFilter.isMultiple) {
                 const parseData = {
                     checked: selectedList.indexOf(item.value) !== -1 ? 'checked' : 'unchecked',
                     label: item.text,
@@ -62,7 +53,7 @@ class Filter {
             }
         });
         return {
-            iconClass: filter.selected ? ' filter-selected' : '',
+            iconClass: columnFilter.selected ? ' filter-selected' : '',
             listStyle: `max-height: ${tableWarpHeight - 100 + 'px'}`,
             okText: i18n.i18nText(settings, 'filter-ok'),
             resetText: i18n.i18nText(settings, 'filter-reset'),

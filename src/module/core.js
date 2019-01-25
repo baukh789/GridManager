@@ -16,6 +16,7 @@ import remind from './remind';
 import sort from './sort';
 import filter from './filter';
 import scroll from './scroll';
+import i18n from './i18n';
 class Core {
 	/**
 	 * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
@@ -579,12 +580,11 @@ class Core {
 
 		// 嵌入配置列表DOM
 		if (settings.supportConfig) {
-			$tableWarp.append(config.createHtml(settings));
+			$tableWarp.append(config.createHtml({configInfo: settings.configInfo}));
 		}
 
 		// 嵌入Ajax分页DOM
 		if (settings.supportAjaxPage) {
-			// $tableWarp.append(ajaxPage.createHtml(settings));
 			ajaxPage.initAjaxPage($table, $tableWarp, settings);
 		}
 
@@ -674,7 +674,7 @@ class Core {
             // 嵌入表头的筛选事件源
             // 插件自动生成的序号列与选择列不做事件绑定
             if (!isAutoCol && column.filter && jTool.type(column.filter) === 'object') {
-                const filterDom = jTool(filter.createHtml(filter.getParseData(settings, column.filter, $tableWarp.height())));
+                const filterDom = jTool(filter.createHtml({settings, columnFilter: column.filter, $tableWarp}));
                 onlyThWarp.append(filterDom);
             }
 

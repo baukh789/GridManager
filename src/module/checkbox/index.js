@@ -50,27 +50,53 @@ class Checkbox {
 			width: CHECKBOX_WIDTH,
 			align: 'center',
 			template: checked => {
-			    if (settings.useRadio) {
-                    return this.getColumnTemplate({template: this.getRadioTpl({checked: checked})});
-                }
-                return this.getColumnTemplate({template: this.getCheckboxTpl({checked: checked ? 'checked' : 'unchecked'})});
+                return this.getColumnTemplate({checked, useRadio: settings.useRadio});
 			}
 		};
 	}
 
-    @parseTpl()
-	getColumnTemplate(parseData) {
-        return columnTpl;
+    /**
+     * 获取选行模板
+     * @param params
+     * @returns {{template: {checked}}}
+     */
+    @parseTpl(columnTpl)
+	getColumnTemplate(params) {
+	    const { checked, useRadio } = params;
+	    const template = useRadio ? this.getRadioTpl({checked: checked}) : this.getCheckboxTpl({checked: checked ? 'checked' : 'unchecked'});
+        return {
+            template
+        };
     }
 
-    @parseTpl()
-    getCheckboxTpl(parseData) {
-        return checkboxTpl;
+    /**
+     * 获取checkbox模板
+     * @param params
+     * @returns {{checked: string}}
+     */
+    @parseTpl(checkboxTpl)
+    getCheckboxTpl(params) {
+        const { checked, label, value } = params;
+        return {
+            checked: checked ? 'checked' : 'unchecked',
+            label,
+            value
+        };
     }
 
-    @parseTpl()
-    getRadioTpl(parseData) {
-        return radioTpl;
+    /**
+     * 获取radio模板
+     * @param params
+     * @returns {{checked: *}}
+     */
+    @parseTpl(radioTpl)
+    getRadioTpl(params) {
+        const { checked, label, value } = params;
+        return {
+            checked,
+            label,
+            value
+        };
     }
 
 	/**
