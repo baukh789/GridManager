@@ -647,15 +647,15 @@ class BaseClass {
      * @param value: input value
      * @returns {string}
      */
-    getRadioString(checked, label, value) {
-        return `<label class="gm-radio-wrapper">
-                    <span class="gm-radio-checkbox gm-radio${checked ? ' gm-radio-checked' : ''}">
-                        <input type="radio" class="gm-radio-checkbox-input gm-radio-input"${value ? ' value="' + value + '"' : ''}${checked ? ' checked="true"' : ''}/>
-                        <span class="gm-radio-inner"></span>
-                    </span>
-                    ${label ? '<span>' + label + '</span>' : ''}
-                </label>`;
-    }
+    // getRadioString(checked, label, value) {
+    //     return `<label class="gm-radio-wrapper">
+    //                 <span class="gm-radio-checkbox gm-radio${checked ? ' gm-radio-checked' : ''}">
+    //                     <input type="radio" class="gm-radio-checkbox-input gm-radio-input"${value ? ' value="' + value + '"' : ''}${checked ? ' checked="true"' : ''}/>
+    //                     <span class="gm-radio-inner"></span>
+    //                 </span>
+    //                 ${label ? '<span>' + label + '</span>' : ''}
+    //             </label>`;
+    // }
 
     /**
      * 更新单选框状态

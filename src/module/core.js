@@ -499,7 +499,7 @@ class Core {
                     th.setAttribute('th-name', order.key);
                     th.setAttribute('th-visible', thVisible);
                     th.setAttribute('gm-order', 'true');
-                    thText.innerHTML = order.getThString(settings);
+                    thText.innerHTML = order.getThContent(settings);
 					break;
 				// 插件自动生成选择列
 				case checkbox.key:
@@ -507,7 +507,7 @@ class Core {
                     th.setAttribute('th-name', checkbox.key);
                     th.setAttribute('th-visible', thVisible);
                     th.setAttribute('gm-checkbox', 'true');
-                    thText.innerHTML = checkbox.getThString(settings.useRadio);
+                    thText.innerHTML = checkbox.getThContent(settings.useRadio);
 					break;
 				// 普通列
 				default:
@@ -636,7 +636,7 @@ class Core {
             // 插件自动生成的序号列与选择列不做事件绑定
             // 排序类型
             if (!isAutoCol && jTool.type(column.sorting) === 'string') {
-                const sortingDom = jTool(sort.html);
+                const sortingDom = jTool(sort.createHtml());
 
                 // 依据 column.sorting 进行初始显示
                 switch (column.sorting) {

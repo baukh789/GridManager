@@ -80,11 +80,11 @@ class Checkbox {
 	}
 
 	/**
-	 * 获取Th: 全选字符串
+	 * 获取Th内容
 	 * @param useRadio: 是否使用单选
 	 * @returns {string}
      */
-	getThString(useRadio) {
+    getThContent(useRadio) {
         return useRadio ? '' : this.getCheckboxTpl({});
 	}
 

@@ -1,22 +1,21 @@
 /*
 * sort: 排序
 * */
-import { jTool, base } from '../base';
+import { jTool, base, parseTpl } from '../base';
 import core from '../core';
 import cache from '../cache';
+import sortTpl from './sort.tpl.html';
 class Sort {
     // 启用状态
     enable = false;
 
 	/**
 	 * 获取排序所需HTML
-	 * @returns {string}
+	 * @returns {parseData}
      */
-	get html() {
-		return `<div class="sorting-action">
-                    <i class="sa-icon sa-up iconfont icon-up"></i>
-                    <i class="sa-icon sa-down iconfont icon-down"></i>
-                </div>`;
+	@parseTpl(sortTpl)
+	createHtml() {
+		return {};
 	}
 
 	/**

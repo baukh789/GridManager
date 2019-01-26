@@ -1,7 +1,7 @@
 /**
  * Settings: 配置项
  */
-import { $ }  from './base';
+import { jTool }  from './base';
 
 class Settings {
 	constructor() {
@@ -26,10 +26,10 @@ class Settings {
 			supportDrag: true,
 
 			// 拖拽前事件
-			dragBefore: $.noop,
+			dragBefore: jTool.noop,
 
 			// 拖拽后事件
-			dragAfter: $.noop
+			dragAfter: jTool.noop
 		};
 
 		/**
@@ -40,10 +40,10 @@ class Settings {
 			supportAdjust: true,
 
 			// 宽度调整前事件
-			adjustBefore: $.noop,
+			adjustBefore: jTool.noop,
 
 			// 宽度调整后事件
-			adjustAfter: $.noop
+			adjustAfter: jTool.noop
 		};
 
 		/**
@@ -105,7 +105,7 @@ class Settings {
             disableHover: false, // v2.6.1新增
 
             // 单个td的hover事件
-            cellHover: $.noop
+            cellHover: jTool.noop
         };
 
 		/**
@@ -142,10 +142,10 @@ class Settings {
 			sortDownText: 'DESC',
 
 			// 排序事件发生前
-			sortingBefore: $.noop,
+			sortingBefore: jTool.noop,
 
 			// 排序事件发生后
-			sortingAfter: $.noop
+			sortingAfter: jTool.noop
 		};
 
 		/**
@@ -195,10 +195,10 @@ class Settings {
 			pageSizeKey: 'pSize',
 
 			// 分页事件发生前
-			pagingBefore: $.noop,
+			pagingBefore: jTool.noop,
 
 			// 分页事件发生后
-			pagingAfter: $.noop
+			pagingAfter: jTool.noop
 		};
 
 		/**
@@ -223,16 +223,16 @@ class Settings {
             useRadio: false,
 
 			// 选择事件执行前事件
-			checkedBefore: $.noop,
+			checkedBefore: jTool.noop,
 
 			// 选择事件执行后事件
-			checkedAfter: $.noop,
+			checkedAfter: jTool.noop,
 
 			// 全选事件执行前事件
-			checkedAllBefore: $.noop,
+			checkedAllBefore: jTool.noop,
 
 			// 全选事件执行后事件
-			checkedAllAfter: $.noop
+			checkedAllAfter: jTool.noop
 		};
 
 		/**
@@ -339,16 +339,16 @@ class Settings {
 			ajax_xhrFields: {},
 
 			// ajax请求之前,与jTool的beforeSend使用方法相同
-			ajax_beforeSend: $.noop,
+			ajax_beforeSend: jTool.noop,
 
 			// ajax成功后,与jTool的success使用方法相同
-			ajax_success: $.noop,
+			ajax_success: jTool.noop,
 
 			// ajax完成后,与jTool的complete使用方法相同
-			ajax_complete: $.noop,
+			ajax_complete: jTool.noop,
 
 			// ajax失败后,与jTool的error使用方法相同
-			ajax_error: $.noop,
+			ajax_error: jTool.noop,
 
 			// 请求前处理程序, 可以通过该方法修改全部的请求参数 @v2.3.14
 			requestHandler: request => request,
@@ -381,7 +381,7 @@ class Settings {
                 suffix: 'xls',
 
                 // 导出处理器函数,该函数需要返回一个promise。当`exportType`为`static`时，该参数不生效。
-                handler: $.noop
+                handler: jTool.noop
             }
 		};
 
@@ -402,7 +402,7 @@ class Settings {
 			...gridExport,
             ...hover
 		};
-		$.extend(true, this, settings);
+		jTool.extend(true, this, settings);
 	}
 }
 

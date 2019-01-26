@@ -9,7 +9,7 @@ export function parseTpl(tpl) {
         // params 中如果存在 tpl 则使用 params 中的进行渲染
         descriptor.value = params => {
             const vm = oldValue.call(target, params);
-            return (params.tpl || tpl).replace(/\{\{([^(\}\})]+)\}\}/g, (match, evalStr) => {
+            return (params && params.tpl || tpl).trim().replace(/\{\{([^(\}\})]+)\}\}/g, (match, evalStr) => {
                 if (/return/.test(evalStr)) {
                     return new Function('vm', evalStr)(vm) || '';
                 }

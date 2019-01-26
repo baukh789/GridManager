@@ -1,7 +1,8 @@
 /*
  * remind: 表头提醒
  * */
-import { jTool } from '../base';
+import { jTool, parseTpl } from '../base';
+import remindTpl from './remind.tpl.html';
 class Remind {
     // 启用状态
     enable = false;
@@ -12,14 +13,12 @@ class Remind {
      * @param content
      * @returns {string}
      */
+    @parseTpl(remindTpl)
 	createHtml(title, content) {
-		return `<div class="remind-action">
-                    <i class="ra-icon iconfont icon-help"></i>
-                    <div class="ra-area">
-                        <span class="ra-title">${title}</span>
-                        <span class="ra-con">${content || title}</span>
-                    </div>
-                </div>`;
+	    return {
+            title,
+            content
+        };
 	}
 
 	/**

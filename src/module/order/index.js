@@ -10,11 +10,11 @@ class Order {
 	}
 
 	/**
-	 * 获取 序号字符串
+	 * 获取TH内容
 	 * @param settings
 	 * @returns {string}
 	 */
-	getThString(settings) {  // TODO getThString要改名
+    getThContent(settings) {
 		return i18n.i18nText(settings, 'order-text');
 	}
 

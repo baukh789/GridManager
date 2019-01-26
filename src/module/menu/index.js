@@ -1,12 +1,17 @@
 /*
  * GridManager: 右键菜单
  * */
-import { jTool, base } from '../base';
+import { jTool, base, parseTpl } from '../base';
 import cache from '../cache';
 import i18n from '../i18n';
 import exportFile from '../exportFile';
 import ajaxPage from '../ajaxPage';
 import config from '../config';
+import menuTpl from './menu.tpl.html';
+import ajaxPageTpl from './ajaxPage.tpl.html';
+import configTpl from './config.tpl.html';
+import exportTpl from './export.tpl.html';
+
 class Menu {
 	// 唯一标识名
 	get keyName() {
@@ -17,64 +22,68 @@ class Menu {
 		let settings = cache.getSettings($table);
 
 		// 创建menu DOM
-		this.createMenuDOM(settings);
+        jTool('body').append(this.createMenuHtml({settings}));
 
 		// 绑定右键菜单事件
 		this.bindRightMenuEvent($table, settings);
 	}
 
-	/**
-	 * 创建menu DOM
-	 * @param $table
-	 * @param settings
+    /**
+     * 创建menu DOM
+     * @param $table
+     * @param settings
      */
-	createMenuDOM(settings) {
-		// menu DOM
-		let menuHTML = `<div class="grid-menu" ${this.keyName}="${settings.gridManagerName}">`;
+    @parseTpl(menuTpl)
+    createMenuHtml(params) {
+        const settings = params.settings;
+        const { gridManagerName, supportAjaxPage, supportExport, supportConfig } = settings;
+        return {
+            gridManagerName: gridManagerName,
+            keyName: this.keyName,
+            menuRefreshText: i18n.i18nText(settings, 'menu-refresh'),
+            ajaxPageHtml: supportAjaxPage ? this.createAjaxPageHtml({settings}) : '',
+            exportHtml: supportExport ? this.createExportHtml({settings}) : '',
+            configHtml: supportConfig ? this.createConfigHtml({settings}) : ''
+        };
+    }
 
-		// 分页类操作
-		if (settings.supportAjaxPage) {
-			menuHTML += `<span grid-action="refresh-page" refresh-type="previous">
-							${i18n.i18nText(settings, 'menu-previous-page')}
-							<i class="iconfont icon-up"></i>
-						</span>
-						<span grid-action="refresh-page" refresh-type="next">
-							${i18n.i18nText(settings, 'menu-next-page')}
-							<i class="iconfont icon-down"></i>
-						</span>`;
-		}
+    /**
+     * 分页类操作
+     * @param params
+     */
+    @parseTpl(ajaxPageTpl)
+    createAjaxPageHtml(params) {
+        const settings = params.settings;
+        return {
+            menuPreviousPageText: i18n.i18nText(settings, 'menu-previous-page'),
+            menuNextPageText: i18n.i18nText(settings, 'menu-next-page'),
+        }
+    }
 
-		// 重新加载当前页
-		menuHTML += `<span grid-action="refresh-page" refresh-type="refresh">
-						${i18n.i18nText(settings, 'menu-refresh')}
-						<i class="iconfont icon-refresh"></i>
-					</span>`;
+    /**
+     * 导出类操作
+     * @param params
+     */
+    @parseTpl(exportTpl)
+    createExportHtml(params) {
+        const settings = params.settings;
+        return {
+            menuSaveAsExcelText: i18n.i18nText(settings, 'menu-save-as-excel'),
+            menuSaveAsExcelForCheckedText: i18n.i18nText(settings, 'menu-save-as-excel-for-checked'),
+        }
+    }
 
-		// 导出
-		if (settings.supportExport) {
-			menuHTML += `<span class="grid-line"></span>
-						<span grid-action="export-excel" only-checked="false">
-							${i18n.i18nText(settings, 'menu-save-as-excel')}
-							<i class="iconfont icon-xls"></i>
-						</span>
-						<span grid-action="export-excel" only-checked="true">
-							${i18n.i18nText(settings, 'menu-save-as-excel-for-checked')}
-							<i class="iconfont icon-xls"></i>
-						</span>`;
-		}
-
-		// 配置
-		if (settings.supportConfig) {
-			menuHTML += `<span class="grid-line"></span>
-						<span grid-action="config-grid">
-							${i18n.i18nText(settings, 'menu-config-grid')}
-							<i class="iconfont icon-config"></i>
-						</span>`;
-		}
-		menuHTML += `</div>`;
-		const _body = jTool('body');
-		_body.append(menuHTML);
-	}
+    /**
+     * 配置类操作
+     * @param params
+     */
+    @parseTpl(configTpl)
+    createConfigHtml(params) {
+        const settings = params.settings;
+        return {
+            menuConfigGridText: i18n.i18nText(settings, 'menu-config-grid')
+        }
+    }
 
 	/**
 	 * 绑定右键菜单事件
@@ -84,7 +93,8 @@ class Menu {
 		const _this = this;
 		const tableWarp = $table.closest('.table-wrap');
 
-		const menuDOM = jTool(`.grid-menu[${_this.keyName}="${settings.gridManagerName}"]`);
+		const gridManagerName = settings.gridManagerName;
+		const menuDOM = jTool(`.grid-menu[${_this.keyName}="${gridManagerName}"]`);
 
 		const _body = jTool('body');
 
@@ -101,7 +111,7 @@ class Menu {
 
 			// 验证：当前是否存在已选中的项
 			const exportExcelOfChecked = jTool('[grid-action="export-excel"][only-checked="true"]');
-			if (jTool('tbody tr[checked="true"]', base.getTable(settings.gridManagerName)).length === 0) {
+			if (jTool('tbody tr[checked="true"]', base.getTable(gridManagerName)).length === 0) {
 				exportExcelOfChecked.addClass('disabled');
 			} else {
 				exportExcelOfChecked.removeClass('disabled');
@@ -143,21 +153,21 @@ class Menu {
 			const _gridMenu = jTool(this).closest('.grid-menu');
 			const _table = base.getTable(_gridMenu.attr(_this.keyName));
 			const refreshType = this.getAttribute('refresh-type');
-			let settings = cache.getSettings(_table);
-			let cPage = settings.pageData[settings.currentPageKey];
+			let _settings = cache.getSettings(_table);
+			let cPage = _settings.pageData[_settings.currentPageKey];
 
 			// 上一页
 			if (refreshType === 'previous' && cPage > 1) {
 				cPage = cPage - 1;
 				// 下一页
-			} else if (refreshType === 'next' && cPage < settings.pageData.tPage) {
+			} else if (refreshType === 'next' && cPage < _settings.pageData.tPage) {
 				cPage = cPage + 1;
 				// 重新加载
 			} else if (refreshType === 'refresh') {
 				cPage = cPage;
 			}
 
-			ajaxPage.gotoPage(_table, settings, cPage);
+			ajaxPage.gotoPage(_table, _settings, cPage);
 			_body.off('mousedown.gridMenu');
 			_gridMenu.hide();
 		});
