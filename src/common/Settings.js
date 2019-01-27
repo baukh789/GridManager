@@ -1,7 +1,7 @@
 /**
  * Settings: 配置项
  */
-import { jTool }  from './base';
+import jTool  from './jTool';
 
 class Settings {
 	constructor() {

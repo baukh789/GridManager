@@ -2,9 +2,8 @@
  * Created by baukh on 18/7/11.
  * 表头的筛选菜单
  */
-import { jTool, base, parseTpl } from '../base';
+import { jTool, base, cache, parseTpl } from '../../common';
 import core from '../core';
-import cache from '../cache';
 import checkbox from '../checkbox';
 import i18n from '../i18n';
 import filterTpl from './filter.tpl.html';

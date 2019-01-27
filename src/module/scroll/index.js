@@ -1,8 +1,7 @@
 /*
  * scroll: 滚动轴
  * */
-import { jTool, base } from '../base';
-import cache from '../cache';
+import { jTool, base, cache } from '../../common';
 import config from '../config';
 class Scroll {
     /**

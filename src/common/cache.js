@@ -4,10 +4,9 @@
 * 1.Store: 渲染表格时所使用的json数据 [存储在GM实例]
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
-import {jTool, base} from './base';
-import {Settings, TextSettings} from './Settings';
-import checkbox from './checkbox';
-import order from './order';
+import jTool from './jTool';
+import base from './base';
+import { Settings, TextSettings } from './Settings';
 import store from './Store';
 
 class Cache {
@@ -64,15 +63,29 @@ class Cache {
         }
     }
 
-    // TODO 暂时没有使用到，该方法可以处理双向数据变更后 GM对于数据的更新
     /**
-     * 设置当前行使用的数据
+     * 更新列数据
      * @param $table
-     * @param index
-     * @param rowData
+     * @param key: 列数据的主键
+     * @param rowDataList: 需要更新的数据列表
+     * @returns tableData: 更新后的表格数据
      */
-    setRowData($table, index, rowData) {
-        store.responseData[base.getKey($table)][index] = rowData;
+    updateRowData($table, key, rowDataList) {
+        const tableData = this.getTableData($table);
+        const { supportCheckbox } = this.getSettings($table);
+        tableData.forEach(item => {
+            rowDataList.forEach(newItem => {
+                if (newItem[key] === item[key]) {
+                    Object.assign(item, newItem);
+                }
+            });
+        });
+        // 存储表格数据
+        this.setTableData($table, tableData);
+
+        // 更新选中数据
+        supportCheckbox && this.setCheckedData($table, tableData);
+        return tableData;
     }
 
     /**
@@ -128,7 +141,7 @@ class Cache {
 
         dataList.forEach(item => {
             let cloneObj = base.getDataForColumnMap(columnMap, item);
-            let checked = item[checkbox.key];
+            let checked = item['gm_checkbox'];
             let index = base.getObjectIndexToArray(tableCheckedList, cloneObj);
 
             // 新增: 已选中 且 未存储
@@ -143,31 +156,6 @@ class Cache {
             }
         });
         store.checkedData[gmName] = tableCheckedList;
-    }
-
-    /**
-     * 更新列数据
-     * @param $table
-     * @param key: 列数据的主键
-     * @param rowDataList: 需要更新的数据列表
-     * @returns tableData: 更新后的表格数据
-     */
-    updateRowData($table, key, rowDataList) {
-        const tableData = this.getTableData($table);
-        const { supportCheckbox } = this.getSettings($table);
-        tableData.forEach(item => {
-            rowDataList.forEach(newItem => {
-                if (newItem[key] === item[key]) {
-                    Object.assign(item, newItem);
-                }
-            });
-        });
-        // 存储表格数据
-        this.setTableData($table, tableData);
-
-        // 更新选中数据
-        supportCheckbox && this.setCheckedData($table, tableData);
-        return tableData;
     }
 
     /**
@@ -283,8 +271,10 @@ class Cache {
      * 初始化设置相关: 合并, 存储
      * @param $table
      * @param arg
+     * @param checkbox
+     * @param order
      */
-    initSettings($table, arg) {
+    initSettings($table, arg, checkbox, order) {
         // TODO 在弱化 $table的使用范围操作时，可以使用getSetting方法进行替换。详情查看2.7.x.md
         if (store.settings[base.getKey($table)]) {
             base.outLog('gridManagerName在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值', 'warn');
@@ -505,5 +495,4 @@ class Cache {
         delete store.settings[gridManagerName];
     }
 }
-
 export default new Cache();

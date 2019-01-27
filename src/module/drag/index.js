@@ -1,9 +1,8 @@
 /*
  * drag: 拖拽
  * */
-import { jTool, base, parseTpl } from '../base';
+import { jTool, base, cache, parseTpl } from '../../common';
 import adjust from '../adjust';
-import cache from '../cache';
 import config from '../config';
 import dreamlandTpl from './dreamland.tpl.html';
 class Drag {

@@ -3,9 +3,8 @@
  * */
 import './style.less';
 import { CHECKBOX_WIDTH } from '../../common/constants';
-import { jTool, base, parseTpl } from '../base';
+import { jTool, base, cache, parseTpl } from '../../common';
 import ajaxPage from '../ajaxPage';
-import cache from '../cache';
 import columnTpl from './column.tpl.html';
 import checkboxTpl from './checkbox.tpl.html';
 import radioTpl from './radio.tpl.html';

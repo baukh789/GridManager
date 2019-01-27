@@ -2,9 +2,8 @@
  * ajaxPage: 分页
  * */
 import './style.less';
-import { jTool, base, parseTpl } from '../base';
+import { jTool, base, cache, parseTpl } from '../../common';
 import core from '../core';
-import cache from '../cache';
 import i18n from '../i18n';
 import ajaxPageTpl from './ajax-page.tpl.html';
 class AjaxPage {

@@ -1,9 +1,8 @@
 /*
 * sort: 排序
 * */
-import { jTool, base, parseTpl } from '../base';
+import { jTool, base, cache, parseTpl } from '../../common';
 import core from '../core';
-import cache from '../cache';
 import sortTpl from './sort.tpl.html';
 class Sort {
     // 启用状态

@@ -1,7 +1,7 @@
 /*
  * remind: 表头提醒
  * */
-import { jTool, parseTpl } from '../base';
+import { jTool, parseTpl } from '../../common';
 import remindTpl from './remind.tpl.html';
 class Remind {
     // 启用状态

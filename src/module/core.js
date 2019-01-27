@@ -4,11 +4,10 @@
 * 2.渲染GM DOM
 * 3.重置tbody
 * */
-import { jTool, base } from './base';
+import { jTool, base, cache } from '../common';
 import menu from './menu';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
-import cache from './cache';
 import config from './config';
 import checkbox from './checkbox';
 import order from './order';
@@ -16,7 +15,6 @@ import remind from './remind';
 import sort from './sort';
 import filter from './filter';
 import scroll from './scroll';
-import i18n from './i18n';
 class Core {
 	/**
 	 * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染

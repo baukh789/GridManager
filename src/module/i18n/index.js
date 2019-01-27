@@ -1,7 +1,7 @@
 /*
  * i18n: 国际化
  * */
-import { jTool, base } from '../base';
+import { jTool, base } from '../../common';
 class I18n {
 	/**
 	 * 获取所用语种，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn

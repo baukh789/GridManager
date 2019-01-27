@@ -1,8 +1,7 @@
 /*
  * adjust: 宽度调整
  * */
-import { jTool, base } from '../base';
-import cache from '../cache';
+import { jTool, base, cache } from '../../common';
 class Adjust {
     /**
      * 宽度调整HTML

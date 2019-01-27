@@ -3,10 +3,10 @@
  * 构造类
  */
 import '../css/index.less';
-import { jTool, base } from './base';
+import { jTool, base, cache } from '../common';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
-import cache from './cache';
+import order from './order';
 import checkbox from './checkbox';
 import config from './config';
 import core from './core';
@@ -529,7 +529,7 @@ export default class GridManager {
 		cache.cleanTableCacheForVersion();
 
 		// 初始化设置相关: 合并, 存储
-		const settings = cache.initSettings($table, arg);
+		const settings = cache.initSettings($table, arg, checkbox, order);
 
 		// 校验: gridManagerName
 		if (settings.gridManagerName.trim() === '') {

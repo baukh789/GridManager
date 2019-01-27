@@ -1,8 +1,7 @@
 /*
  * exportFile: 数据导出
  * */
-import { jTool, base, parseTpl } from '../base';
-import cache from '../cache';
+import { jTool, base, cache, parseTpl } from '../../common';
 import staticTpl from './static.tpl.html';
 class ExportFile {
 	/**

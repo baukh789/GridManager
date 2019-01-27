@@ -1,8 +1,7 @@
 /*
  * config: th配置
  * */
-import { jTool, base, parseTpl } from '../base';
-import cache from '../cache';
+import { jTool, base, cache, parseTpl } from '../../common';
 import adjust from '../adjust';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
