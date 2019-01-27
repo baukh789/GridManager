@@ -1,9 +1,3 @@
 <li th-name="{{vm.key}}" class="{{vm.isShow ? 'checked-li' : ''}}">
-    <label class="gm-checkbox-wrapper">
-        <span class="gm-radio-checkbox gm-checkbox{{vm.isShow ? ' gm-checkbox-checked' : ''}}">
-            <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input">
-            <span class="gm-checkbox-inner"></span>
-        </span>
-        {{vm.title}}
-    </label>
+    {{vm.checkboxTpl}}
 </li>

@@ -4,6 +4,7 @@
 import { jTool, base, parseTpl } from '../base';
 import cache from '../cache';
 import adjust from '../adjust';
+import checkbox from '../checkbox';
 import scroll from '../scroll';
 import configTpl from './config.tpl.html';
 import configColumnTpl from './config-column.tpl.html';
@@ -23,19 +24,21 @@ class Config {
 
     /**
      * 生成配置列HTML
-     * @param params{key, title, isShow}
+     * @param params{key, key, isShow}
      * @returns {string}
      */
     @parseTpl(configColumnTpl)
     createColumn(params) {
         const { $table, key, isShow } = params;
 
-        // 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
-        let title = base.getTh($table, key).find('.th-text').text();
+        // 注意: 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
+        const label = base.getTh($table, key).find('.th-text').text();
+        const checkboxTpl = checkbox.getCheckboxTpl({checked: isShow, label});
 	    return {
             key,
-            title,
-            isShow
+            label,
+            isShow,
+            checkboxTpl
         };
     }
 
@@ -216,12 +219,10 @@ class Config {
             if (disableCustomize) {
                 return;
             }
-
             $configList.append(this.createColumn({ $table, key, isShow }));
             if (isShow) {
                 showNum++;
             }
-            $configList.find(`li[th-name="${key}"] input[type="checkbox"]`).prop('checked', isShow);
         });
 
         // 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示

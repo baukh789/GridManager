@@ -20,6 +20,9 @@
         "component",
         "components"
     ],
+    "directories": {
+        "jtool": "^1.2.26"
+    },
     "devDependencies": {
         "babel-core": "^6.25.0",
         "babel-eslint": "^6.0.4",
@@ -46,8 +49,6 @@
         "istanbul-instrumenter-loader": "^1.2.0",
         "jasmine-ajax": "^3.2.0",
         "jasmine-core": "^2.6.4",
-        "jquery": "^3.2.1",
-        "jtool": "^1.2.26",
         "karma": "^0.13.22",
         "karma-babel-preprocessor": "^7.0.0",
         "karma-chrome-launcher": "^2.0.0",

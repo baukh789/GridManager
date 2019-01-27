@@ -73,9 +73,9 @@ class Filter {
         jTool.each($filters, (index, item) => {
             let $radioOrCheckbox = jTool(item).closest('.gm-radio-checkbox');
             if (filter.isMultiple) {
-                base.updateCheckboxState($radioOrCheckbox, filter.selected.indexOf(item.value)  >= 0 ? 'checked' : 'unchecked');
+                checkbox.updateCheckboxState($radioOrCheckbox, filter.selected.indexOf(item.value)  >= 0 ? 'checked' : 'unchecked');
             } else {
-                base.updateRadioState($radioOrCheckbox, item.value === filter.selected);
+                checkbox.updateRadioState($radioOrCheckbox, item.value === filter.selected);
             }
         });
 
@@ -176,7 +176,7 @@ class Filter {
         $table.off('click', '.gm-checkbox-input');
         $table.on('click', '.gm-checkbox-input', function () {
             const $checkbox = jTool(this).closest('.filter-checkbox').find('.gm-checkbox');
-            base.updateCheckboxState($checkbox, this.checked ? 'checked' : 'unchecked');
+            checkbox.updateCheckboxState($checkbox, this.checked ? 'checked' : 'unchecked');
         });
 
         // 事件: 单选框事件
@@ -184,7 +184,7 @@ class Filter {
         $table.on('click', '.gm-radio-input', function (e) {
             const $filterRadio = jTool(this).closest('.filter-list').find('.filter-radio');
             jTool.each($filterRadio, (index, item) => {
-                base.updateRadioState(jTool(item).find('.gm-radio'), this === item.querySelector('.gm-radio-input'));
+                checkbox.updateRadioState(jTool(item).find('.gm-radio'), this === item.querySelector('.gm-radio-input'));
             });
         });
     }

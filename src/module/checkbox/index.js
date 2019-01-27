@@ -206,7 +206,7 @@ class Checkbox {
 			const $tr = jTool(`tbody tr[cache-key="${index}"]`, $table);
             const $checkSpan = jTool(`td[gm-checkbox="true"] .gm-radio-checkbox`, $tr);
 			$tr.attr('checked', row[this.key]);
-            isRadio ? base.updateRadioState($checkSpan, row[this.key]) : base.updateCheckboxState($checkSpan, row[this.key] ? 'checked' : 'unchecked');
+            isRadio ? this.updateRadioState($checkSpan, row[this.key]) : this.updateCheckboxState($checkSpan, row[this.key] ? 'checked' : 'unchecked');
             row[this.key] && checkedNum++;
 		});
 
@@ -214,11 +214,55 @@ class Checkbox {
         const $allCheckSpan = jTool(`thead tr th[gm-checkbox="true"] .gm-checkbox `, $table);
 
         // [checked: 选中, indeterminate: 半选中, unchecked: 未选中]
-        !isRadio && base.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === tableData.length ? 'checked' : 'indeterminate'));
+        !isRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === tableData.length ? 'checked' : 'indeterminate'));
 
 		// 更新底部工具条选中描述信息
         ajaxPage.updateCheckedInfo($table, settings);
 	}
+
+    /**
+     * 更新单选框状态
+     * @param $radio
+     * @param state Boolean
+     */
+    updateRadioState($radio, state) {
+        const $input = jTool(`input[type="radio"]`, $radio);
+        if (state) {
+            $radio.addClass('gm-radio-checked');
+        } else {
+            $radio.removeClass('gm-radio-checked');
+        }
+        $input.prop('checked', state);
+    }
+
+    /**
+     * 更新checkbox选中状态
+     * @param $checkbox: '<span class="gm-checkbox"></span>'
+     * @param state: [checked: 选中, indeterminate: 半选中, uncheck: 未选中]
+     */
+    updateCheckboxState($checkbox, state) {
+        const $input = jTool(`input[type="checkbox"]`, $checkbox);
+        switch (state) {
+            case 'checked': {
+                $checkbox.addClass('gm-checkbox-checked');
+                $checkbox.removeClass('gm-checkbox-indeterminate');
+                $input.prop('checked', true);
+                break;
+            }
+            case 'indeterminate': {
+                $checkbox.removeClass('gm-checkbox-checked');
+                $checkbox.addClass('gm-checkbox-indeterminate');
+                $input.prop('checked', false);
+                break;
+            }
+            case 'unchecked': {
+                $checkbox.removeClass('gm-checkbox-checked');
+                $checkbox.removeClass('gm-checkbox-indeterminate');
+                $input.prop('checked', false);
+                break;
+            }
+        }
+    }
 
 	/**
 	 * 消毁

@@ -66,8 +66,11 @@ const config = {
 		// 使用webpack内置插件压缩js
 		new webpack.optimize.UglifyJsPlugin({
 			compress: {
-				warnings: false
+				warnings: false,
+                // join_vars: true
 			},
+            // toplevel: false,
+            // ie8: false,
 			sourceMap: false // 是否生成map文件
 		})
 	],
