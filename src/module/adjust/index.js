@@ -12,13 +12,59 @@ class Adjust {
         return '<span class="adjust-action"></span>';
     }
 
+    get selectedClassName() {
+        return 'adjust-selected';
+    }
+
     /**
-     * 初始化
-     * @param $table
+     * init
+     * 绑定宽度调整事件
+     * @param: table [jTool object]
      */
     init($table) {
-        // 绑定宽度调整事件
-        this.__bindAdjustEvent($table);
+        const _this = this;
+        // 监听鼠标调整列宽度
+        $table.off('mousedown', '.adjust-action');
+        $table.on('mousedown', '.adjust-action', function (event) {
+            const _dragAction = jTool(this);
+            // 事件源所在的th
+            let $th = _dragAction.closest('th');
+
+            // 事件源所在的tr
+            let $tr = $th.parent();
+
+            // 事件源所在的table
+            let	_$table = $tr.closest('table');
+
+            // 当前存储属性
+            const { adjustBefore, isIconFollowText } = cache.getSettings(_$table);
+
+            // 事件源同层级下的所有th
+            let	_allTh = $tr.find('th[th-visible="visible"]');
+
+            // 事件源下一个可视th
+            let	$nextTh = _allTh.eq($th.index(_allTh) + 1);
+
+            // 存储与事件源同列的所有td
+            let	$td = base.getColTd($th);
+
+            // 宽度调整触发回调事件
+            adjustBefore(event);
+
+            // 增加宽度调整中样式
+            $th.addClass(_this.selectedClassName);
+            $td.addClass(_this.selectedClassName);
+
+            // 更新界面交互标识
+            base.updateInteractive(_$table, 'adjust');
+
+            // 执行移动事件
+            _this.__runMoveEvent(_$table, $th, $nextTh, isIconFollowText);
+
+            // 绑定停止事件
+            _this.__runStopEvent(_$table, $th, $td);
+            return false;
+        });
     }
 
     /**
@@ -55,56 +101,6 @@ class Adjust {
 
         // 清理: 宽度调整事件
         $table.off('mousedown', '.adjust-action');
-    }
-
-    /**
-     * 绑定宽度调整事件
-     * @param: table [jTool object]
-     */
-    __bindAdjustEvent($table) {
-        const _this = this;
-        // 监听鼠标调整列宽度
-        $table.off('mousedown', '.adjust-action');
-        $table.on('mousedown', '.adjust-action', function (event) {
-            const _dragAction = jTool(this);
-            // 事件源所在的th
-            let $th = _dragAction.closest('th');
-
-            // 事件源所在的tr
-            let $tr = $th.parent();
-
-            // 事件源所在的table
-            let	_$table = $tr.closest('table');
-
-            // 当前存储属性
-            const { adjustBefore, isIconFollowText } = cache.getSettings(_$table);
-
-            // 事件源同层级下的所有th
-            let	_allTh = $tr.find('th[th-visible="visible"]');
-
-            // 事件源下一个可视th
-            let	$nextTh = _allTh.eq($th.index(_allTh) + 1);
-
-            // 存储与事件源同列的所有td
-            let	$td = base.getColTd($th);
-
-            // 宽度调整触发回调事件
-            adjustBefore(event);
-
-            // 增加宽度调整中样式
-            $th.addClass('adjust-selected');
-            $td.addClass('adjust-selected');
-
-            // 更新界面交互标识
-            base.updateInteractive(_$table, 'adjust');
-
-            // 执行移动事件
-            _this.__runMoveEvent(_$table, $th, $nextTh, isIconFollowText);
-
-            // 绑定停止事件
-            _this.__runStopEvent(_$table, $th, $td);
-            return false;
-        });
     }
 
     /**
@@ -169,12 +165,12 @@ class Adjust {
             $table.unbind('mousemove mouseleave');
 
             // 其它操作也在table以该事件进行绑定,所以通过class进行区别
-            if ($th.hasClass('adjust-selected')) {
+            if ($th.hasClass(this.selectedClassName)) {
                 // 宽度调整成功回调事件
                 settings.adjustAfter(event);
             }
-            $th.removeClass('adjust-selected');
-            $td.removeClass('adjust-selected');
+            $th.removeClass(this.selectedClassName);
+            $td.removeClass(this.selectedClassName);
             $table.removeClass('no-select-text');
 
             // 更新界面交互标识
