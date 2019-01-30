@@ -10,11 +10,10 @@ class AjaxPage {
 	/**
 	 * 初始化分页
 	 * @param $table
-	 * @param $tableWarp
-	 * @param settings
      */
-	initAjaxPage($table, $tableWarp, settings) {
-        $tableWarp.append(this.createHtml({settings, i18n, tpl: settings.ajaxPageTemplate}));
+	init($table) {
+        const settings = cache.getSettings($table);
+        const $tableWarp = $table.closest('.table-wrap');
 
 		// 根据本地缓存配置每页显示条数
 		if (!settings.disableCache) {
@@ -42,7 +41,7 @@ class AjaxPage {
      */
     @parseTpl(ajaxPageTpl)
     createHtml(params) {
-        const { settings, i18n } = params;
+        const { settings } = params;
         return {
             refreshActionText: i18n.i18nText(settings, 'refresh-action'),
             gotoFirstText: i18n.i18nText(settings, 'goto-first-text'),

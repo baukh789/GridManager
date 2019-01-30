@@ -4,61 +4,65 @@
 * 2.渲染GM DOM
 * 3.重置tbody
 * */
-import { jTool, base, cache } from '../common';
-import menu from './menu';
-import adjust from './adjust';
-import ajaxPage from './ajaxPage';
-import config from './config';
-import checkbox from './checkbox';
-import order from './order';
-import remind from './remind';
-import sort from './sort';
-import filter from './filter';
-import scroll from './scroll';
+import { jTool, base, parseTpl, cache } from '../../common';
+import menu from '../menu';
+import adjust from '../adjust';
+import ajaxPage from '../ajaxPage';
+import config from '../config';
+import checkbox from '../checkbox';
+import order from '../order';
+import remind from '../remind';
+import sort from '../sort';
+import filter from '../filter';
+import scroll from '../scroll';
+import wrapTpl from './wrap.tpl.html';
+import theadTpl from './thead.tpl.html';
+import thTpl from './th.tpl.html';
+
 class Core {
-	/**
-	 * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
-	 * @param $table
-	 * @param callback
+    /**
+     * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
+     * @param $table
+     * @param callback
      * @private
      */
-	refresh($table, callback) {
-		const settings = cache.getSettings($table);
+    refresh($table, callback) {
+        const settings = cache.getSettings($table);
 
-		const tableWrap = $table.closest('.table-wrap');
+        const tableWrap = $table.closest('.table-wrap');
 
-		// 更新刷新图标状态
-		ajaxPage.updateRefreshIconState($table, true);
+        // 更新刷新图标状态
+        ajaxPage.updateRefreshIconState($table, true);
 
-		base.showLoading(tableWrap, settings.loadingTemplate);
+        base.showLoading(tableWrap, settings.loadingTemplate);
 
-		let ajaxPromise = this.transformToPromise($table, settings);
+        let ajaxPromise = this.transformToPromise($table, settings);
 
-		settings.ajax_beforeSend(ajaxPromise);
-		ajaxPromise
-			.then(response => {
-				this.driveDomForSuccessAfter($table, settings, response, callback);
-				settings.ajax_success(response);
-				settings.ajax_complete(response);
-				base.hideLoading(tableWrap);
-				ajaxPage.updateRefreshIconState($table, false);
-			})
-			.catch(error => {
-				settings.ajax_error(error);
-				settings.ajax_complete(error);
-				base.hideLoading(tableWrap);
-                ajaxPage.updateRefreshIconState($table, false);
-			});
-	}
+        settings.ajax_beforeSend(ajaxPromise);
+        ajaxPromise
+        .then(response => {
+            this.driveDomForSuccessAfter($table, settings, response, callback);
+            settings.ajax_success(response);
+            settings.ajax_complete(response);
+            base.hideLoading(tableWrap);
+            ajaxPage.updateRefreshIconState($table, false);
+        })
+        .catch(error => {
+            settings.ajax_error(error);
+            settings.ajax_complete(error);
+            base.hideLoading(tableWrap);
+            ajaxPage.updateRefreshIconState($table, false);
+        });
+    }
 
-	/**
-	 * 将不同类型的ajax_data转换为promise
-	 * @param $table
-	 * @param settings
-	 * @returns promise
-	 */
-	transformToPromise($table, settings) {
-	    const params = getParams();
+    /**
+     * 将不同类型的ajax_data转换为promise
+     * @param $table
+     * @param settings
+     * @returns promise
+     */
+    transformToPromise($table, settings) {
+        const params = getParams();
         // 将 requestHandler 内修改的分页参数合并至 settings.pageData
         if (settings.supportAjaxPage) {
             jTool.each(settings.pageData, (key, value) => {
@@ -72,27 +76,27 @@ class Core {
         });
         cache.setSettings(settings);
 
-		let ajaxData = typeof settings.ajax_data === 'function' ? settings.ajax_data(settings, params) : settings.ajax_data;
+        let ajaxData = typeof settings.ajax_data === 'function' ? settings.ajax_data(settings, params) : settings.ajax_data;
 
-		// ajaxData === string url
-		if (typeof ajaxData === 'string') {
-			return getPromiseByUrl(params);
-		}
+        // ajaxData === string url
+        if (typeof ajaxData === 'string') {
+            return getPromiseByUrl(params);
+        }
 
-		// ajaxData === Promise
-		if (typeof ajaxData.then === 'function') {
-			return ajaxData;
-		}
+        // ajaxData === Promise
+        if (typeof ajaxData.then === 'function') {
+            return ajaxData;
+        }
 
-		// 	ajaxData === 静态数据
-		if (jTool.type(ajaxData) === 'object' || jTool.type(ajaxData) === 'array') {
-			return new Promise(resolve => {
-				resolve(ajaxData);
-			});
-		}
+        // 	ajaxData === 静态数据
+        if (jTool.type(ajaxData) === 'object' || jTool.type(ajaxData) === 'array') {
+            return new Promise(resolve => {
+                resolve(ajaxData);
+            });
+        }
 
-		// 获取参数信息
-		function getParams() {
+        // 获取参数信息
+        function getParams() {
             let _params = jTool.extend(true, {}, settings.query);
 
             // 合并分页信息至请求参
@@ -126,7 +130,7 @@ class Core {
         }
 
         // 获取Promise, 条件: ajax_data 为 url
-		function getPromiseByUrl(Params) {
+        function getPromiseByUrl(Params) {
             // 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
             // 说明|备注:
             // 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
@@ -136,72 +140,73 @@ class Core {
             }
 
             return new Promise((resolve, reject) => {
-				jTool.ajax({
-					url: ajaxData,
-					type: settings.ajax_type,
-					data: Params,
-					headers: settings.ajax_headers,
-					xhrFields: settings.ajax_xhrFields,
-					cache: true,
-					success: response => {
-						resolve(response);
-					},
-					error: (XMLHttpRequest, textStatus, errorThrown) => {
-						reject(XMLHttpRequest, textStatus, errorThrown);
-					}
-				});
-			});
-		}
-	}
+                jTool.ajax({
+                    url: ajaxData,
+                    type: settings.ajax_type,
+                    data: Params,
+                    headers: settings.ajax_headers,
+                    xhrFields: settings.ajax_xhrFields,
+                    cache: true,
+                    success: response => {
+                        resolve(response);
+                    },
+                    error: (XMLHttpRequest, textStatus, errorThrown) => {
+                        reject(XMLHttpRequest, textStatus, errorThrown);
+                    }
+                });
+            });
+        }
+    }
 
-	/**
-	 * 清空当前表格数据
-	 * @param $table
-	 */
-	cleanData($table) {
-		const settings = cache.getSettings($table);
-		this.insertEmptyTemplate($table, settings);
-
-		// 渲染选择框
-		if (settings.supportCheckbox) {
-			checkbox.resetDOM($table, settings, []);
-		}
-
-		// 渲染分页
-		if (settings.supportAjaxPage) {
-			ajaxPage.resetPageData($table, settings, 0);
-			menu.updateMenuPageStatus(settings.gridManagerName, settings);
-		}
-	}
-
-	/**
-	 * 执行ajax成功后重新渲染DOM
-	 * @param $table
-	 * @param settings
-	 * @param response
-	 * @param callback
+    /**
+     * 清空当前表格数据
+     * @param $table
      */
-	driveDomForSuccessAfter($table, settings, response, callback) {
+    cleanData($table) {
+        const settings = cache.getSettings($table);
+        this.insertEmptyTemplate($table, settings);
+        cache.setTableData($table, []);
+
+        // 渲染选择框
+        if (settings.supportCheckbox) {
+            checkbox.resetDOM($table, settings, []);
+        }
+
+        // 渲染分页
+        if (settings.supportAjaxPage) {
+            ajaxPage.resetPageData($table, settings, 0);
+            menu.updateMenuPageStatus(settings.gridManagerName, settings);
+        }
+    }
+
+    /**
+     * 执行ajax成功后重新渲染DOM
+     * @param $table
+     * @param settings
+     * @param response
+     * @param callback
+     */
+    driveDomForSuccessAfter($table, settings, response, callback) {
         // 用于防止在填tbody时，实例已经被消毁的情况。
         if (!$table || $table.length === 0 || !$table.hasClass('GridManager-ready')) {
             return;
         }
 
         if (!response) {
-			base.outLog('请求数据失败！请查看配置参数[ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
-			return;
-		}
+            base.outLog('请求数据失败！请查看配置参数[ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
+            return;
+        }
 
-		let parseRes = typeof (response) === 'string' ? JSON.parse(response) : response;
+        let parseRes = typeof (response) === 'string' ? JSON.parse(response) : response;
 
-		// 执行请求后执行程序, 通过该程序可以修改返回值格式
-		parseRes = settings.responseHandler(base.cloneObject(parseRes));
+        // 执行请求后执行程序, 通过该程序可以修改返回值格式
+        parseRes = settings.responseHandler(base.cloneObject(parseRes));
 
-		let _data = parseRes[settings.dataKey];
-		let totals = parseRes[settings.totalsKey];
+        let _data = parseRes[settings.dataKey];
+        let totals = parseRes[settings.totalsKey];
 
-		// 数据校验: 数据异常
-		if (!_data || !Array.isArray(_data)) {
+        // 数据校验: 数据异常
+        if (!_data || !Array.isArray(_data)) {
             base.outLog(`请求数据失败！response中的${settings.dataKey}必须为数组类型，可通过配置项[dataKey]修改字段名。`, 'error');
             return;
         }
@@ -212,49 +217,49 @@ class Core {
             return;
         }
 
-		// 数据为空时
-		if (_data.length === 0) {
-			this.insertEmptyTemplate($table, settings);
-			parseRes[settings.totalsKey] = 0;
-		} else {
-		    this.renderTableBody($table, settings, _data);
-		}
-
-		// 渲染选择框
-		if (settings.supportCheckbox) {
-            checkbox.resetDOM($table, settings, _data, settings.useRadio);
-		}
-
-		// 渲染分页
-		if (settings.supportAjaxPage) {
-			ajaxPage.resetPageData($table, settings, parseRes[settings.totalsKey], _data.length);
-			menu.updateMenuPageStatus(settings.gridManagerName, settings);
-		}
-
-		typeof callback === 'function' ? callback(parseRes) : '';
-	};
-
-	/**
-	 * 插入空数据模板
-	 * @param $table
-	 * @param settings
-	 * @param isInit: 是否为初始化时调用
-	 */
-	insertEmptyTemplate($table, settings, isInit) {
-	    // 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
-        // 用于解决容器为不可见时，触发了setQuery的情况
-	    if (isInit && cache.getTableData($table).length !== 0) {
-	        return;
+        // 数据为空时
+        if (_data.length === 0) {
+            this.insertEmptyTemplate($table, settings);
+            parseRes[settings.totalsKey] = 0;
+        } else {
+            this.renderTableBody($table, settings, _data);
         }
 
-		let visibleNum = base.getVisibleTh($table).length;
-		const $tbody = jTool('tbody', $table);
-		const $tableDiv = $table.closest('.table-div');
+        // 渲染选择框
+        if (settings.supportCheckbox) {
+            checkbox.resetDOM($table, settings, _data, settings.useRadio);
+        }
+
+        // 渲染分页
+        if (settings.supportAjaxPage) {
+            ajaxPage.resetPageData($table, settings, parseRes[settings.totalsKey], _data.length);
+            menu.updateMenuPageStatus(settings.gridManagerName, settings);
+        }
+
+        typeof callback === 'function' ? callback(parseRes) : '';
+    };
+
+    /**
+     * 插入空数据模板
+     * @param $table
+     * @param settings
+     * @param isInit: 是否为初始化时调用
+     */
+    insertEmptyTemplate($table, settings, isInit) {
+        // 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
+        // 用于解决容器为不可见时，触发了setQuery的情况
+        if (isInit && cache.getTableData($table).length !== 0) {
+            return;
+        }
+
+        let visibleNum = base.getVisibleTh($table).length;
+        const $tbody = jTool('tbody', $table);
+        const $tableDiv = $table.closest('.table-div');
         $tbody.html(base.getEmptyHtml(visibleNum, settings.emptyTemplate));
         const emptyDOM = $tbody.get(0).querySelector('tr[emptyTemplate]');
         emptyDOM.style.height = $tableDiv.height() + 'px';
         base.compileFramework(settings, {el: emptyDOM});
-	}
+    }
 
     /**
      * 重新组装table body
@@ -262,7 +267,7 @@ class Core {
      * @param settings
      * @param data
      */
-	renderTableBody($table, settings, data) {
+    renderTableBody($table, settings, data) {
         // td模板
         let	tdTemplate = null;
 
@@ -381,8 +386,8 @@ class Core {
      * 为新增的单元格绑定事件
      * @param $table
      */
-	bindEvent($table) {
-	    jTool('[gm-click]', $table).unbind('click');
+    bindEvent($table) {
+        jTool('[gm-click]', $table).unbind('click');
         jTool('[gm-click]', $table).bind('click', function () {
             const row = cache.getRowData($table, this.parentNode.parentNode);
             const scope = cache.getScope($table) || window;
@@ -391,46 +396,61 @@ class Core {
         });
     }
 
-	/**
-	 * 渲染HTML，根据配置嵌入所需的事件源DOM
-     * @param $table
-     * @param settings
-     * @returns {Promise<any>}
+    /**
+     * 生成table wrap 模板
+     * @param params
+     * @returns {parseData}
      */
-    async createDOM($table, settings) {
-        // 外围的html片段
-        const wrapHtml = `<div class="table-wrap">
-                            <div class="table-div"></div>
-                            <span class="text-dreamland"></span>
-                        </div>`;
-        $table.wrap(wrapHtml);
+    @parseTpl(wrapTpl)
+    createWrapTpl(params) {
+        const settings = params.settings;
+        const { skinClassName, isIconFollowText, disableBorder, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
+        const wrapClassList = [];
+        // 根据参数增加皮肤标识
+        if (skinClassName && typeof skinClassName === 'string' && skinClassName.trim()) {
+            wrapClassList.push(skinClassName);
+        }
 
-        // 计算布局
-        base.calcLayout($table, settings.width, settings.height, settings.supportAjaxPage);
+        // 根据参数，增加表头的icon图标是否跟随文本class
+        if (isIconFollowText) {
+            wrapClassList.push('icon-follow-text');
+        }
 
-        const thead = document.createElement('thead');
-        thead.setAttribute(base.tableHeadKey, '');
-        thead.appendChild(document.createElement('tr'));
-        $table.append(thead);
-        const $tr = base.getHeadTr($table);
+        // 根据参数增加禁用禁用边框线标识
+        if (disableBorder) {
+            wrapClassList.push('disable-border');
+        }
 
-		// th显示状态
-		let thVisible = '';
+        return {
+            classNames: wrapClassList.join(' '),
+            configTpl: supportConfig ? config.createHtml({configInfo}) : '',
+            ajaxPageTpl: supportAjaxPage ? ajaxPage.createHtml({settings, tpl: ajaxPageTemplate}) : ''
+        };
+    }
 
-		// 将 columnMap 转换为 数组
-		// 转换的原因是为了处理用户记忆
-		const columnList = [];
-		if (settings.disableCache) {
-			jTool.each(settings.columnMap, (key, col) => {
-				columnList.push(col);
-			});
-		} else {
-			jTool.each(settings.columnMap, (key, col) => {
-				columnList[col.index] = col;
-			});
-		}
+    /**
+     * 生成table head 模板
+     * @param params
+     * @returns {parseData}
+     */
+    @parseTpl(theadTpl)
+    createTheadTpl(params) {
+        const settings = params.settings;
 
-		// 将表头提醒启用状态重置
+        // 将 columnMap 转换为 数组
+        // 转换的原因是为了处理用户记忆
+        const columnList = [];
+        if (settings.disableCache) {
+            jTool.each(settings.columnMap, (key, col) => {
+                columnList.push(col);
+            });
+        } else {
+            jTool.each(settings.columnMap, (key, col) => {
+                columnList[col.index] = col;
+            });
+        }
+
+        // 将表头提醒启用状态重置
         remind.enable = false;
 
         // 将排序启用状态重置
@@ -439,135 +459,152 @@ class Core {
         // 将筛选条件重置
         filter.enable = false;
 
-		// columnList 生成thead
-		jTool.each(columnList, (index, col) => {
-		    const th = document.createElement('th');
-		    const thWrap = document.createElement('div');
-            thWrap.className = 'th-wrap';
-            const thText = document.createElement('span');
-            thText.className = 'th-text';
+        let thListTpl = '';
+        // columnList 生成thead
+        jTool.each(columnList, (index, col) => {
+            thListTpl += this.createThTpl({settings, col});
+        });
 
-			// 表头提醒
-			if (typeof (col.remind) === 'string' && col.remind !== '') {
-                th.setAttribute('remind', col.remind);
-                remind.enable = true;
-			}
+        return {
+            tableHeadKey: base.tableHeadKey,
+            thListTpl
+        };
+    }
 
-			// 排序
-			if (typeof (col.sorting) === 'string') {
-                sort.enable = true;
-				if (col.sorting === settings.sortDownText) {
-                    th.setAttribute('sorting', settings.sortDownText);
-					settings.sortData[col.key] = settings.sortDownText;
-				} else if (col.sorting === settings.sortUpText) {
-                    th.setAttribute('sorting', settings.sortUpText);
-					settings.sortData[col.key] = settings.sortUpText;
-				} else {
-                    th.setAttribute('sorting', '');
-				}
-			}
+    /**
+     * 生成table th 模板
+     * @param params
+     * @returns {parseData}
+     */
+    @parseTpl(thTpl)
+    createThTpl(params) {
+        const { settings, col } = params;
 
-			// 过滤
-            if (jTool.type(col.filter) === 'object') {
-                filter.enable = true;
-                th.setAttribute('filter', '');
-                if (typeof (col.filter.selected) === 'undefined') {
-                    col.filter.selected = settings.query[col.key];
-                } else {
-                    settings.query[col.key] = col.filter.selected;
-                }
+        // 表头提醒
+        let remindAttr = '';
+        if (typeof (col.remind) === 'string' && col.remind !== '') {
+            remindAttr = `remind=${col.remind}`;
+            remind.enable = true;
+        }
+
+        // 排序
+        let sortingAttr = '';
+        if (typeof (col.sorting) === 'string') {
+            sort.enable = true;
+            if (col.sorting === settings.sortDownText) {
+                // th.setAttribute('sorting', settings.sortDownText);
+                sortingAttr = `sorting="${settings.sortDownText}"`;
+                settings.sortData[col.key] = settings.sortDownText;
+            } else if (col.sorting === settings.sortUpText) {
+                // th.setAttribute('sorting', settings.sortUpText);
+                sortingAttr = `sorting="${settings.sortUpText}"`;
+                settings.sortData[col.key] = settings.sortUpText;
+            } else {
+                sortingAttr = `sorting=""`;
             }
+        }
 
-			// th宽度
-            // col.width && th.setAttribute('width', col.width);
-            th.style.width = col.width || 'auto';
-
-			// 文本对齐
-            col.align && th.setAttribute('align', col.align);
-
-			// th可视状态值
-			thVisible = base.getVisibleForColumn(col);
-
-			// 拼接th
-			switch (col.key) {
-				// 插件自动生成序号列
-				case order.key:
-                    // thWrap
-                    th.setAttribute('gm-create', 'true');
-                    th.setAttribute('th-name', order.key);
-                    th.setAttribute('th-visible', thVisible);
-                    th.setAttribute('gm-order', 'true');
-                    thText.innerHTML = order.getThContent(settings);
-					break;
-				// 插件自动生成选择列
-				case checkbox.key:
-                    th.setAttribute('gm-create', 'true');
-                    th.setAttribute('th-name', checkbox.key);
-                    th.setAttribute('th-visible', thVisible);
-                    th.setAttribute('gm-checkbox', 'true');
-                    thText.innerHTML = checkbox.getThContent(settings.useRadio);
-					break;
-				// 普通列
-				default:
-                    th.setAttribute('gm-create', 'false');
-                    th.setAttribute('th-name', col.key);
-                    th.setAttribute('th-visible', thVisible);
-                    thText.innerHTML = col.text;
-					break;
-			}
-
-            // 嵌入拖拽事件标识, 以下情况除外
-            // 1.插件自动生成列
-            // 2.禁止使用个性配置功能的列
-            if (settings.supportDrag && !col.isAutoCreate && !col.disableCustomize) {
-                thText.classList.add('drag-action');
+        // 过滤
+        let filterAttr = '';
+        if (jTool.type(col.filter) === 'object') {
+            filter.enable = true;
+            filterAttr = `filter=""`;
+            if (typeof (col.filter.selected) === 'undefined') {
+                col.filter.selected = settings.query[col.key];
+            } else {
+                settings.query[col.key] = col.filter.selected;
             }
+        }
 
-            thWrap.appendChild(thText);
-            th.appendChild(thWrap);
-            $tr.append(th);
-		});
+        // 文本对齐
+        const alignAttr = col.align ? `align="col.align"` : '';
 
-        const tbody = document.createElement('tbody');
-        $table.append(tbody);
+        // th可视状态值
+        let thVisible = base.getVisibleForColumn(col);
+
+        let gmCreateAttr = '';
+        let thName = '';
+        let thText = '';
+        let checkboxAttr = '';
+        let orderAttr = '';
+        switch (col.key) {
+            // 插件自动生成序号列
+            case order.key:
+                gmCreateAttr = `gm-create="true"`;
+                thName = order.key;
+                orderAttr = `gm-order="true"`;
+                thText = order.getThContent(settings);
+                break;
+            // 插件自动生成选择列
+            case checkbox.key:
+                gmCreateAttr = `gm-create="true"`;
+                thName = checkbox.key;
+                checkboxAttr = `gm-checkbox="true"`;
+                thText = checkbox.getThContent(settings.useRadio);
+                break;
+            // 普通列
+            default:
+                gmCreateAttr = `gm-create="false"`;
+                thName = col.key;
+                thText = col.text;
+                break;
+        }
+
+        // 嵌入拖拽事件标识, 以下情况除外
+        // 1.插件自动生成列
+        // 2.禁止使用个性配置功能的列
+        let dragClassName = '';
+        if (settings.supportDrag && !col.isAutoCreate && !col.disableCustomize) {
+            dragClassName = 'drag-action';
+        }
+
+        return {
+            thName,
+            thText,
+            checkboxAttr,
+            orderAttr,
+            sortingAttr,
+            alignAttr,
+            filterAttr,
+            remindAttr,
+            dragClassName,
+            thVisible,
+            gmCreateAttr,
+            thStyle: `style="width:${col.width || 'auto'}"`
+        };
+    }
+
+    /**
+     * 渲染HTML，根据配置嵌入所需的事件源DOM
+     * @param $table
+     * @param settings
+     * @returns {Promise<any>}
+     */
+    async createDOM($table, settings) {
+        // add wrap div
+        $table.wrap(this.createWrapTpl({ settings }));
+
+        // 计算布局
+        base.calcLayout($table, settings.width, settings.height, settings.supportAjaxPage);
+
+        // append thead
+        $table.append(this.createTheadTpl({settings}));
+
+        // append tbody
+        $table.append(document.createElement('tbody'));
 
         cache.setSettings(settings);
 
-		// 单个table下的thead
-		const $thead = base.getHead($table);
+        // 单个table下的thead
+        const $thead = base.getHead($table);
 
-		// 单个table下的TH
-		const $thList = jTool('th', $thead);
+        // 单个table下的TH
+        const $thList = jTool('th', $thead);
 
-		// 单个table所在的DIV容器
-		const $tableWarp = $table.closest('.table-wrap');
+        // 单个table所在的DIV容器
+        const $tableWarp = $table.closest('.table-wrap');
 
-        // 根据参数增加皮肤标识
-        if (settings.skinClassName && typeof settings.skinClassName === 'string' && settings.skinClassName.trim()) {
-            $tableWarp.addClass(settings.skinClassName);
-        }
-
-        // 根据参数，增加表头的icon图标是否跟随文本class
-        if (settings.isIconFollowText) {
-            $tableWarp.addClass('icon-follow-text');
-        }
-
-        // 根据参数增加禁用禁用边框线标识
-        if (settings.disableBorder) {
-            $tableWarp.addClass('disable-border');
-        }
-
-		// 嵌入配置列表DOM
-		if (settings.supportConfig) {
-			$tableWarp.append(config.createHtml({configInfo: settings.configInfo}));
-		}
-
-		// 嵌入Ajax分页DOM
-		if (settings.supportAjaxPage) {
-			ajaxPage.initAjaxPage($table, $tableWarp, settings);
-		}
-
-		// 等待容器可用
+        // 等待容器可用
         await this.waitContainerAvailable(settings.gridManagerName, $tableWarp.get(0));
 
         // 重绘thead
@@ -582,7 +619,7 @@ class Core {
         // 删除渲染中标识、增加渲染完成标识
         $table.removeClass('GridManager-loading');
         $table.addClass('GridManager-ready');
-	}
+    }
 
     /**
      * 等待容器可用
@@ -610,8 +647,6 @@ class Core {
      * @param settings
      */
     redrawThead($table, $tableWarp, $thList, settings) {
-        // const configList = jTool('.config-list', $tableWarp);
-
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
         jTool.each($thList, (index, item) => {
@@ -676,26 +711,26 @@ class Core {
         base.updateThWidth($table, settings, true);
     }
 
-	/**
-	 * 根据配置项初始化列显示|隐藏 (th 和 td)
-	 * @param $table
-	 */
-	initVisible($table) {
-		// tbody下的tr
-		const _trList = jTool('tbody tr', $table);
-		let	_th = null;
-		let	_td = null;
-		let _visible = 'visible';
-		const settings = cache.getSettings($table);
-		jTool.each(settings.columnMap, (index, col) => {
-			_th = jTool(`th[th-name="${col.key}"]`, $table);
-			_visible = base.getVisibleForColumn(col);
-			_th.attr('th-visible', _visible);
-			jTool.each(_trList, (i2, v2) => {
-				_td = jTool('td', v2).eq(_th.index());
-				_td.attr('td-visible', _visible);
-			});
-		});
-	}
+    /**
+     * 根据配置项初始化列显示|隐藏 (th 和 td)
+     * @param $table
+     */
+    initVisible($table) {
+        // tbody下的tr
+        const _trList = jTool('tbody tr', $table);
+        let	_th = null;
+        let	_td = null;
+        let _visible = 'visible';
+        const settings = cache.getSettings($table);
+        jTool.each(settings.columnMap, (index, col) => {
+            _th = jTool(`th[th-name="${col.key}"]`, $table);
+            _visible = base.getVisibleForColumn(col);
+            _th.attr('th-visible', _visible);
+            jTool.each(_trList, (i2, v2) => {
+                _td = jTool('td', v2).eq(_th.index());
+                _td.attr('td-visible', _visible);
+            });
+        });
+    }
 }
 export default new Core();

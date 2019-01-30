@@ -18,7 +18,7 @@ class Menu {
 	}
 
 	init($table) {
-		let settings = cache.getSettings($table);
+		const settings = cache.getSettings($table);
 
 		// 创建menu DOM
         jTool('body').append(this.createMenuHtml({settings}));

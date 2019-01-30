@@ -1,16 +1,19 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
-const genRules = require('./webpack-common.loader');
+const getRules = require('./webpack-common.loader');
 const buildPath = path.join(__dirname, "dist");
 const { version } = require('./package.json');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 // API: https://www.css88.com/doc/webpack2/configuration/devtool/
 const config = {
+    mode: 'production',
 
 	// 入口文件所在的上下文
-	context: path.join(__dirname, "src/"),
+	context: path.join(__dirname, "./src"),
 
 	// 入口文件配置
 	entry: {
@@ -34,19 +37,40 @@ const config = {
         // 如: `import gridManager from 'gridmanager';` `const gridManager = require('gridmanager').default;`
         libraryTarget: "umd"
 	},
+
+    // 优化代码
+    optimization: {
+        minimizer: [
+            // 压缩js
+            new UglifyJsPlugin({
+                uglifyOptions: {
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true,
+                    warnings: false
+                }
+            }),
+
+            // 压缩css
+            new OptimizeCssAssetsPlugin({
+                assetNameRegExp: /\.css$/g,
+                cssProcessor: require('cssnano'),
+                cssProcessorOptions: {
+                    discardComments: {removeAll: true},
+                    minifyGradients: true
+                },
+                canPrint: true
+            })
+        ]
+    },
+
 	// 以插件形式定制webpack构建过程
 	plugins: [
         // 将样式文件 抽取至独立文件内
-		new ExtractTextWebpackPlugin({
-			// 生成文件的文件名
-			filename: 'css/gm.css',
-
-			// 是否禁用插件
-			disable: false,
-
-			// 是否向所有额外的 chunk 提取（默认只提取初始加载模块）
-			allChunks: true
-		}),
+        new MiniCssExtractPlugin({
+            filename: 'css/gm.css',
+            chunkFilename: '[id].css'
+        }),
 
 		// 将文件复制到构建目录
 		// CopyWebpackPlugin-> https://github.com/webpack-contrib/copy-webpack-plugin
@@ -61,23 +85,12 @@ const config = {
             'process.env': {
                 VERSION: JSON.stringify(version)
             }
-        }),
-
-		// 使用webpack内置插件压缩js
-		new webpack.optimize.UglifyJsPlugin({
-			compress: {
-				warnings: false,
-                // join_vars: true
-			},
-            // toplevel: false,
-            // ie8: false,
-			sourceMap: false // 是否生成map文件
-		})
+        })
 	],
 
 	// 处理项目中的不同类型的模块。
 	module: {
-		rules: genRules('src', false)
+        rules: getRules()
 	}
 };
 

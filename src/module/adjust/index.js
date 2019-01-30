@@ -1,5 +1,6 @@
 /*
  * adjust: 宽度调整
+ * 宽度调整是通过 jTool 进行的事件绑定
  * */
 import { jTool, base, cache } from '../../common';
 class Adjust {

@@ -1,15 +1,16 @@
 const webpack = require('webpack');
 const path = require('path');
-const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const genRules = require('./webpack-common.loader');
+const getRules = require('./webpack-common.loader');
 const { version } = require('./package.json');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // API: http://www.css88.com/doc/webpack2/guides/development/
 const config = {
+    mode: 'development',
 	// map
 	//  http://www.css88.com/doc/webpack2/configuration/devtool/
-	devtool : 'source-map',
+    devtool: 'cheap-eval-source-map',
 
 	// 入口文件配置
 	context: path.join(__dirname, "src/"),
@@ -34,12 +35,11 @@ const config = {
 
 	// 以插件形式定制webpack构建过程
 	plugins: [
-		// 将样式文件 抽取至独立文件内
-		new ExtractTextWebpackPlugin({
-			filename: 'css/gm.css',
-			disable: false,
-			allChunks: true
-		}),
+        // 将样式文件 抽取至独立文件内
+        new MiniCssExtractPlugin({
+            filename: 'css/gm.css',
+            chunkFilename: '[id].css'
+        }),
 
         // 配置环境变量
         new webpack.DefinePlugin({
@@ -56,13 +56,13 @@ const config = {
             defaultSizes: 'parsed',
 
             // 是否启动后打开窗口
-            openAnalyzer: true
+            openAnalyzer: false
         })
 	],
 
 	// 处理项目中的不同类型的模块
 	module: {
-		rules: genRules('src', true)
+		rules: getRules()
 	}
 };
 

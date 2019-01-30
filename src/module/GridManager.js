@@ -625,6 +625,11 @@ export default class GridManager {
             menu.init($table);
         }
 
+        // 初始化Ajax分页
+        if (settings.supportAjaxPage) {
+            ajaxPage.init($table);
+        }
+
         // 更新fake header
         scroll.update($table);
 

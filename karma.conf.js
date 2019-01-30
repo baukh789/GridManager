@@ -68,6 +68,8 @@ module.exports = function (config) {
 
 		// webpack config: https://github.com/webpack-contrib/karma-webpack
 		webpack: {
+            mode: 'development',
+
 			//入口文件配置
 			entry: {
 				js: './test/index_test.js'
@@ -94,31 +96,89 @@ module.exports = function (config) {
 						include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')]
 					},
                     {
-                        test: /\.html?$/,
-                        loaders: ['html-loader'],
-                        exclude: /(node_modules|bower_components)/,
-                        include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')]
-                    },
-					{
-						test:/.less/,
-						loader:'css-loader!less-loader'
-					},
-					{
-						test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-						use: 'url-loader?limit=15000&mimetype=application/font-woff&prefix=fonts'
-					},
-					{
-						test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-						use: 'url-loader?limit=15000&mimetype=application/octet-stream&prefix=fonts'
-					},
-					{
-						test: /\.eot(\?#\w+)?$/,
-						use: 'url-loader?limit=15000&mimetype=application/vnd.ms-fontobject&prefix=fonts'
-					},
-					{
-						test: /\.svg(#\w+)?$/,
-						use: 'url-loader?limit=15000&mimetype=image/svg+xml&prefix=fonts'
-					}
+                        test: /\.less/,
+                        include: [path.join(__dirname, 'src')],
+                        use: [
+                            {
+                                loader: 'css-loader',
+                                options: {
+                                    url: true, // 启用/禁用 url() 处理
+                                    sourceMap: false // 启用/禁用 Sourcemaps
+                                }
+                            },
+                            {
+                                loader: 'resolve-url-loader'
+                            },
+                            {
+                                loader: 'less-loader',
+                                options: {
+                                    sourceMap: false // 启用/禁用 Sourcemaps
+                                }
+                            }
+                        ]
+                    }, {
+                        test: /\.html$/,
+                        use: ['html-loader'],
+                        include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')],
+                        exclude: /(node_modules|bower_components)/
+                    }, {
+                        test: /\.(jpe?g|png|gif|svg)$/i,
+                        use: [
+                            {
+                                loader: 'file-loader?name=[path][name]-[hash:5].[ext]'
+                            }
+                        ]
+                    }, {
+                        test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+                        use: [
+                            {
+                                loader: 'url-loader',
+                                options: {
+                                    limit: 10000,
+                                    mimetype: "application/font-woff"
+                                }
+                            }
+                        ]
+                    }, {
+                        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+                        use: [
+                            {
+                                loader: 'url-loader',
+                                options: {
+                                    limit: 10000,
+                                    mimetype: "application/octet-stream"
+                                }
+                            }
+                        ]
+                    }, {
+                        test: /\.otf(\?v=\d+\.\d+\.\d+)?$/,
+                        use: [
+                            {
+                                loader: 'url-loader',
+                                options: {
+                                    limit: 10000,
+                                    mimetype: "application/font-otf"
+                                }
+                            }
+                        ]
+                    }, {
+                        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+                        use: [
+                            {
+                                loader:"file-loader"
+                            }
+                        ]
+                    }, {
+                        test: /\.(jpe?g|png|gif|svg)$/i,
+                        use: [
+                            {
+                                loader: 'file-loader',
+                                options: {
+                                    name: '[path][name]-[hash:8].[ext]',
+                                }
+                            }
+                        ]
+                    }
 				]
 			}
 		},
