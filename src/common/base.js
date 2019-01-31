@@ -1,5 +1,8 @@
+/**
+ * 项目中的一些基础方法
+ */
 import jTool from './jTool';
-import {FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY} from './constants';
+import { FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE } from './constants';
 
 class Base{
 
@@ -174,14 +177,14 @@ class Base{
     /**
      * get table
      * @param $dom: 父级或子级jTool对象，或者是gridManagerName
-     * @param noParent: 是否为非父级元素查找，如果不是将从下向上查找
+     * @param isSelectUp: 是否为向上查找模式
      * @returns {*}
      */
-    getTable($dom, noParent) {
+    getTable($dom, isSelectUp) {
         if (typeof $dom === 'string') {
             return jTool(`table[${this.key}="${$dom}"]`);
         }
-        return noParent ? $dom.closest(`table[${this.key}]`) : jTool(`table[${this.key}]`, $dom);
+        return isSelectUp ? $dom.closest(`table[${this.key}]`) : jTool(`table[${this.key}]`, $dom);
     }
 
     /**
@@ -333,8 +336,8 @@ class Base{
 
     /**
      * 获取同列的 td jTool 对象
-     * @param $dom: $th 或 $td
-     * @returns {*|HTMLElement|jTool}
+     * @param $dom: $th or $td
+     * @returns {jTool}
      */
     getColTd($dom) {
         const $table = this.getTable($dom, true);
@@ -354,60 +357,35 @@ class Base{
 
     /**
      * 根据参数设置列是否可见(th 和 td)
-     * @param $thList 即将配置的列所对应的th[jTool object，可以是多个]
-     * @param isVisible 是否可见
+     * @param $table
+     * @param thNameList: Array [thName]
+     * @param isVisible: 是否可见
      * @param cb
      */
-    setAreVisible($thList, isVisible, cb) {
-        // 当前所在的table
-        let $table = null;
+    setAreVisible($table, thNameList, isVisible, cb) {
+        jTool.each(thNameList, (i, thName) => {
+            const $th = this.getTh($table, thName);
 
-        // 当前所在的容器
-        let	_tableWarp;
+            // 所对应的显示隐藏所在的li
+            const $checkLi = jTool(`.config-area li[th-name="${thName}"]`, $table.closest('.table-wrap'));
+            const $td = this.getColTd($th);
 
-        // 当前操作的th
-        let	_th = null;
+            // 可视状态值
+            const visibleState = this.getVisibleState(isVisible);
 
-        // 当前tbody下所有的tr
-        let	_trList = null;
+            $th.attr('th-visible', visibleState);
 
-        // 所对应的td
-        let	_tdList = [];
-
-        // 所对应的显示隐藏所在的li
-        let	_checkLi = null;
-
-        // 所对应的显示隐藏事件
-        let	_checkbox = null;
-        jTool.each($thList, (i, v) => {
-            _th = jTool(v);
-            $table = _th.closest('table');
-            _tableWarp = $table.closest('.table-wrap');
-            _trList = jTool('tbody tr[cache-key]', $table);
-            _checkLi = jTool(`.config-area li[th-name="${_th.attr('th-name')}"]`, _tableWarp);
-            _checkbox = jTool('input[type="checkbox"]', _checkLi);
-
-            jTool.each(_trList, (i2, v2) => {
-                _tdList.push(jTool(v2).find('td').get(_th.index()));
+            // fake th
+            this.getFakeTh($table, thName).attr('th-visible', visibleState);
+            // 所对应的td
+            jTool.each($td, (index, td) => {
+                td.setAttribute('td-visible', visibleState);
             });
+            $checkLi.addClass('checked-li');
 
-            // 显示
-            if (isVisible) {
-                _th.attr('th-visible', 'visible');
-                jTool.each(_tdList, (i2, v2) => {
-                    v2.setAttribute('td-visible', 'visible');
-                });
-                _checkLi.addClass('checked-li');
-                _checkbox.prop('checked', true);
-            } else {
-                // 隐藏
-                _th.attr('th-visible', 'none');
-                jTool.each(_tdList, (i2, v2) => {
-                    v2.setAttribute('td-visible', 'none');
-                });
-                _checkLi.removeClass('checked-li');
-                _checkbox.prop('checked', false);
-            }
+            // prop checkbox
+            jTool('input[type="checkbox"]', $checkLi).prop('checked', isVisible);
+
             this.updateEmptyCol($table);
             typeof cb === 'function' ? cb() : '';
         });
@@ -607,12 +585,12 @@ class Base{
     }
 
     /**
-     * 通过配置项columnData 获取指定列的可视信息
-     * @param col 列的配置信息
+     * 获取visible状态
+     * @param isShow: 是否显示
      * @returns {string}
      */
-    getVisibleForColumn(col) {
-        return col.isShow ? 'visible' : 'none';
+    getVisibleState(isShow) {
+        return isShow ? 'visible' : 'none';
     }
 
     /**

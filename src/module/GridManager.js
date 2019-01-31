@@ -9,7 +9,7 @@ import ajaxPage from './ajaxPage';
 import order from './order';
 import checkbox from './checkbox';
 import config from './config';
-import core from './core';
+import core, { coreDOM } from './core';
 import drag from './drag';
 import exportFile from './exportFile';
 import menu from './menu';
@@ -412,7 +412,7 @@ export default class GridManager {
         const tableData = cache.updateRowData($table, key, rowDataList);
 
         // 更新DOM
-        core.renderTableBody($table, settings, tableData);
+        coreDOM.renderTableBody($table, settings, tableData);
         return tableData;
     }
 

@@ -11,6 +11,8 @@ import ajaxPageTpl from './ajaxPage.tpl.html';
 import configTpl from './config.tpl.html';
 import exportTpl from './export.tpl.html';
 
+// 在body上绑定的关闭事件名
+const closeEvent = 'mousedown.gridMenu';
 class Menu {
 	// 唯一标识名
 	get keyName() {
@@ -131,13 +133,15 @@ class Menu {
 			// 隐藏非当前展示表格的菜单项
 			jTool(`.grid-menu[${_this.keyName}]`).hide();
 			menuDOM.show();
-			_body.off('mousedown.gridMenu');
-			_body.on('mousedown.gridMenu', function (e) {
+
+			// 点击空处关闭
+			_body.off(closeEvent);
+			_body.on(closeEvent, function (e) {
 				const eventSource = jTool(e.target);
-				if (eventSource.hasClass('.grid-menu') || eventSource.closest('.grid-menu').length === 1) {
+				if (eventSource.hasClass('grid-menu') || eventSource.closest('.grid-menu').length === 1) {
 					return;
 				}
-				_body.off('mousedown.gridMenu');
+				_body.off(closeEvent);
 				menuDOM.hide();
 			});
 		});
@@ -167,7 +171,7 @@ class Menu {
 			}
 
 			ajaxPage.gotoPage(_table, _settings, cPage);
-			_body.off('mousedown.gridMenu');
+			_body.off(closeEvent);
 			_gridMenu.hide();
 		});
 
@@ -186,7 +190,7 @@ class Menu {
 					onlyChecked = true;
 				}
                 exportFile.__exportGridToXls(_table, undefined, onlyChecked);
-				_body.off('mousedown.gridMenu');
+				_body.off(closeEvent);
 				_gridMenu.hide();
 			});
 		})();
@@ -202,7 +206,7 @@ class Menu {
 				const _gridMenu = jTool(this).closest('.grid-menu');
 				const _table = base.getTable(_gridMenu.attr(_this.keyName));
 				config.toggle(_table);
-				_body.off('mousedown.gridMenu');
+				_body.off(closeEvent);
 				_gridMenu.hide();
 			});
 		})();
@@ -275,7 +279,7 @@ class Menu {
 
 
 		// 清理：隐藏非当前展示表格的菜单项
-		_body.off('mousedown.gridMenu');
+		_body.off(closeEvent);
 
 		// 删除DOM节点
 		menuDOM.remove();

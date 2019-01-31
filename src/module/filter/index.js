@@ -2,11 +2,14 @@
  * Created by baukh on 18/7/11.
  * 表头的筛选菜单
  */
-import { jTool, base, cache, parseTpl } from '../../common';
+import { jTool, cache, parseTpl } from '../../common';
 import core from '../core';
 import checkbox from '../checkbox';
 import i18n from '../i18n';
 import filterTpl from './filter.tpl.html';
+
+// 在body上绑定的关闭事件名
+const closeEvent = 'mousedown.gmFilter';
 class Filter {
     // 启用状态
     enable = false;
@@ -37,7 +40,7 @@ class Filter {
             });
             if (columnFilter.isMultiple) {
                 const parseData = {
-                    checked: selectedList.indexOf(item.value) !== -1 ? 'checked' : 'unchecked',
+                    checked: selectedList.indexOf(item.value) !== -1,
                     label: item.text,
                     value: item.value
                 };
@@ -89,6 +92,7 @@ class Filter {
     __bindFilterEvent($table) {
         // 事件: 显示筛选区域
         const _this = this;
+        const $body = jTool('body');
         $table.off('mousedown', '.fa-icon');
         $table.on('mousedown', '.fa-icon', function (e) {
             e.stopPropagation();
@@ -118,14 +122,17 @@ class Filter {
                 $filterCon.addClass('direction-left');
                 $filterCon.removeClass('direction-right');
             }
-            const $body = jTool('body');
-            $body.unbind('mousedown');
-            $body.bind('mousedown', function (e) {
-                if (e.target.className === 'fa-con' || jTool(e.target).closest('.fa-con').length === 1) {
+
+            // 点击空处关闭
+            $body.unbind(closeEvent);
+            $body.bind(closeEvent, function (e) {
+                const eventSource = jTool(e.target);
+                if (eventSource.hasClass('fa-con') || jTool(e.target).closest('.fa-con').length === 1) {
                     return false;
                 }
                 const $filterCon = $body.find('.fa-con');
                 $filterCon.hide();
+                $body.unbind(closeEvent);
             });
         });
 
@@ -151,6 +158,7 @@ class Filter {
             _this.update($th, settings.columnMap[thName].filter);
             core.refresh($table);
             $filterCon.hide();
+            $body.unbind(closeEvent);
         });
 
         // 事件: 清空选中结果
@@ -169,6 +177,7 @@ class Filter {
             _this.update($th, settings.columnMap[thName].filter);
             core.refresh($table);
             $filterCon.hide();
+            $body.unbind(closeEvent);
         });
 
         // 事件: 复选框事件
@@ -196,6 +205,9 @@ class Filter {
         $table.off('mouseup', '.filter-action');
         $table.off('mouseup', '.filter-submit');
         $table.off('mouseup', '.filter-reset');
+
+        // 清除body上的关闭事件
+        jTool('body').unbind(closeEvent);
     }
 }
 export default new Filter();

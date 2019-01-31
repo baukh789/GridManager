@@ -8,6 +8,8 @@ import scroll from '../scroll';
 import configTpl from './config.tpl.html';
 import configColumnTpl from './config-column.tpl.html';
 
+// 在body上绑定的关闭事件名
+const closeEvent = 'mousedown.gmConfig';
 class Config {
     /**
      * 初始化配置列[隐藏展示列]
@@ -65,10 +67,6 @@ class Config {
 
             const settings = cache.getSettings(_$table);
 
-            // 所对应的th fackTh
-            const _th = base.getTh(_$table, _thName);
-            const _fakeTh = base.getFakeTh(_$table, _thName);
-
             _only.closest('.config-list').find('.no-click').removeClass('no-click');
             let isVisible = !_checkbox.prop('checked');
 
@@ -76,7 +74,7 @@ class Config {
 
             // 设置与当前td同列的td是否可见
             _tableDiv.addClass('config-editing');
-            base.setAreVisible([_th, _fakeTh], isVisible, () => {
+            base.setAreVisible(_$table, [_thName], isVisible, () => {
                 _tableDiv.removeClass('config-editing');
             });
 
@@ -173,6 +171,18 @@ class Config {
         this.updateConfigList($table, settings);
         $configArea.show();
         this.updateConfigListHeight($table);
+
+        // 点击空处关闭
+        const $body = jTool('body');
+        $body.unbind(closeEvent);
+        $body.bind(closeEvent, function (e) {
+            const eventSource = jTool(e.target);
+            if (eventSource.hasClass('config-area') || eventSource.closest('.config-area').length === 1) {
+                return false;
+            }
+            $configArea.hide();
+            $body.unbind(closeEvent);
+        });
     }
 
     /**
@@ -183,6 +193,7 @@ class Config {
         const $tableWrap = $table.closest('.table-wrap');
         const $configArea = jTool('.config-area', $tableWrap);
         $configArea.hide();
+        jTool('body').unbind(closeEvent);
     }
 
     /**
@@ -250,6 +261,9 @@ class Config {
 
 		// 清理: 配置列表事件 - 配置
 		jTool('.config-list li', tableWarp).unbind('click');
+
+		// 清除body上的关闭事件
+        jTool('body').unbind(closeEvent);
 	}
 }
 export default new Config();

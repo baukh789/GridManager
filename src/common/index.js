@@ -1,5 +1,5 @@
 /*
- * 公共方法
+ * 公共方法入口
  * */
 import jTool from './jTool';
 import { parseTpl } from './parse';

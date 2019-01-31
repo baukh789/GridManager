@@ -116,7 +116,7 @@ class Checkbox {
     @parseTpl(columnTpl)
 	getColumnTemplate(params) {
 	    const { checked, useRadio } = params;
-	    const template = useRadio ? this.getRadioTpl({checked: checked}) : this.getCheckboxTpl({checked: checked ? 'checked' : 'unchecked'});
+	    const template = useRadio ? this.getRadioTpl({checked}) : this.getCheckboxTpl({checked});
         return {
             template
         };

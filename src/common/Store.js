@@ -1,5 +1,4 @@
 /**
- * Created by baukh on 17/10/24.
  * 实例化数据的存储对象
  */
 import { GM_VERSION } from './constants';
