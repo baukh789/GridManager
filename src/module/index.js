@@ -57,18 +57,25 @@ import { PublishMethod, publishMethodArray } from './publish';
 			return;
 		}
 
-		// 非init方法, 且当前并未实例化
+		// no init: 当前并未实例化
 		const settings = GridManager.get(this);
 		if (name !== 'init' && (!settings || !settings.gridManagerName)) {
 			base.outLog(`方法调用错误，请确定表格已实例化`, 'error');
 			return;
 		}
 
+        // no init: 执行
 		if (name !== 'init') {
             return PublishMethod[name](this, arg, callback, condition) || this;
         }
 
-        // init
+        // init: 当前已经实例化
+        if (settings && settings.gridManagerName) {
+            base.outLog('渲染失败,可能该表格已经渲染或正在渲染', 'error');
+            return;
+        }
+
+        // init: 执行
         const $table = jTool(this);
         // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
         if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {

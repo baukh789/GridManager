@@ -1,6 +1,8 @@
 # GridManager.js
 > 快速、灵活的对Table标签进行实例化，让Table标签充满活力。
 
+<img src="https://www.lovejavascript.com/upload/plugin/images/7860_t1.png"/>
+
 [![Build Status](https://travis-ci.org/baukh789/GridManager.svg?branch=master&style=flat-square)](https://travis-ci.org/baukh789/GridManager)
 [![npm version](https://img.shields.io/npm/v/gridmanager.svg?style=flat-square)](https://www.npmjs.com/package/gridmanager)
 [![npm downloads](https://img.shields.io/npm/dt/gridmanager.svg?style=flat-square)](https://www.npmjs.com/package/gridmanager)
@@ -37,10 +39,6 @@ npm install gridmanager --save
 ## 相关链接
 - [GridManager by Angular 1.x](https://github.com/baukh789/GridManager-Angular-1.x)
 - [GridManager by Vue](https://github.com/baukh789/GridManager-Vue)
-
-## 浏览器兼容
-- Firefox, Chrome
-- 这里提一下为什么不支持IE: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
 
 ## 示例
 ### 使用默认配置
@@ -173,3 +171,6 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
 ## License
 - [License](/LICENSE)
 
+## 浏览器兼容
+- Firefox, Chrome
+- 这里提一下为什么不支持IE: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.

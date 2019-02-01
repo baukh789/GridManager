@@ -537,12 +537,6 @@ export default class GridManager {
 			return;
 		}
 
-		// 校验: 当前表格是否已经渲染
-		if ($table.hasClass('GridManager-ready') || $table.hasClass('GridManager-loading')) {
-			base.outLog('渲染失败,可能该表格已经渲染或正在渲染', 'error');
-			return;
-		}
-
 		// 增加渲染中标注
 		$table.addClass('GridManager-loading');
 
