@@ -1,5 +1,10 @@
 /**
  * 项目中的一些基础方法
+ *
+ * #001: getDataForColumnMap(columnMap, data)
+ * 获取与ColumnMap匹配的clone数据, 仅会返回data中与ColumnMap相匹配且col.isAutoCreate !== true的字段。
+ * 返回的是clone对象，修改它并不会污染原数据。
+ *
  */
 import jTool from './jTool';
 import { FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE } from './constants';
@@ -11,7 +16,6 @@ class Base{
 
     // 定时器: 等待表格可用，在index.js中使用
     SIV_waitTableAvailable = {};
-
 
     /**
      * 输出日志
@@ -48,6 +52,7 @@ class Base{
 
     /**
      * 获取与ColumnMap匹配的clone数据
+     * #001
      * @param columnMap
      * @param obj
      */
@@ -176,7 +181,7 @@ class Base{
     }
     /**
      * get table
-     * @param $dom: 父级或子级jTool对象，或者是gridManagerName
+     * @param $dom: 父级或子级jTool对象，或者是gridManagerName。如果是gridManagerName，则第二个参数无效。
      * @param isSelectUp: 是否为向上查找模式
      * @returns {*}
      */
@@ -226,7 +231,7 @@ class Base{
     /**
      * get head th
      * @param $table
-     * @param thName: 1.thName 2.jTool object
+     * @param thName: 1.thName 2.fake th
      * @returns {*}
      */
     getTh($table, thName) {
