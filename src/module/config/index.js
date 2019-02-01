@@ -72,7 +72,7 @@ class Config {
 
             isVisible ? checkbox.addClass('gm-checkbox-checked') : checkbox.removeClass('gm-checkbox-checked');
 
-            // 设置与当前td同列的td是否可见
+            // 设置与当前th同列的td可视状态
             _tableDiv.addClass('config-editing');
             base.setAreVisible(_$table, [_thName], isVisible, () => {
                 _tableDiv.removeClass('config-editing');
@@ -85,6 +85,7 @@ class Config {
             const _checkedList = jTool('.config-area .checked-li', _tableWarp);
 
             // 限制最少显示一列
+            console.log(_checkedList.length);
             if (_checkedList.length === 1) {
                 _checkedList.addClass('no-click');
             }

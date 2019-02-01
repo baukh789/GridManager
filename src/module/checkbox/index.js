@@ -90,8 +90,7 @@ class Checkbox {
 	/**
 	 * 获取TD: 选择列对象
 	 * @param settings
-	 * @param language
-	 * @returns {{key: string, name: (*|string), isShow: boolean, width: string, align: string}}
+	 * @returns {parseData}
 	 */
 	getColumn(settings) {
 		return {
@@ -111,7 +110,7 @@ class Checkbox {
     /**
      * 获取选行模板
      * @param params
-     * @returns {{template: {checked}}}
+     * @returns {parseData}
      */
     @parseTpl(columnTpl)
 	getColumnTemplate(params) {
@@ -125,7 +124,7 @@ class Checkbox {
     /**
      * 获取checkbox模板
      * @param params
-     * @returns {{checked: string}}
+     * @returns {parseData}
      */
     @parseTpl(checkboxTpl)
     getCheckboxTpl(params) {
@@ -140,7 +139,7 @@ class Checkbox {
     /**
      * 获取radio模板
      * @param params
-     * @returns {{checked: *}}
+     * @returns {parseData}
      */
     @parseTpl(radioTpl)
     getRadioTpl(params) {

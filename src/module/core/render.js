@@ -11,7 +11,7 @@ import theadTpl from './thead.tpl.html';
 import thTpl from './th.tpl.html';
 
 /**
- * 生成模板
+ * 生成构建时所需要的模板
  */
 class Render {
     /**

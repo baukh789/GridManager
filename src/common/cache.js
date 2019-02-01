@@ -380,6 +380,7 @@ class Cache {
             if (isUsable) {
                 jTool.extend(true, _settings.columnMap, columnCache);
             } else {
+                console.log(JSON.stringify(_settings.columnMap));
                 // 清除用户记忆
                 this.delUserMemory($table, '存储记忆项与配置项[columnData]不匹配');
             }

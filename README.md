@@ -9,8 +9,6 @@
 [![coverage](https://img.shields.io/codecov/c/github/baukh789/GridManager.svg?style=flat-square)](https://codecov.io/gh/baukh789/GridManager)
 
 ## 实现功能
-### GridManager.js可快速的对table标签进行实例化，实例化后将实现以下功能:
-
 - 宽度调整: 表格的列宽度可进行拖拽式调整
 - 位置更换: 表格的列位置进行拖拽式调整
 - 配置列: 可通过配置对列进行显示隐藏转换

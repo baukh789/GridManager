@@ -373,6 +373,7 @@ class Base{
             // 可视状态值
             const visibleState = this.getVisibleState(isVisible);
 
+            // th
             $th.attr('th-visible', visibleState);
 
             // fake th
@@ -381,9 +382,9 @@ class Base{
             jTool.each($td, (index, td) => {
                 td.setAttribute('td-visible', visibleState);
             });
-            $checkLi.addClass('checked-li');
 
-            // prop checkbox
+            // config
+            isVisible ? $checkLi.addClass('checked-li') : $checkLi.removeClass('checked-li');
             jTool('input[type="checkbox"]', $checkLi).prop('checked', isVisible);
 
             this.updateEmptyCol($table);
