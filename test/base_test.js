@@ -836,3 +836,5 @@ describe('base.updateVisibleLast($table)', () => {
         expect(base.getThName($lastTh)).toBe('info');
     });
 });
+
+// updateThWidth

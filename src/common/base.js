@@ -406,6 +406,8 @@ class Base{
         const $fakeVisibleThList = this.getFakeVisibleTh($table);
         const lastIndex = $fakeVisibleThList.length - 1;
         let isLastVisible = null;
+
+        $table.find('[last-visible="true"]').attr('last-visible', false);
         jTool.each($fakeVisibleThList, (index, item) => {
             isLastVisible = index === lastIndex;
             item.setAttribute('last-visible', isLastVisible);
