@@ -85,7 +85,6 @@ class Config {
             const _checkedList = jTool('.config-area .checked-li', _tableWarp);
 
             // 限制最少显示一列
-            console.log(_checkedList.length);
             if (_checkedList.length === 1) {
                 _checkedList.addClass('no-click');
             }
