@@ -66,7 +66,7 @@ class Drag {
 			// 事件源所在的table
 			const _table = base.getTable(_tr, true);
 
-            // 事件源同层级下的所有可视th
+            // fake thead 下所有的 th
             let _allTh = base.getFakeVisibleTh(_table);
 
 			// 事件源所在的DIV

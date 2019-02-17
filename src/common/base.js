@@ -177,7 +177,10 @@ class Base{
      * @returns {*|string}
      */
     getKey($table) {
-        return $table.attr(this.key) || '';
+        if (!$table || !$table.jTool || $table.length === 0) {
+            return '';
+        }
+        return $table.attr(this.key);
     }
     /**
      * get table
@@ -236,7 +239,7 @@ class Base{
      */
     getTh($table, thName) {
         // jTool object
-        if (thName.jTool === true) {
+        if (thName.jTool) {
             thName = this.getThName(thName);
         }
         return jTool(`thead[${this.tableHeadKey}] th[th-name="${thName}"]`, $table);
@@ -277,20 +280,16 @@ class Base{
     }
 
     /**
-     * get fake all th
-     * @returns {*}
-     */
-    getFakeAllTh() {
-        return jTool(`thead[${this.fakeTableHeadKey}] th`, $table);
-    }
-
-    /**
      * get fake th
      * @param $table
      * @param thName
      * @returns {*}
      */
     getFakeTh($table, thName) {
+        // jTool object
+        if (thName.jTool) {
+            thName = this.getThName(thName);
+        }
         return jTool(`thead[${this.fakeTableHeadKey}] th[th-name="${thName}"]`, $table);
     }
 
@@ -320,8 +319,8 @@ class Base{
      */
     getEmptyHtml(visibleNum, emptyTemplate) {
         return `<tr emptyTemplate>
-					<td colspan="${visibleNum || 1}">
-					${emptyTemplate || ''}
+					<td colspan="${visibleNum}">
+					${emptyTemplate}
 					</td>
 				</tr>`;
     }
