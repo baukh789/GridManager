@@ -12,7 +12,7 @@ import render from './render';
 class Dom {
     init($table, settings) {
         // add wrap div
-        $table.wrap(render.createWrapTpl({ settings }));
+        $table.wrap(render.createWrapTpl({ settings }), '.table-div');
 
         // 计算布局
         base.calcLayout($table, settings.width, settings.height, settings.supportAjaxPage);

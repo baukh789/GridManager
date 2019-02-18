@@ -83,7 +83,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.3.1",
-        "jtool": "^1.2.28"
+        "jtool": "^1.2.29"
     },
     "sideEffects": false
 }
