@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="../css/gm.css">
+	<script type="text/javascript" src="../js/gm.js"></script>
+    <title>GridManager:多表I18N</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+	<h3>简体中文: { i18n: 'zh-cn' }</h3>
+	<div>
+		<table id="test1"></table>
+	</div>
+	<br/>
+	<h3>English: { i18n: 'en-us' }</h3>
+	<div>
+		<table id="test2"></table>
+	</div>
+	<br/>
+	<h3>繁體中文: { i18n: zh-tw' }</h3>
+	<div>
+		<table id="test3"></table>
+	</div>
+<script type="text/javascript">
+	// test1 demo
+	document.querySelector('#test1').GM({
+		height: '300px'
+        ,gridManagerName: 'test1'
+		,supportAjaxPage:true
+		,supportCheckbox: false
+		,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajax_type: 'POST'
+		,query: {tableName: 'test1', ccname: 'baukh'}
+		,pageSize:10
+		,columnData: [{
+			key: 'name',
+			remind: '网站标题',
+			width: '100px',
+			text: '标题',
+			sorting: 'up'
+		},{
+			key: 'info',
+			remind: '网站介绍',
+			text: '介绍',
+			sorting: ''
+		},{
+			key: 'url',
+			remind: '网站地址',
+			text: '地址'
+		}
+		]
+		,ajax_success: function () {
+			console.log('test1 ajax_success');
+		}
+	});
+
+	// test 2demo
+	document.querySelector('#test2').GM({
+		height: '400px'
+        ,gridManagerName: 'test2'
+		,i18n: 'en-us'
+		,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajax_type: 'POST'
+		,query: {tableName: 'test2', 'love': 'kouzi'}
+		,pageSize:20
+		,supportAjaxPage:true
+		,columnData: [{
+			key: 'name',
+			remind: 'the name',
+			width: '100px',
+			text: 'name',
+			sorting: 'up'
+		},{
+			key: 'info',
+			remind: 'the info',
+			text: 'info',
+			sorting: ''
+		},{
+			key: 'url',
+			remind: 'the url',
+			text: 'url'
+		}
+		]
+		,ajax_success: function (data) {
+			console.log('test2 ajax_success');
+		}
+	});
+
+	// test 3demo
+	document.querySelector('#test3').GM({
+		height: '300px'
+        ,gridManagerName: 'test3'
+		,i18n: 'zh-tw'
+		,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajax_type: 'POST'
+		,query: {tableName: 'test3', baby: 'kouzi'}
+		,pageSize:30
+		,supportAjaxPage:true
+		,columnData: [{
+			key: 'name',
+			remind: '網站名稱',
+			width: '100px',
+			text: '名稱',
+			sorting: 'up'
+		},{
+			key: 'info',
+			remind: '網站介紹',
+			text: '介紹',
+			sorting: ''
+		},{
+			key: 'url',
+			remind: '網站地址',
+			text: '地址'
+		}
+		]
+		,ajax_success: function (data) {
+			console.log('test2 ajax_success');
+		}
+	});
+
+
+</script>
+
+</body>
+</html>

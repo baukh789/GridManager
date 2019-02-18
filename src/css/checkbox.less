@@ -1,0 +1,136 @@
+.table-wrap {
+    .gm-checkbox-wrapper {
+        display: inline-block;
+        color: rgba(0, 0, 0, .65);
+        margin: 0;
+        padding: 0;
+        line-height: 12px;
+        cursor: pointer;
+        border-collapse: collapse;
+        .gm-checkbox {
+            display: inline-block;
+            position: relative;
+            top: -.5px;
+            font-size: 14px;
+            color: rgba(0, 0, 0, .65);
+            margin: 0;
+            padding: 0;
+            white-space: nowrap;
+            outline: none;
+            line-height: 1;
+            vertical-align: middle;
+            .gm-checkbox-input {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                z-index: 1;
+                cursor: pointer;
+                opacity: 0;
+                margin: 0;
+            }
+            .gm-checkbox-inner {
+                display: block;
+                width: 14px;
+                height: 14px;
+                position: relative;
+                top: 0;
+                left: 0;
+                border: 1px solid #d9d9d9;
+                border-radius: 2px;
+                background-color: #fff;
+                transition: all .3s;
+                &:after {
+                    display: table;
+                    width: 5px;
+                    height: 8px;
+                    position: absolute;
+                    left: 3px;
+                    top: 1px;
+                    -webkit-transform: rotate(45deg) scale(0);
+                    transform: rotate(45deg) scale(0);
+                    border: 2px solid #fff;
+                    border-top: 0;
+                    border-left: 0;
+                    content: " ";
+                }
+            }
+            & + span {
+                padding-left: 8px;
+                padding-right: 8px;
+                margin-top: -1px;
+                font-weight: 400;
+            }
+
+            // 选中样式
+            &.gm-checkbox-checked {
+                &:after {
+                    width: 14px;
+                    height: 14px;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    border-radius: 2px;
+                    border: 1px solid #1890ff;
+                    content: "";
+                    animation: gmCheckboxEffect .36s ease-in-out;
+                    animation-fill-mode: both;
+                    visibility: hidden;
+                }
+                .gm-checkbox-inner:after {
+                    display: table;
+                    position: absolute;
+                    transform: rotate(45deg) scale(1);
+                    border: 2px solid #fff;
+                    border-top: 0;
+                    border-left: 0;
+                    content: " ";
+                }
+            }
+            &.gm-checkbox-indeterminate {
+                .gm-checkbox-inner:after {
+                    width: 8px;
+                    height: 1.2px;
+                    position: absolute;
+                    left: 2px;
+                    top: 5px;
+                    content: " ";
+                    transform: scale(1);
+                }
+            }
+            &.gm-checkbox-checked .gm-checkbox-inner,
+            &.gm-checkbox-indeterminate .gm-checkbox-inner {
+                background-color: #1890ff;
+                border-color: #1890ff;
+            }
+            &:hover:after {
+                visibility: visible;
+            }
+        }
+        &:hover {
+            .gm-checkbox:after {
+                visibility: visible;
+            }
+        }
+    }
+
+    .gm-checkbox-input:focus + .gm-checkbox-inner,
+    .gm-checkbox-wrapper:hover .gm-checkbox-inner,
+    .gm-checkbox:hover .gm-checkbox-inner {
+        border-color: #1890ff;
+    }
+}
+@keyframes gmCheckboxEffect {
+    0% {
+        transform: scale(1);
+        opacity: .5;
+    }
+
+    to {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}

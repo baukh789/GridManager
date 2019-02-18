@@ -55,7 +55,7 @@
     // 规定callback 如果有err参数，只能写出err 或者 error .
     "handle-callback-err": [2, "^(err|error)$" ],
     //这个就是关于用什么来缩进了，规定使用tab 来进行缩进，switch中case也需要一个tab .
-    "indent": [2, "tab", { "SwitchCase": 1 }],
+    "indent": 0,
     //该规则规定了在对象字面量语法中，key和value之间的空白，冒号前不要空格，冒号后面需要一个空格
     "key-spacing": [2, { "beforeColon": false, "afterColon": true }],
     //构造函数首字母大写
@@ -125,10 +125,10 @@
     //禁止使用没有必要的嵌套代码块
     "no-lone-blocks": 2,
     //不要把空格和tab混用
-    "no-mixed-spaces-and-tabs": 2,
+    "no-mixed-spaces-and-tabs": 0,
     //顾名思义，该规则保证了在逻辑表达式、条件表达式、
     //申明语句、数组元素、对象属性、sequences、函数参数中不使用超过一个的空白符。
-    "no-multi-spaces": 2,
+    "no-multi-spaces": 0,
     //该规则保证了字符串不分两行书写。
     "no-multi-str": 2,
     //空行不能够超过2行
@@ -197,7 +197,7 @@
     //在某些场景只能使用一个var来申明变量
     "one-var": [2, { "initialized": "never" }],
     //在进行断行时，操作符应该放在行首还是行尾。并且还可以对某些操作符进行重写。
-    "operator-linebreak": [2, "after", { "overrides": { "?": "before", ":": "before" } }],
+    "operator-linebreak": 0,
     //使用单引号
     "quotes": [2, "single", "avoid-escape"],
     //在使用parseInt() 方法时，需要传递第二个参数，来帮助解析，告诉方法解析成多少进制。

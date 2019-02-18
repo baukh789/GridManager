@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="../css/gm.css">
+	<script type="text/javascript" src="../js/gm.js"></script>
+    <title>GridManager:无总页条数</title>
+    <style>
+		html, body{
+			width: 100%;
+			overflow-x:hidden;
+			margin: 0;
+			padding: 0;
+		}
+		.plugin-action{
+			display: inline-block;
+			color: steelblue;
+			margin-right: 10px;
+			cursor: pointer;
+			text-decoration: none;
+        }
+        .plugin-action:hover{
+            text-decoration: underline;
+        }
+		.search-area{
+			padding: 10px 20px;
+			border: 1px solid #ccc;
+			background: #efefef;
+			margin-bottom: 15px;
+		}
+		.search-area .sa-ele{
+			display: inline-block;
+			margin-right: 20px;
+			font-size: 12px;
+		}
+		.search-area .sa-ele .se-title{
+			display: inline-block;
+			margin-right: 10px;
+		}
+		.search-area .sa-ele .se-con{
+			display: inline-block;
+			width:180px;
+			height: 24px;
+			border: 1px solid #ccc;
+			padding: 0 4px;
+			line-height: 24px;
+		}
+		.search-area .sa-ele .search-action, .search-area .sa-ele .reset-action{
+			display: inline-block;
+			width:80px;
+			height: 26px;
+			border: 1px solid #ccc;
+			background: #e8e8e8;
+			padding: 0 4px;
+			line-height: 26px;
+			text-align: center;
+			cursor: pointer;
+			margin-right: 10px;
+		}
+		.search-area .sa-ele .search-action:hover, .search-area .sa-ele .reset-action:hover{
+			opacity: 0.7;
+		}
+
+		.bottom-bar{
+			background: #f8f8f8;
+			padding: 10px;
+			margin-top: 10px;
+		}
+		.bottom-bar button{
+			padding: 5px 20px;
+			margin-right: 10px;
+		}
+		.bottom-bar a{
+			font-size: 12px;
+			margin-right: 10px;
+		}
+		.void-template{
+			height:300px;
+			line-height: 300px;
+			text-align: center;
+			font-size: 24px;
+			color: #ccc;
+		}
+        .grid-main {
+            height: calc(100vh - 64px - 57px);
+        }
+    </style>
+	<script>
+		// 博文类型
+		const TYPE_MAP = {
+			'1': 'HTML/CSS',
+			'2': 'nodeJS',
+			'3': 'javaScript',
+			'4': '前端鸡汤',
+			'5': 'PM Coffee',
+			'6': '前端框架',
+			'7': '前端相关'
+		};
+
+	</script>
+</head>
+
+<body>
+	<section class="search-area">
+		<div class="sa-ele">
+			<label class="se-title">标题:</label>
+			<input class="se-con" name="title"/>
+		</div>
+		<div class="sa-ele">
+			<label class="se-title">博文分类:</label>
+			<select class="se-con" name="type">
+				<option value="-1">请选择</option>
+				<!--通过js增加-->
+			</select>
+		</div>
+		<div class="sa-ele">
+			<label class="se-title">内容:</label>
+			<input class="se-con" name="content"/>
+		</div>
+		<div class="sa-ele">
+			<button class="search-action">搜索</button>
+			<button class="reset-action">重置</button>
+		</div>
+	</section>
+
+	<section class="grid-main">
+		<table></table>
+	</section>
+
+	<section class="bottom-bar">
+		<button id="init-gm" disabled>init</button>
+		<button id="destroy-gm" disabled>destroy</button>
+		<a href="https://github.com/baukh789/GridManager/blob/master/src/demo/demo1.html" target="_blank">查看源码</a>
+	</section>
+
+	<script type="text/javascript">
+		// GridManager 渲染
+		var table = document.querySelector('table');
+		function init() {
+			table.GM({
+				gridManagerName: 'test',
+                width: '100%',
+				height: '100%',
+				supportAjaxPage:true,
+				isCombSorting: true,
+				ajax_data: function () {
+					return 'https://www.lovejavascript.com/blogManager/getBlogList';
+				},
+				ajax_type: 'POST',
+
+                // 使用无总页模式
+                useNoTotalsMode: true,
+
+                // 指定接口返回无总页数据，这个参数仅是demo演示所需的数据，配置是否使用无总页模式的字段为: useNoTotalsMode
+				query: {noTotals: true},
+				dataKey: 'list',  // 注意: 这里是用来测试responseHandler 是否生效; 数据本身返回为data, 而在这里我把数据名模拟为list, 再通过responseHandler去更改
+
+				// 通过该方法修改全部的请求参数
+				requestHandler: function(request){
+					request.newParams = '这个参数是通过 requestHandler 函数新增的';
+					// 更改这个参数后, 将会强制createDate字段使用 降序排序.
+					// 'sort_' 通过 配置项 sortKey 进行配置
+					// 'DESC' 通过 配置项 sortDownText 进行配置
+					//			request.sort_createDate = 'DESC';
+					return request;
+				},
+				// 可以通过该方法修改返回的数据
+				responseHandler: function(response){
+					// 数据本身返回为data, 通过responseHandler更改为与dataKey匹配的值
+					response.list = response.data;
+					return response;
+				},
+				columnData: [
+					{
+						key: 'pic',
+						remind: 'the pic',
+						width: '110px',
+						align: 'center',
+						text: '缩略图',
+						// 使用函数返回 dom node
+						template: function(pic, rowObject) {
+							var picNode = document.createElement('a');
+							picNode.setAttribute('href', `https://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
+							picNode.setAttribute('title', rowObject.title);
+							picNode.setAttribute('target', '_blank');
+							picNode.title = `点击阅读[${rowObject.title}]`;
+							picNode.style.display = 'block';
+							picNode.style.height = '58.5px';
+
+							var imgNode = document.createElement('img');
+							imgNode.style.width = '90px';
+							imgNode.style.margin = '0 auto';
+							imgNode.alt = rowObject.title;
+							imgNode.src = `https://www.lovejavascript.com/${pic}`;
+
+							picNode.appendChild(imgNode);
+							return '<i class="iconfont icon-help"></i>';
+						}
+					},{
+						key: 'title',
+						remind: 'the title',
+						align: 'left',
+						text: '标题',
+						sorting: '',
+						// 使用函数返回 dom node
+						template: function(title, rowObject) {
+							var titleNode = document.createElement('a');
+							titleNode.setAttribute('href', `https://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
+							titleNode.setAttribute('title', title);
+							titleNode.setAttribute('target', '_blank');
+							titleNode.innerText = title;
+							titleNode.title = `点击阅读[${rowObject.title}]`;
+							titleNode.classList.add('plugin-action');
+							return titleNode;
+						}
+					},{
+						key: 'type',
+						remind: 'the type',
+						text: '博文分类',
+						align: 'center',
+                        width: '150px',
+                        sorting: '',
+                        // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。非必设项
+                        filter: {
+                            // 筛选条件列表, 数组对象。格式: [{value: '1', text: 'HTML/CSS'}],在使用filter时该参数为必设项。
+                            option: [
+                                {value: '1', text: 'HTML/CSS'},
+                                {value: '2', text: 'nodeJS'},
+                                {value: '3', text: 'javaScript'},
+                                {value: '4', text: '前端鸡汤'},
+                                {value: '5', text: 'PM Coffee'},
+                                {value: '6', text: '前端框架'},
+                                {value: '7', text: '前端相关'}
+                            ],
+                            // 筛选选中项，字符串, 默认为''。 非必设项，选中的过滤条件将会覆盖query
+                            selected: '3',
+                            // 否为多选, 布尔值, 默认为false。非必设项
+                            isMultiple: true
+                        },
+						template: function(type, rowObject){
+							return TYPE_MAP[type];
+						}
+					},{
+						key: 'info',
+						remind: 'the info',
+                        width: '100px',
+						text: '简介'
+					},{
+						key: 'username',
+						remind: 'the username',
+						align: 'center',
+						width: '100px',
+						text: '作者',
+						template: function(username){
+							return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
+						}
+					},{
+						key: 'createDate',
+						width: '130px',
+						text: '创建时间',
+						sorting: 'DESC',
+						// 使用函数返回 htmlString
+						template: function(createDate, rowObject){
+							return new Date(createDate).toLocaleDateString();
+						}
+					},{
+						key: 'lastDate',
+						width: '130px',
+						text: '最后修改时间',
+						sorting: '',
+						// 使用函数返回 htmlString
+						template: function(lastDate, rowObject){
+							return new Date(lastDate).toLocaleDateString();
+						}
+					},{
+						key: 'action',
+						remind: 'the action',
+                        width: '100px',
+						align: 'center',
+						text: '<span style="color: red">操作</span>',
+						// 直接返回 htmlString
+						template: '<span class="plugin-action" gm-click="delectRowData">删除</span>'
+					},{
+                        key: 'config',
+                        text: '<i class="iconfont icon-config" onclick="onShowConfig()"></i>',
+                        width: '50px',
+                        disableCustomize: true,
+                        align: 'center',
+                        template: () => {
+                            return '';
+                        }
+                    }
+				],
+				// 排序后事件
+				sortingAfter: function (data) {
+					console.log('sortAfter', data);
+				},
+
+                // 单个td的hover事件
+                cellHover: function(row, rowIndex, colIndex){
+				    console.log(row, rowIndex, colIndex);
+                }
+			}, function(query){
+				// 渲染完成后的回调函数
+				console.log('渲染完成后的回调函数:', query);
+			});
+		}
+
+		function onShowConfig() {
+            document.querySelector('table[grid-manager="test"]').GM('showConfig');
+        }
+
+		// 删除功能
+		function delectRowData(rowData){
+			// 执行删除操作
+			if(window.confirm('确认要删除['+rowData.title+']?')){
+				window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
+			}
+		}
+
+		/**
+		 * 渲染博文类型
+		 */
+		(function () {
+			// 渲染下拉框
+			var typeSelect = document.querySelector('.search-area select[name="type"]');
+
+			for(var key in TYPE_MAP){
+				var option = document.createElement('option');
+				option.value = key;
+				option.innerText = TYPE_MAP[key];
+				typeSelect.appendChild(option);
+			}
+		})();
+
+		 /**
+		 * 提供demo中的搜索, 重置
+		 */
+		(function(){
+
+			// 绑定搜索事件
+			document.querySelector('.search-action').addEventListener('click', function () {
+				var _query = {
+					title: document.querySelector('[name="title"]').value,
+					type: document.querySelector('[name="type"]').value,
+					content: document.querySelector('[name="content"]').value,
+					cPage: 1
+				};
+				table.GM('setQuery', _query, function(){
+					console.log('setQuery执行成功');
+				});
+			});
+
+			// 绑定重置
+			document.querySelector('.reset-action').addEventListener('click', function () {
+				document.querySelector('[name="title"]').value = '';
+				document.querySelector('[name="type"]').value = '-1';
+				document.querySelector('[name="content"]').value = '';
+			});
+		})();
+
+		/**
+		 * 绑定 实例化, 消毁事件
+		 */
+		(function () {
+			var initDOM = document.getElementById('init-gm');
+			var destroyDOM = document.getElementById('destroy-gm');
+			var codeShowDOM = document.querySelector('.code-show');
+			// 绑定初始化事件
+			initDOM.onclick = function(){
+				init();
+				initDOM.setAttribute('disabled', '');
+				destroyDOM.removeAttribute('disabled');
+			};
+
+			// 绑定消毁事件
+			destroyDOM.onclick = function(){
+				table.GM('destroy');
+				initDOM.removeAttribute('disabled');
+				destroyDOM.setAttribute('disabled', '');
+			};
+
+		})();
+
+		/**
+		 * 初始进入时, 执行init 方法
+		 */
+		(function(){
+			init();
+			var initDOM = document.getElementById('init-gm');
+			var destroyDOM = document.getElementById('destroy-gm');
+			initDOM.setAttribute('disabled', '');
+			destroyDOM.removeAttribute('disabled');
+		})();
+	</script>
+</body>
+</html>

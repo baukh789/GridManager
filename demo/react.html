@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>GridManager: React 示例</title>
+	<!--引入 GridManager 依赖-->
+	<link rel="stylesheet" type="text/css" href="../css/gm.css">
+	<script type="text/javascript" src="../js/gm.js"></script>
+	<!--引入 React 依赖-->
+	<script src="https://cdn.bootcss.com/react/15.4.2/react.min.js"></script>
+	<script src="https://cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
+	<script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
+	<style>
+		html, body{
+			width: 100%;
+			height: 100%;
+			overflow-x:hidden;
+			margin: 0;
+			padding: 0;
+		}
+		h2{
+			font-size:22px;
+			padding:10px 30px;
+			color:#333;
+		}
+		p{
+			font-size:14px;
+			padding:10px 30px;
+			color:#333;
+			text-indent:2em;
+			margin: 0;
+		}
+		hr{
+			margin-top: 18px;
+			margin-bottom: 18px;
+			border: 0;
+			border-top: 1px solid #eee;
+		}
+		.plugin-action{
+			color: #0f88eb;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+<div id="example"></div>
+<script type="text/babel">
+
+	// 首先将GridManager 注册为 React 标签
+	var ReactGridManager = React.createClass({
+		render: function () {
+			return <table data-name={this.props.gridManagerName}></table>;
+		},
+		componentDidMount: function () {
+			var table = document.querySelector('table[data-name="'+this.props.gridManagerName+'"]');
+			table.GM(this.props);
+			GM.setScope(table, this);
+		},
+        testGM: function(row) {
+		    console.log(row);
+        }
+	});
+
+	// 配置GridManager init 必要参数
+	var colData = [{
+		key: 'name',
+		remind: 'the name',
+		width: '100px',
+		text: '名称',
+		sorting: ''
+	},{
+		key: 'info',
+		remind: 'the info',
+		text: '使用说明'
+	},{
+		key: 'url',
+		remind: 'the url',
+		text: 'url'
+	},{
+		key: 'createDate',
+		remind: 'the createDate',
+		width: '130px',
+		text: '创建时间',
+		sorting: 'DESC',
+		template: function(createDate, rowObject){
+			return new Date(createDate);
+		}
+	},{
+		key: 'lastDate',
+		remind: 'the lastDate',
+		width: '130px',
+		text: '最后修改时间',
+		sorting: '',
+		template: function(lastDate, rowObject){
+			return new Date(lastDate);
+		}
+	},{
+		key: 'action',
+		remind: 'the action',
+		width: '100px',
+		text: '操作',
+		template: function(action, rowObject){
+            return '<span class="plugin-action" gm-click="testGM">删除</span>';
+		}
+	}];
+	var queryInfo = {pluginId: 1};
+	ReactDOM.render(
+			<div>
+				<ReactGridManager
+						gridManagerName="testReact"
+						height="400px"
+						columnData= {colData}
+						isCombSorting=  {true}
+						supportAjaxPage= {true}
+						ajax_data= "https://www.lovejavascript.com/learnLinkManager/getLearnLinkList"
+						ajax_type= "POST"
+						query= {queryInfo}
+						pageSize= {20}
+				/>
+			</div>,
+			document.querySelector('#example')
+	);
+</script>
+</body>
+</html>

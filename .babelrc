@@ -1,19 +1,34 @@
 {
-  "presets": [
-    [
-      "es2015",
-      {
-        "modules": false
-      }
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": "chrome>38, firefox>56",
+                "useBuiltIns": "entry"
+            }
+        ]
     ],
-    "stage-0"
-  ],
-  "plugins": [
-    "transform-decorators-legacy"
-  ],
-  "env": {
-    "test": {
-      "plugins": ["istanbul"]
+    "plugins": [
+        [
+            "@babel/plugin-transform-runtime",
+            {
+                "corejs": false,
+                "helpers": true,
+                "regenerator": true,
+                "useESModules": true
+            }
+        ],
+        [
+            "@babel/plugin-proposal-decorators",
+            {
+                "legacy": true
+            }
+        ],
+        "@babel/plugin-proposal-class-properties"
+    ],
+    "env": {
+        "test": {
+            "plugins": ["istanbul"]
+        }
     }
-  }
 }

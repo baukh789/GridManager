@@ -1,0 +1,76 @@
+/* 表格配置 */
+.table-wrap{
+	.config-area{
+		display: none;
+		width: 260px;
+        position: absolute;
+        top: 42px;
+		right: 0;
+		cursor: pointer;
+		z-index: 3;
+		padding: 8px 0;
+		border: 1px solid #ddd;
+		background-color: #fff;
+		.config-action{
+			display: block;
+			width: 20px;
+			height: calc(100% + 2px);
+			position: absolute;
+			left: -20px;
+			top: -1px;
+			overflow: hidden;
+			text-align: center;
+			background-color: #09f;
+			i{
+				display: inline-block;
+				position: absolute;
+				left: 2px;
+				top: calc(50% - 9px);
+				font-size: 16px;
+				color: #ddd;
+			}
+			&:hover i{
+				color: #fff;
+			}
+		}
+		.config-info{
+			line-height: 20px;
+			padding: 0 18px;
+			color: #666;
+		}
+		.config-list{
+			display: block;
+			width: 100%;
+			list-style-type: none;
+			font-size: 12px;
+			margin: 0;
+            padding: 0 8px;
+            user-select: none;
+            overflow-y: auto;
+			>li{
+				display: inline-block;
+				width: calc(50% - 2px);
+				padding: 4px 10px;
+				line-height: 20px;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+                .gm-checkbox-input{
+                    pointer-events: none;
+                }
+				&:hover{
+                    color: #09f;
+				}
+				&.no-click{
+					cursor: not-allowed;
+					*{
+						cursor: not-allowed;
+					}
+					&:hover{
+                        color:#666;
+					}
+				}
+			}
+		}
+	}
+}

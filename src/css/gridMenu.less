@@ -1,0 +1,42 @@
+/* 右键菜单 */
+.grid-menu[grid-master]{
+  	color: #000;
+	display: none;
+	width: 200px;
+	max-height: 200px;
+	position: absolute;
+	border: 1px solid #ccc;
+	padding: 5px 0;
+	background: #fff;
+	z-index: 3;
+	[grid-action]{
+		display: block;
+        height: 28px;
+		position: relative;
+		padding: 5px 20px;
+		cursor: default;
+        line-height: 18px;
+		&:hover{
+			background: #777;
+			color: #fff;
+		}
+		&.disabled{
+			color: #ccc;
+			background: #fff;
+		}
+		.iconfont{
+			display: block;
+			font-size: 16px;
+			position: absolute;
+			top: 5px;
+			right: 10px;
+		}
+	}
+	.grid-line{
+		display: block;
+		height: 3px;
+		background: #e8e8e8;
+		border-top: 1px solid #f8f8f8;
+		border-bottom: 1px solid #f8f8f8;
+	}
+}

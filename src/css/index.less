@@ -1,0 +1,556 @@
+@import '../fonts/iconfont';
+@import "./animation";
+@import "./gridMenu";
+@import "./gridBase";
+@import "./gridLoading";
+//@import "./gridPage";
+@import "./gridConfig";
+@import "./checkbox";
+@import "./radio";
+@import "./mixins";
+
+@table-border: 1px solid #e8e8e8;
+@font-normal-size: 12px;
+
+/* table所在的DIV */
+.table-wrap {
+    position: relative;
+    overflow: hidden;
+    background-color: #fff;
+    border: @table-border;
+    padding-top: 40px;
+    // 配置是否禁用边框线
+    &.disable-border {
+        border: none;
+    }
+    // 表头的icon图标是否跟随文本
+    &.icon-follow-text{
+        .table-div table[grid-manager] thead th[th-name]{
+            .th-wrap{
+                display: inline-block;
+                vertical-align: middle;
+                padding-right: 11px;
+                .th-text{
+                    display: inline-block;
+                    width: auto;
+                    vertical-align: middle;
+                }
+                .sorting-action, .filter-action{
+                    display: inline-block;
+                    width: 20px;
+                    position: relative;
+                    top: 0;
+                    left: 0;
+                    vertical-align: middle;
+                    text-align: center;
+                    .sa-icon, .fa-icon{
+                        right: 4px;
+                    }
+                }
+            }
+        }
+    }
+    .table-div {
+        overflow: auto;
+        /* 配置列表功能 */
+        .config-editing {
+            overflow-x: hidden;
+        }
+        /* table */
+        table[grid-manager] {
+            table-layout: fixed;
+            word-wrap: break-word;
+            text-align: center;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: -40px;
+            //font-family: @font-family;
+            tr {
+                border-bottom: @table-border;
+                [last-visible="true"]{
+                    border-right: none;
+                }
+            }
+            th {
+                text-align: center;
+                margin: 0;
+                padding: 0;
+                line-height: 18px;
+                font-weight: 400;
+                &[th-visible="none"] {
+                    display: none;
+                }
+                &[th-visible="visible"] {
+                    display: table-cell;
+                }
+                &[remind] .th-wrap {
+                    padding-left: 20px;
+                }
+                &[sorting] .th-wrap {
+                    padding-right: 20px;
+                }
+                &[filter] .th-wrap {
+                    padding-right: 20px;
+                }
+                &[sorting][filter] .th-wrap { /*排序与表头筛选同时存在时，需要将样式重置*/
+                    padding-right: 45px;
+                    .sorting-action{
+                        right: 25px;
+                    }
+                }
+                &[gm-create="true"] {
+                    .th-wrap {
+                        padding: 6px 4px;
+                    }
+                }
+                .th-wrap {
+                    /*减去的1px 为border-right. 原因是table元素存在特殊性, thead浮动后border的宽度不会计算到th内,而是会在原基础上将th的宽加1. */
+                    width: calc(100% - 1px);
+                    height: 100%;
+                    position: relative;
+                    padding: 6px 11px;
+                    .th-text {
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        .text-overflow();
+                    }
+                    .iconfont{
+                        opacity: 0.7;
+                        cursor: pointer;
+                        &:hover{
+                            opacity: 1;
+                        }
+                    }
+                    /* 宽度调整事件源 */
+                    .adjust-action {
+                        display: block;
+                        width: 6px;
+                        height: 100%;
+                        position: absolute;
+                        top: 0;
+                        right: -4px;
+                        cursor: col-resize;
+                        //z-index: 2;
+                    }
+                    /* 表头提醒 */
+                    .remind-action {
+                        width: 16px;
+                        height: 16px;
+                        position: absolute;
+                        top: 6px;
+                        left: 4px;
+                        cursor: help;
+                        .ra-area {
+                            display: none;
+                            min-width: 150px;
+                            max-width: 300px;
+                            position: absolute;
+                            top: 80%;
+                            left: 80%;
+                            padding: 12px;
+                            border: 3px solid #000;
+                            z-index: 9999;
+                            border-radius: 5px;
+                            box-shadow: 3px 3px 10px 0 #222;
+                            background-color: #000;
+                            opacity: 0.8;
+                            line-height: 14px;
+                            color: #fff;
+                            .ra-title {
+                                display: block;
+                                text-align: left;
+                                margin-bottom: 4px;
+                                font-weight: 600;
+                                font-size: 1.1em;
+                                color: #FF6;
+                                .text-overflow();
+                            }
+                            .ra-con {
+                                display: block;
+                                font-weight: 500;
+                                text-align: left;
+                                font-size: 0.9em;
+                                color: #fff;
+                            }
+                        }
+                        .ra-icon {
+                            display: block;
+                            width: 16px;
+                            height: 16px;
+                            font-size: @font-normal-size;
+                            line-height: 18px;
+                            color: #666;
+                        }
+                        &:hover {
+                            .ra-icon {
+                                color: #2b669a;
+                            }
+                        }
+                    }
+                    /* 排序 */
+                    .sorting-action {
+                        display: block;
+                        width: 14px;
+                        height: 18px;
+                        position: absolute;
+                        top: 6px;
+                        right: 5px;
+                        cursor: default;
+                        //z-index: 2;
+                        color: #444;
+                        &:hover {
+                            color: #000;
+                        }
+                        &.sorting-up {
+                            .sa-up {
+                                opacity: 1;
+                            }
+                            .sa-down {
+                                opacity: 0.1;
+                            }
+                        }
+                        &.sorting-down {
+                            .sa-up {
+                                opacity: 0.1;
+                            }
+                            .sa-down {
+                                opacity: 1;
+                            }
+                        }
+                        .sa-icon {
+                            display: block;
+                            height: 10px;
+                            position: absolute;
+                            font-size: @font-normal-size;
+                            line-height: 10px;
+                        }
+                        .sa-up {
+                            top: 0;
+                            right: 0;
+                        }
+                        .sa-down {
+                            bottom: 0;
+                            right: 0;
+                        }
+                    }
+                    /*表头的筛选菜单*/
+                    .filter-action{
+                        display: block;
+                        width: 14px;
+                        height: 18px;
+                        position: absolute;
+                        top: 6px;
+                        right: 5px;
+                        cursor: default;
+                        //z-index: 2;
+                        color: #444;
+                        .fa-icon {
+                            display: block;
+                            position: absolute;
+                            font-size: @font-normal-size;
+                            line-height: 18px;
+                            &.filter-selected{
+                                color: @font-active-color;
+                            }
+                        }
+                        .fa-con{
+                            display: none;
+                            min-width: 100px;
+                            position: absolute;
+                            top: 100%;
+                            background: #fff;
+                            border: 1px solid #ccc;
+                            &.direction-left{
+                                left: 0;
+                            }
+                            &.direction-right{
+                                right: 0;
+                            }
+                            .filter-list{
+                                overflow-y: auto;
+                                li{
+                                    padding: 5px 12px;
+                                    > label{
+                                        cursor: pointer;
+                                        display: flex;
+                                        word-break: keep-all;
+                                        // TODO 这里需要清掉
+                                        .filter-value{
+                                            cursor: pointer;
+                                            margin: 3px 0;
+                                        }
+                                        .filter-text{
+                                            padding-left: 8px;
+                                            color: rgba(0,0,0,.65);
+                                        }
+                                    }
+                                    &:hover{
+                                        background: #e6f7ff;
+                                    }
+                                }
+                            }
+                            .filter-bottom{
+                                border-top: @table-border;
+                                padding: 7px 8px;
+                                text-align: center;
+                                .filter-button{
+                                    cursor: pointer;
+                                    color: #1890ff;
+                                    &:hover{
+                                        color: #40a9ff;
+                                    }
+                                    &:first-child{
+                                        margin-right: 10px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    /* 拖拽换位 */
+                    .drag-action {
+                        cursor: all-scroll;
+                    }
+                }
+            }
+            td {
+                text-align: left;
+            }
+            th, td {
+                border-right: @table-border;
+                &[th-visible="none"] {
+                    display: none;
+                }
+                &[th-visible="visible"] {
+                    display: table-cell;
+                }
+                /* 宽度调整选中 */
+                &.adjust-selected {
+                    border-right-width: 2px;
+                    border-right-style: dashed;
+                    border-right-color: #ccc;
+                    &.drag-action {
+                        cursor: col-resize;
+                    }
+                }
+                /* 拖拽换位中 */
+                &.drag-ongoing {
+                    cursor: all-scroll;
+                    &.opacityChange {
+                        opacity: 1;
+                        animation: opacityChange 1s ease-in-out infinite;
+                    }
+                }
+                /* 文本对齐 */
+                &[align] {
+                    &[align="left"] {
+                        text-align: left;
+                    }
+                    &[align="center"] {
+                        text-align: center;
+                    }
+                    &[align="right"] {
+                        text-align: right;
+                    }
+                }
+                /* 由插件自动生成的序号 与 全选 */
+                &[gm-create="true"] {
+                    text-align: center;
+                    cursor: default;
+                    &[gm-checkbox="true"] input[type=checkbox] {
+                        vertical-align: middle;
+                    }
+                }
+            }
+            thead {
+                tr {
+                    height: 40px;
+                    line-height: 40px;
+                }
+                //&.scrolling {
+                &[grid-manager-thead]{
+                    visibility: hidden;
+                }
+                /* 表头置顶 */
+                &[grid-manager-mock-thead] {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    //z-index: 2;
+                    //background-color: #ddd;
+                    .bg-image();
+                    tr {
+                        th {
+                            /* 表头提醒 */
+                            .remind-action {
+                                .ra-area {
+                                    visibility: hidden;
+                                    display: none;
+                                }
+                                &:hover .ra-area {
+                                    visibility: visible;
+                                    display: block !important;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            tbody {
+                tr {
+                    /*顶部通栏*/
+                    &[top-full-column="true"]{
+                        border-bottom: none;
+                        td{
+                            border-left: @table-border;
+                            border-right: @table-border;
+                            padding: 0;
+                            .full-column-td{
+                                border-top: @table-border;
+                                .bg-image();
+                            }
+                        }
+                    }
+                    &[top-full-column-interval="true"]{
+                        border: none;
+                        td{
+                            padding: 0;
+                            >div{
+                                height: 10px;
+                            }
+                        }
+                    }
+                    &[top-full-column="false"]{
+                        border-bottom: @table-border;
+                        td{
+                            &:first-child{
+                                border-left: @table-border;
+                            }
+                            &:last-child{
+                                border-right: @table-border;
+                            }
+                        }
+                    }
+                    td {
+                        .text-overflow();
+                        background-color: #fff;
+                        color: #3d3d3d;
+                        padding: 11px;
+                        &[gm-create="true"]{
+                            padding: 0;
+                        }
+                        vertical-align: middle;
+                        &[td-visible="none"] {
+                            display: none;
+                        }
+                        &[td-visible="visible"] {
+                            display: table-cell;
+                        }
+                        &td[gm-create="true"] {
+                            background-color: #f8f8f8;
+                        }
+                        /* 空模板样式 */
+                        .gm-emptyTemplate {
+                            width: 100%;
+                            height: 80px;
+                            line-height: 80px;
+                            text-align: center;
+                            font-size: 16px;
+                            color: #ddd;
+                        }
+                    }
+
+                    // 为空提示特殊处理, hover状态不高亮
+                    &[emptytemplate] {
+                        border: none;
+                        &[row-hover] td {
+                            background-color: #fff;
+                        }
+                    }
+                }
+                &:hover{
+                    tr{
+                        &[row-hover="true"] td {
+                            background-color: #f3f3f3;
+                            color: #000;
+                        }
+                        td[col-hover="true"] {
+                            background-color: #f3f3f3;
+                        }
+
+                        // 为空提示特殊处理, hover状态不高亮
+                        &[emptytemplate] {
+                            border: none;
+                            &[row-hover] td {
+                                background-color: #fff;
+                            }
+                        }
+                    }
+                }
+            }
+            &.disable-line {
+                th, td{
+                    border-right: none;
+                }
+            }
+        }
+    }
+
+    /* 导出excel */
+    #gm-export-action {
+        display: none;
+    }
+
+    /* 文本镜像：用于实时获取th的文本宽度 */
+    .text-dreamland {
+        position: absolute;
+        top: 0;
+        left: 0;
+        //white-space: nowrap;
+        visibility: hidden;
+        z-index: -1;
+    }
+
+    /* 拖拽换位镜象 */
+    .dreamland-div {
+        display: none;
+        position: absolute;
+        padding: 0;
+        background: #fff;
+        cursor: all-scroll;
+        z-index: 9;
+        .dreamland-table {
+            table-layout: fixed;
+            width: 100%;
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: #d8d8d8;
+            border-collapse: separate;
+            border-spacing: 1px;
+            font-size: @font-normal-size !important;
+            thead{
+                .bg-image();
+            }
+            tr {
+                td {
+                    background-color: #fff;
+                    color: #3d3d3d;
+                    padding: 4px;
+                    .text-overflow();
+                }
+            }
+        }
+    }
+
+    /*遮罩*/
+    .mask-element {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #000;
+        opacity: 0.6;
+        z-index: 9;
+    }
+}

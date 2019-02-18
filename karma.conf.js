@@ -3,7 +3,9 @@
  * phantomjs: 模拟的浏览器环境
  *
  */
+const webpack = require('webpack');
 const path = require('path');
+const { version } = require('./package.json');
 module.exports = function (config) {
 	// karma config: http://karma-runner.github.io/1.0/config/configuration-file.html
 	// karma-coverage: https://www.npmjs.com/package/karma-coverage
@@ -18,29 +20,7 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-			'test/*_test.js',
-			// 'test/Adjust_test.js',
-			// 'test/AjaxPage_test.js',
-			// 'test/Base_test.js',
-			// 'test/Cache_test.js',
-			// 'test/Checkbox_test.js',
-			// 'test/Config_test.js',
-			// 'test/Core_test.js',
-			// 'test/Drag_test.js',
-			// 'test/Export_test.js',
-			// 'test/GridManager_test.js',
-			// 'test/Hover_test.js',
-			// 'test/I18n_test.js',
-			// 'test/index_test.js',
-			// 'test/index_jQuery_test.js',
-			// 'test/Menu_test.js',
-			// 'test/Order_test.js',
-			// 'test/Publish_test.js',
-			// 'test/Remind_test.js',
-			// 'test/Scroll_test.js',
-			// 'test/Settings_test.js',
-			// 'test/Sort_test.js',
-			// 'test/Store_test.js'
+            'test/index_test.js'
 		],
 
 		// 使用端口
@@ -65,15 +45,13 @@ module.exports = function (config) {
 
 		captureTimeout: 60000,
 
-		// test results reporter to use
-		// possible values: 'dots', 'progress'
-		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
+        // coverage reporter generates the coverage
 		reporters: ['progress', 'coverage'],
 
 		// 预处理
 		preprocessors: {
-			// src/js/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/js/*.js 不需要通过 webpack 进行打.
-			'src/js/*.js': ['sourcemap', 'coverage'],
+			// src/module/**/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/**/*.js 不需要通过 webpack 进行打.
+			'src/module/**/*.js': ['sourcemap', 'coverage'],
 			'test/*_test.js': ['webpack']
 		},
 		// optionally, configure the reporter
@@ -90,6 +68,8 @@ module.exports = function (config) {
 
 		// webpack config: https://github.com/webpack-contrib/karma-webpack
 		webpack: {
+            mode: 'development',
+
 			//入口文件配置
 			entry: {
 				js: './test/index_test.js'
@@ -97,34 +77,108 @@ module.exports = function (config) {
 			resolve:{
 				extensions: [".js"] //当requrie的模块找不到时,添加这些后缀
 			},
+			plugins: [
+				new webpack.ProvidePlugin({
+					'Promise': 'es6-promise'
+				}),
+                new webpack.DefinePlugin({
+                    'process.env': {
+                        VERSION: JSON.stringify(version)
+                    }
+                })
+			],
 			module: {
 				rules: [
 					{
 						test: /\.js?$/,
-						use: ['babel-loader?{"presets":["es2015"]}'],
+						use: ['babel-loader'],
 						exclude: /(node_modules|bower_components)/,
 						include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')]
 					},
-					{
-						test:/.css$/,
-						loader:'style-loader!css-loader'
-					},
-					{
-						test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-						use: 'url-loader?limit=15000&mimetype=application/font-woff&prefix=fonts'
-					},
-					{
-						test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-						use: 'url-loader?limit=15000&mimetype=application/octet-stream&prefix=fonts'
-					},
-					{
-						test: /\.eot(\?#\w+)?$/,
-						use: 'url-loader?limit=15000&mimetype=application/vnd.ms-fontobject&prefix=fonts'
-					},
-					{
-						test: /\.svg(#\w+)?$/,
-						use: 'url-loader?limit=15000&mimetype=image/svg+xml&prefix=fonts'
-					}
+                    {
+                        test: /\.less/,
+                        include: [path.join(__dirname, 'src')],
+                        use: [
+                            {
+                                loader: 'css-loader',
+                                options: {
+                                    url: true, // 启用/禁用 url() 处理
+                                    sourceMap: false // 启用/禁用 Sourcemaps
+                                }
+                            },
+                            {
+                                loader: 'resolve-url-loader'
+                            },
+                            {
+                                loader: 'less-loader',
+                                options: {
+                                    sourceMap: false // 启用/禁用 Sourcemaps
+                                }
+                            }
+                        ]
+                    }, {
+                        test: /\.html$/,
+                        use: ['html-loader'],
+                        include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')],
+                        exclude: /(node_modules|bower_components)/
+                    }, {
+                        test: /\.(jpe?g|png|gif|svg)$/i,
+                        use: [
+                            {
+                                loader: 'file-loader?name=[path][name]-[hash:5].[ext]'
+                            }
+                        ]
+                    }, {
+                        test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+                        use: [
+                            {
+                                loader: 'url-loader',
+                                options: {
+                                    limit: 10000,
+                                    mimetype: "application/font-woff"
+                                }
+                            }
+                        ]
+                    }, {
+                        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+                        use: [
+                            {
+                                loader: 'url-loader',
+                                options: {
+                                    limit: 10000,
+                                    mimetype: "application/octet-stream"
+                                }
+                            }
+                        ]
+                    }, {
+                        test: /\.otf(\?v=\d+\.\d+\.\d+)?$/,
+                        use: [
+                            {
+                                loader: 'url-loader',
+                                options: {
+                                    limit: 10000,
+                                    mimetype: "application/font-otf"
+                                }
+                            }
+                        ]
+                    }, {
+                        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+                        use: [
+                            {
+                                loader:"file-loader"
+                            }
+                        ]
+                    }, {
+                        test: /\.(jpe?g|png|gif|svg)$/i,
+                        use: [
+                            {
+                                loader: 'file-loader',
+                                options: {
+                                    name: '[path][name]-[hash:8].[ext]',
+                                }
+                            }
+                        ]
+                    }
 				]
 			}
 		},

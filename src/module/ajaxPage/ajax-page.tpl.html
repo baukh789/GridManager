@@ -1,0 +1,58 @@
+<!--
+.footer-toolbar 存在以下属性的标签将会实时更新数据，共有以下属性:
+
+begin-number-info: 当前页从多少条开始显示
+end-number-info: 当前页到多少条结束显示
+current-page-info: 当前页
+totals-number-info: 总条数
+totals-page-info: 总页数
+-->
+
+<div class="footer-toolbar">
+    <!--刷新图标-->
+    <span class="refresh-action">{{ vm.refreshActionText }}</span>
+
+    <!--跳转至-->
+    <div class="goto-page">
+        {{ vm.gotoFirstText }}
+        <input type="text" class="gp-input" current-page-info/>
+        {{ vm.gotoLastText }}
+    </div>
+
+    <!--每页显示条数-->
+    <div class="change-size">
+        <select name="pSizeArea">
+            {{ vm.pageSizeOptionTpl }}
+        </select>
+    </div>
+
+    <!--选中信息-->
+    <div class="toolbar-info checked-info"></div>
+
+    <!--分页描述-->
+    <div class="toolbar-info page-info"></div>
+
+    <!--分页切换-->
+    <div class="ajax-page">
+        <!--上一页、首页区-->
+        <ul class="pagination" pagination-before>
+            <li class="first-page">
+                {{ vm.firstPageText }}
+            </li>
+            <li class="previous-page">
+                {{ vm.previousPageText }}
+            </li>
+        </ul>
+        <!--页码区-->
+        <ul class="pagination" pagination-number></ul>
+        <!--下一页、尾页区-->
+        <ul class="pagination" pagination-after>
+            <li class="next-page">
+                {{ vm.nextPageText }}
+            </li>
+            <li class="last-page">
+                {{ vm.lastPageText }}
+            </li>
+        </ul>
+    </div>
+</div>
