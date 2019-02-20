@@ -1,6 +1,7 @@
 /*
  * remind: 表头提醒
- * */
+ */
+import './style.less';
 import { jTool, parseTpl } from '../../common';
 import remindTpl from './remind.tpl.html';
 class Remind {

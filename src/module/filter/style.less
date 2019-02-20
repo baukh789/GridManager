@@ -1,0 +1,82 @@
+/**
+ * 表头的筛选菜单
+ * style.less
+ * @author wangbo
+ * @since 2019-02-20
+ */
+@import "../../css/mixins";
+
+.table-wrap {
+    .table-div {
+        table[grid-manager] {
+            th {
+                .th-wrap {
+                    /*表头的筛选菜单*/
+                    .filter-action{
+                        display: block;
+                        width: 14px;
+                        height: 18px;
+                        position: absolute;
+                        top: 6px;
+                        right: 5px;
+                        cursor: default;
+                        //z-index: 2;
+                        color: #444;
+                        .fa-icon {
+                            display: block;
+                            position: absolute;
+                            font-size: @font-normal-size;
+                            line-height: 18px;
+                            &.filter-selected{
+                                color: @font-active-color;
+                            }
+                        }
+                        .fa-con{
+                            display: none;
+                            min-width: 100px;
+                            position: absolute;
+                            top: 100%;
+                            background: #fff;
+                            border: 1px solid #ccc;
+                            &.direction-left{
+                                left: 0;
+                            }
+                            &.direction-right{
+                                right: 0;
+                            }
+                            .filter-list{
+                                overflow-y: auto;
+                                li{
+                                    padding: 5px 12px;
+                                    > label{
+                                        cursor: pointer;
+                                        display: flex;
+                                        word-break: keep-all;
+                                    }
+                                    &:hover{
+                                        background: #e6f7ff;
+                                    }
+                                }
+                            }
+                            .filter-bottom{
+                                border-top: @table-border;
+                                padding: 7px 8px;
+                                text-align: center;
+                                .filter-button{
+                                    cursor: pointer;
+                                    color: #1890ff;
+                                    &:hover{
+                                        color: #40a9ff;
+                                    }
+                                    &:first-child{
+                                        margin-right: 10px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
