@@ -2,6 +2,7 @@
  * Created by baukh on 17/3/3.
  * 鼠标hover 高亮
  */
+import './style.less';
 import { jTool, base, cache } from '../../common';
 class Hover {
 	onTbodyHover($table) {

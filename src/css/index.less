@@ -1,7 +1,6 @@
 @import '../fonts/iconfont';
 @import "./animation";
 @import "./gridBase";
-@import "./gridLoading";
 @import "./mixins";
 
 /* table所在的DIV */
@@ -11,37 +10,7 @@
     background-color: #fff;
     border: @table-border;
     padding-top: 40px;
-    // 配置是否禁用边框线
-    &.disable-border {
-        border: none;
-    }
-    // 表头的icon图标是否跟随文本
-    &.icon-follow-text{
-        .table-div table[grid-manager] thead th[th-name]{
-            .th-wrap{
-                display: inline-block;
-                vertical-align: middle;
-                padding-right: 5px;
-                .th-text{
-                    display: inline-block;
-                    width: auto;
-                    vertical-align: middle;
-                }
-                .sorting-action, .filter-action{
-                    display: inline-block;
-                    width: 20px;
-                    position: relative;
-                    top: 0;
-                    left: 0;
-                    vertical-align: middle;
-                    text-align: center;
-                    .sa-icon, .fa-icon{
-                        right: 4px;
-                    }
-                }
-            }
-        }
-    }
+
     .table-div {
         overflow: auto;
         /* table */
@@ -52,7 +21,6 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: -40px;
-            //font-family: @font-family;
             tr {
                 border-bottom: @table-border;
                 [last-visible="true"]{
@@ -144,40 +112,7 @@
                     }
                 }
             }
-            thead {
-                tr {
-                    height: 40px;
-                    line-height: 40px;
-                }
-                //&.scrolling {
-                &[grid-manager-thead]{
-                    visibility: hidden;
-                }
-                /* 表头置顶 */
-                &[grid-manager-mock-thead] {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    //z-index: 2;
-                    //background-color: #ddd;
-                    .bg-image();
-                    tr {
-                        th {
-                            /* 表头提醒 */
-                            .remind-action {
-                                .ra-area {
-                                    visibility: hidden;
-                                    display: none;
-                                }
-                                &:hover .ra-area {
-                                    visibility: visible;
-                                    display: block !important;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+
             tbody {
                 tr {
                     /*顶部通栏*/
@@ -241,34 +176,8 @@
                             color: #ddd;
                         }
                     }
-
-                    // 为空提示特殊处理, hover状态不高亮
-                    &[emptytemplate] {
-                        border: none;
-                        &[row-hover] td {
-                            background-color: #fff;
-                        }
-                    }
                 }
-                &:hover{
-                    tr{
-                        &[row-hover="true"] td {
-                            background-color: #f3f3f3;
-                            color: #000;
-                        }
-                        td[col-hover="true"] {
-                            background-color: #f3f3f3;
-                        }
 
-                        // 为空提示特殊处理, hover状态不高亮
-                        &[emptytemplate] {
-                            border: none;
-                            &[row-hover] td {
-                                background-color: #fff;
-                            }
-                        }
-                    }
-                }
             }
             &.disable-line {
                 th, td{
@@ -279,29 +188,19 @@
     }
 
     /* 导出excel */
-    #gm-export-action {
-        display: none;
-    }
-
-    /* 文本镜像：用于实时获取th的文本宽度 */
-    .text-dreamland {
-        position: absolute;
-        top: 0;
-        left: 0;
-        //white-space: nowrap;
-        visibility: hidden;
-        z-index: -1;
-    }
+    //#gm-export-action {
+    //    display: none;
+    //}
 
     /*遮罩*/
-    .mask-element {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        background: #000;
-        opacity: 0.6;
-        z-index: 9;
-    }
+    //.mask-element {
+    //    width: 100%;
+    //    height: 100%;
+    //    position: absolute;
+    //    top: 0;
+    //    left: 0;
+    //    background: #000;
+    //    opacity: 0.6;
+    //    z-index: 9;
+    //}
 }

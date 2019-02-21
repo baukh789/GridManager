@@ -1,0 +1,90 @@
+/**
+ * style.less
+ * @author wangbo
+ * @since 2019-02-21
+ */
+
+@import "../../css/mixins";
+.table-wrap {
+    // 配置是否禁用边框线
+    &.disable-border {
+        border: none;
+    }
+
+    // 表头的icon图标是否跟随文本
+    &.icon-follow-text{
+        .table-div table[grid-manager] thead th[th-name]{
+            .th-wrap{
+                display: inline-block;
+                vertical-align: middle;
+                padding-right: 5px;
+                .th-text{
+                    display: inline-block;
+                    width: auto;
+                    vertical-align: middle;
+                }
+                .sorting-action, .filter-action{
+                    display: inline-block;
+                    width: 20px;
+                    position: relative;
+                    top: 0;
+                    left: 0;
+                    vertical-align: middle;
+                    text-align: center;
+                    .sa-icon, .fa-icon{
+                        right: 4px;
+                    }
+                }
+            }
+        }
+    }
+
+    .table-div {
+        table[grid-manager] {
+            thead {
+                tr {
+                    height: 40px;
+                    line-height: 40px;
+                }
+                //&.scrolling {
+                &[grid-manager-thead]{
+                    visibility: hidden;
+                }
+                /* 表头置顶 */
+                &[grid-manager-mock-thead] {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    //z-index: 2;
+                    //background-color: #ddd;
+                    .bg-image();
+                    tr {
+                        th {
+                            /* 表头提醒 */
+                            .remind-action {
+                                .ra-area {
+                                    visibility: hidden;
+                                    display: none;
+                                }
+                                &:hover .ra-area {
+                                    visibility: visible;
+                                    display: block !important;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* 文本镜像：用于实时获取th的文本宽度 */
+    .text-dreamland {
+        position: absolute;
+        top: 0;
+        left: 0;
+        //white-space: nowrap;
+        visibility: hidden;
+        z-index: -1;
+    }
+}
