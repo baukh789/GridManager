@@ -62,7 +62,7 @@ class ExportFile {
      */
 	@parseTpl(staticTpl)
 	createExportHTML(params) {
-	    const { $table, base } = params;
+	    const { $table, base, onlyChecked } = params;
         const thDOM = base.getVisibleTh($table, false);
         let	trDOM = null;
         // 验证：是否只导出已选中的表格
@@ -196,7 +196,7 @@ class ExportFile {
      * @returns {boolean}
      */
 	downStatic($table, fileName, onlyChecked) {
-        this.dispatchDownload(fileName, this.getHref(this.createExportHTML({$table, base})));
+        this.dispatchDownload(fileName, this.getHref(this.createExportHTML({$table, base, onlyChecked})));
     }
 
     /**
