@@ -1,0 +1,7 @@
+<label class="gm-checkbox-wrapper">
+    <span class="gm-radio-checkbox gm-checkbox{{vm.checked === 'checked' ? ' gm-checkbox-checked' : ''}}{{vm.checked === 'indeterminate' ? ' gm-checkbox-indeterminate' : ''}}">
+        <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"{{vm.value ? ' value="' + vm.value + '"' : ''}}{{vm.checked === 'checked' ? ' checked="true"' : ''}}/>
+        <span class="gm-checkbox-inner"></span>
+    </span>
+    {{vm.label ? '<span>' + vm.label + '</span>' : ''}}
+</label>

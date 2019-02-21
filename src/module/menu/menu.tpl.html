@@ -1,0 +1,16 @@
+<div class="grid-menu" {{vm.keyName}}="{{vm.gridManagerName}}">
+    <!--分页类操作-->
+    {{vm.ajaxPageHtml}}
+
+    <!--导出类操作-->
+    {{vm.exportHtml}}
+
+    <!--重新加载当前页-->
+    <span grid-action="refresh-page" refresh-type="refresh">
+        {{vm.menuRefreshText}}
+        <i class="iconfont icon-refresh"></i>
+    </span>
+
+    <!--配置类操作-->
+    {{vm.configHtml}}
+</div>

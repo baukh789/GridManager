@@ -1,14 +1,14 @@
 # GridManager.js
 > 快速、灵活的对Table标签进行实例化，让Table标签充满活力。
 
+<img src="https://www.lovejavascript.com/upload/plugin/images/7860_t1.png"/>
+
 [![Build Status](https://travis-ci.org/baukh789/GridManager.svg?branch=master&style=flat-square)](https://travis-ci.org/baukh789/GridManager)
 [![npm version](https://img.shields.io/npm/v/gridmanager.svg?style=flat-square)](https://www.npmjs.com/package/gridmanager)
 [![npm downloads](https://img.shields.io/npm/dt/gridmanager.svg?style=flat-square)](https://www.npmjs.com/package/gridmanager)
 [![coverage](https://img.shields.io/codecov/c/github/baukh789/GridManager.svg?style=flat-square)](https://codecov.io/gh/baukh789/GridManager)
 
 ## 实现功能
-### GridManager.js可快速的对table标签进行实例化，实例化后将实现以下功能:
-
 - 宽度调整: 表格的列宽度可进行拖拽式调整
 - 位置更换: 表格的列位置进行拖拽式调整
 - 配置列: 可通过配置对列进行显示隐藏转换
@@ -37,10 +37,6 @@ npm install gridmanager --save
 ## 相关链接
 - [GridManager by Angular 1.x](https://github.com/baukh789/GridManager-Angular-1.x)
 - [GridManager by Vue](https://github.com/baukh789/GridManager-Vue)
-
-## 浏览器兼容
-- Firefox, Chrome
-- 这里提一下为什么不支持IE: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
 
 ## 示例
 ### 使用默认配置
@@ -101,9 +97,9 @@ GM.refreshGrid('demo-ajaxPageCode');
 
 // 更新查询条件
 GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
-
-// ...其它更多请直接访问[API](http://gridmanager.lovejavascript.com/api/index.html)
 ```
+
+其它更多请直接访问[API](http://gridmanager.lovejavascript.com/api/index.html)
 
 ## 数据格式
 > 这是标准格式, 如果返回格式不同。可以通过参数或responseHandler进行修改。 具体请参考[API](http://gridmanager.lovejavascript.com/api/index.html#responseHandler)
@@ -140,6 +136,39 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
 
 - [ccms-skin](https://github.com/BoWang816/GridManager-ccms-skin)
 
+## 贡献者
+<table>
+<tr>
+    <td>
+        <a href="https://github.com/silence717">
+            <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars2.githubusercontent.com/u/8267830?s=460&amp;v=4">
+            <div style="text-align:center">silence717</div>
+        </a>
+    </td>
+    <td>
+        <a href="https://github.com/BoWang816">
+            <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars2.githubusercontent.com/u/26587649?s=460&v=4">
+            <div style="text-align:center">BoWang816</div>
+        </a>
+    </td>
+    <td>
+        <a href="https://github.com/luchyrabbit">
+            <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars0.githubusercontent.com/u/21122430?s=460&v=4">
+            <div style="text-align:center">luchyrabbit</div>
+        </a>
+    </td>
+    <td>
+        <a href="https://github.com/gaochaodd">
+            <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars3.githubusercontent.com/u/19342927?s=460&v=4">
+            <div style="text-align:center">gaochaodd</div>
+        </a>
+    </td>
+</tr>
+</table>
+
 ## License
 - [License](/LICENSE)
 
+## 浏览器兼容
+- Firefox, Chrome
+- 这里提一下为什么不支持IE: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.

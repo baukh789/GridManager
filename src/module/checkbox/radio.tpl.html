@@ -1,0 +1,7 @@
+<label class="gm-radio-wrapper">
+    <span class="gm-radio-checkbox gm-radio{{vm.checked ? ' gm-radio-checked' : ''}}">
+        <input type="radio" class="gm-radio-checkbox-input gm-radio-input"{{vm.value ? ' value="' + vm.value + '"' : ''}}{{vm.checked ? ' checked="true"' : ''}}/>
+        <span class="gm-radio-inner"></span>
+    </span>
+    {{vm.label ? '<span>' + vm.label + '</span>' : ''}}
+</label>
