@@ -115,7 +115,40 @@
                     }
                 }
             }
-
+            thead {
+                tr {
+                    height: 40px;
+                    line-height: 40px;
+                }
+                //&.scrolling {
+                &[grid-manager-thead]{
+                    visibility: hidden;
+                }
+                /* 表头置顶 */
+                &[grid-manager-mock-thead] {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    //z-index: 2;
+                    //background-color: #ddd;
+                    .bg-image();
+                    tr {
+                        th {
+                            /* 表头提醒 */
+                            .remind-action {
+                                .ra-area {
+                                    visibility: hidden;
+                                    display: none;
+                                }
+                                &:hover .ra-area {
+                                    visibility: visible;
+                                    display: block !important;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             tbody {
                 tr {
                     /*顶部通栏*/
@@ -222,46 +255,7 @@
         }
     }
 
-    .table-div {
-        table[grid-manager] {
-            thead {
-                tr {
-                    height: 40px;
-                    line-height: 40px;
-                }
-                //&.scrolling {
-                &[grid-manager-thead]{
-                    visibility: hidden;
-                }
-                /* 表头置顶 */
-                &[grid-manager-mock-thead] {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    //z-index: 2;
-                    //background-color: #ddd;
-                    .bg-image();
-                    tr {
-                        th {
-                            /* 表头提醒 */
-                            .remind-action {
-                                .ra-area {
-                                    visibility: hidden;
-                                    display: none;
-                                }
-                                &:hover .ra-area {
-                                    visibility: visible;
-                                    display: block !important;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /* 文本镜像：用于实时获取th的文本宽度 */
+    // 文本镜像：用于实时获取th的文本宽度
     .text-dreamland {
         position: absolute;
         top: 0;
