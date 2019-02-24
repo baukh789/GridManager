@@ -1,0 +1,28 @@
+/**
+ * 宽度调整
+ * style.less
+ * @author wangbo
+ * @since 2019-02-20
+ */
+
+.table-wrap {
+    .table-div {
+        table[grid-manager] {
+            th {
+                .th-wrap {
+                    /* 宽度调整事件源 */
+                    .adjust-action {
+                        display: block;
+                        width: 6px;
+                        height: 100%;
+                        position: absolute;
+                        top: 0;
+                        right: -4px;
+                        cursor: col-resize;
+                        //z-index: 2;
+                    }
+                }
+            }
+        }
+    }
+}

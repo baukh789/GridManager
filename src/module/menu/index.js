@@ -1,6 +1,7 @@
 /*
  * GridManager: 右键菜单
- * */
+ */
+import './style.less';
 import { jTool, base, cache, parseTpl } from '../../common';
 import i18n from '../i18n';
 import exportFile from '../exportFile';

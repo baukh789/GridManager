@@ -1,0 +1,65 @@
+/**
+ * 排序
+ * style.less
+ * @author wangbo
+ * @since 2019-02-20
+ */
+
+@import "../../css/mixins";
+
+.table-wrap {
+    .table-div {
+        table[grid-manager] {
+            th {
+                .th-wrap {
+                    /* 排序 */
+                    .sorting-action {
+                        display: block;
+                        width: 14px;
+                        height: 18px;
+                        position: absolute;
+                        top: 6px;
+                        right: 5px;
+                        cursor: default;
+                        //z-index: 2;
+                        color: #444;
+                        &:hover {
+                            color: #000;
+                        }
+                        &.sorting-up {
+                            .sa-up {
+                                opacity: 1;
+                            }
+                            .sa-down {
+                                opacity: 0.1;
+                            }
+                        }
+                        &.sorting-down {
+                            .sa-up {
+                                opacity: 0.1;
+                            }
+                            .sa-down {
+                                opacity: 1;
+                            }
+                        }
+                        .sa-icon {
+                            display: block;
+                            height: 10px;
+                            position: absolute;
+                            font-size: @font-normal-size;
+                            line-height: 10px;
+                        }
+                        .sa-up {
+                            top: 0;
+                            right: 0;
+                        }
+                        .sa-down {
+                            bottom: 0;
+                            right: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

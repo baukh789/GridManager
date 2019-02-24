@@ -1,6 +1,7 @@
 /*
  * config: th配置
  * */
+import './style.less';
 import { jTool, base, cache, parseTpl } from '../../common';
 import adjust from '../adjust';
 import checkbox from '../checkbox';
@@ -8,7 +9,7 @@ import scroll from '../scroll';
 import configTpl from './config.tpl.html';
 import configColumnTpl from './config-column.tpl.html';
 
-// 在body上绑定的关闭事件名
+// 在body上绑定的关闭co事件名
 const closeEvent = 'mousedown.gmConfig';
 class Config {
     /**

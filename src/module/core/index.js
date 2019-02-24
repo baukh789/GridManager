@@ -1,9 +1,10 @@
 /*
-* core: 核心方法
-* 1.刷新
-* 2.渲染GM DOM
-* 3.重置tbody
-* */
+ * core: 核心方法
+ * 1.刷新
+ * 2.渲染GM DOM
+ * 3.重置tbody
+ */
+import './style.less';
 import { jTool, base, cache } from '../../common';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';

@@ -2,7 +2,6 @@
  * Created by baukh on 17/10/26.
  * 构造类
  */
-import '../css/index.less';
 import { jTool, base, cache } from '../common';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';

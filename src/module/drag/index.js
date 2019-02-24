@@ -1,10 +1,12 @@
 /*
  * drag: 拖拽
- * */
+ */
+import './style.less';
 import { jTool, base, cache, parseTpl } from '../../common';
 import adjust from '../adjust';
 import config from '../config';
 import dreamlandTpl from './dreamland.tpl.html';
+
 class Drag {
 	/**
 	 * 初始化拖拽
