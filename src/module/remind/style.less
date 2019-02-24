@@ -1,0 +1,73 @@
+/**
+ * 表头提醒
+ * style.less
+ * @author wangbo
+ * @since 2019-02-20
+ */
+@import "../../css/mixins";
+
+.table-wrap {
+    .table-div {
+        table[grid-manager] {
+            th {
+                .th-wrap {
+                    /* 表头提醒 */
+                    .remind-action {
+                        width: 16px;
+                        height: 16px;
+                        position: absolute;
+                        top: 6px;
+                        left: 4px;
+                        cursor: help;
+                        .ra-area {
+                            display: none;
+                            min-width: 150px;
+                            max-width: 300px;
+                            position: absolute;
+                            top: 80%;
+                            left: 80%;
+                            padding: 12px;
+                            border: 3px solid #000;
+                            z-index: 9999;
+                            border-radius: 5px;
+                            box-shadow: 3px 3px 10px 0 #222;
+                            background-color: #000;
+                            opacity: 0.8;
+                            line-height: 14px;
+                            color: #fff;
+                            .ra-title {
+                                display: block;
+                                text-align: left;
+                                margin-bottom: 4px;
+                                font-weight: 600;
+                                font-size: 1.1em;
+                                color: #FF6;
+                                .text-overflow();
+                            }
+                            .ra-con {
+                                display: block;
+                                font-weight: 500;
+                                text-align: left;
+                                font-size: 0.9em;
+                                color: #fff;
+                            }
+                        }
+                        .ra-icon {
+                            display: block;
+                            width: 16px;
+                            height: 16px;
+                            font-size: @font-normal-size;
+                            line-height: 18px;
+                            color: #666;
+                        }
+                        &:hover {
+                            .ra-icon {
+                                color: #2b669a;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

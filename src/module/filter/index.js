@@ -2,6 +2,7 @@
  * Created by baukh on 18/7/11.
  * 表头的筛选菜单
  */
+import './style.less';
 import { jTool, cache, parseTpl } from '../../common';
 import core from '../core';
 import checkbox from '../checkbox';
