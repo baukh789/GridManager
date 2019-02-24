@@ -8,11 +8,11 @@ class Fixed {
         tableDiv.append(this.createLeftTpl(settings));
         tableDiv.append(this.createRightTpl(settings));
 
-        console.log(settings.columnRightMap);
     }
 
     @parseTpl(fixedTpl)
     createLeftTpl(params) {
+        console.log('columnLeftMap===>', params.columnLeftMap);
         return {
             fixed: 'left'
         };
@@ -20,6 +20,7 @@ class Fixed {
 
     @parseTpl(fixedTpl)
     createRightTpl(params) {
+        console.log('columnRightMap===>', params.columnRightMap);
         return {
             fixed: 'right'
         };
