@@ -1,0 +1,23 @@
+@import "../../css/mixins";
+.table-fixed{
+    width: 200px;
+    height: calc(100% - 40px);
+    position: absolute;
+    top: 0;
+    background: #fff;
+    &[fixed="left"]{
+        left: 0;
+        box-shadow: 6px 0 10px -6px #ddd;
+    }
+    &[fixed="right"]{
+        right: 0;
+        box-shadow: -6px 0 10px -6px #ddd;
+    }
+    .fixed-head{
+        height: 40px;
+        .bg-image();
+    }
+    .fixed-body{
+        height: calc(100% - 40px);
+    }
+}

@@ -3,10 +3,10 @@ import order from '../order';
 import {base, cache, jTool} from '../../common';
 import filter from '../filter';
 import sort from '../sort';
+import fixed from '../fixed';
 import checkbox from '../checkbox';
 import adjust from '../adjust';
 import render from './render';
-import './right.less';
 /**
  * core dom
  */
@@ -24,12 +24,7 @@ class Dom {
         // append tbody
         $table.append(document.createElement('tbody'));
 
-        const tableDiv = $table.closest('.table-div');
-        tableDiv.append('<div class="table-right"></div>');
-
-        const tableRight = jTool('.table-right', tableDiv);
-        tableRight.append('<div style="height: 1000px"></div>');
-        console.log(settings.columnRightMap);
+        fixed.init($table, settings);
     }
 
     /**
