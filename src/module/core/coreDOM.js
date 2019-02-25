@@ -3,6 +3,7 @@ import order from '../order';
 import {base, cache, jTool} from '../../common';
 import filter from '../filter';
 import sort from '../sort';
+import fixed from '../fixed';
 import checkbox from '../checkbox';
 import adjust from '../adjust';
 import render from './render';
@@ -22,6 +23,8 @@ class Dom {
 
         // append tbody
         $table.append(document.createElement('tbody'));
+
+        fixed.init($table, settings);
     }
 
     /**

@@ -101,6 +101,7 @@ class Checkbox {
             disableCustomize: true,
 			width: CHECKBOX_WIDTH,
 			align: 'center',
+            float: settings.checkboxFloat,
 			template: checked => {
                 return this.getColumnTemplate({checked, useRadio: settings.useRadio});
 			}

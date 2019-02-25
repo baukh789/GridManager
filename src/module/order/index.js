@@ -33,6 +33,7 @@ class Order {
             disableCustomize: true,
 			width: ORDER_WIDTH,
 			align: 'center',
+            float: settings.orderFloat,
 			template: nodeData => {
 				return `<td gm-order="true" gm-create="true">${nodeData}</td>`;
 			}

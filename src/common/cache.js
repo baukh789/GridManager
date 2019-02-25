@@ -275,7 +275,6 @@ class Cache {
      * @param order
      */
     initSettings($table, arg, checkbox, order) {
-        // TODO 在弱化 $table的使用范围操作时，可以使用getSetting方法进行替换。详情查看2.7.x.md
         if (store.settings[base.getKey($table)]) {
             base.outLog('gridManagerName在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值', 'warn');
         }
@@ -302,6 +301,8 @@ class Cache {
         // columnData 在此之后, 将不再被使用到
         // columnData 与 columnMap 已经过特殊处理, 不会彼此影响
         _settings.columnMap = {};
+        _settings.columnLeftMap = {};
+        _settings.columnRightMap = {};
         _settings.columnData.forEach((col, index) => {
             _settings.columnMap[col.key] = col;
 
@@ -316,6 +317,13 @@ class Cache {
 
             // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
             _settings.columnMap[col.key].__isShow = col.isShow;
+
+            if (col.fixed === 'left') {
+                _settings.columnLeftMap[col.key] = Object.assign(_settings.columnMap[col.key], {disableCustomize: true});
+            }
+            if (col.fixed === 'right') {
+                _settings.columnRightMap[col.key] = Object.assign(_settings.columnMap[col.key], {disableCustomize: true});
+            }
         });
 
 	    // 合并用户记忆至 settings, 每页显示条数记忆不在此处
@@ -380,7 +388,6 @@ class Cache {
             if (isUsable) {
                 jTool.extend(true, _settings.columnMap, columnCache);
             } else {
-                console.log(JSON.stringify(_settings.columnMap));
                 // 清除用户记忆
                 this.delUserMemory($table, '存储记忆项与配置项[columnData]不匹配');
             }
