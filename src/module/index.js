@@ -48,7 +48,7 @@ import { PublishMethod, publishMethodArray } from './publish';
 		}
 
         if (name === 'init' && (!arg.columnData || (!arg.ajax_data && !arg.ajax_url))) {
-            base.outLog(`方法调用错误，缺失必要参数:[columnData、(ajax_data || ajax_url)]`, 'error');
+            base.outLog('方法调用错误，缺失必要参数:[columnData、(ajax_data || ajax_url)]', 'error');
             return;
         }
 
@@ -60,7 +60,7 @@ import { PublishMethod, publishMethodArray } from './publish';
 		// no init: 当前并未实例化
 		const settings = GridManager.get(this);
 		if (name !== 'init' && (!settings || !settings.gridManagerName)) {
-			base.outLog(`方法调用错误，请确定表格已实例化`, 'error');
+			base.outLog('方法调用错误，请确定表格已实例化', 'error');
 			return;
 		}
 

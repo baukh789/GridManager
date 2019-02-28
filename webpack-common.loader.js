@@ -3,27 +3,27 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = () => {
     return [
-        // {
-        // 	enforce: 'pre',
-        // 	test: /\.js$/,
-        // 	include: srcDir,
-        // 	exclude: /node_modules/,
-        // 	use: [
-        // 		{
-        // 			loader: 'eslint-loader',
-        // 			options: {
-        // 				formatter: require('eslint-friendly-formatter')
-        // 			},
-        // 		}
-        // 	]
-        // },
+        {
+        	enforce: 'pre',
+        	test: /\.js$/,
+        	include: [path.join(__dirname, 'src')],
+        	exclude: /node_modules/,
+        	use: [
+        		{
+        			loader: 'eslint-loader',
+        			options: {
+        				formatter: require('eslint-friendly-formatter')
+        			},
+        		}
+        	]
+        },
         {
             test: /\.js$/,
             exclude: /node_modules/,
             use: ["babel-loader"]
         },
         {
-            test: /\.less/,
+            test: /\.(le|c)ss/,
             include: [path.join(__dirname, 'src')],
             use: [
                 {
@@ -33,9 +33,12 @@ module.exports = () => {
                     loader: 'css-loader',
                     options: {
                         url: true, // 启用/禁用 url() 处理
-                        sourceMap: false // 启用/禁用 Sourcemaps
+                        sourceMap: true // 启用/禁用 Sourcemaps
                     }
                 },
+                // {
+                //     loader: 'postcss-loader'
+                // },
                 {
                     loader: 'resolve-url-loader'
                 },

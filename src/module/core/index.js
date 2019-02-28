@@ -10,10 +10,10 @@ import menu from '../menu';
 import ajaxPage from '../ajaxPage';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
-import coreDOM from "./coreDOM";
+import coreDOM from './coreDOM';
 import transformToPromise from './transformToPromise';
 
-class Core{
+class Core {
     /**
      * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
      * @param $table

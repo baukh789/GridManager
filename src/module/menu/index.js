@@ -58,8 +58,8 @@ class Menu {
         const settings = params.settings;
         return {
             menuPreviousPageText: i18n.i18nText(settings, 'menu-previous-page'),
-            menuNextPageText: i18n.i18nText(settings, 'menu-next-page'),
-        }
+            menuNextPageText: i18n.i18nText(settings, 'menu-next-page')
+        };
     }
 
     /**
@@ -71,8 +71,8 @@ class Menu {
         const settings = params.settings;
         return {
             menuSaveAsExcelText: i18n.i18nText(settings, 'menu-save-as-excel'),
-            menuSaveAsExcelForCheckedText: i18n.i18nText(settings, 'menu-save-as-excel-for-checked'),
-        }
+            menuSaveAsExcelForCheckedText: i18n.i18nText(settings, 'menu-save-as-excel-for-checked')
+        };
     }
 
     /**
@@ -84,7 +84,7 @@ class Menu {
         const settings = params.settings;
         return {
             menuConfigGridText: i18n.i18nText(settings, 'menu-config-grid')
-        }
+        };
     }
 
 	/**

@@ -7,6 +7,13 @@
 @import "../../css/animation";
 
 .table-wrap {
+    table[grid-manager]{
+        th, td{
+            &[gm-checkbox="true"] input[type=checkbox] {
+                vertical-align: middle;
+            }
+        }
+    }
     .gm-checkbox-wrapper {
         display: inline-block;
         color: rgba(0, 0, 0, .65);

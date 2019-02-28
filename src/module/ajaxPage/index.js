@@ -1,6 +1,17 @@
 /*
  * ajaxPage: 分页
- * */
+**/
+/**
+ * #001:
+ * 关于ajax-page.tpl.html 文件中的实时更新
+ * 有效区域: <div class="footer-toolbar">标签内
+ * 触发条件: 以下属性的标签将会触发实时更新，共有以下属性:
+ * 1. begin-number-info: 当前页从多少条开始显示
+ * 2. end-number-info: 当前页到多少条结束显示
+ * 3. current-page-info: 当前页
+ * 4. totals-number-info: 总条数
+ * 5. totals-page-info: 总页数
+ */
 import './style.less';
 import { jTool, base, cache, parseTpl } from '../../common';
 import core from '../core';
@@ -385,7 +396,6 @@ class AjaxPage {
 			}
 			let _cPage = parseInt(this.value, 10);
 			_this.gotoPage($table, cache.getSettings(base.getKey($table)), _cPage);
-			this.value = '';
 		});
 	}
 
@@ -491,31 +501,32 @@ class AjaxPage {
             $pageInfo.html(info);
         }
 
-        // 重置分页附属显示信息: 当前页从多少条开始显示
+        // #001
+        // 更新实时更新数据: 当前页从多少条开始显示
         const $beginNumber = jTool('[begin-number-info]', $footerToolbar);
         if ($beginNumber.length) {
             $beginNumber.text(fromNum).val(fromNum);
         }
 
-        // 重置分页附属显示信息: 当前页到多少条结束显示
+        // 更新实时更新数据: 当前页到多少条结束显示
         const $endNumber = jTool('[end-number-info]', $footerToolbar);
         if ($endNumber.length) {
             $endNumber.text(toNum).val(toNum);
         }
 
-        // 重置分页附属显示信息: 当前页
+        // 更新实时更新数据: 当前页
         const $currentPage = jTool('[current-page-info]', $footerToolbar);
         if ($currentPage.length) {
             $currentPage.text(cPage).val(cPage);
         }
 
-        // 重置分页附属显示信息: 总条数
+        // 更新实时更新数据: 总条数
         const $totalsNumber = jTool('[totals-number-info]', $footerToolbar);
         if ($totalsNumber.length) {
             $totalsNumber.text(totalNum).val(totalNum);
         }
 
-        // 重置分页附属显示信息: 总页数
+        // 更新实时更新数据: 总页数
         const $totalsPage = jTool('[totals-page-info]', $footerToolbar);
         if ($totalsPage.length) {
             $totalsPage.text(tPage).val(tPage);
