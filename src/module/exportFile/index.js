@@ -233,7 +233,7 @@ class ExportFile {
 
             // 当前返回的blob有误，直接跳出
             if (!blob || Object.getPrototypeOf(blob) !== blobPrototype) {
-                base.outLog(`导出错误，请确认接口返回是否为Blob格式`, 'error');
+                base.outLog('导出错误，请确认接口返回是否为Blob格式', 'error');
                 return;
             }
 

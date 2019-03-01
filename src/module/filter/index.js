@@ -61,7 +61,7 @@ class Filter {
             okText: i18n.i18nText(settings, 'filter-ok'),
             resetText: i18n.i18nText(settings, 'filter-reset'),
             listHtml: listHtml
-        }
+        };
     }
 
     /**

@@ -203,14 +203,14 @@ class Checkbox {
         let checkedNum = 0;
 		tableData && tableData.forEach((row, index) => {
 			const $tr = jTool(`tbody tr[cache-key="${index}"]`, $table);
-            const $checkSpan = jTool(`td[gm-checkbox="true"] .gm-radio-checkbox`, $tr);
+            const $checkSpan = jTool('td[gm-checkbox="true"] .gm-radio-checkbox', $tr);
 			$tr.attr('checked', row[this.key]);
             isRadio ? this.updateRadioState($checkSpan, row[this.key]) : this.updateCheckboxState($checkSpan, row[this.key] ? 'checked' : 'unchecked');
             row[this.key] && checkedNum++;
 		});
 
 		// 更新thead区域选中状态
-        const $allCheckSpan = jTool(`thead tr th[gm-checkbox="true"] .gm-checkbox `, $table);
+        const $allCheckSpan = jTool('thead tr th[gm-checkbox="true"] .gm-checkbox ', $table);
 
         // [checked: 选中, indeterminate: 半选中, unchecked: 未选中]
         !isRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === tableData.length ? 'checked' : 'indeterminate'));
@@ -225,7 +225,7 @@ class Checkbox {
      * @param state Boolean
      */
     updateRadioState($radio, state) {
-        const $input = jTool(`input[type="radio"]`, $radio);
+        const $input = jTool('input[type="radio"]', $radio);
         if (state) {
             $radio.addClass('gm-radio-checked');
         } else {
@@ -240,7 +240,7 @@ class Checkbox {
      * @param state: [checked: 选中, indeterminate: 半选中, uncheck: 未选中]
      */
     updateCheckboxState($checkbox, state) {
-        const $input = jTool(`input[type="checkbox"]`, $checkbox);
+        const $input = jTool('input[type="checkbox"]', $checkbox);
         switch (state) {
             case 'checked': {
                 $checkbox.addClass('gm-checkbox-checked');

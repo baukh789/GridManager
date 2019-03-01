@@ -1,4 +1,4 @@
-import { parseTpl } from "../../common";
+import { parseTpl } from '../../common';
 import './style.less';
 import fixedTpl from './fixed.html';
 

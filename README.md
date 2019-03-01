@@ -140,12 +140,6 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
 <table>
 <tr>
     <td>
-        <a href="https://github.com/silence717">
-            <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars2.githubusercontent.com/u/8267830?s=460&amp;v=4">
-            <div style="text-align:center">silence717</div>
-        </a>
-    </td>
-    <td>
         <a href="https://github.com/BoWang816">
             <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars2.githubusercontent.com/u/26587649?s=460&v=4">
             <div style="text-align:center">BoWang816</div>
@@ -161,6 +155,12 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
         <a href="https://github.com/gaochaodd">
             <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars3.githubusercontent.com/u/19342927?s=460&v=4">
             <div style="text-align:center">gaochaodd</div>
+        </a>
+    </td>
+    <td>
+        <a href="https://github.com/silence717">
+            <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars2.githubusercontent.com/u/8267830?s=460&amp;v=4">
+            <div style="text-align:center">silence717</div>
         </a>
     </td>
 </tr>

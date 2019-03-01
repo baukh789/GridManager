@@ -118,7 +118,7 @@ class Render {
                 sortingAttr = `sorting="${settings.sortUpText}"`;
                 settings.sortData[col.key] = settings.sortUpText;
             } else {
-                sortingAttr = `sorting=""`;
+                sortingAttr = 'sorting=""';
             }
         }
 
@@ -126,7 +126,7 @@ class Render {
         let filterAttr = '';
         if (jTool.type(col.filter) === 'object') {
             filter.enable = true;
-            filterAttr = `filter=""`;
+            filterAttr = 'filter=""';
             if (typeof (col.filter.selected) === 'undefined') {
                 col.filter.selected = settings.query[col.key];
             } else {
@@ -135,7 +135,7 @@ class Render {
         }
 
         // 文本对齐
-        const alignAttr = col.align ? `align="col.align"` : '';
+        const alignAttr = col.align ? 'align="col.align"' : '';
 
         // th可视状态值
         let thVisible = base.getVisibleState(col.isShow);
@@ -148,21 +148,21 @@ class Render {
         switch (col.key) {
             // 插件自动生成序号列
             case order.key:
-                gmCreateAttr = `gm-create="true"`;
+                gmCreateAttr = 'gm-create="true"';
                 thName = order.key;
-                orderAttr = `gm-order="true"`;
+                orderAttr = 'gm-order="true"';
                 thText = order.getThContent(settings);
                 break;
             // 插件自动生成选择列
             case checkbox.key:
-                gmCreateAttr = `gm-create="true"`;
+                gmCreateAttr = 'gm-create="true"';
                 thName = checkbox.key;
-                checkboxAttr = `gm-checkbox="true"`;
+                checkboxAttr = 'gm-checkbox="true"';
                 thText = checkbox.getThContent(settings.useRadio);
                 break;
             // 普通列
             default:
-                gmCreateAttr = `gm-create="false"`;
+                gmCreateAttr = 'gm-create="false"';
                 thName = col.key;
                 thText = col.text;
                 break;

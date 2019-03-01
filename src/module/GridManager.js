@@ -15,7 +15,6 @@ import menu from './menu';
 import remind from './remind';
 import scroll from './scroll';
 import sort from './sort';
-import hover from './hover';
 import filter from './filter';
 
 /**
@@ -457,7 +456,6 @@ export default class GridManager {
             checkbox.destroy($table);
             config.destroy($table);
             drag.destroy($table);
-            hover.destroy($table);
             menu.destroy($table);
             remind.destroy($table);
             scroll.destroy($table);
@@ -505,9 +503,6 @@ export default class GridManager {
 
 		// 相互冲突的参数项处理 TODO 这个功能为试点功能，现在与被禁用项冲突，后期还是想把这些冲突点解决掉
         if (arg.topFullColumn && arg.topFullColumn.template) {
-		    // 是否禁用hover选中样式
-            arg.disableHover = true;
-
             // 不使用配置功能
             arg.supportConfig = false;
 
@@ -606,11 +601,6 @@ export default class GridManager {
         // init config
         if (settings.supportConfig) {
             config.init($table);
-        }
-
-        // 绑定$table区域hover事件
-        if (!settings.disableHover) {
-            hover.onTbodyHover($table);
         }
 
         // 初始化右键菜单事件

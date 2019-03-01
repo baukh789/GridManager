@@ -10,6 +10,8 @@
  * @param tpl
  * @returns {Function}
  */
+/* 仅在该文件内使用 new Function */
+/* eslint no-new-func: "off"*/
 export function parseTpl(tpl) {
     return (target, key, descriptor) => {
         const oldValue = descriptor.value;
@@ -28,7 +30,7 @@ export function parseTpl(tpl) {
                 return new Function('vm', 'return ' + evalStr)(vm) || '';
             });
         };
-    }
+    };
 }
 
 /**

@@ -9,7 +9,7 @@
 import jTool from './jTool';
 import { FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE } from './constants';
 
-class Base{
+class Base {
 
     // 定时器: 等待容器可用, 在core.js中使用
     SIV_waitContainerAvailable = {};
@@ -273,7 +273,7 @@ class Base{
             }
             default: {
                 gmCreateStr = '';
-                break
+                break;
             }
         }
         return jTool(`thead[${this.tableHeadKey}] th[th-visible="visible"]${gmCreateStr}`, $table);
