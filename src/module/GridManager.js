@@ -600,9 +600,6 @@ export default class GridManager {
             gridManagerName = table.getAttribute(base.key);
         }
 
-        // 清除实例及数据
-        cache.cleanTable(gridManagerName);
-
         // 清除setInterval
         base.SIV_waitTableAvailable[gridManagerName] && clearInterval(base.SIV_waitTableAvailable[gridManagerName]);
         base.SIV_waitContainerAvailable[gridManagerName] && clearInterval(base.SIV_waitContainerAvailable[gridManagerName]);
@@ -636,5 +633,8 @@ export default class GridManager {
         } catch (e) {
             // '在清除GridManager实例的过程时, table被移除'
         }
+
+        // 清除实例及数据
+        cache.cleanTable(gridManagerName);
     }
 }
