@@ -584,7 +584,7 @@ export default class GridManager {
     static
     destroy(table) {
         if (!table) {
-            return
+            return;
         }
         let gridManagerName = '';
 
