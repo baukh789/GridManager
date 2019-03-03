@@ -2,7 +2,7 @@
  * Created by baukh on 17/3/5.
  */
 'use strict';
-import I18n from '../src/module/I18n';
+import I18n from '../src/module/i18n';
 import { Settings, TextSettings } from '../src/common/Settings';
 import { CONSOLE_STYLE } from '../src/common/constants';
 /**
