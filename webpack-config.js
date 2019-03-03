@@ -25,7 +25,10 @@ const config = {
 
 	// 配置模块如何解析
 	resolve:{
-		extensions: [".js"] // 当requrie的模块找不到时,添加这些后缀
+		extensions: [".js"], // 当requrie的模块找不到时,添加这些后缀
+        alias: {
+            '@common': path.join(__dirname, './src/common')
+        }
 	},
 
 	// 文件导出的配置

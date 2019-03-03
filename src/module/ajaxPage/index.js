@@ -13,7 +13,10 @@
  * 5. totals-page-info: 总页数
  */
 import './style.less';
-import { jTool, base, cache, parseTpl } from '../../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
+import { parseTpl } from '@common/parse';
 import core from '../core';
 import i18n from '../i18n';
 import ajaxPageTpl from './ajax-page.tpl.html';

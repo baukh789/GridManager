@@ -3,7 +3,10 @@
  */
 
 import './style.less';
-import { jTool, base, cache, parseTpl } from '../../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
+import { parseTpl } from '@common/parse';
 import core from '../core';
 import sortTpl from './sort.tpl.html';
 class Sort {

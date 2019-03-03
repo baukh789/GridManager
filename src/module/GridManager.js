@@ -2,7 +2,9 @@
  * Created by baukh on 17/10/26.
  * 构造类
  */
-import { jTool, base, cache } from '../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
 import order from './order';

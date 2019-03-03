@@ -2,8 +2,11 @@
  * checkbox: 数据选择/全选/返选
  * */
 import './style.less';
-import { CHECKBOX_WIDTH } from '../../common/constants';
-import { jTool, base, cache, parseTpl } from '../../common';
+import { CHECKBOX_WIDTH } from '@common/constants';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
+import { parseTpl } from '@common/parse';
 import ajaxPage from '../ajaxPage';
 import columnTpl from './column.tpl.html';
 import checkboxTpl from './checkbox.tpl.html';

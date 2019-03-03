@@ -1,7 +1,9 @@
 import remind from '../remind';
 import order from '../order';
 import ajaxPage from '../ajaxPage';
-import {base, jTool, parseTpl} from '../../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import { parseTpl } from '../../common/parse';
 import filter from '../filter';
 import config from '../config';
 import sort from '../sort';

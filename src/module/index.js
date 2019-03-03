@@ -1,7 +1,8 @@
 /*
  *  GridManager: 入口
  * */
-import { jTool, base } from '../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
 import GridManager from './GridManager';
 import { PublishMethod, publishMethodArray } from './publish';
 /*

@@ -2,7 +2,8 @@
  * remind: 表头提醒
  */
 import './style.less';
-import { jTool, parseTpl } from '../../common';
+import jTool from '@common/jTool';
+import { parseTpl } from '@common/parse';
 import remindTpl from './remind.tpl.html';
 class Remind {
     // 启用状态

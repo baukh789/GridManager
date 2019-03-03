@@ -2,7 +2,10 @@
  * config: th配置
  * */
 import './style.less';
-import { jTool, base, cache, parseTpl } from '../../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
+import { parseTpl } from '@common/parse';
 import adjust from '../adjust';
 import checkbox from '../checkbox';
 import scroll from '../scroll';

@@ -3,7 +3,9 @@
  * 表头的筛选菜单
  */
 import './style.less';
-import { jTool, cache, parseTpl } from '../../common';
+import jTool from '@common/jTool';
+import cache from '@common/cache';
+import { parseTpl } from '@common/parse';
 import core from '../core';
 import checkbox from '../checkbox';
 import i18n from '../i18n';

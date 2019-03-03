@@ -3,7 +3,9 @@
  * 宽度调整是通过 jTool 进行的事件绑定
  */
 import './style.less';
-import { jTool, base, cache } from '../../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
 
 class Adjust {
     /**

@@ -5,7 +5,9 @@
  * 3.重置tbody
  */
 import './style.less';
-import { jTool, base, cache } from '../../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';
 import checkbox from '../checkbox';
