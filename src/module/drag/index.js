@@ -2,7 +2,10 @@
  * drag: 拖拽
  */
 import './style.less';
-import { jTool, base, cache, parseTpl } from '../../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
+import { parseTpl } from '@common/parse';
 import adjust from '../adjust';
 import config from '../config';
 import dreamlandTpl from './dreamland.tpl.html';

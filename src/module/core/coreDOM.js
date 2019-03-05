@@ -1,6 +1,8 @@
 import remind from '../remind';
 import order from '../order';
-import {base, cache, jTool} from '../../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
 // import fixed from '../fixed';

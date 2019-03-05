@@ -10,7 +10,9 @@
  * 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
  * 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
  */
-import {base, cache, jTool} from '../../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
 
 /**
  * 将不同类型的ajax_data转换为promise

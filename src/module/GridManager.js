@@ -2,7 +2,9 @@
  * Created by baukh on 17/10/26.
  * 构造类
  */
-import { jTool, base, cache } from '../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
 import order from './order';
@@ -30,7 +32,7 @@ const __jTable = table => {
     }
 
     // dom
-    if (table.nodeType) {
+    if (table.nodeName === 'TABLE') {
         return jTool(table);
     }
 
@@ -426,53 +428,6 @@ export default class GridManager {
 	}
 
 	/**
-	 * @静态方法
-	 * 消毁当前实例
-	 * @param $table
-	 */
-	static
-	destroy(table) {
-        if (!table) {
-            return;
-        }
-
-        const gridManagerName = table.getAttribute(base.key);
-
-        // 清除实例及数据
-        cache.cleanTable(gridManagerName);
-
-        // 清除setInterval
-        base.SIV_waitTableAvailable[gridManagerName] && clearInterval(base.SIV_waitTableAvailable[gridManagerName]);
-        base.SIV_waitContainerAvailable[gridManagerName] && clearInterval(base.SIV_waitContainerAvailable[gridManagerName]);
-        base.SIV_waitTableAvailable[gridManagerName] = null;
-        base.SIV_waitContainerAvailable[gridManagerName] = null;
-
-        // TODO 这里所有的消毁方法都应该使用gridManagerName，以防止$table在这里已经被消毁的问题
-        try {
-            const $table = __jTable(table);
-            // 清除各模块中的事件及部分DOM
-            adjust.destroy($table);
-            ajaxPage.destroy($table);
-            checkbox.destroy($table);
-            config.destroy($table);
-            drag.destroy($table);
-            menu.destroy($table);
-            remind.destroy($table);
-            scroll.destroy($table);
-            sort.destroy($table);
-
-            // 清除DOM属性及节点
-            const $tableWrap = $table.closest('.table-wrap');
-            $table.removeClass('GridManager-ready');
-            $table.html('');
-            $tableWrap.after($table);
-            $tableWrap.remove();
-        } catch (e) {
-            // '在清除GridManager实例的过程时, table被移除'
-        }
-	}
-
-	/**
 	 * [对外公开方法]
 	 * @param table
 	 * @param arg: 参数
@@ -622,4 +577,64 @@ export default class GridManager {
         // 渲染tbodyDOM
         settings.firstLoading ? core.refresh($table) : core.insertEmptyTemplate($table, settings, true);
 	}
+
+    /**
+     * @静态方法
+     * 消毁当前实例
+     * @param table
+     */
+    static
+    destroy(table) {
+        if (!table) {
+            return;
+        }
+        let gridManagerName = '';
+
+        // gridManagerName
+        if (jTool.type(table) === 'string') {
+            gridManagerName = table;
+        }
+
+        // table dom
+        if(table.nodeName === 'TABLE') {
+            gridManagerName = table.getAttribute(base.key);
+        }
+
+        // 清除setInterval
+        base.SIV_waitTableAvailable[gridManagerName] && clearInterval(base.SIV_waitTableAvailable[gridManagerName]);
+        base.SIV_waitContainerAvailable[gridManagerName] && clearInterval(base.SIV_waitContainerAvailable[gridManagerName]);
+        base.SIV_waitTableAvailable[gridManagerName] = null;
+        base.SIV_waitContainerAvailable[gridManagerName] = null;
+
+        // TODO 这里所有的消毁方法都应该使用gridManagerName，以防止$table在这里已经被消毁的问题
+        try {
+            const $table = __jTable(table);
+            if (!$table) {
+                return;
+            }
+
+            // 清除各模块中的事件及部分DOM
+            adjust.destroy($table);
+            ajaxPage.destroy($table);
+            checkbox.destroy($table);
+            config.destroy($table);
+            drag.destroy($table);
+            menu.destroy($table);
+            remind.destroy($table);
+            scroll.destroy($table);
+            sort.destroy($table);
+
+            // 清除DOM属性及节点
+            const $tableWrap = $table.closest('.table-wrap');
+            $table.removeClass('GridManager-ready');
+            $table.html('');
+            $tableWrap.after($table);
+            $tableWrap.remove();
+        } catch (e) {
+            // '在清除GridManager实例的过程时, table被移除'
+        }
+
+        // 清除实例及数据
+        cache.cleanTable(gridManagerName);
+    }
 }

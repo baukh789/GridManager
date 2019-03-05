@@ -15,9 +15,6 @@ const Store = {
     // 当前选中的数据列表
     checkedData: {},
 
-	// 表渲染前的th
-	// originalTh: {},
-
 	// 表配置信息存储器
 	settings: {
 		// columnData: 表配置项, 在宽度\位置等信息变化后 会 即时更新

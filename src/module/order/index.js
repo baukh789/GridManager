@@ -1,7 +1,7 @@
 /*
  * order: 序号
  * */
-import { ORDER_WIDTH } from '../../common/constants';
+import { ORDER_WIDTH } from '@common/constants';
 import i18n from '../i18n';
 class Order {
 	// 序号的唯一标识

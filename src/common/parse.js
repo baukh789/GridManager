@@ -22,7 +22,6 @@ export function parseTpl(tpl) {
             // 清除标签间的空格 #001
             let str = trimTpl(params && params.tpl || tpl);
 
-            // console.log(str);
             return str.replace(/\{\{([^(\}\})]+)\}\}/g, (match, evalStr) => {
                 if (/return/.test(evalStr)) {
                     return new Function('vm', evalStr)(vm) || '';

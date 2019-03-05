@@ -9,7 +9,7 @@ const tableTestTpl = trimTpl(tableTpl);
 describe('base 验证类的属性及方法总量', () => {
     let getPropertyCount = null;
     beforeEach(() => {
-        getPropertyCount = function(o){
+        getPropertyCount = o => {
             let n, count = 0;
             for(n in o){
                 if(o.hasOwnProperty(n)){

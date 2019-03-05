@@ -4,7 +4,7 @@
  * 参数中的table, 将由组件自动添加
  */
 import GridManager from './GridManager';
-import { GM_PUBLISH_METHOD_LIST } from '../common/constants';
+import { GM_PUBLISH_METHOD_LIST } from '@common/constants';
 class PublishMethodClass {
     /**
      * 初始化方法

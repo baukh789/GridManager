@@ -1,7 +1,10 @@
 /*
  * exportFile: 数据导出
  */
-import { jTool, base, cache, parseTpl } from '../../common';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import cache from '@common/cache';
+import { parseTpl } from '@common/parse';
 import staticTpl from './static.tpl.html';
 class ExportFile {
 	/**

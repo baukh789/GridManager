@@ -25,7 +25,10 @@ const config = {
 
 	// 配置模块如何解析
 	resolve:{
-		extensions: [".js"] // 当requrie的模块找不到时,添加这些后缀
+		extensions: [".js"], // 当requrie的模块找不到时,添加这些后缀
+        alias: {
+            '@common': path.join(__dirname, './src/common')
+        }
 	},
 
 	// 文件导出的配置
@@ -79,6 +82,7 @@ const config = {
         // 将文件复制到构建目录
 		// CopyWebpackPlugin-> https://github.com/webpack-contrib/copy-webpack-plugin
 		new CopyWebpackPlugin([
+            {from: __dirname + '/src/demo', to: 'demo'},
 			{from: path.join(__dirname, '/package.json'), to: '', toType: 'file'},
 			{from: path.join(__dirname, '/README.md'), to: '', toType: 'file'}
 		]),

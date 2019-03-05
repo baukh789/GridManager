@@ -75,7 +75,10 @@ module.exports = function (config) {
 				js: './test/index_test.js'
 			},
 			resolve:{
-				extensions: [".js"] //当requrie的模块找不到时,添加这些后缀
+				extensions: [".js"], //当requrie的模块找不到时,添加这些后缀
+                alias: {
+                    '@common': path.join(__dirname, './src/common')
+                }
 			},
 			plugins: [
 				new webpack.ProvidePlugin({
