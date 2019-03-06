@@ -508,25 +508,29 @@ class AjaxPage {
         // 更新实时更新数据: 当前页从多少条开始显示
         const $beginNumber = jTool('[begin-number-info]', $footerToolbar);
         if ($beginNumber.length) {
-            $beginNumber.text(fromNum).val(fromNum);
+            $beginNumber.text(fromNum);
+            $beginNumber.val(fromNum);
         }
 
         // 更新实时更新数据: 当前页到多少条结束显示
         const $endNumber = jTool('[end-number-info]', $footerToolbar);
         if ($endNumber.length) {
-            $endNumber.text(toNum).val(toNum);
+            $endNumber.text(toNum);
+            $endNumber.val(toNum);
         }
 
         // 更新实时更新数据: 当前页
         const $currentPage = jTool('[current-page-info]', $footerToolbar);
         if ($currentPage.length) {
-            $currentPage.text(cPage).val(cPage);
+            $currentPage.text(cPage);
+            $currentPage.val(cPage);
         }
 
         // 更新实时更新数据: 总条数
         const $totalsNumber = jTool('[totals-number-info]', $footerToolbar);
         if ($totalsNumber.length) {
-            $totalsNumber.text(totalNum).val(totalNum);
+            $totalsNumber.text(totalNum);
+            $totalsNumber.val(totalNum);
         }
 
         // 更新实时更新数据: 总页数
