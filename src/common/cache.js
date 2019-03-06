@@ -174,10 +174,10 @@ class Cache {
 
         // 指定table, 定点清除
         const settings = this.getSettings($table);
-        base.outLog(`${settings.gridManagerName}用户记忆被清除: ${cleanText}`, 'warn');
 
         let GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
         if (!GridManagerMemory) {
+            base.outLog(`${settings.gridManagerName}: 当前无用户记忆`, 'warn');
             return false;
         }
         GridManagerMemory = JSON.parse(GridManagerMemory);
@@ -188,6 +188,7 @@ class Cache {
 
         // 清除后, 重新存储
         window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
+        base.outLog(`${settings.gridManagerName}用户记忆被清除: ${cleanText}`, 'warn');
         return true;
     }
 
@@ -318,12 +319,13 @@ class Cache {
             // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
             _settings.columnMap[col.key].__isShow = col.isShow;
 
-            if (col.fixed === 'left') {
-                _settings.columnLeftMap[col.key] = Object.assign(_settings.columnMap[col.key], {disableCustomize: true});
-            }
-            if (col.fixed === 'right') {
-                _settings.columnRightMap[col.key] = Object.assign(_settings.columnMap[col.key], {disableCustomize: true});
-            }
+            // TODO fixed 暂时先不做
+            // if (col.fixed === 'left') {
+            //     _settings.columnLeftMap[col.key] = Object.assign(_settings.columnMap[col.key], {disableCustomize: true});
+            // }
+            // if (col.fixed === 'right') {
+            //     _settings.columnRightMap[col.key] = Object.assign(_settings.columnMap[col.key], {disableCustomize: true});
+            // }
         });
 
 	    // 合并用户记忆至 settings, 每页显示条数记忆不在此处

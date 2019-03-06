@@ -137,7 +137,7 @@ class Render {
         }
 
         // 文本对齐
-        const alignAttr = col.align ? 'align="col.align"' : '';
+        const alignAttr = col.align ? `align="${col.align}"` : '';
 
         // th可视状态值
         let thVisible = base.getVisibleState(col.isShow);

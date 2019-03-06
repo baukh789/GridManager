@@ -12,7 +12,7 @@ import scroll from '../scroll';
 import configTpl from './config.tpl.html';
 import configColumnTpl from './config-column.tpl.html';
 
-// 在body上绑定的关闭co事件名
+// 在body上绑定的关闭事件名
 const closeEvent = 'mousedown.gmConfig';
 class Config {
     /**
@@ -21,9 +21,8 @@ class Config {
      */
     init($table) {
         const _this = this;
-        // GM容器
-        const tableWarp = $table.closest('div.table-wrap');
-        const configArea = tableWarp.find('.config-area');
+
+        const configArea = jTool('.config-area', $table.closest('div.table-wrap'));
 
         // 关闭设置事件源
         const configAction = jTool('.config-action', configArea);
@@ -69,7 +68,6 @@ class Config {
             // 所对应的table
             const _$table = base.getTable(_tableWarp);
 
-            const settings = cache.getSettings(_$table);
 
             _only.closest('.config-list').find('.no-click').removeClass('no-click');
             let isVisible = !_checkbox.prop('checked');
@@ -78,12 +76,8 @@ class Config {
 
             // 设置与当前th同列的td可视状态
             _tableDiv.addClass('config-editing');
-            base.setAreVisible(_$table, [_thName], isVisible, () => {
-                _tableDiv.removeClass('config-editing');
-            });
-
-            // 更新存储信息
-            cache.update(_$table, settings);
+            base.setAreVisible(_$table, [_thName], isVisible);
+            _tableDiv.removeClass('config-editing');
 
             // 当前处于选中状态的展示项
             const _checkedList = jTool('.config-area .checked-li', _tableWarp);
@@ -93,29 +87,37 @@ class Config {
                 _checkedList.addClass('no-click');
             }
 
-            // 重置调整宽度事件源
-            if (settings.supportAdjust) {
-                adjust.resetAdjust(_$table);
-            }
-
-            // 重置镜像滚动条的宽度
-            jTool('.sa-inner', _tableWarp).width('100%');
-
-            // 重置当前可视th的宽度
-            base.updateThWidth(_$table, settings);
-
-            // 更新存储信息
-            cache.update(_$table, settings);
-
-            // 处理置顶表头
-            scroll.update(_$table);
-
-            // 更新最后一项可视列的标识
-            base.updateVisibleLast($table);
-
-            // 更新滚动轴显示状态
-            base.updateScrollStatus(_$table);
+            // 通知相关组件进行更新
+            _this.noticeUpdate($table);
         });
+    }
+
+    /**
+     * 对项配置成功后，通知相关组件进行更新
+     * @param $table
+     */
+    noticeUpdate($table) {
+        const settings = cache.getSettings($table);
+
+        // 重置调整宽度事件源
+        if (settings.supportAdjust) {
+            adjust.resetAdjust($table);
+        }
+
+        // 重置当前可视th的宽度
+        base.updateThWidth($table, settings);
+
+        // 更新存储信息
+        cache.update($table, settings);
+
+        // 处理置顶表头
+        scroll.update($table);
+
+        // 更新最后一项可视列的标识
+        base.updateVisibleLast($table);
+
+        // 更新滚动轴显示状态
+        base.updateScrollStatus($table);
     }
 
 	/**

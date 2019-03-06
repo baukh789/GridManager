@@ -364,15 +364,10 @@ class Base {
      * @param $table
      * @param thNameList: Array [thName]
      * @param isVisible: 是否可见
-     * @param cb
      */
-    setAreVisible($table, thNameList, isVisible, cb) {
+    setAreVisible($table, thNameList, isVisible) {
         jTool.each(thNameList, (i, thName) => {
             const $th = this.getTh($table, thName);
-
-            // 所对应的显示隐藏所在的li
-            const $checkLi = jTool(`.config-area li[th-name="${thName}"]`, $table.closest('.table-wrap'));
-            const $td = this.getColTd($th);
 
             // 可视状态值
             const visibleState = this.getVisibleState(isVisible);
@@ -382,17 +377,20 @@ class Base {
 
             // fake th
             this.getFakeTh($table, thName).attr('th-visible', visibleState);
+
             // 所对应的td
+            const $td = this.getColTd($th);
             jTool.each($td, (index, td) => {
                 td.setAttribute('td-visible', visibleState);
             });
 
             // config
+            // 所对应的显示隐藏所在的li
+            const $checkLi = jTool(`.config-area li[th-name="${thName}"]`, $table.closest('.table-wrap'));
             isVisible ? $checkLi.addClass('checked-li') : $checkLi.removeClass('checked-li');
             jTool('input[type="checkbox"]', $checkLi).prop('checked', isVisible);
 
             this.updateEmptyCol($table);
-            typeof cb === 'function' ? cb() : '';
         });
     }
 

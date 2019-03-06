@@ -224,26 +224,26 @@ export default class GridManager {
 	 * @静态方法
 	 * 显示Th及对应的TD项
 	 * @param table
-	 * @param target
+	 * @param thName or thNameList
      */
 	static
-	showTh(table, target) {
-		base.setAreVisible(jTool(target), true);
-        // 更新存储信息
-        cache.update(__jTable(table));
+	showTh(table, thName) {
+        const $table = __jTable(table);
+		base.setAreVisible($table, Array.isArray(thName) ? thName : [thName], true);
+        config.noticeUpdate($table);
 	}
 
 	/**
 	 * @静态方法
 	 * 隐藏Th及对应的TD项
 	 * @param table
-	 * @param target
+     * @param thName or thNameList
      */
 	static
-	hideTh(table, target) {
-		base.setAreVisible(jTool(target), false);
-        // 更新存储信息
-        cache.update(__jTable(table));
+	hideTh(table, thName) {
+        const $table = __jTable(table);
+        base.setAreVisible($table, Array.isArray(thName) ? thName : [thName], false);
+        config.noticeUpdate($table);
 	}
 
 	/**
