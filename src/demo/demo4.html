@@ -149,9 +149,9 @@
             disableBorder: true,
 
             topFullColumn: {
-                template: function(row){
+                template: function(){
                     return `<div style="padding: 12px; text-align: center;">
-                                    快速、灵活的对Table标签进行实例化，让Table标签充满活力。该项目已开源, <a target="_blank" href="https://github.com/baukh789/GridManager">点击进入</a>github
+                                    <span v-bind="row.title"></span>快速、灵活的对Table标签进行实例化，让Table标签充满活力。该项目已开源, <a target="_blank" href="https://github.com/baukh789/GridManager">点击进入</a>github
                                 </div>`;
                 }
             },
@@ -162,83 +162,11 @@
             // ,ajax_url: 'https://www.lovejavascript.com/blogManager/getBlogList'
             ajax_data: function () {
                 return 'https://www.lovejavascript.com/blogManager/getBlogList';
-            }
+            },
             // ,firstLoading: false // 初始渲染时是否加载数据
-            ,ajax_type: 'POST'
-            ,supportMenu: true
-
-            // 选择事件执行前事件
-            ,checkedBefore: function(checkedList){
-                console.log('checkedBefore==', checkedList);
-            }
-
-            // 选择事件执行后事件
-            ,checkedAfter: function(checkedList){
-                console.log('checkedAfter==', checkedList);
-            }
-
-            // 全选事件执行前事件
-            ,checkedAllBefore: function(checkedList){
-                console.log('checkedAllBefore==', checkedList);
-            }
-
-            // 全选事件执行后事件
-            ,checkedAllAfter: function(checkedList){
-                console.log('checkedAllAfter==', checkedList);
-            }
-
-            // AJAX请求前事件函数
-            ,ajax_beforeSend: function(promise){
-                console.log('ajax_beforeSend');
-            }
-            // AJAX成功事件函数
-            ,ajax_success: function(response){
-                console.log('ajax_success');
-            }
-
-            // AJAX失败事件函数
-            ,ajax_error: function(error){
-                console.log('ajax_error');
-            }
-
-            // AJAX结束事件函数
-            ,ajax_complete: function(complete){
-                console.log('ajax_complete');
-            }
-
-            // ,emptyTemplate: '<div class="void-template">通过 emptyTemplate 配置的空数据提示</div>'
-            // 配置 request header, 非xhr自带的头信息将会触发非简单请求, 需要在后端进行对应的配置
-            // 参考链接: https://www.lovejavascript.com/#!zone/blog/content.html?id=53
-//				,ajax_headers: {
-//					'header-test': 'this is test request header'
-//					'Content-Type': 'application/json'
-//				}
-            // 配置xhr, 如: withCredentials -> 跨域情况使用cookie等证书. 需要在后端进行对应的配置
-            // 参考链接: https://www.lovejavascript.com/#!zone/blog/content.html?id=59
-            //		,ajax_xhrFields: {
-            //			withCredentials: true
-            //		}
-            ,query: {test: 22, type: '3'}
-            ,dataKey: 'list'  // 注意: 这里是用来测试responseHandler 是否生效; 数据本身返回为data, 而在这里我把数据名模拟为list, 再通过responseHandler去更改
-
-            // 通过该方法修改全部的请求参数
-            ,requestHandler: function(request){
-                request.newParams = '这个参数是通过 requestHandler 函数新增的';
-                // 更改这个参数后, 将会强制createDate字段使用 降序排序.
-                // 'sort_' 通过 配置项 sortKey 进行配置
-                // 'DESC' 通过 配置项 sortDownText 进行配置
-                //			request.sort_createDate = 'DESC';
-                return request;
-            }
-            // 可以通过该方法修改返回的数据
-            ,responseHandler: function(response){
-
-                // 数据本身返回为data, 通过responseHandler更改为与dataKey匹配的值
-                response.list = response.data;
-                return response;
-            }
-
-            ,columnData: [
+            ajax_type: 'POST',
+            supportMenu: true,
+            columnData: [
                 {
                     key: 'pic',
                     remind: 'the pic',
