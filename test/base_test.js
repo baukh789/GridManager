@@ -774,7 +774,7 @@ describe('base.setAreVisible($table, thNameList, isVisible, cb)', () => {
 
     it('基础验证', () => {
         expect(base.setAreVisible).toBeDefined();
-        expect(base.setAreVisible.length).toBe(4);
+        expect(base.setAreVisible.length).toBe(3);
     });
 
     it('执行验证', () => {
@@ -782,11 +782,9 @@ describe('base.setAreVisible($table, thNameList, isVisible, cb)', () => {
         expect(base.getTh($table, 'title').attr('th-visible')).toBe('visible');
         expect(base.getTh($table, 'pic').attr('th-visible')).toBe('visible');
 
-        let cb = jasmine.createSpy('callback');
         // 设置gm_checkbox, pic不可见
-        base.setAreVisible($table, ['gm_checkbox', 'pic'], false, cb);
+        base.setAreVisible($table, ['gm_checkbox', 'pic'], false);
 
-        expect(cb).toHaveBeenCalled();
         expect(base.getTh($table, 'gm_checkbox').attr('th-visible')).toBe('none');
         expect(base.getTh($table, 'title').attr('th-visible')).toBe('visible');
         expect(base.getTh($table, 'pic').attr('th-visible')).toBe('none');
