@@ -186,7 +186,7 @@ const demo1 = {
 
         // 渲染选择区域, instantiated: 是否已经实例化
         const renderSelect = (instantiated) => {
-            let liStr = '';
+            let liStr = '<option value="-1">请选择方法</option>';
             for (let key in GM_PUBLISH_METHOD_MAP) {
                 let fn = GM_PUBLISH_METHOD_MAP[key];
                 let disabled = !instantiated && fn.relyInit  ? 'disabled' : '';
@@ -204,6 +204,10 @@ const demo1 = {
 
         // bind run event
         fnRun.addEventListener('click', function() {
+            if (!fnCode.value) {
+                fnRunInfo.innerHTML = '请通过选择方法生成所需要执行的代码';
+                return;
+            }
             fnRunInfo.innerHTML = '';
             try {
                 const log = eval(fnCode.value);
@@ -218,6 +222,11 @@ const demo1 = {
                 if (nowFn === 'destroy') {
                     renderSelect(false);
                 }
+                // 重置
+                fnCode.value = '';
+                fnRun.setAttribute('now-fun', '');
+                fnSelect.value = '-1';
+
                 fnRunInfo.innerHTML = `<span class="success-info">
                     <a href="http://gridmanager.lovejavascript.com/api/index.html#${nowFn}" target="_blank">${nowFn}</a>
                     执行成功, 请打开控制台查看具体信息
@@ -230,11 +239,6 @@ const demo1 = {
                 console.error('执行错误: ', e);
             }
         });
-
-        // 默认选中消毁方法
-        fnSelect.value = 'destroy';
-        fnCode.value = GM_PUBLISH_METHOD_MAP['destroy'].code;
-        fnRun.setAttribute('now-fun', 'destroy');
     },
 
     /**
