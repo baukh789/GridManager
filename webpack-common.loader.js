@@ -36,9 +36,6 @@ module.exports = () => {
                         sourceMap: true // 启用/禁用 Sourcemaps
                     }
                 },
-                // {
-                //     loader: 'postcss-loader'
-                // },
                 {
                     loader: 'resolve-url-loader'
                 },
