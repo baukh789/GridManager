@@ -1,6 +1,6 @@
 {
     "name": "gridmanager",
-    "version": "2.7.4",
+    "version": "2.7.5",
     "description": "表格管理插件",
     "author": "baukh",
     "main": "js/gm.js",
@@ -81,9 +81,6 @@
         "webpack-cli": "^3.2.1",
         "webpack-dev-middleware": "^3.5.1",
         "webpack-hot-middleware": "^2.24.3"
-    },
-    "peerDependencies": {
-        "library": "^1.3.5"
     },
     "dependencies": {
         "@babel/runtime": "^7.3.1",
