@@ -11,6 +11,7 @@ const TYPE_MAP = {
     '6': '前端框架',
     '7': '前端相关'
 };
+
 // 公开方法列表
 const GM_PUBLISH_METHOD_MAP = {
     init: {
@@ -373,7 +374,7 @@ const demo1 = {
                             {value: '6', text: '前端框架'},
                             {value: '7', text: '前端相关'}
                         ],
-                        // 筛选选中项，字符串, 默认为''。 非必设项，选中的过滤条件将会覆盖query
+                        // 筛选选中项，字符串, 未存在选中项时设置为''。 在此设置的选中的过滤条件将会覆盖query
                         selected: '3',
                         // 否为多选, 布尔值, 默认为false。非必设项
                         isMultiple: true
@@ -448,7 +449,7 @@ const demo1 = {
 };
 
 // GridManager 渲染
-var table = document.querySelector('table');
+const table = document.querySelector('table');
 demo1.initSearch(table);
 demo1.initGM(table);
 demo1.initFN();

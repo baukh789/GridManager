@@ -161,21 +161,6 @@ class Settings {
             // 分页区域自定义模板
             ajaxPageTemplate: '',
 
-            // 是否显示底部工具: 刷新按纽
-            showFooterRefresh: true,
-
-            // 是否显示底部工具: 快捷跳转
-            showFooterGoTo: true,
-
-            // 是否显示底部工具: 切换每页显示条数
-            showFooterPageSize: true,
-
-            // 是否显示底部工具: 选中项描述信息
-            showFooterCheckedInfo: true,
-
-            // 是否显示底部工具: 分页描述信息
-            showFooterPageInfo: true,
-
 			// 用于配置列表每页展示条数选择框
 			sizeData: [10, 20, 30, 50, 100],
 

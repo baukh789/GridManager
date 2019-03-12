@@ -154,9 +154,12 @@
                     &:hover td{
                         background-color: #F1F8FB;
                     }
-                    &[emptytemplate=""] td{
-                        background-color: #FFF;
-                        padding: 0;
+                    &[emptytemplate=""]{
+                        border-bottom: none;
+                        td{
+                            background-color: #FFF;
+                            padding: 0;
+                        }
                     }
                     /*顶部通栏*/
                     &[top-full-column="true"]{

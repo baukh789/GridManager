@@ -2,22 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GridManager: Angular 示例</title>
-    <style>
-        p{
-            line-height: 32px;
-            text-align: center;
-        }
-        a{
-            color: #0f88eb;
-        }
-    </style>
+    <title>GM-Angular</title>
+    <link type="text/css" rel="stylesheet" href="http://develop.lovejavascript.com/node_modules/gridmanager-angular-1.x/css/gm-angular.css"/>
+    <link type="text/css" rel="stylesheet" href="./css/common.css"/>
+    <script src="http://develop.lovejavascript.com/node_modules/angular/angular.min.js"></script>
+    <script src="http://develop.lovejavascript.com/node_modules/gridmanager-angular-1.x/js/gm-angular.js"></script>
 </head>
-<body>
-<div>
-    <p>gridmanager-angular-1.x已经开发完成</p>
-    <p><a target="_blank" title="gridmanager-vue" href="https://github.com/baukh789/GridManager-Angular-1.x">请点击这里跳转</a></p>
-</div>
+<body ng-app="myApp" ng-controller="AppController as vm">
+    <div class="search-area">
+        <div class="sa-ele">
+            <label class="se-title">标题:</label>
+            <input class="se-con" ng-model="searchForm.title"/>
+        </div>
+        <div class="sa-ele">
+            <label class="se-title">博文分类:</label>
+            <select class="se-con" ng-model="searchForm.type">
+                <option value="-1">请选择</option>
+                <option value="{{$index + 1}}" ng-repeat="item in TYPE_MAP track by $index">{{item}}</option>
+            </select>
+        </div>
+        <div class="sa-ele">
+            <label class="se-title">内容:</label>
+            <input class="se-con" ng-model="searchForm.content"/>
+        </div>
+        <div class="sa-ele">
+            <button class="search-action" ng-click="onSearch()">搜索</button>
+            <button class="reset-action" ng-click="onReset()">重置</button>
+        </div>
+    </div>
+
+    <div class="grid-main">
+        <grid-manager option="option" callback="callback(query)"></grid-manager>
+    </div>
+
+    <div class="bottom-bar">
+        <a href="https://github.com/baukh789/GridManager-Angular-1.x" target="_blank">查看源码</a>
+        <select class="fn-select" ng-model="fnSelected" ng-change="onFnChange(fnSelected)">
+            <option value="-1">请选择方法</option>
+            <option value="{{item.key}}"
+                    ng-repeat="item in GM_PUBLISH_METHOD_MAP track by $index"
+                    title="{{item.title}}"
+                    ng-disabled="!inited && item.relyInit"
+                    >{{item.key}}</option>
+        </select>
+        <input class="fn-code" placeholder="请通过选择方法生成所需要执行的代码" ng-model="fnCode" ng-disabled="{{inited}}"/>
+        <button class="fn-run" ng-click="onFnRun()">执行</button>
+        <span class="fn-run-info" ng-bind-html="fnRunInfo"></span>
+    </div>
+
+    <script src="./js/angular-demo.js"></script>
 </body>
 </html>
 
