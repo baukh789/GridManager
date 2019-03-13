@@ -355,7 +355,7 @@ const demo1 = {
                         titleNode.classList.add('plugin-action');
                         return titleNode;
                     }
-                },{
+                }, {
                     key: 'type',
                     remind: 'the type',
                     text: '博文分类',
@@ -382,30 +382,30 @@ const demo1 = {
                     template: function(type, row){
                         return TYPE_MAP[type];
                     }
-                },{
+                }, {
                     key: 'info',
                     remind: 'the info',
                     width: '100px',
                     text: '简介'
-                },{
+                }, {
                     key: 'username',
                     remind: 'the username',
                     align: 'center',
                     width: '100px',
                     text: '作者',
-                    template: function(username){
+                    template: username => {
                         return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
                     }
-                },{
+                }, {
                     key: 'createDate',
                     width: '130px',
                     text: '创建时间',
                     sorting: 'DESC',
                     // 使用函数返回 htmlString
-                    template: function(createDate, row){
+                    template: (createDate, row) => {
                         return new Date(createDate).toLocaleDateString();
                     }
-                },{
+                }, {
                     key: 'lastDate',
                     width: '130px',
                     text: '最后修改时间',
@@ -414,7 +414,7 @@ const demo1 = {
                     template: function(lastDate, row){
                         return new Date(lastDate).toLocaleDateString();
                     }
-                },{
+                }, {
                     key: 'action',
                     remind: 'the action',
                     width: '100px',
@@ -422,19 +422,19 @@ const demo1 = {
                     disableCustomize: true,
                     text: '<span style="color: red">操作</span>',
                     // 直接返回 htmlString
-                    template:  function(undefined, row){
+                    template: (action, row) => {
                         return `<span class="plugin-action" title="${row.title}" onclick="demo1.delectRowData(this.title)">删除</span>`;
                     }
                 }
-            ]
+            ],
             // 排序后事件
-            ,sortingAfter: function (data) {
+            sortingAfter: data => {
                 console.log('sortAfter', data);
             }
-        }, function(query){
+        }, query => {
             // 渲染完成后的回调函数
             console.log('渲染完成后的回调函数:', query);
-        })
+        });
     },
 
     /**

@@ -305,6 +305,10 @@ class Cache {
         _settings.columnLeftMap = {};
         _settings.columnRightMap = {};
         _settings.columnData.forEach((col, index) => {
+            if (!col.key) {
+                base.outLog(`配置项columnData内，索引为${index}的key字段未定义`, 'error');
+                return;
+            }
             _settings.columnMap[col.key] = col;
 
             // 如果未设定, 设置默认值为true

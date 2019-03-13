@@ -13,14 +13,14 @@ module.exports = () => {
         			loader: 'eslint-loader',
         			options: {
         				formatter: require('eslint-friendly-formatter')
-        			},
+        			}
         		}
         	]
         },
         {
             test: /\.js$/,
             exclude: /node_modules/,
-            use: ["babel-loader"]
+            use: ['babel-loader']
         },
         {
             test: /\.(le|c)ss/,

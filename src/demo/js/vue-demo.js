@@ -1,11 +1,11 @@
 
 // 模拟的一个promise请求
-const getBlogList = function(paramse) {
+const getBlogList = function (paramse) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'https://www.lovejavascript.com/blogManager/getBlogList');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onreadystatechange = function() {
+        xhr.onreadystatechange = () => {
             if (xhr.readyState !== 4) {
                 return;
             }
@@ -28,10 +28,10 @@ const getBlogList = function(paramse) {
     });
 };
 
-Vue.use(GridManager);
+window.Vue.use(window.GridManager);
 
 const gridManagerName = 'testVue';
-const app = new Vue({
+new window.Vue({
     el: '#app',
     data: {
 
@@ -68,121 +68,121 @@ const app = new Vue({
                 key: 'get',
                 relyInit: true,  // 是否依赖init方法
                 title: '获取表格的实时配置信息',
-                code: `this.$refs['grid'].$el.GM('get', '${gridManagerName}');`
+                code: 'this.$refs["grid"].$el.GM("get");'
             },
             version: {
                 key: 'version',
                 relyInit: false,
                 title: '获取当前GridManager的版本号',
-                code: `this.$refs['grid'].$el.GM('version');`
+                code: 'this.$refs["grid"].$el.GM("version");'
             },
             getLocalStorage: {
                 key: 'getLocalStorage',
                 relyInit: true,
                 title: '获取表格用户记忆',
-                code: `this.$refs['grid'].$el.GM('getLocalStorage', '${gridManagerName}');`
+                code: 'this.$refs["grid"].$el.GM("getLocalStorage");'
             },
             resetLayout: {
                 key: 'resetLayout',
                 relyInit: true,
                 title: '重置表格布局',
-                code: `this.$refs['grid'].$el.GM('resetLayout', '${gridManagerName}', '800px', '500px');`
+                code: 'this.$refs["grid"].$el.GM("resetLayout", "800px", "500px");'
             },
             clear: {
                 key: 'clear',
                 relyInit: true,
                 title: '清除表格记忆数据',
-                code: `this.$refs['grid'].$el.GM('clear', '${gridManagerName}');`
+                code: 'this.$refs["grid"].$el.GM("clear");'
             },
             getRowData: {
                 key: 'getRowData',
                 relyInit: true,
                 title: '获取指定tr所使用的数据',
-                code: `this.$refs['grid'].$el.GM('getRowData', '${gridManagerName}', 'pic');`
+                code: 'this.$refs["grid"].$el.GM("getRowData", "pic");'
             },
             updateRowData: {
                 key: 'updateRowData',
                 relyInit: true,
                 title: '更新指定行所使用的数据',
-                code: `this.$refs['grid'].$el.GM('updateRowData', '${gridManagerName}', 'id', {'id': 92, 'title': 'ccc'});`
+                code: 'this.$refs["grid"].$el.GM("updateRowData", "id", {"id": 92, "title": "ccc"});'
             },
             setSort: {
                 key: 'setSort',
                 relyInit: true,
                 title: '手动设置排序',
-                code: `this.$refs['grid'].$el.GM('setSort', '${gridManagerName}', {name: 'ASC'});`
+                code: 'this.$refs["grid"].$el.GM("setSort", {name: "ASC"});'
             },
             setConfigVisible: {
                 key: 'setConfigVisible',
                 relyInit: true,
                 title: '设置表头配置区域可视状态',
-                code: `this.$refs['grid'].$el.GM('setConfigVisible', '${gridManagerName}', true);`
+                code: 'this.$refs["grid"].$el.GM("setConfigVisible", true);'
             },
             showTh: {
                 key: 'showTh',
                 relyInit: true,
                 title: '设置列为可视状态',
-                code: `this.$refs['grid'].$el.GM('showTh', '${gridManagerName}', 'pic');`
+                code: 'this.$refs["grid"].$el.GM("showTh", "pic");'
             },
             hideTh: {
                 key: 'hideTh',
                 relyInit: true,
                 title: '设置列为隐藏状态',
-                code: `this.$refs['grid'].$el.GM('hideTh', '${gridManagerName}', 'pic');`
+                code: 'this.$refs["grid"].$el.GM("hideTh", "pic");'
             },
             exportGridToXls: {
                 key: 'exportGridToXls',
                 relyInit: true,
                 title: '导出指定表格',
-                code: `this.$refs['grid'].$el.GM('exportGridToXls', '${gridManagerName}', 'demo中使用的导出');`
+                code: 'this.$refs["grid"].$el.GM("exportGridToXls", "demo中使用的导出");'
             },
             setQuery: {
                 key: 'setQuery',
                 relyInit: true,
                 title: '更改在生成组件时所配置的参数query',
-                code: `this.$refs['grid'].$el.GM('setQuery', '${gridManagerName}', {'userName':'baukh','sex':'男'});`
+                code: 'this.$refs["grid"].$el.GM("setQuery", {"userName":"baukh","sex":"男"});'
             },
             setAjaxData: {
                 key: 'setAjaxData',
                 relyInit: true,
                 title: '用于再次配置ajax_data数据',
-                code: `this.$refs['grid'].$el.GM('setAjaxData', '${gridManagerName}', {data: [], totals: 0});`
+                code: 'this.$refs["grid"].$el.GM("setAjaxData", {data: [], totals: 0});'
             },
             refreshGrid: {
                 key: 'refreshGrid',
                 relyInit: true,
                 title: '刷新表格',
-                code: `this.$refs['grid'].$el.GM('refreshGrid', '${gridManagerName}');`
+                code: 'this.$refs["grid"].$el.GM("refreshGrid");'
             },
             getCheckedTr: {
                 key: 'getCheckedTr',
                 relyInit: true,
                 title: '获取当前选中的行',
-                code: `this.$refs['grid'].$el.GM('getCheckedTr', '${gridManagerName}');`
+                code: 'this.$refs["grid"].$el.GM("getCheckedTr");'
             },
             getCheckedData: {
                 key: 'getCheckedData',
                 relyInit: true,
                 title: '获取选中行的渲染数据',
-                code: `this.$refs['grid'].$el.GM('getCheckedData', '${gridManagerName}');`
+                code: 'this.$refs["grid"].$el.GM("getCheckedData");'
             },
             setCheckedData: {
                 key: 'setCheckedData',
                 relyInit: true,
                 title: '设置选中的数据',
-                code: `this.$refs['grid'].$el.GM('setCheckedData', '${gridManagerName}', []);`
+                code: 'this.$refs["grid"].$el.GM("setCheckedData", []);'
             },
             cleanData: {
                 key: 'cleanData',
                 relyInit: true,
                 title: '清除指定表格数据',
-                code: `this.$refs['grid'].$el.GM('cleanData', '${gridManagerName}');`
+                code: 'this.$refs["grid"].$el.GM("cleanData");'
             },
             destroy: {
                 key: 'destroy',
                 relyInit: true,
                 title: '消毁指定的GridManager实例',
-                code: `this.$refs['grid'].$el.GM('destroy', '${gridManagerName}');`
+                code: 'this.$refs["grid"].$el.GM("destroy");'
             }
         },
 
