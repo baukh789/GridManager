@@ -276,10 +276,6 @@ class Cache {
      * @param order
      */
     initSettings($table, arg, checkbox, order) {
-        if (store.settings[base.getKey($table)]) {
-            base.outLog('gridManagerName在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值', 'warn');
-        }
-
         // 合并参数
         const _settings = new Settings();
         _settings.textConfig = new TextSettings();

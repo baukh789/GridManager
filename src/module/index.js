@@ -1,5 +1,6 @@
 /*
  *  GridManager: 入口
+ *  #001: 如果已经存在，则清除之前的实例，重新进行实例化。原因：如果不清除而直接返回错误，会让使用者存在不便。
  * */
 import jTool from '@common/jTool';
 import base from '@common/base';
@@ -72,8 +73,10 @@ import { PublishMethod, publishMethodArray } from './publish';
 
         // init: 当前已经实例化
         if (settings && settings.gridManagerName) {
-            base.outLog('渲染失败,可能该表格已经渲染或正在渲染', 'error');
-            return;
+            base.outLog(`gridManagerName为${settings.gridManagerName}的实例在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值`, 'warn');
+
+            // 如果已经存在，则清除之前的数据。#001
+            PublishMethod.destroy(settings.gridManagerName);
         }
 
         // init: 执行
