@@ -37,6 +37,8 @@ class Core {
         settings.ajax_beforeSend(ajaxPromise);
         ajaxPromise
         .then(response => {
+            // 异步重新获取settings
+            const settings = cache.getSettings($table);
             this.driveDomForSuccessAfter($table, settings, response, callback);
             settings.ajax_success(response);
             settings.ajax_complete(response);

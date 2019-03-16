@@ -59,24 +59,18 @@ import { PublishMethod, publishMethodArray } from './publish';
 			return;
 		}
 
-		// no init: 当前并未实例化
-		const settings = GridManager.get(this);
-		if (name !== 'init' && (!settings || !settings.gridManagerName)) {
-			base.outLog('方法调用错误，请确定表格已实例化', 'error');
-			return;
-		}
-
         // no init: 执行
 		if (name !== 'init') {
             return PublishMethod[name](this, arg, callback, condition) || this;
         }
 
+		const gridManagerName = this.getAttribute(base.key);
         // init: 当前已经实例化
-        if (settings && settings.gridManagerName) {
-            base.outLog(`gridManagerName为${settings.gridManagerName}的实例在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值`, 'warn');
+        if (gridManagerName) {
+            base.outLog(`gridManagerName为${gridManagerName}的实例在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值`, 'warn');
 
             // 如果已经存在，则清除之前的数据。#001
-            PublishMethod.destroy(settings.gridManagerName);
+            PublishMethod.destroy(gridManagerName);
         }
 
         // init: 执行

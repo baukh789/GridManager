@@ -53,6 +53,17 @@ const __jTable = table => {
     return $table;
 };
 
+const isRendered = (table, fnName) => {
+    const $table = __jTable(table);
+    const settings = cache.getSettings($table);
+    console.log('settings.rendered', settings.rendered);
+    if (!settings.rendered) {
+        base.outLog(`${fnName}方法调用失败，请确认表格已经实例化`, 'error');
+        return false;
+    }
+    return true;
+};
+
 // 存储默认配置
 let defaultOption = {};
 export default class GridManager {
@@ -95,7 +106,10 @@ export default class GridManager {
 	 */
 	static
 	get(table) {
-		return cache.getSettings(__jTable(table));
+	    if (!isRendered(table, 'get')) {
+	        return;
+        }
+        return cache.getSettings(table);
 	}
 
     /**
@@ -131,6 +145,9 @@ export default class GridManager {
      */
 	static
 	getLocalStorage(table) {
+        if (!isRendered(table, 'getLocalStorage')) {
+            return;
+        }
 		return cache.getUserMemory(__jTable(table));
 	}
 
@@ -144,6 +161,9 @@ export default class GridManager {
      */
 	static
     resetLayout(table, width, height) {
+        if (!isRendered(table, 'resetLayout')) {
+            return;
+        }
 	    const $table = __jTable(table);
         const settings = cache.getSettings($table);
         base.calcLayout($table, width, height, settings.supportAjaxPage);
@@ -158,6 +178,9 @@ export default class GridManager {
      */
 	static
 	clear(table) {
+        if (table && !isRendered(table, 'clear')) {
+            return;
+        }
 		return cache.delUserMemory(__jTable(table), '通过clear()方法清除');
 	}
 
@@ -170,6 +193,9 @@ export default class GridManager {
      */
 	static
 	getRowData(table, target) {
+        if (!isRendered(table, 'getRowData')) {
+            return;
+        }
 		return cache.getRowData(__jTable(table), target);
 	}
 
@@ -183,6 +209,9 @@ export default class GridManager {
      */
 	static
 	setSort(table, sortJson, callback, refresh) {
+	    if (!isRendered(table, 'setSort')) {
+	        return;
+        }
 		sort.__setSort(__jTable(table), sortJson, callback, refresh);
 	}
 
@@ -193,6 +222,9 @@ export default class GridManager {
      */
     static
     setConfigVisible(table, visible) {
+        if (!isRendered(table, 'setConfigVisible')) {
+            return;
+        }
         const $table = __jTable(table);
         const settings = cache.getSettings($table);
         if (!settings.supportConfig) {
@@ -228,6 +260,9 @@ export default class GridManager {
      */
 	static
 	showTh(table, thName) {
+        if (!isRendered(table, 'showTh')) {
+            return;
+        }
         const $table = __jTable(table);
 		base.setAreVisible($table, Array.isArray(thName) ? thName : [thName], true);
         config.noticeUpdate($table);
@@ -241,6 +276,9 @@ export default class GridManager {
      */
 	static
 	hideTh(table, thName) {
+        if (!isRendered(table, 'hideTh')) {
+            return;
+        }
         const $table = __jTable(table);
         base.setAreVisible($table, Array.isArray(thName) ? thName : [thName], false);
         config.noticeUpdate($table);
@@ -256,6 +294,9 @@ export default class GridManager {
      */
 	static
 	exportGridToXls(table, fileName, onlyChecked) {
+        if (!isRendered(table, 'exportGridToXls')) {
+            return;
+        }
 		return exportFile.__exportGridToXls(__jTable(table), fileName, onlyChecked);
 	}
 
@@ -274,13 +315,12 @@ export default class GridManager {
 	 */
 	static
 	setQuery(table, query, isGotoFirstPage, callback) {
-		const $table = __jTable(table);
-		const settings = cache.getSettings($table);
-
-		if (!settings.pageData) {
-		    base.outLog('setQuery失败，当前实例可能已被消毁', 'warn');
-		    return;
+        if (!isRendered(table, 'setQuery')) {
+            return;
         }
+
+        const $table = __jTable(table);
+		const settings = cache.getSettings($table);
 
 		if (jTool.type(query) !== 'object') {
             query = {};
@@ -316,6 +356,9 @@ export default class GridManager {
 	 */
 	static
 	setAjaxData(table, ajaxData, callback) {
+        if (!isRendered(table, 'setAjaxData')) {
+            return;
+        }
 		const $table = __jTable(table);
 		const settings = cache.getSettings($table);
 		jTool.extend(settings, {ajax_data: ajaxData});
@@ -332,6 +375,9 @@ export default class GridManager {
 	 */
 	static
 	refreshGrid(table, isGotoFirstPage, callback) {
+	    if (!isRendered(table, 'refreshGrid')) {
+	        return;
+        }
 		const $table = __jTable(table);
 		const settings = cache.getSettings($table);
 		if (typeof (isGotoFirstPage) !== 'boolean') {
@@ -353,6 +399,9 @@ export default class GridManager {
      */
 	static
 	getCheckedTr(table) {
+        if (!isRendered(table, 'getCheckedTr')) {
+            return;
+        }
 		return checkbox.getCheckedTr(__jTable(table));
 	};
 
@@ -364,6 +413,9 @@ export default class GridManager {
      */
 	static
 	getCheckedData(table) {
+        if (!isRendered(table, 'getCheckedData')) {
+            return;
+        }
 		return cache.getCheckedData(__jTable(table));
 	};
 
@@ -376,6 +428,9 @@ export default class GridManager {
      */
     static
     setCheckedData(table, checkedData) {
+        if (!isRendered(table, 'setCheckedData')) {
+            return;
+        }
         const $table = __jTable(table);
         const checkedList = Array.isArray(checkedData) ? checkedData : [checkedData];
         let tableData = cache.getTableData($table);
@@ -406,6 +461,9 @@ export default class GridManager {
      */
     static
     updateRowData(table, key, rowData) {
+        if (!isRendered(table, 'updateRowData')) {
+            return;
+        }
         const $table = __jTable(table);
         const settings = cache.getSettings($table);
         const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
@@ -424,6 +482,9 @@ export default class GridManager {
      */
 	static
 	cleanData(table) {
+        if (!isRendered(table, 'cleanData')) {
+            return;
+        }
 		return core.cleanData(__jTable(table));
 	}
 
@@ -478,7 +539,7 @@ export default class GridManager {
 		cache.cleanTableCacheForVersion();
 
 		// 初始化设置相关: 合并, 存储
-		const settings = cache.initSettings($table, arg, checkbox, order);
+		let settings = cache.initSettings($table, arg, checkbox, order);
 
 		// 校验: gridManagerName
 		if (settings.gridManagerName.trim() === '') {
@@ -506,6 +567,11 @@ export default class GridManager {
         }
         // 启用回调
         typeof (callback) === 'function' ? callback(settings.query) : '';
+
+        // 设置渲染完成标识
+        settings = cache.getSettings(settings.gridManagerName);
+        settings.rendered = true;
+        cache.setSettings(settings);
 	}
 
 	/**
@@ -585,7 +651,7 @@ export default class GridManager {
      */
     static
     destroy(table) {
-        if (!table) {
+        if (!isRendered(table, 'destroy')) {
             return;
         }
         let gridManagerName = '';

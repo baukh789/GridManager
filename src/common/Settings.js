@@ -371,6 +371,8 @@ class Settings {
 		};
 
 		const settings = {
+		    // 是否加载完成，用于调用公开方法确认
+            rendered: false,
 			...frameworks,
 			...drag,
 			...adjust,

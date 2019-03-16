@@ -250,8 +250,9 @@ const demo1 = {
             gridManagerName: 'test',
             width: '100%',
             height: '100%',
+            // firstLoading: false,
             // useNoTotalsMode: true,
-            supportAjaxPage:true,
+            supportAjaxPage: true,
             // isCombSorting: true,
             // mergeSort: true,
             isIconFollowText: true,
@@ -442,7 +443,7 @@ const demo1 = {
      */
     delectRowData: function(title) {
         // 执行删除操作
-        if(window.confirm('确认要删除['+title+']?')){
+        if (window.confirm(`确认要删除[${title}]?`)) {
             window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
         }
     }
