@@ -565,13 +565,14 @@ export default class GridManager {
                 $table.removeAttr('grid-manager-cache-error');
             }, 1000);
         }
-        // 启用回调
-        typeof (callback) === 'function' ? callback(settings.query) : '';
 
         // 设置渲染完成标识
         settings = cache.getSettings(settings.gridManagerName);
         settings.rendered = true;
         cache.setSettings(settings);
+
+        // 启用回调
+        typeof (callback) === 'function' ? callback(settings.query) : '';
 	}
 
 	/**

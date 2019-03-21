@@ -561,7 +561,7 @@ class AjaxPage {
 		const pageData = {};
 
 		// 总页数
-		pageData['tPage'] = _tPage;
+		pageData['tPage'] = _tPage || 1;
 
 		// 当前页
 		pageData[settings.currentPageKey] = _cPage > _tPage ? 1 : _cPage;
@@ -569,7 +569,7 @@ class AjaxPage {
 		// 每页显示条数
 		pageData[settings.pageSizeKey] = _pSize;
 
-		// 总条路
+		// 总条数
 		pageData['tSize'] = totals;
 
 		return pageData;
