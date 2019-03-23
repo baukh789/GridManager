@@ -673,23 +673,22 @@ export default class GridManager {
         base.SIV_waitTableAvailable[gridManagerName] = null;
         base.SIV_waitContainerAvailable[gridManagerName] = null;
 
-        // TODO 这里所有的消毁方法都应该使用gridManagerName，以防止$table在这里已经被消毁的问题
+        // 清除各模块中的事件及部分DOM
+        adjust.destroy(gridManagerName);
+        ajaxPage.destroy(gridManagerName);
+        checkbox.destroy(gridManagerName);
+        config.destroy(gridManagerName);
+        drag.destroy(gridManagerName);
+        menu.destroy(gridManagerName);
+        remind.destroy($table);
+        scroll.destroy($table);
+        sort.destroy($table);
+
         try {
             const $table = __jTable(table);
             if (!$table) {
                 return;
             }
-
-            // 清除各模块中的事件及部分DOM
-            adjust.destroy($table);
-            ajaxPage.destroy($table);
-            checkbox.destroy($table);
-            config.destroy($table);
-            drag.destroy($table);
-            menu.destroy($table);
-            remind.destroy($table);
-            scroll.destroy($table);
-            sort.destroy($table);
 
             // 清除DOM属性及节点
             const $tableWrap = $table.closest('.table-wrap');

@@ -18,20 +18,49 @@ import exportTpl from './export.tpl.html';
 // 在body上绑定的关闭事件名
 const closeEvent = 'mousedown.gridMenu';
 class Menu {
-	// 唯一标识名
+    // 事件map
+    eventMap = {
+        close: 'mousedown'
+    };
+
+    /**
+     * 初始化
+     * @param $table
+     */
+    init($table) {
+        const settings = cache.getSettings($table);
+
+        // 创建menu DOM
+        const $menu = jTool(this.getQuerySelector(settings.gridManagerName));
+        if($menu.length === 0) {
+            jTool('body').append(this.createMenuHtml({settings}));
+        }
+
+        // 绑定右键菜单事件
+        this.bindRightMenuEvent($table, settings);
+    }
+
+    // 唯一标识名
 	get keyName() {
 		return 'grid-master';
 	}
 
-	init($table) {
-		const settings = cache.getSettings($table);
+    /**
+     * 获取指定key的menu选择器
+     * @param gridManagerName
+     * @returns {string}
+     */
+	getQuerySelector(gridManagerName) {
+	    return `.grid-menu[${this.keyName}="${gridManagerName}"]`;
+    }
 
-		// 创建menu DOM
-        jTool('body').append(this.createMenuHtml({settings}));
-
-		// 绑定右键菜单事件
-		this.bindRightMenuEvent($table, settings);
-	}
+    /**
+     * 获取menu 的 jtool对像
+     * @param gridManagerName
+     */
+    getMenuByJtool(gridManagerName) {
+	    return jTool(this.getQuerySelector(gridManagerName));
+    }
 
     /**
      * 创建menu DOM
@@ -99,13 +128,13 @@ class Menu {
 		const tableWarp = $table.closest('.table-wrap');
 
 		const gridManagerName = settings.gridManagerName;
-		const menuDOM = jTool(`.grid-menu[${_this.keyName}="${gridManagerName}"]`);
-
-		const _body = jTool('body');
+		const $menu = this.getMenuByJtool(gridManagerName);
+		// const menuQuerySelector = `.grid-menu[${_this.keyName}="${gridManagerName}"]`;
+		const $body = jTool('body');
 
 		// 绑定打开右键菜单栏
-		tableWarp.unbind('contextmenu');
-		tableWarp.bind('contextmenu', function (e) {
+        $body.off('contextmenu', `.table-wrap[wrap-key="${gridManagerName}"]`);
+        $body.on('contextmenu', `.table-wrap[wrap-key="${gridManagerName}"]`, function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -123,37 +152,36 @@ class Menu {
 			}
 
 			// 定位
-			const menuWidth = menuDOM.width();
-			const menuHeight = menuDOM.height();
+			const menuWidth = $menu.width();
+			const menuHeight = $menu.height();
 			const offsetHeight = document.documentElement.offsetHeight;
 			const offsetWidth = document.documentElement.offsetWidth;
 			const top = offsetHeight < e.clientY + menuHeight ? e.clientY - menuHeight : e.clientY;
 			const left = offsetWidth < e.clientX + menuWidth ? e.clientX - menuWidth : e.clientX;
-			menuDOM.css({
+			$menu.css({
 				top: top + tableWarp.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop),
 				left: left + tableWarp.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft)
 			});
 
 			// 隐藏非当前展示表格的菜单项
 			jTool(`.grid-menu[${_this.keyName}]`).hide();
-			menuDOM.show();
+			$menu.show();
 
 			// 点击空处关闭
-			_body.off(closeEvent);
-			_body.on(closeEvent, function (e) {
+			$body.off(closeEvent);
+			$body.on(closeEvent, function (e) {
 				const eventSource = jTool(e.target);
 				if (eventSource.hasClass('grid-menu') || eventSource.closest('.grid-menu').length === 1) {
 					return;
 				}
-				_body.off(closeEvent);
-				menuDOM.hide();
+				$body.off(closeEvent);
+				$menu.hide();
 			});
 		});
 
 		// 绑定事件：上一页、下一页、重新加载
-		const refreshPage = jTool('[grid-action="refresh-page"]');
-		refreshPage.unbind('click');
-		refreshPage.bind('click', function (e) {
+        $body.off('click', `${this.getQuerySelector(gridManagerName)} [grid-action="refresh-page"]`);
+        $body.on('click', `${this.getQuerySelector(gridManagerName)}  [grid-action="refresh-page"]`, function (e) {
 			if (_this.isDisabled(this, e)) {
 				return false;
 			}
@@ -175,7 +203,7 @@ class Menu {
 			}
 
 			ajaxPage.gotoPage(_table, _settings, cPage);
-			_body.off(closeEvent);
+			$body.off(closeEvent);
 			_gridMenu.hide();
 		});
 
@@ -194,23 +222,22 @@ class Menu {
 					onlyChecked = true;
 				}
                 exportFile.__exportGridToXls(_table, undefined, onlyChecked);
-				_body.off(closeEvent);
+				$body.off(closeEvent);
 				_gridMenu.hide();
 			});
 		})();
 
 		// 绑定事件：配置表
 		settings.supportConfig && (() => {
-			const settingGrid = jTool('[grid-action="config-grid"]');
-			settingGrid.unbind('click');
-			settingGrid.bind('click', function (e) {
+			$menu.off('click', '[grid-action="config-grid"]');
+            $menu.on('click', '[grid-action="config-grid"]', function (e) {
 				if (_this.isDisabled(this, e)) {
 					return false;
 				}
 				const _gridMenu = jTool(this).closest('.grid-menu');
 				const _table = base.getTable(_gridMenu.attr(_this.keyName));
 				config.toggle(_table);
-				_body.off(closeEvent);
+				$body.off(closeEvent);
 				_gridMenu.hide();
 			});
 		})();
@@ -261,16 +288,15 @@ class Menu {
 
 	/**
 	 * 消毁
-	 * @param $table
+	 * @param gridManagerName
 	 */
-	destroy($table) {
-		const tableWarp = $table.closest('.table-wrap');
-		const settings = cache.getSettings($table);
-		const menuDOM = jTool(`.grid-menu[${this.keyName}="${settings.gridManagerName}"]`);
-		const _body = jTool('body');
+	destroy(gridManagerName) {
+		const $menu = jTool(`.grid-menu[${this.keyName}="${gridManagerName}"]`);
+        const $tableWarp = $menu.closest('.table-wrap');
+		const $body = jTool('body');
 
 		// 清理: 打开右键菜单栏事件
-		tableWarp.unbind('contextmenu');
+        $tableWarp.unbind('contextmenu');
 
 		// 清理：上一页、下一页、重新加载
 		jTool('[grid-action="refresh-page"]').unbind('click');
@@ -281,12 +307,11 @@ class Menu {
 		// 清理：配置表
 		jTool('[grid-action="config-grid"]').unbind('click');
 
-
 		// 清理：隐藏非当前展示表格的菜单项
-		_body.off(closeEvent);
+        $body.off(closeEvent);
 
 		// 删除DOM节点
-		menuDOM.remove();
+        $menu.remove();
 	}
 }
 export default new Menu();

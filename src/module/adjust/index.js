@@ -175,9 +175,16 @@ class Adjust {
 
     /**
      * 消毁
-     * @param $table
+     * @param gridManagerName
      */
-    destroy($table) {
+    destroy(gridManagerName) {
+        const $table = base.getTable(gridManagerName);
+
+        // table 已被消毁
+        if (!$table.length) {
+            return;
+        }
+
         // 清理: 鼠标放开、移出事件
         $table.unbind('mouseup mouseleave');
 

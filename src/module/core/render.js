@@ -24,7 +24,7 @@ class Render {
     @parseTpl(wrapTpl)
     createWrapTpl(params) {
         const settings = params.settings;
-        const { skinClassName, isIconFollowText, disableBorder, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
+        const { gridManagerName, skinClassName, isIconFollowText, disableBorder, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
         const wrapClassList = [];
         // 根据参数增加皮肤标识
         if (skinClassName && typeof skinClassName === 'string' && skinClassName.trim()) {
@@ -42,8 +42,9 @@ class Render {
         }
 
         return {
+            gridManagerName: gridManagerName,
             classNames: wrapClassList.join(' '),
-            configTpl: supportConfig ? config.createHtml({configInfo}) : '',
+            configTpl: supportConfig ? config.createHtml({gridManagerName, configInfo}) : '',
             ajaxPageTpl: supportAjaxPage ? ajaxPage.createHtml({settings, tpl: ajaxPageTemplate}) : ''
         };
     }

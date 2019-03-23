@@ -238,13 +238,13 @@ class Drag {
 
 	/**
 	 * 消毁
-	 * @param $table
+	 * @param gridManagerName
 	 */
-	destroy($table) {
-		const $body = jTool('body');
+	destroy(gridManagerName) {
 		// 清理: 拖拽换位事件
-		$table.off('mousedown', '.drag-action');
+		base.getTable(gridManagerName).off('mousedown', '.drag-action');
 
+        const $body = jTool('body');
 		// 清理: 拖拽滑动事件
 		$body.unbind('mousemove');
 

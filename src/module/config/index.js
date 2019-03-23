@@ -24,12 +24,9 @@ class Config {
 
         const configArea = jTool('.config-area', $table.closest('div.table-wrap'));
 
-        // 关闭设置事件源
-        const configAction = jTool('.config-action', configArea);
-
         // 事件: 关闭
-        configAction.unbind('click');
-        configAction.bind('click', function () {
+        configArea.off('click', '.config-action');
+        configArea.on('click', '.config-action', function () {
             // 展示事件源
             const _configAction = jTool(this);
 
@@ -128,6 +125,7 @@ class Config {
 	@parseTpl(configTpl)
 	createHtml(params) {
 	    return {
+            gridManagerName: params.gridManagerName,
             configInfo: params.configInfo
 	    };
 	}
@@ -256,20 +254,22 @@ class Config {
 
     /**
 	 * 消毁
-	 * @param $table
+	 * @param gridManagerName
 	 */
-	destroy($table) {
-		const tableWarp = $table.closest('div.table-wrap');
-		const configAction = jTool('.config-action', tableWarp);
-
-		// 清理: 配置列表事件 - 打开或关闭
-		configAction.unbind('click');
-
-		// 清理: 配置列表事件 - 配置
-		jTool('.config-list li', tableWarp).unbind('click');
-
+	destroy(gridManagerName) {
 		// 清除body上的关闭事件
         jTool('body').unbind(closeEvent);
+        const configArea = jTool(`.config-area[config-key="${gridManagerName}"]`);
+
+        if (!configArea.length) {
+            return;
+        }
+
+        // 清理: 配置区域关闭事件
+        configArea.off('click', '.config-action');
+
+        // 清理: 配置列表事件 - 配置
+        configArea.off('click', '.config-list li');
 	}
 }
 export default new Config();

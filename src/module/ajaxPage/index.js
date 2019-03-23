@@ -57,6 +57,7 @@ class AjaxPage {
     createHtml(params) {
         const { settings } = params;
         return {
+            gridManagerName: settings.gridManagerName,
             refreshActionText: i18n.i18nText(settings, 'refresh-action'),
             gotoFirstText: i18n.i18nText(settings, 'goto-first-text'),
             gotoLastText: i18n.i18nText(settings, 'goto-last-text'),
@@ -603,11 +604,15 @@ class AjaxPage {
 
 	/**
 	 * 消毁
-	 * @param $table
+	 * @param gridManagerName
 	 */
-	destroy($table) {
-		const $tableWarp = $table.closest('.table-wrap');
-		const $footerToolbar = jTool('.footer-toolbar', $tableWarp);
+	destroy(gridManagerName) {
+		const $footerToolbar = jTool(`.footer-toolbar[toolbar-key="${gridManagerName}"]`);
+
+		// 分页dom已被消毁
+		if (!$footerToolbar.length) {
+		    return;
+        }
 
 		// 清理: 快捷跳转事件
         jTool('.gp-input', $footerToolbar).unbind('keyup');

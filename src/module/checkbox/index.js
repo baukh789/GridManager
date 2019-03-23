@@ -268,10 +268,17 @@ class Checkbox {
 
 	/**
 	 * 消毁
-	 * @param $table
+	 * @param gridManagerName
 	 */
-	destroy($table) {
-		// 清理: 选择框事件
+	destroy(gridManagerName) {
+        const $table = base.getTable(gridManagerName);
+
+        // table 已被消毁
+        if (!$table.length) {
+            return;
+        }
+
+        // 清理: 选择框事件
 		$table.off('click', 'th[gm-checkbox="true"] input[type="checkbox"]');
 		$table.off('click', 'td[gm-checkbox="true"] input[type="checkbox"]');
 	}
