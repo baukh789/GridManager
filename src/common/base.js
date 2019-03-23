@@ -315,10 +315,11 @@ class Base {
      * 获取数据为空时的html
      * @param visibleNum: 可视状态TH的数据
      * @param emptyTemplate: 自定义的为空显示模版
+     * @param style: 模版自定义样式
      * @returns {string}
      */
-    getEmptyHtml(visibleNum, emptyTemplate) {
-        return `<tr emptyTemplate>
+    getEmptyHtml(visibleNum, emptyTemplate, style) {
+        return `<tr emptyTemplate style="${style}">
 					<td colspan="${visibleNum}">
 					${emptyTemplate}
 					</td>

@@ -651,7 +651,7 @@ describe('base.getThName($th)', () => {
     });
 });
 
-describe('base.getEmptyHtml(visibleNum, emptyTemplate)', () => {
+describe('base.getEmptyHtml(visibleNum, emptyTemplate, style)', () => {
     let tpl = null;
     beforeEach(() =>{
     });
@@ -663,25 +663,25 @@ describe('base.getEmptyHtml(visibleNum, emptyTemplate)', () => {
 
     it('基础验证', () => {
         expect(base.getEmptyHtml).toBeDefined();
-        expect(base.getEmptyHtml.length).toBe(2);
+        expect(base.getEmptyHtml.length).toBe(3);
     });
 
     it('返回值验证', () => {
-        tpl = `<tr emptyTemplate>
+        tpl = `<tr emptyTemplate style="height: 100px;">
 					<td colspan="5">
 					无内容
 					</td>
 				</tr>`;
-        expect(base.getEmptyHtml(5, '无内容').replace(/\s/, '')).toBe(tpl.replace(/\s/, ''));
+        expect(base.getEmptyHtml(5, '无内容', 'height: 100px;').replace(/\s/, '')).toBe(tpl.replace(/\s/, ''));
     });
 });
 
 describe('base.updateEmptyCol($table)', () => {
     let $table = null;
-    beforeEach(() =>{
+    beforeEach(() => {
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         $table = null;
     });
