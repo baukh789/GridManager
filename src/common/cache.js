@@ -207,6 +207,11 @@ class Cache {
      * @returns {*} 成功则返回本地存储数据,失败则返回空对象
      */
     getUserMemory($table) {
+        // todo @baukh20190324: 临时处理，待传参全部替换为gridManangerName后移除
+        if (typeof $table === 'string') {
+            $table = base.getTable($table);
+        }
+
         if (!$table || $table.length === 0) {
             return {};
         }

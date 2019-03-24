@@ -20,18 +20,26 @@ import { parseTpl } from '@common/parse';
 import core from '../core';
 import i18n from '../i18n';
 import ajaxPageTpl from './ajax-page.tpl.html';
+import getAjaxEvent from './event';
 class AjaxPage {
-	/**
+    eventMap = {};
+    // 唯一标识名
+    get keyName() {
+        return 'toolbar-key';
+    }
+
+    /**
 	 * 初始化分页
-	 * @param $table
+	 * @param gridManagerName
      */
-	init($table) {
-        const settings = cache.getSettings($table);
-        const $tableWarp = $table.closest('.table-wrap');
+	init(gridManagerName) {
+        const settings = cache.getSettings(gridManagerName);
+	    this.$body = jTool('body');
+        this.eventMap[gridManagerName] = getAjaxEvent(gridManagerName, this.getQuerySelector(gridManagerName));
 
 		// 根据本地缓存配置每页显示条数
 		if (!settings.disableCache) {
-			this.__configPageForCache($table, settings);
+			this.__configPageForCache(settings);
 		} else {
             const pageData = {
                 [settings.pageSizeKey]: settings.pageSize || 10,
@@ -41,12 +49,18 @@ class AjaxPage {
             cache.setSettings(settings);
         }
 
-		// 绑定页面跳转事件
-		this.__bindPageJumpEvent($table, $tableWarp);
-
-		// 绑定设置显示条数切换事件
-		this.__bindSetPageSizeEvent($table, $tableWarp);
+		// 绑定事件
+		this.__bindPageEvent(gridManagerName);
 	}
+
+    /**
+     * 获取指定key的menu选择器
+     * @param gridManagerName
+     * @returns {string}
+     */
+    getQuerySelector(gridManagerName) {
+        return `.footer-toolbar[${this.keyName}="${gridManagerName}"]`;
+    }
 
     /**
      * 分页所需HTML
@@ -58,6 +72,7 @@ class AjaxPage {
         const { settings } = params;
         return {
             gridManagerName: settings.gridManagerName,
+            keyName: this.keyName,
             refreshActionText: i18n.i18nText(settings, 'refresh-action'),
             gotoFirstText: i18n.i18nText(settings, 'goto-first-text'),
             gotoLastText: i18n.i18nText(settings, 'goto-last-text'),
@@ -140,11 +155,10 @@ class AjaxPage {
 
 	/**
 	 * 跳转至指定页
-	 * @param $table
 	 * @param settings
 	 * @param toPage 跳转页
 	 */
-	gotoPage($table, settings, toPage) {
+	gotoPage(settings, toPage) {
 		if (!toPage || toPage < 1) {
 			toPage = 1;
 		}
@@ -164,7 +178,7 @@ class AjaxPage {
 		// 调用事件、渲染DOM
 		const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
 		settings.pagingBefore(query);
-		core.refresh($table, () => {
+		core.refresh(base.getTable(settings.gridManagerName), () => {
 			settings.pagingAfter(query);
 		});
 	}
@@ -267,21 +281,6 @@ class AjaxPage {
 		return pageSizeOptionStr;
 	}
 
-	/**
-	 * 绑定页面跳转事件
-	 * @param $table
-	 * @param $tableWarp
-	 * @private
-     */
-	__bindPageJumpEvent($table, $tableWarp) {
-		// 分页工具条
-		const $footerToolbar = jTool('.footer-toolbar', $tableWarp);
-
-		this.__bindPageClick($table, $footerToolbar);
-		this.__bindInputEvent($table, $footerToolbar);
-		this.__bindRefreshEvent($table, $footerToolbar);
-	}
-
     /**
      * 更新分页禁用状态
      * @param $footerToolbar
@@ -318,140 +317,91 @@ class AjaxPage {
 
 	/**
 	 * 绑定分页点击事件
-	 * @param $table
-	 * @param $footerToolbar
+	 * @param gridManagerName
 	 * @private
      */
-	__bindPageClick($table, $footerToolbar) {
+    __bindPageEvent(gridManagerName) {
 		const _this = this;
-		const key = base.getKey($table);
 
 		// 事件: 首页
-        const $firstPage = jTool('[pagination-before] .first-page', $footerToolbar);
-        if ($firstPage.length) {
-            $firstPage.bind('click', () => {
-                _this.gotoPage($table, cache.getSettings(key), 1);
-            });
-        }
+        const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage, changePageSize } = this.eventMap[gridManagerName];
+        this.$body.on(firstPage.eventName, firstPage.eventQuerySelector, function () {
+            _this.gotoPage(cache.getSettings(gridManagerName), 1);
+        });
 
         // 事件: 上一页
-        const $previousPage = jTool('[pagination-before] .previous-page', $footerToolbar);
-        if ($previousPage.length) {
-            $previousPage.bind('click', () => {
-                const settings = cache.getSettings(key);
-                const cPage = settings.pageData[settings.currentPageKey];
-                const toPage = cPage - 1;
-                _this.gotoPage($table, settings, toPage < 1 ? 1 : toPage);
-            });
-        }
+        this.$body.on(previousPage.eventName, previousPage.eventQuerySelector, function () {
+            const settings = cache.getSettings(gridManagerName);
+            const cPage = settings.pageData[settings.currentPageKey];
+            const toPage = cPage - 1;
+            _this.gotoPage(settings, toPage < 1 ? 1 : toPage);
+        });
 
         // 事件: 下一页
-        const $nextPage = jTool('[pagination-after] .next-page', $footerToolbar);
-        if ($nextPage.length) {
-            $nextPage.bind('click', () => {
-                const settings = cache.getSettings(key);
-                const cPage = settings.pageData[settings.currentPageKey];
-                const tPage = settings.pageData.tPage;
-                const toPage = cPage + 1;
-                _this.gotoPage($table, settings, toPage > tPage ? tPage : toPage);
-            });
-        }
+        this.$body.on(nextPage.eventName, nextPage.eventQuerySelector, function () {
+            const settings = cache.getSettings(gridManagerName);
+            const cPage = settings.pageData[settings.currentPageKey];
+            const tPage = settings.pageData.tPage;
+            const toPage = cPage + 1;
+            _this.gotoPage(settings, toPage > tPage ? tPage : toPage);
+        });
 
         // 事件: 尾页
-        const $lastPage = jTool('[pagination-after] .last-page', $footerToolbar);
-        if ($lastPage.length) {
-            $lastPage.bind('click', () => {
-                const settings = cache.getSettings(key);
-                _this.gotoPage($table, settings, settings.pageData.tPage);
-            });
-        }
+        this.$body.on(lastPage.eventName, lastPage.eventQuerySelector, function () {
+            const settings = cache.getSettings(gridManagerName);
+            _this.gotoPage(settings, settings.pageData.tPage);
+        });
 
         // 事件: 页码
-        const $paginationNumber = jTool('[pagination-number]', $footerToolbar);
-        if ($paginationNumber.length) {
-            $paginationNumber.on('click', 'li', function () {
-                const settings = cache.getSettings(key);
-                const pageAction = jTool(this);
+        this.$body.on(numberPage.eventName, numberPage.eventQuerySelector, function () {
+            const settings = cache.getSettings(gridManagerName);
+            const pageAction = jTool(this);
 
-                // 分页页码
-                let toPage = pageAction.attr('to-page');
-                if (!toPage || !Number(toPage) || pageAction.hasClass('disabled')) {
-                    base.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
-                    return false;
-                }
-                toPage = window.parseInt(toPage);
-                _this.gotoPage($table, settings, toPage);
+            // 分页页码
+            let toPage = pageAction.attr('to-page');
+            if (!toPage || !Number(toPage) || pageAction.hasClass('disabled')) {
+                base.outLog('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在', 'info');
+                return false;
+            }
+            toPage = window.parseInt(toPage);
+            _this.gotoPage(settings, toPage);
+        });
+
+        // 事件: 刷新
+        this.$body.on(refresh.eventName, refresh.eventQuerySelector, function () {
+            core.refresh(base.getTable(gridManagerName));
+        });
+
+        // 事件: 快捷跳转
+        this.$body.on(gotoPage.eventName, gotoPage.eventQuerySelector, function (event) {
+            if (event.which !== 13) {
+                return;
+            }
+            let _cPage = parseInt(this.value, 10);
+            _this.gotoPage(cache.getSettings(gridManagerName), _cPage);
+        });
+
+        // 事件: 切换每页显示条数
+        this.$body.on(changePageSize.eventName, changePageSize.eventQuerySelector, function (event) {
+            const _size = jTool(event.target);
+            const settings = cache.getSettings(gridManagerName);
+            settings.pageData = {};
+            settings.pageData[settings.currentPageKey] = 1;
+            settings.pageData[settings.pageSizeKey] = window.parseInt(_size.val());
+
+            const $table = base.getTable(gridManagerName);
+            cache.saveUserMemory($table, settings);
+
+            // 更新缓存
+            cache.setSettings(settings);
+
+            // 调用事件、渲染tbody
+            const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
+            settings.pagingBefore(query);
+            core.refresh($table, () => {
+                settings.pagingAfter(query);
             });
-        }
-	}
-
-	/**
-	 * 绑定快捷跳转事件
-	 * @param $table
-	 * @param $footerToolbar
-	 * @private
-     */
-	__bindInputEvent($table, $footerToolbar) {
-		const _this = this;
-        $footerToolbar.off('keyup', '.gp-input');
-        $footerToolbar.on('keyup', '.gp-input', function (event) {
-			if (event.which !== 13) {
-				return;
-			}
-			let _cPage = parseInt(this.value, 10);
-			_this.gotoPage($table, cache.getSettings(base.getKey($table)), _cPage);
-		});
-	}
-
-	/**
-	 * 绑定刷新界面事件
-	 * @param $table
-	 * @param $footerToolbar
-	 * @private
-     */
-	__bindRefreshEvent($table, $footerToolbar) {
-		const refreshAction	= jTool('.refresh-action', $footerToolbar);
-
-		refreshAction.unbind('click');
-		refreshAction.bind('click', () => {
-			core.refresh($table);
-		});
-	}
-
-	/**
-	 * 绑定设置当前页显示数事件
-	 * @param $table
-	 * @param $tableWarp
-	 * @private
-     */
-	__bindSetPageSizeEvent($table, $tableWarp) {
-		// 切换条数区域
-		const $sizeArea = jTool('select[name=pSizeArea]', jTool('.footer-toolbar', $tableWarp));
-
-		// 未找到单页显示数切换区域，停止该事件绑定
-		if (!$sizeArea || $sizeArea.length === 0) {
-			return false;
-		}
-        $sizeArea.unbind('change');
-        $sizeArea.bind('change', event => {
-			const _size = jTool(event.target);
-			const settings = cache.getSettings($table);
-			settings.pageData = {};
-			settings.pageData[settings.currentPageKey] = 1;
-			settings.pageData[settings.pageSizeKey] = window.parseInt(_size.val());
-
-			cache.saveUserMemory($table, settings);
-
-			// 更新缓存
-			cache.setSettings(settings);
-
-			// 调用事件、渲染tbody
-			const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
-			settings.pagingBefore(query);
-			core.refresh($table, () => {
-				settings.pagingAfter(query);
-			});
-		});
+        });
 	}
 
 	/**
@@ -578,13 +528,12 @@ class AjaxPage {
 
 	/**
 	 * 根据本地缓存配置分页数据
-	 * @param $table
 	 * @param settings
 	 * @private
      */
-	__configPageForCache($table, settings) {
+	__configPageForCache(settings) {
 		// 缓存对应
-		let	userMemory = cache.getUserMemory($table);
+		let	userMemory = cache.getUserMemory(settings.gridManagerName);
 
 		// 每页显示条数
 		let	_pSize = null;
@@ -607,36 +556,7 @@ class AjaxPage {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-		const $footerToolbar = jTool(`.footer-toolbar[toolbar-key="${gridManagerName}"]`);
-
-		// 分页dom已被消毁
-		if (!$footerToolbar.length) {
-		    return;
-        }
-
-		// 清理: 快捷跳转事件
-        jTool('.gp-input', $footerToolbar).unbind('keyup');
-
-		// 清理: 刷新界面事件
-        jTool('.refresh-action', $footerToolbar).unbind('click');
-
-		// 清理: 设置当前页显示数事件
-        jTool('select[name=pSizeArea]', $footerToolbar).unbind('change');
-
-		// 清理: 首页事件
-        jTool('[pagination-before] .first-page', $footerToolbar).unbind('click');
-
-        // 清理: 上一页事件
-        jTool('[pagination-before] .previous-page', $footerToolbar).unbind('click');
-
-        // 清理: 下一页事件
-        jTool('[pagination-after] .next-page', $footerToolbar).unbind('click');
-
-        // 清理: 尾页事件
-        jTool('[pagination-after] .last-page', $footerToolbar).unbind('click');
-
-        // 清理: 页码事件
-        jTool('[pagination-number]', $footerToolbar).off('click', 'li');
+        base.clearBodyEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new AjaxPage();

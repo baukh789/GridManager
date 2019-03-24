@@ -253,6 +253,7 @@ const demo1 = {
             // firstLoading: false,
             // useNoTotalsMode: true,
             supportAjaxPage: true,
+            // disableLine: true,
             // isCombSorting: true,
             // mergeSort: true,
             isIconFollowText: true,

@@ -1,6 +1,6 @@
 {
     "name": "gridmanager",
-    "version": "2.7.6",
+    "version": "2.7.8",
     "description": "表格管理插件",
     "author": "baukh",
     "main": "js/gm.js",
@@ -30,6 +30,7 @@
     "devDependencies": {
         "@babel/cli": "^7.0.0",
         "@babel/core": "^7.1.6",
+        "@babel/runtime": "^7.3.1",
         "@babel/plugin-proposal-class-properties": "^7.1.0",
         "@babel/plugin-proposal-decorators": "^7.2.2",
         "@babel/plugin-transform-runtime": "^7.2.0",
@@ -76,14 +77,11 @@
         "uglifyjs-webpack-plugin": "^2.1.1",
         "url-loader": "^1.1.2",
         "watchify": "^3.7.0",
+        "jtool": "^1.2.29",
         "webpack": "^4.29.0",
         "webpack-bundle-analyzer": "^3.0.3",
         "webpack-cli": "^3.2.1",
         "webpack-dev-middleware": "^3.5.1",
         "webpack-hot-middleware": "^2.24.3"
-    },
-    "dependencies": {
-        "@babel/runtime": "^7.3.1",
-        "jtool": "^1.2.29"
     }
 }

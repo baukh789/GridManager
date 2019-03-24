@@ -14,14 +14,17 @@ import menuTpl from './menu.tpl.html';
 import ajaxPageTpl from './ajaxPage.tpl.html';
 import configTpl from './config.tpl.html';
 import exportTpl from './export.tpl.html';
+import getMenuEvent from './event';
 
 // 在body上绑定的关闭事件名
 const closeEvent = 'mousedown.gridMenu';
 class Menu {
-    // 事件map
-    eventMap = {
-        close: 'mousedown'
-    };
+    eventMap = {};
+
+    // 唯一标识名
+    get keyName() {
+        return 'grid-master';
+    }
 
     /**
      * 初始化
@@ -29,9 +32,12 @@ class Menu {
      */
     init($table) {
         const settings = cache.getSettings($table);
+        const gridManagerName = settings.gridManagerName;
+        this.$body = jTool('body');
+        this.eventMap[gridManagerName] = getMenuEvent(gridManagerName, this.getQuerySelector(gridManagerName));
 
         // 创建menu DOM
-        const $menu = jTool(this.getQuerySelector(settings.gridManagerName));
+        const $menu = jTool(this.getQuerySelector(gridManagerName));
         if($menu.length === 0) {
             jTool('body').append(this.createMenuHtml({settings}));
         }
@@ -39,11 +45,6 @@ class Menu {
         // 绑定右键菜单事件
         this.bindRightMenuEvent($table, settings);
     }
-
-    // 唯一标识名
-	get keyName() {
-		return 'grid-master';
-	}
 
     /**
      * 获取指定key的menu选择器
@@ -129,12 +130,11 @@ class Menu {
 
 		const gridManagerName = settings.gridManagerName;
 		const $menu = this.getMenuByJtool(gridManagerName);
-		// const menuQuerySelector = `.grid-menu[${_this.keyName}="${gridManagerName}"]`;
-		const $body = jTool('body');
 
+		const { openMenu, closeMenu, refresh, exportExcel, openConfig } = this.eventMap[gridManagerName];
 		// 绑定打开右键菜单栏
-        $body.off('contextmenu', `.table-wrap[wrap-key="${gridManagerName}"]`);
-        $body.on('contextmenu', `.table-wrap[wrap-key="${gridManagerName}"]`, function (e) {
+        _this.$body.off(openMenu.eventName, openMenu.eventQuerySelector);
+        _this.$body.on(openMenu.eventName, openMenu.eventQuerySelector, function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -168,27 +168,27 @@ class Menu {
 			$menu.show();
 
 			// 点击空处关闭
-			$body.off(closeEvent);
-			$body.on(closeEvent, function (e) {
-				const eventSource = jTool(e.target);
+            _this.$body.off(closeMenu.eventName);
+            _this.$body.on(closeMenu.eventName, function (e) {
+                _this.$body.off(closeMenu.eventName);
+                const eventSource = jTool(e.target);
 				if (eventSource.hasClass('grid-menu') || eventSource.closest('.grid-menu').length === 1) {
 					return;
 				}
-				$body.off(closeEvent);
+                _this.$body.off(closeEvent);
 				$menu.hide();
 			});
 		});
 
-		// 绑定事件：上一页、下一页、重新加载
-        $body.off('click', `${this.getQuerySelector(gridManagerName)} [grid-action="refresh-page"]`);
-        $body.on('click', `${this.getQuerySelector(gridManagerName)}  [grid-action="refresh-page"]`, function (e) {
+        // 绑定事件：上一页、下一页、重新加载
+        _this.$body.off(refresh.eventName, refresh.eventQuerySelector);
+        _this.$body.on(refresh.eventName, refresh.eventQuerySelector, function (e) {
 			if (_this.isDisabled(this, e)) {
 				return false;
 			}
 			const _gridMenu = jTool(this).closest('.grid-menu');
-			const _table = base.getTable(_gridMenu.attr(_this.keyName));
 			const refreshType = this.getAttribute('refresh-type');
-			let _settings = cache.getSettings(_table);
+			let _settings = cache.getSettings(_gridMenu.attr(_this.keyName));
 			let cPage = _settings.pageData[_settings.currentPageKey];
 
 			// 上一页
@@ -202,16 +202,15 @@ class Menu {
 				cPage = cPage;
 			}
 
-			ajaxPage.gotoPage(_table, _settings, cPage);
-			$body.off(closeEvent);
+			ajaxPage.gotoPage(_settings, cPage);
+            _this.$body.off(closeEvent);
 			_gridMenu.hide();
 		});
 
 		// 绑定事件：另存为EXCEL、已选中表格另存为Excel
 		settings.supportExport && (() => {
-			const exportExcel = jTool('[grid-action="export-excel"]');
-			exportExcel.unbind('click');
-			exportExcel.bind('click', function (e) {
+            _this.$body.off(exportExcel.eventName, exportExcel.eventQuerySelector);
+            _this.$body.on(exportExcel.eventName, exportExcel.eventQuerySelector, function (e) {
 				if (_this.isDisabled(this, e)) {
 					return false;
 				}
@@ -222,22 +221,22 @@ class Menu {
 					onlyChecked = true;
 				}
                 exportFile.__exportGridToXls(_table, undefined, onlyChecked);
-				$body.off(closeEvent);
+                _this.$body.off(closeEvent);
 				_gridMenu.hide();
 			});
 		})();
 
-		// 绑定事件：配置表
+		// 绑定事件：打开配置区域
 		settings.supportConfig && (() => {
-			$menu.off('click', '[grid-action="config-grid"]');
-            $menu.on('click', '[grid-action="config-grid"]', function (e) {
+            _this.$body.off(openConfig.eventName, openConfig.eventQuerySelector);
+            _this.$body.on(openConfig.eventName, openConfig.eventQuerySelector, function (e) {
 				if (_this.isDisabled(this, e)) {
 					return false;
 				}
 				const _gridMenu = jTool(this).closest('.grid-menu');
 				const _table = base.getTable(_gridMenu.attr(_this.keyName));
 				config.toggle(_table);
-				$body.off(closeEvent);
+                _this.$body.off(closeEvent);
 				_gridMenu.hide();
 			});
 		})();
@@ -291,27 +290,11 @@ class Menu {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-		const $menu = jTool(`.grid-menu[${this.keyName}="${gridManagerName}"]`);
-        const $tableWarp = $menu.closest('.table-wrap');
-		const $body = jTool('body');
+	    // 清除事件
+        base.clearBodyEvent(this.eventMap[gridManagerName]);
 
-		// 清理: 打开右键菜单栏事件
-        $tableWarp.unbind('contextmenu');
-
-		// 清理：上一页、下一页、重新加载
-		jTool('[grid-action="refresh-page"]').unbind('click');
-
-		// 清理：另存为EXCEL、已选中表格另存为Excel
-		jTool('[grid-action="export-excel"]').unbind('click');
-
-		// 清理：配置表
-		jTool('[grid-action="config-grid"]').unbind('click');
-
-		// 清理：隐藏非当前展示表格的菜单项
-        $body.off(closeEvent);
-
-		// 删除DOM节点
-        $menu.remove();
+        // 删除DOM节点
+        jTool(`.grid-menu[${this.keyName}="${gridManagerName}"]`).remove();
 	}
 }
 export default new Menu();

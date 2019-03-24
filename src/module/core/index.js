@@ -150,10 +150,10 @@ class Core {
         let visibleNum = base.getVisibleTh($table).length;
         const $tbody = jTool('tbody', $table);
         const $tableDiv = $table.closest('.table-div');
-        $tbody.html(base.getEmptyHtml(visibleNum, settings.emptyTemplate));
-        const emptyDOM = $tbody.get(0).querySelector('tr[emptyTemplate]');
-        emptyDOM.style.height = $tableDiv.height() + 'px';
-        base.compileFramework(settings, {el: emptyDOM});
+        // height - 1的原因: 当设置disableLine=true时，会在高度正确的情况下出现y轴滚动条
+        const style = `height: ${$tableDiv.height() - 1}px;`;
+        $tbody.html(base.getEmptyHtml(visibleNum, settings.emptyTemplate, style));
+        base.compileFramework(settings, {el: $tbody.get(0).querySelector('tr[emptyTemplate]')});
     }
 
     /**

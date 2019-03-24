@@ -24,24 +24,24 @@ const config = {
 	},
 
 	// 配置模块如何解析
-	resolve:{
-		extensions: [".js"], // 当requrie的模块找不到时,添加这些后缀
+	resolve: {
+		extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
         alias: {
             '@common': path.join(__dirname, './src/common')
         }
 	},
 
 	// 文件导出的配置
-	output:{
-		path: buildPath ,
-		filename: "js/gm.js",
+	output: {
+		path: buildPath,
+		filename: 'js/gm.js',
 
         // 通过script标签引入时，由index.js中设置的window.GridManager将被覆盖为{default: {..gm object}}。原因是通过library设置所返回的值为{default: {..gm object}}
         // library: 'GridManager', // 引入后可以通过全局变量GridManager来使用
 
         // 允许与CommonJS，AMD和全局变量一起使用。
         // 如: `import gridManager from 'gridmanager';` `const gridManager = require('gridmanager').default;`
-        libraryTarget: "umd"
+        libraryTarget: 'umd'
 	},
 
     // 优化代码

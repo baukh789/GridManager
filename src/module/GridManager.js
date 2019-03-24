@@ -590,9 +590,10 @@ export default class GridManager {
         // 通过缓存配置成功后, 重置宽度调整事件源dom
         settings.supportAdjust ? adjust.resetAdjust($table) : '';
 
+        const gridManagerName = settings.gridManagerName;
         // init adjust
         if (settings.supportAdjust) {
-            adjust.init($table);
+            adjust.init(gridManagerName);
         }
 
         // init drag
@@ -632,7 +633,7 @@ export default class GridManager {
 
         // 初始化Ajax分页
         if (settings.supportAjaxPage) {
-            ajaxPage.init($table);
+            ajaxPage.init(gridManagerName);
         }
 
         // 更新fake header
@@ -676,13 +677,13 @@ export default class GridManager {
         // 清除各模块中的事件及部分DOM
         adjust.destroy(gridManagerName);
         ajaxPage.destroy(gridManagerName);
-        checkbox.destroy(gridManagerName);
-        config.destroy(gridManagerName);
-        drag.destroy(gridManagerName);
+        // checkbox.destroy(gridManagerName);
+        // config.destroy(gridManagerName);
+        // drag.destroy(gridManagerName);
         menu.destroy(gridManagerName);
-        remind.destroy($table);
-        scroll.destroy($table);
-        sort.destroy($table);
+        // remind.destroy($table);
+        // scroll.destroy($table);
+        // sort.destroy($table);
 
         try {
             const $table = __jTable(table);

@@ -6,8 +6,10 @@ import './style.less';
 import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
+import getAdjustEvent from './event';
 
 class Adjust {
+    eventMap = {};
     /**
      * 宽度调整HTML
      * @returns {string}
@@ -23,13 +25,16 @@ class Adjust {
     /**
      * init
      * 绑定宽度调整事件
-     * @param: table [jTool object]
+     * @param: gridManagerName
      */
-    init($table) {
+    init(gridManagerName) {
         const _this = this;
         // 监听鼠标调整列宽度
-        $table.off('mousedown', '.adjust-action');
-        $table.on('mousedown', '.adjust-action', function (event) {
+        this.$body = jTool('body');
+        this.eventMap[gridManagerName] = getAdjustEvent(gridManagerName, `table[${base.key}="${gridManagerName}"]`);
+
+        const {eventName, eventQuerySelector} = this.eventMap[gridManagerName].adjustStart;
+        this.$body.on(eventName, eventQuerySelector, function (event) {
             const _dragAction = jTool(this);
             // 事件源所在的th
             let $th = _dragAction.closest('th');
@@ -41,7 +46,7 @@ class Adjust {
             let	_$table = $tr.closest('table');
 
             // 当前存储属性
-            const { adjustBefore, isIconFollowText } = cache.getSettings(_$table);
+            const { adjustBefore, isIconFollowText, gridManagerName } = cache.getSettings(_$table);
 
             // 事件源同层级下的所有th
             let	_allTh = $tr.find('th[th-visible="visible"]');
@@ -63,7 +68,7 @@ class Adjust {
             base.updateInteractive(_$table, 'adjust');
 
             // 执行移动事件
-            _this.__runMoveEvent(_$table, $th, $nextTh, isIconFollowText);
+            _this.__runMoveEvent(gridManagerName, $th, $nextTh, isIconFollowText);
 
             // 绑定停止事件
             _this.__runStopEvent(_$table, $th, $td);
@@ -94,19 +99,21 @@ class Adjust {
 
     /**
      * 执行移动事件
-     * @param $table
+     * @param gridManagerName
      * @param $th
      * @param $nextTh
      * @param isIconFollowText: 表头的icon图标是否跟随文本
      * @private
      */
-    __runMoveEvent($table, $th, $nextTh, isIconFollowText) {
+    __runMoveEvent(gridManagerName, $th, $nextTh, isIconFollowText) {
         let _thWidth = null;
         let	_NextWidth = null;
         let _thMinWidth = base.getTextWidth($th, isIconFollowText);
         let	_NextThMinWidth = base.getTextWidth($nextTh, isIconFollowText);
-        $table.unbind('mousemove');
-        $table.bind('mousemove', event => {
+        const { eventName, eventQuerySelector } = this.eventMap[gridManagerName].adjusting;
+        this.$body.off(eventName, eventQuerySelector);
+        this.$body.on(eventName, eventQuerySelector, function (event) {
+            const $table = jTool(this);
             $table.addClass('no-select-text');
             _thWidth = event.clientX - $th.offset().left;
             _thWidth = Math.ceil(_thWidth);
@@ -152,6 +159,9 @@ class Adjust {
         $table.bind('mouseup mouseleave', event => {
             const settings = cache.getSettings($table);
             $table.unbind('mousemove mouseleave');
+            const { eventName, eventQuerySelector } = this.eventMap[settings.gridManagerName].adjusting;
+            const $body = jTool('body');
+            $body.off(eventName, eventQuerySelector);
 
             // 其它操作也在table以该事件进行绑定,所以通过class进行区别
             if ($th.hasClass(this.selectedClassName)) {
@@ -178,21 +188,7 @@ class Adjust {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        const $table = base.getTable(gridManagerName);
-
-        // table 已被消毁
-        if (!$table.length) {
-            return;
-        }
-
-        // 清理: 鼠标放开、移出事件
-        $table.unbind('mouseup mouseleave');
-
-        // 清理: 移动事件
-        $table.unbind('mousemove');
-
-        // 清理: 宽度调整事件
-        $table.off('mousedown', '.adjust-action');
+        base.clearBodyEvent(this.eventMap[gridManagerName]);
     }
 }
 export default new Adjust();
