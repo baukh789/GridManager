@@ -28,11 +28,10 @@ class Menu {
 
     /**
      * 初始化
-     * @param $table
+     * @param gridManagerName
      */
-    init($table) {
-        const settings = cache.getSettings($table);
-        const gridManagerName = settings.gridManagerName;
+    init(gridManagerName) {
+        const settings = cache.getSettings(gridManagerName);
         this.$body = jTool('body');
         this.eventMap[gridManagerName] = getMenuEvent(gridManagerName, this.getQuerySelector(gridManagerName));
 
@@ -43,7 +42,7 @@ class Menu {
         }
 
         // 绑定右键菜单事件
-        this.bindRightMenuEvent($table, settings);
+        this.bindRightMenuEvent(gridManagerName, settings);
     }
 
     /**
@@ -122,13 +121,12 @@ class Menu {
 
 	/**
 	 * 绑定右键菜单事件
-	 * @param $table
+	 * @param gridManagerName
+	 * @param settings
      */
-	bindRightMenuEvent($table, settings) {
+	bindRightMenuEvent(gridManagerName, settings) {
 		const _this = this;
-		const tableWarp = $table.closest('.table-wrap');
 
-		const gridManagerName = settings.gridManagerName;
 		const $menu = this.getMenuByJtool(gridManagerName);
 
 		const { openMenu, closeMenu, refresh, exportExcel, openConfig } = this.eventMap[gridManagerName];
@@ -159,8 +157,8 @@ class Menu {
 			const top = offsetHeight < e.clientY + menuHeight ? e.clientY - menuHeight : e.clientY;
 			const left = offsetWidth < e.clientX + menuWidth ? e.clientX - menuWidth : e.clientX;
 			$menu.css({
-				top: top + tableWarp.get(0).scrollTop + (document.body.scrollTop || document.documentElement.scrollTop),
-				left: left + tableWarp.get(0).scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft)
+				top: top + this.scrollTop + (document.body.scrollTop || document.documentElement.scrollTop),
+				left: left + this.scrollLeft + (document.body.scrollLeft || document.documentElement.scrollLeft)
 			});
 
 			// 隐藏非当前展示表格的菜单项

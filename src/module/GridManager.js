@@ -628,7 +628,7 @@ export default class GridManager {
 
         // 初始化右键菜单事件
         if (settings.supportMenu) {
-            menu.init($table);
+            menu.init(gridManagerName);
         }
 
         // 初始化Ajax分页
