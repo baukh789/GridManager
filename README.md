@@ -26,6 +26,19 @@
 npm install gridmanager --save
 ```
 
+## 引用
+### ES6+
+```
+import 'gridmanager/css/gm.css';
+import GridManager from 'gridmanager';
+```
+
+### ES5
+```
+<link rel="stylesheet" href="/node_modules/gridmanager/css/gm.css">
+<script src="/node_modules/gridmanager/js/gm.js"></script>
+```
+
 ## API
 - [API](http://gridmanager.lovejavascript.com/api/index.html)
 
