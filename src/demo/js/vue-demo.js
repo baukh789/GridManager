@@ -98,7 +98,7 @@ new window.Vue({
                 key: 'getRowData',
                 relyInit: true,
                 title: '获取指定tr所使用的数据',
-                code: 'this.$refs["grid"].$el.GM("getRowData", "pic");'
+                code: 'this.$refs["grid"].$el.GM("getRowData", document.querySelector("table[grid-manager=testVue] tbody tr"));'
             },
             updateRowData: {
                 key: 'updateRowData',

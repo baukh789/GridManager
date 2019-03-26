@@ -54,7 +54,7 @@ const GM_PUBLISH_METHOD_MAP = {
         key: 'getRowData',
         relyInit: true,
         title: '获取指定tr所使用的数据',
-        code: `GridManager.getRowData('${gridManagerName}', 'pic');`
+        code: `GridManager.getRowData('${gridManagerName}', document.querySelector("table[grid-manager=${gridManagerName}] tbody tr"));`
     },
     updateRowData: {
         key: 'updateRowData',

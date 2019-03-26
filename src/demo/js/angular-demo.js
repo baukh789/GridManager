@@ -61,7 +61,7 @@ angular.module("myApp", ['gridManager'])
             key: 'getRowData',
             relyInit: true,
             title: '获取指定tr所使用的数据',
-            code: `$gridManager.getRowData('${$scope.gridManagerName}', 'pic');`
+            code: `$gridManager.getRowData('${$scope.gridManagerName}', document.querySelector("table[grid-manager=${$scope.gridManagerName}] tbody tr"));`
         },
         updateRowData: {
             key: 'updateRowData',
