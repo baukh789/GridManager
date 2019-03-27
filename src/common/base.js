@@ -238,6 +238,11 @@ class Base {
      * @returns {*}
      */
     getTh($table, thName) {
+        // todo 去dom
+        if (typeof $table === 'string') {
+            $table = this.getTable($table);
+        }
+
         // jTool object
         if (thName.jTool) {
             thName = this.getThName(thName);
@@ -250,8 +255,8 @@ class Base {
      * @param $table
      * @returns {*}
      */
-    getAllTh($table) {
-        return jTool(`thead[${this.tableHeadKey}] th`, $table);
+    getAllTh(gridManagerName) {
+        return jTool(`table[${this.key}=${gridManagerName}]thead[${this.tableHeadKey}] th`);
     }
 
     /**

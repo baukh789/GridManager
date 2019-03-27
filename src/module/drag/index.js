@@ -175,7 +175,7 @@ class Drag {
 				}
 
                 // 更新存储信息
-                cache.update($table, settings);
+                cache.update(settings);
 
 				// 重置调整宽度事件源
 				if (settings.supportAdjust) {

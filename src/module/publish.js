@@ -9,13 +9,13 @@ class PublishMethodClass {
     /**
      * 初始化方法
      * @param table
-     * @param settings
+     * @param arg
      * @param callback
      * @returns {*}
      */
-	init(table, settings, callback) {
+	init(table, arg, callback) {
 		const _GM = new GridManager();
-		return _GM.init(table, settings, callback);
+		return _GM.init(table, arg, callback);
 	}
 
 	/**

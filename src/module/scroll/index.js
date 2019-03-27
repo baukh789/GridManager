@@ -84,7 +84,7 @@ class Scroll {
             if (_bodyWidth !== oldBodyWidth) {
                 base.updateThWidth($table, settings);
                 oldBodyWidth = _bodyWidth;
-                cache.update($table, settings);
+                cache.update(settings);
             }
             base.updateScrollStatus($table);
 

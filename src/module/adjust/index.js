@@ -179,7 +179,7 @@ class Adjust {
             base.updateScrollStatus($table);
 
             // 更新存储信息
-            cache.update($table, settings);
+            cache.update(settings);
         });
     }
 

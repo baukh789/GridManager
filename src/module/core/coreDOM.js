@@ -129,7 +129,7 @@ class Dom {
 
         // add checkbox
         if (settings.supportCheckbox) {
-            const checkedData = cache.getCheckedData($table);
+            const checkedData = cache.getCheckedData(settings.gridManagerName);
             data = data.map(rowData => {
                 let checked = checkedData.some(item => {
                     let cloneRow = base.getDataForColumnMap(settings.columnMap, item);
@@ -139,11 +139,11 @@ class Dom {
                 rowData[checkbox.key] = checked || Boolean(rowData[checkbox.key]);
                 return rowData;
             });
-            cache.setCheckedData($table, data);
+            cache.setCheckedData(settings.gridManagerName, data);
         }
 
         // 存储表格数据
-        cache.setTableData($table, data);
+        cache.setTableData(settings.gridManagerName, data);
 
         // tbody dom
         const _tbody = jTool('tbody', $table).get(0);
@@ -230,8 +230,9 @@ class Dom {
     bindEvent($table) {
         jTool('[gm-click]', $table).unbind('click');
         jTool('[gm-click]', $table).bind('click', function () {
-            const row = cache.getRowData($table, this.parentNode.parentNode);
-            const scope = cache.getScope($table) || window;
+            const gridManagerName = $table.attr(base.key);
+            const row = cache.getRowData(gridManagerName, this.parentNode.parentNode);
+            const scope = cache.getScope(gridManagerName) || window;
             const fun = scope[this.getAttribute('gm-click')];
             typeof fun === 'function' && fun.call(scope, row);
         });

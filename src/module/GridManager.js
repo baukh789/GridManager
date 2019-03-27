@@ -56,7 +56,6 @@ const __jTable = table => {
 const isRendered = (table, fnName) => {
     const $table = __jTable(table);
     const settings = cache.getSettings($table);
-    console.log('settings.rendered', settings.rendered);
     if (!settings.rendered) {
         base.outLog(`${fnName}方法调用失败，请确认表格已经实例化`, 'error');
         return false;
@@ -106,10 +105,7 @@ export default class GridManager {
 	 */
 	static
 	get(table) {
-	    if (!isRendered(table, 'get')) {
-	        return;
-        }
-        return cache.getSettings(table);
+        return cache.getSettings(__jTable(table));
 	}
 
     /**
@@ -133,7 +129,7 @@ export default class GridManager {
      */
     static
     setScope(table, scope) {
-        return cache.setScope(__jTable(table), scope);
+        return cache.setScope(__jTable(table).attr(base.key), scope);
     }
 
 	/**
@@ -148,7 +144,7 @@ export default class GridManager {
         if (!isRendered(table, 'getLocalStorage')) {
             return;
         }
-		return cache.getUserMemory(__jTable(table));
+		return cache.getUserMemory(__jTable(table).attr(base.key));
 	}
 
     /**
@@ -196,7 +192,7 @@ export default class GridManager {
         if (!isRendered(table, 'getRowData')) {
             return;
         }
-		return cache.getRowData(__jTable(table), target);
+		return cache.getRowData(__jTable(table).attr(base.key), target);
 	}
 
 	/**
@@ -433,9 +429,9 @@ export default class GridManager {
         }
         const $table = __jTable(table);
         const checkedList = Array.isArray(checkedData) ? checkedData : [checkedData];
-        let tableData = cache.getTableData($table);
         const settings = cache.getSettings($table);
-        const { columnMap, isRadio } = settings;
+        const { columnMap, isRadio, gridManagerName } = settings;
+        let tableData = cache.getTableData(gridManagerName);
 
         tableData = tableData.map(rowData => {
             let checked = checkedList.some(item => {
@@ -446,9 +442,9 @@ export default class GridManager {
             rowData[checkbox.key] = checked;
             return rowData;
         });
-        cache.setTableData($table, tableData);
-        cache.setCheckedData($table, checkedList, true);
-        return checkbox.resetDOM($table, settings, tableData, isRadio);
+        cache.setTableData(gridManagerName, tableData);
+        cache.setCheckedData(gridManagerName, checkedList, true);
+        return checkbox.resetDOM(settings, tableData, isRadio);
     };
 
     /**
@@ -467,7 +463,7 @@ export default class GridManager {
         const $table = __jTable(table);
         const settings = cache.getSettings($table);
         const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
-        const tableData = cache.updateRowData($table, key, rowDataList);
+        const tableData = cache.updateRowData(settings.gridManagerName, key, rowDataList);
 
         // 更新DOM
         coreDOM.renderTableBody($table, settings, tableData);
@@ -539,7 +535,7 @@ export default class GridManager {
 		cache.cleanTableCacheForVersion();
 
 		// 初始化设置相关: 合并, 存储
-		let settings = cache.initSettings($table, arg, checkbox, order);
+		let settings = cache.initSettings(arg, checkbox, order);
 
 		// 校验: gridManagerName
 		if (settings.gridManagerName.trim() === '') {
@@ -561,7 +557,7 @@ export default class GridManager {
         // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
         if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
             window.setTimeout(() => {
-                cache.saveUserMemory($table, settings);
+                cache.saveUserMemory(settings);
                 $table.removeAttr('grid-manager-cache-error');
             }, 1000);
         }
@@ -603,7 +599,7 @@ export default class GridManager {
 
         // init checkbox
         if (settings.supportCheckbox) {
-            checkbox.init($table, settings.useRowCheck);
+            checkbox.init(gridManagerName, settings.useRowCheck);
         }
 
         // init sort

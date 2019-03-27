@@ -59,18 +59,19 @@ class Core {
      */
     cleanData($table) {
         const settings = cache.getSettings($table);
+        const gridManagerName = settings.gridManagerName;
         this.insertEmptyTemplate($table, settings);
-        cache.setTableData($table, []);
+        cache.setTableData(gridManagerName, []);
 
         // 渲染选择框
         if (settings.supportCheckbox) {
-            checkbox.resetDOM($table, settings, []);
+            checkbox.resetDOM(settings, []);
         }
 
         // 渲染分页
         if (settings.supportAjaxPage) {
             ajaxPage.resetPageData($table, settings, 0);
-            menu.updateMenuPageStatus(settings.gridManagerName, settings);
+            menu.updateMenuPageStatus(gridManagerName, settings);
         }
     }
 
@@ -122,7 +123,7 @@ class Core {
 
         // 渲染选择框
         if (settings.supportCheckbox) {
-            checkbox.resetDOM($table, settings, _data, settings.useRadio);
+            checkbox.resetDOM(settings, _data, settings.useRadio);
         }
 
         // 渲染分页
@@ -143,7 +144,7 @@ class Core {
     insertEmptyTemplate($table, settings, isInit) {
         // 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
         // 用于解决容器为不可见时，触发了setQuery的情况
-        if (isInit && cache.getTableData($table).length !== 0) {
+        if (isInit && cache.getTableData(settings.gridManagerName).length !== 0) {
             return;
         }
 

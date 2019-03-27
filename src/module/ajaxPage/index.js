@@ -150,7 +150,7 @@ class AjaxPage {
         if (checkedInfo.length === 0) {
             return;
         }
-        checkedInfo.html(i18n.i18nText(settings, 'checked-info', cache.getCheckedData($table).length));
+        checkedInfo.html(i18n.i18nText(settings, 'checked-info', cache.getCheckedData(settings.gridManagerName).length));
     }
 
 	/**
@@ -390,7 +390,7 @@ class AjaxPage {
             settings.pageData[settings.pageSizeKey] = window.parseInt(_size.val());
 
             const $table = base.getTable(gridManagerName);
-            cache.saveUserMemory($table, settings);
+            cache.saveUserMemory(settings);
 
             // 更新缓存
             cache.setSettings(settings);

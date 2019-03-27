@@ -105,7 +105,7 @@ class Config {
         base.updateThWidth($table, settings);
 
         // 更新存储信息
-        cache.update($table, settings);
+        cache.update(settings);
 
         // 处理置顶表头
         scroll.update($table);

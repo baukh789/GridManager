@@ -64,13 +64,13 @@ import { PublishMethod, publishMethodArray } from './publish';
             return PublishMethod[name](this, arg, callback, condition) || this;
         }
 
-		const gridManagerName = this.getAttribute(base.key);
+        const settings = GridManager.get(this);
         // init: 当前已经实例化
-        if (gridManagerName) {
-            base.outLog(`gridManagerName为${gridManagerName}的实例在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值`, 'warn');
+        if (settings.rendered) {
+            base.outLog(`gridManagerName为${settings.gridManagerName}的实例在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值`, 'warn');
 
             // 如果已经存在，则清除之前的数据。#001
-            PublishMethod.destroy(gridManagerName);
+            PublishMethod.destroy(settings.gridManagerName);
         }
 
         // init: 执行

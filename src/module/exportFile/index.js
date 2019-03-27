@@ -116,7 +116,7 @@ class ExportFile {
             return false;
         }
 
-        const selectedList = onlyChecked ? cache.getCheckedData($table) : undefined;
+        const selectedList = onlyChecked ? cache.getCheckedData(gridManagerName) : undefined;
 
         if (jTool.type(exportConfig.handler) !== 'function') {
             base.outLog('配置项exportAPI错误，该参数由一个返回promise的函数构成。', 'error');

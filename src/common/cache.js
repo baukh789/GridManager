@@ -20,41 +20,40 @@ class Cache {
 
     /**
      * 获取当前GM所在的域
-     * @param $table
+     * @param gridManagerName
      * @returns {*}
      */
-    getScope($table) {
-        return store.scope[base.getKey($table)];
+    getScope(gridManagerName) {
+        return store.scope[gridManagerName];
     }
 
     /**
      * 存储当前GM所在的域, 当前
-     * @param $table
+     * @param gridManagerName
      * @param scope
      */
-    setScope($table, scope) {
-        store.scope[base.getKey($table)] = scope;
+    setScope(gridManagerName, scope) {
+        store.scope[gridManagerName] = scope;
     }
 
     /**
      * 获取当前行使用的数据
-     * @param $table 当前操作的grid,由插件自动传入
+     * @param gridManagerName
      * @param target 将要获取数据所对应的tr[Element or NodeList]
      * @returns {*}
      */
-    getRowData($table, target) {
-        const gmName = base.getKey($table);
-        if (!store.responseData[gmName]) {
+    getRowData(gridManagerName, target) {
+        if (!store.responseData[gridManagerName]) {
             return;
         }
         // target type = Element 元素时, 返回单条数据对象;
         if (jTool.type(target) === 'element') {
-            return store.responseData[gmName][target.getAttribute('cache-key')];
+            return store.responseData[gridManagerName][target.getAttribute('cache-key')];
         } else if (jTool.type(target) === 'nodeList') {
             // target type =  NodeList 类型时, 返回数组
             let rodData = [];
             jTool.each(target, function (i, v) {
-                rodData.push(store.responseData[gmName][v.getAttribute('cache-key')]);
+                rodData.push(store.responseData[gridManagerName][v.getAttribute('cache-key')]);
             });
             return rodData;
         } else {
@@ -65,14 +64,13 @@ class Cache {
 
     /**
      * 更新列数据
-     * @param $table
+     * @param gridManagerName
      * @param key: 列数据的主键
      * @param rowDataList: 需要更新的数据列表
      * @returns tableData: 更新后的表格数据
      */
-    updateRowData($table, key, rowDataList) {
-        const tableData = this.getTableData($table);
-        const { supportCheckbox } = this.getSettings($table);
+    updateRowData(gridManagerName, key, rowDataList) {
+        const tableData = this.getTableData(gridManagerName);
         tableData.forEach(item => {
             rowDataList.forEach(newItem => {
                 if (newItem[key] === item[key]) {
@@ -81,37 +79,37 @@ class Cache {
             });
         });
         // 存储表格数据
-        this.setTableData($table, tableData);
+        this.setTableData(gridManagerName, tableData);
 
         // 更新选中数据
-        supportCheckbox && this.setCheckedData($table, tableData);
+        this.getSettings(gridManagerName).supportCheckbox && this.setCheckedData(gridManagerName, tableData);
         return tableData;
     }
 
     /**
      * 获取表格数据
-     * @param $table
+     * @param gridManagerName
      */
-    getTableData($table) {
-        return store.responseData[base.getKey($table)] || [];
+    getTableData(gridManagerName) {
+        return store.responseData[gridManagerName] || [];
     }
 
     /**
      * 存储表格数据
-     * @param $table
+     * @param gridManagerName
      * @param data
      */
-    setTableData($table, data) {
-        store.responseData[base.getKey($table)] = data;
+    setTableData(gridManagerName, data) {
+        store.responseData[gridManagerName] = data;
     }
 
     /**
      * 获取选中的数据
-     * @param $table
+     * @param gridManagerName
      * @returns {*|Array}
      */
-    getCheckedData($table) {
-        const checkedList = store.checkedData[base.getKey($table)] || [];
+    getCheckedData(gridManagerName) {
+        const checkedList = store.checkedData[gridManagerName] || [];
 
         // 返回clone后的数组，以防止在外部操作导致数据错误。
         return checkedList.map(item => jTool.extend(true, {}, item));
@@ -119,25 +117,24 @@ class Cache {
 
     /**
      * 设置选中的数据: 覆盖操作，会将原有的选中值清除
-     * @param $table
+     * @param gridManagerName
      * @param dataList: 数据列表， isClear===true时该项只能为选中的数据
      * @param isClear: 是否清空原有的选中项 (该参数不公开)
      */
-    setCheckedData($table, dataList, isClear) {
-        const gmName = base.getKey($table);
-        const { columnMap } = this.getSettings($table);
+    setCheckedData(gridManagerName, dataList, isClear) {
+        const { columnMap } = this.getSettings(gridManagerName);
 
         // 覆盖操作，清空原有的选中数据
         if (isClear) {
-            store.checkedData[gmName] = dataList.map(item => base.getDataForColumnMap(columnMap, item));
+            store.checkedData[gridManagerName] = dataList.map(item => base.getDataForColumnMap(columnMap, item));
             return;
         }
 
         // 合并操作，不清空原有的选中数据
-        if (!store.checkedData[gmName]) {
-            store.checkedData[gmName] = [];
+        if (!store.checkedData[gridManagerName]) {
+            store.checkedData[gridManagerName] = [];
         }
-        let tableCheckedList = store.checkedData[gmName];
+        let tableCheckedList = store.checkedData[gridManagerName];
 
         dataList.forEach(item => {
             let cloneObj = base.getDataForColumnMap(columnMap, item);
@@ -155,74 +152,63 @@ class Cache {
                 tableCheckedList.splice(index, 1);
             }
         });
-        store.checkedData[gmName] = tableCheckedList;
+        store.checkedData[gridManagerName] = tableCheckedList;
     }
 
     /**
      * 删除用户记忆
-     * @param $table
+     * @param gridManagerName
      * @param cleanText
      * @returns {boolean}
      */
-    delUserMemory($table, cleanText) {
+    delUserMemory(gridManagerName, cleanText) {
         // 如果未指定删除的table, 则全部清除
-        if (!$table || $table.length === 0) {
+        if (!gridManagerName) {
             window.localStorage.removeItem('GridManagerMemory');
             base.outLog(`用户记忆被全部清除: ${cleanText}`, 'warn');
             return true;
         }
 
-        // 指定table, 定点清除
-        const settings = this.getSettings($table);
-
         let GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
         if (!GridManagerMemory) {
-            base.outLog(`${settings.gridManagerName}: 当前无用户记忆`, 'warn');
+            base.outLog(`${gridManagerName}: 当前无用户记忆`, 'warn');
             return false;
         }
         GridManagerMemory = JSON.parse(GridManagerMemory);
 
         // 指定删除的table, 则定点清除
-        const _key = this.getMemoryKey(settings);
+        const _key = this.getMemoryKey(gridManagerName);
         delete GridManagerMemory[_key];
 
         // 清除后, 重新存储
         window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
-        base.outLog(`${settings.gridManagerName}用户记忆被清除: ${cleanText}`, 'warn');
+        base.outLog(`${gridManagerName}用户记忆被清除: ${cleanText}`, 'warn');
         return true;
     }
 
     /**
      * 获取表格的用户记忆标识码
-     * @param settings
+     * @param gridManagerName
      * @returns {*}
      */
-    getMemoryKey(settings) {
-        return window.location.pathname + window.location.hash + '-' + settings.gridManagerName;
+    getMemoryKey(gridManagerName) {
+        return window.location.pathname + window.location.hash + '-' + gridManagerName;
     }
 
     /**
      * 获取用户记忆
-     * @param $table
+     * @param gridManagerName
      * @returns {*} 成功则返回本地存储数据,失败则返回空对象
      */
-    getUserMemory($table) {
-        // todo @baukh20190324: 临时处理，待传参全部替换为gridManangerName后移除
-        if (typeof $table === 'string') {
-            $table = base.getTable($table);
-        }
-
-        if (!$table || $table.length === 0) {
-            return {};
-        }
-        const _key = this.getMemoryKey(this.getSettings($table));
+    getUserMemory(gridManagerName) {
+        const _key = this.getMemoryKey(gridManagerName);
         if (!_key) {
             return {};
         }
         let GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
         // 如无数据，增加属性标识：grid-manager-cache-error
         if (!GridManagerMemory || GridManagerMemory === '{}') {
-            $table.attr('grid-manager-cache-error', 'error');
+            base.getTable(gridManagerName).attr('grid-manager-cache-error', 'error');
             return {};
         }
         GridManagerMemory = JSON.parse(GridManagerMemory);
@@ -231,30 +217,30 @@ class Cache {
 
     /**
      * 存储用户记忆
-     * @param $table
      * @param settings
      * @returns {boolean}
      */
-    saveUserMemory($table, settings) {
+    saveUserMemory(settings) {
+        const { disableCache, gridManagerName, columnMap, supportAjaxPage, pageData, pageSizeKey } = settings;
         // 当前为禁用缓存模式，直接跳出
-        if (settings.disableCache) {
+        if (disableCache) {
             return false;
         }
 
         // jTool(`thead[${base.tableHeadKey}] th`, $table)
-        const thList = base.getAllTh($table);
-        if (!thList || thList.length === 0) {
+        const thList = base.getAllTh(gridManagerName);
+        if (!thList.length) {
             base.outLog('saveUserMemory:无效的thList,请检查是否正确配置table,thead,th', 'error');
             return false;
         }
 
         let _cache = {};
-        _cache.column = settings.columnMap;
+        _cache.column = columnMap;
 
         // 存储分页
-        if (settings.supportAjaxPage) {
+        if (supportAjaxPage) {
 	        const _pageCache = {};
-            _pageCache[settings.pageSizeKey] = settings.pageData[settings.pageSizeKey];
+            _pageCache[pageSizeKey] = pageData[pageSizeKey];
             _cache.page = _pageCache;
         }
 
@@ -268,19 +254,18 @@ class Cache {
         } else {
             GridManagerMemory = JSON.parse(GridManagerMemory);
         }
-        GridManagerMemory[this.getMemoryKey(settings)] = cacheString;
+        GridManagerMemory[this.getMemoryKey(gridManagerName)] = cacheString;
         window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
         return cacheString;
     }
 
     /**
      * 初始化设置相关: 合并, 存储
-     * @param $table
      * @param arg
      * @param checkbox
      * @param order
      */
-    initSettings($table, arg, checkbox, order) {
+    initSettings(arg, checkbox, order) {
         // 合并参数
         const _settings = new Settings();
         _settings.textConfig = new TextSettings();
@@ -340,7 +325,7 @@ class Cache {
                 return;
             }
 
-            const userMemory = this.getUserMemory($table);
+            const userMemory = this.getUserMemory(_settings.gridManagerName);
             const columnCache = userMemory.column || {};
             const columnCacheKeys = Object.keys(columnCache);
             const columnMapKeys = Object.keys(_settings.columnMap);
@@ -396,7 +381,7 @@ class Cache {
                 jTool.extend(true, _settings.columnMap, columnCache);
             } else {
                 // 清除用户记忆
-                this.delUserMemory($table, '存储记忆项与配置项[columnData]不匹配');
+                this.delUserMemory(_settings.gridManagerName, '存储记忆项与配置项[columnData]不匹配');
             }
         };
 
@@ -437,30 +422,27 @@ class Cache {
 
     /**
      * 更新Cache, 包含[更新表格列Map, 重置settings, 存储用户记忆]
-     * @param $table
      * @param settings
      */
-    update($table, settings) {
-        if (!settings) {
-            settings = this.getSettings($table);
-        }
+    update(settings) {
         // 更新表格列Map
-        settings.columnMap = this.reworkColumnMap($table, settings.columnMap);
+        settings.columnMap = this.reworkColumnMap(settings);
 
         // 重置settings
         this.setSettings(settings);
 
         // 存储用户记忆
-        this.saveUserMemory($table, settings);
+        this.saveUserMemory(settings);
     }
 
     /**
      * 将 columnMap 返厂回修, 并返回最新的值, 适用操作[宽度调整, 位置调整, 可视状态调整]
-     * @param $table
-     * @param columnMap
+     * @param settings
      * @returns {*}
      */
-    reworkColumnMap($table, columnMap) {
+    reworkColumnMap(settings) {
+        const { gridManagerName, columnMap } = settings;
+        const $table = base.getTable(gridManagerName);
         // columnMap 为无效数据, 跳出
         if (!columnMap || jTool.isEmptyObject(columnMap)) {
             base.outLog('columnMap 为无效数据', 'error');
@@ -483,8 +465,6 @@ class Cache {
 
     /**
      * 验证版本号,如果版本号变更清除用户记忆
-     * @param $table
-     * @param version 版本号
      */
     cleanTableCacheForVersion() {
         const cacheVersion = window.localStorage.getItem('GridManagerVersion');
