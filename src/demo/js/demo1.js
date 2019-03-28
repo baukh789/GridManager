@@ -313,9 +313,9 @@ const demo1 = {
                 console.log('ajax_complete');
             }
 
-            ,cellHover: function(row, rowIndex, colIndex) {
-                console.log(row, rowIndex, colIndex);
-            }
+            // ,cellHover: function(row, rowIndex, colIndex) {
+            //     console.log(row, rowIndex, colIndex);
+            // }
             ,columnData: [
                 {
                     key: 'pic',
