@@ -186,7 +186,7 @@ const demo1 = {
         const fnRunInfo = document.querySelector('.fn-run-info');
 
         // 渲染选择区域, instantiated: 是否已经实例化
-        const renderSelect = (instantiated) => {
+        const renderSelect = instantiated => {
             let liStr = '<option value="-1">请选择方法</option>';
             for (let key in GM_PUBLISH_METHOD_MAP) {
                 let fn = GM_PUBLISH_METHOD_MAP[key];
@@ -313,6 +313,9 @@ const demo1 = {
                 console.log('ajax_complete');
             }
 
+            ,cellHover: function(row, rowIndex, colIndex) {
+                console.log(row, rowIndex, colIndex);
+            }
             ,columnData: [
                 {
                     key: 'pic',
