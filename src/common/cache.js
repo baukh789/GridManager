@@ -395,21 +395,17 @@ class Cache {
 
     /**
      * 获取配置项
-     * @param $table
+     * @param gridManagerName
      * @returns {*}
      */
-    getSettings($table) {
-        if (typeof $table === 'string') {
-            // 返回的是 clone 对象 而非对象本身
-            return jTool.extend(true, {}, store.settings[$table] || {});
+    getSettings(gridManagerName) {
+        // 当前传入的为 $table
+        if (gridManagerName.jTool) {
+            gridManagerName = base.getKey(gridManagerName);
         }
 
-        // TODO @baukh20190122: 以下通过$table的方式正在用gridManagerName的方式替换，替换完成之后就可以清除了
-        if (!$table || $table.length === 0) {
-            return {};
-        }
         // 返回的是 clone 对象 而非对象本身
-        return jTool.extend(true, {}, store.settings[base.getKey($table)] || {});
+        return jTool.extend(true, {}, store.settings[gridManagerName] || {});
     }
 
     /**
@@ -442,7 +438,6 @@ class Cache {
      */
     reworkColumnMap(settings) {
         const { gridManagerName, columnMap } = settings;
-        const $table = base.getTable(gridManagerName);
         // columnMap 为无效数据, 跳出
         if (!columnMap || jTool.isEmptyObject(columnMap)) {
             base.outLog('columnMap 为无效数据', 'error');
@@ -450,7 +445,7 @@ class Cache {
         }
         let th = null;
         jTool.each(columnMap, (key, col) => {
-            th = base.getTh($table, col.key);
+            th = base.getTh(gridManagerName, col.key);
             // 宽度
             col.width = th.width() + 'px';
 

@@ -137,10 +137,10 @@ class Config {
      */
     @parseTpl(configColumnTpl)
     createColumn(params) {
-        const { $table, key, isShow } = params;
+        const { gridManagerName, key, isShow } = params;
 
         // 注意: 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
-        const label = base.getTh($table, key).find('.th-text').text();
+        const label = base.getTh(gridManagerName, key).find('.th-text').text();
         const checkboxTpl = checkbox.getCheckboxTpl({checked: isShow, label});
 	    return {
             key,
@@ -209,6 +209,7 @@ class Config {
         const $tableWrap = $table.closest('.table-wrap');
         const $configArea = jTool('.config-area', $tableWrap);
         const $configList = jTool('.config-list', $tableWrap);
+        const gridManagerName = base.getKey($table);
 
         // 可视列计数
         let showNum = 0;
@@ -225,7 +226,7 @@ class Config {
             if (disableCustomize) {
                 return;
             }
-            $configList.append(this.createColumn({ $table, key, isShow }));
+            $configList.append(this.createColumn({ gridManagerName, key, isShow }));
             if (isShow) {
                 showNum++;
             }

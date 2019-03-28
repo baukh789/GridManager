@@ -65,7 +65,7 @@ module.exports = () => {
                     loader: 'url-loader',
                     options: {
                         limit: 10000,
-                        mimetype: "application/font-woff"
+                        mimetype: 'application/font-woff'
                     }
                 }
             ]
@@ -76,7 +76,7 @@ module.exports = () => {
                     loader: 'url-loader',
                     options: {
                         limit: 10000,
-                        mimetype: "application/octet-stream"
+                        mimetype: 'application/octet-stream'
                     }
                 }
             ]
@@ -87,7 +87,7 @@ module.exports = () => {
                     loader: 'url-loader',
                     options: {
                         limit: 10000,
-                        mimetype: "application/font-otf"
+                        mimetype: 'application/font-otf'
                     }
                 }
             ]
@@ -95,7 +95,7 @@ module.exports = () => {
             test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
             use: [
                 {
-                    loader:"file-loader"
+                    loader: 'file-loader'
                 }
             ]
         }, {
@@ -104,7 +104,7 @@ module.exports = () => {
                 {
                     loader: 'file-loader',
                     options: {
-                        name: '[path][name]-[hash:8].[ext]',
+                        name: '[path][name]-[hash:8].[ext]'
                     }
                 }
             ]

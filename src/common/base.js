@@ -233,21 +233,16 @@ class Base {
 
     /**
      * get head th
-     * @param $table
+     * @param gridManagerName
      * @param thName: 1.thName 2.fake th
      * @returns {*}
      */
-    getTh($table, thName) {
-        // todo 去dom
-        if (typeof $table === 'string') {
-            $table = this.getTable($table);
-        }
-
+    getTh(gridManagerName, thName) {
         // jTool object
         if (thName.jTool) {
             thName = this.getThName(thName);
         }
-        return jTool(`thead[${this.tableHeadKey}] th[th-name="${thName}"]`, $table);
+        return jTool(`table[${this.key}="${gridManagerName}"] thead[${this.tableHeadKey}] th[th-name="${thName}"]`);
     }
 
     /**
@@ -256,7 +251,7 @@ class Base {
      * @returns {*}
      */
     getAllTh(gridManagerName) {
-        return jTool(`table[${this.key}=${gridManagerName}]thead[${this.tableHeadKey}] th`);
+        return jTool(`table[${this.key}="${gridManagerName}"] thead[${this.tableHeadKey}] th`);
     }
 
     /**
@@ -372,8 +367,9 @@ class Base {
      * @param isVisible: 是否可见
      */
     setAreVisible($table, thNameList, isVisible) {
+        const gridManagerName = this.getKey($table);
         jTool.each(thNameList, (i, thName) => {
-            const $th = this.getTh($table, thName);
+            const $th = this.getTh(gridManagerName, thName);
 
             // 可视状态值
             const visibleState = this.getVisibleState(isVisible);

@@ -20,7 +20,7 @@ describe('base 验证类的属性及方法总量', () => {
             return count;
         };
     });
-    afterEach(() =>{
+    afterEach(() => {
         getPropertyCount = null;
     });
     it('Function count', () => {
@@ -45,52 +45,49 @@ describe('base.SIV_waitTableAvailable', () => {
 
 describe('base.outLog(msg, type)', () => {
     let table = null;
-    let arg = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         // 存储console, 用于在测方式完成后原还console对象
         console._log = console.log;
-        console.log = jasmine.createSpy("log");
+        console.log = jasmine.createSpy('log');
 
         table = document.createElement('table');
         document.body.appendChild(table);
-        arg = null;
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         // 还原console
         console.log = console._log;
 
         document.body.innerHTML = '';
         table = null;
-        arg = null;
     });
 
-    it('基础验证', () =>{
+    it('基础验证', () => {
         expect(base.outLog).toBeDefined();
         expect(base.outLog.length).toBe(2);
     });
 
-    it('info', () =>{
+    it('info', () => {
         base.outLog('hello GridManager', 'info');
         expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c hello GridManager ', ...CONSOLE_STYLE.INFO);
     });
 
-    it('warn', () =>{
+    it('warn', () => {
         base.outLog('hello GridManager', 'warn');
         expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c hello GridManager ', ...CONSOLE_STYLE.WARN);
     });
 
-    it('error', () =>{
+    it('error', () => {
         base.outLog('hello GridManager', 'error');
         expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c hello GridManager ', ...CONSOLE_STYLE.ERROR);
     });
 
-    it('log', () =>{
+    it('log', () => {
         base.outLog('hello GridManager', 'log');
         expect(console.log).toHaveBeenCalledWith('%c GridManager Log %c hello GridManager ', ...CONSOLE_STYLE.LOG);
     });
 
-    it('undefined', () =>{
+    it('undefined', () => {
         base.outLog('hello GridManager');
         expect(console.log).toHaveBeenCalledWith('%c GridManager Log %c hello GridManager ', ...CONSOLE_STYLE.LOG);
     });
@@ -126,19 +123,19 @@ describe('base.getDataForColumnMap(columnMap, obj)', () => {
     it('返回值验证', () => {
         let columnMap = {
             info: {
-                key: "info",
-                text: "介绍",
+                key: 'info',
+                text: '介绍',
                 isShow: true
             },
             username: {
-                key: "username",
-                text: "作者",
+                key: 'username',
+                text: '作者',
                 isShow: true
             },
             gm_checkbox: {
-                key: "gm_checkbox",
+                key: 'gm_checkbox',
                 isAutoCreate: true,
-                text: "",
+                text: '',
                 isShow: true
             }
         };
@@ -169,8 +166,8 @@ describe('base.getObjectIndexToArray(arr, obj)', () => {
     });
 
     it('返回值验证', () => {
-        let arr = [{a:1, b:2}, {name:'baukh', age:31}, {name:'kouzi', age:28}];
-        let obj = {name:'baukh', age:31};
+        let arr = [{a: 1, b: 2}, {name: 'baukh', age: 31}, {name: 'kouzi', age: 28}];
+        let obj = {name: 'baukh', age: 31};
         expect(base.getObjectIndexToArray(arr, obj)).toBe(1);
     });
 });
@@ -180,7 +177,7 @@ describe('base.showLoading($table, loadingTemplate, cb)', () => {
     beforeEach(() => {
         $body = jTool('body');
     });
-    afterEach(() =>{
+    afterEach(() => {
         $body = null;
         document.body.innerHTML = '';
     });
@@ -224,7 +221,7 @@ describe('base.cloneObject(object)', () => {
         expect(base.cloneObject.length).toBe(1);
     });
 
-    it('执行结果', () =>{
+    it('执行结果', () => {
         let o1 = {name: 'cc', ename: 'baukh'};
         let o2 = o1;
         expect(o2 === o1).toBe(true);
@@ -239,12 +236,12 @@ describe('base.cloneObject(object)', () => {
 describe('base.compileFramework(settings, compileList)', () => {
     let settings = null;
     let compileList = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         console._log = console.log;
-        console.log = jasmine.createSpy("log");
+        console.log = jasmine.createSpy('log');
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         settings = null;
         compileList = null;
         console.log = console._log;
@@ -341,11 +338,11 @@ describe('base.fakeTableHeadKey', () => {
 });
 
 describe('base.getKey($table)', () => {
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
     });
     it('基础验证', () => {
@@ -366,11 +363,11 @@ describe('base.getTable($dom, isSelectUp)', () => {
     let table = null;
     let $tableWrap = null;
     let $thead = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         table = null;
         $tableWrap = null;
@@ -408,11 +405,11 @@ describe('base.getTable($dom, isSelectUp)', () => {
 
 describe('base.getHead($table)', () => {
     let thead = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         thead = null;
     });
@@ -430,11 +427,11 @@ describe('base.getHead($table)', () => {
 
 describe('base.getFakeHead($table)', () => {
     let fakeHead = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         fakeHead = null;
     });
@@ -452,11 +449,11 @@ describe('base.getFakeHead($table)', () => {
 
 describe('base.getHeadTr($table)', () => {
     let tr = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         tr = null;
     });
@@ -473,11 +470,11 @@ describe('base.getHeadTr($table)', () => {
 });
 
 describe('base.getFakeHeadTr($table)', () => {
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
     });
 
@@ -491,20 +488,17 @@ describe('base.getFakeHeadTr($table)', () => {
     });
 });
 
-describe('base.getTh($table, thName)', () => {
-    let $table = null;
+describe('base.getTh(gridManagerName, thName)', () => {
     let th = null;
     let $fakeTh = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        $table = jTool('table[grid-manager="test"]');
         th = document.querySelector('table[grid-manager="test"] thead[grid-manager-thead] tr th[th-name="createDate"]');
         $fakeTh = jTool('table[grid-manager="test"] thead[grid-manager-mock-thead] tr th[th-name="createDate"]');
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
-        $table = null;
         th = null;
         $fakeTh = null;
     });
@@ -514,25 +508,22 @@ describe('base.getTh($table, thName)', () => {
         expect(base.getTh.length).toBe(2);
     });
 
-    it('base.getTh($table, thName)', () => {
-        expect(base.getTh($table, 'createDate').get(0)).toBe(th);
+    it('执行验证: thName', () => {
+        expect(base.getTh('test', 'createDate').get(0)).toBe(th);
     });
 
-    it('base.getTh($table, $fakeTh)', () => {
-        expect(base.getTh($table, $fakeTh).get(0)).toBe(th);
+    it('执行验证: thDOM', () => {
+        expect(base.getTh('test', $fakeTh).get(0)).toBe(th);
     });
 });
 
-describe('base.getAllTh($table)', () => {
-    let $table = null;
-    beforeEach(() =>{
+describe('base.getAllTh(gridManagerName)', () => {
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        $table = jTool('table[grid-manager="test"]');
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
-        $table = null;
     });
 
     it('基础验证', () => {
@@ -540,19 +531,19 @@ describe('base.getAllTh($table)', () => {
         expect(base.getAllTh.length).toBe(1);
     });
 
-    it('base.getAllTh($table)', () => {
-        expect(base.getAllTh($table).length).toBe(10);
+    it('测试返回长度', () => {
+        expect(base.getAllTh('test').length).toBe(10);
     });
 });
 
 describe('base.getVisibleTh($table, isGmCreate)', () => {
     let $table = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         $table = jTool('table[grid-manager="test"]');
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         $table = null;
     });
@@ -579,14 +570,14 @@ describe('base.getFakeTh($table, thName)', () => {
     let $table = null;
     let fakeTh = null;
     let $fakeTh = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         $table = jTool('table[grid-manager="test"]');
         fakeTh = document.querySelector('table[grid-manager="test"] thead[grid-manager-mock-thead] tr th[th-name="createDate"]');
         $fakeTh = jTool('table[grid-manager="test"] thead[grid-manager-mock-thead] tr th[th-name="createDate"]');
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         $table = null;
         fakeTh = null;
@@ -598,23 +589,23 @@ describe('base.getFakeTh($table, thName)', () => {
         expect(base.getFakeTh.length).toBe(2);
     });
 
-    it('base.getTh($table, thName)', () => {
+    it('base.getFakeTh($table, thName)', () => {
         expect(base.getFakeTh($table, 'createDate').get(0)).toBe(fakeTh);
     });
 
-    it('base.getTh($table, $fakeTh)', () => {
+    it('base.getFakeTh($table, $fakeTh)', () => {
         expect(base.getFakeTh($table, $fakeTh).get(0)).toBe(fakeTh);
     });
 });
 
 describe('base.getFakeVisibleTh($table)', () => {
     let $table = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         $table = jTool('table[grid-manager="test"]');
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         $table = null;
     });
@@ -631,12 +622,12 @@ describe('base.getFakeVisibleTh($table)', () => {
 
 describe('base.getThName($th)', () => {
     let $thList = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         $thList = jTool('table[grid-manager="test"] thead[grid-manager-thead] th');
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         $thList = null;
     });
@@ -654,10 +645,10 @@ describe('base.getThName($th)', () => {
 
 describe('base.getEmptyHtml(visibleNum, emptyTemplate, style)', () => {
     let tpl = null;
-    beforeEach(() =>{
+    beforeEach(() => {
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         tpl = '';
     });
@@ -732,12 +723,12 @@ describe('base.updateEmptyCol($table)', () => {
 describe('base.getColTd($dom)', () => {
     let $table = null;
     let $dom = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         $table = jTool('table[grid-manager="test"]');
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         $table = null;
         $dom = null;
@@ -763,12 +754,12 @@ describe('base.getColTd($dom)', () => {
 
 describe('base.setAreVisible($table, thNameList, isVisible, cb)', () => {
     let $table = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         $table = jTool('table[grid-manager="test"]');
     });
 
-    afterEach(() =>{
+    afterEach(() => {
         document.body.innerHTML = '';
         $table = null;
     });
@@ -779,37 +770,37 @@ describe('base.setAreVisible($table, thNameList, isVisible, cb)', () => {
     });
 
     it('执行验证', () => {
-        expect(base.getTh($table, 'gm_checkbox').attr('th-visible')).toBe('visible');
-        expect(base.getTh($table, 'title').attr('th-visible')).toBe('visible');
-        expect(base.getTh($table, 'pic').attr('th-visible')).toBe('visible');
+        expect(base.getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
+        expect(base.getTh('test', 'title').attr('th-visible')).toBe('visible');
+        expect(base.getTh('test', 'pic').attr('th-visible')).toBe('visible');
 
         // 设置gm_checkbox, pic不可见
         base.setAreVisible($table, ['gm_checkbox', 'pic'], false);
 
-        expect(base.getTh($table, 'gm_checkbox').attr('th-visible')).toBe('none');
-        expect(base.getTh($table, 'title').attr('th-visible')).toBe('visible');
-        expect(base.getTh($table, 'pic').attr('th-visible')).toBe('none');
+        expect(base.getTh('test', 'gm_checkbox').attr('th-visible')).toBe('none');
+        expect(base.getTh('test', 'title').attr('th-visible')).toBe('visible');
+        expect(base.getTh('test', 'pic').attr('th-visible')).toBe('none');
 
         // 设置gm_checkbox, pic可见
         base.setAreVisible($table, ['gm_checkbox', 'pic'], true);
-        expect(base.getTh($table, 'gm_checkbox').attr('th-visible')).toBe('visible');
-        expect(base.getTh($table, 'title').attr('th-visible')).toBe('visible');
-        expect(base.getTh($table, 'pic').attr('th-visible')).toBe('visible');
+        expect(base.getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
+        expect(base.getTh('test', 'title').attr('th-visible')).toBe('visible');
+        expect(base.getTh('test', 'pic').attr('th-visible')).toBe('visible');
     });
 });
 
 describe('base.updateVisibleLast($table)', () => {
     let $table = null;
     let $lastTh = null;
-    beforeEach(() =>{
+    beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         $table = jTool('table[grid-manager="test"]');
     });
 
-    afterEach(() =>{
-        document.body.innerHTML = '';
+    afterEach(() => {
         $table = null;
         $lastTh = null;
+        document.body.innerHTML = '';
     });
 
     it('基础验证', () => {
@@ -817,13 +808,13 @@ describe('base.updateVisibleLast($table)', () => {
         expect(base.updateVisibleLast.length).toBe(1);
     });
 
-    it('base.updateVisibleLast($table)', () => {
+    it('执行验证', () => {
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
         expect(base.getThName($lastTh)).toBe('action');
 
         base.updateVisibleLast($table);
 
-        // 在未变更列的情况下，执行结果不会变化
+        // // 在未变更列的情况下，执行结果不会变化
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
         expect(base.getThName($lastTh)).toBe('action');
 

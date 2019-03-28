@@ -140,8 +140,8 @@ class Adjust {
             // 当前宽度调整的事件原为表头置顶的thead th
             // 修改与置顶thead 对应的 thead
             if ($th.closest(`thead[${base.fakeTableHeadKey}]`).length === 1) {
-                base.getTh($table, $th).width(_thWidth);
-                base.getTh($table, $nextTh).width(_NextWidth);
+                base.getTh(gridManagerName, $th).width(_thWidth);
+                base.getTh(gridManagerName, $nextTh).width(_NextWidth);
                 base.getFakeHead($table).width(base.getHead($table).width());
             }
         });

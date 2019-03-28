@@ -60,7 +60,7 @@ class Drag {
 			// 获取设置项
 			let settings = cache.getSettings($table);
 
-            const { columnMap, dragBefore } = settings;
+            const { gridManagerName, columnMap, dragBefore } = settings;
 
 			// 事件源th
 			let _th = jTool(this).closest('th');
@@ -114,7 +114,7 @@ class Drag {
 				// 当前移动的非第一列
 				if (_thIndex > 0) {
 					prevTh = _allTh.eq(_thIndex - 1);
-                    prevThName = prevTh.attr('th-name');
+                    prevThName = base.getThName(prevTh);
 				}
 
                 // 事件源的下一个th
@@ -142,7 +142,7 @@ class Drag {
 					top: e2.clientY - _tableWrap.offset().top + window.pageYOffset - dreamlandDIV.find('th').get(0).offsetHeight / 2
 				});
 
-				_this.updateDrag(_table, prevTh, nextTh, _th, colTd, dreamlandDIV);
+				_this.updateDrag(gridManagerName, prevTh, nextTh, _th, colTd, dreamlandDIV);
 
                 // 更新最后一项可视列的标识
                 base.updateVisibleLast(_table);
@@ -198,14 +198,14 @@ class Drag {
 
 	/**
 	 * 拖拽触发后更新DOM
-	 * @param $table
+	 * @param gridManagerName
 	 * @param $prevTh
 	 * @param $nextTh
 	 * @param $th
 	 * @param $colTd
 	 * @param $dreamlandDIV
 	 */
-	updateDrag($table, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV) {
+	updateDrag(gridManagerName, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV) {
 		// 处理向左拖拽
 		if ($prevTh && $prevTh.length !== 0 && $dreamlandDIV.offset().left < $prevTh.offset().left) {
             // 事件源对应的上一组td
@@ -216,8 +216,8 @@ class Drag {
 			});
 
 			// 同步 head
-            let _prevTh = base.getTh($table, $prevTh);
-            let __th = base.getTh($table, $th);
+            let _prevTh = base.getTh(gridManagerName, $prevTh);
+            let __th = base.getTh(gridManagerName, $th);
             _prevTh.before(__th);
 
 			// 处理向右拖拽
@@ -230,8 +230,8 @@ class Drag {
 			});
 
             // 同步 head
-            let _nextTh = base.getTh($table, $nextTh);
-            let __th = base.getTh($table, $th);
+            let _nextTh = base.getTh(gridManagerName, $nextTh);
+            let __th = base.getTh(gridManagerName, $th);
             _nextTh.after(__th);
 		}
 	}

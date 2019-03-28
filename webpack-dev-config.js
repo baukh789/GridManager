@@ -13,7 +13,7 @@ const config = {
     devtool: 'cheap-eval-source-map',
 
 	// 入口文件配置
-	context: path.join(__dirname, "src/"),
+	context: path.join(__dirname, 'src/'),
 
 	// 入口文件配置
 	entry: {
@@ -21,19 +21,19 @@ const config = {
 	},
 
 	// 配置模块如何解析
-	resolve:{
-		extensions: [".js"], //当requrie的模块找不到时,添加这些后缀
+	resolve: {
+		extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
         alias: {
             '@common': path.join(__dirname, './src/common')
         }
 	},
 
 	// 文件导出的配置
-	output:{
-		path: '/' ,
-		filename: "js/gm.js",
+	output: {
+		path: '/',
+		filename: 'js/gm.js',
 		// publicPath 对于热替换（HMR）是必须的，让webpack知道在哪里载入热更新的模块（chunk）
-		publicPath: "/"
+		publicPath: '/'
 	},
 
 	// 以插件形式定制webpack构建过程

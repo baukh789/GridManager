@@ -3,24 +3,24 @@
  */
 import Store from '../src/common/Store';
 import { version } from '../package.json';
-describe('Store.js', function() {
-	it('Store.version', function() {
+describe('Store.js', () => {
+	it('Store.version', () => {
 		expect(Store.version).toBe(version);
 	});
 
-	it('Store.scope', function() {
+	it('Store.scope', () => {
 		expect(Store.scope).toBeDefined();
 	});
 
-	it('Store.responseData', function() {
+	it('Store.responseData', () => {
 		expect(Store.responseData).toBeDefined();
 	});
 
-	it('Store.originalTh', function() {
+	it('Store.originalTh', () => {
 		expect(Store.checkedData).toBeDefined();
 	});
 
-	it('Store.settings', function() {
+	it('Store.settings', () => {
 		expect(Store.settings).toBeDefined();
 	});
 });

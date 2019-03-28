@@ -60,9 +60,9 @@ module.exports = function (config) {
 				// generates ./coverage/chart/*.html
 				{ type: 'html', subdir: 'chart' },
 				// generates ./coverage/lcov.info
-				{type:'lcovonly', subdir: '.'},
+				{type: 'lcovonly', subdir: '.'},
 				// generates ./coverage/coverage-final.json
-				{type:'json', subdir: '.'}
+				{type: 'json', subdir: '.'}
 			]
 		},
 
@@ -70,12 +70,12 @@ module.exports = function (config) {
 		webpack: {
             mode: 'development',
 
-			//入口文件配置
+			// 入口文件配置
 			entry: {
 				js: './test/index_test.js'
 			},
-			resolve:{
-				extensions: [".js"], //当requrie的模块找不到时,添加这些后缀
+			resolve: {
+				extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
                 alias: {
                     '@common': path.join(__dirname, './src/common')
                 }
@@ -138,7 +138,7 @@ module.exports = function (config) {
                                 loader: 'url-loader',
                                 options: {
                                     limit: 10000,
-                                    mimetype: "application/font-woff"
+                                    mimetype: 'application/font-woff'
                                 }
                             }
                         ]
@@ -149,7 +149,7 @@ module.exports = function (config) {
                                 loader: 'url-loader',
                                 options: {
                                     limit: 10000,
-                                    mimetype: "application/octet-stream"
+                                    mimetype: 'application/octet-stream'
                                 }
                             }
                         ]
@@ -160,7 +160,7 @@ module.exports = function (config) {
                                 loader: 'url-loader',
                                 options: {
                                     limit: 10000,
-                                    mimetype: "application/font-otf"
+                                    mimetype: 'application/font-otf'
                                 }
                             }
                         ]
@@ -168,7 +168,7 @@ module.exports = function (config) {
                         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
                         use: [
                             {
-                                loader:"file-loader"
+                                loader: 'file-loader'
                             }
                         ]
                     }, {
@@ -177,7 +177,7 @@ module.exports = function (config) {
                             {
                                 loader: 'file-loader',
                                 options: {
-                                    name: '[path][name]-[hash:8].[ext]',
+                                    name: '[path][name]-[hash:8].[ext]'
                                 }
                             }
                         ]
