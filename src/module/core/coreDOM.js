@@ -228,6 +228,21 @@ class Dom {
      * @param $table
      */
     bindEvent($table) {
+        let hoverTd = null;
+        jTool('tbody td', $table).unbind('mousemove');
+        jTool('tbody td', $table).bind('mousemove', function () {
+            if (hoverTd === this) {
+                return;
+            }
+            const settings = cache.getSettings($table);
+            hoverTd = this;
+            const tr = hoverTd.parentNode;
+            const colIndex = hoverTd.cellIndex;
+            const rowIndex = parseInt(tr.getAttribute('cache-key'), 10);
+
+            // cellHover: 单个td的hover事件
+            typeof settings.cellHover === 'function' && settings.cellHover(cache.getRowData($table, tr), rowIndex, colIndex);
+        });
         jTool('[gm-click]', $table).unbind('click');
         jTool('[gm-click]', $table).bind('click', function () {
             const gridManagerName = $table.attr(base.key);
