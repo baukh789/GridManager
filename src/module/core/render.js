@@ -2,6 +2,7 @@ import remind from '../remind';
 import order from '../order';
 import ajaxPage from '../ajaxPage';
 import jTool from '@common/jTool';
+import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY } from '@common/constants';
 import base from '@common/base';
 import { parseTpl } from '../../common/parse';
 import filter from '../filter';
@@ -42,6 +43,8 @@ class Render {
         }
 
         return {
+            wrapKey: WRAP_KEY,
+            divKey: DIV_KEY,
             gridManagerName: gridManagerName,
             classNames: wrapClassList.join(' '),
             configTpl: supportConfig ? config.createHtml({gridManagerName, configInfo}) : '',
@@ -87,7 +90,7 @@ class Render {
         });
 
         return {
-            tableHeadKey: base.tableHeadKey,
+            tableHeadKey: TABLE_HEAD_KEY,
             thListTpl
         };
     }

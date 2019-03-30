@@ -1,5 +1,5 @@
-<div class="table-wrap {{ vm.classNames }}" wrap-key="{{vm.gridManagerName}}">
-    <div class="table-div"></div>
+<div class="table-wrap {{ vm.classNames }}" {{vm.wrapKey}}="{{vm.gridManagerName}}">
+    <div class="table-div" {{vm.divKey}}="{{vm.gridManagerName}}"></div>
     <span class="text-dreamland"></span>
     {{ vm.configTpl}}
     {{ vm.ajaxPageTpl }}

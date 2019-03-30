@@ -148,7 +148,7 @@ class Core {
             return;
         }
 
-        let visibleNum = base.getVisibleTh($table).length;
+        let visibleNum = base.getVisibleTh(settings.gridManagerName).length;
         const $tbody = jTool('tbody', $table);
         const $tableDiv = $table.closest('.table-div');
         // height - 1的原因: 当设置disableLine=true时，会在高度正确的情况下出现y轴滚动条
@@ -169,7 +169,7 @@ class Core {
         cache.setSettings(settings);
 
         // 单个table下的thead
-        const $thead = base.getHead($table);
+        const $thead = base.getHead(settings.gridManagerName);
 
         // 单个table下的TH
         const $thList = jTool('th', $thead);

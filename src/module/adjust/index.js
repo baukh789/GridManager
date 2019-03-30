@@ -5,6 +5,7 @@
 import './style.less';
 import jTool from '@common/jTool';
 import base from '@common/base';
+import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import cache from '@common/cache';
 import getAdjustEvent from './event';
 
@@ -31,7 +32,7 @@ class Adjust {
         const _this = this;
         // 监听鼠标调整列宽度
         this.$body = jTool('body');
-        this.eventMap[gridManagerName] = getAdjustEvent(gridManagerName, `table[${base.key}="${gridManagerName}"]`);
+        this.eventMap[gridManagerName] = getAdjustEvent(gridManagerName, base.getQuerySelector(gridManagerName));
 
         const {eventName, eventQuerySelector} = this.eventMap[gridManagerName].adjustStart;
         this.$body.on(eventName, eventQuerySelector, function (event) {
@@ -85,7 +86,7 @@ class Adjust {
         if (!$table || $table.length === 0) {
             return false;
         }
-        let _thList = jTool(`thead[${base.fakeTableHeadKey}] [th-visible="visible"]`, $table);
+        let _thList = jTool(`thead[${FAKE_TABLE_HEAD_KEY}] [th-visible="visible"]`, $table);
         let	_adjustAction = jTool('.adjust-action', _thList);
         if (!_adjustAction || _adjustAction.length === 0) {
             return false;
@@ -139,10 +140,10 @@ class Adjust {
 
             // 当前宽度调整的事件原为表头置顶的thead th
             // 修改与置顶thead 对应的 thead
-            if ($th.closest(`thead[${base.fakeTableHeadKey}]`).length === 1) {
+            if ($th.closest(`thead[${FAKE_TABLE_HEAD_KEY}]`).length === 1) {
                 base.getTh(gridManagerName, $th).width(_thWidth);
                 base.getTh(gridManagerName, $nextTh).width(_NextWidth);
-                base.getFakeHead($table).width(base.getHead($table).width());
+                base.getFakeHead(gridManagerName).width(base.getHead(gridManagerName).width());
             }
         });
     }

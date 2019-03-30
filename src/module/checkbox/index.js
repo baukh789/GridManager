@@ -29,7 +29,7 @@ class Checkbox {
     init(gridManagerName, useRowCheck) {
         const _this = this;
         const $body = jTool('body');
-        this.eventMap[gridManagerName] = getCheckboxEvent(gridManagerName, `table[${base.key}="${gridManagerName}"]`);
+        this.eventMap[gridManagerName] = getCheckboxEvent(gridManagerName, base.getQuerySelector(gridManagerName));
         const { allChange, checkboxChange, radioChange, trChange } = this.eventMap[gridManagerName];
 
         // th内的全选

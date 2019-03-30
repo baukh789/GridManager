@@ -72,7 +72,7 @@ class Drag {
 			const _table = base.getTable(_tr, true);
 
             // fake thead 下所有的 th
-            let _allTh = base.getFakeVisibleTh(_table);
+            let _allTh = base.getFakeVisibleTh(base.getKey(_table));
 
 			// 事件源所在的DIV
 			const tableDiv = _table.closest('.table-div');
@@ -145,7 +145,7 @@ class Drag {
 				_this.updateDrag(gridManagerName, prevTh, nextTh, _th, colTd, dreamlandDIV);
 
                 // 更新最后一项可视列的标识
-                base.updateVisibleLast(_table);
+                base.updateVisibleLast(gridManagerName);
 
 				// 重置TH对象数据
 				_allTh = jTool('th[th-visible="visible"]', _tr);
@@ -184,7 +184,7 @@ class Drag {
 
 				// 重置配置区域
                 if (settings.supportConfig) {
-                    config.updateConfigList(_table, settings);
+                    config.updateConfigList(settings.gridManagerName);
                 }
 
 				// 开启文字选中效果

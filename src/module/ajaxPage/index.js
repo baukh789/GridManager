@@ -17,16 +17,13 @@ import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
+import { TOOLBAR_KEY } from '@common/constants';
 import core from '../core';
 import i18n from '../i18n';
 import ajaxPageTpl from './ajax-page.tpl.html';
 import getAjaxEvent from './event';
 class AjaxPage {
     eventMap = {};
-    // 唯一标识名
-    get keyName() {
-        return 'toolbar-key';
-    }
 
     /**
 	 * 初始化分页
@@ -59,7 +56,7 @@ class AjaxPage {
      * @returns {string}
      */
     getQuerySelector(gridManagerName) {
-        return `.footer-toolbar[${this.keyName}="${gridManagerName}"]`;
+        return `.footer-toolbar[${TOOLBAR_KEY}="${gridManagerName}"]`;
     }
 
     /**
@@ -72,7 +69,7 @@ class AjaxPage {
         const { settings } = params;
         return {
             gridManagerName: settings.gridManagerName,
-            keyName: this.keyName,
+            keyName: TOOLBAR_KEY,
             refreshActionText: i18n.i18nText(settings, 'refresh-action'),
             gotoFirstText: i18n.i18nText(settings, 'goto-first-text'),
             gotoLastText: i18n.i18nText(settings, 'goto-last-text'),

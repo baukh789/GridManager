@@ -16,8 +16,6 @@ import configTpl from './config.tpl.html';
 import exportTpl from './export.tpl.html';
 import getMenuEvent from './event';
 
-// 在body上绑定的关闭事件名
-const closeEvent = 'mousedown.gridMenu';
 class Menu {
     eventMap = {};
 
@@ -173,7 +171,7 @@ class Menu {
 				if (eventSource.hasClass('grid-menu') || eventSource.closest('.grid-menu').length === 1) {
 					return;
 				}
-                _this.$body.off(closeEvent);
+                _this.$body.off(closeMenu.eventName);
 				$menu.hide();
 			});
 		});
@@ -201,7 +199,7 @@ class Menu {
 			}
 
 			ajaxPage.gotoPage(_settings, cPage);
-            _this.$body.off(closeEvent);
+            _this.$body.off(closeMenu.eventName);
 			_gridMenu.hide();
 		});
 
@@ -219,7 +217,7 @@ class Menu {
 					onlyChecked = true;
 				}
                 exportFile.__exportGridToXls(_table, undefined, onlyChecked);
-                _this.$body.off(closeEvent);
+                _this.$body.off(closeMenu.eventName);
 				_gridMenu.hide();
 			});
 		})();
@@ -232,9 +230,8 @@ class Menu {
 					return false;
 				}
 				const _gridMenu = jTool(this).closest('.grid-menu');
-				const _table = base.getTable(_gridMenu.attr(_this.keyName));
-				config.toggle(_table);
-                _this.$body.off(closeEvent);
+				config.toggle(_gridMenu.attr(_this.keyName));
+                _this.$body.off(closeMenu.eventName);
 				_gridMenu.hide();
 			});
 		})();

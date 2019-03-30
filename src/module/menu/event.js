@@ -3,13 +3,14 @@
  * @param gridManagerName
  * @param scope: querySelector 域
  */
+import { WRAP_KEY } from '@common/constants';
 export default function getMenuEvent(gridManagerName, scope) {
     return {
         // 右键打开菜单
-        openMenu: {eventName: 'contextmenu', eventQuerySelector: `.table-wrap[wrap-key="${gridManagerName}"]`},
+        openMenu: {eventName: 'contextmenu', eventQuerySelector: `.table-wrap[${WRAP_KEY}="${gridManagerName}"]`},
 
         // 关闭菜单
-        closeMenu: {eventName: `mousedown.${gridManagerName}`},
+        closeMenu: {eventName: 'mousedown.closeMenu'},
 
         // 上一页、下一页、重新加载
         refresh: {eventName: 'click', eventQuerySelector: `${scope} [grid-action="refresh-page"]`},

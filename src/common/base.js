@@ -7,7 +7,7 @@
  *
  */
 import jTool from './jTool';
-import { FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE } from './constants';
+import { FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY } from './constants';
 
 class Base {
 
@@ -148,30 +148,6 @@ class Base {
     }
 
     /**
-     * 表格唯一key
-     * @returns {string}
-     */
-    get key() {
-        return TABLE_KEY;
-    }
-
-    /**
-     * 获取表头所使用的attr
-     * @returns {string}
-     */
-    get tableHeadKey() {
-        return TABLE_HEAD_KEY;
-    }
-
-    /**
-     * 获取表头吸顶所使用的attr
-     * @returns {string}
-     */
-    get fakeTableHeadKey() {
-        return FAKE_TABLE_HEAD_KEY;
-    }
-
-    /**
      * 获取表的GM 唯一标识
      * @param $table
      * @returns {*|string}
@@ -180,8 +156,18 @@ class Base {
         if (!$table || !$table.jTool || $table.length === 0) {
             return '';
         }
-        return $table.attr(this.key);
+        return $table.attr(TABLE_KEY);
     }
+
+    /**
+     * 获取表格的选择器
+     * @param gridManagerName
+     * @returns {string}
+     */
+    getQuerySelector(gridManagerName) {
+        return `table[${TABLE_KEY}="${gridManagerName}"]`;
+    }
+
     /**
      * get table
      * @param $dom: 父级或子级jTool对象，或者是gridManagerName。如果是gridManagerName，则第二个参数无效。
@@ -190,45 +176,53 @@ class Base {
      */
     getTable($dom, isSelectUp) {
         if (typeof $dom === 'string') {
-            return jTool(`table[${this.key}="${$dom}"]`);
+            return jTool(`table[${TABLE_KEY}="${$dom}"]`);
         }
-        return isSelectUp ? $dom.closest(`table[${this.key}]`) : jTool(`table[${this.key}]`, $dom);
+        return isSelectUp ? $dom.closest(`table[${TABLE_KEY}]`) : jTool(`table[${TABLE_KEY}]`, $dom);
+    }
+
+    /**
+     * get table wrap
+     * @param $dom: 父级或子级jTool对象，或者是gridManagerName。如果是gridManagerName，则第二个参数无效。
+     * @param isSelectUp: 是否为向上查找模式
+     * @returns {*}
+     */
+    getWrap($dom, isSelectUp) {
+        if (typeof $dom === 'string') {
+            return jTool(`.table-wrap[${WRAP_KEY}="${$dom}"]`);
+        }
+        return isSelectUp ? $dom.closest(`.table-wrap[${WRAP_KEY}]`) : jTool(`.table-wrap[${WRAP_KEY}]`, $dom);
+    }
+
+    /**
+     * get table div
+     * @param $dom: 父级或子级jTool对象，或者是gridManagerName。如果是gridManagerName，则第二个参数无效。
+     * @param isSelectUp: 是否为向上查找模式
+     * @returns {*}
+     */
+    getDiv($dom, isSelectUp) {
+        if (typeof $dom === 'string') {
+            return jTool(`.table-div[${DIV_KEY}="${$dom}"]`);
+        }
+        return isSelectUp ? $dom.closest(`.table-div[${DIV_KEY}]`) : jTool(`.table-div[${DIV_KEY}]`, $dom);
     }
 
     /**
      * get table head
-     * @param $table
+     * @param gridManagerName
      * @returns {*}
      */
-    getHead($table) {
-        return jTool(`thead[${this.tableHeadKey}]`, $table);
+    getHead(gridManagerName) {
+        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${TABLE_HEAD_KEY}]`);
     }
 
     /**
      * get fake head
-     * @param $table
+     * @param gridManagerName
      * @returns {*}
      */
-    getFakeHead($table) {
-        return jTool(`thead[${this.fakeTableHeadKey}]`, $table);
-    }
-
-    /**
-     * get head tr
-     * @param $table
-     * @returns {*}
-     */
-    getHeadTr($table) {
-        return jTool(`thead[${this.tableHeadKey}] tr`, $table);
-    }
-
-    /**
-     * get fake head tr
-     * @param $table
-     * @returns {*}
-     */
-    getFakeHeadTr($table) {
-        return jTool(`thead[${this.tableHeadKey}] tr`, $table);
+    getFakeHead(gridManagerName) {
+        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${FAKE_TABLE_HEAD_KEY}]`);
     }
 
     /**
@@ -242,7 +236,7 @@ class Base {
         if (thName.jTool) {
             thName = this.getThName(thName);
         }
-        return jTool(`table[${this.key}="${gridManagerName}"] thead[${this.tableHeadKey}] th[th-name="${thName}"]`);
+        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${TABLE_HEAD_KEY}] th[th-name="${thName}"]`);
     }
 
     /**
@@ -251,7 +245,7 @@ class Base {
      * @returns {*}
      */
     getAllTh(gridManagerName) {
-        return jTool(`table[${this.key}="${gridManagerName}"] thead[${this.tableHeadKey}] th`);
+        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${TABLE_HEAD_KEY}] th`);
     }
 
     /**
@@ -260,7 +254,7 @@ class Base {
      * @param isGmCreate
      * @returns {*}
      */
-    getVisibleTh($table, isGmCreate) {
+    getVisibleTh(gridManagerName, isGmCreate) {
         let gmCreateStr = '';
         switch (isGmCreate) {
             case true: {
@@ -276,30 +270,30 @@ class Base {
                 break;
             }
         }
-        return jTool(`thead[${this.tableHeadKey}] th[th-visible="visible"]${gmCreateStr}`, $table);
+        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${TABLE_HEAD_KEY}] th[th-visible="visible"]${gmCreateStr}`);
     }
 
     /**
      * get fake th
-     * @param $table
+     * @param gridManagerName
      * @param thName
      * @returns {*}
      */
-    getFakeTh($table, thName) {
+    getFakeTh(gridManagerName, thName) {
         // jTool object
         if (thName.jTool) {
             thName = this.getThName(thName);
         }
-        return jTool(`thead[${this.fakeTableHeadKey}] th[th-name="${thName}"]`, $table);
+        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${FAKE_TABLE_HEAD_KEY}] th[th-name="${thName}"]`);
     }
 
     /**
      * get fake visible th
-     * @param $table
+     * @param gridManagerName
      * @returns {*}
      */
-    getFakeVisibleTh($table) {
-        return jTool(`thead[${this.fakeTableHeadKey}] th[th-visible="visible"]`, $table);
+    getFakeVisibleTh(gridManagerName) {
+        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${FAKE_TABLE_HEAD_KEY}] th[th-visible="visible"]`);
     }
 
     /**
@@ -328,14 +322,14 @@ class Base {
 
     /**
      * 更新数据为空显示DOM所占的列数
-     * @param $table
+     * @param gridManagerName
      */
-    updateEmptyCol($table) {
-        const emptyDOM = jTool('tbody tr[emptyTemplate]', $table);
+    updateEmptyCol(gridManagerName) {
+        const emptyDOM = jTool(`${this.getQuerySelector(gridManagerName)} tbody tr[emptyTemplate]`);
         if (emptyDOM.length === 0) {
             return;
         }
-        const visibleNum = this.getVisibleTh($table).length;
+        const visibleNum = this.getVisibleTh(gridManagerName).length;
         jTool('td', emptyDOM).attr('colspan', visibleNum);
     }
 
@@ -362,12 +356,11 @@ class Base {
 
     /**
      * 根据参数设置列是否可见(th 和 td)
-     * @param $table
+     * @param gridManagerName
      * @param thNameList: Array [thName]
      * @param isVisible: 是否可见
      */
-    setAreVisible($table, thNameList, isVisible) {
-        const gridManagerName = this.getKey($table);
+    setAreVisible(gridManagerName, thNameList, isVisible) {
         jTool.each(thNameList, (i, thName) => {
             const $th = this.getTh(gridManagerName, thName);
 
@@ -378,7 +371,7 @@ class Base {
             $th.attr('th-visible', visibleState);
 
             // fake th
-            this.getFakeTh($table, thName).attr('th-visible', visibleState);
+            this.getFakeTh(gridManagerName, thName).attr('th-visible', visibleState);
 
             // 所对应的td
             const $td = this.getColTd($th);
@@ -388,26 +381,27 @@ class Base {
 
             // config
             // 所对应的显示隐藏所在的li
-            const $checkLi = jTool(`.config-area li[th-name="${thName}"]`, $table.closest('.table-wrap'));
+            const $checkLi = jTool(`.config-area[${CONFIG_KEY}="${gridManagerName}"] li[th-name="${thName}"]`);
+
             isVisible ? $checkLi.addClass('checked-li') : $checkLi.removeClass('checked-li');
             jTool('input[type="checkbox"]', $checkLi).prop('checked', isVisible);
 
-            this.updateEmptyCol($table);
+            this.updateEmptyCol(gridManagerName);
         });
     }
 
     /**
      * 更新最后一项可视列的标识
-     * @param $table
+     * @param gridManagerName
      */
-    updateVisibleLast($table) {
-        const $visibleThList = this.getVisibleTh($table);
+    updateVisibleLast(gridManagerName) {
+        const $visibleThList = this.getVisibleTh(gridManagerName);
 
-        const $fakeVisibleThList = this.getFakeVisibleTh($table);
+        const $fakeVisibleThList = this.getFakeVisibleTh(gridManagerName);
         const lastIndex = $fakeVisibleThList.length - 1;
         let isLastVisible = null;
 
-        $table.find('[last-visible="true"]').attr('last-visible', false);
+        jTool(`${this.getQuerySelector(gridManagerName)} [last-visible="true"]`).attr('last-visible', false);
         jTool.each($fakeVisibleThList, (index, item) => {
             isLastVisible = index === lastIndex;
             item.setAttribute('last-visible', isLastVisible);
@@ -423,7 +417,7 @@ class Base {
      * @param isInit: 是否为init调用
      */
     updateThWidth($table, settings, isInit) {
-        const { columnMap, isIconFollowText } = settings;
+        const { gridManagerName, columnMap, isIconFollowText } = settings;
         const updateColumnList = [];
         let toltalWidth = $table.closest('.table-div').width();
 
@@ -440,7 +434,7 @@ class Base {
         });
 
         // jTool(`thead[grid-manager-thead]`, $table);
-        const $thead = this.getHead($table);
+        const $thead = this.getHead(gridManagerName);
         let autoLen = 0;
         let lastIndex = updateColumnList.length - 1;
 

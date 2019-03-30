@@ -8,11 +8,29 @@ export const GM_VERSION = process.env.VERSION;
 // 表格唯一key
 export const TABLE_KEY = 'grid-manager';
 
+// 表格外围唯一key
+export const WRAP_KEY = 'grid-manager-wrap';
+
+// 表格的核心区域div唯一key
+export const DIV_KEY = 'grid-manager-div';
+
+// 配置区域唯一key
+export const CONFIG_KEY = 'grid-manager-config';
+
+// 底部工具唯一key
+export const TOOLBAR_KEY = 'grid-manager-toolbar';
+
 // table head key
 export const TABLE_HEAD_KEY = 'grid-manager-thead';
 
 // 吸顶head所使用的key
 export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
+
+// 序号的列宽
+export const ORDER_WIDTH = '50px';
+
+// 全选的列宽
+export const CHECKBOX_WIDTH = '40px';
 
 // 公开方法列表
 export const GM_PUBLISH_METHOD_LIST = [
@@ -38,12 +56,6 @@ export const GM_PUBLISH_METHOD_LIST = [
 	'cleanData',
 	'destroy'
 ];
-
-// 序号的列宽
-export const ORDER_WIDTH = '50px';
-
-// 全选的列宽
-export const CHECKBOX_WIDTH = '40px';
 
 // console样式
 export const CONSOLE_STYLE = {

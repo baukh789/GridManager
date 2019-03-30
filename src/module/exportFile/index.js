@@ -66,7 +66,7 @@ class ExportFile {
 	@parseTpl(staticTpl)
 	createExportHTML(params) {
 	    const { $table, base, onlyChecked } = params;
-        const thDOM = base.getVisibleTh($table, false);
+        const thDOM = base.getVisibleTh(base.getKey($table), false);
         let	trDOM = null;
         // 验证：是否只导出已选中的表格
         if (onlyChecked) {

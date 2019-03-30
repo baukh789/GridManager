@@ -3,6 +3,7 @@
  * 构造类
  */
 import jTool from '@common/jTool';
+import { TABLE_KEY } from '@common/constants';
 import base from '@common/base';
 import cache from '@common/cache';
 import adjust from './adjust';
@@ -43,7 +44,7 @@ const __jTable = table => {
 
     // gridManagerName
     if ($table.length === 0) {
-        $table = jTool(`table[${base.key}="${table}"]`);
+        $table = base.getTable(table);
     }
 
     // undefined
@@ -129,7 +130,7 @@ export default class GridManager {
      */
     static
     setScope(table, scope) {
-        return cache.setScope(__jTable(table).attr(base.key), scope);
+        return cache.setScope(base.getKey(__jTable(table)), scope);
     }
 
 	/**
@@ -144,7 +145,7 @@ export default class GridManager {
         if (!isRendered(table, 'getLocalStorage')) {
             return;
         }
-		return cache.getUserMemory(__jTable(table).attr(base.key));
+		return cache.getUserMemory(base.getKey(__jTable(table)));
 	}
 
     /**
@@ -192,7 +193,7 @@ export default class GridManager {
         if (!isRendered(table, 'getRowData')) {
             return;
         }
-		return cache.getRowData(__jTable(table).attr(base.key), target);
+		return cache.getRowData(base.getKey(__jTable(table)), target);
 	}
 
 	/**
@@ -230,7 +231,7 @@ export default class GridManager {
 
         switch (visible) {
             case true: {
-                config.show($table, settings);
+                config.show(settings);
                 break;
             }
             case false: {
@@ -238,7 +239,7 @@ export default class GridManager {
                 break;
             }
             case undefined: {
-                config.toggle($table);
+                config.toggle(settings.gridManagerName);
                 break;
             }
             default: {
@@ -260,7 +261,7 @@ export default class GridManager {
             return;
         }
         const $table = __jTable(table);
-		base.setAreVisible($table, Array.isArray(thName) ? thName : [thName], true);
+		base.setAreVisible(base.getKey($table), Array.isArray(thName) ? thName : [thName], true);
         config.noticeUpdate($table);
 	}
 
@@ -276,7 +277,7 @@ export default class GridManager {
             return;
         }
         const $table = __jTable(table);
-        base.setAreVisible($table, Array.isArray(thName) ? thName : [thName], false);
+        base.setAreVisible(base.getKey($table), Array.isArray(thName) ? thName : [thName], false);
         config.noticeUpdate($table);
 	}
 
@@ -539,7 +540,7 @@ export default class GridManager {
 
 		// 校验: gridManagerName
 		if (settings.gridManagerName.trim() === '') {
-			base.outLog(`请在html标签中为属性[${base.key}]赋值或在配置项中配置gridManagerName`, 'error');
+			base.outLog(`请在html标签中为属性[${TABLE_KEY}]赋值或在配置项中配置gridManagerName`, 'error');
 			return;
 		}
 
@@ -619,7 +620,7 @@ export default class GridManager {
 
         // init config
         if (settings.supportConfig) {
-            config.init($table);
+            config.init(gridManagerName);
         }
 
         // 初始化右键菜单事件
@@ -636,7 +637,7 @@ export default class GridManager {
         scroll.update($table);
 
         // 更新最后一项可视列的标识
-        base.updateVisibleLast($table);
+        base.updateVisibleLast(gridManagerName);
 
         // 渲染tbodyDOM
         settings.firstLoading ? core.refresh($table) : core.insertEmptyTemplate($table, settings, true);
@@ -661,7 +662,7 @@ export default class GridManager {
 
         // table dom
         if(table.nodeName === 'TABLE') {
-            gridManagerName = table.getAttribute(base.key);
+            gridManagerName = table.getAttribute(TABLE_KEY);
         }
 
         // 清除setInterval
@@ -673,8 +674,8 @@ export default class GridManager {
         // 清除各模块中的事件及部分DOM
         adjust.destroy(gridManagerName);
         ajaxPage.destroy(gridManagerName);
-        // checkbox.destroy(gridManagerName);
-        // config.destroy(gridManagerName);
+        checkbox.destroy(gridManagerName);
+        config.destroy(gridManagerName);
         // drag.destroy(gridManagerName);
         menu.destroy(gridManagerName);
         // remind.destroy($table);

@@ -2,6 +2,7 @@ import remind from '../remind';
 import order from '../order';
 import jTool from '@common/jTool';
 import base from '@common/base';
+import { TABLE_KEY } from '@common/constants';
 import cache from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
@@ -245,7 +246,7 @@ class Dom {
         });
         jTool('[gm-click]', $table).unbind('click');
         jTool('[gm-click]', $table).bind('click', function () {
-            const gridManagerName = $table.attr(base.key);
+            const gridManagerName = $table.attr(TABLE_KEY);
             const row = cache.getRowData(gridManagerName, this.parentNode.parentNode);
             const scope = cache.getScope(gridManagerName) || window;
             const fun = scope[this.getAttribute('gm-click')];
@@ -259,7 +260,7 @@ class Dom {
      */
     initVisible($table, columnMap) {
         jTool.each(columnMap, (index, col) => {
-            base.setAreVisible($table, [col.key], col.isShow);
+            base.setAreVisible(base.getKey($table), [col.key], col.isShow);
         });
     }
 }

@@ -4,6 +4,7 @@
  * */
 import jTool from '@common/jTool';
 import base from '@common/base';
+import { TABLE_KEY } from '@common/constants';
 import GridManager from './GridManager';
 import { PublishMethod, publishMethodArray } from './publish';
 /*
@@ -81,7 +82,7 @@ import { PublishMethod, publishMethodArray } from './publish';
             arg.gridManagerName = base.getKey($table);
             // 参数中存在配置项 gridManagerName: 更新table DOM 的 grid-manager属性
         } else {
-            $table.attr(base.key, arg.gridManagerName);
+            $table.attr(TABLE_KEY, arg.gridManagerName);
         }
 
         base.SIV_waitTableAvailable[arg.gridManagerName] = setInterval(() => {

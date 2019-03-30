@@ -1,7 +1,7 @@
 import jTool from '../src/common/jTool';
 import base from '../src/common/base';
 import { trimTpl } from '../src/common/parse';
-import {CONSOLE_STYLE, FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY} from '../src/common/constants';
+import {CONSOLE_STYLE} from '../src/common/constants';
 import tableTpl from './table-test.tpl.html';
 
 // 清除空格
@@ -25,7 +25,7 @@ describe('base 验证类的属性及方法总量', () => {
     });
     it('Function count', () => {
         // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(35 + 1);
+        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(33 + 1);
     });
 });
 
@@ -316,27 +316,6 @@ describe('base.compileFramework(settings, compileList)', () => {
     });
 });
 
-describe('base.key', () => {
-    it('基础验证', () => {
-        expect(base.key).toBeDefined();
-        expect(base.key).toBe(TABLE_KEY);
-    });
-});
-
-describe('base.tableHeadKey', () => {
-    it('基础验证', () => {
-        expect(base.tableHeadKey).toBeDefined();
-        expect(base.tableHeadKey).toBe(TABLE_HEAD_KEY);
-    });
-});
-
-describe('base.fakeTableHeadKey', () => {
-    it('基础验证', () => {
-        expect(base.fakeTableHeadKey).toBeDefined();
-        expect(base.fakeTableHeadKey).toBe(FAKE_TABLE_HEAD_KEY);
-    });
-});
-
 describe('base.getKey($table)', () => {
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -359,12 +338,27 @@ describe('base.getKey($table)', () => {
     });
 });
 
+describe('base.getQuerySelector(gridManagerName)', () => {
+    it('基础验证', () => {
+        expect(base.getQuerySelector).toBeDefined();
+        expect(base.getQuerySelector.length).toBe(1);
+    });
+
+    it('返回值验证 ', () => {
+        expect(base.getQuerySelector('test')).toBe('table[grid-manager="test"]');
+        expect(base.getQuerySelector('test2')).toBe('table[grid-manager="test2"]');
+    });
+});
+
 describe('base.getTable($dom, isSelectUp)', () => {
     let table = null;
     let $tableWrap = null;
     let $thead = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
+        table = document.querySelector('table[grid-manager="test"]');
+        $tableWrap = jTool('.table-wrap');
+        $thead = jTool('thead[grid-manager-thead]');
     });
 
     afterEach(() => {
@@ -380,30 +374,103 @@ describe('base.getTable($dom, isSelectUp)', () => {
     });
 
     it('base.getTable($dom)', () => {
-        $tableWrap = jTool('.table-wrap');
-        table = document.querySelector('table[grid-manager="test"]');
         expect(base.getTable($tableWrap).get(0)).toBe(table);
     });
 
     it('base.getTable($dom, false)', () => {
-        $tableWrap = jTool('.table-wrap');
-        table = document.querySelector('table[grid-manager="test"]');
         expect(base.getTable($tableWrap).get(0)).toBe(table);
     });
 
     it('base.getTable($dom, true)', () => {
-        $thead = jTool('thead[grid-manager-thead]');
-        table = document.querySelector('table[grid-manager="test"]');
         expect(base.getTable($thead, true).get(0)).toBe(table);
     });
 
     it('base.getTable(gridManagerName)', () => {
-        table = document.querySelector('table[grid-manager="test"]');
         expect(base.getTable('test').get(0)).toBe(table);
     });
 });
 
-describe('base.getHead($table)', () => {
+describe('base.getWrap($dom, isSelectUp)', () => {
+    let tableWrap = null;
+    let $body = null;
+    let $table = null;
+    beforeEach(() => {
+        document.body.innerHTML = tableTestTpl;
+        tableWrap = document.querySelector('.table-wrap[grid-manager-wrap="test"]');
+        $body = jTool('body');
+        $table = jTool('table[grid-manager="test"]');
+    });
+
+    afterEach(() => {
+        document.body.innerHTML = '';
+        tableWrap = null;
+        $body = null;
+        $table = null;
+    });
+
+    it('基础验证', () => {
+        expect(base.getWrap).toBeDefined();
+        expect(base.getWrap.length).toBe(2);
+    });
+
+    it('base.getWrap($dom)', () => {
+        expect(base.getWrap($body).get(0)).toBe(tableWrap);
+    });
+
+    it('base.getWrap($dom, false)', () => {
+        expect(base.getWrap($body, false).get(0)).toBe(tableWrap);
+    });
+
+    it('base.getWrap($dom, true)', () => {
+        expect(base.getWrap($table, true).get(0)).toBe(tableWrap);
+    });
+
+    it('base.getWrap(gridManagerName)', () => {
+        expect(base.getWrap('test').get(0)).toBe(tableWrap);
+    });
+});
+
+describe('base.getDiv($dom, isSelectUp)', () => {
+    let tableDiv = null;
+    let $body = null;
+    let $table = null;
+    beforeEach(() => {
+        document.body.innerHTML = tableTestTpl;
+        tableDiv = document.querySelector('.table-div[grid-manager-div="test"]');
+        $body = jTool('body');
+        $table = jTool('table[grid-manager="test"]');
+    });
+
+    afterEach(() => {
+        document.body.innerHTML = '';
+        tableDiv = null;
+        $body = null;
+        $table = null;
+    });
+
+    it('基础验证', () => {
+        expect(base.getDiv).toBeDefined();
+        expect(base.getDiv.length).toBe(2);
+    });
+
+    it('base.getDiv($dom)', () => {
+        expect(base.getDiv($body).get(0)).toBe(tableDiv);
+    });
+
+    it('base.getDiv($dom, false)', () => {
+        expect(base.getDiv($body, false).get(0)).toBe(tableDiv);
+    });
+
+    it('base.getDiv($dom, true)', () => {
+        expect(base.getDiv($table, true).get(0)).toBe(tableDiv);
+    });
+
+    it('base.getDiv(gridManagerName)', () => {
+        expect(base.getDiv('test').get(0)).toBe(tableDiv);
+    });
+});
+
+describe('base.getHead(gridManagerName)', () => {
     let thead = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -421,11 +488,11 @@ describe('base.getHead($table)', () => {
 
     it('返回值验证', () => {
         thead = document.querySelector('table[grid-manager="test"] thead[grid-manager-thead]');
-        expect(base.getHead(jTool('table[grid-manager="test"]')).get(0)).toBe(thead);
+        expect(base.getHead('test').get(0)).toBe(thead);
     });
 });
 
-describe('base.getFakeHead($table)', () => {
+describe('base.getFakeHead(gridManagerName)', () => {
     let fakeHead = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -443,48 +510,7 @@ describe('base.getFakeHead($table)', () => {
 
     it('返回值验证', () => {
         fakeHead = document.querySelector('table[grid-manager="test"] thead[grid-manager-mock-thead]');
-        expect(base.getFakeHead(jTool('table[grid-manager="test"]')).get(0)).toBe(fakeHead);
-    });
-});
-
-describe('base.getHeadTr($table)', () => {
-    let tr = null;
-    beforeEach(() => {
-        document.body.innerHTML = tableTestTpl;
-    });
-
-    afterEach(() => {
-        document.body.innerHTML = '';
-        tr = null;
-    });
-
-    it('基础验证', () => {
-        expect(base.getHeadTr).toBeDefined();
-        expect(base.getHeadTr.length).toBe(1);
-    });
-
-    it('返回值验证', () => {
-        tr = document.querySelector('table[grid-manager="test"] thead[grid-manager-thead] tr');
-        expect(base.getHeadTr(jTool('table[grid-manager="test"]')).get(0)).toBe(tr);
-    });
-});
-
-describe('base.getFakeHeadTr($table)', () => {
-    beforeEach(() => {
-        document.body.innerHTML = tableTestTpl;
-    });
-
-    afterEach(() => {
-        document.body.innerHTML = '';
-    });
-
-    it('基础验证', () => {
-        expect(base.getFakeHeadTr).toBeDefined();
-        expect(base.getFakeHeadTr.length).toBe(1);
-    });
-
-    it('返回值验证', () => {
-        expect(base.getFakeHeadTr(jTool('table[grid-manager="test"]')).find('th').attr('th-name')).toBe('gm_checkbox');
+        expect(base.getFakeHead('test').get(0)).toBe(fakeHead);
     });
 });
 
@@ -536,16 +562,16 @@ describe('base.getAllTh(gridManagerName)', () => {
     });
 });
 
-describe('base.getVisibleTh($table, isGmCreate)', () => {
-    let $table = null;
+describe('base.getVisibleTh(gridManagerName, isGmCreate)', () => {
+    let gridManagerName = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        $table = jTool('table[grid-manager="test"]');
+        gridManagerName = 'test';
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
-        $table = null;
+        gridManagerName = null;
     });
 
     it('基础验证', () => {
@@ -553,33 +579,33 @@ describe('base.getVisibleTh($table, isGmCreate)', () => {
         expect(base.getVisibleTh.length).toBe(2);
     });
 
-    it('base.getVisibleTh($table)', () => {
-        expect(base.getVisibleTh($table).length).toBe(10);
+    it('base.getVisibleTh(gridManagerName)', () => {
+        expect(base.getVisibleTh(gridManagerName).length).toBe(10);
     });
 
-    it('base.getVisibleTh($table, true)', () => {
-        expect(base.getVisibleTh($table, true).length).toBe(2);
+    it('base.getVisibleTh(gridManagerName, true)', () => {
+        expect(base.getVisibleTh(gridManagerName, true).length).toBe(2);
     });
 
-    it('base.getVisibleTh($table, true)', () => {
-        expect(base.getVisibleTh($table, false).length).toBe(8);
+    it('base.getVisibleTh(gridManagerName, true)', () => {
+        expect(base.getVisibleTh(gridManagerName, false).length).toBe(8);
     });
 });
 
-describe('base.getFakeTh($table, thName)', () => {
-    let $table = null;
+describe('base.getFakeTh(gridManagerName, thName)', () => {
+    let gridManagerName = null;
     let fakeTh = null;
     let $fakeTh = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        $table = jTool('table[grid-manager="test"]');
+        gridManagerName = 'test';
         fakeTh = document.querySelector('table[grid-manager="test"] thead[grid-manager-mock-thead] tr th[th-name="createDate"]');
         $fakeTh = jTool('table[grid-manager="test"] thead[grid-manager-mock-thead] tr th[th-name="createDate"]');
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
-        $table = null;
+        gridManagerName = null;
         fakeTh = null;
         $fakeTh = null;
     });
@@ -589,25 +615,25 @@ describe('base.getFakeTh($table, thName)', () => {
         expect(base.getFakeTh.length).toBe(2);
     });
 
-    it('base.getFakeTh($table, thName)', () => {
-        expect(base.getFakeTh($table, 'createDate').get(0)).toBe(fakeTh);
+    it('base.getFakeTh(gridManagerName, thName)', () => {
+        expect(base.getFakeTh(gridManagerName, 'createDate').get(0)).toBe(fakeTh);
     });
 
-    it('base.getFakeTh($table, $fakeTh)', () => {
-        expect(base.getFakeTh($table, $fakeTh).get(0)).toBe(fakeTh);
+    it('base.getFakeTh(gridManagerName, $fakeTh)', () => {
+        expect(base.getFakeTh(gridManagerName, $fakeTh).get(0)).toBe(fakeTh);
     });
 });
 
-describe('base.getFakeVisibleTh($table)', () => {
-    let $table = null;
+describe('base.getFakeVisibleTh(gridManagerName)', () => {
+    let gridManagerName = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        $table = jTool('table[grid-manager="test"]');
+        gridManagerName = 'test';
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
-        $table = null;
+        gridManagerName = null;
     });
 
     it('基础验证', () => {
@@ -615,8 +641,8 @@ describe('base.getFakeVisibleTh($table)', () => {
         expect(base.getFakeVisibleTh.length).toBe(1);
     });
 
-    it('base.getFakeVisibleTh($table)', () => {
-        expect(base.getFakeVisibleTh($table).length).toBe(10);
+    it('返回值验证', () => {
+        expect(base.getFakeVisibleTh(gridManagerName).length).toBe(10);
     });
 });
 
@@ -668,13 +694,16 @@ describe('base.getEmptyHtml(visibleNum, emptyTemplate, style)', () => {
     });
 });
 
-describe('base.updateEmptyCol($table)', () => {
+describe('base.updateEmptyCol(gridManagerName)', () => {
+    let gridManagerName = null;
     let $table = null;
     beforeEach(() => {
+        gridManagerName = 'test-empty';
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
+        gridManagerName = null;
         $table = null;
     });
 
@@ -684,7 +713,7 @@ describe('base.updateEmptyCol($table)', () => {
     });
 
     it('验证异常情况', () => {
-        document.body.innerHTML = `<table>
+        document.body.innerHTML = `<table grid-manager="test-empty">
                                         <thead grid-manager-thead>
                                             <tr>
                                                 <th th-visible="visible">1</th><th th-visible="visible">2</th>
@@ -696,13 +725,13 @@ describe('base.updateEmptyCol($table)', () => {
                                             </tr>
                                         </tbody>
                                     </table>`;
-        $table = jTool('table');
-        base.updateEmptyCol($table);
+        $table = jTool('table[grid-manager="test-empty"]');
+        base.updateEmptyCol(gridManagerName);
         expect($table.find('td').attr('colspan')).toBeUndefined();
     });
 
     it('验证正常情况', () => {
-        document.body.innerHTML = `<table>
+        document.body.innerHTML = `<table grid-manager="test-empty">
                                         <thead grid-manager-thead>
                                             <tr>
                                                 <th th-visible="visible">1</th><th th-visible="visible">2</th>
@@ -714,8 +743,8 @@ describe('base.updateEmptyCol($table)', () => {
                                             </tr>
                                         </tbody>
                                     </table>`;
-        $table = jTool('table');
-        base.updateEmptyCol($table);
+        $table = jTool('table[grid-manager="test-empty"]');
+        base.updateEmptyCol(gridManagerName);
         expect($table.find('td').attr('colspan')).toBe('2');
     });
 });
@@ -752,16 +781,16 @@ describe('base.getColTd($dom)', () => {
     });
 });
 
-describe('base.setAreVisible($table, thNameList, isVisible, cb)', () => {
-    let $table = null;
+describe('base.setAreVisible(gridManagerName, thNameList, isVisible, cb)', () => {
+    let gridManagerName = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        $table = jTool('table[grid-manager="test"]');
+        gridManagerName = 'test';
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
-        $table = null;
+        gridManagerName = null;
     });
 
     it('基础验证', () => {
@@ -775,29 +804,32 @@ describe('base.setAreVisible($table, thNameList, isVisible, cb)', () => {
         expect(base.getTh('test', 'pic').attr('th-visible')).toBe('visible');
 
         // 设置gm_checkbox, pic不可见
-        base.setAreVisible($table, ['gm_checkbox', 'pic'], false);
+        base.setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], false);
 
         expect(base.getTh('test', 'gm_checkbox').attr('th-visible')).toBe('none');
         expect(base.getTh('test', 'title').attr('th-visible')).toBe('visible');
         expect(base.getTh('test', 'pic').attr('th-visible')).toBe('none');
 
         // 设置gm_checkbox, pic可见
-        base.setAreVisible($table, ['gm_checkbox', 'pic'], true);
+        base.setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], true);
         expect(base.getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
         expect(base.getTh('test', 'title').attr('th-visible')).toBe('visible');
         expect(base.getTh('test', 'pic').attr('th-visible')).toBe('visible');
     });
 });
 
-describe('base.updateVisibleLast($table)', () => {
+describe('base.updateVisibleLast(gridManagerName)', () => {
     let $table = null;
+    let gridManagerName = null;
     let $lastTh = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
+        gridManagerName = 'test';
         $table = jTool('table[grid-manager="test"]');
     });
 
     afterEach(() => {
+        gridManagerName = null;
         $table = null;
         $lastTh = null;
         document.body.innerHTML = '';
@@ -812,16 +844,16 @@ describe('base.updateVisibleLast($table)', () => {
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
         expect(base.getThName($lastTh)).toBe('action');
 
-        base.updateVisibleLast($table);
+        base.updateVisibleLast(gridManagerName);
 
         // // 在未变更列的情况下，执行结果不会变化
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
         expect(base.getThName($lastTh)).toBe('action');
 
         // 隐藏最后一列
-        base.setAreVisible($table, [base.getThName($lastTh)], false);
+        base.setAreVisible(gridManagerName, [base.getThName($lastTh)], false);
 
-        base.updateVisibleLast($table);
+        base.updateVisibleLast(gridManagerName);
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
         expect(base.getThName($lastTh)).toBe('info');
     });
