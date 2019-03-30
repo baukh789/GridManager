@@ -6,38 +6,35 @@ import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
+import { CONFIG_KEY } from '@common/constants';
 import adjust from '../adjust';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
 import configTpl from './config.tpl.html';
 import configColumnTpl from './config-column.tpl.html';
+import getConfigEvent from './event';
 
-// 在body上绑定的关闭事件名
-const closeEvent = 'mousedown.gmConfig';
 class Config {
+    eventMap = {};
+
     /**
      * 初始化配置列[隐藏展示列]
-     * @param $table
+     * @param gridManagerName
      */
-    init($table) {
+    init(gridManagerName) {
         const _this = this;
-
-        const configArea = jTool('.config-area', $table.closest('div.table-wrap'));
+        const $body = jTool('body');
+        this.eventMap[gridManagerName] = getConfigEvent(gridManagerName, this.getQuerySelector(gridManagerName));
+        const { closeConfig, liChange } = this.eventMap[gridManagerName];
 
         // 事件: 关闭
-        configArea.off('click', '.config-action');
-        configArea.on('click', '.config-action', function () {
+        $body.on(closeConfig.eventName, closeConfig.eventQuerySelector, function () {
             // 展示事件源
-            const _configAction = jTool(this);
-
-            const $tableWrap = _configAction.closest('.table-wrap');
-            const $table = base.getTable($tableWrap);
-            _this.hide($table);
+            _this.hide(gridManagerName);
         });
 
         // 事件: 设置
-        configArea.off('click', '.config-list li');
-        configArea.on('click', '.config-list li', function (e) {
+        $body.on(liChange.eventName, liChange.eventQuerySelector, function (e) {
             e.preventDefault();
 
             // 单个的设置项
@@ -56,28 +53,24 @@ class Config {
             // 事件下的checkbox
             const _checkbox = _only.find('input[type="checkbox"]');
 
-            // 所在的大容器
-            const _tableWarp = _only.closest('.table-wrap');
+            // 配置区域
+            const $configArea = _this.getDOM(gridManagerName);
 
             // 所在的table-div
-            const _tableDiv	= jTool('.table-div', _tableWarp);
+            const $tableDiv	= base.getDiv(gridManagerName);
 
-            // 所对应的table
-            const _$table = base.getTable(_tableWarp);
-
-
-            _only.closest('.config-list').find('.no-click').removeClass('no-click');
+            jTool('.config-list .no-click', $configArea).removeClass('no-click');
             let isVisible = !_checkbox.prop('checked');
 
             isVisible ? checkbox.addClass('gm-checkbox-checked') : checkbox.removeClass('gm-checkbox-checked');
 
             // 设置与当前th同列的td可视状态
-            _tableDiv.addClass('config-editing');
-            base.setAreVisible(_$table, [_thName], isVisible);
-            _tableDiv.removeClass('config-editing');
+            $tableDiv.addClass('config-editing');
+            base.setAreVisible(gridManagerName, [_thName], isVisible);
+            $tableDiv.removeClass('config-editing');
 
             // 当前处于选中状态的展示项
-            const _checkedList = jTool('.config-area .checked-li', _tableWarp);
+            const _checkedList = jTool('.checked-li', $configArea);
 
             // 限制最少显示一列
             if (_checkedList.length === 1) {
@@ -85,16 +78,34 @@ class Config {
             }
 
             // 通知相关组件进行更新
-            _this.noticeUpdate($table);
+            _this.noticeUpdate(gridManagerName);
         });
+    }
+
+    /**
+     * 获取指定key的menu选择器
+     * @param gridManagerName
+     * @returns {string}
+     */
+    getQuerySelector(gridManagerName) {
+        return `.config-area[${CONFIG_KEY}="${gridManagerName}"]`;
+    }
+
+    /**
+     * 获取config 的 jtool对像
+     * @param gridManagerName
+     */
+    getDOM(gridManagerName) {
+        return jTool(this.getQuerySelector(gridManagerName));
     }
 
     /**
      * 对项配置成功后，通知相关组件进行更新
      * @param $table
      */
-    noticeUpdate($table) {
-        const settings = cache.getSettings($table);
+    noticeUpdate(gridManagerName) {
+        const settings = cache.getSettings(gridManagerName);
+        const $table = base.getTable(gridManagerName);
 
         // 重置调整宽度事件源
         if (settings.supportAdjust) {
@@ -111,7 +122,7 @@ class Config {
         scroll.update($table);
 
         // 更新最后一项可视列的标识
-        base.updateVisibleLast($table);
+        base.updateVisibleLast(gridManagerName);
 
         // 更新滚动轴显示状态
         base.updateScrollStatus($table);
@@ -125,6 +136,7 @@ class Config {
 	@parseTpl(configTpl)
 	createHtml(params) {
 	    return {
+	        configKey: CONFIG_KEY,
             gridManagerName: params.gridManagerName,
             configInfo: params.configInfo
 	    };
@@ -152,68 +164,62 @@ class Config {
 
 	/**
 	 * 切换配置区域可视状态
-	 * @param $table
+	 * @param gridManagerName
 	 * @returns {boolean}
 	 */
-	toggle($table) {
+	toggle(gridManagerName) {
 		// 设置区域
-		const $configArea = jTool('.config-area', $table.closest('.table-wrap'));
-        const settings = cache.getSettings($table);
+		const $configArea = this.getDOM(gridManagerName);
 
-        $configArea.css('display') === 'block' ?  this.hide($table) : this.show($table, settings);
+        $configArea.css('display') === 'block' ?  this.hide(gridManagerName) : this.show(gridManagerName);
 	}
 
     /**
      * 显示配置区域
-     * @param $table
-     * @param settings
+     * @param gridManagerName
      */
-	show($table, settings) {
-        const $tableWrap = $table.closest('.table-wrap');
-        const $configArea = jTool('.config-area', $tableWrap);
+	show(gridManagerName) {
+        const $configArea = this.getDOM(gridManagerName);
 
-        this.updateConfigList($table, settings);
+        this.updateConfigList(gridManagerName);
         $configArea.show();
-        this.updateConfigListHeight($table);
+        this.updateConfigListHeight(gridManagerName);
 
+        const { closeConfigByBody } = this.eventMap[gridManagerName];
         // 点击空处关闭
         const $body = jTool('body');
-        $body.unbind(closeEvent);
-        $body.bind(closeEvent, function (e) {
+        $body.off(closeConfigByBody.eventName);
+        $body.on(closeConfigByBody.eventName, function (e) {
             const eventSource = jTool(e.target);
             if (eventSource.hasClass('config-area') || eventSource.closest('.config-area').length === 1) {
                 return false;
             }
             $configArea.hide();
-            $body.unbind(closeEvent);
+            $body.off(closeConfigByBody.eventName);
         });
     }
 
     /**
      * 隐藏配置区域
-     * @param $table
+     * @param gridManagerName
      */
-    hide($table) {
-        const $tableWrap = $table.closest('.table-wrap');
-        const $configArea = jTool('.config-area', $tableWrap);
+    hide(gridManagerName) {
+        const $configArea = this.getDOM(gridManagerName);
         $configArea.hide();
-        jTool('body').unbind(closeEvent);
     }
 
     /**
      * 更新配置区域列表
-     * @param $table
-     * @param settings
+     * @param gridManagerName
      */
-    updateConfigList($table, settings) {
-        const $tableWrap = $table.closest('.table-wrap');
-        const $configArea = jTool('.config-area', $tableWrap);
-        const $configList = jTool('.config-list', $tableWrap);
-        const gridManagerName = base.getKey($table);
+    updateConfigList(gridManagerName) {
+        const $configArea = this.getDOM(gridManagerName);
+        const $configList = jTool('.config-list', $configArea);
 
         // 可视列计数
         let showNum = 0;
 
+        const settings = cache.getSettings(gridManagerName);
         const columnList = [];
         jTool.each(settings.columnMap, (key, col) => {
             columnList[col.index] = col;
@@ -239,11 +245,11 @@ class Config {
 
     /**
      * 更新配置列表区的高度: 用于解决 config-list 无法继承 config-area 设置的 max-height问题
-     * @param $table
+     * @param gridManagerName
      */
-    updateConfigListHeight($table) {
-        const $tableWrap = $table.closest('.table-wrap');
-        const $configArea = jTool('.config-area', $tableWrap);
+    updateConfigListHeight(gridManagerName) {
+        const $tableWrap = base.getWrap(gridManagerName);
+        const $configArea = this.getDOM(gridManagerName);
         const configList = $configArea.find('.config-list').get(0);
         const $configInfo = $configArea.find('.config-info');
         setTimeout(() => {
@@ -258,19 +264,8 @@ class Config {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-		// 清除body上的关闭事件
-        jTool('body').unbind(closeEvent);
-        const configArea = jTool(`.config-area[config-key="${gridManagerName}"]`);
-
-        if (!configArea.length) {
-            return;
-        }
-
-        // 清理: 配置区域关闭事件
-        configArea.off('click', '.config-action');
-
-        // 清理: 配置列表事件 - 配置
-        configArea.off('click', '.config-list li');
+        // 清除事件
+        base.clearBodyEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new Config();
