@@ -135,7 +135,7 @@
 
 	<script type="text/javascript">
 		// GridManager 渲染
-		var table = document.querySelector('table');
+        var table = document.querySelector('table');
 		function init() {
 			table.GM({
 				gridManagerName: 'test',
@@ -297,9 +297,9 @@
 				},
 
                 // 单个td的hover事件
-                cellHover: function(row, rowIndex, colIndex){
-				    console.log(row, rowIndex, colIndex);
-                }
+                // cellHover: function(row, rowIndex, colIndex){
+				 //    console.log(row, rowIndex, colIndex);
+                // }
 			}, function(query){
 				// 渲染完成后的回调函数
 				console.log('渲染完成后的回调函数:', query);
@@ -307,7 +307,7 @@
 		}
 
 		function onShowConfig() {
-            document.querySelector('table[grid-manager="test"]').GM('showConfig');
+		    GridManager.setConfigVisible('test', true);
         }
 
 		// 删除功能

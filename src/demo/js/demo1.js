@@ -210,13 +210,13 @@ const demo1 = {
                 return;
             }
             fnRunInfo.innerHTML = '';
+            const log = eval(fnCode.value);
+            const nowFn = fnRun.getAttribute('now-fun');
+            console.group(nowFn);
+            console.log(fnCode.value);
+            console.log(log);
+            console.groupEnd();
             try {
-                const log = eval(fnCode.value);
-                const nowFn = fnRun.getAttribute('now-fun');
-                console.group(nowFn);
-                console.log(fnCode.value);
-                console.log(log);
-                console.groupEnd();
                 if (nowFn === 'init') {
                     renderSelect(true);
                 }
