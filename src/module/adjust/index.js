@@ -41,20 +41,17 @@ class Adjust {
             // 事件源所在的th
             let $th = _dragAction.closest('th');
 
-            // 事件源所在的tr
-            let $tr = $th.parent();
-
             // 事件源所在的table
-            let	_$table = base.getTable(gridManagerName);
+            let	$table = base.getTable(gridManagerName);
 
             // 当前存储属性
-            const { adjustBefore, isIconFollowText } = cache.getSettings(gridManagerName);
+            const { adjustBefore, adjustAfter, isIconFollowText } = cache.getSettings(gridManagerName);
 
             // 事件源同层级下的所有th
-            let	_allTh = $tr.find('th[th-visible="visible"]');
+            let	$allTh = base.getFakeVisibleTh(gridManagerName);
 
             // 事件源下一个可视th
-            let	$nextTh = _allTh.eq($th.index(_allTh) + 1);
+            let	$nextTh = $allTh.eq($th.index($allTh) + 1);
 
             // 存储与事件源同列的所有td
             let	$td = base.getColTd($th);
@@ -66,11 +63,14 @@ class Adjust {
             $th.addClass(_this.selectedClassName);
             $td.addClass(_this.selectedClassName);
 
+            // 禁用文本选中
+            $table.addClass(NO_SELECT_CLASS_NAME);
+
             // 执行移动事件
             _this.__runMoveEvent(gridManagerName, $th, $nextTh, isIconFollowText);
 
             // 绑定停止事件
-            _this.__runStopEvent(_$table, $th, $td);
+            _this.__runStopEvent(gridManagerName, $table, $th, $td, adjustAfter);
             return false;
         });
     }
@@ -112,8 +112,6 @@ class Adjust {
         const { eventName, eventQuerySelector } = this.eventMap[gridManagerName].adjusting;
         this.$body.off(eventName, eventQuerySelector);
         this.$body.on(eventName, eventQuerySelector, function (event) {
-            const $table = jTool(this);
-            $table.addClass(NO_SELECT_CLASS_NAME);
             _thWidth = event.clientX - $th.offset().left;
             _thWidth = Math.ceil(_thWidth);
             _NextWidth = $nextTh.width() + $th.width() - _thWidth;
@@ -148,24 +146,23 @@ class Adjust {
 
     /**
      * 绑定鼠标放开、移出事件
+     * @param gridManagerName
      * @param $table
      * @param $th
      * @param $td
+     * @param adjustAfter
      * @private
      */
-    __runStopEvent($table, $th, $td) {
+    __runStopEvent(gridManagerName, $table, $th, $td, adjustAfter) {
         $table.unbind('mouseup mouseleave');
         $table.bind('mouseup mouseleave', event => {
-            const settings = cache.getSettings($table);
+            const adjusting = this.eventMap[gridManagerName].adjusting;
             $table.unbind('mousemove mouseleave');
-            const { eventName, eventQuerySelector } = this.eventMap[settings.gridManagerName].adjusting;
-            const $body = jTool('body');
-            $body.off(eventName, eventQuerySelector);
+            this.$body.off(adjusting.eventName, adjusting.eventQuerySelector);
 
-            // 其它操作也在table以该事件进行绑定,所以通过class进行区别
+            // 宽度调整成功回调事件
             if ($th.hasClass(this.selectedClassName)) {
-                // 宽度调整成功回调事件
-                settings.adjustAfter(event);
+                adjustAfter(event);
             }
             $th.removeClass(this.selectedClassName);
             $td.removeClass(this.selectedClassName);
@@ -175,7 +172,7 @@ class Adjust {
             base.updateScrollStatus($table);
 
             // 更新存储信息
-            cache.update(settings);
+            cache.update(cache.getSettings($table));
         });
     }
 
