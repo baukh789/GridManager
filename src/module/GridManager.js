@@ -222,24 +222,24 @@ export default class GridManager {
         if (!isRendered(table, 'setConfigVisible')) {
             return;
         }
-        const $table = __jTable(table);
-        const settings = cache.getSettings($table);
-        if (!settings.supportConfig) {
+        const gridManagerName = base.getKey(__jTable(table));
+
+        if (!cache.getSettings(gridManagerName).supportConfig) {
             base.outLog('supportConfig未配置，setConfigVisible不可用', 'error');
             return;
         }
 
         switch (visible) {
             case true: {
-                config.show(settings);
+                config.show(gridManagerName);
                 break;
             }
             case false: {
-                config.hide($table, settings);
+                config.hide(gridManagerName);
                 break;
             }
             case undefined: {
-                config.toggle(settings.gridManagerName);
+                config.toggle(gridManagerName);
                 break;
             }
             default: {
@@ -294,7 +294,7 @@ export default class GridManager {
         if (!isRendered(table, 'exportGridToXls')) {
             return;
         }
-		return exportFile.__exportGridToXls(__jTable(table), fileName, onlyChecked);
+		return exportFile.__exportGridToXls(base.getKey(__jTable(table)), fileName, onlyChecked);
 	}
 
 	/**
@@ -595,7 +595,7 @@ export default class GridManager {
 
         // init drag
         if (settings.supportDrag) {
-            drag.init($table);
+            drag.init(gridManagerName);
         }
 
         // init checkbox

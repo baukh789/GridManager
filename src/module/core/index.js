@@ -25,12 +25,10 @@ class Core {
     refresh($table, callback) {
         const settings = cache.getSettings($table);
 
-        const tableWrap = $table.closest('.table-wrap');
-
         // 更新刷新图标状态
         ajaxPage.updateRefreshIconState($table, true);
 
-        base.showLoading(tableWrap, settings.loadingTemplate);
+        base.showLoading(settings.gridManagerName, settings.loadingTemplate);
 
         let ajaxPromise = transformToPromise($table, settings);
 
@@ -42,13 +40,13 @@ class Core {
             this.driveDomForSuccessAfter($table, settings, response, callback);
             settings.ajax_success(response);
             settings.ajax_complete(response);
-            base.hideLoading(tableWrap);
+            base.hideLoading(settings.gridManagerName);
             ajaxPage.updateRefreshIconState($table, false);
         })
         .catch(error => {
             settings.ajax_error(error);
             settings.ajax_complete(error);
-            base.hideLoading(tableWrap);
+            base.hideLoading(settings.gridManagerName);
             ajaxPage.updateRefreshIconState($table, false);
         });
     }

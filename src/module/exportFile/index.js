@@ -65,8 +65,9 @@ class ExportFile {
      */
 	@parseTpl(staticTpl)
 	createExportHTML(params) {
-	    const { $table, base, onlyChecked } = params;
-        const thDOM = base.getVisibleTh(base.getKey($table), false);
+	    const { gridManagerName, onlyChecked } = params;
+        const thDOM = base.getVisibleTh(gridManagerName, false);
+        const $table = base.getTable(gridManagerName);
         let	trDOM = null;
         // 验证：是否只导出已选中的表格
         if (onlyChecked) {
@@ -99,15 +100,15 @@ class ExportFile {
 
 	/**
 	 * 导出表格 .xls
-	 * @param $table:当前操作的grid,由插件自动传入
+	 * @param gridManagerName
 	 * @param fileName: 导出后的文件名, 该文件名不包含后缀名
 	 * @param onlyChecked: 是否只导出已选中的表格
 	 * @returns {boolean}
      * @private
      */
-	async __exportGridToXls($table, fileName, onlyChecked) {
-	    const settings = cache.getSettings($table);
-	    const {gridManagerName, query, loadingTemplate, exportConfig, pageData, sortData} = settings;
+	async __exportGridToXls(gridManagerName, fileName, onlyChecked) {
+	    const settings = cache.getSettings(gridManagerName);
+	    const { query, loadingTemplate, exportConfig, pageData, sortData } = settings;
 
         fileName = this.addSuffix(gridManagerName, fileName, exportConfig.suffix);
 
@@ -125,7 +126,7 @@ class ExportFile {
 
 	    switch (exportConfig.mode) {
             case 'blob': {
-                await this.downBlob($table, loadingTemplate, fileName, query, exportConfig.handler, pageData, sortData, selectedList);
+                await this.downBlob(gridManagerName, loadingTemplate, fileName, query, exportConfig.handler, pageData, sortData, selectedList);
                 break;
             }
             // TODO 待添加
@@ -140,12 +141,12 @@ class ExportFile {
             // }
 
             case 'static': {
-                this.downStatic($table, fileName, onlyChecked);
+                this.downStatic(gridManagerName, fileName, onlyChecked);
                 break;
             }
 
             default: {
-                this.downStatic($table, fileName, onlyChecked);
+                this.downStatic(gridManagerName, fileName, onlyChecked);
                 break;
             }
         }
@@ -193,18 +194,18 @@ class ExportFile {
 
     /**
      * 下载方式: 静态下载
-     * @param $table
+     * @param gridManagerName
      * @param fileName
      * @param onlyChecked
      * @returns {boolean}
      */
-	downStatic($table, fileName, onlyChecked) {
-        this.dispatchDownload(fileName, this.getHref(this.createExportHTML({$table, base, onlyChecked})));
+	downStatic(gridManagerName, fileName, onlyChecked) {
+        this.dispatchDownload(fileName, this.getHref(this.createExportHTML({gridManagerName, onlyChecked})));
     }
 
     /**
      * 下载方式: Blob格式
-     * @param $table
+     * @param gridManagerName
      * @param loadingTemplate: loading模板
      * @param fileName: 导出的文件名，不包含后缀名
      * @param query: 请求参数信息
@@ -212,14 +213,13 @@ class ExportFile {
      * @param sortData: 排序信息
      * @param selectedList: 当前选中的列表
      */
-    async downBlob($table, loadingTemplate, fileName, query, exportHandler, pageData, sortData, selectedList) {
-        const $tableWrap = $table.closest('.table-wrap');
+    async downBlob(gridManagerName, loadingTemplate, fileName, query, exportHandler, pageData, sortData, selectedList) {
         try {
-            base.showLoading($table, loadingTemplate);
+            base.showLoading(gridManagerName, loadingTemplate);
 
             const res = await exportHandler(fileName, query, pageData, sortData, selectedList);
 
-            base.hideLoading($tableWrap);
+            base.hideLoading(gridManagerName);
 
             const blobPrototype = Blob.prototype;
             let blob = null;
@@ -243,7 +243,7 @@ class ExportFile {
             this.dispatchDownload(fileName, URL.createObjectURL(blob));
         } catch (e) {
             base.outLog(`blob方式导出错误, ${e}`, 'error');
-            base.hideLoading($tableWrap);
+            base.hideLoading(gridManagerName);
         }
     }
 }

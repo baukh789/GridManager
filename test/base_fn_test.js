@@ -25,7 +25,7 @@ describe('base 验证类的属性及方法总量', () => {
     });
     it('Function count', () => {
         // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(33 + 1);
+        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(32 + 1);
     });
 });
 
@@ -172,46 +172,54 @@ describe('base.getObjectIndexToArray(arr, obj)', () => {
     });
 });
 
-describe('base.showLoading($table, loadingTemplate, cb)', () => {
-    let $body = null;
+describe('base.showLoading(gridManagerName, loadingTemplate)', () => {
+    let gridManagerName = null;
     beforeEach(() => {
-        $body = jTool('body');
+        gridManagerName = 'test';
+        document.body.innerHTML = tableTestTpl;
     });
     afterEach(() => {
-        $body = null;
+        gridManagerName = null;
         document.body.innerHTML = '';
     });
     it('基础验证', () => {
         expect(base.showLoading).toBeDefined();
-        expect(base.showLoading.length).toBe(3);
+        expect(base.showLoading.length).toBe(2);
     });
 
-    it('并不存在的dom', () => {
-        expect(base.showLoading(jTool('body-void'))).toBe(false);
+    it('当前未存在loading dom', () => {
+        expect(base.showLoading(gridManagerName)).toBe(true);
     });
 
-    it('无回调函数', () => {
+    it('第二次执行(上一次执行未进行销毁)', () => {
+        jTool('.table-wrap').append('<div class="gm-load-area"></div>');
+        expect(base.showLoading(gridManagerName)).toBe(true);
+    });
+});
+
+describe('base.hideLoading(gridManagerName)', () => {
+    let gridManagerName = null;
+    beforeEach(() => {
+        gridManagerName = 'test';
+        document.body.innerHTML = tableTestTpl;
+        jTool('.table-wrap').append('<div class="gm-load-area"></div>');
+    });
+    afterEach(() => {
+        gridManagerName = null;
+        document.body.innerHTML = '';
+    });
+    it('基础验证', () => {
+        expect(base.hideLoading).toBeDefined();
+        expect(base.hideLoading.length).toBe(1);
+    });
+
+    it('执行验证', () => {
         jasmine.clock().install();
-        expect(base.showLoading($body)).toBe(true);
+        expect(base.hideLoading(gridManagerName)).toBe(true);
+        expect(document.querySelector('.gm-load-area').nodeName).toBe('DIV');
         jasmine.clock().tick(500);
+        expect(document.querySelector('.gm-load-area')).toBeNull();
         jasmine.clock().uninstall();
-    });
-
-    it('当前已经存在loading dom', () => {
-        let load = document.createElement('div');
-        load.className = 'gm-load-area';
-        $body.append(load);
-        expect(base.showLoading($body)).toBe(true);
-    });
-
-    it('回调函数是否执行', () => {
-        jasmine.clock().install();
-        let callback = jasmine.createSpy('callback');
-        expect(base.showLoading($body, undefined, callback)).toBe(true);
-        jasmine.clock().tick(100);
-        expect(callback).toHaveBeenCalled();
-        jasmine.clock().uninstall();
-        callback = null;
     });
 });
 

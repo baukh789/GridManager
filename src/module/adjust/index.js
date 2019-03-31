@@ -34,7 +34,7 @@ class Adjust {
         this.$body = jTool('body');
         this.eventMap[gridManagerName] = getAdjustEvent(gridManagerName, base.getQuerySelector(gridManagerName));
 
-        const {eventName, eventQuerySelector} = this.eventMap[gridManagerName].adjustStart;
+        const { eventName, eventQuerySelector } = this.eventMap[gridManagerName].adjustStart;
         this.$body.on(eventName, eventQuerySelector, function (event) {
             const _dragAction = jTool(this);
             // 事件源所在的th
@@ -44,10 +44,10 @@ class Adjust {
             let $tr = $th.parent();
 
             // 事件源所在的table
-            let	_$table = $tr.closest('table');
+            let	_$table = base.getTable(gridManagerName);
 
             // 当前存储属性
-            const { adjustBefore, isIconFollowText, gridManagerName } = cache.getSettings(_$table);
+            const { adjustBefore, isIconFollowText } = cache.getSettings(gridManagerName);
 
             // 事件源同层级下的所有th
             let	_allTh = $tr.find('th[th-visible="visible"]');
@@ -64,9 +64,6 @@ class Adjust {
             // 增加宽度调整中样式
             $th.addClass(_this.selectedClassName);
             $td.addClass(_this.selectedClassName);
-
-            // 更新界面交互标识
-            base.updateInteractive(_$table, 'adjust');
 
             // 执行移动事件
             _this.__runMoveEvent(gridManagerName, $th, $nextTh, isIconFollowText);
@@ -172,9 +169,6 @@ class Adjust {
             $th.removeClass(this.selectedClassName);
             $td.removeClass(this.selectedClassName);
             $table.removeClass('no-select-text');
-
-            // 更新界面交互标识
-            base.updateInteractive($table);
 
             // 更新滚动轴状态
             base.updateScrollStatus($table);

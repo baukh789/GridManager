@@ -88,26 +88,32 @@ class Base {
 
     /**
      * 显示加载中动画
-     * @param $dom 加载动画的容器
+     * @param gridManagerName
      * @param loadingTemplate
-     * @param cb 回调函数
      */
-    showLoading($dom, loadingTemplate, cb) {
-        if (!$dom || $dom.length === 0) {
-            return false;
-        }
-        const loading = $dom.find('.gm-load-area');
-        if (loading.length > 0) {
-            loading.remove();
+    showLoading(gridManagerName, loadingTemplate) {
+        const $tableWrap = this.getWrap(gridManagerName);
+
+        const $loading = $tableWrap.find('.gm-load-area');
+        if ($loading.length > 0) {
+            $loading.remove();
         }
 
-        const loadingDom = jTool(loadingTemplate);
-        loadingDom.addClass('gm-load-area');
-        $dom.append(loadingDom);
+        const $loadingDom = jTool(loadingTemplate);
+        $loadingDom.addClass('gm-load-area');
+        $tableWrap.append($loadingDom);
+        return true;
+    }
+
+    /**
+     * 隐藏加载中动画
+     * @param gridManagerName
+     */
+    hideLoading(gridManagerName) {
+        const $tableWrap = this.getWrap(gridManagerName);
         window.setTimeout(() => {
-            typeof cb === 'function' ? cb() : '';
-        }, 100);
-
+            jTool('.gm-load-area', $tableWrap).remove();
+        }, 500);
         return true;
     }
 
@@ -335,23 +341,11 @@ class Base {
 
     /**
      * 获取同列的 td jTool 对象
-     * @param $dom: $th or $td
+     * @param $th
      * @returns {jTool}
      */
-    getColTd($dom) {
-        const $table = this.getTable($dom, true);
-        const domIndex = $dom.index();
-        const trList = jTool('tbody tr', $table);
-        let tdList = [];
-        let _td = null;
-
-        jTool.each(trList, (i, v) => {
-            _td = jTool('td', v).get(domIndex);
-            if (_td) {
-                tdList.push(_td);
-            }
-        });
-        return jTool(tdList);
+    getColTd($th) {
+        return jTool(`tbody tr td:nth-child(${$th.index() + 1})`, this.getTable($th, true));
     }
 
     /**
@@ -395,19 +389,21 @@ class Base {
      * @param gridManagerName
      */
     updateVisibleLast(gridManagerName) {
-        const $visibleThList = this.getVisibleTh(gridManagerName);
-
         const $fakeVisibleThList = this.getFakeVisibleTh(gridManagerName);
-        const lastIndex = $fakeVisibleThList.length - 1;
-        let isLastVisible = null;
+        const index = $fakeVisibleThList.length - 1;
+        const $lastFakeTh = $fakeVisibleThList.eq(index);
 
+        // 清除所有列
         jTool(`${this.getQuerySelector(gridManagerName)} [last-visible="true"]`).attr('last-visible', false);
-        jTool.each($fakeVisibleThList, (index, item) => {
-            isLastVisible = index === lastIndex;
-            item.setAttribute('last-visible', isLastVisible);
-            $visibleThList.get(index).setAttribute('last-visible', isLastVisible);
-            this.getColTd(jTool(item)).attr('last-visible', isLastVisible);
-        });
+
+        // fake th 最后一项增加标识
+        $lastFakeTh.attr('last-visible', true);
+
+        // th 最后一项增加标识
+        this.getVisibleTh(gridManagerName).eq(index).attr('last-visible', true);
+
+        // td 最后一项增加标识
+        this.getColTd($lastFakeTh).attr('last-visible', true);
     }
 
     /**
@@ -536,37 +532,6 @@ class Base {
         // 返回宽度值
         // 文本所占宽度 + icon所占的空间 + 左内间距 + 右内间距 + (由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错) + th-wrap减去的1px
         return textDreamland.width() + iconWidth + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1;
-    }
-    /**
-     * 隐藏加载中动画
-     * @param dom
-     * @param cb
-     */
-    hideLoading(dom, cb) {
-        if (!dom || dom.length === 0) {
-            return false;
-        }
-        window.setTimeout(() => {
-            jTool('.gm-load-area', dom).remove();
-            typeof cb === 'function' ? cb() : '';
-        }, 500);
-        return true;
-    }
-
-    /**
-     * 更新当前用户交互状态, 用于优化置顶状态下进行[拖拽, 宽度调整]操作时,页面出现滚动的问题
-     * @param $table
-     * @param interactive: 如果不存在于interactiveList内, 将删除属性[user-interactive]
-     */
-    updateInteractive($table, interactive) {
-        const interactiveList = ['adjust', 'drag'];
-        // 事件源所在的容器
-        let	tableWrap = $table.closest('.table-wrap');
-        if (!interactive || interactiveList.indexOf(interactive) === -1) {
-            tableWrap.removeAttr('user-interactive');
-        } else {
-            tableWrap.attr('user-interactive', interactive);
-        }
     }
 
     /**

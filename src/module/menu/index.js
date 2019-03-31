@@ -62,8 +62,7 @@ class Menu {
 
     /**
      * 创建menu DOM
-     * @param $table
-     * @param settings
+     * @param params
      */
     @parseTpl(menuTpl)
     createMenuHtml(params) {
@@ -182,9 +181,8 @@ class Menu {
 			if (_this.isDisabled(this, e)) {
 				return false;
 			}
-			const _gridMenu = jTool(this).closest('.grid-menu');
 			const refreshType = this.getAttribute('refresh-type');
-			let _settings = cache.getSettings(_gridMenu.attr(_this.keyName));
+			let _settings = cache.getSettings(gridManagerName);
 			let cPage = _settings.pageData[_settings.currentPageKey];
 
 			// 上一页
@@ -200,7 +198,7 @@ class Menu {
 
 			ajaxPage.gotoPage(_settings, cPage);
             _this.$body.off(closeMenu.eventName);
-			_gridMenu.hide();
+			$menu.hide();
 		});
 
 		// 绑定事件：另存为EXCEL、已选中表格另存为Excel
@@ -210,15 +208,13 @@ class Menu {
 				if (_this.isDisabled(this, e)) {
 					return false;
 				}
-				const _gridMenu = jTool(this).closest('.grid-menu');
-				const _table = base.getTable(_gridMenu.attr(_this.keyName));
 				let onlyChecked = false;
 				if (this.getAttribute('only-checked') === 'true') {
 					onlyChecked = true;
 				}
-                exportFile.__exportGridToXls(_table, undefined, onlyChecked);
+                exportFile.__exportGridToXls(gridManagerName, undefined, onlyChecked);
                 _this.$body.off(closeMenu.eventName);
-				_gridMenu.hide();
+                $menu.hide();
 			});
 		})();
 
@@ -229,10 +225,9 @@ class Menu {
 				if (_this.isDisabled(this, e)) {
 					return false;
 				}
-				const _gridMenu = jTool(this).closest('.grid-menu');
-				config.toggle(_gridMenu.attr(_this.keyName));
+				config.toggle(gridManagerName);
                 _this.$body.off(closeMenu.eventName);
-				_gridMenu.hide();
+				$menu.hide();
 			});
 		})();
 	}
