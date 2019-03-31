@@ -2,7 +2,7 @@ import remind from '../remind';
 import order from '../order';
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { TABLE_KEY } from '@common/constants';
+import { TABLE_KEY, TR_CACHE_KEY } from '@common/constants';
 import cache from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
@@ -157,7 +157,7 @@ class Dom {
         try {
             jTool.each(data, (index, row) => {
                 const trNode = document.createElement('tr');
-                trNode.setAttribute('cache-key', index);
+                trNode.setAttribute(TR_CACHE_KEY, index);
 
                 // 插入通栏: top-full-column
                 if (typeof settings.topFullColumn.template !== 'undefined') {
@@ -239,7 +239,7 @@ class Dom {
             hoverTd = this;
             const tr = hoverTd.parentNode;
             const colIndex = hoverTd.cellIndex;
-            const rowIndex = parseInt(tr.getAttribute('cache-key'), 10);
+            const rowIndex = parseInt(tr.getAttribute(TR_CACHE_KEY), 10);
 
             // cellHover: 单个td的hover事件
             typeof settings.cellHover === 'function' && settings.cellHover(cache.getRowData(settings.gridManagerName, tr), rowIndex, colIndex);

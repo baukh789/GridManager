@@ -3,7 +3,7 @@
  * 构造类
  */
 import jTool from '@common/jTool';
-import { TABLE_KEY } from '@common/constants';
+import { TABLE_KEY, CACHE_ERROR_KEY } from '@common/constants';
 import base from '@common/base';
 import cache from '@common/cache';
 import adjust from './adjust';
@@ -556,10 +556,10 @@ export default class GridManager {
         await this.initTable($table, settings);
 
         // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
-        if (typeof $table.attr('grid-manager-cache-error') !== 'undefined') {
+        if (typeof $table.attr(CACHE_ERROR_KEY) !== 'undefined') {
             window.setTimeout(() => {
                 cache.saveUserMemory(settings);
-                $table.removeAttr('grid-manager-cache-error');
+                $table.removeAttr(CACHE_ERROR_KEY);
             }, 1000);
         }
 

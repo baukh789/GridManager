@@ -45,7 +45,7 @@ class Config {
                 return false;
             }
 
-            const checkbox = _only.find('.gm-checkbox');
+            const $checkbox = _only.find('.gm-checkbox');
 
             // 单个设置项的thName
             const _thName = _only.attr('th-name');
@@ -62,7 +62,7 @@ class Config {
             jTool('.config-list .no-click', $configArea).removeClass('no-click');
             let isVisible = !_checkbox.prop('checked');
 
-            isVisible ? checkbox.addClass('gm-checkbox-checked') : checkbox.removeClass('gm-checkbox-checked');
+            isVisible ? $checkbox.addClass(checkbox.checkedClassName) : $checkbox.removeClass(checkbox.checkedClassName);
 
             // 设置与当前th同列的td可视状态
             $tableDiv.addClass('config-editing');

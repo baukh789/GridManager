@@ -26,6 +26,18 @@ export const TABLE_HEAD_KEY = 'grid-manager-thead';
 // 吸顶head所使用的key
 export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
 
+// tr 上 cache key
+export const TR_CACHE_KEY = 'grid-manager-mock-thead';
+
+// 用户记忆 localStorage key
+export const MEMORY_KEY = 'GridManagerMemory';
+
+// 版本信息 localStorage key
+export const VERSION_KEY = 'GridManagerVersion';
+
+// 缓存错误 key
+export const CACHE_ERROR_KEY = 'grid-manager-cache-error';
+
 // 序号的列宽
 export const ORDER_WIDTH = '50px';
 

@@ -8,6 +8,7 @@ import jTool from './jTool';
 import base from './base';
 import { Settings, TextSettings } from './Settings';
 import store from './Store';
+import { TR_CACHE_KEY, CACHE_ERROR_KEY, MEMORY_KEY, VERSION_KEY } from './constants';
 
 class Cache {
     /**
@@ -48,12 +49,12 @@ class Cache {
         }
         // target type = Element 元素时, 返回单条数据对象;
         if (jTool.type(target) === 'element') {
-            return store.responseData[gridManagerName][target.getAttribute('cache-key')];
+            return store.responseData[gridManagerName][target.getAttribute(TR_CACHE_KEY)];
         } else if (jTool.type(target) === 'nodeList') {
             // target type =  NodeList 类型时, 返回数组
             let rodData = [];
             jTool.each(target, function (i, v) {
-                rodData.push(store.responseData[gridManagerName][v.getAttribute('cache-key')]);
+                rodData.push(store.responseData[gridManagerName][v.getAttribute(TR_CACHE_KEY)]);
             });
             return rodData;
         } else {
@@ -164,12 +165,12 @@ class Cache {
     delUserMemory(gridManagerName, cleanText) {
         // 如果未指定删除的table, 则全部清除
         if (!gridManagerName) {
-            window.localStorage.removeItem('GridManagerMemory');
+            window.localStorage.removeItem(MEMORY_KEY);
             base.outLog(`用户记忆被全部清除: ${cleanText}`, 'warn');
             return true;
         }
 
-        let GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
+        let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
         if (!GridManagerMemory) {
             base.outLog(`${gridManagerName}: 当前无用户记忆`, 'warn');
             return false;
@@ -181,7 +182,7 @@ class Cache {
         delete GridManagerMemory[_key];
 
         // 清除后, 重新存储
-        window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify(GridManagerMemory));
         base.outLog(`${gridManagerName}用户记忆被清除: ${cleanText}`, 'warn');
         return true;
     }
@@ -205,10 +206,10 @@ class Cache {
         if (!_key) {
             return {};
         }
-        let GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
-        // 如无数据，增加属性标识：grid-manager-cache-error
+        let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
+        // 如无数据，增加缓存错误标识
         if (!GridManagerMemory || GridManagerMemory === '{}') {
-            base.getTable(gridManagerName).attr('grid-manager-cache-error', 'error');
+            base.getTable(gridManagerName).attr(CACHE_ERROR_KEY, 'error');
             return {};
         }
         GridManagerMemory = JSON.parse(GridManagerMemory);
@@ -248,15 +249,15 @@ class Cache {
         // 1.函数类型的模板
         // 2.值为undefined
         const cacheString = JSON.stringify(_cache);
-        let GridManagerMemory = window.localStorage.getItem('GridManagerMemory');
+        let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
         if (!GridManagerMemory) {
             GridManagerMemory = {};
         } else {
             GridManagerMemory = JSON.parse(GridManagerMemory);
         }
         GridManagerMemory[this.getMemoryKey(gridManagerName)] = cacheString;
-        window.localStorage.setItem('GridManagerMemory', JSON.stringify(GridManagerMemory));
-        return cacheString;
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify(GridManagerMemory));
+        // return cacheString;
     }
 
     /**
@@ -462,15 +463,15 @@ class Cache {
      * 验证版本号,如果版本号变更清除用户记忆
      */
     cleanTableCacheForVersion() {
-        const cacheVersion = window.localStorage.getItem('GridManagerVersion');
+        const cacheVersion = window.localStorage.getItem(VERSION_KEY);
         // 当前为第一次渲染
         if (!cacheVersion) {
-            window.localStorage.setItem('GridManagerVersion', store.version);
+            window.localStorage.setItem(VERSION_KEY, store.version);
         }
         // 版本变更, 清除所有的用户记忆
         if (cacheVersion && cacheVersion !== store.version) {
             this.delUserMemory(null, '版本已升级,原全部缓存被自动清除');
-            window.localStorage.setItem('GridManagerVersion', store.version);
+            window.localStorage.setItem(VERSION_KEY, store.version);
         }
     }
 

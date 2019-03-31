@@ -2,7 +2,7 @@
  * checkbox: 数据选择/全选/返选
  * */
 import './style.less';
-import { CHECKBOX_WIDTH } from '@common/constants';
+import { CHECKBOX_WIDTH, TR_CACHE_KEY } from '@common/constants';
 import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
@@ -14,12 +14,22 @@ import radioTpl from './radio.tpl.html';
 import getCheckboxEvent from './event';
 
 class Checkbox {
-	// 全选的唯一标识
+    eventMap = {};
+
+    // 全选的唯一标识
 	get key() {
 		return 'gm_checkbox';
 	}
 
-	eventMap = {};
+    // 选中ClassName
+	get checkedClassName() {
+	    return 'gm-checkbox-checked';
+    }
+
+    // 半选中ClassName
+    get indeterminateClassName() {
+        return 'gm-checkbox-indeterminate';
+    }
 
 	/**
      * 初始化选择框事件
@@ -50,7 +60,7 @@ class Checkbox {
             const settings = cache.getSettings(gridManagerName);
 
             settings.checkedBefore(cache.getCheckedData(gridManagerName));
-            const tableData = _this.resetData(gridManagerName, this.checked, false, jTool(this).closest('tr').attr('cache-key'));
+            const tableData = _this.resetData(gridManagerName, this.checked, false, jTool(this).closest('tr').attr(TR_CACHE_KEY));
             _this.resetDOM(settings, tableData);
             settings.checkedAfter(cache.getCheckedData(gridManagerName));
         });
@@ -60,7 +70,7 @@ class Checkbox {
             const settings = cache.getSettings(gridManagerName);
 
             settings.checkedBefore(cache.getCheckedData(gridManagerName));
-            const tableData = _this.resetData(gridManagerName, undefined, false, jTool(this).closest('tr').attr('cache-key'), true);
+            const tableData = _this.resetData(gridManagerName, undefined, false, jTool(this).closest('tr').attr(TR_CACHE_KEY), true);
             _this.resetDOM(settings, tableData, true);
             settings.checkedAfter(cache.getCheckedData(gridManagerName));
         });
@@ -209,7 +219,7 @@ class Checkbox {
 		// 更改tbody区域选中状态
         let checkedNum = 0;
 		tableData && tableData.forEach((row, index) => {
-			const $tr = jTool(`tbody tr[cache-key="${index}"]`, $table);
+			const $tr = jTool(`tbody tr[${TR_CACHE_KEY}="${index}"]`, $table);
             const $checkSpan = jTool('td[gm-checkbox="true"] .gm-radio-checkbox', $tr);
 			$tr.attr('checked', row[this.key]);
             isRadio ? this.updateRadioState($checkSpan, row[this.key]) : this.updateCheckboxState($checkSpan, row[this.key] ? 'checked' : 'unchecked');
@@ -250,20 +260,20 @@ class Checkbox {
         const $input = jTool('input[type="checkbox"]', $checkbox);
         switch (state) {
             case 'checked': {
-                $checkbox.addClass('gm-checkbox-checked');
-                $checkbox.removeClass('gm-checkbox-indeterminate');
+                $checkbox.addClass(this.checkedClassName);
+                $checkbox.removeClass(this.indeterminateClassName);
                 $input.prop('checked', true);
                 break;
             }
             case 'indeterminate': {
-                $checkbox.removeClass('gm-checkbox-checked');
-                $checkbox.addClass('gm-checkbox-indeterminate');
+                $checkbox.removeClass(this.checkedClassName);
+                $checkbox.addClass(this.indeterminateClassName);
                 $input.prop('checked', false);
                 break;
             }
             case 'unchecked': {
-                $checkbox.removeClass('gm-checkbox-checked');
-                $checkbox.removeClass('gm-checkbox-indeterminate');
+                $checkbox.removeClass(this.checkedClassName);
+                $checkbox.removeClass(this.indeterminateClassName);
                 $input.prop('checked', false);
                 break;
             }
