@@ -268,56 +268,61 @@ const demo1 = {
             // 选择事件执行前事件
             checkedBefore: function(checkedList){
                 console.log('checkedBefore==', checkedList);
-            }
+            },
 
             // 选择事件执行后事件
-            ,checkedAfter: function(checkedList){
+            checkedAfter: function(checkedList){
                 console.log('checkedAfter==', checkedList);
-            }
+            },
 
             // 全选事件执行前事件
-            ,checkedAllBefore: function(checkedList){
+            checkedAllBefore: function(checkedList){
                 console.log('checkedAllBefore==', checkedList);
-            }
+            },
 
             // 全选事件执行后事件
-            ,checkedAllAfter: function(checkedList){
+            checkedAllAfter: function(checkedList){
                 console.log('checkedAllAfter==', checkedList);
-            }
+            },
 
             // 执行排序前事件
-            ,sortingBefore: function(query){
+            sortingBefore: function(query){
                 console.log('sortingBefore', query);
-            }
+            },
 
             // 排行排序后事件
-            ,sortingAfter: function(query){
+            sortingAfter: function(query){
                 console.log('sortingAfter', query);
-            }
+            },
 
             // AJAX请求前事件函数
-            ,ajax_beforeSend: function(promise){
+            ajax_beforeSend: function(promise){
                 console.log('ajax_beforeSend');
-            }
+            },
             // AJAX成功事件函数
-            ,ajax_success: function(response){
+            ajax_success: function(response){
                 console.log('ajax_success');
-            }
+            },
 
             // AJAX失败事件函数
-            ,ajax_error: function(error){
+            ajax_error: function(error){
                 console.log('ajax_error');
-            }
+            },
 
             // AJAX结束事件函数
-            ,ajax_complete: function(complete){
+            ajax_complete: function(complete){
                 console.log('ajax_complete');
-            }
-
-            // ,cellHover: function(row, rowIndex, colIndex) {
-            //     console.log(row, rowIndex, colIndex);
-            // }
-            ,columnData: [
+            },
+            adjustBefore: query => {
+                console.log('adjustBefore=>', query);
+            },
+            adjustAfter: query => {
+                console.log('adjustBefore=>', query);
+            },
+            cellHover: function(row, rowIndex, colIndex) {
+                console.log(row, rowIndex, colIndex);
+            },
+            columnData: [
                 {
                     key: 'pic',
                     remind: 'the pic',
@@ -431,11 +436,7 @@ const demo1 = {
                         return `<span class="plugin-action" title="${row.title}" onclick="demo1.delectRowData(this.title)">删除</span>`;
                     }
                 }
-            ],
-            // 排序后事件
-            sortingAfter: data => {
-                console.log('sortAfter', data);
-            }
+            ]
         }, query => {
             // 渲染完成后的回调函数
             console.log('渲染完成后的回调函数:', query);
