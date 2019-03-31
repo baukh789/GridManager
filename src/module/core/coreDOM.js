@@ -242,8 +242,9 @@ class Dom {
             const rowIndex = parseInt(tr.getAttribute('cache-key'), 10);
 
             // cellHover: 单个td的hover事件
-            typeof settings.cellHover === 'function' && settings.cellHover(cache.getRowData($table, tr), rowIndex, colIndex);
+            typeof settings.cellHover === 'function' && settings.cellHover(cache.getRowData(settings.gridManagerName, tr), rowIndex, colIndex);
         });
+
         jTool('[gm-click]', $table).unbind('click');
         jTool('[gm-click]', $table).bind('click', function () {
             const gridManagerName = $table.attr(TABLE_KEY);
