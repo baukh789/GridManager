@@ -1,7 +1,8 @@
 /**
  * 宽度调整功能所需的事件项
- * @param key
+ * @param gridManagerName
  * @param scope: querySelector 域
+ *
  * #001: adjusted事件中使用到了两个事件类型，1.mouseup 2.mouseleave
  * 其中mouseleave的事件范围超出了querySelector的区域，所以该事件不再交由body代理。
  * 这里的querySelector指向的是table element。
@@ -16,6 +17,6 @@ export default function getAdjustEvent(gridManagerName, scope) {
         adjusting: {eventName: 'mousemove', eventQuerySelector: scope}
 
         // 宽度调整停止, 不在这里使用是由于用到了mouseleave #001
-        // adjusted: {eventName: 'mouseup mouseleave', eventQuerySelector: scope}
+        // adjustAbort: {eventName: 'mouseup mouseleave', eventQuerySelector: scope}
     };
 }

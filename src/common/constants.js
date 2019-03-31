@@ -32,6 +32,9 @@ export const ORDER_WIDTH = '50px';
 // 全选的列宽
 export const CHECKBOX_WIDTH = '40px';
 
+// 禁用文本选中Class Name
+export const NO_SELECT_CLASS_NAME = 'no-select-text';
+
 // 公开方法列表
 export const GM_PUBLISH_METHOD_LIST = [
 	'init',

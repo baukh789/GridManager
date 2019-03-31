@@ -676,7 +676,7 @@ export default class GridManager {
         ajaxPage.destroy(gridManagerName);
         checkbox.destroy(gridManagerName);
         config.destroy(gridManagerName);
-        // drag.destroy(gridManagerName);
+        drag.destroy(gridManagerName);
         menu.destroy(gridManagerName);
         // remind.destroy($table);
         // scroll.destroy($table);

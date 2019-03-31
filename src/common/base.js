@@ -582,7 +582,6 @@ class Base {
         const $body = jTool('body');
         for (let key in eventMap) {
             const { eventName, eventQuerySelector } = eventMap[key];
-            console.log('clearBodyEvent==', eventName, eventQuerySelector);
             if (eventQuerySelector) {
                 $body.off(eventName, eventQuerySelector);
                 continue;

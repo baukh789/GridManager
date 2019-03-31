@@ -5,12 +5,13 @@
 import './style.less';
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
 import cache from '@common/cache';
 import getAdjustEvent from './event';
 
 class Adjust {
     eventMap = {};
+
     /**
      * 宽度调整HTML
      * @returns {string}
@@ -112,7 +113,7 @@ class Adjust {
         this.$body.off(eventName, eventQuerySelector);
         this.$body.on(eventName, eventQuerySelector, function (event) {
             const $table = jTool(this);
-            $table.addClass('no-select-text');
+            $table.addClass(NO_SELECT_CLASS_NAME);
             _thWidth = event.clientX - $th.offset().left;
             _thWidth = Math.ceil(_thWidth);
             _NextWidth = $nextTh.width() + $th.width() - _thWidth;
@@ -168,7 +169,7 @@ class Adjust {
             }
             $th.removeClass(this.selectedClassName);
             $td.removeClass(this.selectedClassName);
-            $table.removeClass('no-select-text');
+            $table.removeClass(NO_SELECT_CLASS_NAME);
 
             // 更新滚动轴状态
             base.updateScrollStatus($table);
