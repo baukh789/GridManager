@@ -1,128 +1,130 @@
 /*
  * drag: 拖拽
+ *
+ * #001: 这里使用get(0).innerHTML 而不直接使用.html()的原因是: jTool中的html直接添加table标签存在BUG
  */
 import './style.less';
 import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
+import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
 import adjust from '../adjust';
 import config from '../config';
 import dreamlandTpl from './dreamland.tpl.html';
+import getDragEvent from '../drag/event';
 
+const draggingClassName = 'drag-ongoing';
 class Drag {
-	/**
+    eventMap = {};
+
+    /**
 	 * 初始化拖拽
 	 * @param gridManagerName
      */
 	init(gridManagerName) {
         const _this = this;
         const $table = base.getTable(gridManagerName);
+        const table = $table.get(0);
         const $body = jTool('body');
+        this.eventMap[gridManagerName] = getDragEvent(gridManagerName, `${base.getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
+        const { dragStart, dragging, dragAbort } = this.eventMap[gridManagerName];
+
+        // 拖拽事件仅绑在fake head th
         // 指定拖拽换位事件源,配置拖拽样式
-        $table.off('mousedown', '.drag-action');
-        $table.on('mousedown', '.drag-action', function (event) {
+        $body.on(dragStart.eventName, dragStart.eventQuerySelector, function (event) {
             // 获取设置项
             let settings = cache.getSettings(gridManagerName);
 
             const { columnMap, dragBefore, animateTime, dragAfter, supportAdjust, supportConfig } = settings;
 
             // 事件源th
-            let _th = jTool(this).closest('th');
-
-            // 事件源所在的tr
-            let _tr = _th.parent();
+            const $th = jTool(this).closest('th');
+            const th = $th.get(0);
 
             // fake thead 下所有的 th
-            let _allTh = base.getFakeVisibleTh(gridManagerName);
-
-            // 事件源所在的DIV
-            const tableDiv = base.getDiv(gridManagerName);
+            let $allFakeVisibleTh = base.getFakeVisibleTh(gridManagerName);
 
             // 事件源所在的容器
-            const _tableWrap = base.getWrap(gridManagerName);
+            const $tableWrap = base.getWrap(gridManagerName);
 
             // 与事件源同列的所有td
-            const colTd = base.getColTd(_th);
+            const $colTd = base.getColTd($th);
 
             // 列拖拽触发回调事件
             dragBefore(event);
 
             // 禁用文字选中效果
-            $body.addClass('no-select-text');
+            $body.addClass(NO_SELECT_CLASS_NAME);
 
             // 增加拖拽中样式
-            _th.addClass('drag-ongoing opacityChange');
-            colTd.addClass('drag-ongoing opacityChange');
+            $th.addClass(draggingClassName);
+            $colTd.addClass(draggingClassName);
 
-            _tableWrap.append('<div class="dreamland-div"></div>');
-            let dreamlandDIV = jTool('.dreamland-div', _tableWrap);
-            dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({$table,  _th, colTd});
+            $tableWrap.append('<div class="dreamland-div"></div>');
+            let $dreamlandDIV = jTool('.dreamland-div', $tableWrap);
+            // #001
+            $dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({ $table,  $th, $colTd });
 
             // 存储移动时的th所处的位置
             let _thIndex = 0;
 
             // 绑定拖拽滑动事件
-            $body.unbind('mousemove');
-            $body.bind('mousemove', function (e2) {
-                _thIndex = _th.index(_allTh);
+            $body.off(dragging.eventName);
+            $body.on(dragging.eventName, function (e2) {
+                _thIndex = $th.index($allFakeVisibleTh);
                 // 事件源的上一个th
-                let prevTh = null;
+                let $prevTh = null;
                 let prevThName = null;
 
                 // 当前移动的非第一列
                 if (_thIndex > 0) {
-                    prevTh = _allTh.eq(_thIndex - 1);
-                    prevThName = base.getThName(prevTh);
+                    $prevTh = $allFakeVisibleTh.eq(_thIndex - 1);
+                    prevThName = base.getThName($prevTh);
                 }
 
                 // 事件源的下一个th
-                let nextTh = null;
+                let $nextTh = null;
                 let nextThName = null;
 
                 // 当前移动的非最后一列
-                if (_thIndex < _allTh.length - 1) {
-                    nextTh = _allTh.eq(_thIndex + 1);
-                    nextThName = nextTh.attr('th-name');
+                if (_thIndex < $allFakeVisibleTh.length - 1) {
+                    $nextTh = $allFakeVisibleTh.eq(_thIndex + 1);
+                    nextThName = $nextTh.attr('th-name');
                 }
 
                 // 禁用配置的列,不允许移动
-                if (prevTh && prevTh.length !== 0 && columnMap[prevThName].disableCustomize) {
-                    prevTh = undefined;
-                } else if (nextTh && nextTh.length !== 0 && columnMap[nextThName].disableCustomize) {
-                    nextTh = undefined;
+                if ($prevTh && $prevTh.length !== 0 && columnMap[prevThName].disableCustomize) {
+                    $prevTh = undefined;
+                } else if ($nextTh && $nextTh.length !== 0 && columnMap[nextThName].disableCustomize) {
+                    $nextTh = undefined;
                 }
 
-                dreamlandDIV.show();
-                dreamlandDIV.css({
-                    width: _th.get(0).offsetWidth,
-                    height: $table.get(0).offsetHeight,
-                    left: e2.clientX - _tableWrap.offset().left + window.pageXOffset - _th.get(0).offsetWidth / 2,
-                    top: e2.clientY - _tableWrap.offset().top + window.pageYOffset - dreamlandDIV.find('th').get(0).offsetHeight / 2
+                $dreamlandDIV.show();
+                $dreamlandDIV.css({
+                    width: th.offsetWidth,
+                    height: table.offsetHeight,
+                    left: e2.clientX - $tableWrap.offset().left + window.pageXOffset - th.offsetWidth / 2,
+                    top: e2.clientY - $tableWrap.offset().top + window.pageYOffset - $dreamlandDIV.find('th').get(0).offsetHeight / 2
                 });
 
-                _this.updateDrag(gridManagerName, prevTh, nextTh, _th, colTd, dreamlandDIV);
-
-                // 重置TH对象数据
-                _allTh = jTool('th[th-visible="visible"]', _tr);
+                $allFakeVisibleTh = _this.updateDrag(gridManagerName, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh);
             });
 
             // 绑定拖拽停止事件
-            $body.unbind('mouseup');
-            $body.bind('mouseup', function (event) {
-                $body.unbind('mousemove');
-                $body.unbind('mouseup');
+            $body.off(dragAbort.eventName);
+            $body.on(dragAbort.eventName, function (event) {
+                $body.off(dragging.eventName);
+                $body.off(dragAbort.eventName);
                 // 清除临时展示被移动的列
-                dreamlandDIV = jTool('.dreamland-div');
-                if (dreamlandDIV.length !== 0) {
-                    dreamlandDIV.animate({
-                        top: `${$table.get(0).offsetTop}px`,
-                        left: `${_th.get(0).offsetLeft - tableDiv.get(0).scrollLeft}px`
+                if ($dreamlandDIV.length !== 0) {
+                    $dreamlandDIV.animate({
+                        top: `${table.offsetTop}px`,
+                        left: `${th.offsetLeft - base.getDiv(gridManagerName).get(0).scrollLeft}px`
                     }, animateTime, () => {
-                        // tableDiv.css('position',_divPosition);
-                        _th.removeClass('drag-ongoing');
-                        colTd.removeClass('drag-ongoing');
-                        dreamlandDIV.remove();
+                        $th.removeClass(draggingClassName);
+                        $colTd.removeClass(draggingClassName);
+                        $dreamlandDIV.remove();
 
                         // 列拖拽成功回调事件
                         dragAfter(event);
@@ -143,7 +145,7 @@ class Drag {
                 }
 
                 // 开启文字选中效果
-                $body.removeClass('no-select-text');
+                $body.removeClass(NO_SELECT_CLASS_NAME);
             });
         });
 	}
@@ -155,11 +157,11 @@ class Drag {
      */
 	@parseTpl(dreamlandTpl)
 	createDreamlandHtml(params) {
-	    const { $table, _th, colTd } = params;
+	    const { $table, $th, $colTd } = params;
 
         // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
         let tbodyHtml = '';
-        jTool.each(colTd, (i, v) => {
+        jTool.each($colTd, (i, v) => {
             let _cloneTd = v.cloneNode(true);
             _cloneTd.style.height = v.offsetHeight + 'px';
             let _cloneTr = jTool(v).closest('tr').clone();
@@ -168,8 +170,8 @@ class Drag {
 
         return {
             tableClassName: $table.attr('class'),
-            thOuterHtml: jTool('.drag-action', _th).get(0).outerHTML,
-            thStyle: `style="height:${_th.height()}px"`,
+            thOuterHtml: jTool('.drag-action', $th).get(0).outerHTML,
+            thStyle: `style="height:${$th.height()}px"`,
             tbodyHtml: tbodyHtml
         };
     }
@@ -182,8 +184,9 @@ class Drag {
 	 * @param $th
 	 * @param $colTd
 	 * @param $dreamlandDIV
+	 * @param $allFakeVisibleTh
 	 */
-	updateDrag(gridManagerName, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV) {
+	updateDrag(gridManagerName, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh) {
 		// 处理向左拖拽
 		if ($prevTh && $prevTh.length !== 0 && $dreamlandDIV.offset().left < $prevTh.offset().left) {
             // 事件源对应的上一组td
@@ -194,15 +197,15 @@ class Drag {
 			});
 
 			// 同步 head
-            let _prevTh = base.getTh(gridManagerName, $prevTh);
-            let __th = base.getTh(gridManagerName, $th);
-            _prevTh.before(__th);
+            base.getTh(gridManagerName, $prevTh).before(base.getTh(gridManagerName, $th));
 
             // 更新最后一项可视列的标识
             base.updateVisibleLast(gridManagerName);
+            $allFakeVisibleTh = base.getFakeVisibleTh(gridManagerName);
+		}
 
-			// 处理向右拖拽
-		} else if ($nextTh && $nextTh.length !== 0 && $dreamlandDIV.offset().left + $dreamlandDIV.width() > $nextTh.offset().left) {
+		// 处理向右拖拽
+		if ($nextTh && $nextTh.length !== 0 && $dreamlandDIV.offset().left + $dreamlandDIV.width() > $nextTh.offset().left) {
             // 事件源对应的下一组td
 		    let nextTd = base.getColTd($nextTh);
 			$nextTh.after($th);
@@ -211,13 +214,15 @@ class Drag {
 			});
 
             // 同步 head
-            let _nextTh = base.getTh(gridManagerName, $nextTh);
-            let __th = base.getTh(gridManagerName, $th);
-            _nextTh.after(__th);
+            base.getTh(gridManagerName, $nextTh).after(base.getTh(gridManagerName, $th));
 
             // 更新最后一项可视列的标识
             base.updateVisibleLast(gridManagerName);
+            $allFakeVisibleTh = base.getFakeVisibleTh(gridManagerName);
 		}
+
+		// 返回新的可视fake th列
+		return $allFakeVisibleTh;
 	}
 
 	/**
@@ -225,15 +230,7 @@ class Drag {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-		// 清理: 拖拽换位事件
-		base.getTable(gridManagerName).off('mousedown', '.drag-action');
-
-        const $body = jTool('body');
-		// 清理: 拖拽滑动事件
-		$body.unbind('mousemove');
-
-		// 清理: 拖拽停止事件
-		$body.unbind('mouseup');
+        base.clearBodyEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new Drag();

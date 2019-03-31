@@ -30,10 +30,8 @@
                 /* 拖拽换位中 */
                 &.drag-ongoing {
                     cursor: all-scroll;
-                    &.opacityChange {
-                        opacity: 1;
-                        animation: opacityChange 1s ease-in-out infinite;
-                    }
+                    opacity: 1;
+                    animation: opacityChange 1s ease-in-out infinite;
                 }
             }
         }
@@ -58,12 +56,20 @@
             thead{
                 .bg-image();
             }
-            tr {
-                td {
-                    background-color: #fff;
-                    color: #3d3d3d;
-                    padding: 4px;
-                    .text-overflow();
+            tbody{
+
+                tr {
+                    td {
+                        background-color: #fff;
+                        padding: 11px;
+                        .text-overflow();
+                    }
+                    &:nth-child(odd) td{
+                        background-color: #fafafa;
+                    }
+                    &:hover td{
+                        background-color: #F1F8FB;
+                    }
                 }
             }
         }
