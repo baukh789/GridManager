@@ -107,8 +107,8 @@ class Adjust {
     __runMoveEvent(gridManagerName, $th, $nextTh, isIconFollowText) {
         let _thWidth = null;
         let	_NextWidth = null;
-        let _thMinWidth = base.getTextWidth($th, isIconFollowText);
-        let	_NextThMinWidth = base.getTextWidth($nextTh, isIconFollowText);
+        let _thMinWidth = base.getThTextWidth(gridManagerName, $th, isIconFollowText);
+        let	_NextThMinWidth = base.getThTextWidth(gridManagerName, $nextTh, isIconFollowText);
         const { eventName, eventQuerySelector } = this.eventMap[gridManagerName].adjusting;
         this.$body.off(eventName, eventQuerySelector);
         this.$body.on(eventName, eventQuerySelector, function (event) {

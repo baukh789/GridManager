@@ -536,8 +536,6 @@ class Base {
      */
     getTextWidth(gridManagerName, text, cssObj) {
         const $textDreamland = jTool(`.table-wrap[${WRAP_KEY}="${gridManagerName}"] .text-dreamland`);
-
-        console.log(`.table-wrap[${WRAP_KEY}="${gridManagerName}"] .text-dreamland`);
         $textDreamland.html(text);
         cssObj && $textDreamland.css(cssObj);
         return $textDreamland.width();
