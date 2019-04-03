@@ -48,7 +48,7 @@ class Remind {
 
 	/**
 	 * 消毁
-	 * @param $table
+	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
 	    base.clearBodyEvent(this.eventMap[gridManagerName]);

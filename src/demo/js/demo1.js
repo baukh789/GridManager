@@ -319,9 +319,9 @@ const demo1 = {
             adjustAfter: query => {
                 console.log('adjustBefore=>', query);
             },
-            cellHover: function(row, rowIndex, colIndex) {
-                console.log(row, rowIndex, colIndex);
-            },
+            // cellHover: (row, rowIndex, colIndex) => {
+            //     console.log(row, rowIndex, colIndex);
+            // },
             columnData: [
                 {
                     key: 'pic',
