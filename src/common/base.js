@@ -473,7 +473,7 @@ class Base {
         jTool.each(updateColumnList, (i, col) => {
             const $th = $thead.find(`th[th-name="${col.key}"]`);
             let thWidth = jTool($th).width();
-            let minWidth = this.getTextWidth($th, isIconFollowText);
+            let minWidth = this.getThTextWidth(gridManagerName, $th, isIconFollowText);
             let newWidth = thWidth < minWidth ? minWidth : thWidth;
 
             // 最后一列使用剩余的宽度
@@ -488,32 +488,25 @@ class Base {
 
     /**
      * 获取TH中文本的宽度. 该宽度指的是文本所实际占用的宽度
-     * @param th
+     * @param $th
      * @param isIconFollowText: 表头的icon图标是否跟随文本, 如果根随则需要加上两个icon所占的空间
      * @returns {*}
      */
-    getTextWidth(th, isIconFollowText) {
-        const $th = jTool(th);
-
+    getThTextWidth(gridManagerName, $th, isIconFollowText) {
         // th下的GridManager包裹容器
-        const thWarp = jTool('.th-wrap', $th);
+        const $thWarp = jTool('.th-wrap', $th);
 
         // 文本所在容器
         const thText = jTool('.th-text', $th);
 
-        // 文本镜象 用于处理实时获取文本长度
-        const tableWrap = $th.closest('.table-wrap');
-        const textDreamland	= jTool('.text-dreamland', tableWrap);
-
-        // 将th-text内容嵌入文本镜象 用于获取文本实时宽度
-        textDreamland.html(thText.html());
-        textDreamland.css({
+        // 获取文本长度
+        const textWidth = this.getTextWidth(gridManagerName, thText.html(), {
             fontSize: thText.css('font-size'),
             fontWeight: thText.css('font-weight'),
             fontFamily: thText.css('font-family')
         });
-        const thPaddingLeft = thWarp.css('padding-left');
-        const thPaddingRight = thWarp.css('padding-right');
+        const thPaddingLeft = $thWarp.css('padding-left');
+        const thPaddingRight = $thWarp.css('padding-right');
 
         // 计算icon所占的空间
         // 仅在isIconFollowText === true时进行计算。
@@ -531,7 +524,23 @@ class Base {
 
         // 返回宽度值
         // 文本所占宽度 + icon所占的空间 + 左内间距 + 右内间距 + (由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错) + th-wrap减去的1px
-        return textDreamland.width() + iconWidth + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1;
+        return textWidth + iconWidth + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1;
+    }
+
+    /**
+     * 获取文本宽度
+     * @param gridManagerName
+     * @param text
+     * @param cssObj: 样式对像，允许为空。示例: {fontSize: '12px', ...}
+     * @returns {*}
+     */
+    getTextWidth(gridManagerName, text, cssObj) {
+        const $textDreamland = jTool(`.table-wrap[${WRAP_KEY}="${gridManagerName}"] .text-dreamland`);
+
+        console.log(`.table-wrap[${WRAP_KEY}="${gridManagerName}"] .text-dreamland`);
+        $textDreamland.html(text);
+        cssObj && $textDreamland.css(cssObj);
+        return $textDreamland.width();
     }
 
     /**
