@@ -54,7 +54,7 @@ class Dom {
             // 嵌入表头提醒事件源
             // 插件自动生成的序号与选择列不做事件绑定
             if (!isAutoCol && jTool.type(column.remind) === 'string') {
-                onlyThWarp.append(jTool(remind.createHtml(onlyThText, column.remind)));
+                onlyThWarp.append(jTool(remind.createHtml({gridManagerName: settings.gridManagerName, title: onlyThText, remind: column.remind, column})));
             }
 
             // 嵌入排序事件源

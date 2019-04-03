@@ -610,7 +610,7 @@ export default class GridManager {
 
         // init remind
         if (remind.enable) {
-            remind.init($table);
+            remind.init(gridManagerName);
         }
 
         // init filter
@@ -678,7 +678,7 @@ export default class GridManager {
         config.destroy(gridManagerName);
         drag.destroy(gridManagerName);
         menu.destroy(gridManagerName);
-        // remind.destroy($table);
+        remind.destroy(gridManagerName);
         // scroll.destroy($table);
         // sort.destroy($table);
 

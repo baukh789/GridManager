@@ -3,56 +3,46 @@
  */
 import './style.less';
 import jTool from '@common/jTool';
+import base from '@common/base';
+import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import remindTpl from './remind.tpl.html';
+import getRemindEvent from './event';
 class Remind {
+    eventMap = {};
     // 启用状态
     enable = false;
 
     /**
      * 获取表头提醒所需HTML
-     * @param title
-     * @param content
+     * @param params
      * @returns {string}
      */
     @parseTpl(remindTpl)
-	createHtml(title, content) {
+	createHtml(params) {
+        const { title, remind } = params;
 	    return {
             title,
-            content
+            remind
         };
 	}
 
 	/**
 	 * 初始化表头提醒
-	 * @param $table
+	 * @param gridManagerName
      */
-	init($table) {
-		this.__bindRemindEvent($table);
-	}
+	init(gridManagerName) {
+        this.eventMap[gridManagerName] = getRemindEvent(gridManagerName, `${base.getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
+        const { eventName, eventQuerySelector } = this.eventMap[gridManagerName].remindStart;
 
-	/**
-	 * 绑定表头提醒功能
-	 * @param table
-     */
-	__bindRemindEvent($table) {
-		const remindAction = jTool('.remind-action', $table);
-		remindAction.unbind('mouseenter');
-		remindAction.bind('mouseenter', function () {
-		    let _onlyRemind = jTool(this);
-			let raArea = _onlyRemind.find('.ra-area');
-			let tableDiv = _onlyRemind.closest('.table-div');
-			raArea.show();
-			let theLeft = (tableDiv.get(0).offsetWidth - (_onlyRemind.offset().left - tableDiv.offset().left)) > raArea.get(0).offsetWidth;
-			raArea.css({
-				left: theLeft ? '0px' : 'auto',
-				right: theLeft ? 'auto' : '0px'
-			});
-		});
-		remindAction.unbind('mouseleave');
-		remindAction.bind('mouseleave', function () {
-			let raArea = jTool(this).find('.ra-area');
-			raArea.hide();
+        const $body = jTool('body');
+        const $tableDiv = base.getDiv(gridManagerName);
+        $body.off(eventName, eventQuerySelector);
+        $body.on(eventName, eventQuerySelector, function () {
+		    let $onlyRemind = jTool(this);
+			let $raArea = $onlyRemind.find('.ra-area');
+			let theLeft = ($tableDiv.get(0).offsetWidth - ($onlyRemind.offset().left - $tableDiv.offset().left)) > $raArea.get(0).offsetWidth + 20;
+            theLeft ? $raArea.removeClass('right-model') : $raArea.addClass('right-model');
 		});
 	}
 
@@ -60,14 +50,8 @@ class Remind {
 	 * 消毁
 	 * @param $table
 	 */
-	destroy($table) {
-		const remindAction = jTool('.remind-action', $table);
-
-		// 清理: 表头提醒移入事件
-		remindAction.unbind('mouseenter');
-
-		// 清理: 表头提醒移出事件
-		remindAction.unbind('mouseleave');
+	destroy(gridManagerName) {
+	    base.clearBodyEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new Remind();
