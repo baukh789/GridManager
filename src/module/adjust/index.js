@@ -154,10 +154,11 @@ class Adjust {
      * @private
      */
     __runStopEvent(gridManagerName, $table, $th, $td, adjustAfter) {
-        $table.unbind('mouseup mouseleave');
-        $table.bind('mouseup mouseleave', event => {
+        const stopEventName = 'mouseup mouseleave';
+        $table.unbind(stopEventName);
+        $table.bind(stopEventName, event => {
             const adjusting = this.eventMap[gridManagerName].adjusting;
-            $table.unbind('mousemove mouseleave');
+            $table.unbind(stopEventName);
             this.$body.off(adjusting.eventName, adjusting.eventQuerySelector);
 
             // 宽度调整成功回调事件
