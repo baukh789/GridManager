@@ -47,6 +47,9 @@ export const CHECKBOX_WIDTH = '40px';
 // 禁用文本选中Class Name
 export const NO_SELECT_CLASS_NAME = 'no-select-text';
 
+// 空数据Class Name
+export const EMPTY_DATA_CLASS_NAME = 'empty-data';
+
 // 公开方法列表
 export const GM_PUBLISH_METHOD_LIST = [
 	'init',

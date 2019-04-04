@@ -136,7 +136,7 @@ class Drag {
 
                 // 重置调整宽度事件源
                 if (supportAdjust) {
-                    adjust.resetAdjust($table);
+                    adjust.resetAdjust(gridManagerName);
                 }
 
                 // 重置配置区域

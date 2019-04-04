@@ -175,7 +175,7 @@ class AjaxPage {
 		// 调用事件、渲染DOM
 		const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
 		settings.pagingBefore(query);
-		core.refresh(base.getTable(settings.gridManagerName), () => {
+		core.refresh(settings.gridManagerName, () => {
 			settings.pagingAfter(query);
 		});
 	}
@@ -366,7 +366,7 @@ class AjaxPage {
 
         // 事件: 刷新
         this.$body.on(refresh.eventName, refresh.eventQuerySelector, function () {
-            core.refresh(base.getTable(gridManagerName));
+            core.refresh(gridManagerName);
         });
 
         // 事件: 快捷跳转
@@ -386,7 +386,6 @@ class AjaxPage {
             settings.pageData[settings.currentPageKey] = 1;
             settings.pageData[settings.pageSizeKey] = window.parseInt(_size.val());
 
-            const $table = base.getTable(gridManagerName);
             cache.saveUserMemory(settings);
 
             // 更新缓存
@@ -395,7 +394,7 @@ class AjaxPage {
             // 调用事件、渲染tbody
             const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
             settings.pagingBefore(query);
-            core.refresh($table, () => {
+            core.refresh(gridManagerName, () => {
                 settings.pagingAfter(query);
             });
         });

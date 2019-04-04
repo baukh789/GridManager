@@ -77,14 +77,11 @@ class Adjust {
 
     /**
      * 通过缓存配置成功后, 重置宽度调整事件源dom 用于禁用最后一列调整宽度事件
-     * @param $table
+     * @param gridManagerName
      * @returns {boolean}
      */
-    resetAdjust($table) {
-        if (!$table || $table.length === 0) {
-            return false;
-        }
-        let _thList = jTool(`thead[${FAKE_TABLE_HEAD_KEY}] [th-visible="visible"]`, $table);
+    resetAdjust(gridManagerName) {
+        let _thList = jTool(`thead[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] [th-visible="visible"]`);
         let	_adjustAction = jTool('.adjust-action', _thList);
         if (!_adjustAction || _adjustAction.length === 0) {
             return false;
@@ -93,7 +90,7 @@ class Adjust {
         _adjustAction.eq(_adjustAction.length - 1).hide();
 
         // 更新滚动轴状态
-        base.updateScrollStatus($table);
+        base.updateScrollStatus(gridManagerName);
     }
 
     /**
@@ -139,7 +136,7 @@ class Adjust {
             if ($th.closest(`thead[${FAKE_TABLE_HEAD_KEY}]`).length === 1) {
                 base.getTh(gridManagerName, $th).width(_thWidth);
                 base.getTh(gridManagerName, $nextTh).width(_NextWidth);
-                base.getFakeHead(gridManagerName).width(base.getHead(gridManagerName).width());
+                base.getFakeThead(gridManagerName).width(base.getThead(gridManagerName).width());
             }
         });
     }
@@ -170,7 +167,7 @@ class Adjust {
             $table.removeClass(NO_SELECT_CLASS_NAME);
 
             // 更新滚动轴状态
-            base.updateScrollStatus($table);
+            base.updateScrollStatus(gridManagerName);
 
             // 更新存储信息
             cache.update(cache.getSettings($table));

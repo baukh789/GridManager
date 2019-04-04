@@ -218,8 +218,8 @@ class Base {
      * @param gridManagerName
      * @returns {*}
      */
-    getHead(gridManagerName) {
-        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${TABLE_HEAD_KEY}]`);
+    getThead(gridManagerName) {
+        return jTool(`thead[${TABLE_HEAD_KEY}="${gridManagerName}"]`);
     }
 
     /**
@@ -227,8 +227,16 @@ class Base {
      * @param gridManagerName
      * @returns {*}
      */
-    getFakeHead(gridManagerName) {
-        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${FAKE_TABLE_HEAD_KEY}]`);
+    getFakeThead(gridManagerName) {
+        return jTool(`thead[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"]`);
+    }
+
+    /**
+     * get tbody
+     * @param gridManagerName
+     */
+    getTbody(gridManagerName) {
+        return jTool(`table[${TABLE_KEY}="${gridManagerName}"] tbody`);
     }
 
     /**
@@ -408,12 +416,12 @@ class Base {
 
     /**
      * 更新列宽
-     * @param $table
      * @param settings
      * @param isInit: 是否为init调用
      */
-    updateThWidth($table, settings, isInit) {
+    updateThWidth(settings, isInit) {
         const { gridManagerName, columnMap, isIconFollowText } = settings;
+        const $table = this.getTable(gridManagerName);
         const updateColumnList = [];
         let toltalWidth = $table.closest('.table-div').width();
 
@@ -430,7 +438,7 @@ class Base {
         });
 
         // jTool(`thead[grid-manager-thead]`, $table);
-        const $thead = this.getHead(gridManagerName);
+        const $thead = this.getThead(gridManagerName);
         let autoLen = 0;
         let lastIndex = updateColumnList.length - 1;
 
@@ -543,10 +551,11 @@ class Base {
 
     /**
      * 更新滚动轴显示状态
-     * @param $table
+     * @param gridManagerName
      */
-    updateScrollStatus($table) {
-        const $tableDiv = $table.closest('.table-div');
+    updateScrollStatus(gridManagerName) {
+        const $table = this.getTable(gridManagerName);
+        const $tableDiv = this.getDiv(gridManagerName);
         // 宽度: table的宽度大于 tableDiv的宽度时，显示滚动条
         if ($table.width() > $tableDiv.width()) {
             $tableDiv.css('overflow-x', 'auto');

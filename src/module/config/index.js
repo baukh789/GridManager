@@ -105,27 +105,26 @@ class Config {
      */
     noticeUpdate(gridManagerName) {
         const settings = cache.getSettings(gridManagerName);
-        const $table = base.getTable(gridManagerName);
 
         // 重置调整宽度事件源
         if (settings.supportAdjust) {
-            adjust.resetAdjust($table);
+            adjust.resetAdjust(gridManagerName);
         }
 
         // 重置当前可视th的宽度
-        base.updateThWidth($table, settings);
+        base.updateThWidth(settings);
 
         // 更新存储信息
         cache.update(settings);
 
         // 处理置顶表头
-        scroll.update($table);
+        scroll.update(gridManagerName);
 
         // 更新最后一项可视列的标识
         base.updateVisibleLast(gridManagerName);
 
         // 更新滚动轴显示状态
-        base.updateScrollStatus($table);
+        base.updateScrollStatus(gridManagerName);
     }
 
 	/**
@@ -168,10 +167,7 @@ class Config {
 	 * @returns {boolean}
 	 */
 	toggle(gridManagerName) {
-		// 设置区域
-		const $configArea = this.getDOM(gridManagerName);
-
-        $configArea.css('display') === 'block' ?  this.hide(gridManagerName) : this.show(gridManagerName);
+        this.getDOM(gridManagerName).css('display') === 'block' ?  this.hide(gridManagerName) : this.show(gridManagerName);
 	}
 
     /**

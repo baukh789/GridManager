@@ -100,7 +100,7 @@ class Dom {
         });
 
         // 更新列宽
-        base.updateThWidth($table, settings, true);
+        base.updateThWidth(settings, true);
     }
 
     /**
@@ -147,7 +147,7 @@ class Dom {
         cache.setTableData(settings.gridManagerName, data);
 
         // tbody dom
-        const _tbody = jTool('tbody', $table).get(0);
+        const _tbody = document.querySelector(`${base.getQuerySelector(settings.gridManagerName)} tbody`);
 
         // 清空 tbody
         _tbody.innerHTML = '';

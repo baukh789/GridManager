@@ -91,6 +91,7 @@ class Render {
 
         return {
             tableHeadKey: TABLE_HEAD_KEY,
+            gridManagerName: settings.gridManagerName,
             thListTpl
         };
     }

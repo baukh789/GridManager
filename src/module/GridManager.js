@@ -164,7 +164,7 @@ export default class GridManager {
 	    const $table = __jTable(table);
         const settings = cache.getSettings($table);
         base.calcLayout($table, width, height, settings.supportAjaxPage);
-        return base.updateScrollStatus($table);
+        return base.updateScrollStatus(settings.gridManagerName);
     }
 
 	/**
@@ -342,7 +342,7 @@ export default class GridManager {
 			settings.pageData[settings.currentPageKey] = 1;
 		}
 		cache.setSettings(settings);
-		core.refresh($table, callback);
+		core.refresh(settings.gridManagerName, callback);
 	}
 
 	/**
@@ -360,7 +360,7 @@ export default class GridManager {
 		const settings = cache.getSettings($table);
 		jTool.extend(settings, {ajax_data: ajaxData});
 		cache.setSettings(settings);
-		core.refresh($table, callback);
+		core.refresh(settings.gridManagerName, callback);
 	}
 
 	/**
@@ -385,7 +385,7 @@ export default class GridManager {
 			settings.pageData['cPage'] = 1;
 			cache.setSettings(settings);
 		}
-		core.refresh($table, callback);
+		core.refresh(settings.gridManagerName, callback);
 	};
 
 	/**
@@ -581,13 +581,13 @@ export default class GridManager {
 		// 渲染HTML，嵌入所需的事件源DOM
         await core.createDOM($table, settings);
 
+        const gridManagerName = settings.gridManagerName;
         // 更新滚动轴显示状态
-        base.updateScrollStatus($table);
+        base.updateScrollStatus(gridManagerName);
 
         // 通过缓存配置成功后, 重置宽度调整事件源dom
-        settings.supportAdjust ? adjust.resetAdjust($table) : '';
+        settings.supportAdjust ? adjust.resetAdjust(gridManagerName) : '';
 
-        const gridManagerName = settings.gridManagerName;
         // init adjust
         if (settings.supportAdjust) {
             adjust.init(gridManagerName);
@@ -605,7 +605,7 @@ export default class GridManager {
 
         // init sort
         if (sort.enable) {
-            sort.init($table);
+            sort.init(gridManagerName);
         }
 
         // init remind
@@ -634,13 +634,13 @@ export default class GridManager {
         }
 
         // 更新fake header
-        scroll.update($table);
+        scroll.update(gridManagerName);
 
         // 更新最后一项可视列的标识
         base.updateVisibleLast(gridManagerName);
 
         // 渲染tbodyDOM
-        settings.firstLoading ? core.refresh($table) : core.insertEmptyTemplate($table, settings, true);
+        settings.firstLoading ? core.refresh(gridManagerName) : core.insertEmptyTemplate(settings, true);
 	}
 
     /**
@@ -679,8 +679,9 @@ export default class GridManager {
         drag.destroy(gridManagerName);
         menu.destroy(gridManagerName);
         remind.destroy(gridManagerName);
-        // scroll.destroy($table);
-        // sort.destroy($table);
+        scroll.destroy(gridManagerName);
+        sort.destroy(gridManagerName);
+        // filter.destroy(gridManagerName);
 
         try {
             const $table = __jTable(table);

@@ -9,7 +9,10 @@ import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
 import core from '../core';
 import sortTpl from './sort.tpl.html';
+import getSortEvent from './event';
 class Sort {
+    eventMap = {};
+
     // 启用状态
     enable = false;
 
@@ -24,29 +27,54 @@ class Sort {
 
 	/**
 	 * 初始化排序
-	 * @param $table
+	 * @param gridManagerName
      */
-	init($table) {
-		this.__bindSortingEvent($table);
+	init(gridManagerName) {
+        this.eventMap[gridManagerName] = getSortEvent(gridManagerName, base.getQuerySelector(gridManagerName));
+        const { eventName, eventQuerySelector } = this.eventMap[gridManagerName].sortAction;
+        const _this = this;
+        // 绑定排序事件
+        jTool('body').on(eventName, eventQuerySelector, function () {
+            // 事件源所在的th
+            const $th = jTool(this).closest('th');
+
+            // th对应的名称
+            const thName = $th.attr('th-name');
+            const settings = cache.getSettings(gridManagerName);
+
+            if (!thName || jTool.trim(thName) === '') {
+                base.outLog('排序必要的参数丢失', 'error');
+                return false;
+            }
+
+            const oldSort = settings.sortData[thName];
+
+            const sortJson = {
+                [thName]: oldSort === settings.sortDownText ? settings.sortUpText : settings.sortDownText
+            };
+
+            _this.__setSort(gridManagerName, sortJson);
+        });
 	}
 
 	/*
 	 * 手动设置排序
-	 * @param $table: table jTool
+	 * @param gridManagerName
 	 * @param sortJson: 排序信息
 	 * 格式: {key: value} key 需要与参数 columnData 中的 key匹配, value  为参数 sortUpText 或 sortDownText 的值
 	 * 示例: sortJson => {name: 'ASC}
 	 * @param callback: 回调函数[function]
 	 * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
 	 * */
-	__setSort($table, sortJson, callback, refresh) {
-		let settings = cache.getSettings($table);
+	__setSort(gridManagerName, sortJson, callback, refresh) {
 		if (!sortJson || jTool.type(sortJson) !== 'object' || jTool.isEmptyObject(sortJson)) {
 			base.outLog('排序数据不可用', 'warn');
 			return false;
 		}
 
-        // 单例排序: 清空原有排序数据
+        let settings = cache.getSettings(gridManagerName);
+
+		// 单例排序: 清空原有排序数据
         if (!settings.isCombSorting) {
             settings.sortData = {};
         }
@@ -72,9 +100,9 @@ class Sort {
 
 		// 执行更新
 		if (refresh) {
-			core.refresh($table, response => {
+			core.refresh(gridManagerName, response => {
 				// 更新排序样式
-				this.updateSortStyle($table);
+				this.updateSortStyle(gridManagerName);
 
 				// 执行回调函数
 				callback(response);
@@ -92,62 +120,22 @@ class Sort {
 	}
 
 	/**
-	 * 绑定排序事件
-	 * @param $table
-     */
-	__bindSortingEvent($table) {
-		const _this = this;
-
-		// 绑定排序事件
-		$table.off('mouseup', '.sorting-action');
-		$table.on('mouseup', '.sorting-action', function () {
-			// 向上或向下事件源
-			const action = jTool(this);
-
-			// 事件源所在的th
-			const th = action.closest('th');
-
-			// 事件源所在的table
-			const _$table = th.closest('table');
-
-			// th对应的名称
-			const thName = th.attr('th-name');
-			const settings = cache.getSettings(_$table);
-
-			if (!thName || jTool.trim(thName) === '') {
-				base.outLog('排序必要的参数丢失', 'error');
-				return false;
-			}
-
-			const oldSort = settings.sortData[thName];
-
-			const sortJson = {
-                [thName]: oldSort === settings.sortDownText ? settings.sortUpText : settings.sortDownText
-            };
-
-			_this.__setSort($table, sortJson);
-		});
-	}
-
-	/**
 	 * 更新排序样式
-	 * @param $table
+	 * @param gridManagerName
      */
-	updateSortStyle($table) {
-		const settings = cache.getSettings($table);
-		let $th = null;
-		let $sortAction = null;
+	updateSortStyle(gridManagerName) {
+		const settings = cache.getSettings(gridManagerName);
 
 		// 重置排序样式
-        jTool.each(jTool('.sorting-action', $table), (i, v) => {
+        jTool.each(jTool(`${base.getQuerySelector(gridManagerName)} .sorting-action`), (i, v) => {
             jTool(v).removeClass('sorting-up sorting-down');
             jTool(v).closest('th').attr('sorting', '');
 		});
 
 		// 根据排序数据更新排序
         jTool.each(settings.sortData, (key, value) => {
-			$th = jTool(`thead th[th-name="${key}"]`, $table);
-			$sortAction = jTool('.sorting-action', $th);
+			const $th = jTool(`${base.getQuerySelector(gridManagerName)} thead th[th-name="${key}"]`);
+            const $sortAction = jTool('.sorting-action', $th);
 
 			// 排序操作：升序
 			if (value === settings.sortUpText) {
@@ -167,11 +155,10 @@ class Sort {
 
 	/**
 	 * 消毁
-	 * @param $table
+	 * @param gridManagerName
 	 */
-	destroy($table) {
-		// 清理: 排序事件
-		$table.off('mouseup', '.sorting-action');
+	destroy(gridManagerName) {
+	    base.clearBodyEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new Sort();

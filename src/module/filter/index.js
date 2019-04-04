@@ -159,7 +159,7 @@ class Filter {
             cache.setSettings(settings);
 
             _this.update($th, settings.columnMap[thName].filter);
-            core.refresh($table);
+            core.refresh(settings.gridManagerName);
             $filterCon.hide();
             $body.unbind(closeEvent);
         });
@@ -178,7 +178,7 @@ class Filter {
             cache.setSettings(settings);
 
             _this.update($th, settings.columnMap[thName].filter);
-            core.refresh($table);
+            core.refresh(settings.gridManagerName);
             $filterCon.hide();
             $body.unbind(closeEvent);
         });

@@ -25,7 +25,7 @@ describe('base 验证类的属性及方法总量', () => {
     });
     it('Function count', () => {
         // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(32 + 1);
+        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(34 + 1);
     });
 });
 
@@ -478,7 +478,7 @@ describe('base.getDiv($dom, isSelectUp)', () => {
     });
 });
 
-describe('base.getHead(gridManagerName)', () => {
+describe('base.getThead(gridManagerName)', () => {
     let thead = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -490,17 +490,17 @@ describe('base.getHead(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getHead).toBeDefined();
-        expect(base.getHead.length).toBe(1);
+        expect(base.getThead).toBeDefined();
+        expect(base.getThead.length).toBe(1);
     });
 
     it('返回值验证', () => {
-        thead = document.querySelector('table[grid-manager="test"] thead[grid-manager-thead]');
-        expect(base.getHead('test').get(0)).toBe(thead);
+        thead = document.querySelector('thead[grid-manager-thead="test"]');
+        expect(base.getThead('test').get(0)).toBe(thead);
     });
 });
 
-describe('base.getFakeHead(gridManagerName)', () => {
+describe('base.getFakeThead(gridManagerName)', () => {
     let fakeHead = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -512,13 +512,35 @@ describe('base.getFakeHead(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getFakeHead).toBeDefined();
-        expect(base.getFakeHead.length).toBe(1);
+        expect(base.getFakeThead).toBeDefined();
+        expect(base.getFakeThead.length).toBe(1);
     });
 
     it('返回值验证', () => {
-        fakeHead = document.querySelector('table[grid-manager="test"] thead[grid-manager-mock-thead]');
-        expect(base.getFakeHead('test').get(0)).toBe(fakeHead);
+        fakeHead = document.querySelector('thead[grid-manager-mock-thead="test"]');
+        expect(base.getFakeThead('test').get(0)).toBe(fakeHead);
+    });
+});
+
+describe('base.getTbody(gridManagerName)', () => {
+    let tbody = null;
+    beforeEach(() => {
+        document.body.innerHTML = tableTestTpl;
+    });
+
+    afterEach(() => {
+        document.body.innerHTML = '';
+        tbody = null;
+    });
+
+    it('基础验证', () => {
+        expect(base.getTbody).toBeDefined();
+        expect(base.getTbody.length).toBe(1);
+    });
+
+    it('返回值验证', () => {
+        tbody = document.querySelector('table[grid-manager="test"] tbody');
+        expect(base.getTbody('test').get(0)).toBe(tbody);
     });
 });
 

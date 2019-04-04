@@ -16,6 +16,10 @@
     padding-top: 40px;
     .table-div {
         overflow: auto;
+        /*数据为空时，禁用Y轴滚动*/
+        &.empty-data{
+            overflow-y: hidden;
+        }
         /* table */
         table[grid-manager] {
             table-layout: fixed;

@@ -5,9 +5,9 @@
  * 3.重置tbody
  */
 import './style.less';
-import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
+import { EMPTY_DATA_CLASS_NAME } from '@common/constants';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';
 import checkbox from '../checkbox';
@@ -18,12 +18,13 @@ import transformToPromise from './transformToPromise';
 class Core {
     /**
      * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
-     * @param $table
+     * @param gridManagerName
      * @param callback
      * @private
      */
-    refresh($table, callback) {
-        const settings = cache.getSettings($table);
+    refresh(gridManagerName, callback) {
+        const settings = cache.getSettings(gridManagerName);
+        const $table = base.getTable(gridManagerName);
 
         // 更新刷新图标状态
         ajaxPage.updateRefreshIconState($table, true);
@@ -36,7 +37,7 @@ class Core {
         ajaxPromise
         .then(response => {
             // 异步重新获取settings
-            const settings = cache.getSettings($table);
+            const settings = cache.getSettings(gridManagerName);
             this.driveDomForSuccessAfter($table, settings, response, callback);
             settings.ajax_success(response);
             settings.ajax_complete(response);
@@ -58,7 +59,7 @@ class Core {
     cleanData($table) {
         const settings = cache.getSettings($table);
         const gridManagerName = settings.gridManagerName;
-        this.insertEmptyTemplate($table, settings);
+        this.insertEmptyTemplate(settings);
         cache.setTableData(gridManagerName, []);
 
         // 渲染选择框
@@ -113,9 +114,10 @@ class Core {
 
         // 数据为空时
         if (_data.length === 0) {
-            this.insertEmptyTemplate($table, settings);
+            this.insertEmptyTemplate(settings);
             parseRes[settings.totalsKey] = 0;
         } else {
+            base.getDiv(settings.gridManagerName).removeClass(EMPTY_DATA_CLASS_NAME);
             coreDOM.renderTableBody($table, settings, _data);
         }
 
@@ -135,23 +137,23 @@ class Core {
 
     /**
      * 插入空数据模板
-     * @param $table
      * @param settings
      * @param isInit: 是否为初始化时调用
      */
-    insertEmptyTemplate($table, settings, isInit) {
+    insertEmptyTemplate(settings, isInit) {
+        const { gridManagerName, emptyTemplate } = settings;
         // 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
         // 用于解决容器为不可见时，触发了setQuery的情况
-        if (isInit && cache.getTableData(settings.gridManagerName).length !== 0) {
+        if (isInit && cache.getTableData(gridManagerName).length !== 0) {
             return;
         }
 
-        let visibleNum = base.getVisibleTh(settings.gridManagerName).length;
-        const $tbody = jTool('tbody', $table);
-        const $tableDiv = $table.closest('.table-div');
-        // height - 1的原因: 当设置disableLine=true时，会在高度正确的情况下出现y轴滚动条
+        let visibleNum = base.getVisibleTh(gridManagerName).length;
+        const $tbody = base.getTbody(gridManagerName);
+        const $tableDiv = base.getDiv(gridManagerName);
         const style = `height: ${$tableDiv.height() - 1}px;`;
-        $tbody.html(base.getEmptyHtml(visibleNum, settings.emptyTemplate, style));
+        $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
+        $tbody.html(base.getEmptyHtml(visibleNum, emptyTemplate, style));
         base.compileFramework(settings, {el: $tbody.get(0).querySelector('tr[emptyTemplate]')});
     }
 
@@ -165,24 +167,25 @@ class Core {
         coreDOM.init($table, settings);
 
         cache.setSettings(settings);
+        const gridManagerName = settings.gridManagerName;
 
         // 单个table下的thead
-        const $thead = base.getHead(settings.gridManagerName);
+        const $thead = base.getThead(gridManagerName);
 
         // 单个table下的TH
-        const $thList = jTool('th', $thead);
+        const $thList = base.getAllTh(gridManagerName);
 
         // 单个table所在的DIV容器
-        const $tableWarp = $table.closest('.table-wrap');
+        const $tableWarp = base.getWrap(gridManagerName);
 
         // 等待容器可用
-        await this.waitContainerAvailable(settings.gridManagerName, $tableWarp.get(0));
+        await this.waitContainerAvailable(gridManagerName, $tableWarp.get(0));
 
         // 重绘thead
         coreDOM.redrawThead($table, $tableWarp, $thList, settings);
 
-        // 初始化fake thead
-        scroll.init($table);
+        // 初始化滚轴
+        scroll.init(gridManagerName);
 
         // 解析框架: thead区域
         await base.compileFramework(settings, [{el: $thead.get(0).querySelector('tr')}]);
