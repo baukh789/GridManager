@@ -14,6 +14,7 @@ import checkbox from '../checkbox';
 import scroll from '../scroll';
 import coreDOM from './coreDOM';
 import transformToPromise from './transformToPromise';
+import { TABLE_HEAD_KEY, WRAP_KEY, READY_CLASS_NAME } from '../../common/constants';
 
 class Core {
     /**
@@ -24,41 +25,39 @@ class Core {
      */
     refresh(gridManagerName, callback) {
         const settings = cache.getSettings(gridManagerName);
-        const $table = base.getTable(gridManagerName);
-
+        const { loadingTemplate, ajax_beforeSend, ajax_success, ajax_error, ajax_complete } = settings;
         // 更新刷新图标状态
-        ajaxPage.updateRefreshIconState($table, true);
+        ajaxPage.updateRefreshIconState(gridManagerName, true);
 
-        base.showLoading(settings.gridManagerName, settings.loadingTemplate);
+        base.showLoading(gridManagerName, loadingTemplate);
 
-        let ajaxPromise = transformToPromise($table, settings);
+        let ajaxPromise = transformToPromise(settings);
 
-        settings.ajax_beforeSend(ajaxPromise);
+        ajax_beforeSend(ajaxPromise);
         ajaxPromise
         .then(response => {
             // 异步重新获取settings
             const settings = cache.getSettings(gridManagerName);
-            this.driveDomForSuccessAfter($table, settings, response, callback);
-            settings.ajax_success(response);
-            settings.ajax_complete(response);
-            base.hideLoading(settings.gridManagerName);
-            ajaxPage.updateRefreshIconState($table, false);
+            this.driveDomForSuccessAfter(settings, response, callback);
+            ajax_success(response);
+            ajax_complete(response);
+            base.hideLoading(gridManagerName);
+            ajaxPage.updateRefreshIconState(gridManagerName, false);
         })
         .catch(error => {
-            settings.ajax_error(error);
-            settings.ajax_complete(error);
-            base.hideLoading(settings.gridManagerName);
-            ajaxPage.updateRefreshIconState($table, false);
+            ajax_error(error);
+            ajax_complete(error);
+            base.hideLoading(gridManagerName);
+            ajaxPage.updateRefreshIconState(gridManagerName, false);
         });
     }
 
     /**
      * 清空当前表格数据
-     * @param $table
+     * @param gridManagerName
      */
-    cleanData($table) {
-        const settings = cache.getSettings($table);
-        const gridManagerName = settings.gridManagerName;
+    cleanData(gridManagerName) {
+        const settings = cache.getSettings(gridManagerName);
         this.insertEmptyTemplate(settings);
         cache.setTableData(gridManagerName, []);
 
@@ -69,21 +68,22 @@ class Core {
 
         // 渲染分页
         if (settings.supportAjaxPage) {
-            ajaxPage.resetPageData($table, settings, 0);
-            menu.updateMenuPageStatus(gridManagerName, settings);
+            ajaxPage.resetPageData(settings, 0);
+            menu.updateMenuPageStatus(settings);
         }
     }
 
     /**
      * 执行ajax成功后重新渲染DOM
-     * @param $table
      * @param settings
      * @param response
      * @param callback
      */
-    driveDomForSuccessAfter($table, settings, response, callback) {
+    driveDomForSuccessAfter(settings, response, callback) {
+        const { gridManagerName, rendered, responseHandler, supportCheckbox, supportAjaxPage, dataKey, totalsKey, useNoTotalsMode, useRadio } = settings;
+
         // 用于防止在填tbody时，实例已经被消毁的情况。
-        if (!$table || $table.length === 0 || !$table.hasClass('GridManager-ready')) {
+        if (!rendered) {
             return;
         }
 
@@ -95,19 +95,19 @@ class Core {
         let parseRes = typeof (response) === 'string' ? JSON.parse(response) : response;
 
         // 执行请求后执行程序, 通过该程序可以修改返回值格式
-        parseRes = settings.responseHandler(base.cloneObject(parseRes));
+        parseRes = responseHandler(base.cloneObject(parseRes));
 
-        let _data = parseRes[settings.dataKey];
-        let totals = parseRes[settings.totalsKey];
+        let _data = parseRes[dataKey];
+        let totals = parseRes[totalsKey];
 
         // 数据校验: 数据异常
         if (!_data || !Array.isArray(_data)) {
-            base.outLog(`请求数据失败！response中的${settings.dataKey}必须为数组类型，可通过配置项[dataKey]修改字段名。`, 'error');
+            base.outLog(`请求数据失败！response中的${dataKey}必须为数组类型，可通过配置项[dataKey]修改字段名。`, 'error');
             return;
         }
 
         // 数据校验: 未使用无总条数模式 且 总条数无效时直接跳出
-        if (settings.supportAjaxPage && !settings.useNoTotalsMode && isNaN(parseInt(totals, 10))) {
+        if (supportAjaxPage && !useNoTotalsMode && isNaN(parseInt(totals, 10))) {
             base.outLog('分页错误，请确认返回数据中是否存在totals字段(或配置项totalsKey所指定的字段)。', 'error');
             return;
         }
@@ -115,21 +115,21 @@ class Core {
         // 数据为空时
         if (_data.length === 0) {
             this.insertEmptyTemplate(settings);
-            parseRes[settings.totalsKey] = 0;
+            parseRes[totalsKey] = 0;
         } else {
-            base.getDiv(settings.gridManagerName).removeClass(EMPTY_DATA_CLASS_NAME);
-            coreDOM.renderTableBody($table, settings, _data);
+            base.getDiv(gridManagerName).removeClass(EMPTY_DATA_CLASS_NAME);
+            coreDOM.renderTableBody(settings, _data);
         }
 
         // 渲染选择框
-        if (settings.supportCheckbox) {
-            checkbox.resetDOM(settings, _data, settings.useRadio);
+        if (supportCheckbox) {
+            checkbox.resetDOM(settings, _data, useRadio);
         }
 
         // 渲染分页
-        if (settings.supportAjaxPage) {
-            ajaxPage.resetPageData($table, settings, parseRes[settings.totalsKey], _data.length);
-            menu.updateMenuPageStatus(settings.gridManagerName, settings);
+        if (supportAjaxPage) {
+            ajaxPage.resetPageData(settings, parseRes[totalsKey], _data.length);
+            menu.updateMenuPageStatus(settings);
         }
 
         typeof callback === 'function' ? callback(parseRes) : '';
@@ -169,38 +169,28 @@ class Core {
         cache.setSettings(settings);
         const gridManagerName = settings.gridManagerName;
 
-        // 单个table下的thead
-        const $thead = base.getThead(gridManagerName);
-
-        // 单个table下的TH
-        const $thList = base.getAllTh(gridManagerName);
-
-        // 单个table所在的DIV容器
-        const $tableWarp = base.getWrap(gridManagerName);
-
         // 等待容器可用
-        await this.waitContainerAvailable(gridManagerName, $tableWarp.get(0));
+        await this.waitContainerAvailable(gridManagerName);
 
         // 重绘thead
-        coreDOM.redrawThead($table, $tableWarp, $thList, settings);
+        coreDOM.redrawThead(settings);
 
         // 初始化滚轴
         scroll.init(gridManagerName);
 
         // 解析框架: thead区域
-        await base.compileFramework(settings, [{el: $thead.get(0).querySelector('tr')}]);
+        await base.compileFramework(settings, [{el: document.querySelector(`thead[${TABLE_HEAD_KEY}="${gridManagerName}"] tr`)}]);
 
-        // 删除渲染中标识、增加渲染完成标识
-        $table.removeClass('GridManager-loading');
-        $table.addClass('GridManager-ready');
+        // 增加渲染完成标识
+        $table.addClass(READY_CLASS_NAME);
     }
 
     /**
      * 等待容器可用
-     * @param gridManagerName
      * @param tableWarp
      */
-    waitContainerAvailable(gridManagerName, tableWarp) {
+    waitContainerAvailable(gridManagerName) {
+        const tableWarp = document.querySelector(`[${WRAP_KEY}="${gridManagerName}"]`);
         return new Promise(resolve => {
             base.SIV_waitContainerAvailable[gridManagerName] = setInterval(() => {
                 let tableWarpWidth = window.getComputedStyle(tableWarp).width;

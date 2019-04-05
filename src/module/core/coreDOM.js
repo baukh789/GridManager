@@ -2,7 +2,7 @@ import remind from '../remind';
 import order from '../order';
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { TABLE_KEY, TR_CACHE_KEY } from '@common/constants';
+import { READY_CLASS_NAME, TR_CACHE_KEY } from '@common/constants';
 import cache from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
@@ -10,10 +10,13 @@ import sort from '../sort';
 import checkbox from '../checkbox';
 import adjust from '../adjust';
 import render from './render';
+import getCoreEvent from './event';
 /**
  * core dom
  */
 class Dom {
+    eventMap = {};
+
     init($table, settings) {
         // add wrap div
         $table.wrap(render.createWrapTpl({ settings }), '.table-div');
@@ -29,16 +32,20 @@ class Dom {
 
         // TODO 定位效果下个版本进行开发
         // fixed.init($table, settings);
+
+        // 绑定事件
+        this.bindEvent(settings.gridManagerName);
     }
 
     /**
      * 重绘thead
-     * @param $table
-     * @param $tableWarp
-     * @param $thList
      * @param settings
      */
-    redrawThead($table, $tableWarp, $thList, settings) {
+    redrawThead(settings) {
+        const { gridManagerName, columnMap, sortUpText, sortDownText, supportAdjust } = settings;
+        // 单个table下的TH
+        const $thList = base.getAllTh(gridManagerName);
+
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
         jTool.each($thList, (index, item) => {
@@ -46,7 +53,7 @@ class Dom {
             const onlyThWarp = jTool('.th-wrap', onlyTH);
             const thName = onlyTH.attr('th-name');
             const onlyThText = onlyTH.text();
-            const column = settings.columnMap[thName];
+            const column = columnMap[thName];
 
             // 是否为GM自动添加的列
             const isAutoCol = column.isAutoCreate;
@@ -54,7 +61,7 @@ class Dom {
             // 嵌入表头提醒事件源
             // 插件自动生成的序号与选择列不做事件绑定
             if (!isAutoCol && jTool.type(column.remind) === 'string') {
-                onlyThWarp.append(jTool(remind.createHtml({gridManagerName: settings.gridManagerName, title: onlyThText, remind: column.remind, column})));
+                onlyThWarp.append(jTool(remind.createHtml({gridManagerName, title: onlyThText, remind: column.remind, column})));
             }
 
             // 嵌入排序事件源
@@ -65,10 +72,10 @@ class Dom {
 
                 // 依据 column.sorting 进行初始显示
                 switch (column.sorting) {
-                    case settings.sortUpText:
+                    case sortUpText:
                         sortingDom.addClass('sorting-up');
                         break;
-                    case settings.sortDownText:
+                    case sortDownText:
                         sortingDom.addClass('sorting-down');
                         break;
                     default :
@@ -80,14 +87,14 @@ class Dom {
             // 嵌入表头的筛选事件源
             // 插件自动生成的序号列与选择列不做事件绑定
             if (!isAutoCol && column.filter && jTool.type(column.filter) === 'object') {
-                const filterDom = jTool(filter.createHtml({settings, columnFilter: column.filter, $tableWarp}));
+                const filterDom = jTool(filter.createHtml({settings, columnFilter: column.filter}));
                 onlyThWarp.append(filterDom);
             }
 
             // 嵌入宽度调整事件源,以下情况除外
             // 1.插件自动生成的选择列不做事件绑定
             // 2.禁止使用个性配置功能的列
-            if (settings.supportAdjust && !isAutoCol && !column.disableCustomize) {
+            if (supportAdjust && !isAutoCol && !column.disableCustomize) {
                 const adjustDOM = jTool(adjust.html);
 
                 // 最后一列不支持调整宽度
@@ -105,49 +112,45 @@ class Dom {
 
     /**
      * 重新组装table body
-     * @param $table
      * @param settings
      * @param data
      */
-    renderTableBody($table, settings, data) {
-        // td模板
-        let	tdTemplate = null;
-
+    renderTableBody(settings, data) {
+        const { gridManagerName, pageData, supportAutoOrder, supportCheckbox, pageSizeKey, currentPageKey, columnData, columnMap, topFullColumn } = settings;
         // add order
-        if (settings.supportAutoOrder) {
-            let _pageData = settings.pageData;
-            let	_orderBaseNumber = 1;
+        if (supportAutoOrder) {
+            let	orderBaseNumber = 1;
 
             // 验证是否存在分页数据
-            if (_pageData && _pageData[settings.pageSizeKey] && _pageData[settings.currentPageKey]) {
-                _orderBaseNumber = _pageData[settings.pageSizeKey] * (_pageData[settings.currentPageKey] - 1) + 1;
+            if (pageData && pageData[pageSizeKey] && pageData[currentPageKey]) {
+                orderBaseNumber = pageData[pageSizeKey] * (pageData[currentPageKey] - 1) + 1;
             }
             data = data.map((item, index) => {
-                item[order.key] = _orderBaseNumber + index;
+                item[order.key] = orderBaseNumber + index;
                 return item;
             });
         }
 
         // add checkbox
-        if (settings.supportCheckbox) {
-            const checkedData = cache.getCheckedData(settings.gridManagerName);
+        if (supportCheckbox) {
+            const checkedData = cache.getCheckedData(gridManagerName);
             data = data.map(rowData => {
                 let checked = checkedData.some(item => {
-                    let cloneRow = base.getDataForColumnMap(settings.columnMap, item);
-                    let cloneItem = base.getDataForColumnMap(settings.columnMap, rowData);
+                    let cloneRow = base.getDataForColumnMap(columnMap, item);
+                    let cloneItem = base.getDataForColumnMap(columnMap, rowData);
                     return base.equal(cloneRow, cloneItem);
                 });
                 rowData[checkbox.key] = checked || Boolean(rowData[checkbox.key]);
                 return rowData;
             });
-            cache.setCheckedData(settings.gridManagerName, data);
+            cache.setCheckedData(gridManagerName, data);
         }
 
         // 存储表格数据
-        cache.setTableData(settings.gridManagerName, data);
+        cache.setTableData(gridManagerName, data);
 
         // tbody dom
-        const _tbody = document.querySelector(`${base.getQuerySelector(settings.gridManagerName)} tbody`);
+        const _tbody = document.querySelector(`${base.getQuerySelector(gridManagerName)} tbody`);
 
         // 清空 tbody
         _tbody.innerHTML = '';
@@ -160,7 +163,7 @@ class Dom {
                 trNode.setAttribute(TR_CACHE_KEY, index);
 
                 // 插入通栏: top-full-column
-                if (typeof settings.topFullColumn.template !== 'undefined') {
+                if (typeof topFullColumn.template !== 'undefined') {
                     // 通栏tr
                     const topTrNode = document.createElement('tr');
                     topTrNode.setAttribute('top-full-column', 'true');
@@ -168,23 +171,25 @@ class Dom {
                     // 通栏用于向上的间隔的tr
                     const intervalTrNode = document.createElement('tr');
                     intervalTrNode.setAttribute('top-full-column-interval', 'true');
-                    intervalTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div></div></td>`;
+                    intervalTrNode.innerHTML = `<td colspan="${columnData.length}"><div></div></td>`;
                     _tbody.appendChild(intervalTrNode);
 
                     // 为非通栏tr的添加标识
                     trNode.setAttribute('top-full-column', 'false');
 
-                    let _template = settings.topFullColumn.template;
+                    let _template = topFullColumn.template;
                     _template = typeof _template === 'function' ? _template(row) : _template;
 
-                    topTrNode.innerHTML = `<td colspan="${settings.columnData.length}"><div class="full-column-td">${_template}</div></td>`;
+                    topTrNode.innerHTML = `<td colspan="${columnData.length}"><div class="full-column-td">${_template}</div></td>`;
                     compileList.push({el: topTrNode, row: row, index: index});
                     _tbody.appendChild(topTrNode);
                 }
 
                 // 与当前位置信息匹配的td列表
                 const tdList = [];
-                jTool.each(settings.columnMap, (key, col) => {
+                // td模板
+                let	tdTemplate = null;
+                jTool.each(columnMap, (key, col) => {
                     tdTemplate = col.template;
                     // td 模板
                     tdTemplate = typeof tdTemplate === 'function' ? tdTemplate(row[col.key], row, index) : (typeof tdTemplate === 'string' ? tdTemplate : row[col.key]);
@@ -215,54 +220,72 @@ class Dom {
         } catch (e) {
             base.outLog(e, 'error');
         }
-        // 为新生成的tbody 的内容绑定 gm-事件
-        this.bindEvent($table);
 
-        this.initVisible($table, settings.columnMap);
+        this.initVisible(gridManagerName, columnMap);
 
         // 解析框架
         base.compileFramework(settings, compileList);
     }
 
     /**
-     * 为新增的单元格绑定事件
-     * @param $table
+     * 根据配置项初始化列显示|隐藏 (th 和 td)
+     * @param gridManagerName
+     * @param columnMap
      */
-    bindEvent($table) {
+    initVisible(gridManagerName, columnMap) {
+        jTool.each(columnMap, (index, col) => {
+            base.setAreVisible(gridManagerName, [col.key], col.isShow);
+        });
+    }
+
+    /**
+     * 为新增的单元格绑定事件
+     * @param gridManagerName
+     */
+    bindEvent(gridManagerName) {
+        this.eventMap[gridManagerName] = getCoreEvent(gridManagerName, base.getQuerySelector(gridManagerName));
+        const { eventName, eventQuerySelector } = this.eventMap[gridManagerName].tdMousemove;
+
+        // 绑定td移入事件
         let hoverTd = null;
-        jTool('tbody td', $table).unbind('mousemove');
-        jTool('tbody td', $table).bind('mousemove', function () {
+        jTool('body').on(eventName, eventQuerySelector, function () {
             if (hoverTd === this) {
                 return;
             }
-            const settings = cache.getSettings($table);
+            const settings = cache.getSettings(gridManagerName);
             hoverTd = this;
             const tr = hoverTd.parentNode;
             const colIndex = hoverTd.cellIndex;
             const rowIndex = parseInt(tr.getAttribute(TR_CACHE_KEY), 10);
 
             // cellHover: 单个td的hover事件
-            typeof settings.cellHover === 'function' && settings.cellHover(cache.getRowData(settings.gridManagerName, tr), rowIndex, colIndex);
-        });
-
-        jTool('[gm-click]', $table).unbind('click');
-        jTool('[gm-click]', $table).bind('click', function () {
-            const gridManagerName = $table.attr(TABLE_KEY);
-            const row = cache.getRowData(gridManagerName, this.parentNode.parentNode);
-            const scope = cache.getScope(gridManagerName) || window;
-            const fun = scope[this.getAttribute('gm-click')];
-            typeof fun === 'function' && fun.call(scope, row);
+            typeof settings.cellHover === 'function' && settings.cellHover(cache.getRowData(gridManagerName, tr), rowIndex, colIndex);
         });
     }
 
     /**
-     * 根据配置项初始化列显示|隐藏 (th 和 td)
-     * @param columnMap
+     * 消毁
+     * @param gridManagerName
      */
-    initVisible($table, columnMap) {
-        jTool.each(columnMap, (index, col) => {
-            base.setAreVisible(base.getKey($table), [col.key], col.isShow);
-        });
+    destroy(gridManagerName) {
+        base.clearBodyEvent(this.eventMap[gridManagerName]);
+
+        try {
+            const $table = base.getTable(gridManagerName);
+            const $tableWrap = base.getWrap(gridManagerName);
+            // DOM有可能在执行到这里时, 已经被框架中的消毁机制清除
+            if (!$table.length || !$tableWrap.length) {
+                return;
+            }
+
+            $table.removeClass(READY_CLASS_NAME);
+            // 还原table
+            $table.html('');
+            $tableWrap.after($table);
+            $tableWrap.remove();
+        } catch (e) {
+            // '在清除GridManager实例的过程时, table被移除'
+        }
     }
 }
 export default new Dom();

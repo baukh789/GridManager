@@ -16,11 +16,10 @@ import cache from '@common/cache';
 
 /**
  * 将不同类型的ajax_data转换为promise
- * @param $table
  * @param settings
  * @returns promise
  */
-export default function transformToPromise($table, settings) {
+export default function transformToPromise(settings) {
     const params = getParams();
     // 将 requestHandler 内修改的分页参数合并至 settings.pageData
     if (settings.supportAjaxPage) {
