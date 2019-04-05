@@ -110,7 +110,7 @@ new window.Vue({
                 key: 'setSort',
                 relyInit: true,
                 title: '手动设置排序',
-                code: 'this.$refs["grid"].$el.GM("setSort", {name: "ASC"});'
+                code: 'this.$refs["grid"].$el.GM("setSort", {createDate: "ASC"});'
             },
             setConfigVisible: {
                 key: 'setConfigVisible',

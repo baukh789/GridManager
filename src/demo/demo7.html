@@ -238,29 +238,13 @@
 						}
 					},{
 						key: 'createDate',
-						width: '130px',
-						text: '创建时间',
+						width: '140px',
+						text: '<div class="type"><p>创建时间</p><p>与</p><p>最后修改时间</p></div>',
 						sorting: 'DESC',
 						// 使用函数返回 htmlString
 						template: function(createDate, rowObject){
-							return new Date(createDate).toLocaleDateString();
+							return `创建于: ${new Date(createDate).toLocaleDateString()} <br/>修改于: ${new Date(rowObject.lastDate).toLocaleDateString()}`;
 						}
-					},{
-						key: 'lastDate',
-						width: '130px',
-						text: '最后修改时间',
-						sorting: '',
-						// 使用函数返回 htmlString
-						template: function(lastDate, rowObject){
-							return new Date(lastDate).toLocaleDateString();
-						}
-					},{
-						key: 'action',
-						align: 'center',
-						text: '<div class="type"><p>在开卡门店消费</p><p>/</p><p>在所有门店消费</p></div>',
-						template: function (undefined, row){
-                            return '<span class="plugin-action" gm-click="delectRowData">删除</span>';
-                        }
 					}
 				]
 			});

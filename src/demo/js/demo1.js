@@ -66,7 +66,7 @@ const GM_PUBLISH_METHOD_MAP = {
         key: 'setSort',
         relyInit: true,
         title: '手动设置排序',
-        code: `GridManager.setSort('${gridManagerName}', {name: 'ASC'});`
+        code: `GridManager.setSort('${gridManagerName}', {createDate: 'ASC'});`
     },
     setConfigVisible: {
         key: 'setConfigVisible',
@@ -431,7 +431,7 @@ const demo1 = {
                     align: 'center',
                     disableCustomize: true,
                     text: '<span style="color: red">操作</span>',
-                    // 直接返回 htmlString
+                    // 直接返回 通过函数返回
                     template: (action, row) => {
                         return `<span class="plugin-action" title="${row.title}" onclick="demo1.delectRowData(this.title)">删除</span>`;
                     }

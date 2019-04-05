@@ -259,14 +259,6 @@
 					template: function(lastDate, rowObject){
 						return new Date(lastDate).toLocaleDateString();
 					}
-				},{
-					key: 'action',
-					remind: 'the action',
-					width: '10%',
-					align: 'center',
-					text: '<span style="color: red">操作</span>',
-					// 直接返回 htmlString
-					template: '<span class="plugin-action" gm-click="delectRowData">删除</span>'
 				}
 			]
 			// 排序后事件
@@ -275,15 +267,6 @@
 			}
 		});
 	}
-
-	// 删除功能
-	function delectRowData(rowData){
-		// 执行删除操作
-		if(window.confirm('确认要删除['+rowData.title+']?')){
-			window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
-		}
-	}
-
 	/**
 	 * 渲染博文类型
 	 */

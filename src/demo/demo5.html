@@ -264,18 +264,19 @@
                     width: '100px',
                     align: 'center',
                     text: '<span style="color: red">操作</span>',
-                    // 直接返回 htmlString
-                    template: '<span class="plugin-action" gm-click="delectRowData">删除</span>'
+                    template: function(action, rowObject){
+                        return `<span class="plugin-action" title="${rowObject.title}"onclick="delectRowData(this.title)">删除</span>`;
+                    }
                 }
             ]
         });
     }
 
     // 删除功能
-    function delectRowData(rowData){
+    function delectRowData(title){
         window.event.stopPropagation();
         // 执行删除操作
-        if(window.confirm('确认要删除['+rowData.title+']?')){
+        if(window.confirm('确认要删除['+title+']?')){
             window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
         }
     }

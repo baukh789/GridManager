@@ -73,7 +73,7 @@ angular.module("myApp", ['gridManager'])
             key: 'setSort',
             relyInit: true,
             title: '手动设置排序',
-            code: `$gridManager.setSort('${$scope.gridManagerName}', {name: 'ASC'});`
+            code: `$gridManager.setSort('${$scope.gridManagerName}', {createDate: 'ASC'});`
         },
         setConfigVisible: {
             key: 'setConfigVisible',

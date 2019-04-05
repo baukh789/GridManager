@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel="stylesheet" type="text/css" href="../css/gm.css">
 	<script type="text/javascript" src="../js/gm.js"></script>
-    <title>GridManager:无总页条数</title>
+    <title>GridManager:无总条数</title>
     <style>
 		html, body{
 			width: 100%;
@@ -273,14 +273,6 @@
 							return new Date(lastDate).toLocaleDateString();
 						}
 					},{
-						key: 'action',
-						remind: 'the action',
-                        width: '100px',
-						align: 'center',
-						text: '<span style="color: red">操作</span>',
-						// 直接返回 htmlString
-						template: '<span class="plugin-action" gm-click="delectRowData">删除</span>'
-					},{
                         key: 'config',
                         text: '<i class="iconfont icon-config" onclick="onShowConfig()"></i>',
                         width: '50px',
@@ -309,15 +301,6 @@
 		function onShowConfig() {
 		    GridManager.setConfigVisible('test', true);
         }
-
-		// 删除功能
-		function delectRowData(rowData){
-			// 执行删除操作
-			if(window.confirm('确认要删除['+rowData.title+']?')){
-				window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
-			}
-		}
-
 		/**
 		 * 渲染博文类型
 		 */
