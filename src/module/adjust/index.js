@@ -35,8 +35,8 @@ class Adjust {
         this.$body = jTool('body');
         this.eventMap[gridManagerName] = getAdjustEvent(gridManagerName, base.getQuerySelector(gridManagerName));
 
-        const { eventName, eventQuerySelector } = this.eventMap[gridManagerName].adjustStart;
-        this.$body.on(eventName, eventQuerySelector, function (event) {
+        const { events, selector } = this.eventMap[gridManagerName].adjustStart;
+        this.$body.on(events, selector, function (event) {
             const _dragAction = jTool(this);
             // 事件源所在的th
             let $th = _dragAction.closest('th');
@@ -106,9 +106,9 @@ class Adjust {
         let	_NextWidth = null;
         let _thMinWidth = base.getThTextWidth(gridManagerName, $th, isIconFollowText);
         let	_NextThMinWidth = base.getThTextWidth(gridManagerName, $nextTh, isIconFollowText);
-        const { eventName, eventQuerySelector } = this.eventMap[gridManagerName].adjusting;
-        this.$body.off(eventName, eventQuerySelector);
-        this.$body.on(eventName, eventQuerySelector, function (event) {
+        const { events, selector } = this.eventMap[gridManagerName].adjusting;
+        this.$body.off(events, selector);
+        this.$body.on(events, selector, function (event) {
             _thWidth = event.clientX - $th.offset().left;
             _thWidth = Math.ceil(_thWidth);
             _NextWidth = $nextTh.width() + $th.width() - _thWidth;
@@ -156,7 +156,7 @@ class Adjust {
         $table.bind(stopEventName, event => {
             const adjusting = this.eventMap[gridManagerName].adjusting;
             $table.unbind(stopEventName);
-            this.$body.off(adjusting.eventName, adjusting.eventQuerySelector);
+            this.$body.off(adjusting.events, adjusting.selector);
 
             // 宽度调整成功回调事件
             if ($th.hasClass(this.selectedClassName)) {

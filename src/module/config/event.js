@@ -6,12 +6,12 @@
 export default function getConfigEvent(gridManagerName, scope) {
     return {
         // 关闭
-        closeConfig: {eventName: 'click', eventQuerySelector: `${scope} .config-action`},
+        closeConfig: {events: 'click', selector: `${scope} .config-action`},
 
         // 设置
-        liChange: {eventName: 'click', eventQuerySelector: `${scope} .config-list li`},
+        liChange: {events: 'click', selector: `${scope} .config-list li`},
 
         // 菜单
-        closeConfigByBody: {eventName: 'mousedown.closeConfig'}
+        closeConfigByBody: {events: 'mousedown.closeConfig'}
     };
 }

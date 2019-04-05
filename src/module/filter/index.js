@@ -31,10 +31,10 @@ class Filter {
         const scopeQuerySelector = `${base.getQuerySelector(gridManagerName)} .filter-area`;
 
         this.eventMap[gridManagerName] = getFilterEvent(gridManagerName, scopeQuerySelector);
-        const { toggleAction, closeFitler, submitAction, resetAction, checkboxAction, radioAction } = this.eventMap[gridManagerName];
+        const { toggle, close, submit, reset, checkboxAction, radioAction } = this.eventMap[gridManagerName];
 
         // 事件: 切换可视状态
-        $body.on(toggleAction.eventName, toggleAction.eventQuerySelector, function (e) {
+        $body.on(toggle.events, toggle.selector, function (e) {
             e.stopPropagation();
             e.preventDefault();
             const $allFilterCon = jTool(`${scopeQuerySelector} .fa-con`);
@@ -66,8 +66,8 @@ class Filter {
             }
 
             // 点击空处关闭
-            $body.off(closeFitler.eventName);
-            $body.on(closeFitler.eventName, function (e) {
+            $body.off(close.events);
+            $body.on(close.events, function (e) {
                 const eventSource = jTool(e.target);
                 if (eventSource.hasClass('fa-con') || jTool(e.target).closest('.fa-con').length === 1) {
                     return false;
@@ -79,7 +79,7 @@ class Filter {
         });
 
         // 事件: 提交选中结果
-        $body.on(submitAction.eventName, submitAction.eventQuerySelector, function () {
+        $body.on(submit.events, submit.selector, function () {
             const $action = jTool(this);
             const $filterCon = $action.closest('.fa-con');
             const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
@@ -103,7 +103,7 @@ class Filter {
         });
 
         // 事件: 清空选中结果
-        $body.on(resetAction.eventName, resetAction.eventQuerySelector, function () {
+        $body.on(reset.events, reset.selector, function () {
             const $action = jTool(this);
             const $filterCon = $action.closest('.fa-con');
             const $th = jTool(this).closest('th[th-name]');
@@ -121,13 +121,13 @@ class Filter {
         });
 
         // 事件: 复选框事件
-        $body.on(checkboxAction.eventName, checkboxAction.eventQuerySelector, function () {
+        $body.on(checkboxAction.events, checkboxAction.selector, function () {
             const $checkbox = jTool(this).closest('.filter-checkbox').find('.gm-checkbox');
             checkbox.updateCheckboxState($checkbox, this.checked ? 'checked' : 'unchecked');
         });
 
         // 事件: 单选框事件
-        $body.on(radioAction.eventName, radioAction.eventQuerySelector, function () {
+        $body.on(radioAction.events, radioAction.selector, function () {
             const $filterRadio = jTool(this).closest('.filter-list').find('.filter-radio');
             jTool.each($filterRadio, (index, item) => {
                 checkbox.updateRadioState(jTool(item).find('.gm-radio'), this === item.querySelector('.gm-radio-input'));

@@ -319,12 +319,12 @@ class AjaxPage {
 
 		// 事件: 首页
         const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage, changePageSize } = this.eventMap[gridManagerName];
-        this.$body.on(firstPage.eventName, firstPage.eventQuerySelector, function () {
+        this.$body.on(firstPage.events, firstPage.selector, function () {
             _this.gotoPage(cache.getSettings(gridManagerName), 1);
         });
 
         // 事件: 上一页
-        this.$body.on(previousPage.eventName, previousPage.eventQuerySelector, function () {
+        this.$body.on(previousPage.events, previousPage.selector, function () {
             const settings = cache.getSettings(gridManagerName);
             const cPage = settings.pageData[settings.currentPageKey];
             const toPage = cPage - 1;
@@ -332,7 +332,7 @@ class AjaxPage {
         });
 
         // 事件: 下一页
-        this.$body.on(nextPage.eventName, nextPage.eventQuerySelector, function () {
+        this.$body.on(nextPage.events, nextPage.selector, function () {
             const settings = cache.getSettings(gridManagerName);
             const cPage = settings.pageData[settings.currentPageKey];
             const tPage = settings.pageData.tPage;
@@ -341,13 +341,13 @@ class AjaxPage {
         });
 
         // 事件: 尾页
-        this.$body.on(lastPage.eventName, lastPage.eventQuerySelector, function () {
+        this.$body.on(lastPage.events, lastPage.selector, function () {
             const settings = cache.getSettings(gridManagerName);
             _this.gotoPage(settings, settings.pageData.tPage);
         });
 
         // 事件: 页码
-        this.$body.on(numberPage.eventName, numberPage.eventQuerySelector, function () {
+        this.$body.on(numberPage.events, numberPage.selector, function () {
             const settings = cache.getSettings(gridManagerName);
             const pageAction = jTool(this);
 
@@ -362,12 +362,12 @@ class AjaxPage {
         });
 
         // 事件: 刷新
-        this.$body.on(refresh.eventName, refresh.eventQuerySelector, function () {
+        this.$body.on(refresh.events, refresh.selector, function () {
             core.refresh(gridManagerName);
         });
 
         // 事件: 快捷跳转
-        this.$body.on(gotoPage.eventName, gotoPage.eventQuerySelector, function (event) {
+        this.$body.on(gotoPage.events, gotoPage.selector, function (event) {
             if (event.which !== 13) {
                 return;
             }
@@ -376,7 +376,7 @@ class AjaxPage {
         });
 
         // 事件: 切换每页显示条数
-        this.$body.on(changePageSize.eventName, changePageSize.eventQuerySelector, function (event) {
+        this.$body.on(changePageSize.events, changePageSize.selector, function (event) {
             const _size = jTool(event.target);
             const settings = cache.getSettings(gridManagerName);
             settings.pageData = {};

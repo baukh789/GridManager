@@ -6,12 +6,12 @@
 export default function getDragEvent(gridManagerName, scope) {
     return {
         // 开始
-        dragStart: {eventName: 'mousedown', eventQuerySelector: `${scope} .drag-action`},
+        dragStart: {events: 'mousedown', selector: `${scope} .drag-action`},
 
         // 调整中
-        dragging: {eventName: 'mousemove.gmDrag'},
+        dragging: {events: 'mousemove.gmDrag'},
 
         // 停止
-        dragAbort: {eventName: 'mouseup'}
+        dragAbort: {events: 'mouseup'}
     };
 }

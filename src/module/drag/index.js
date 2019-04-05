@@ -32,7 +32,7 @@ class Drag {
 
         // 拖拽事件仅绑在fake head th
         // 指定拖拽换位事件源,配置拖拽样式
-        $body.on(dragStart.eventName, dragStart.eventQuerySelector, function (event) {
+        $body.on(dragStart.events, dragStart.selector, function (event) {
             // 获取设置项
             let settings = cache.getSettings(gridManagerName);
 
@@ -70,8 +70,8 @@ class Drag {
             let _thIndex = 0;
 
             // 绑定拖拽滑动事件
-            $body.off(dragging.eventName);
-            $body.on(dragging.eventName, function (e2) {
+            $body.off(dragging.events);
+            $body.on(dragging.events, function (e2) {
                 _thIndex = $th.index($allFakeVisibleTh);
                 // 事件源的上一个th
                 let $prevTh = null;
@@ -112,10 +112,10 @@ class Drag {
             });
 
             // 绑定拖拽停止事件
-            $body.off(dragAbort.eventName);
-            $body.on(dragAbort.eventName, function (event) {
-                $body.off(dragging.eventName);
-                $body.off(dragAbort.eventName);
+            $body.off(dragAbort.events);
+            $body.on(dragAbort.events, function (event) {
+                $body.off(dragging.events);
+                $body.off(dragAbort.events);
                 // 清除临时展示被移动的列
                 if ($dreamlandDIV.length !== 0) {
                     $dreamlandDIV.animate({

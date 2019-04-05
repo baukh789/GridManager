@@ -597,12 +597,12 @@ class Base {
     clearBodyEvent(eventMap) {
         const $body = jTool('body');
         for (let key in eventMap) {
-            const { eventName, eventQuerySelector } = eventMap[key];
-            if (eventQuerySelector) {
-                $body.off(eventName, eventQuerySelector);
+            const { events, selector } = eventMap[key];
+            if (selector) {
+                $body.off(events, selector);
                 continue;
             }
-            $body.off(eventName);
+            $body.off(events);
         }
     }
 }

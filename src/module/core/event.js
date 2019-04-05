@@ -6,6 +6,6 @@
 export default function getCoreEvent(gridManagerName, scope) {
     return {
         // td移入
-        tdMousemove: {eventName: 'mousemove', eventQuerySelector: `${scope} tbody td`}
+        tdMousemove: {events: 'mousemove', selector: `${scope} tbody td`}
     };
 }

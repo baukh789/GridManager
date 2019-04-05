@@ -7,18 +7,18 @@ import { WRAP_KEY } from '@common/constants';
 export default function getMenuEvent(gridManagerName, scope) {
     return {
         // 打开菜单
-        openMenu: {eventName: 'contextmenu', eventQuerySelector: `.table-wrap[${WRAP_KEY}="${gridManagerName}"]`},
+        openMenu: {events: 'contextmenu', selector: `.table-wrap[${WRAP_KEY}="${gridManagerName}"]`},
 
         // 关闭菜单
-        closeMenu: {eventName: 'mousedown.closeMenu'},
+        closeMenu: {events: 'mousedown.closeMenu'},
 
         // 上一页、下一页、重新加载
-        refresh: {eventName: 'click', eventQuerySelector: `${scope} [grid-action="refresh-page"]`},
+        refresh: {events: 'click', selector: `${scope} [grid-action="refresh-page"]`},
 
         // 导出、导出已选中
-        exportExcel: {eventName: 'click', eventQuerySelector: `${scope} [grid-action="export-excel"]`},
+        exportExcel: {events: 'click', selector: `${scope} [grid-action="export-excel"]`},
 
         // 打开配置区域
-        openConfig: {eventName: 'click', eventQuerySelector: `${scope} [grid-action="config-grid"]`}
+        openConfig: {events: 'click', selector: `${scope} [grid-action="config-grid"]`}
     };
 }

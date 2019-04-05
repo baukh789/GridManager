@@ -244,11 +244,11 @@ class Dom {
      */
     bindEvent(gridManagerName) {
         this.eventMap[gridManagerName] = getCoreEvent(gridManagerName, base.getQuerySelector(gridManagerName));
-        const { eventName, eventQuerySelector } = this.eventMap[gridManagerName].tdMousemove;
+        const { events, selector } = this.eventMap[gridManagerName].tdMousemove;
 
         // 绑定td移入事件
         let hoverTd = null;
-        jTool('body').on(eventName, eventQuerySelector, function () {
+        jTool('body').on(events, selector, function () {
             if (hoverTd === this) {
                 return;
             }

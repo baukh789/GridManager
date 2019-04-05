@@ -6,21 +6,21 @@
 export default function getFilterEvent(gridManagerName, scope) {
     return {
         // 切换可视状态
-        toggleAction: {eventName: 'mousedown', eventQuerySelector: `${scope} .fa-icon`},
+        toggle: {events: 'mousedown', selector: `${scope} .fa-icon`},
 
         // 关闭
-        closeFitler: {eventName: 'mousedown.closeFitler'},
+        close: {events: 'mousedown.closeFitler'},
 
         // 提交
-        submitAction: {eventName: 'mouseup', eventQuerySelector: `${scope} .filter-submit`},
+        submit: {events: 'mouseup', selector: `${scope} .filter-submit`},
 
         // 重置
-        resetAction: {eventName: 'mouseup', eventQuerySelector: `${scope} .filter-reset`},
+        reset: {events: 'mouseup', selector: `${scope} .filter-reset`},
 
         // 复选框点选
-        checkboxAction: {eventName: 'click', eventQuerySelector: `${scope} .gm-checkbox-input`},
+        checkboxAction: {events: 'click', selector: `${scope} .gm-checkbox-input`},
 
         // 单选框点选
-        radioAction: {eventName: 'click', eventQuerySelector: `${scope} .gm-radio-input`}
+        radioAction: {events: 'click', selector: `${scope} .gm-radio-input`}
     };
 }

@@ -128,8 +128,8 @@ class Menu {
 
 		const { openMenu, closeMenu, refresh, exportExcel, openConfig } = this.eventMap[gridManagerName];
 		// 绑定打开右键菜单栏
-        _this.$body.off(openMenu.eventName, openMenu.eventQuerySelector);
-        _this.$body.on(openMenu.eventName, openMenu.eventQuerySelector, function (e) {
+        _this.$body.off(openMenu.events, openMenu.selector);
+        _this.$body.on(openMenu.events, openMenu.selector, function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -163,21 +163,21 @@ class Menu {
 			$menu.show();
 
 			// 点击空处关闭
-            _this.$body.off(closeMenu.eventName);
-            _this.$body.on(closeMenu.eventName, function (e) {
-                _this.$body.off(closeMenu.eventName);
+            _this.$body.off(closeMenu.events);
+            _this.$body.on(closeMenu.events, function (e) {
+                _this.$body.off(closeMenu.events);
                 const eventSource = jTool(e.target);
 				if (eventSource.hasClass('grid-menu') || eventSource.closest('.grid-menu').length === 1) {
 					return;
 				}
-                _this.$body.off(closeMenu.eventName);
+                _this.$body.off(closeMenu.events);
 				$menu.hide();
 			});
 		});
 
         // 绑定事件：上一页、下一页、重新加载
-        _this.$body.off(refresh.eventName, refresh.eventQuerySelector);
-        _this.$body.on(refresh.eventName, refresh.eventQuerySelector, function (e) {
+        _this.$body.off(refresh.events, refresh.selector);
+        _this.$body.on(refresh.events, refresh.selector, function (e) {
 			if (_this.isDisabled(this, e)) {
 				return false;
 			}
@@ -197,14 +197,14 @@ class Menu {
 			}
 
 			ajaxPage.gotoPage(_settings, cPage);
-            _this.$body.off(closeMenu.eventName);
+            _this.$body.off(closeMenu.events);
 			$menu.hide();
 		});
 
 		// 绑定事件：另存为EXCEL、已选中表格另存为Excel
 		settings.supportExport && (() => {
-            _this.$body.off(exportExcel.eventName, exportExcel.eventQuerySelector);
-            _this.$body.on(exportExcel.eventName, exportExcel.eventQuerySelector, function (e) {
+            _this.$body.off(exportExcel.events, exportExcel.selector);
+            _this.$body.on(exportExcel.events, exportExcel.selector, function (e) {
 				if (_this.isDisabled(this, e)) {
 					return false;
 				}
@@ -213,20 +213,20 @@ class Menu {
 					onlyChecked = true;
 				}
                 exportFile.__exportGridToXls(gridManagerName, undefined, onlyChecked);
-                _this.$body.off(closeMenu.eventName);
+                _this.$body.off(closeMenu.events);
                 $menu.hide();
 			});
 		})();
 
 		// 绑定事件：打开配置区域
 		settings.supportConfig && (() => {
-            _this.$body.off(openConfig.eventName, openConfig.eventQuerySelector);
-            _this.$body.on(openConfig.eventName, openConfig.eventQuerySelector, function (e) {
+            _this.$body.off(openConfig.events, openConfig.selector);
+            _this.$body.on(openConfig.events, openConfig.selector, function (e) {
 				if (_this.isDisabled(this, e)) {
 					return false;
 				}
 				config.toggle(gridManagerName);
-                _this.$body.off(closeMenu.eventName);
+                _this.$body.off(closeMenu.events);
 				$menu.hide();
 			});
 		})();

@@ -28,13 +28,13 @@ class Config {
         const { closeConfig, liChange } = this.eventMap[gridManagerName];
 
         // 事件: 关闭
-        $body.on(closeConfig.eventName, closeConfig.eventQuerySelector, function () {
+        $body.on(closeConfig.events, closeConfig.selector, function () {
             // 展示事件源
             _this.hide(gridManagerName);
         });
 
         // 事件: 设置
-        $body.on(liChange.eventName, liChange.eventQuerySelector, function (e) {
+        $body.on(liChange.events, liChange.selector, function (e) {
             e.preventDefault();
 
             // 单个的设置项
@@ -184,14 +184,14 @@ class Config {
         const { closeConfigByBody } = this.eventMap[gridManagerName];
         // 点击空处关闭
         const $body = jTool('body');
-        $body.off(closeConfigByBody.eventName);
-        $body.on(closeConfigByBody.eventName, function (e) {
+        $body.off(closeConfigByBody.events);
+        $body.on(closeConfigByBody.events, function (e) {
             const eventSource = jTool(e.target);
             if (eventSource.hasClass('config-area') || eventSource.closest('.config-area').length === 1) {
                 return false;
             }
             $configArea.hide();
-            $body.off(closeConfigByBody.eventName);
+            $body.off(closeConfigByBody.events);
         });
     }
 
