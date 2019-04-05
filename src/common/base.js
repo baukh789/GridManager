@@ -526,7 +526,7 @@ class Base {
             sortingAction.length !== 0 ? iconWidth += sortingAction.width() : '';
 
             // 筛选
-            const filterAction = jTool('.filter-action', $th);
+            const filterAction = jTool('.filter-area', $th);
             filterAction.length !== 0 ? iconWidth += filterAction.width() : '';
         }
 

@@ -83,14 +83,13 @@ class AjaxPage {
 
 	/**
 	 * 重置分页数据
-	 * @param $table
 	 * @param settings
 	 * @param totals 总条数
 	 * @param len 本次请求返回的总条数，该参数仅在totals为空时使用
 	 */
-	resetPageData($table, settings, totals, len) {
+	resetPageData(settings, totals, len) {
 		const _pageData = this.__getPageData(settings, totals, len);
-        const $tableWrap = $table.closest('.table-wrap');
+        const $tableWrap = base.getWrap(settings.gridManagerName);
         const $footerToolbar = jTool('.footer-toolbar', $tableWrap);
 
 		// 更新底部DOM节点
@@ -111,14 +110,12 @@ class AjaxPage {
 
     /**
      * 更新刷新图标状态
-     * @param $table
+     * @param gridManagerName
      * @param isRefresh: 是否刷新
      */
-    updateRefreshIconState($table, isRefresh) {
-        const tableWrap = $table.closest('.table-wrap');
-
+    updateRefreshIconState(gridManagerName, isRefresh) {
         // 刷新按纽
-        const refreshAction = jTool('.footer-toolbar .refresh-action', tableWrap);
+        const refreshAction = jTool(`${this.getQuerySelector(gridManagerName)} .refresh-action`);
 
         // 当前刷新图标不存在
         if (refreshAction.length === 0) {

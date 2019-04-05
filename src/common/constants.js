@@ -50,6 +50,9 @@ export const NO_SELECT_CLASS_NAME = 'no-select-text';
 // 空数据Class Name
 export const EMPTY_DATA_CLASS_NAME = 'empty-data';
 
+// 渲染完成标识 Class Name
+export const READY_CLASS_NAME = 'GridManager-ready';
+
 // 公开方法列表
 export const GM_PUBLISH_METHOD_LIST = [
 	'init',

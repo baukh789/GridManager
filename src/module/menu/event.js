@@ -6,7 +6,7 @@
 import { WRAP_KEY } from '@common/constants';
 export default function getMenuEvent(gridManagerName, scope) {
     return {
-        // 右键打开菜单
+        // 打开菜单
         openMenu: {eventName: 'contextmenu', eventQuerySelector: `.table-wrap[${WRAP_KEY}="${gridManagerName}"]`},
 
         // 关闭菜单

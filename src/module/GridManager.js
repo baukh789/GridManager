@@ -209,7 +209,7 @@ export default class GridManager {
 	    if (!isRendered(table, 'setSort')) {
 	        return;
         }
-		sort.__setSort(__jTable(table), sortJson, callback, refresh);
+		sort.__setSort(base.getKey(__jTable(table)), sortJson, callback, refresh);
 	}
 
     /**
@@ -262,7 +262,7 @@ export default class GridManager {
         }
         const $table = __jTable(table);
 		base.setAreVisible(base.getKey($table), Array.isArray(thName) ? thName : [thName], true);
-        config.noticeUpdate($table);
+        config.noticeUpdate(base.getKey($table));
 	}
 
 	/**
@@ -278,7 +278,7 @@ export default class GridManager {
         }
         const $table = __jTable(table);
         base.setAreVisible(base.getKey($table), Array.isArray(thName) ? thName : [thName], false);
-        config.noticeUpdate($table);
+        config.noticeUpdate(base.getKey($table));
 	}
 
 	/**
@@ -413,7 +413,7 @@ export default class GridManager {
         if (!isRendered(table, 'getCheckedData')) {
             return;
         }
-		return cache.getCheckedData(__jTable(table));
+		return cache.getCheckedData(base.getKey(__jTable(table)));
 	};
 
     /**
@@ -467,7 +467,7 @@ export default class GridManager {
         const tableData = cache.updateRowData(settings.gridManagerName, key, rowDataList);
 
         // 更新DOM
-        coreDOM.renderTableBody($table, settings, tableData);
+        coreDOM.renderTableBody(settings, tableData);
         return tableData;
     }
 
@@ -544,9 +544,6 @@ export default class GridManager {
 			return;
 		}
 
-		// 增加渲染中标注
-		$table.addClass('GridManager-loading');
-
 		// 根据参数增加禁用单元格分割线标识
         if (settings.disableLine) {
             $table.addClass('disable-line');
@@ -563,8 +560,9 @@ export default class GridManager {
             }, 1000);
         }
 
-        // 设置渲染完成标识
         settings = cache.getSettings(settings.gridManagerName);
+
+        // 设置渲染完成标识
         settings.rendered = true;
         cache.setSettings(settings);
 
@@ -615,7 +613,7 @@ export default class GridManager {
 
         // init filter
         if (filter.enable) {
-            filter.init($table);
+            filter.init(gridManagerName);
         }
 
         // init config
@@ -681,23 +679,8 @@ export default class GridManager {
         remind.destroy(gridManagerName);
         scroll.destroy(gridManagerName);
         sort.destroy(gridManagerName);
-        // filter.destroy(gridManagerName);
-
-        try {
-            const $table = __jTable(table);
-            if (!$table) {
-                return;
-            }
-
-            // 清除DOM属性及节点
-            const $tableWrap = $table.closest('.table-wrap');
-            $table.removeClass('GridManager-ready');
-            $table.html('');
-            $tableWrap.after($table);
-            $tableWrap.remove();
-        } catch (e) {
-            // '在清除GridManager实例的过程时, table被移除'
-        }
+        filter.destroy(gridManagerName);
+        coreDOM.destroy(gridManagerName);
 
         // 清除实例及数据
         cache.cleanTable(gridManagerName);

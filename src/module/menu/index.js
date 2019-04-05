@@ -234,12 +234,11 @@ class Menu {
 
 	/**
 	 * 更新菜单区域分页相关操作可用状态
-	 * @param gridManagerName
 	 * @param settings
 	 */
-	updateMenuPageStatus(gridManagerName, settings) {
+	updateMenuPageStatus(settings) {
 		// 右键菜单区上下页限制
-		const gridMenu = jTool(`.grid-menu[${this.keyName}="${gridManagerName}"]`);
+		const gridMenu = jTool(`.grid-menu[${this.keyName}="${settings.gridManagerName}"]`);
 		if (!gridMenu || gridMenu.length === 0) {
 			return;
 		}
