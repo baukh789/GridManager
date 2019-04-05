@@ -268,68 +268,70 @@ class Cache {
      */
     initSettings(arg, checkbox, order) {
         // 合并参数
-        const _settings = new Settings();
-        _settings.textConfig = new TextSettings();
-        jTool.extend(true, _settings, arg);
+        const settings = new Settings();
+        settings.textConfig = new TextSettings();
+        jTool.extend(true, settings, arg);
 
         // 存储初始配置项
-        this.setSettings(_settings);
+        this.setSettings(settings);
 
         // 为 columnData 增加 序号列
-        if (_settings.supportAutoOrder) {
-            _settings.columnData.unshift(order.getColumn(_settings));
+        if (settings.supportAutoOrder) {
+            settings.columnData.unshift(order.getColumn(settings));
         }
 
         // 为 columnData 增加 选择列
-        if (_settings.supportCheckbox) {
-            _settings.columnData.unshift(checkbox.getColumn(_settings));
+        if (settings.supportCheckbox) {
+            settings.columnData.unshift(checkbox.getColumn(settings));
         }
 
         // 为 columnData 提供锚 => columnMap
         // columnData 在此之后, 将不再被使用到
         // columnData 与 columnMap 已经过特殊处理, 不会彼此影响
-        _settings.columnMap = {};
-        _settings.columnLeftMap = {};
-        _settings.columnRightMap = {};
-        _settings.columnData.forEach((col, index) => {
+        const columnMap = {};
+        // const columnLeftMap = {};
+        // const columnRightMap = {};
+        settings.columnData.forEach((col, index) => {
             if (!col.key) {
                 base.outLog(`配置项columnData内，索引为${index}的key字段未定义`, 'error');
                 return;
             }
-            _settings.columnMap[col.key] = col;
+            columnMap[col.key] = col;
 
             // 如果未设定, 设置默认值为true
-            _settings.columnMap[col.key].isShow = col.isShow || typeof (col.isShow) === 'undefined';
+            columnMap[col.key].isShow = col.isShow || typeof (col.isShow) === 'undefined';
 
             // 为列Map 增加索引
-            _settings.columnMap[col.key].index = index;
+            columnMap[col.key].index = index;
 
             // 存储由用户配置的列宽度值, 该值不随着之后的操作变更
-            _settings.columnMap[col.key].__width = col.width;
+            columnMap[col.key].__width = col.width;
 
             // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
-            _settings.columnMap[col.key].__isShow = col.isShow;
+            columnMap[col.key].__isShow = col.isShow;
 
             // TODO fixed 暂时先不做
             // if (col.fixed === 'left') {
-            //     _settings.columnLeftMap[col.key] = Object.assign(_settings.columnMap[col.key], {disableCustomize: true});
+            //     columnLeftMap[col.key] = Object.assign(columnMap[col.key], {disableCustomize: true});
             // }
             // if (col.fixed === 'right') {
-            //     _settings.columnRightMap[col.key] = Object.assign(_settings.columnMap[col.key], {disableCustomize: true});
+            //     columnRightMap[col.key] = Object.assign(columnMap[col.key], {disableCustomize: true});
             // }
         });
+        settings.columnMap = columnMap;
 
-	    // 合并用户记忆至 settings, 每页显示条数记忆不在此处
+        // 合并用户记忆至 settings, 每页显示条数记忆不在此处
         const mergeUserMemory = () => {
             // 当前为禁用状态
-            if (_settings.disableCache) {
+            if (settings.disableCache) {
                 return;
             }
 
-            const userMemory = this.getUserMemory(_settings.gridManagerName);
+            const { gridManagerName, columnMap } = settings;
+            const userMemory = this.getUserMemory(gridManagerName);
             const columnCache = userMemory.column || {};
             const columnCacheKeys = Object.keys(columnCache);
-            const columnMapKeys = Object.keys(_settings.columnMap);
+            const columnMapKeys = Object.keys(columnMap);
 
             // 无用户记忆
             if (columnCacheKeys.length === 0) {
@@ -345,10 +347,10 @@ class Cache {
             }
 
             // 与用户记忆项不匹配
-            isUsable && jTool.each(_settings.columnMap, (key, col) => {
-	            if (!columnCache[key]
-		            // 显示文本
-		            || columnCache[key].text !== col.text
+            isUsable && jTool.each(columnMap, (key, col) => {
+                if (!columnCache[key]
+                    // 显示文本
+                    || columnCache[key].text !== col.text
 
                     // 宽度
                     || columnCache[key].__width !== col.width
@@ -356,33 +358,33 @@ class Cache {
                     // 显示状态
                     || columnCache[key].__isShow !== col.isShow
 
-		            // 文本排列方向
-		            || columnCache[key].align !== col.align
+                    // 文本排列方向
+                    || columnCache[key].align !== col.align
 
-		            // 数据排序
-		            || columnCache[key].sorting !== col.sorting
+                    // 数据排序
+                    || columnCache[key].sorting !== col.sorting
 
-		            // 字段描述
-	                || columnCache[key].remind !== col.remind
+                    // 字段描述
+                    || columnCache[key].remind !== col.remind
 
                     // 禁止使用个性配置功能
                     || columnCache[key].disableCustomize !== col.disableCustomize
 
-	                || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)
+                    || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)
 
-		            // 字段模版
-		            || (columnCache[key].template && columnCache[key].template !== col.template)) {
-		            isUsable = false;
-		            return false;
-	            }
+                    // 字段模版
+                    || (columnCache[key].template && columnCache[key].template !== col.template)) {
+                    isUsable = false;
+                    return false;
+                }
             });
 
             // 将用户记忆并入 columnMap 内
             if (isUsable) {
-                jTool.extend(true, _settings.columnMap, columnCache);
+                jTool.extend(true, columnMap, columnCache);
             } else {
                 // 清除用户记忆
-                this.delUserMemory(_settings.gridManagerName, '存储记忆项与配置项[columnData]不匹配');
+                this.delUserMemory(gridManagerName, '存储记忆项与配置项[columnData]不匹配');
             }
         };
 
@@ -390,8 +392,8 @@ class Cache {
         mergeUserMemory();
 
         // 更新存储配置项
-        this.setSettings(_settings);
-        return _settings;
+        this.setSettings(settings);
+        return settings;
     }
 
     /**
