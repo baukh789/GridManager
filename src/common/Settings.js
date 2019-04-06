@@ -71,7 +71,7 @@ class Settings {
 			// 宽度配置
 			width: '100%',
 
-			// 高度配置, 可配置的最小宽度为300px
+			// 高度配置
 			height: '300px',
 
 			// 文本对齐方式
@@ -345,7 +345,7 @@ class Settings {
 			dataKey: 'data',
 
 			// 为空时显示的html
-			emptyTemplate: '<div class="gm-emptyTemplate">暂无数据</div>'
+			emptyTemplate: '<div class="gm-empty-template">暂无数据</div>'
 		};
 
 		/**

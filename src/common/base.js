@@ -7,7 +7,7 @@
  *
  */
 import jTool from './jTool';
-import { FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY } from './constants';
+import { FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY } from './constants';
 
 class Base {
 
@@ -320,14 +320,15 @@ class Base {
     }
 
     /**
-     * 获取数据为空时的html
+     * 获取空模版html
+     * @param gridManagerName
      * @param visibleNum: 可视状态TH的数据
      * @param emptyTemplate: 自定义的为空显示模版
      * @param style: 模版自定义样式
      * @returns {string}
      */
-    getEmptyHtml(visibleNum, emptyTemplate, style) {
-        return `<tr emptyTemplate style="${style}">
+    getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style) {
+        return `<tr ${EMPTY_TPL_KEY}="${gridManagerName}" style="${style}">
 					<td colspan="${visibleNum}">
 					${emptyTemplate}
 					</td>
@@ -335,11 +336,19 @@ class Base {
     }
 
     /**
+     * 获取空模版jTool对像
+     * @param gridManagerName
+     */
+    getEmpty(gridManagerName) {
+        return jTool(`tr[${EMPTY_TPL_KEY}="${gridManagerName}"]`);
+    }
+
+    /**
      * 更新数据为空显示DOM所占的列数
      * @param gridManagerName
      */
     updateEmptyCol(gridManagerName) {
-        const emptyDOM = jTool(`${this.getQuerySelector(gridManagerName)} tbody tr[emptyTemplate]`);
+        const emptyDOM = this.getEmpty(gridManagerName);
         if (emptyDOM.length === 0) {
             return;
         }
@@ -421,9 +430,8 @@ class Base {
      */
     updateThWidth(settings, isInit) {
         const { gridManagerName, columnMap, isIconFollowText } = settings;
-        const $table = this.getTable(gridManagerName);
         const updateColumnList = [];
-        let toltalWidth = $table.closest('.table-div').width();
+        let toltalWidth = this.getDiv(gridManagerName).width();
 
         jTool.each(columnMap, (index, col) => {
             // 需要更新宽度的列
@@ -437,15 +445,13 @@ class Base {
             }
         });
 
-        // jTool(`thead[grid-manager-thead]`, $table);
-        const $thead = this.getThead(gridManagerName);
         let autoLen = 0;
         let lastIndex = updateColumnList.length - 1;
 
         // 通过 th.style.width 来进行表格宽度 设置
         jTool.each(updateColumnList, (i, col) => {
-            const {__width, width} = col;
-            const th = $thead.find(`th[th-name="${col.key}"]`).get(0);
+            const { __width, width } = col;
+            const th = this.getTh(gridManagerName, col.key).get(0);
 
             // 非init情况下，设置自动适应列，并统计当前可视项中自动宽度列的总数
             if (!isInit && (!__width || __width === 'auto')) {
@@ -479,7 +485,7 @@ class Base {
         // 需要在上一个each执行完后,才可以获取到准确的值
         let usedTotalWidth = 0;
         jTool.each(updateColumnList, (i, col) => {
-            const $th = $thead.find(`th[th-name="${col.key}"]`);
+            const $th = this.getTh(gridManagerName, col.key);
             let thWidth = jTool($th).width();
             let minWidth = this.getThTextWidth(gridManagerName, $th, isIconFollowText);
             let newWidth = thWidth < minWidth ? minWidth : thWidth;
@@ -577,14 +583,14 @@ class Base {
 
     /**
      * 计算表格布局
-     * @param $table
+     * @param gridManagerName
      * @param width
      * @param height
      * @param supportAjaxPage
      */
-    calcLayout($table, width = '100%', height = '100%', supportAjaxPage = true) {
-        const tableWrap = $table.closest('.table-wrap').get(0);
-        const tableDiv = tableWrap.querySelector('.table-div');
+    calcLayout(gridManagerName, width, height, supportAjaxPage) {
+        const tableWrap = this.getWrap(gridManagerName).get(0);
+        const tableDiv = this.getDiv(gridManagerName).get(0);
         tableWrap.style.width = `calc(${width})`;
         tableWrap.style.height = `calc(${height})`;
         tableDiv.style.height = `calc(100% - ${supportAjaxPage ? '40px' : '0px'})`;
@@ -597,12 +603,7 @@ class Base {
     clearBodyEvent(eventMap) {
         const $body = jTool('body');
         for (let key in eventMap) {
-            const { events, selector } = eventMap[key];
-            if (selector) {
-                $body.off(events, selector);
-                continue;
-            }
-            $body.off(events);
+            $body.off(eventMap[key].events, eventMap[key].selector);
         }
     }
 }

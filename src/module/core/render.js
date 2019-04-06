@@ -60,16 +60,17 @@ class Render {
     @parseTpl(theadTpl)
     createTheadTpl(params) {
         const settings = params.settings;
+        const { disableCache, columnMap, gridManagerName } = settings;
 
         // 将 columnMap 转换为 数组
         // 转换的原因是为了处理用户记忆
         const columnList = [];
-        if (settings.disableCache) {
-            jTool.each(settings.columnMap, (key, col) => {
+        if (disableCache) {
+            jTool.each(columnMap, (key, col) => {
                 columnList.push(col);
             });
         } else {
-            jTool.each(settings.columnMap, (key, col) => {
+            jTool.each(columnMap, (key, col) => {
                 columnList[col.index] = col;
             });
         }
@@ -91,7 +92,7 @@ class Render {
 
         return {
             tableHeadKey: TABLE_HEAD_KEY,
-            gridManagerName: settings.gridManagerName,
+            gridManagerName,
             thListTpl
         };
     }

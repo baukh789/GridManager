@@ -233,7 +233,7 @@ class Checkbox {
         !isRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === tableData.length ? 'checked' : 'indeterminate'));
 
 		// 更新底部工具条选中描述信息
-        ajaxPage.updateCheckedInfo($table, settings);
+        ajaxPage.updateCheckedInfo(settings);
 	}
 
     /**

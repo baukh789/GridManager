@@ -38,6 +38,9 @@ export const VERSION_KEY = 'GridManagerVersion';
 // 缓存错误 key
 export const CACHE_ERROR_KEY = 'grid-manager-cache-error';
 
+// 空模板属性 key
+export const EMPTY_TPL_KEY = 'empty-template';
+
 // 序号的列宽
 export const ORDER_WIDTH = '50px';
 

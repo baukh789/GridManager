@@ -88,21 +88,20 @@ class AjaxPage {
 	 * @param len 本次请求返回的总条数，该参数仅在totals为空时使用
 	 */
 	resetPageData(settings, totals, len) {
-		const _pageData = this.__getPageData(settings, totals, len);
-        const $tableWrap = base.getWrap(settings.gridManagerName);
-        const $footerToolbar = jTool('.footer-toolbar', $tableWrap);
+		const pageData = this.__getPageData(settings, totals, len);
+        const $footerToolbar = jTool(this.getQuerySelector(settings.gridManagerName));
 
 		// 更新底部DOM节点
-		this.__updateFooterDOM($footerToolbar, settings, _pageData);
+		this.__updateFooterDOM($footerToolbar, settings, pageData);
 
 		// 重置当前页显示条数
-        this.__resetPSize($footerToolbar, settings, _pageData);
+        this.__resetPSize($footerToolbar, settings, pageData);
 
 		// 修改分页描述信息
-        this.__resetPageInfo($footerToolbar, settings, _pageData);
+        this.__resetPageInfo($footerToolbar, settings, pageData);
 
 		// 更新Cache
-		cache.setSettings(jTool.extend(true, settings, {pageData: _pageData}));
+		cache.setSettings(jTool.extend(true, settings, {pageData}));
 
 		// 显示底部工具条
         $footerToolbar.css('visibility', 'visible');
@@ -136,15 +135,15 @@ class AjaxPage {
 
     /**
      * 更新选中信息
-     * @param $table
      * @param settings
      */
-    updateCheckedInfo($table, settings) {
-        const checkedInfo = jTool('.footer-toolbar .toolbar-info.checked-info', $table.closest('.table-wrap'));
+    updateCheckedInfo(settings) {
+        const gridManagerName = settings.gridManagerName;
+        const checkedInfo = jTool(`${this.getQuerySelector(gridManagerName)} .toolbar-info.checked-info`);
         if (checkedInfo.length === 0) {
             return;
         }
-        checkedInfo.html(i18n.i18nText(settings, 'checked-info', cache.getCheckedData(settings.gridManagerName).length));
+        checkedInfo.html(i18n.i18nText(settings, 'checked-info', cache.getCheckedData(gridManagerName).length));
     }
 
 	/**

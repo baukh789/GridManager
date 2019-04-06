@@ -153,8 +153,8 @@ class Core {
         const $tableDiv = base.getDiv(gridManagerName);
         const style = `height: ${$tableDiv.height() - 1}px;`;
         $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
-        $tbody.html(base.getEmptyHtml(visibleNum, emptyTemplate, style));
-        base.compileFramework(settings, {el: $tbody.get(0).querySelector('tr[emptyTemplate]')});
+        $tbody.html(base.getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style));
+        base.compileFramework(settings, {el: base.getEmpty(gridManagerName).get(0)});
     }
 
     /**

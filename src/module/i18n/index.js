@@ -1,7 +1,6 @@
 /*
  * i18n: 国际化
  * */
-import jTool from '@common/jTool';
 import base from '@common/base';
 class I18n {
 	/**
@@ -34,11 +33,10 @@ class I18n {
      * @returns {string}
      */
 	i18nText(settings, key, v1, v2, v3) {
-		const _this = this;
 		let intrusion = [];
 
 		// 处理参数，实现多态化
-		if (arguments.length === 3 && jTool.type(arguments[2]) === 'array') {
+		if (arguments.length === 3 && Array.isArray(arguments[2])) {
 			intrusion = arguments[2];
 		} else if (arguments.length > 2) {
 			for (let i = 2; i < arguments.length; i++) {
@@ -46,9 +44,8 @@ class I18n {
 			}
 		}
 
-		let _text = '';
 		try {
-			_text = _this.getText(settings, key);
+			let _text = this.getText(settings, key);
 			if (!intrusion || intrusion.length === 0) {
 				return _text;
 			}
@@ -60,7 +57,7 @@ class I18n {
 			});
 			return _text;
 		} catch (e) {
-			base.outLog(`未找到与${key}相匹配的${_this.getLanguage(settings)}语言`, 'warn');
+			base.outLog(`未找到与${key}相匹配的${this.getLanguage(settings)}语言`, 'warn');
 			return '';
 		}
 	}

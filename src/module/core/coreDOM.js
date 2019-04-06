@@ -18,11 +18,12 @@ class Dom {
     eventMap = {};
 
     init($table, settings) {
+        const { gridManagerName, width, height, supportAjaxPage } = settings;
         // add wrap div
         $table.wrap(render.createWrapTpl({ settings }), '.table-div');
 
         // 计算布局
-        base.calcLayout($table, settings.width, settings.height, settings.supportAjaxPage);
+        base.calcLayout(gridManagerName, width, height, supportAjaxPage);
 
         // append thead
         $table.append(render.createTheadTpl({settings}));
@@ -34,7 +35,7 @@ class Dom {
         // fixed.init($table, settings);
 
         // 绑定事件
-        this.bindEvent(settings.gridManagerName);
+        this.bindEvent(gridManagerName);
     }
 
     /**
