@@ -25,7 +25,7 @@ describe('base 验证类的属性及方法总量', () => {
     });
     it('Function count', () => {
         // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(34 + 1);
+        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(35 + 1);
     });
 });
 
@@ -699,7 +699,7 @@ describe('base.getThName($th)', () => {
     });
 });
 
-describe('base.getEmptyHtml(visibleNum, emptyTemplate, style)', () => {
+describe('base.getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style)', () => {
     let tpl = null;
     beforeEach(() => {
     });
@@ -711,16 +711,52 @@ describe('base.getEmptyHtml(visibleNum, emptyTemplate, style)', () => {
 
     it('基础验证', () => {
         expect(base.getEmptyHtml).toBeDefined();
-        expect(base.getEmptyHtml.length).toBe(3);
+        expect(base.getEmptyHtml.length).toBe(4);
     });
 
     it('返回值验证', () => {
-        tpl = `<tr emptyTemplate style="height: 100px;">
+        tpl = `<tr empty-template="test-empty" style="height: 100px;">
 					<td colspan="5">
 					无内容
 					</td>
 				</tr>`;
-        expect(base.getEmptyHtml(5, '无内容', 'height: 100px;').replace(/\s/, '')).toBe(tpl.replace(/\s/, ''));
+        expect(base.getEmptyHtml('test-empty', 5, '无内容', 'height: 100px;').replace(/\s/g, '')).toBe(tpl.replace(/\s/g, ''));
+    });
+});
+
+
+describe('base.getEmpty(gridManagerName)', () => {
+    let tpl = null;
+    beforeEach(() => {
+        document.body.innerHTML = `<table grid-manager="test-empty">
+                                        <thead grid-manager-thead>
+                                            <tr>
+                                                <th th-visible="visible">1</th><th th-visible="visible">2</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr empty-template="test-empty">
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>`;
+    });
+
+    afterEach(() => {
+        document.body.innerHTML = '';
+        tpl = '';
+    });
+
+    it('基础验证', () => {
+        expect(base.getEmpty).toBeDefined();
+        expect(base.getEmpty.length).toBe(1);
+    });
+
+    it('返回值验证', () => {
+        tpl = `<tr empty-template="test-empty">
+                 <td></td>
+               </tr>`;
+        expect(base.getEmpty('test-empty').get(0).outerHTML.replace(/\s/g, '')).toBe(tpl.replace(/\s/g, ''));
     });
 });
 
@@ -768,7 +804,7 @@ describe('base.updateEmptyCol(gridManagerName)', () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr emptyTemplate>
+                                            <tr empty-template="test-empty">
                                                 <td></td>
                                             </tr>
                                         </tbody>
@@ -890,3 +926,77 @@ describe('base.updateVisibleLast(gridManagerName)', () => {
 });
 
 // updateThWidth
+
+
+
+
+
+
+
+
+describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () => {
+    let $wrap = null;
+    let $div = null;
+    beforeEach(() => {
+        document.body.innerHTML = tableTestTpl;
+        $wrap = jTool('.table-wrap');
+        $div = jTool('.table-div');
+    });
+
+    afterEach(() => {
+        document.body.innerHTML = '';
+        $wrap = null;
+        $div = null;
+    });
+
+    it('基础验证', () => {
+        expect(base.calcLayout).toBeDefined();
+        expect(base.calcLayout.length).toBe(4);
+    });
+
+    it('有分页的验证', () => {
+        base.calcLayout('test', '1000px', '500px', true);
+        expect($wrap.width()).toBe(1000);
+        expect($wrap.height()).toBe(500);
+        expect($div.height()).toBe(460);
+    });
+
+    it('无分页的验证', () => {
+        base.calcLayout('test', '1000px', '500px', false);
+        expect($wrap.width()).toBe(1000);
+        expect($wrap.height()).toBe(500);
+        expect($div.height()).toBe(500);
+    });
+});
+
+describe('base.clearBodyEvent(eventMap)', () => {
+    let eventMap = null;
+    let $body = null;
+    beforeEach(() => {
+        $body = jTool('body');
+        document.body.innerHTML = tableTestTpl;
+    });
+
+    afterEach(() => {
+        eventMap = null;
+        $body = null;
+        document.body.innerHTML = '';
+    });
+
+    it('基础验证', () => {
+        expect(base.clearBodyEvent).toBeDefined();
+        expect(base.clearBodyEvent.length).toBe(1);
+    });
+
+    it('执行验证', () => {
+        eventMap = {
+            testeEvent: {
+                events: 'click', selector: '.table-wrap'
+            }
+        };
+        $body.on(eventMap.testeEvent.events, eventMap.testeEvent.selector, () => {});
+        expect($body.get(0).jToolEvent['click.table-wrap']).toBeDefined();
+        base.clearBodyEvent(eventMap);
+        expect($body.get(0).jToolEvent['click.table-wrap']).toBeUndefined();
+    });
+});
