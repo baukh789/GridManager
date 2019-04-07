@@ -529,11 +529,11 @@ class Base {
         if (isIconFollowText) {
             // 排序
             const sortingAction = jTool('.sorting-action', $th);
-            sortingAction.length !== 0 ? iconWidth += sortingAction.width() : '';
+            sortingAction.length && (iconWidth += sortingAction.width());
 
             // 筛选
             const filterAction = jTool('.filter-area', $th);
-            filterAction.length !== 0 ? iconWidth += filterAction.width() : '';
+            filterAction.length && (iconWidth += filterAction.width());
         }
 
         // 返回宽度值
@@ -544,13 +544,13 @@ class Base {
     /**
      * 获取文本宽度
      * @param gridManagerName
-     * @param text
+     * @param content
      * @param cssObj: 样式对像，允许为空。示例: {fontSize: '12px', ...}
      * @returns {*}
      */
-    getTextWidth(gridManagerName, text, cssObj) {
+    getTextWidth(gridManagerName, content, cssObj) {
         const $textDreamland = jTool(`.table-wrap[${WRAP_KEY}="${gridManagerName}"] .text-dreamland`);
-        $textDreamland.html(text);
+        $textDreamland.html(content);
         cssObj && $textDreamland.css(cssObj);
         return $textDreamland.width();
     }
@@ -563,13 +563,7 @@ class Base {
         const $table = this.getTable(gridManagerName);
         const $tableDiv = this.getDiv(gridManagerName);
         // 宽度: table的宽度大于 tableDiv的宽度时，显示滚动条
-        if ($table.width() > $tableDiv.width()) {
-            $tableDiv.css('overflow-x', 'auto');
-            return 'auto';
-        } else {
-            $tableDiv.css('overflow-x', 'hidden');
-            return 'hidden';
-        }
+        $tableDiv.css('overflow-x', $table.width() > $tableDiv.width() ? 'auto' : 'hidden');
     }
 
     /**
