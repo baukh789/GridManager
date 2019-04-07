@@ -928,11 +928,93 @@ describe('base.updateVisibleLast(gridManagerName)', () => {
 // updateThWidth
 
 
+describe('base.getThTextWidth(gridManagerName, $th, isIconFollowText)', () => {
+    let $th;
+    beforeEach(() => {
+        document.body.innerHTML = tableTestTpl;
+        document.querySelector('.text-dreamland').style.position = 'absolute';
+        document.querySelector('.text-dreamland').style.visibility = 'hidden';
+        document.querySelector('.text-dreamland').style.zIndex = -10;
+        $th = jTool('thead[grid-manager-thead="test"] th[th-name="pic"]');
+    });
 
+    afterEach(() => {
+        $th = null;
+        document.querySelector('.text-dreamland').style.position = 'static';
+        document.querySelector('.text-dreamland').style.visibility = 'visible';
+        document.querySelector('.text-dreamland').style.zIndex = 1;
+        document.body.innerHTML = '';
+    });
 
+    it('基础验证', () => {
+        expect(base.getThTextWidth).toBeDefined();
+        expect(base.getThTextWidth.length).toBe(3);
+    });
 
+    it('执行验证', () => {
+        expect(typeof base.getThTextWidth('test', $th)).toBe('number');
+        expect(typeof base.getThTextWidth('test', $th, true)).toBe('number');
+    });
+});
 
+describe('base.getTextWidth(gridManagerName, content, cssObj)', () => {
+    beforeEach(() => {
+        document.body.innerHTML = tableTestTpl;
+        document.querySelector('.text-dreamland').style.position = 'absolute';
+        document.querySelector('.text-dreamland').style.visibility = 'hidden';
+        document.querySelector('.text-dreamland').style.zIndex = -10;
+    });
 
+    afterEach(() => {
+        document.querySelector('.text-dreamland').style.position = 'static';
+        document.querySelector('.text-dreamland').style.visibility = 'visible';
+        document.querySelector('.text-dreamland').style.zIndex = 1;
+        document.body.innerHTML = '';
+    });
+
+    it('基础验证', () => {
+        expect(base.getTextWidth).toBeDefined();
+        expect(base.getTextWidth.length).toBe(3);
+    });
+
+    it('执行验证', () => {
+        expect(base.getTextWidth('test', '123456')).toBe(40);
+        expect(base.getTextWidth('test', '123456', {'fontSize': '24px'})).toBe(80);
+    });
+});
+
+describe('base.updateScrollStatus(gridManagerName)', () => {
+    let $table = null;
+    let $tableDiv = null;
+    beforeEach(() => {
+        document.body.innerHTML = tableTestTpl;
+        $table = jTool('table');
+        $tableDiv = jTool('.table-div');
+    });
+
+    afterEach(() => {
+        $table = null;
+        $tableDiv = null;
+        document.body.innerHTML = '';
+    });
+
+    it('基础验证', () => {
+        expect(base.updateScrollStatus).toBeDefined();
+        expect(base.updateScrollStatus.length).toBe(1);
+    });
+
+    it('执行验证', () => {
+        $table.width(1000);
+        $tableDiv.width(1100);
+        base.updateScrollStatus('test');
+        expect($tableDiv.css('overflow-x')).toBe('hidden');
+
+        $table.width(1100);
+        $tableDiv.width(1000);
+        base.updateScrollStatus('test');
+        expect($tableDiv.css('overflow-x')).toBe('auto');
+    });
+});
 
 describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () => {
     let $wrap = null;
