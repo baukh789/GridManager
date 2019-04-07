@@ -164,7 +164,7 @@ export default class GridManager {
 	    const $table = __jTable(table);
         const { gridManagerName, supportAjaxPage } = cache.getSettings($table);
         base.calcLayout(gridManagerName, width, height, supportAjaxPage);
-        return base.updateScrollStatus(gridManagerName);
+        base.updateScrollStatus(gridManagerName);
     }
 
 	/**
