@@ -342,7 +342,7 @@ describe('base.getKey($table)', () => {
     });
 
     it('错误情况验证 ', () => {
-        expect(base.getKey()).toBe('');
+        expect(base.getKey()).toBeUndefined();
     });
 });
 

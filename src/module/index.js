@@ -65,9 +65,9 @@ import { PublishMethod, publishMethodArray } from './publish';
             return PublishMethod[name](this, arg, callback, condition) || this;
         }
 
-        const settings = GridManager.get(this);
+        const settings = this.getAttribute(TABLE_KEY) && GridManager.get(this);
         // init: 当前已经实例化
-        if (settings.rendered) {
+        if (settings && settings.rendered) {
             base.outLog(`gridManagerName为${settings.gridManagerName}的实例在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值`, 'warn');
 
             // 如果已经存在，则清除之前的数据。#001

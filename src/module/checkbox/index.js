@@ -12,6 +12,7 @@ import columnTpl from './column.tpl.html';
 import checkboxTpl from './checkbox.tpl.html';
 import radioTpl from './radio.tpl.html';
 import getCheckboxEvent from './event';
+import { TABLE_KEY } from '../../common/constants';
 
 class Checkbox {
     eventMap = {};
@@ -88,11 +89,11 @@ class Checkbox {
 
 	/**
 	 * 获取当前页选中的行
-	 * @param table
+	 * @param gridManagerName
 	 * @returns {NodeListOf<Element>}
 	 */
-	getCheckedTr($table) {
-		return $table.get(0).querySelectorAll('tbody tr[checked="true"]');
+	getCheckedTr(gridManagerName) {
+		return document.querySelectorAll(`[${TABLE_KEY}="${gridManagerName}"] tbody tr[checked="true"]`);
 	}
 
 	/**

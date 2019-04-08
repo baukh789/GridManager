@@ -159,10 +159,25 @@ class Base {
      * @returns {*|string}
      */
     getKey($table) {
-        if (!$table || !$table.jTool || $table.length === 0) {
-            return '';
+        // undefined
+        if (!$table) {
+            return;
         }
-        return $table.attr(TABLE_KEY);
+
+        // gridManagerName
+        if (typeof $table === 'string') {
+            return $table;
+        }
+
+        // jTool table
+        if ($table.jTool && $table.length) {
+            return $table.attr(TABLE_KEY);
+        }
+
+        // table element
+        if ($table.nodeName === 'TABLE') {
+            return $table.getActiveAttrib(TABLE_KEY);
+        }
     }
 
     /**

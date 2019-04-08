@@ -118,11 +118,9 @@ class Render {
         if (typeof (col.sorting) === 'string') {
             sort.enable = true;
             if (col.sorting === settings.sortDownText) {
-                // th.setAttribute('sorting', settings.sortDownText);
                 sortingAttr = `sorting="${settings.sortDownText}"`;
                 settings.sortData[col.key] = settings.sortDownText;
             } else if (col.sorting === settings.sortUpText) {
-                // th.setAttribute('sorting', settings.sortUpText);
                 sortingAttr = `sorting="${settings.sortUpText}"`;
                 settings.sortData[col.key] = settings.sortUpText;
             } else {
@@ -184,6 +182,7 @@ class Render {
             dragClassName = 'drag-action';
         }
 
+        console.log(col.key, col)
         return {
             thName,
             thText,
