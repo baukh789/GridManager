@@ -104,6 +104,7 @@ class Config {
      * @param $table
      */
     noticeUpdate(gridManagerName) {
+        cache.update(cache.getSettings(gridManagerName));
         const settings = cache.getSettings(gridManagerName);
 
         // 重置调整宽度事件源

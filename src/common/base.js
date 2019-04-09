@@ -155,28 +155,28 @@ class Base {
 
     /**
      * 获取表的GM 唯一标识
-     * @param $table
+     * @param target
      * @returns {*|string}
      */
-    getKey($table) {
+    getKey(target) {
         // undefined
-        if (!$table) {
+        if (!target) {
             return;
         }
 
         // gridManagerName
-        if (typeof $table === 'string') {
-            return $table;
+        if (typeof target === 'string') {
+            return target;
         }
 
         // jTool table
-        if ($table.jTool && $table.length) {
-            return $table.attr(TABLE_KEY);
+        if (target.jTool && target.length) {
+            return target.attr(TABLE_KEY);
         }
 
         // table element
-        if ($table.nodeName === 'TABLE') {
-            return $table.getActiveAttrib(TABLE_KEY);
+        if (target.nodeName === 'TABLE') {
+            return target.getAttribute(TABLE_KEY);
         }
     }
 
@@ -445,73 +445,80 @@ class Base {
      */
     updateThWidth(settings, isInit) {
         const { gridManagerName, columnMap, isIconFollowText } = settings;
-        const updateColumnList = [];
         let toltalWidth = this.getDiv(gridManagerName).width();
-
-        jTool.each(columnMap, (index, col) => {
-            // 需要更新宽度的列
-            if (col.isShow && !col.disableCustomize) {
-                updateColumnList.push(col);
-            }
-
-            // 汇总不可更新但可见的列宽
-            if (col.isShow && col.disableCustomize) {
-                toltalWidth += col.__width;
-            }
-        });
-
-        let autoLen = 0;
-        let lastIndex = updateColumnList.length - 1;
-
-        // 通过 th.style.width 来进行表格宽度 设置
-        jTool.each(updateColumnList, (i, col) => {
-            const { __width, width } = col;
-            const th = this.getTh(gridManagerName, col.key).get(0);
-
-            // 非init情况下，设置自动适应列，并统计当前可视项中自动宽度列的总数
-            if (!isInit && (!__width || __width === 'auto')) {
-                autoLen++;
-                th.style.width = 'auto';
-                return;
-            }
-
-            // 当前为init情况，需要使用在core.js中配置的width
-            if (isInit && (!width || width === 'auto')) {
-                autoLen++;
-                th.style.width = 'auto';
-                return;
-            }
-
-            // 当设置至最后一列 且 已经设置的列未存在自动适应列
-            if (i === lastIndex && autoLen === 0) {
-                th.style.width = 'auto';
-                return;
-            }
-
-            // 非init的情况下，清除缓存使用原始宽度
-            if (!isInit) {
-                th.style.width = __width;
-            } else {
-                th.style.width = width;
-            }
-        });
-
-        // 当前th文本所占宽度大于设置的宽度
-        // 需要在上一个each执行完后,才可以获取到准确的值
         let usedTotalWidth = 0;
-        jTool.each(updateColumnList, (i, col) => {
-            const $th = this.getTh(gridManagerName, col.key);
-            let thWidth = jTool($th).width();
-            let minWidth = this.getThTextWidth(gridManagerName, $th, isIconFollowText);
-            let newWidth = thWidth < minWidth ? minWidth : thWidth;
 
-            // 最后一列使用剩余的宽度
-            if (i === lastIndex) {
-                newWidth = toltalWidth > usedTotalWidth + newWidth ? toltalWidth - usedTotalWidth : newWidth;
+        const autoList = [];
+        const haveList = [];
+        jTool.each(columnMap, (key, col) => {
+            const { __width, width, isShow, disableCustomize } = col;
+
+            // 不可见列: 不处理
+            if (!isShow) {
+                return;
             }
 
-            $th.width(newWidth);
-            usedTotalWidth += newWidth;
+            // 禁用定制列: 不进行宽度处理
+            if (disableCustomize) {
+                toltalWidth -= parseInt(width, 10);
+                return;
+            }
+
+            // auto col
+            if ((isInit && (!width || width === 'auto')) ||
+                (!isInit && (!__width || __width === 'auto'))) {
+                col.width = this.getThTextWidth(gridManagerName, this.getTh(gridManagerName, col.key), isIconFollowText);
+                usedTotalWidth += parseInt(col.width, 10);
+                autoList.push(col);
+                return;
+            }
+
+            // init
+            if (isInit) {
+                usedTotalWidth += parseInt(width, 10);
+            }
+
+            // not init
+            if (!isInit) {
+                col.width = __width;
+                usedTotalWidth += parseInt(__width, 10);
+            }
+            haveList.push(col);
+        });
+
+        const autolen = autoList.length;
+
+        // 剩余的值
+        let overage = toltalWidth - usedTotalWidth;
+
+        // 未存在自动列: 将最后一列可定制列宽度强制与剩余宽度相加
+        // todo 不应该是对数组的最后一列操作，而是应该对col.index最大的值操作
+        if (!autolen) {
+            const lastCol = haveList[haveList.length - 1];
+            lastCol.width = `${parseInt(lastCol.width, 10) + overage}px`;
+        }
+
+        // 存在自动列 且 存在剩余宽度: 平分剩余的宽度
+        if (autolen && overage) {
+            const splitVal = Math.floor(overage / autolen);
+            jTool.each(autoList, (index, col) => {
+                // 最后一项自动列: 将余值全部赋予
+                if (index === autolen - 1) {
+                    col.width = `${parseInt(col.width, 10) + overage}px`;
+                    return;
+                }
+                col.width = `${parseInt(col.width, 10) + splitVal}px`;
+                overage = overage - splitVal;
+            });
+        }
+
+        // 绘制th宽度
+        jTool.each(columnMap, (key, col) => {
+            // 可见 且 禁用定制列 不处理
+            if (col.isShow && col.disableCustomize) {
+                return;
+            }
+            this.getTh(gridManagerName, key).width(col.width);
         });
     }
 
@@ -575,10 +582,9 @@ class Base {
      * @param gridManagerName
      */
     updateScrollStatus(gridManagerName) {
-        const $table = this.getTable(gridManagerName);
         const $tableDiv = this.getDiv(gridManagerName);
         // 宽度: table的宽度大于 tableDiv的宽度时，显示滚动条
-        $tableDiv.css('overflow-x', $table.width() > $tableDiv.width() ? 'auto' : 'hidden');
+        $tableDiv.css('overflow-x', this.getTable(gridManagerName).width() > $tableDiv.width() ? 'auto' : 'hidden');
     }
 
     /**

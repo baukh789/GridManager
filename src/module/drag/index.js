@@ -144,6 +144,9 @@ class Drag {
                     config.updateConfigList(gridManagerName);
                 }
 
+                // 更新滚动轴状态
+                base.updateScrollStatus(gridManagerName);
+
                 // 开启文字选中效果
                 $body.removeClass(NO_SELECT_CLASS_NAME);
             });

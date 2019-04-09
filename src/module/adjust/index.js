@@ -31,6 +31,7 @@ class Adjust {
      */
     init(gridManagerName) {
         const _this = this;
+
         // 监听鼠标调整列宽度
         this.$body = jTool('body');
         this.eventMap[gridManagerName] = getAdjustEvent(gridManagerName, base.getQuerySelector(gridManagerName));
@@ -73,6 +74,8 @@ class Adjust {
             _this.__runStopEvent(gridManagerName, $table, $th, $td, adjustAfter);
             return false;
         });
+
+        this.resetAdjust(gridManagerName);
     }
 
     /**
@@ -88,9 +91,6 @@ class Adjust {
         }
         _adjustAction.show();
         _adjustAction.eq(_adjustAction.length - 1).hide();
-
-        // 更新滚动轴状态
-        base.updateScrollStatus(gridManagerName);
     }
 
     /**

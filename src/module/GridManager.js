@@ -541,11 +541,9 @@ export default class GridManager {
         await core.createDOM($table, settings);
 
         const gridManagerName = settings.gridManagerName;
-        // 更新滚动轴显示状态
-        base.updateScrollStatus(gridManagerName);
 
         // 通过缓存配置成功后, 重置宽度调整事件源dom
-        settings.supportAdjust ? adjust.resetAdjust(gridManagerName) : '';
+        // settings.supportAdjust ? adjust.resetAdjust(gridManagerName) : '';
 
         // init adjust
         if (settings.supportAdjust) {
@@ -597,6 +595,9 @@ export default class GridManager {
 
         // 更新最后一项可视列的标识
         base.updateVisibleLast(gridManagerName);
+
+        // 更新滚动轴显示状态
+        base.updateScrollStatus(gridManagerName);
 
         // 渲染tbodyDOM
         settings.firstLoading ? core.refresh(gridManagerName) : core.insertEmptyTemplate(settings, true);

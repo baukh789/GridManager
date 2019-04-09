@@ -448,6 +448,11 @@ class Cache {
         }
         let th = null;
         jTool.each(columnMap, (key, col) => {
+            // 禁用定制列: 不处理
+            if (col.disableCustomize) {
+                return;
+            }
+
             th = base.getTh(gridManagerName, col.key);
             // 宽度
             col.width = th.width() + 'px';

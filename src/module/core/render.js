@@ -182,7 +182,6 @@ class Render {
             dragClassName = 'drag-action';
         }
 
-        console.log(col.key, col)
         return {
             thName,
             thText,
