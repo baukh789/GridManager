@@ -296,7 +296,6 @@ export default class GridManager {
         filter.enable && jTool.each(settings.columnMap, (index, column) => {
             if (typeof query[column.key] === 'string' && column.filter) {
                 column.filter.selected = query[column.key];
-                console.log(jTool(`${base.getQuerySelector(gridManagerName)} th[th-name=${column.key}]`));
                 filter.update(jTool(`${base.getQuerySelector(gridManagerName)} th[th-name=${column.key}]`), column.filter);
             }
         });

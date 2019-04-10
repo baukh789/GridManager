@@ -120,10 +120,12 @@ class Adjust {
             if (_NextWidth < _NextThMinWidth) {
                 _NextWidth = _NextThMinWidth;
             }
+
             // 验证是否更改
             if (_thWidth === $th.width()) {
                 return;
             }
+
             // 验证宽度是否匹配
             if (_thWidth + _NextWidth < $th.width() + $nextTh.width()) {
                 _NextWidth = $th.width() + $nextTh.width() - _thWidth;

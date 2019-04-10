@@ -52,14 +52,14 @@ class Scroll {
         }
         const $thead = base.getThead(gridManagerName);
         const theadWidth = $thead.width();
-        const tableDivWidth = $tableDiv.width();
+        // const tableDivWidth = $tableDiv.width();
 
         // 吸顶元素
         const $setTopHead = base.getFakeThead(gridManagerName);
 
         // 重置thead的宽度和位置
         $setTopHead.css({
-            width: tableDivWidth < theadWidth ? theadWidth + 10 : tableDivWidth,
+            width: theadWidth,
             left: -$tableDiv.scrollLeft() + 'px'
         });
 

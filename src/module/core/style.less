@@ -11,11 +11,20 @@
 .table-wrap {
     position: relative;
     overflow: hidden;
-    background-color: #fff;
     border: @table-border;
     padding-top: 40px;
+    background-color: #fff;
+    .table-header {
+        width: 100%;
+        height: 40px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        .bg-image();
+    }
     .table-div {
-        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
         /*数据为空时，禁用Y轴滚动*/
         &.empty-data{
             overflow-y: hidden;
@@ -119,7 +128,7 @@
             thead {
                 tr {
                     height: 40px;
-                    line-height: 40px;
+                    border-bottom: none;
                 }
 
                 &[grid-manager-thead]{
@@ -130,24 +139,6 @@
                     position: absolute;
                     left: 0;
                     top: 0;
-                    //z-index: 2;
-                    //background-color: #ddd;
-                    .bg-image();
-                    //tr {
-                    //    th {
-                    //        /* 表头提醒 */
-                    //        .remind-action {
-                    //            .ra-area {
-                    //                visibility: hidden;
-                    //                display: none;
-                    //            }
-                    //            &:hover .ra-area {
-                    //                visibility: visible;
-                    //                display: block !important;
-                    //            }
-                    //        }
-                    //    }
-                    //}
                 }
             }
             tbody {
@@ -157,6 +148,9 @@
                     }
                     &:hover td{
                         background-color: #F1F8FB;
+                    }
+                    &:last-child{
+                        border-bottom: none;
                     }
                     &[empty-template]{
                         border-bottom: none;
@@ -216,6 +210,9 @@
                         }
                         &td[gm-create="true"] {
                             background-color: #f8f8f8;
+                        }
+                        &:last-child{
+                            border-right: none;
                         }
                         // 默认的空模板样式
                         .gm-empty-template {

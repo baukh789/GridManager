@@ -449,7 +449,9 @@ class Base {
         let usedTotalWidth = 0;
 
         const autoList = [];
-        const haveList = [];
+
+        // 存储首列
+        let firstCol = null;
         jTool.each(columnMap, (key, col) => {
             const { __width, width, isShow, disableCustomize } = col;
 
@@ -483,19 +485,21 @@ class Base {
                 col.width = __width;
                 usedTotalWidth += parseInt(__width, 10);
             }
-            haveList.push(col);
-        });
 
+            // 通过col.index更新首列
+            if (!firstCol || firstCol.index > col.index) {
+                firstCol = col;
+            }
+        });
         const autolen = autoList.length;
 
         // 剩余的值
         let overage = toltalWidth - usedTotalWidth;
 
-        // 未存在自动列: 将最后一列可定制列宽度强制与剩余宽度相加
-        // todo 不应该是对数组的最后一列操作，而是应该对col.index最大的值操作
-        if (!autolen) {
-            const lastCol = haveList[haveList.length - 1];
-            lastCol.width = `${parseInt(lastCol.width, 10) + overage}px`;
+
+        // 未存在自动列 且 存在剩余的值: 将第一个可定制列宽度强制与剩余宽度相加
+        if (autolen === 0 && overage > 0) {
+            firstCol.width = `${parseInt(firstCol.width, 10) + overage}px`;
         }
 
         // 存在自动列 且 存在剩余宽度: 平分剩余的宽度
