@@ -936,9 +936,6 @@ describe('base.updateVisibleLast(gridManagerName)', () => {
 
 describe('base.updateThWidth(settings, isInit)', () => {
     let testCon = null;
-    let $table = null;
-    let gridManagerName = null;
-    let $lastTh = null;
     let settings = null;
     beforeEach(() => {
         testCon = document.createElement('div');
@@ -948,8 +945,6 @@ describe('base.updateThWidth(settings, isInit)', () => {
         document.querySelector('.text-dreamland').style.position = 'absolute';
         document.querySelector('.text-dreamland').style.visibility = 'hidden';
         document.querySelector('.text-dreamland').style.zIndex = -10;
-        gridManagerName = 'test';
-        $table = jTool('table[grid-manager="test"]');
         settings = {
             gridManagerName: 'test',
             columnMap: getColumnMap(),
@@ -959,9 +954,6 @@ describe('base.updateThWidth(settings, isInit)', () => {
 
     afterEach(() => {
         testCon = null;
-        gridManagerName = null;
-        $table = null;
-        $lastTh = null;
         settings = null;
         document.querySelector('.text-dreamland').style.position = 'static';
         document.querySelector('.text-dreamland').style.visibility = 'visible';
@@ -1072,7 +1064,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
         expect(settings.columnMap['action'].width).toBe('100px');
     });
 
-    it('再打开一个拥有宽度的定制列', () => {
+    it('打开一个拥有宽度的定制列', () => {
         settings.columnMap['pic'].isShow = false;
         settings.columnMap['type'].isShow = true;
         settings.columnMap['info'].isShow = false;
@@ -1087,7 +1079,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
         expect(settings.columnMap['action'].width).toBe('100px');
     });
 
-    it('再打开一个自适应宽度的定制列', () => {
+    it('打开一个自适应宽度的定制列', () => {
         settings.columnMap['pic'].isShow = false;
         settings.columnMap['type'].isShow = true;
         settings.columnMap['info'].isShow = false;
@@ -1101,6 +1093,32 @@ describe('base.updateThWidth(settings, isInit)', () => {
         expect(settings.columnMap['title'].width).toBe('730px');
         expect(settings.columnMap['lastDate'].width).toBe('130px');
         expect(settings.columnMap['action'].width).toBe('100px');
+    });
+
+    it('再打开一个自适应宽度的定制列', () => {
+        settings.columnMap['pic'].isShow = true;
+        settings.columnMap['pic'].__width = null;  // 修改 _width， 将该列设置为自动列
+        settings.columnMap['type'].isShow = true;
+        settings.columnMap['info'].isShow = false;
+        settings.columnMap['username'].isShow = false;
+        settings.columnMap['title'].isShow = true;
+        settings.columnMap['createDate'].isShow = false;
+
+        let picThTextWidth = base.getThTextWidth('test', jTool('[grid-manager-thead="test"] th[th-name="pic"]'), settings.columnMap['pic'].isIconFollowText);
+        let titleThTextWidth = base.getThTextWidth('test', jTool('[grid-manager-thead="test"] th[th-name="title"]'), settings.columnMap['title'].isIconFollowText);
+        let overage = 1200 - 40 - 50 - 150 - 130 - 100 - picThTextWidth - titleThTextWidth;
+        base.updateThWidth(settings, false);
+        expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
+        expect(settings.columnMap['gm_order'].width).toBe('50px');
+        expect(settings.columnMap['pic'].width).toBe(`${overage / 2 + picThTextWidth}px`);
+        expect(settings.columnMap['type'].width).toBe('150px');
+        expect(settings.columnMap['title'].width).toBe(`${overage / 2 + titleThTextWidth}px`);
+        expect(settings.columnMap['lastDate'].width).toBe('130px');
+        expect(settings.columnMap['action'].width).toBe('100px');
+
+        picThTextWidth = null;
+        titleThTextWidth = null;
+        overage = null;
     });
 });
 
