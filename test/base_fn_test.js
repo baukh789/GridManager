@@ -3,6 +3,7 @@ import base from '../src/common/base';
 import { trimTpl } from '../src/common/parse';
 import {CONSOLE_STYLE} from '../src/common/constants';
 import tableTpl from './table-test.tpl.html';
+import { getColumnMap } from './table-config';
 
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
@@ -337,7 +338,15 @@ describe('base.getKey($table)', () => {
         expect(base.getKey.length).toBe(1);
     });
 
-    it('返回值验证 ', () => {
+    it('参数为gridManagerName ', () => {
+        expect(base.getKey('test')).toBe('test');
+    });
+
+    it('参数为table ', () => {
+        expect(base.getKey(document.querySelector('table[grid-manager="test"]'))).toBe('test');
+    });
+
+    it('参数为$table ', () => {
         expect(base.getKey(jTool('table[grid-manager="test"]'))).toBe('test');
     });
 
@@ -925,13 +934,183 @@ describe('base.updateVisibleLast(gridManagerName)', () => {
     });
 });
 
-// updateThWidth
+describe('base.updateThWidth(settings, isInit)', () => {
+    let testCon = null;
+    let $table = null;
+    let gridManagerName = null;
+    let $lastTh = null;
+    let settings = null;
+    beforeEach(() => {
+        testCon = document.createElement('div');
+        testCon.style.width = '1200px';
+        testCon.innerHTML = tableTestTpl;
+        document.body.appendChild(testCon);
+        document.querySelector('.text-dreamland').style.position = 'absolute';
+        document.querySelector('.text-dreamland').style.visibility = 'hidden';
+        document.querySelector('.text-dreamland').style.zIndex = -10;
+        gridManagerName = 'test';
+        $table = jTool('table[grid-manager="test"]');
+        settings = {
+            gridManagerName: 'test',
+            columnMap: getColumnMap(),
+            isIconFollowText: false
+        };
+    });
+
+    afterEach(() => {
+        testCon = null;
+        gridManagerName = null;
+        $table = null;
+        $lastTh = null;
+        settings = null;
+        document.querySelector('.text-dreamland').style.position = 'static';
+        document.querySelector('.text-dreamland').style.visibility = 'visible';
+        document.querySelector('.text-dreamland').style.zIndex = 1;
+        document.body.innerHTML = '';
+    });
+
+    it('基础验证', () => {
+        expect(base.updateThWidth).toBeDefined();
+        expect(base.updateThWidth.length).toBe(2);
+    });
+
+    it('初始化时的更新', () => {
+        base.updateThWidth(settings, true);
+        expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
+        expect(settings.columnMap['gm_order'].width).toBe('50px');
+        expect(settings.columnMap['pic'].width).toBe('110px');
+        expect(settings.columnMap['title'].width).toBe('508px');
+        expect(settings.columnMap['type'].width).toBe('150px');
+        expect(settings.columnMap['info'].width).toBe('100px');
+        expect(settings.columnMap['username'].width).toBe('100px');
+        expect(settings.columnMap['createDate'].width).toBe('130px');
+        expect(settings.columnMap['lastDate'].width).toBe('130px');
+        expect(settings.columnMap['action'].width).toBe('100px');
+    });
+
+    it('非初始化时的更新', () => {
+        base.updateThWidth(settings, false);
+        expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
+        expect(settings.columnMap['gm_order'].width).toBe('50px');
+        expect(settings.columnMap['pic'].width).toBe('110px');
+        expect(settings.columnMap['title'].width).toBe('290px');
+        expect(settings.columnMap['type'].width).toBe('150px');
+        expect(settings.columnMap['info'].width).toBe('100px');
+        expect(settings.columnMap['username'].width).toBe('100px');
+        expect(settings.columnMap['createDate'].width).toBe('130px');
+        expect(settings.columnMap['lastDate'].width).toBe('130px');
+        expect(settings.columnMap['action'].width).toBe('100px');
+    });
+
+    it('隐藏一个定制列', () => {
+        base.updateThWidth(settings, false);
+        expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
+        expect(settings.columnMap['gm_order'].width).toBe('50px');
+        expect(settings.columnMap['pic'].width).toBe('110px');
+        expect(settings.columnMap['title'].width).toBe('290px');
+        expect(settings.columnMap['type'].width).toBe('150px');
+        expect(settings.columnMap['info'].width).toBe('100px');
+        expect(settings.columnMap['username'].width).toBe('100px');
+        expect(settings.columnMap['createDate'].width).toBe('130px');
+        expect(settings.columnMap['lastDate'].width).toBe('130px');
+        expect(settings.columnMap['action'].width).toBe('100px');
+    });
+
+    it('隐藏一个拥有宽度的可定制列', () => {
+        settings.columnMap['pic'].isShow = false;
+        base.updateThWidth(settings, false);
+        expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
+        expect(settings.columnMap['gm_order'].width).toBe('50px');
+        expect(settings.columnMap['title'].width).toBe('400px');
+        expect(settings.columnMap['type'].width).toBe('150px');
+        expect(settings.columnMap['info'].width).toBe('100px');
+        expect(settings.columnMap['username'].width).toBe('100px');
+        expect(settings.columnMap['createDate'].width).toBe('130px');
+        expect(settings.columnMap['lastDate'].width).toBe('130px');
+        expect(settings.columnMap['action'].width).toBe('100px');
+    });
+
+    it('仅有一个自动和两个拥有宽度的定制列', () => {
+        settings.columnMap['pic'].isShow = false;
+        settings.columnMap['type'].isShow = false;
+        settings.columnMap['info'].isShow = false;
+        settings.columnMap['username'].isShow = false;
+        base.updateThWidth(settings, false);
+        expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
+        expect(settings.columnMap['gm_order'].width).toBe('50px');
+        expect(settings.columnMap['title'].width).toBe('750px');
+        expect(settings.columnMap['createDate'].width).toBe('130px');
+        expect(settings.columnMap['lastDate'].width).toBe('130px');
+        expect(settings.columnMap['action'].width).toBe('100px');
+    });
+
+    it('仅有两个拥有宽度的定制列', () => {
+        settings.columnMap['pic'].isShow = false;
+        settings.columnMap['type'].isShow = false;
+        settings.columnMap['info'].isShow = false;
+        settings.columnMap['username'].isShow = false;
+        settings.columnMap['title'].isShow = false;
+        base.updateThWidth(settings, false);
+        expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
+        expect(settings.columnMap['gm_order'].width).toBe('50px');
+        expect(settings.columnMap['createDate'].width).toBe('880px');
+        expect(settings.columnMap['lastDate'].width).toBe('130px');
+        expect(settings.columnMap['action'].width).toBe('100px');
+    });
+
+    it('仅有一个拥有宽度的定制列', () => {
+        settings.columnMap['pic'].isShow = false;
+        settings.columnMap['type'].isShow = false;
+        settings.columnMap['info'].isShow = false;
+        settings.columnMap['username'].isShow = false;
+        settings.columnMap['title'].isShow = false;
+        settings.columnMap['createDate'].isShow = false;
+        base.updateThWidth(settings, false);
+        expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
+        expect(settings.columnMap['gm_order'].width).toBe('50px');
+        expect(settings.columnMap['lastDate'].width).toBe('1010px');
+        expect(settings.columnMap['action'].width).toBe('100px');
+    });
+
+    it('再打开一个拥有宽度的定制列', () => {
+        settings.columnMap['pic'].isShow = false;
+        settings.columnMap['type'].isShow = true;
+        settings.columnMap['info'].isShow = false;
+        settings.columnMap['username'].isShow = false;
+        settings.columnMap['title'].isShow = false;
+        settings.columnMap['createDate'].isShow = false;
+        base.updateThWidth(settings, false);
+        expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
+        expect(settings.columnMap['gm_order'].width).toBe('50px');
+        expect(settings.columnMap['type'].width).toBe('880px');
+        expect(settings.columnMap['lastDate'].width).toBe('130px');
+        expect(settings.columnMap['action'].width).toBe('100px');
+    });
+
+    it('再打开一个自适应宽度的定制列', () => {
+        settings.columnMap['pic'].isShow = false;
+        settings.columnMap['type'].isShow = true;
+        settings.columnMap['info'].isShow = false;
+        settings.columnMap['username'].isShow = false;
+        settings.columnMap['title'].isShow = true;
+        settings.columnMap['createDate'].isShow = false;
+        base.updateThWidth(settings, false);
+        expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
+        expect(settings.columnMap['gm_order'].width).toBe('50px');
+        expect(settings.columnMap['type'].width).toBe('150px');
+        expect(settings.columnMap['title'].width).toBe('730px');
+        expect(settings.columnMap['lastDate'].width).toBe('130px');
+        expect(settings.columnMap['action'].width).toBe('100px');
+    });
+});
 
 
 describe('base.getThTextWidth(gridManagerName, $th, isIconFollowText)', () => {
     let $th;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
+
+        // TODO 由于没有引样式文件，所以需要通过修改样式属性来处理
         document.querySelector('.text-dreamland').style.position = 'absolute';
         document.querySelector('.text-dreamland').style.visibility = 'hidden';
         document.querySelector('.text-dreamland').style.zIndex = -10;

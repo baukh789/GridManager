@@ -450,6 +450,7 @@ class Base {
 
         const autoList = [];
 
+        // console.log(this.getThTextWidth('test', jTool('thead[grid-manager-thead="test"] th[th-name="pic"]'), true));
         // 存储首列
         let firstCol = null;
         jTool.each(columnMap, (key, col) => {
@@ -460,16 +461,16 @@ class Base {
                 return;
             }
 
-            // 禁用定制列: 不进行宽度处理
+            // 禁用定制列: 仅统计总宽，不进行宽度处理
             if (disableCustomize) {
                 toltalWidth -= parseInt(width, 10);
                 return;
             }
 
-            // auto col
+            // 自适应列: 更新为最小宽度，统计总宽，收录自适应列数组
             if ((isInit && (!width || width === 'auto')) ||
                 (!isInit && (!__width || __width === 'auto'))) {
-                col.width = this.getThTextWidth(gridManagerName, this.getTh(gridManagerName, col.key), isIconFollowText);
+                col.width = this.getThTextWidth(gridManagerName, this.getTh(gridManagerName, key), isIconFollowText);
                 usedTotalWidth += parseInt(col.width, 10);
                 autoList.push(col);
                 return;
@@ -495,7 +496,6 @@ class Base {
 
         // 剩余的值
         let overage = toltalWidth - usedTotalWidth;
-
 
         // 未存在自动列 且 存在剩余的值: 将第一个可定制列宽度强制与剩余宽度相加
         if (autolen === 0 && overage > 0) {
