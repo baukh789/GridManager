@@ -117,7 +117,9 @@ class Core {
             this.insertEmptyTemplate(settings);
             parseRes[totalsKey] = 0;
         } else {
-            base.getDiv(gridManagerName).removeClass(EMPTY_DATA_CLASS_NAME);
+            const $div = base.getDiv(gridManagerName);
+            $div.removeClass(EMPTY_DATA_CLASS_NAME);
+            $div.scrollTop(0);
             coreDOM.renderTableBody(settings, _data);
         }
 
