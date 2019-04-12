@@ -147,6 +147,7 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
 > 以下皮肤为第三方提供，如果你也有过好的实现，请提交至 [issues](https://github.com/baukh789/GridManager/issues)
 
 - [ccms-skin](https://github.com/BoWang816/GridManager-ccms-skin)
+- [element-skin](https://github.com/xtfan21/GridManager-element-skin)
 
 ## 贡献者
 <table>
@@ -161,6 +162,12 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
         <a href="https://github.com/luchyrabbit">
             <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars0.githubusercontent.com/u/21122430?s=460&v=4">
             <div style="text-align:center">luchyrabbit</div>
+        </a>
+    </td>
+    <td>
+        <a href="https://github.com/xtfan21">
+            <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars2.githubusercontent.com/u/23092282?s=460&v=4">
+            <div style="text-align:center">xtfan21</div>
         </a>
     </td>
     <td>
