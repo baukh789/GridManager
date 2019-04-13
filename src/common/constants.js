@@ -27,7 +27,7 @@ export const TABLE_HEAD_KEY = 'grid-manager-thead';
 export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
 
 // tr 上 cache key
-export const TR_CACHE_KEY = 'grid-manager-mock-thead';
+export const TR_CACHE_KEY = 'cache-key';
 
 // 用户记忆 localStorage key
 export const MEMORY_KEY = 'GridManagerMemory';
