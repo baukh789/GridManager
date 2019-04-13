@@ -84,7 +84,7 @@ export default class GridManager {
             base.outLog('mergeDefaultOption配置失败，配置的值只允许为object', 'error');
             return;
         }
-        defaultOption = Object.assign(defaultOption, conf);
+        defaultOption = jTool.extend(defaultOption, conf);
     }
 
     /**
@@ -397,8 +397,8 @@ export default class GridManager {
 
         tableData = tableData.map(rowData => {
             let checked = checkedList.some(item => {
-                let cloneRow = base.getDataForColumnMap(columnMap, item);
-                let cloneItem = base.getDataForColumnMap(columnMap, rowData);
+                let cloneRow = base.getCloneRowData(columnMap, item);
+                let cloneItem = base.getCloneRowData(columnMap, rowData);
                 return base.equal(cloneRow, cloneItem);
             });
             rowData[checkbox.key] = checked;
@@ -423,8 +423,14 @@ export default class GridManager {
             return;
         }
         const settings = cache.getSettings(base.getKey(table));
+        const { gridManagerName, supportCheckbox } = settings;
         const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
-        const tableData = cache.updateRowData(settings.gridManagerName, key, rowDataList);
+        const tableData = cache.updateRowData(gridManagerName, key, rowDataList);
+
+        // 更新选中数据
+        if (supportCheckbox) {
+            cache.updateCheckedData(gridManagerName, key, rowDataList);
+        }
 
         // 更新DOM
         coreDOM.renderTableBody(settings, tableData);

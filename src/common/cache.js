@@ -44,23 +44,23 @@ class Cache {
      * @returns {*}
      */
     getRowData(gridManagerName, target) {
-        if (!store.responseData[gridManagerName]) {
-            return;
-        }
+        const tableData = this.getTableData(gridManagerName);
         // target type = Element 元素时, 返回单条数据对象;
         if (jTool.type(target) === 'element') {
-            return store.responseData[gridManagerName][target.getAttribute(TR_CACHE_KEY)];
-        } else if (jTool.type(target) === 'nodeList') {
-            // target type =  NodeList 类型时, 返回数组
+            return tableData[target.getAttribute(TR_CACHE_KEY)];
+        }
+
+        // target type =  NodeList 类型时, 返回数组
+        if (jTool.type(target) === 'nodeList') {
             let rodData = [];
             jTool.each(target, function (i, v) {
-                rodData.push(store.responseData[gridManagerName][v.getAttribute(TR_CACHE_KEY)]);
+                rodData.push(tableData[v.getAttribute(TR_CACHE_KEY)]);
             });
             return rodData;
-        } else {
-            // 不为Element NodeList时, 返回空对象
-            return {};
         }
+
+        // 不为Element 和 NodeList时, 返回空对象
+        return {};
     }
 
     /**
@@ -75,15 +75,12 @@ class Cache {
         tableData.forEach(item => {
             rowDataList.forEach(newItem => {
                 if (newItem[key] === item[key]) {
-                    Object.assign(item, newItem);
+                    jTool.extend(item, newItem);
                 }
             });
         });
         // 存储表格数据
         this.setTableData(gridManagerName, tableData);
-
-        // 更新选中数据
-        this.getSettings(gridManagerName).supportCheckbox && this.setCheckedData(gridManagerName, tableData);
         return tableData;
     }
 
@@ -124,10 +121,9 @@ class Cache {
      */
     setCheckedData(gridManagerName, dataList, isClear) {
         const { columnMap } = this.getSettings(gridManagerName);
-
-        // 覆盖操作，清空原有的选中数据
+        // 覆盖操作，清空原有的选中数据。 并且 dataList 将会按选中状态进行处理
         if (isClear) {
-            store.checkedData[gridManagerName] = dataList.map(item => base.getDataForColumnMap(columnMap, item));
+            store.checkedData[gridManagerName] = dataList.map(item => base.getCloneRowData(columnMap, item));
             return;
         }
 
@@ -135,10 +131,10 @@ class Cache {
         if (!store.checkedData[gridManagerName]) {
             store.checkedData[gridManagerName] = [];
         }
-        let tableCheckedList = store.checkedData[gridManagerName];
+        const tableCheckedList = store.checkedData[gridManagerName];
 
         dataList.forEach(item => {
-            let cloneObj = base.getDataForColumnMap(columnMap, item);
+            let cloneObj = base.getCloneRowData(columnMap, item);
             let checked = item['gm_checkbox'];
             let index = base.getObjectIndexToArray(tableCheckedList, cloneObj);
 
@@ -153,7 +149,23 @@ class Cache {
                 tableCheckedList.splice(index, 1);
             }
         });
-        store.checkedData[gridManagerName] = tableCheckedList;
+    }
+
+    /**
+     * 更新选中的数据
+     * @param gridManagerName
+     * @param key
+     * @param rowDataList
+     */
+    updateCheckedData(gridManagerName, key, rowDataList) {
+        store.checkedData[gridManagerName] = store.checkedData[gridManagerName].map(item => {
+            rowDataList.forEach(newItem => {
+                if (item[key] === newItem[key]) {
+                    jTool.extend(item, newItem);
+                }
+            });
+            return item;
+        });
     }
 
     /**

@@ -136,15 +136,11 @@ class Dom {
         if (supportCheckbox) {
             const checkedData = cache.getCheckedData(gridManagerName);
             data = data.map(rowData => {
-                let checked = checkedData.some(item => {
-                    let cloneRow = base.getDataForColumnMap(columnMap, item);
-                    let cloneItem = base.getDataForColumnMap(columnMap, rowData);
-                    return base.equal(cloneRow, cloneItem);
+                rowData[checkbox.key] = checkedData.some(item => {
+                    return base.equal(base.getCloneRowData(columnMap, item), base.getCloneRowData(columnMap, rowData));
                 });
-                rowData[checkbox.key] = checked || Boolean(rowData[checkbox.key]);
                 return rowData;
             });
-            cache.setCheckedData(gridManagerName, data);
         }
 
         // 存储表格数据
