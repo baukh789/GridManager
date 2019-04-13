@@ -5,10 +5,10 @@
 import { Settings, TextSettings } from '../src/common/Settings';
 describe('Settings', () => {
 	let settings = null;
-	beforeEach(() =>{
+	beforeEach(() => {
 		settings = new Settings();
 	});
-	afterEach(() =>{
+	afterEach(() => {
 		settings = null;
 	});
 

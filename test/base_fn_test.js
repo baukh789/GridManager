@@ -117,8 +117,8 @@ describe('base.equal(obj1, obj2)', () => {
 
 describe('base.getDataForColumnMap(columnMap, obj)', () => {
     it('基础验证', () => {
-        expect(base.getDataForColumnMap).toBeDefined();
-        expect(base.getDataForColumnMap.length).toBe(2);
+        expect(base.getCloneRowData).toBeDefined();
+        expect(base.getCloneRowData.length).toBe(2);
     });
 
     it('返回值验证', () => {
@@ -149,9 +149,11 @@ describe('base.getDataForColumnMap(columnMap, obj)', () => {
         };
         let cloneData = {
             username: 'baukh',
+            age: 32,
+            content: 'this is content',
             info: 'this is info'
         };
-        expect(base.getDataForColumnMap(columnMap, data)).toEqual(cloneData);
+        expect(base.getCloneRowData(columnMap, data)).toEqual(cloneData);
 
         columnMap = null;
         data = null;

@@ -9,19 +9,19 @@ import { CONSOLE_STYLE } from '../src/common/constants';
  * 验证类的属性及方法总量
  */
 describe('I18n 验证类的属性及方法总量', () => {
-	var getPropertyCount = null;
+    let getPropertyCount = null;
 	beforeEach(() => {
-		getPropertyCount = function(o){
-			var n, count = 0;
-			for(n in o){
-				if(o.hasOwnProperty(n)){
+		getPropertyCount = o => {
+			let count = 0;
+			for(let n in o) {
+				if(o.hasOwnProperty(n)) {
 					count++;
 				}
 			}
 			return count;
-		}
+		};
 	});
-	afterEach(() =>{
+	afterEach(() => {
 		getPropertyCount = null;
 	});
 	it('Function count', () => {
@@ -72,16 +72,16 @@ describe('getText(settings, key, language)', () => {
 
 describe('i18nText(settings, key, v1, v2, v3)', () => {
 	let settings = null;
-	beforeEach(() =>{
+	beforeEach(() => {
 		settings = new Settings();
 		settings.textConfig = new TextSettings();
 
 		// 存储console, 用于在测方式完成后原还console对象
 		console._log = console.log;
-		console.log = jasmine.createSpy("log");
+		console.log = jasmine.createSpy('log');
 	});
 
-	afterEach(() =>{
+	afterEach(() => {
 		settings = null;
 
 		// 还原console
