@@ -154,14 +154,15 @@ class Cache {
     /**
      * 更新选中的数据
      * @param gridManagerName
+     * @param columnMap
      * @param key
      * @param rowDataList
      */
-    updateCheckedData(gridManagerName, key, rowDataList) {
+    updateCheckedData(gridManagerName, columnMap, key, rowDataList) {
         store.checkedData[gridManagerName] = store.checkedData[gridManagerName].map(item => {
             rowDataList.forEach(newItem => {
                 if (item[key] === newItem[key]) {
-                    jTool.extend(item, newItem);
+                    jTool.extend(item, base.getCloneRowData(columnMap, newItem));
                 }
             });
             return item;

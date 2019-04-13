@@ -423,13 +423,13 @@ export default class GridManager {
             return;
         }
         const settings = cache.getSettings(base.getKey(table));
-        const { gridManagerName, supportCheckbox } = settings;
+        const { gridManagerName, columnMap, supportCheckbox } = settings;
         const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
         const tableData = cache.updateRowData(gridManagerName, key, rowDataList);
 
         // 更新选中数据
         if (supportCheckbox) {
-            cache.updateCheckedData(gridManagerName, key, rowDataList);
+            cache.updateCheckedData(gridManagerName, columnMap, key, rowDataList);
         }
 
         // 更新DOM
