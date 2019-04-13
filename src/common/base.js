@@ -1,10 +1,5 @@
 /**
  * 项目中的一些基础方法
- *
- * #001: getDataForColumnMap(columnMap, data)
- * 获取与ColumnMap匹配的clone数据, 仅会返回data中与ColumnMap相匹配且col.isAutoCreate !== true的字段。
- * 返回的是clone对象，修改它并不会污染原数据。
- *
  */
 import jTool from './jTool';
 import { FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY } from './constants';
@@ -51,20 +46,18 @@ class Base {
     }
 
     /**
-     * 获取与ColumnMap匹配的clone数据
-     * #001
+     * 获取clone行数据匹配，修改它并不会污染原数据。
      * @param columnMap
      * @param obj
      */
-    getDataForColumnMap(columnMap, obj) {
+    getCloneRowData(columnMap, obj) {
         let cloneObj = jTool.extend(true, {}, obj);
-        let cloneData = {};
         for (let key in columnMap) {
-            if (!columnMap[key].isAutoCreate) {
-                cloneData[key] = cloneObj[key];
+            if (columnMap[key].isAutoCreate) {
+                delete cloneObj[key];
             }
         }
-        return cloneData;
+        return cloneObj;
     }
 
     /**
