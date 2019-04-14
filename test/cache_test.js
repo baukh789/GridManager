@@ -1,6 +1,7 @@
 'use strict';
 import jTool from '../src/common/jTool';
 import { trimTpl } from '../src/common/parse';
+import {CACHE_ERROR_KEY, CONSOLE_STYLE, MEMORY_KEY} from '../src/common/constants';
 import cache from '../src/common/cache';
 import store from '../src/common/Store';
 import { version } from '../package.json';
@@ -223,5 +224,234 @@ describe('getCheckedData and setCheckedData', () => {
         // 清空
         cache.setCheckedData('test', [], true);
         expect(cache.getCheckedData('test').length).toBe(0);
+    });
+});
+
+describe('updateCheckedData', () => {
+    let tableData = null;
+    let columnMap = null;
+    beforeEach(() => {
+        columnMap = getColumnMap();
+        tableData = getTableData().data;
+        store.checkedData = {
+            test: [tableData[0], tableData[5]]
+        };
+    });
+    afterEach(() => {
+        tableData = null;
+        columnMap = null;
+        delete store.checkedData.test;
+    });
+
+    it('基础验证', () => {
+        expect(cache.updateCheckedData).toBeDefined();
+        expect(cache.updateCheckedData.length).toBe(4);
+    });
+
+    it('执行验证', () => {
+        expect(store.checkedData['test'].length).toBe(2);
+        expect(store.checkedData['test'][0].title).toBe('Content-Type 对照表');
+        expect(store.checkedData['test'][1].title).toBe('js捕获错误信息');
+
+        cache.updateCheckedData('test', columnMap, 'id', [{id: 92, title: 'this is new title'}]);
+        expect(store.checkedData['test'].length).toBe(2);
+        expect(store.checkedData['test'][0].title).toBe('this is new title');
+        expect(store.checkedData['test'][1].title).toBe('js捕获错误信息');
+    });
+});
+
+describe('getMemoryKey', () => {
+    beforeEach(() => {
+        // 在测试中不能对pathname进行修改，该值默认为/context.html， 如果修改的话将会报出如下错误: Some of your tests did a full page reload!
+        // window.location.pathname = '/context.html';
+        window.location.hash = '#userList';
+    });
+    afterEach(() => {
+        // window.location.pathname = null;
+        window.location.hash = null;
+    });
+
+    it('基础验证', () => {
+        expect(cache.getMemoryKey).toBeDefined();
+        expect(cache.getMemoryKey.length).toBe(1);
+    });
+
+    it('执行验证', () => {
+        expect(cache.getMemoryKey('test')).toBe('/context.html#userList-test');
+    });
+});
+
+describe('getUserMemory', () => {
+    let settings = null;
+    beforeEach(() => {
+        // 在测试中不能对pathname进行修改，该值默认为/context.html， 如果修改的话将会报出如下错误: Some of your tests did a full page reload!
+        // window.location.pathname = '/context.html';
+        window.location.hash = '#userList';
+        window.localStorage.removeItem(MEMORY_KEY);
+        document.body.innerHTML = tableTestTpl;
+        settings = {
+            disableCache: false,
+            gridManagerName: 'test',
+            columnMap: getColumnMap(),
+            supportAjaxPage: true,
+            pageData: {
+                cPage: 1,
+                pSize: 20,
+                tPage: 3,
+                tSize: 54
+            },
+            pageSizeKey: 'pSize'
+        };
+    });
+    afterEach(() => {
+        // window.location.pathname = null;
+        window.location.hash = null;
+        window.localStorage.removeItem(MEMORY_KEY);
+        document.body.innerHTML = null;
+        settings = null;
+    });
+
+    it('基础验证', () => {
+        expect(cache.getUserMemory).toBeDefined();
+        expect(cache.getUserMemory.length).toBe(1);
+    });
+
+    it('当前key值无效', () => {
+        expect(cache.getUserMemory('undefined')).toEqual({});
+    });
+
+    it('当前无存储字段', () => {
+        expect(cache.getUserMemory('test')).toEqual({});
+        expect(document.querySelector('table').getAttribute(CACHE_ERROR_KEY)).toBe('error');
+    });
+
+    it('当前有存储字段，但当前表无存储', () => {
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify({otherTable: {column: getColumnMap(), page: {pSize: 20}}}));
+        expect(cache.getUserMemory('test')).toEqual({});
+    });
+});
+
+describe('saveUserMemory', () => {
+    let settings = null;
+    beforeEach(() => {
+        // 在测试中不能对pathname进行修改，该值默认为/context.html， 如果修改的话将会报出如下错误: Some of your tests did a full page reload!
+        // window.location.pathname = '/context.html';
+        window.location.hash = '#userList';
+        window.localStorage.removeItem(MEMORY_KEY);
+        document.body.innerHTML = tableTestTpl;
+        settings = {
+            disableCache: false,
+            gridManagerName: 'test',
+            columnMap: getColumnMap(),
+            supportAjaxPage: true,
+            pageData: {
+                cPage: 1,
+                pSize: 20,
+                tPage: 3,
+                tSize: 54
+            },
+            pageSizeKey: 'pSize'
+        };
+    });
+    afterEach(() => {
+        // window.location.pathname = null;
+        window.location.hash = null;
+        window.localStorage.removeItem(MEMORY_KEY);
+        document.body.innerHTML = null;
+        settings = null;
+    });
+
+    it('基础验证', () => {
+        expect(cache.saveUserMemory).toBeDefined();
+        expect(cache.saveUserMemory.length).toBe(1);
+    });
+
+    it('缓存被禁用', () => {
+        settings.disableCache = true;
+        expect(cache.saveUserMemory(settings)).toBeUndefined();
+        expect(cache.getUserMemory('test')).toEqual({});
+    });
+
+    it('当前未存在其它存储', () => {
+        cache.saveUserMemory(settings);
+        expect(cache.getUserMemory('test')).toEqual({column: getColumnMap(), page: {pSize: 20}});
+    });
+
+    it('当前已存在其它存储', () => {
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
+            '/context.html#userList-otherTable': {column: getColumnMap(), page: {pSize: 20}}
+        }));
+        cache.saveUserMemory(settings);
+        expect(cache.getUserMemory('test')).toEqual({column: getColumnMap(), page: {pSize: 20}});
+    });
+});
+
+describe('delUserMemory', () => {
+    let settings = null;
+    beforeEach(() => {
+        // 在测试中不能对pathname进行修改，该值默认为/context.html， 如果修改的话将会报出如下错误: Some of your tests did a full page reload!
+        // window.location.pathname = '/context.html';
+        window.location.hash = '#userList';
+        window.localStorage.removeItem(MEMORY_KEY);
+        document.body.innerHTML = tableTestTpl;
+        settings = {
+            disableCache: false,
+            gridManagerName: 'test',
+            columnMap: getColumnMap(),
+            supportAjaxPage: true,
+            pageData: {
+                cPage: 1,
+                pSize: 20,
+                tPage: 3,
+                tSize: 54
+            },
+            pageSizeKey: 'pSize'
+        };
+        console._log = console.log;
+        console.log = jasmine.createSpy('log');
+    });
+    afterEach(() => {
+        // window.location.pathname = null;
+        window.location.hash = null;
+        window.localStorage.removeItem(MEMORY_KEY);
+        document.body.innerHTML = null;
+        // 还原console
+        console.log = console._log;
+        settings = null;
+    });
+
+    it('基础验证', () => {
+        expect(cache.delUserMemory).toBeDefined();
+        expect(cache.delUserMemory.length).toBe(2);
+    });
+
+    it('当前无用户记忆', () => {
+        expect(cache.delUserMemory('test')).toBe(false);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test: 当前无用户记忆 ', ...CONSOLE_STYLE.WARN);
+    });
+
+    it('定点清除', () => {
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
+            '/context.html#userList-otherTable': {column: getColumnMap(), page: {pSize: 20}},
+            '/context.html#userList-test': {column: getColumnMap(), page: {pSize: 20}}
+        }));
+        cache.saveUserMemory(settings);
+        expect(cache.delUserMemory('test', 'delete userMemory')).toBe(true);
+        expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-otherTable']).toEqual({column: getColumnMap(), page: {pSize: 20}});
+        expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-test']).toBeUndefined();
+
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: delete userMemory ', ...CONSOLE_STYLE.WARN);
+    });
+
+    it('清除所有', () => {
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
+            '/context.html#userList-otherTable': {column: getColumnMap(), page: {pSize: 20}},
+            '/context.html#userList-test': {column: getColumnMap(), page: {pSize: 20}}
+        }));
+        cache.saveUserMemory(settings);
+        expect(cache.delUserMemory(null, 'delete userMemory')).toBe(true);
+        expect(window.localStorage.getItem(MEMORY_KEY)).toBe(null);
+
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 用户记忆被全部清除: delete userMemory ', ...CONSOLE_STYLE.WARN);
     });
 });
