@@ -24,7 +24,7 @@ export function parseTpl(tpl) {
 
             return str.replace(/\{\{([^(\}\})]+)\}\}/g, (match, evalStr) => {
                 if (/return/.test(evalStr)) {
-                    console.error('确认一下parseTpl 中的 /return/.test(evalStr) 是否有用到');
+                    alert('确认一下parseTpl 中的 /return/.test(evalStr) 是否有用到');
                     return new Function('vm', evalStr)(vm) || '';
                 }
                 return new Function('vm', 'return ' + evalStr)(vm) || '';

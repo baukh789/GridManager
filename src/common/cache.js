@@ -170,6 +170,69 @@ class Cache {
     }
 
     /**
+     * 获取表格的用户记忆标识码
+     * @param gridManagerName
+     * @returns {*}
+     */
+    getMemoryKey(gridManagerName) {
+        return window.location.pathname + window.location.hash + '-' + gridManagerName;
+    }
+
+    /**
+     * 获取用户记忆
+     * @param gridManagerName
+     * @returns {*} 成功则返回本地存储数据,失败则返回空对象
+     */
+    getUserMemory(gridManagerName) {
+        const memoryKey = this.getMemoryKey(gridManagerName);
+
+        let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
+        // 如无数据，增加缓存错误标识
+        if (!GridManagerMemory || GridManagerMemory === '{}') {
+            base.getTable(gridManagerName).attr(CACHE_ERROR_KEY, 'error');
+            return {};
+        }
+        GridManagerMemory = JSON.parse(GridManagerMemory);
+        return JSON.parse(GridManagerMemory[memoryKey] || '{}');
+    }
+
+    /**
+     * 存储用户记忆
+     * @param settings
+     * @returns {boolean}
+     */
+    saveUserMemory(settings) {
+        const { disableCache, gridManagerName, columnMap, supportAjaxPage, pageData, pageSizeKey } = settings;
+        // 当前为禁用缓存模式，直接跳出
+        if (disableCache) {
+            return;
+        }
+
+        let _cache = {};
+        _cache.column = columnMap;
+
+        // 存储分页
+        if (supportAjaxPage) {
+	        const _pageCache = {};
+            _pageCache[pageSizeKey] = pageData[pageSizeKey];
+            _cache.page = _pageCache;
+        }
+
+        // 注意: 这行代码会将columnMap中以下情况的字段清除:
+        // 1.函数类型的模板
+        // 2.值为undefined
+        const cacheString = JSON.stringify(_cache);
+        let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
+        if (!GridManagerMemory) {
+            GridManagerMemory = {};
+        } else {
+            GridManagerMemory = JSON.parse(GridManagerMemory);
+        }
+        GridManagerMemory[this.getMemoryKey(gridManagerName)] = cacheString;
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify(GridManagerMemory));
+    }
+
+    /**
      * 删除用户记忆
      * @param gridManagerName
      * @param cleanText
@@ -198,79 +261,6 @@ class Cache {
         window.localStorage.setItem(MEMORY_KEY, JSON.stringify(GridManagerMemory));
         base.outLog(`${gridManagerName}用户记忆被清除: ${cleanText}`, 'warn');
         return true;
-    }
-
-    /**
-     * 获取表格的用户记忆标识码
-     * @param gridManagerName
-     * @returns {*}
-     */
-    getMemoryKey(gridManagerName) {
-        return window.location.pathname + window.location.hash + '-' + gridManagerName;
-    }
-
-    /**
-     * 获取用户记忆
-     * @param gridManagerName
-     * @returns {*} 成功则返回本地存储数据,失败则返回空对象
-     */
-    getUserMemory(gridManagerName) {
-        const _key = this.getMemoryKey(gridManagerName);
-        if (!_key) {
-            return {};
-        }
-        let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
-        // 如无数据，增加缓存错误标识
-        if (!GridManagerMemory || GridManagerMemory === '{}') {
-            base.getTable(gridManagerName).attr(CACHE_ERROR_KEY, 'error');
-            return {};
-        }
-        GridManagerMemory = JSON.parse(GridManagerMemory);
-        return JSON.parse(GridManagerMemory[_key] || '{}');
-    }
-
-    /**
-     * 存储用户记忆
-     * @param settings
-     * @returns {boolean}
-     */
-    saveUserMemory(settings) {
-        const { disableCache, gridManagerName, columnMap, supportAjaxPage, pageData, pageSizeKey } = settings;
-        // 当前为禁用缓存模式，直接跳出
-        if (disableCache) {
-            return false;
-        }
-
-        // jTool(`thead[${base.tableHeadKey}] th`, $table)
-        const thList = base.getAllTh(gridManagerName);
-        if (!thList.length) {
-            base.outLog('saveUserMemory:无效的thList,请检查是否正确配置table,thead,th', 'error');
-            return false;
-        }
-
-        let _cache = {};
-        _cache.column = columnMap;
-
-        // 存储分页
-        if (supportAjaxPage) {
-	        const _pageCache = {};
-            _pageCache[pageSizeKey] = pageData[pageSizeKey];
-            _cache.page = _pageCache;
-        }
-
-        // 注意: 这行代码会将columnMap中以下情况的字段清除:
-        // 1.函数类型的模板
-        // 2.值为undefined
-        const cacheString = JSON.stringify(_cache);
-        let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
-        if (!GridManagerMemory) {
-            GridManagerMemory = {};
-        } else {
-            GridManagerMemory = JSON.parse(GridManagerMemory);
-        }
-        GridManagerMemory[this.getMemoryKey(gridManagerName)] = cacheString;
-        window.localStorage.setItem(MEMORY_KEY, JSON.stringify(GridManagerMemory));
-        // return cacheString;
     }
 
     /**
