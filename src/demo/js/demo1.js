@@ -330,7 +330,7 @@ const demo1 = {
                     align: 'center',
                     text: '缩略图',
                     // 使用函数返回 dom node
-                    template: function(pic, row) {
+                    template: function (pic, row) {
                         var picNode = document.createElement('a');
                         picNode.setAttribute('href', `https://www.lovejavascript.com/#!zone/blog/content.html?id=${row.id}`);
                         picNode.setAttribute('title', row.title);
@@ -348,14 +348,14 @@ const demo1 = {
                         picNode.appendChild(imgNode);
                         return picNode;
                     }
-                },{
+                }, {
                     key: 'title',
                     remind: 'the title',
                     align: 'left',
                     text: '标题',
                     sorting: '',
                     // 使用函数返回 dom node
-                    template: function(title, row) {
+                    template: function (title, row) {
                         var titleNode = document.createElement('a');
                         titleNode.setAttribute('href', `https://www.lovejavascript.com/#!zone/blog/content.html?id=${row.id}`);
                         titleNode.setAttribute('title', title);
@@ -389,7 +389,7 @@ const demo1 = {
                         // 否为多选, 布尔值, 默认为false。非必设项
                         isMultiple: true
                     },
-                    template: function(type, row){
+                    template: function (type, row) {
                         return TYPE_MAP[type];
                     }
                 }, {
@@ -421,7 +421,7 @@ const demo1 = {
                     text: '最后修改时间',
                     sorting: '',
                     // 使用函数返回 htmlString
-                    template: function(lastDate, row){
+                    template: function (lastDate, row) {
                         return new Date(lastDate).toLocaleDateString();
                     }
                 }, {
