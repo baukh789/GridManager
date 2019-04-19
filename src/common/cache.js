@@ -294,9 +294,12 @@ class Cache {
         const columnMap = {};
         // const columnLeftMap = {};
         // const columnRightMap = {};
+
+        let isError = false;
         settings.columnData.forEach((col, index) => {
             if (!col.key) {
                 base.outLog(`配置项columnData内，索引为${index}的key字段未定义`, 'error');
+                isError = true;
                 return;
             }
             columnMap[col.key] = col;
@@ -321,6 +324,9 @@ class Cache {
             //     columnRightMap[col.key] = Object.assign(columnMap[col.key], {disableCustomize: true});
             // }
         });
+        if (isError) {
+            return false;
+        }
         settings.columnMap = columnMap;
 
         // 合并用户记忆至 settings, 每页显示条数记忆不在此处
@@ -375,7 +381,7 @@ class Cache {
 
                     || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)
 
-                    // 字段模版
+                    // 字段模版: 仅对非函数类型的模板进行验证
                     || (columnCache[key].template && columnCache[key].template !== col.template)) {
                     isUsable = false;
                     return false;
