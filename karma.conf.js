@@ -43,6 +43,7 @@ module.exports = function (config) {
 		// 配置启动单元测试的环境
 		browsers: ['PhantomJS'],
 
+        // 捕获浏览器的超时时间
 		captureTimeout: 60000,
 
         // coverage reporter generates the coverage
@@ -51,7 +52,7 @@ module.exports = function (config) {
 		// 预处理
 		preprocessors: {
 			// src/module/**/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/**/*.js 不需要通过 webpack 进行打.
-			'src/module/**/*.js': ['sourcemap', 'coverage'],
+			// 'src/module/**/*.js': ['sourcemap', 'coverage'],
 			'test/*_test.js': ['webpack']
 		},
 		// optionally, configure the reporter
