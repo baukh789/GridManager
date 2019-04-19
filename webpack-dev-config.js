@@ -54,10 +54,6 @@ const config = {
         // 使用交互式可缩放树形图可视化webpack输出文件的大小
         // https://www.npmjs.com/package/webpack-bundle-analyzer
         new BundleAnalyzerPlugin({
-            // 是否为静态导出
-            // analyzerMode: 'static',
-            defaultSizes: 'parsed',
-
             // 是否启动后打开窗口
             openAnalyzer: false
         })

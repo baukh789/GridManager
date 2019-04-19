@@ -52,13 +52,6 @@ module.exports = () => {
             include: [path.join(__dirname, 'src')],
             exclude: /(node_modules|bower_components)/
         }, {
-            test: /\.(jpe?g|png|gif|svg)$/i,
-            use: [
-                {
-                    loader: 'file-loader?name=[path][name]-[hash:5].[ext]'
-                }
-            ]
-        }, {
             test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
             use: [
                 {
