@@ -7,7 +7,9 @@ import store from '../src/common/Store';
 import { version } from '../package.json';
 import tableTpl from './table-test.tpl.html';
 import getTableData from './table-test.data.js';
-import { getColumnMap } from './table-config';
+import { getColumnMap, getColumnData } from './table-config';
+import order from '../src/module/order';
+import checkbox from '../src/module/checkbox';
 
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
@@ -282,33 +284,18 @@ describe('getMemoryKey', () => {
 });
 
 describe('getUserMemory', () => {
-    let settings = null;
     beforeEach(() => {
         // 在测试中不能对pathname进行修改，该值默认为/context.html， 如果修改的话将会报出如下错误: Some of your tests did a full page reload!
         // window.location.pathname = '/context.html';
         window.location.hash = '#userList';
         window.localStorage.removeItem(MEMORY_KEY);
         document.body.innerHTML = tableTestTpl;
-        settings = {
-            disableCache: false,
-            gridManagerName: 'test',
-            columnMap: getColumnMap(),
-            supportAjaxPage: true,
-            pageData: {
-                cPage: 1,
-                pSize: 20,
-                tPage: 3,
-                tSize: 54
-            },
-            pageSizeKey: 'pSize'
-        };
     });
     afterEach(() => {
         // window.location.pathname = null;
         window.location.hash = null;
         window.localStorage.removeItem(MEMORY_KEY);
         document.body.innerHTML = null;
-        settings = null;
     });
 
     it('基础验证', () => {
@@ -326,7 +313,9 @@ describe('getUserMemory', () => {
     });
 
     it('当前有存储字段，但当前表无存储', () => {
-        window.localStorage.setItem(MEMORY_KEY, JSON.stringify({otherTable: {column: getColumnMap(), page: {pSize: 20}}}));
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
+            otherTable: JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
+        }));
         expect(cache.getUserMemory('test')).toEqual({});
     });
 });
@@ -379,7 +368,7 @@ describe('saveUserMemory', () => {
 
     it('当前已存在其它存储', () => {
         window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
-            '/context.html#userList-otherTable': {column: getColumnMap(), page: {pSize: 20}}
+            '/context.html#userList-otherTable': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
         }));
         cache.saveUserMemory(settings);
         expect(cache.getUserMemory('test')).toEqual({column: getColumnMap(), page: {pSize: 20}});
@@ -432,12 +421,12 @@ describe('delUserMemory', () => {
 
     it('定点清除', () => {
         window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
-            '/context.html#userList-otherTable': {column: getColumnMap(), page: {pSize: 20}},
-            '/context.html#userList-test': {column: getColumnMap(), page: {pSize: 20}}
+            '/context.html#userList-otherTable': JSON.stringify({column: getColumnMap(), page: {pSize: 20}}),
+            '/context.html#userList-test': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
         }));
         cache.saveUserMemory(settings);
         expect(cache.delUserMemory('test', 'delete userMemory')).toBe(true);
-        expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-otherTable']).toEqual({column: getColumnMap(), page: {pSize: 20}});
+        expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-otherTable']).toBe(JSON.stringify({column: getColumnMap(), page: {pSize: 20}}));
         expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-test']).toBeUndefined();
 
         expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: delete userMemory ', ...CONSOLE_STYLE.WARN);
@@ -445,13 +434,115 @@ describe('delUserMemory', () => {
 
     it('清除所有', () => {
         window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
-            '/context.html#userList-otherTable': {column: getColumnMap(), page: {pSize: 20}},
-            '/context.html#userList-test': {column: getColumnMap(), page: {pSize: 20}}
+            '/context.html#userList-otherTable': JSON.stringify({column: getColumnMap(), page: {pSize: 20}}),
+            '/context.html#userList-test': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
         }));
         cache.saveUserMemory(settings);
         expect(cache.delUserMemory(null, 'delete userMemory')).toBe(true);
         expect(window.localStorage.getItem(MEMORY_KEY)).toBe(null);
 
         expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 用户记忆被全部清除: delete userMemory ', ...CONSOLE_STYLE.WARN);
+    });
+});
+
+describe('initSettings', () => {
+    let arg = null;
+    let settings = null;
+    let columnData = null;
+    let columnMap = null;
+    beforeEach(() => {
+        // 在测试中不能对pathname进行修改，该值默认为/context.html， 如果修改的话将会报出如下错误: Some of your tests did a full page reload!
+        // window.location.pathname = '/context.html';
+        window.location.hash = '#userList';
+        window.localStorage.removeItem(MEMORY_KEY);
+        document.body.innerHTML = tableTestTpl;
+        columnData = getColumnData();
+        columnMap = getColumnMap();
+        arg = {
+            gridManagerName: 'test',
+            ajax_data: 'https://www.lovejavascript.com/blogManager/getBlogList',
+            ajax_type: 'POST',
+            columnData: columnData
+        };
+        console._log = console.log;
+        console.log = jasmine.createSpy('log');
+    });
+    afterEach(() => {
+        window.location.hash = null;
+        window.localStorage.removeItem(MEMORY_KEY);
+        document.body.innerHTML = null;
+        arg = null;
+        settings = null;
+        columnData = null;
+        columnMap = null;
+        // 还原console
+        console.log = console._log;
+    });
+
+    it('基础验证', () => {
+        expect(cache.initSettings).toBeDefined();
+        expect(cache.initSettings.length).toBe(3);
+    });
+
+    it('默认配置', () => {
+        // settings 中对默认值都已经测试过了，这里只挑部分项进行测试
+        settings = cache.initSettings(arg, checkbox, order);
+        expect(settings.gridManagerName).toBe('test');
+        expect(settings.supportAdjust).toBe(true);
+        expect(settings.supportAjaxPage).toBe(false);
+
+        expect(settings.columnData).toEqual(columnData);
+
+        // columnMap中存在template，该项未在这里进行测试
+        expect(Object.keys(settings.columnMap)).toEqual(Object.keys(columnMap));
+    });
+
+    it('异常配置', () => {
+        arg.supportAutoOrder = false;
+        arg.supportCheckbox = false;
+        delete arg.columnData[0].key;
+        settings = cache.initSettings(arg, checkbox, order);
+        expect(settings).toBe(false);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 配置项columnData内，索引为0的key字段未定义 ', ...CONSOLE_STYLE.ERROR);
+    });
+
+    it('开启缓存:当前无用户记忆', () => {
+        // 当前无用户记忆
+        arg.disableCache = false;
+        settings = cache.initSettings(arg, checkbox, order);
+        expect(settings.columnMap.pic.width).toBe('110px');
+    });
+
+    it('开启缓存: 当前有用户记忆', () => {
+        columnMap.pic.width = '120px';
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
+            '/context.html#userList-test': JSON.stringify({column: columnMap, page: {pSize: 20}})
+        }));
+
+        arg.disableCache = false;
+        settings = cache.initSettings(arg, checkbox, order);
+        expect(settings.columnMap.pic.width).toBe('120px');
+    });
+
+    it('开启缓存: 与用户记忆数量不匹配', () => {
+        delete columnMap.pic;
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
+            '/context.html#userList-test': JSON.stringify({column: columnMap, page: {pSize: 20}})
+        }));
+
+        arg.disableCache = false;
+        settings = cache.initSettings(arg, checkbox, order);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE.WARN);
+    });
+
+    it('开启缓存: 与用户记忆项不匹配', () => {
+        columnMap.pic.__width = '120px';
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
+            '/context.html#userList-test': JSON.stringify({column: columnMap, page: {pSize: 20}})
+        }));
+
+        arg.disableCache = false;
+        settings = cache.initSettings(arg, checkbox, order);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE.WARN);
     });
 });
