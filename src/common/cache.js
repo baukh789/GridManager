@@ -413,7 +413,7 @@ class Cache {
     getSettings(gridManagerName) {
         // 当前传入的为 $table
         if (gridManagerName.jTool) {
-            gridManagerName = base.getKey(gridManagerName);
+            alert('getSettings: 不应该存在通过jtool获取的情况');
         }
 
         // 返回的是 clone 对象 而非对象本身
