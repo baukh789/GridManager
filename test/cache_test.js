@@ -348,6 +348,7 @@ describe('saveUserMemory', () => {
         window.localStorage.removeItem(MEMORY_KEY);
         document.body.innerHTML = null;
         settings = null;
+        store.settings = {};
     });
 
     it('基础验证', () => {
@@ -404,6 +405,7 @@ describe('delUserMemory', () => {
         window.location.hash = null;
         window.localStorage.removeItem(MEMORY_KEY);
         document.body.innerHTML = null;
+        store.settings = {};
         // 还原console
         console.log = console._log;
         settings = null;
@@ -473,6 +475,7 @@ describe('initSettings', () => {
         document.body.innerHTML = null;
         arg = null;
         settings = null;
+        store.settings = {};
         columnData = null;
         columnMap = null;
         // 还原console
@@ -544,5 +547,50 @@ describe('initSettings', () => {
         arg.disableCache = false;
         settings = cache.initSettings(arg, checkbox, order);
         expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE.WARN);
+    });
+});
+
+describe('getSettings or setSettings', () => {
+    let settings = null;
+    beforeEach(() => {
+        document.body.innerHTML = tableTestTpl;
+        settings = {
+            disableCache: false,
+            gridManagerName: 'test',
+            columnMap: getColumnMap(),
+            supportAjaxPage: true,
+            pageData: {
+                cPage: 1,
+                pSize: 20,
+                tPage: 3,
+                tSize: 54
+            },
+            pageSizeKey: 'pSize'
+        };
+    });
+    afterEach(() => {
+        store.settings = {};
+        settings = null;
+        document.body.innerHTML = null;
+    });
+
+    it('基础验证', () => {
+        expect(cache.getSettings).toBeDefined();
+        expect(cache.getSettings.length).toBe(1);
+
+        expect(cache.setSettings).toBeDefined();
+        expect(cache.setSettings.length).toBe(1);
+    });
+
+    it('settings 无值的情况', () => {
+        // gridManagerName
+        expect(cache.getSettings('test')).toEqual({});
+    });
+
+    it('设置 settings，后再获取', () => {
+        expect(cache.setSettings(settings)).toBeUndefined();
+
+        // gridManagerName
+        expect(cache.getSettings('test')).toEqual(settings);
     });
 });
