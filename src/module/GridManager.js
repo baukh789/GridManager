@@ -392,7 +392,7 @@ export default class GridManager {
         }
         const checkedList = Array.isArray(checkedData) ? checkedData : [checkedData];
         const settings = cache.getSettings(base.getKey(table));
-        const { columnMap, isRadio, gridManagerName } = settings;
+        const { columnMap, useRadio, gridManagerName } = settings;
         let tableData = cache.getTableData(gridManagerName);
 
         tableData = tableData.map(rowData => {
@@ -406,7 +406,7 @@ export default class GridManager {
         });
         cache.setTableData(gridManagerName, tableData);
         cache.setCheckedData(gridManagerName, checkedList, true);
-        return checkbox.resetDOM(settings, tableData, isRadio);
+        return checkbox.resetDOM(settings, tableData, useRadio);
     };
 
     /**

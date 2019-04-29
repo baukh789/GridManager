@@ -212,9 +212,9 @@ class Checkbox {
 	 * 重置选择框DOM
 	 * @param settings
 	 * @param tableData
-	 * @param isRadio: 当前事件源为单选
+	 * @param useRadio: 当前事件源为单选
      */
-	resetDOM(settings, tableData, isRadio) {
+	resetDOM(settings, tableData, useRadio) {
 	    const $table = base.getTable(settings.gridManagerName);
 		// 更改tbody区域选中状态
         let checkedNum = 0;
@@ -222,7 +222,7 @@ class Checkbox {
 			const $tr = jTool(`tbody tr[${TR_CACHE_KEY}="${index}"]`, $table);
             const $checkSpan = jTool('td[gm-checkbox="true"] .gm-radio-checkbox', $tr);
 			$tr.attr('checked', row[this.key]);
-            isRadio ? this.updateRadioState($checkSpan, row[this.key]) : this.updateCheckboxState($checkSpan, row[this.key] ? 'checked' : 'unchecked');
+            useRadio ? this.updateRadioState($checkSpan, row[this.key]) : this.updateCheckboxState($checkSpan, row[this.key] ? 'checked' : 'unchecked');
             row[this.key] && checkedNum++;
 		});
 
@@ -230,7 +230,7 @@ class Checkbox {
         const $allCheckSpan = jTool('thead tr th[gm-checkbox="true"] .gm-checkbox ', $table);
 
         // [checked: 选中, indeterminate: 半选中, unchecked: 未选中]
-        !isRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === tableData.length ? 'checked' : 'indeterminate'));
+        !useRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === tableData.length ? 'checked' : 'indeterminate'));
 
 		// 更新底部工具条选中描述信息
         ajaxPage.updateCheckedInfo(settings);

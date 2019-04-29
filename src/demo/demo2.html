@@ -62,6 +62,7 @@
 		var ajaxData1 = {
 			"data":[
 				{
+                    "id": 1,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -69,6 +70,7 @@
 					"operation": "修改"
 				},
 				{
+                    "id": 2,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -76,6 +78,7 @@
 					"operation": "修改"
 				},
 				{
+                    "id": 3,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -83,6 +86,7 @@
 					"operation": "修改"
 				},
 				{
+                    "id": 4,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -90,12 +94,14 @@
 					"operation": "修改"
 				},
 				{
+                    "id": 5,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
 					"info": "野生前端程序",
 					"operation": "修改"
 				},{
+                    "id": 6,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -103,6 +109,7 @@
 					"operation": "修改"
 				},
 				{
+                    "id": 7,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -110,6 +117,7 @@
 					"operation": "修改"
 				},
 				{
+                    "id": 8,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -123,6 +131,7 @@
 		var ajaxData2 = {
 			"data":[
 				{
+				    "id": 1,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -130,6 +139,7 @@
 					"operation": "修改"
 				},
 				{
+                    "id": 2,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -137,6 +147,7 @@
 					"operation": "修改"
 				},
 				{
+                    "id": 3,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -144,6 +155,7 @@
 					"operation": "修改"
 				},
 				{
+                    "id": 4,
 					"name": "baukh",
 					"age": "28",
 					"createDate": "2015-03-12",
@@ -159,16 +171,13 @@
 		var table = document.querySelector('table[grid-manager]');
 		function init(){
 			table.GM({
-                gridManagerName:'aaa'
-				// ,disableCache:false
-				// ,supportDrag:true
-				// ,supportAjaxPage:true
-				,emptyTemplate: '<div class="gm-empty-template">什么也没有</div>'
-				,ajax_data: ajaxData1
-				// ,isCombSorting: false
-				,pageSize:20
-				,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
-				,columnData: [{
+                gridManagerName:'test',
+				emptyTemplate: '<div class="gm-empty-template">什么也没有</div>',
+				ajax_data: ajaxData1,
+                useRadio: true,
+				pageSize:20,
+				query: {ex: '用户自定义的查询参数,格式:{key:value}'},
+				columnData: [{
 					key: 'name',
 					remind: 'the username',
 					sorting: 'up',
@@ -201,25 +210,26 @@
 						return '<a href=javascript:alert("这是一个按纽");>'+operation+'</a>';
 					}
 				}
-				]
-				,pagingBefore:function(query){
+				],
+				pagingBefore:function(query){
 					console.log('Event: 分页前', query);
-				}
-				,pagingAfter: function(query){
+				},
+				pagingAfter: function(query){
 					console.log('Event: 分页后', query);
-				}
-				,sortingBefore:function(query){
+				},
+				sortingBefore:function(query){
 					console.log('Event: 排序前', query);
-				}
-				,sortingAfter: function(query){
+				},
+				sortingAfter: function(query){
 					console.log('Event: 排序后', query);
-				}
-				,ajax_success: function(data){
+				},
+				ajax_success: function(data){
 					console.log('Event: ajax_success', data);
 				}
 			}, function(query){
 				// 渲染完成后的回调函数
 				console.log(query);
+				GM.setCheckedData('test', ajaxData1.data[2]);
 			});
 		}
 	</script>
