@@ -159,23 +159,13 @@
 		var table = document.querySelector('table[grid-manager]');
 		function init(){
 			table.GM({
-				height: 'auto'
-				,i18n:'zh-cn'
-				,textConfig:{
-					'page-go': {
-						'zh-cn':'跳转',
-						'en-us':'Go '
-					}
-				}
-				,supportSetTop: true
-				,gridManagerName:'aaa'
-				,disableCache:false
-				,disableOrder:false
-				,supportDrag:true
-				,supportAjaxPage:true
+                gridManagerName:'aaa'
+				// ,disableCache:false
+				// ,supportDrag:true
+				// ,supportAjaxPage:true
 				,emptyTemplate: '<div class="gm-empty-template">什么也没有</div>'
-				,ajax_data : ajaxData1
-				,isCombSorting: false
+				,ajax_data: ajaxData1
+				// ,isCombSorting: false
 				,pageSize:20
 				,query: {ex: '用户自定义的查询参数,格式:{key:value}'}
 				,columnData: [{

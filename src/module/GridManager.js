@@ -503,9 +503,10 @@ export default class GridManager {
 
 		// 初始化设置相关: 合并, 存储
 		let settings = cache.initSettings(arg, checkbox, order);
+		const gridManagerName = settings.gridManagerName;
 
 		// 校验: gridManagerName
-		if (settings.gridManagerName.trim() === '') {
+		if (gridManagerName.trim() === '') {
 			base.outLog(`请在html标签中为属性[${TABLE_KEY}]赋值或在配置项中配置gridManagerName`, 'error');
 			return;
 		}
@@ -526,14 +527,17 @@ export default class GridManager {
             }, 1000);
         }
 
-        settings = cache.getSettings(settings.gridManagerName);
+        settings = cache.getSettings(gridManagerName);
 
         // 设置渲染完成标识
         settings.rendered = true;
         cache.setSettings(settings);
 
-        // 启用回调
-        typeof (callback) === 'function' ? callback(settings.query) : '';
+        // 渲染tbodyDOM
+        settings.firstLoading ? core.refresh(gridManagerName, () => {
+            // 启用回调
+            typeof (callback) === 'function' ? callback(settings.query) : '';
+        }) : core.insertEmptyTemplate(settings, true);
 	}
 
 	/**
@@ -603,9 +607,6 @@ export default class GridManager {
 
         // 更新滚动轴显示状态
         base.updateScrollStatus(gridManagerName);
-
-        // 渲染tbodyDOM
-        settings.firstLoading ? core.refresh(gridManagerName) : core.insertEmptyTemplate(settings, true);
 	}
 
     /**
