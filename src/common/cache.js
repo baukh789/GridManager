@@ -430,39 +430,20 @@ class Cache {
 
     /**
      * 更新Cache, 包含[更新表格列Map, 重置settings, 存储用户记忆]
-     * @param settings
+     * @param gridManagerName
      */
-    update(settings) {
-        // 更新表格列Map
-        settings.columnMap = this.reworkColumnMap(settings);
+    update(gridManagerName) {
+        const settings = this.getSettings(gridManagerName);
+        const columnMap = settings.columnMap;
 
-        // 重置settings
-        this.setSettings(settings);
-
-        // 存储用户记忆
-        this.saveUserMemory(settings);
-    }
-
-    /**
-     * 将 columnMap 返厂回修, 并返回最新的值, 适用操作[宽度调整, 位置调整, 可视状态调整]
-     * @param settings
-     * @returns {*}
-     */
-    reworkColumnMap(settings) {
-        const { gridManagerName, columnMap } = settings;
-        // columnMap 为无效数据, 跳出
-        if (!columnMap || jTool.isEmptyObject(columnMap)) {
-            base.outLog('columnMap 为无效数据', 'error');
-            return;
-        }
-        let th = null;
+        // 更新 columnMap , 适用操作[宽度调整, 位置调整, 可视状态调整]
         jTool.each(columnMap, (key, col) => {
             // 禁用定制列: 不处理
             if (col.disableCustomize) {
                 return;
             }
 
-            th = base.getTh(gridManagerName, col.key);
+            let th = base.getTh(gridManagerName, col.key);
             // 宽度
             col.width = th.width() + 'px';
 
@@ -472,7 +453,14 @@ class Cache {
             // 可视状态
             col.isShow = th.attr('th-visible') === 'visible';
         });
-        return columnMap;
+
+        // 重置settings
+        this.setSettings(settings);
+
+        // 存储用户记忆
+        this.saveUserMemory(settings);
+
+        return settings;
     }
 
     /**

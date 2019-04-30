@@ -104,8 +104,8 @@ class Config {
      * @param $table
      */
     noticeUpdate(gridManagerName) {
-        cache.update(cache.getSettings(gridManagerName));
-        const settings = cache.getSettings(gridManagerName);
+        // 执行前，先对当前的columnMap进行更新
+        const settings = cache.update(gridManagerName);
 
         // 重置调整宽度事件源
         if (settings.supportAdjust) {
@@ -116,7 +116,7 @@ class Config {
         base.updateThWidth(settings);
 
         // 更新存储信息
-        cache.update(settings);
+        cache.update(gridManagerName);
 
         // 处理置顶表头
         scroll.update(gridManagerName);

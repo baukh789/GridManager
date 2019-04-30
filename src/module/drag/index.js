@@ -132,7 +132,7 @@ class Drag {
                 }
 
                 // 更新存储信息
-                cache.update(settings);
+                cache.update(gridManagerName);
 
                 // 重置调整宽度事件源
                 if (supportAdjust) {

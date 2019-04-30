@@ -172,7 +172,7 @@ class Adjust {
             base.updateScrollStatus(gridManagerName);
 
             // 更新存储信息
-            cache.update(cache.getSettings(gridManagerName));
+            cache.update(gridManagerName);
         });
     }
 

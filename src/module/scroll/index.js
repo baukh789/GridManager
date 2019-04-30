@@ -90,7 +90,7 @@ class Scroll {
             if (bodyWidth !== oldBodyWidth) {
                 base.updateThWidth(settings);
                 oldBodyWidth = bodyWidth;
-                cache.update(settings);
+                cache.update(gridManagerName);
             }
             base.updateScrollStatus(gridManagerName);
 

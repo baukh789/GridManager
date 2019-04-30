@@ -35,7 +35,7 @@ describe('cache 验证类的属性及方法总量', () => {
     });
     it('Function count', () => {
         // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(cache)))).toBe(21 + 1);
+        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(cache)))).toBe(20 + 1);
     });
 });
 
@@ -583,14 +583,56 @@ describe('getSettings or setSettings', () => {
     });
 
     it('settings 无值的情况', () => {
-        // gridManagerName
         expect(cache.getSettings('test')).toEqual({});
     });
 
     it('设置 settings，后再获取', () => {
         expect(cache.setSettings(settings)).toBeUndefined();
 
-        // gridManagerName
         expect(cache.getSettings('test')).toEqual(settings);
+    });
+});
+
+describe('update', () => {
+    let settings = null;
+    let _settings = null;
+    beforeEach(() => {
+        document.body.innerHTML = tableTestTpl;
+        settings = {
+            disableCache: false,
+            gridManagerName: 'test',
+            columnMap: getColumnMap(),
+            supportAjaxPage: true,
+            pageData: {
+                cPage: 1,
+                pSize: 20,
+                tPage: 3,
+                tSize: 54
+            },
+            pageSizeKey: 'pSize'
+        };
+        store.settings['test'] = settings;
+    });
+    afterEach(() => {
+        store.settings = {};
+        settings = null;
+        _settings = null;
+        document.body.innerHTML = null;
+    });
+
+    it('基础验证', () => {
+        expect(cache.update).toBeDefined();
+        expect(cache.update.length).toBe(1);
+    });
+
+    it('执行验证', () => {
+        _settings = cache.update('test');
+        expect(_settings.gridManagerName).toBe(settings.gridManagerName);
+        expect(_settings.supportAjaxPage).toBe(settings.supportAjaxPage);
+        expect(_settings.pageSizeKey).toBe(settings.pageSizeKey);
+        expect(_settings.pageData).toEqual(settings.pageData);
+
+        // todo 单元测试中，对dom的验证存在问题
+        // expect(_settings.columnMap).toEqual(settings.columnMap);
     });
 });
