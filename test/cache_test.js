@@ -1,7 +1,7 @@
 'use strict';
 import jTool from '../src/common/jTool';
 import { trimTpl } from '../src/common/parse';
-import {CACHE_ERROR_KEY, CONSOLE_STYLE, MEMORY_KEY} from '../src/common/constants';
+import {CACHE_ERROR_KEY, CONSOLE_STYLE, MEMORY_KEY, VERSION_KEY} from '../src/common/constants';
 import cache from '../src/common/cache';
 import store from '../src/common/Store';
 import { version } from '../package.json';
@@ -58,6 +58,7 @@ describe('getScope and setScope', () => {
     afterEach(() => {
         document.body.innerHTML = '';
         scope = null;
+        store.scope = {};
     });
 
     it('基础验证', () => {
@@ -634,5 +635,72 @@ describe('update', () => {
 
         // todo 单元测试中，对dom的验证存在问题
         // expect(_settings.columnMap).toEqual(settings.columnMap);
+    });
+});
+
+
+describe('verifyVersion', () => {
+    beforeEach(() => {
+        console._log = console.log;
+        console.log = jasmine.createSpy('log');
+    });
+    afterEach(() => {
+        console.log = console._log;
+        console._log = null;
+    });
+
+    it('基础验证', () => {
+        expect(cache.verifyVersion).toBeDefined();
+        expect(cache.verifyVersion.length).toBe(0);
+    });
+
+    it('当前为第一次渲染', () => {
+        // 当前为第一次渲染
+        window.localStorage.removeItem(VERSION_KEY);
+        expect(window.localStorage.getItem(VERSION_KEY)).toBeNull();
+        cache.verifyVersion();
+        expect(window.localStorage.getItem(VERSION_KEY)).toBe(store.version);
+
+        // 版本变更
+        localStorage.setItem(VERSION_KEY, -1);
+        cache.verifyVersion();
+        expect(localStorage.getItem(VERSION_KEY)).toBe(store.version);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 用户记忆被全部清除: 版本已升级,原全部缓存被自动清除 ', ...CONSOLE_STYLE.WARN);
+
+        window.localStorage.removeItem(VERSION_KEY);
+    });
+});
+
+
+describe('clear', () => {
+    beforeEach(() => {
+        store.scope['test'] = {};
+        store.responseData['test'] = {};
+        store.checkedData['test'] = {};
+        store.settings['test'] = {};
+    });
+    afterEach(() => {
+        store.scope = {};
+        store.responseData = {};
+        store.checkedData = {};
+        store.settings = {};
+    });
+
+    it('基础验证', () => {
+        expect(cache.clear).toBeDefined();
+        expect(cache.clear.length).toBe(1);
+    });
+
+    it('执行验证', () => {
+        expect(store.scope['test']).toEqual({});
+        expect(store.responseData['test']).toEqual({});
+        expect(store.checkedData['test']).toEqual({});
+        expect(store.settings['test']).toEqual({});
+
+        cache.clear('test');
+        expect(store.scope['test']).toBeUndefined();
+        expect(store.responseData['test']).toBeUndefined();
+        expect(store.checkedData['test']).toBeUndefined();
+        expect(store.settings['test']).toBeUndefined();
     });
 });

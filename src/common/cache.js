@@ -466,9 +466,9 @@ class Cache {
     /**
      * 验证版本号,如果版本号变更清除用户记忆
      */
-    cleanTableCacheForVersion() {
+    verifyVersion() {
         const cacheVersion = window.localStorage.getItem(VERSION_KEY);
-        // 当前为第一次渲染
+        // 当前为第一次渲染, 存储版本号
         if (!cacheVersion) {
             window.localStorage.setItem(VERSION_KEY, store.version);
         }
@@ -483,7 +483,7 @@ class Cache {
      * 销毁实例store
      * @param gridManagerName
      */
-    cleanTable(gridManagerName) {
+    clear(gridManagerName) {
         delete store.scope[gridManagerName];
         delete store.responseData[gridManagerName];
         delete store.checkedData[gridManagerName];

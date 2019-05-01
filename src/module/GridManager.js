@@ -499,7 +499,7 @@ export default class GridManager {
         }
 
 		// 通过版本较验 清理缓存
-		cache.cleanTableCacheForVersion();
+		cache.verifyVersion();
 
 		// 初始化设置相关: 合并, 存储
 		let settings = cache.initSettings(arg, checkbox, order);
@@ -651,6 +651,6 @@ export default class GridManager {
         coreDOM.destroy(gridManagerName);
 
         // 清除实例及数据
-        cache.cleanTable(gridManagerName);
+        cache.clear(gridManagerName);
     }
 }
