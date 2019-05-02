@@ -10,7 +10,6 @@ import getTableData from './table-test.data.js';
 import { getColumnMap, getColumnData } from './table-config';
 import i18n from '@module/i18n';
 
-console.info('testing @common/cache');
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
 

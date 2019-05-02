@@ -1,6 +1,5 @@
 import getEventFN from '@module/config/event';
 
-console.info('testing @module/config/event');
 describe('getConfigEvent', () => {
     let events = null;
     beforeEach(() => {

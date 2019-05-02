@@ -4,7 +4,6 @@
 import Store from '@common/Store';
 import { version } from '../package.json';
 
-console.info('testing @common/Store');
 describe('Store.js', () => {
 	it('Store.version', () => {
 		expect(Store.version).toBe(version);

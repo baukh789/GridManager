@@ -8,8 +8,6 @@ import { CONSOLE_STYLE } from '@common/constants';
 /**
  * 验证类的属性及方法总量
  */
-
-console.info('testing @module/i18n');
 describe('I18n 验证类的属性及方法总量', () => {
     let getPropertyCount = null;
 	beforeEach(() => {

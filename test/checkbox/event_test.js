@@ -1,6 +1,5 @@
 import getEventFN from '@module/checkbox/event';
 
-console.info('testing @module/checkbox/event');
 describe('getCheckboxEvent', () => {
     let events = null;
     beforeEach(() => {

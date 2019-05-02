@@ -4,7 +4,6 @@
 'use strict';
 import { Settings, TextSettings } from '@common/Settings';
 
-console.info('testing @common/Settings');
 describe('Settings', () => {
 	let settings = null;
 	beforeEach(() => {

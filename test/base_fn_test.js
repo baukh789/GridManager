@@ -5,7 +5,6 @@ import {CONSOLE_STYLE} from '@common/constants';
 import tableTpl from './table-test.tpl.html';
 import { getColumnMap } from './table-config';
 
-console.info('testing @common/base');
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
 describe('base 验证类的属性及方法总量', () => {

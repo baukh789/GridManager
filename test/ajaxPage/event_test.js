@@ -1,6 +1,5 @@
 import getEventFN from '@module/ajaxPage/event';
 
-console.info('testing @module/ajaxPage/event');
 describe('getAjaxEvent', () => {
     let events = null;
     beforeEach(() => {

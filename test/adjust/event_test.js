@@ -1,6 +1,5 @@
 import getAdjustEvent from '@module/adjust/event';
 
-console.info('testing @module/adjust/event');
 describe('getAdjustEvent', () => {
     let events = null;
     beforeEach(() => {
