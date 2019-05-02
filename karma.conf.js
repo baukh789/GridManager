@@ -20,7 +20,7 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-            'test/index_test.js'
+            'test/**/*_test.js'
 		],
 
 		// 使用端口
@@ -51,9 +51,9 @@ module.exports = function (config) {
 
 		// 预处理
 		preprocessors: {
-			// src/module/**/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/**/*.js 不需要通过 webpack 进行打.
+			// src/module/**/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/**/*.js 不需要通过 webpack 进行打包.
 			// 'src/module/**/*.js': ['sourcemap', 'coverage'],
-			'test/*_test.js': ['webpack']
+			'test/**/*_test.js': ['webpack']
 		},
 		// optionally, configure the reporter
 		coverageReporter: {
@@ -72,9 +72,6 @@ module.exports = function (config) {
             mode: 'development',
 
 			// 入口文件配置
-			entry: {
-				js: './test/index_test.js'
-			},
 			resolve: {
 				extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
                 alias: {
@@ -94,6 +91,12 @@ module.exports = function (config) {
 			],
 			module: {
 				rules: [
+                    {
+                        test: /_test.js?$/,
+                        use: [{
+                            loader: path.join(__dirname, './webpack-loaders/karma-log-loader.js')
+                        }]
+                    },
 					{
 						test: /\.js?$/,
 						use: ['babel-loader'],
