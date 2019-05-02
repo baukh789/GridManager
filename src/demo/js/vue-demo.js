@@ -390,9 +390,9 @@ new window.Vue({
             }
             const selectedFN = this.GM_PUBLISH_METHOD_MAP[this.fnSelected];
             try {
-                const log = eval(selectedFN.code);
+                const log = eval(this.fnCode);
                 console.group(selectedFN.key);
-                console.log(selectedFN.code);
+                console.log(this.fnCode);
                 console.log(log);
                 console.groupEnd();
                 if (selectedFN.key === 'init') {

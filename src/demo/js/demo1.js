@@ -139,7 +139,7 @@ const GM_PUBLISH_METHOD_MAP = {
         relyInit: true,
         title: '消毁指定的GridManager实例',
         code: `GridManager.destroy('${gridManagerName}');`
-    },
+    }
 };
 const demo1 = {
     /**

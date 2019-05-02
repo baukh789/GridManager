@@ -171,9 +171,9 @@ angular.module("myApp", ['gridManager'])
         }
         const selectedFN = $scope.GM_PUBLISH_METHOD_MAP[$scope.fnSelected];
         try {
-            const log = eval(selectedFN.code);
+            const log = eval($scope.fnCode);
             console.group(selectedFN.key);
-            console.log(selectedFN.code);
+            console.log($scope.fnCode);
             console.log(log);
             console.groupEnd();
             if (selectedFN.key === 'init') {
