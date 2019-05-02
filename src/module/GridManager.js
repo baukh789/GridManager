@@ -63,17 +63,6 @@ export default class GridManager {
         defaultOption = conf;
     }
 
-	/**
-	 * @静态方法
-	 * 获取Table 对应 GridManager的实例
-	 * @param table
-	 * @returns {*}
-	 */
-	static
-	get(table) {
-        return cache.getSettings(base.getKey(table));
-	}
-
     /**
      * 合并默认配置项，用于追加全局通用配置项
      * @param conf
@@ -86,6 +75,17 @@ export default class GridManager {
         }
         defaultOption = jTool.extend(defaultOption, conf);
     }
+
+	/**
+	 * @静态方法
+	 * 获取Table 对应 GridManager的实例
+	 * @param table
+	 * @returns {*}
+	 */
+	static
+	get(table) {
+        return cache.getSettings(base.getKey(table));
+	}
 
     /**
      * @静态方法
