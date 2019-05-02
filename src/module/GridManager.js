@@ -321,6 +321,10 @@ export default class GridManager {
             return;
         }
 		const settings = cache.getSettings(base.getKey(table));
+        if (!settings.useStaticData) {
+            base.outLog('setAjaxData仅用于对静态数据的操作', 'error');
+            return;
+        }
 		jTool.extend(settings, {ajax_data: ajaxData});
 		cache.setSettings(settings);
 		core.refresh(settings.gridManagerName, callback);
@@ -502,7 +506,7 @@ export default class GridManager {
 		cache.verifyVersion();
 
 		// 初始化设置相关: 合并, 存储
-		let settings = cache.initSettings(arg, checkbox, order);
+		let settings = cache.initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order));
 		const gridManagerName = settings.gridManagerName;
 
 		// 校验: gridManagerName

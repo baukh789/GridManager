@@ -2,12 +2,14 @@
  * Created by baukh on 17/3/5.
  */
 'use strict';
-import I18n from '../src/module/i18n';
-import { Settings, TextSettings } from '../src/common/Settings';
-import { CONSOLE_STYLE } from '../src/common/constants';
+import I18n from '@module/i18n';
+import { Settings, TextSettings } from '@common/Settings';
+import { CONSOLE_STYLE } from '@common/constants';
 /**
  * 验证类的属性及方法总量
  */
+
+console.info('testing @module/i18n');
 describe('I18n 验证类的属性及方法总量', () => {
     let getPropertyCount = null;
 	beforeEach(() => {

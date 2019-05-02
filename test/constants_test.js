@@ -1,7 +1,8 @@
 import { GM_VERSION, TABLE_KEY, WRAP_KEY, DIV_KEY, CONFIG_KEY,
     TOOLBAR_KEY, TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, ORDER_WIDTH,
-    CHECKBOX_WIDTH, GM_PUBLISH_METHOD_LIST } from '../src/common/constants';
+    CHECKBOX_WIDTH, GM_PUBLISH_METHOD_LIST } from '@common/constants';
 
+console.info('testing @common/constants');
 describe('常量验证', () => {
     it('GM_VERSION', () => {
         expect(GM_VERSION).toBe(process.env.VERSION);

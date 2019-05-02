@@ -159,6 +159,9 @@ class Cache {
      * @param rowDataList
      */
     updateCheckedData(gridManagerName, columnMap, key, rowDataList) {
+        if (!store.checkedData[gridManagerName]) {
+            return;
+        }
         store.checkedData[gridManagerName] = store.checkedData[gridManagerName].map(item => {
             rowDataList.forEach(newItem => {
                 if (item[key] === newItem[key]) {
@@ -266,10 +269,10 @@ class Cache {
     /**
      * 初始化设置相关: 合并, 存储
      * @param arg
-     * @param checkbox
-     * @param order
+     * @param checkboxColumnFn
+     * @param orderColumnFn
      */
-    initSettings(arg, checkbox, order) {
+    initSettings(arg, checkboxColumnFn, orderColumnFn) {
         // 合并参数
         const settings = new Settings();
         settings.textConfig = new TextSettings();
@@ -280,12 +283,12 @@ class Cache {
 
         // 为 columnData 增加 序号列
         if (settings.supportAutoOrder) {
-            settings.columnData.unshift(order.getColumn(settings));
+            settings.columnData.unshift(orderColumnFn(settings));
         }
 
         // 为 columnData 增加 选择列
         if (settings.supportCheckbox) {
-            settings.columnData.unshift(checkbox.getColumn(settings));
+            settings.columnData.unshift(checkboxColumnFn(settings));
         }
 
         // 为 columnData 提供锚 => columnMap
@@ -411,11 +414,6 @@ class Cache {
      * @returns {*}
      */
     getSettings(gridManagerName) {
-        // 当前传入的为 $table
-        if (gridManagerName.jTool) {
-            alert('getSettings: 不应该存在通过jtool获取的情况');
-        }
-
         // 返回的是 clone 对象 而非对象本身
         return jTool.extend(true, {}, store.settings[gridManagerName] || {});
     }

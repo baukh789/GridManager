@@ -1,10 +1,11 @@
-import jTool from '../src/common/jTool';
-import base from '../src/common/base';
-import { trimTpl } from '../src/common/parse';
-import {CONSOLE_STYLE} from '../src/common/constants';
+import jTool from '@common/jTool';
+import base from '@common/base';
+import { trimTpl } from '@common/parse';
+import {CONSOLE_STYLE} from '@common/constants';
 import tableTpl from './table-test.tpl.html';
 import { getColumnMap } from './table-config';
 
+console.info('testing @common/base');
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
 describe('base 验证类的属性及方法总量', () => {

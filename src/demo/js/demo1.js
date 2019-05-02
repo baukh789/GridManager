@@ -223,10 +223,6 @@ const demo1 = {
                 if (nowFn === 'destroy') {
                     renderSelect(false);
                 }
-                // 重置
-                fnCode.value = '';
-                fnRun.setAttribute('now-fun', '');
-                fnSelect.value = '-1';
 
                 fnRunInfo.innerHTML = `<span class="success-info">
                     <a href="http://gridmanager.lovejavascript.com/api/index.html#${nowFn}" target="_blank">${nowFn}</a>

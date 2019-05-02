@@ -1,6 +1,6 @@
-import { parseTpl, trimTpl } from '../src/common/parse';
+import { parseTpl, trimTpl } from '@common/parse';
 
-
+console.info('testing @common/parse');
 describe('trimTpl', () => {
     it('基础验证', () => {
         let str = `<table class="dreamland-table {{vm.tableClassName}}">

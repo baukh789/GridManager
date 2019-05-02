@@ -1,16 +1,16 @@
 'use strict';
-import jTool from '../src/common/jTool';
-import { trimTpl } from '../src/common/parse';
-import {CACHE_ERROR_KEY, CONSOLE_STYLE, MEMORY_KEY, VERSION_KEY} from '../src/common/constants';
-import cache from '../src/common/cache';
-import store from '../src/common/Store';
+import jTool from '@common/jTool';
+import { trimTpl } from '@common/parse';
+import {CACHE_ERROR_KEY, CONSOLE_STYLE, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH} from '@common/constants';
+import cache from '@common/cache';
+import store from '@common/Store';
 import { version } from '../package.json';
 import tableTpl from './table-test.tpl.html';
 import getTableData from './table-test.data.js';
 import { getColumnMap, getColumnData } from './table-config';
-import order from '../src/module/order';
-import checkbox from '../src/module/checkbox';
+import i18n from '@module/i18n';
 
+console.info('testing @common/cache');
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
 
@@ -236,9 +236,6 @@ describe('updateCheckedData', () => {
     beforeEach(() => {
         columnMap = getColumnMap();
         tableData = getTableData().data;
-        store.checkedData = {
-            test: [tableData[0], tableData[5]]
-        };
     });
     afterEach(() => {
         tableData = null;
@@ -251,7 +248,17 @@ describe('updateCheckedData', () => {
         expect(cache.updateCheckedData.length).toBe(4);
     });
 
-    it('执行验证', () => {
+    it('未存在选中数据时', () => {
+        expect(store.checkedData['test']).toBeUndefined();
+        cache.updateCheckedData('test', columnMap, 'id', [{id: 92, title: 'this is new title'}]);
+        expect(store.checkedData['test']).toBeUndefined();
+    });
+
+    it('存在选中数据时', () => {
+        store.checkedData = {
+            test: [tableData[0], tableData[5]]
+        };
+
         expect(store.checkedData['test'].length).toBe(2);
         expect(store.checkedData['test'][0].title).toBe('Content-Type 对照表');
         expect(store.checkedData['test'][1].title).toBe('js捕获错误信息');
@@ -453,6 +460,8 @@ describe('initSettings', () => {
     let settings = null;
     let columnData = null;
     let columnMap = null;
+    let checkboxColumnFn = null;
+    let orderColumnFn = null;
     beforeEach(() => {
         // 在测试中不能对pathname进行修改，该值默认为/context.html， 如果修改的话将会报出如下错误: Some of your tests did a full page reload!
         // window.location.pathname = '/context.html';
@@ -469,6 +478,35 @@ describe('initSettings', () => {
         };
         console._log = console.log;
         console.log = jasmine.createSpy('log');
+
+        checkboxColumnFn = settings => {
+            return {
+                key: 'gm_checkbox',
+                text: '',
+                isAutoCreate: true,
+                isShow: true,
+                disableCustomize: true,
+                width: CHECKBOX_WIDTH,
+                align: 'center',
+                template: checked => {
+                    return this.getColumnTemplate({checked, useRadio: settings.useRadio});
+                }
+            };
+        };
+        orderColumnFn = settings => {
+            return {
+                key: 'gm_order',
+                text: i18n.getText(settings, 'order-text'),
+                isAutoCreate: true,
+                isShow: true,
+                disableCustomize: true,
+                width: ORDER_WIDTH,
+                align: 'center',
+                template: nodeData => {
+                    return `<td gm-order="true" gm-create="true">${nodeData}</td>`;
+                }
+            };
+        };
     });
     afterEach(() => {
         window.location.hash = null;
@@ -481,6 +519,8 @@ describe('initSettings', () => {
         columnMap = null;
         // 还原console
         console.log = console._log;
+        checkboxColumnFn = null;
+        orderColumnFn = null;
     });
 
     it('基础验证', () => {
@@ -490,7 +530,7 @@ describe('initSettings', () => {
 
     it('默认配置', () => {
         // settings 中对默认值都已经测试过了，这里只挑部分项进行测试
-        settings = cache.initSettings(arg, checkbox, order);
+        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings.gridManagerName).toBe('test');
         expect(settings.supportAdjust).toBe(true);
         expect(settings.supportAjaxPage).toBe(false);
@@ -505,7 +545,7 @@ describe('initSettings', () => {
         arg.supportAutoOrder = false;
         arg.supportCheckbox = false;
         delete arg.columnData[0].key;
-        settings = cache.initSettings(arg, checkbox, order);
+        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings).toBe(false);
         expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 配置项columnData内，索引为0的key字段未定义 ', ...CONSOLE_STYLE.ERROR);
     });
@@ -513,7 +553,7 @@ describe('initSettings', () => {
     it('开启缓存:当前无用户记忆', () => {
         // 当前无用户记忆
         arg.disableCache = false;
-        settings = cache.initSettings(arg, checkbox, order);
+        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings.columnMap.pic.width).toBe('110px');
     });
 
@@ -524,7 +564,7 @@ describe('initSettings', () => {
         }));
 
         arg.disableCache = false;
-        settings = cache.initSettings(arg, checkbox, order);
+        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings.columnMap.pic.width).toBe('120px');
     });
 
@@ -535,7 +575,7 @@ describe('initSettings', () => {
         }));
 
         arg.disableCache = false;
-        settings = cache.initSettings(arg, checkbox, order);
+        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE.WARN);
     });
 
@@ -546,7 +586,7 @@ describe('initSettings', () => {
         }));
 
         arg.disableCache = false;
-        settings = cache.initSettings(arg, checkbox, order);
+        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE.WARN);
     });
 });
