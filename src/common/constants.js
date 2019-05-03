@@ -82,9 +82,12 @@ export const GM_PUBLISH_METHOD_LIST = [
 ];
 
 // console样式
+const __getStyle = bgColor => {
+    return [`background:${bgColor} ; height: 18px;line-height: 18px; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff`, 'background:#169fe6 ; height: 18px;line-height: 18px; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff'];
+};
 export const CONSOLE_STYLE = {
-    LOG: ['background:#333 ; height: 18px;line-height: 18px; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff', 'background:#169fe6 ; height: 18px;line-height: 18px; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff'],
-    INFO: ['background:#333 ; height: 18px;line-height: 18px; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff', 'background:#169fe6 ; height: 18px;line-height: 18px; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff'],
-    WARN: ['background:#f90 ; height: 18px;line-height: 18px; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff', 'background:#169fe6 ; height: 18px;line-height: 18px; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff'],
-    ERROR: ['background:#f00 ; height: 18px;line-height: 18px; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff', 'background:#169fe6 ; height: 18px;line-height: 18px; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff']
+    LOG: __getStyle('#333'),
+    INFO: __getStyle('#333'),
+    WARN: __getStyle('#f90'),
+    ERROR: __getStyle('#f00')
 };
