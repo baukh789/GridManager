@@ -4,10 +4,10 @@ import { trimTpl } from '@common/parse';
 import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH} from '@common/constants';
 import cache from '@common/cache';
 import store from '@common/Store';
-import { version } from '../package.json';
-import tableTpl from './table-test.tpl.html';
-import getTableData from './table-test.data.js';
-import { getColumnMap, getColumnData } from './table-config';
+import { version } from '../../package.json';
+import tableTpl from '../table-test.tpl.html';
+import getTableData from '../table-test.data.js';
+import { getColumnMap, getColumnData } from '../table-config';
 import i18n from '@module/i18n';
 
 // 清除空格

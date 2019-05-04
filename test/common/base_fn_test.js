@@ -2,8 +2,8 @@ import jTool from '@common/jTool';
 import base from '@common/base';
 import { trimTpl } from '@common/parse';
 import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_WARN, CONSOLE_STYLE } from '@common/constants';
-import tableTpl from './table-test.tpl.html';
-import { getColumnMap } from './table-config';
+import tableTpl from '../table-test.tpl.html';
+import { getColumnMap } from '../table-config';
 
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
