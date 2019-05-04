@@ -1,7 +1,7 @@
 'use strict';
 import jTool from '@common/jTool';
 import { trimTpl } from '@common/parse';
-import {CACHE_ERROR_KEY, CONSOLE_STYLE, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH} from '@common/constants';
+import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_WARN, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH} from '@common/constants';
 import cache from '@common/cache';
 import store from '@common/Store';
 import { version } from '../package.json';
@@ -425,7 +425,7 @@ describe('delUserMemory', () => {
 
     it('当前无用户记忆', () => {
         expect(cache.delUserMemory('test')).toBe(false);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test: 当前无用户记忆 ', ...CONSOLE_STYLE.WARN);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test: 当前无用户记忆 ', ...CONSOLE_STYLE[CONSOLE_WARN]);
     });
 
     it('定点清除', () => {
@@ -438,7 +438,7 @@ describe('delUserMemory', () => {
         expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-otherTable']).toBe(JSON.stringify({column: getColumnMap(), page: {pSize: 20}}));
         expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-test']).toBeUndefined();
 
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: delete userMemory ', ...CONSOLE_STYLE.WARN);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: delete userMemory ', ...CONSOLE_STYLE[CONSOLE_WARN]);
     });
 
     it('清除所有', () => {
@@ -450,7 +450,7 @@ describe('delUserMemory', () => {
         expect(cache.delUserMemory(null, 'delete userMemory')).toBe(true);
         expect(window.localStorage.getItem(MEMORY_KEY)).toBe(null);
 
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 用户记忆被全部清除: delete userMemory ', ...CONSOLE_STYLE.WARN);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 用户记忆被全部清除: delete userMemory ', ...CONSOLE_STYLE[CONSOLE_WARN]);
     });
 });
 
@@ -546,7 +546,7 @@ describe('initSettings', () => {
         delete arg.columnData[0].key;
         settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings).toBe(false);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 配置项columnData内，索引为0的key字段未定义 ', ...CONSOLE_STYLE.ERROR);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 配置项columnData内，索引为0的key字段未定义 ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
     });
 
     it('开启缓存:当前无用户记忆', () => {
@@ -575,7 +575,7 @@ describe('initSettings', () => {
 
         arg.disableCache = false;
         settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE.WARN);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE[CONSOLE_WARN]);
     });
 
     it('开启缓存: 与用户记忆项不匹配', () => {
@@ -586,7 +586,7 @@ describe('initSettings', () => {
 
         arg.disableCache = false;
         settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE.WARN);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE[CONSOLE_WARN]);
     });
 });
 
@@ -704,7 +704,7 @@ describe('verifyVersion', () => {
         localStorage.setItem(VERSION_KEY, -1);
         cache.verifyVersion();
         expect(localStorage.getItem(VERSION_KEY)).toBe(store.version);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 用户记忆被全部清除: 版本已升级,原全部缓存被自动清除 ', ...CONSOLE_STYLE.WARN);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 用户记忆被全部清除: 版本已升级,原全部缓存被自动清除 ', ...CONSOLE_STYLE[CONSOLE_WARN]);
 
         window.localStorage.removeItem(VERSION_KEY);
     });

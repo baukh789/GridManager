@@ -2,7 +2,17 @@
  * 项目中的一些基础方法
  */
 import jTool from './jTool';
-import { FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY } from './constants';
+import { CONSOLE_INFO, CONSOLE_WARN, CONSOLE_ERROR, FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY } from './constants';
+
+/**
+ * 输出日志
+ * @param msg 输出文本
+ * @param type 输出分类[info,warn,error]
+ * @returns {*}
+ */
+const OUT_LOG = (msg, type) => {
+    console.log(`%c GridManager ${type} %c ${msg} `, ...CONSOLE_STYLE[type]);
+};
 
 class Base {
 
@@ -13,26 +23,30 @@ class Base {
     SIV_waitTableAvailable = {};
 
     /**
-     * 输出日志
+     * 输出信息
      * @param msg 输出文本
-     * @param type 输出分类[info,warn,error]
      * @returns {*}
      */
-    outLog(msg, type) {
-        switch (type) {
-            case 'info':
-                console.log(`%c GridManager Info %c ${msg} `, ...CONSOLE_STYLE.INFO);
-                break;
-            case 'warn':
-                console.log(`%c GridManager Warn %c ${msg} `, ...CONSOLE_STYLE.WARN);
-                break;
-            case 'error':
-                console.log(`%c GridManager Error %c ${msg} `, ...CONSOLE_STYLE.ERROR);
-                break;
-            default:
-                console.log(`%c GridManager Log %c ${msg} `, ...CONSOLE_STYLE.INFO);
-                break;
-        }
+    outInfo(msg) {
+        OUT_LOG(msg, CONSOLE_INFO);
+    }
+
+    /**
+     * 输出警告
+     * @param msg 输出文本
+     * @returns {*}
+     */
+    outWarn(msg) {
+        OUT_LOG(msg, CONSOLE_WARN);
+    }
+
+    /**
+     * 输出错误
+     * @param msg 输出文本
+     * @returns {*}
+     */
+    outError(msg) {
+        OUT_LOG(msg, CONSOLE_ERROR);
     }
 
     /**
@@ -142,7 +156,7 @@ class Base {
             // 解析框架: React
             // ...
         } catch (err) {
-            this.outLog(`框架模板解析异常。${err}`, 'error');
+            this.outError(`框架模板解析异常。${err}`);
         }
     }
 

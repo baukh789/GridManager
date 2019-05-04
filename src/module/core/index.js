@@ -88,7 +88,7 @@ class Core {
         }
 
         if (!response) {
-            base.outLog('请求数据失败！请查看配置参数[ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确', 'error');
+            base.outError('请求数据失败！请查看配置参数[ajax_data]是否配置正确，并查看通过该地址返回的数据格式是否正确');
             return;
         }
 
@@ -102,13 +102,13 @@ class Core {
 
         // 数据校验: 数据异常
         if (!_data || !Array.isArray(_data)) {
-            base.outLog(`请求数据失败！response中的${dataKey}必须为数组类型，可通过配置项[dataKey]修改字段名。`, 'error');
+            base.outError(`请求数据失败！response中的${dataKey}必须为数组类型，可通过配置项[dataKey]修改字段名。`);
             return;
         }
 
         // 数据校验: 未使用无总条数模式 且 总条数无效时直接跳出
         if (supportAjaxPage && !useNoTotalsMode && isNaN(parseInt(totals, 10))) {
-            base.outLog('分页错误，请确认返回数据中是否存在totals字段(或配置项totalsKey所指定的字段)。', 'error');
+            base.outError('分页错误，请确认返回数据中是否存在totals字段(或配置项totalsKey所指定的字段)。');
             return;
         }
 

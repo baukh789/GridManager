@@ -1,7 +1,7 @@
 import jTool from '@common/jTool';
 import base from '@common/base';
 import { trimTpl } from '@common/parse';
-import {CONSOLE_STYLE} from '@common/constants';
+import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_WARN, CONSOLE_STYLE } from '@common/constants';
 import tableTpl from './table-test.tpl.html';
 import { getColumnMap } from './table-config';
 
@@ -26,7 +26,7 @@ describe('base 验证类的属性及方法总量', () => {
     });
     it('Function count', () => {
         // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(35 + 1);
+        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(37 + 1);
     });
 });
 
@@ -44,7 +44,7 @@ describe('base.SIV_waitTableAvailable', () => {
     });
 });
 
-describe('base.outLog(msg, type)', () => {
+describe('outInfo, outWarn, outError', () => {
     let table = null;
     beforeEach(() => {
         // 存储console, 用于在测方式完成后原还console对象
@@ -64,33 +64,29 @@ describe('base.outLog(msg, type)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.outLog).toBeDefined();
-        expect(base.outLog.length).toBe(2);
+        expect(base.outInfo).toBeDefined();
+        expect(base.outInfo.length).toBe(1);
+
+        expect(base.outWarn).toBeDefined();
+        expect(base.outWarn.length).toBe(1);
+
+        expect(base.outError).toBeDefined();
+        expect(base.outError.length).toBe(1);
     });
 
     it('info', () => {
-        base.outLog('hello GridManager', 'info');
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c hello GridManager ', ...CONSOLE_STYLE.INFO);
+        base.outInfo('hello GridManager');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c hello GridManager ', ...CONSOLE_STYLE[CONSOLE_INFO]);
     });
 
     it('warn', () => {
-        base.outLog('hello GridManager', 'warn');
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c hello GridManager ', ...CONSOLE_STYLE.WARN);
+        base.outWarn('hello GridManager');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c hello GridManager ', ...CONSOLE_STYLE[CONSOLE_WARN]);
     });
 
     it('error', () => {
-        base.outLog('hello GridManager', 'error');
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c hello GridManager ', ...CONSOLE_STYLE.ERROR);
-    });
-
-    it('log', () => {
-        base.outLog('hello GridManager', 'log');
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Log %c hello GridManager ', ...CONSOLE_STYLE.LOG);
-    });
-
-    it('undefined', () => {
-        base.outLog('hello GridManager');
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Log %c hello GridManager ', ...CONSOLE_STYLE.LOG);
+        base.outError('hello GridManager');
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c hello GridManager ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
     });
 });
 

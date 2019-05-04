@@ -245,13 +245,13 @@ class Cache {
         // 如果未指定删除的table, 则全部清除
         if (!gridManagerName) {
             window.localStorage.removeItem(MEMORY_KEY);
-            base.outLog(`用户记忆被全部清除: ${cleanText}`, 'warn');
+            base.outWarn(`用户记忆被全部清除: ${cleanText}`);
             return true;
         }
 
         let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
         if (!GridManagerMemory) {
-            base.outLog(`${gridManagerName}: 当前无用户记忆`, 'warn');
+            base.outWarn(`${gridManagerName}: 当前无用户记忆`);
             return false;
         }
         GridManagerMemory = JSON.parse(GridManagerMemory);
@@ -262,7 +262,7 @@ class Cache {
 
         // 清除后, 重新存储
         window.localStorage.setItem(MEMORY_KEY, JSON.stringify(GridManagerMemory));
-        base.outLog(`${gridManagerName}用户记忆被清除: ${cleanText}`, 'warn');
+        base.outWarn(`${gridManagerName}用户记忆被清除: ${cleanText}`);
         return true;
     }
 
@@ -301,7 +301,7 @@ class Cache {
         let isError = false;
         settings.columnData.forEach((col, index) => {
             if (!col.key) {
-                base.outLog(`配置项columnData内，索引为${index}的key字段未定义`, 'error');
+                base.outError(`配置项columnData内，索引为${index}的key字段未定义`);
                 isError = true;
                 return;
             }

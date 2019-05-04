@@ -4,7 +4,7 @@
 'use strict';
 import I18n from '@module/i18n';
 import { Settings, TextSettings } from '@common/Settings';
-import { CONSOLE_STYLE } from '@common/constants';
+import { CONSOLE_STYLE, CONSOLE_WARN } from '@common/constants';
 /**
  * 验证类的属性及方法总量
  */
@@ -111,7 +111,7 @@ describe('i18nText(settings, key, v1, v2, v3)', () => {
 
 		// 指定错误的, 并验证错误打印信息
 		expect(I18n.i18nText(settings, 'undefinedKey', [1, 2, 3])).toBe('');
-		expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 未找到与undefinedKey相匹配的zh-cn语言 ', ...CONSOLE_STYLE.WARN);
+		expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 未找到与undefinedKey相匹配的zh-cn语言 ', ...CONSOLE_STYLE[CONSOLE_WARN]);
 
 	});
 });

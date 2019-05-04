@@ -57,7 +57,7 @@ class I18n {
 			});
 			return _text;
 		} catch (e) {
-			base.outLog(`未找到与${key}相匹配的${this.getLanguage(settings)}语言`, 'warn');
+			base.outWarn(`未找到与${key}相匹配的${this.getLanguage(settings)}语言`);
 			return '';
 		}
 	}

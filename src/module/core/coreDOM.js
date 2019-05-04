@@ -215,7 +215,7 @@ class Dom {
                 _tbody.appendChild(trNode);
             });
         } catch (e) {
-            base.outLog(e, 'error');
+            base.outError(e);
         }
 
         this.initVisible(gridManagerName, columnMap);

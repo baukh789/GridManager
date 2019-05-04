@@ -23,7 +23,7 @@ import filter from './filter';
 const isRendered = (table, fnName) => {
     const settings = cache.getSettings(base.getKey(table));
     if (!settings.rendered) {
-        base.outLog(`${fnName}方法调用失败，请确认表格已经实例化`, 'error');
+        base.outError(`${fnName}方法调用失败，请确认表格已经实例化`);
         return false;
     }
     return true;
@@ -57,7 +57,7 @@ export default class GridManager {
 	static
     set defaultOption(conf) {
 	    if (jTool.type(conf) !== 'object') {
-	        base.outLog('defaultOption配置失败，配置的值只允许为object', 'error');
+	        base.outError('defaultOption配置失败，配置的值只允许为object');
 	        return;
         }
         defaultOption = conf;
@@ -70,7 +70,7 @@ export default class GridManager {
     static
     mergeDefaultOption(conf) {
         if (jTool.type(conf) !== 'object') {
-            base.outLog('mergeDefaultOption配置失败，配置的值只允许为object', 'error');
+            base.outError('mergeDefaultOption配置失败，配置的值只允许为object');
             return;
         }
         defaultOption = jTool.extend(defaultOption, conf);
@@ -189,7 +189,7 @@ export default class GridManager {
         const gridManagerName = base.getKey(table);
 
         if (!cache.getSettings(gridManagerName).supportConfig) {
-            base.outLog('supportConfig未配置，setConfigVisible不可用', 'error');
+            base.outError('supportConfig未配置，setConfigVisible不可用');
             return;
         }
 
@@ -321,10 +321,6 @@ export default class GridManager {
             return;
         }
 		const settings = cache.getSettings(base.getKey(table));
-        if (!settings.useStaticData) {
-            base.outLog('setAjaxData仅用于对静态数据的操作', 'error');
-            return;
-        }
 		jTool.extend(settings, {ajax_data: ajaxData});
 		cache.setSettings(settings);
 		core.refresh(settings.gridManagerName, callback);
@@ -468,19 +464,19 @@ export default class GridManager {
 
 		// 校验: 初始参
 		if (!arg || jTool.isEmptyObject(arg)) {
-			base.outLog('init()方法中未发现有效的参数', 'error');
+			base.outError('init()方法中未发现有效的参数');
 			return;
 		}
 
 		// 校验: columnData
 		if (!arg.columnData || arg.columnData.length === 0) {
-			base.outLog('请对参数columnData进行有效的配置', 'error');
+			base.outError('请对参数columnData进行有效的配置');
 			return;
 		}
 
 		// 参数变更提醒
 		if (arg.ajax_url) {
-			base.outLog('ajax_url在之后将被废弃, 请使用ajax_data替代', 'warn');
+			base.outWarn('ajax_url在之后将被废弃, 请使用ajax_data替代');
 			arg.ajax_data = arg.ajax_url;
 		}
 
@@ -511,7 +507,7 @@ export default class GridManager {
 
 		// 校验: gridManagerName
 		if (gridManagerName.trim() === '') {
-			base.outLog(`请在html标签中为属性[${TABLE_KEY}]赋值或在配置项中配置gridManagerName`, 'error');
+			base.outError(`请在html标签中为属性[${TABLE_KEY}]赋值或在配置项中配置gridManagerName`);
 			return;
 		}
 
