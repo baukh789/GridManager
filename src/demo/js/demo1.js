@@ -249,12 +249,28 @@ const demo1 = {
             // firstLoading: false,
             // useNoTotalsMode: true,
             supportAjaxPage: true,
+
+            // 右键菜单
+            // supportMenu: false,
+
+            // 禁用行
             // disableLine: true,
+
+            // 组合排序
             // isCombSorting: true,
             // mergeSort: true,
-            isIconFollowText: true,
+
+            // 使用单选
             // useRadio: true,
-            disableCache: false,
+
+            // 使用行选中
+            // useRowCheck: true,
+
+            // 图标跟随文本
+            isIconFollowText: true,
+
+            // 禁用缓存
+            disableCache: true,
             ajax_data: function () {
                 return 'https://www.lovejavascript.com/blogManager/getBlogList';
             },
