@@ -270,7 +270,7 @@ const demo1 = {
             isIconFollowText: true,
 
             // 禁用缓存
-            disableCache: true,
+            // disableCache: true,
             ajax_data: function () {
                 return 'https://www.lovejavascript.com/blogManager/getBlogList';
             },
