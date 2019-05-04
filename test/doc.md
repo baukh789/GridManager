@@ -86,6 +86,8 @@
 - 刷新后: 显示为初始条数
 - `disableCache:false`
 
+# 筛选功能
+
 # 右键功能
 - `supportMenu: true`
 - 在区域内点击右键，可正常打开
