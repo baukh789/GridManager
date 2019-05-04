@@ -1,7 +1,7 @@
 # GridManager.js
 > 快速、灵活的对Table标签进行实例化，让Table标签充满活力。
 
-![image](https://www.lovejavascript.com/upload/plugin/images/4381_1.png)
+![image](https://s2.ax1x.com/2019/04/16/AxA4xK.png)
 [![Build Status](https://travis-ci.org/baukh789/GridManager.svg?branch=master&style=flat-square)](https://travis-ci.org/baukh789/GridManager)
 [![npm version](https://img.shields.io/npm/v/gridmanager.svg?style=flat-square)](https://www.npmjs.com/package/gridmanager)
 [![npm downloads](https://img.shields.io/npm/dt/gridmanager.svg?style=flat-square)](https://www.npmjs.com/package/gridmanager)
