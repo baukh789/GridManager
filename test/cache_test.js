@@ -1,7 +1,7 @@
 'use strict';
 import jTool from '@common/jTool';
 import { trimTpl } from '@common/parse';
-import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_WARN, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH} from '@common/constants';
+import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH} from '@common/constants';
 import cache from '@common/cache';
 import store from '@common/Store';
 import { version } from '../package.json';
@@ -420,12 +420,11 @@ describe('delUserMemory', () => {
 
     it('基础验证', () => {
         expect(cache.delUserMemory).toBeDefined();
-        expect(cache.delUserMemory.length).toBe(2);
+        expect(cache.delUserMemory.length).toBe(1);
     });
 
     it('当前无用户记忆', () => {
         expect(cache.delUserMemory('test')).toBe(false);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test: 当前无用户记忆 ', ...CONSOLE_STYLE[CONSOLE_WARN]);
     });
 
     it('定点清除', () => {
@@ -434,11 +433,11 @@ describe('delUserMemory', () => {
             '/context.html#userList-test': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
         }));
         cache.saveUserMemory(settings);
-        expect(cache.delUserMemory('test', 'delete userMemory')).toBe(true);
+        expect(cache.delUserMemory('test')).toBe(true);
         expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-otherTable']).toBe(JSON.stringify({column: getColumnMap(), page: {pSize: 20}}));
         expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-test']).toBeUndefined();
 
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: delete userMemory ', ...CONSOLE_STYLE[CONSOLE_WARN]);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of test ', ...CONSOLE_STYLE[CONSOLE_INFO]);
     });
 
     it('清除所有', () => {
@@ -447,10 +446,10 @@ describe('delUserMemory', () => {
             '/context.html#userList-test': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
         }));
         cache.saveUserMemory(settings);
-        expect(cache.delUserMemory(null, 'delete userMemory')).toBe(true);
+        expect(cache.delUserMemory()).toBe(true);
         expect(window.localStorage.getItem(MEMORY_KEY)).toBe(null);
 
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 用户记忆被全部清除: delete userMemory ', ...CONSOLE_STYLE[CONSOLE_WARN]);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of all ', ...CONSOLE_STYLE[CONSOLE_INFO]);
     });
 });
 
@@ -546,7 +545,7 @@ describe('initSettings', () => {
         delete arg.columnData[0].key;
         settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings).toBe(false);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c 配置项columnData内，索引为0的key字段未定义 ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c columnData[0].key undefined ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
     });
 
     it('开启缓存:当前无用户记忆', () => {
@@ -575,7 +574,7 @@ describe('initSettings', () => {
 
         arg.disableCache = false;
         settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE[CONSOLE_WARN]);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of test ', ...CONSOLE_STYLE[CONSOLE_INFO]);
     });
 
     it('开启缓存: 与用户记忆项不匹配', () => {
@@ -586,7 +585,7 @@ describe('initSettings', () => {
 
         arg.disableCache = false;
         settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c test用户记忆被清除: 存储记忆项与配置项[columnData]不匹配 ', ...CONSOLE_STYLE[CONSOLE_WARN]);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of test ', ...CONSOLE_STYLE[CONSOLE_INFO]);
     });
 });
 
@@ -704,7 +703,7 @@ describe('verifyVersion', () => {
         localStorage.setItem(VERSION_KEY, -1);
         cache.verifyVersion();
         expect(localStorage.getItem(VERSION_KEY)).toBe(store.version);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 用户记忆被全部清除: 版本已升级,原全部缓存被自动清除 ', ...CONSOLE_STYLE[CONSOLE_WARN]);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of all ', ...CONSOLE_STYLE[CONSOLE_INFO]);
 
         window.localStorage.removeItem(VERSION_KEY);
     });

@@ -111,7 +111,7 @@ describe('i18nText(settings, key, v1, v2, v3)', () => {
 
 		// 指定错误的, 并验证错误打印信息
 		expect(I18n.i18nText(settings, 'undefinedKey', [1, 2, 3])).toBe('');
-		expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c 未找到与undefinedKey相匹配的zh-cn语言 ', ...CONSOLE_STYLE[CONSOLE_WARN]);
+		expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c not find language matched to undefinedKey ', ...CONSOLE_STYLE[CONSOLE_WARN]);
 
 	});
 });

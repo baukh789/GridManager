@@ -14,7 +14,7 @@ import { PublishMethod, publishMethodArray } from './publish';
 	Element.prototype.GM = Element.prototype.GridManager = function () {
 		// 验证当前Element是否为table
 		if (this.nodeName !== 'TABLE') {
-			base.outError('不支持对非table标签实例化');
+			base.outError('nodeName !== "TABLE"');
 			return;
 		}
 		// 方法名
@@ -51,12 +51,12 @@ import { PublishMethod, publishMethodArray } from './publish';
 		}
 
         if (name === 'init' && (!arg.columnData || (!arg.ajax_data && !arg.ajax_url))) {
-            base.outError('方法调用错误，缺失必要参数:[columnData、(ajax_data || ajax_url)]');
+            base.outError('columnData or ajax_data undefined');
             return;
         }
 
 		if (publishMethodArray.indexOf(name) === -1) {
-			base.outError(`方法调用错误，请确定方法名[${name}]是否正确`);
+			base.outError(`${name} method undefined`);
 			return;
 		}
 
@@ -68,7 +68,7 @@ import { PublishMethod, publishMethodArray } from './publish';
         const settings = this.getAttribute(TABLE_KEY) && GridManager.get(this);
         // init: 当前已经实例化
         if (settings && settings.rendered) {
-            base.outWarn(`gridManagerName为${settings.gridManagerName}的实例在之前已被使用。为防止异常发生, 请更换gridManagerName为不重复的值`);
+            base.outWarn(`${settings.gridManagerName} had been used`);
 
             // 如果已经存在，则清除之前的数据。#001
             PublishMethod.destroy(settings.gridManagerName);

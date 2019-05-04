@@ -156,7 +156,7 @@ class Base {
             // 解析框架: React
             // ...
         } catch (err) {
-            this.outError(`框架模板解析异常。${err}`);
+            this.outError(`parse framework template error。${err}`);
         }
     }
 

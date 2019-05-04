@@ -30,11 +30,6 @@ class ExportFile {
 	 * @param suffix: 后缀名
      */
     addSuffix(gridManagerName, fileName, suffix) {
-        if (jTool.type(suffix) !== 'string') {
-            base.outError('导出参数错误，exportConfig.suffix只允许为字符串');
-            return;
-        }
-
 		if (!fileName) {
 			fileName = gridManagerName;
 		}
@@ -120,7 +115,7 @@ class ExportFile {
         const selectedList = onlyChecked ? cache.getCheckedData(gridManagerName) : undefined;
 
         if (jTool.type(exportConfig.handler) !== 'function') {
-            base.outError('配置项exportAPI错误，该参数由一个返回promise的函数构成。');
+            base.outError('exportConfig.handler not return promise');
             return false;
         }
 
@@ -169,7 +164,7 @@ class ExportFile {
             const res = await exportHandler(fileName, pageData, sortData, selectedList);
             this.dispatchDownload(fileName, res);
         } catch (e) {
-            base.outError(`导出错误，请确认exportAPI接口, ${e}`);
+            base.outError(e);
         }
     }
 
@@ -187,7 +182,7 @@ class ExportFile {
             const res = await exportHandler(fileName, pageData, sortData, selectedList);
             window.open(res);
         } catch (e) {
-            base.outError(`导出错误，请确认exportAPI接口, ${e}`);
+            base.outError(e);
         }
 
     }
@@ -236,13 +231,13 @@ class ExportFile {
 
             // 当前返回的blob有误，直接跳出
             if (!blob || Object.getPrototypeOf(blob) !== blobPrototype) {
-                base.outError('导出错误，请确认接口返回是否为Blob格式');
+                base.outError('response type not equal to Blob');
                 return;
             }
 
             this.dispatchDownload(fileName, URL.createObjectURL(blob));
         } catch (e) {
-            base.outError(`blob方式导出错误, ${e}`);
+            base.outError(e);
             base.hideLoading(gridManagerName);
         }
     }

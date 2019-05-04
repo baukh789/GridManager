@@ -238,20 +238,18 @@ class Cache {
     /**
      * 删除用户记忆
      * @param gridManagerName
-     * @param cleanText
      * @returns {boolean}
      */
-    delUserMemory(gridManagerName, cleanText) {
+    delUserMemory(gridManagerName) {
         // 如果未指定删除的table, 则全部清除
         if (!gridManagerName) {
             window.localStorage.removeItem(MEMORY_KEY);
-            base.outWarn(`用户记忆被全部清除: ${cleanText}`);
+            base.outInfo('delete user memory of all');
             return true;
         }
 
         let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
         if (!GridManagerMemory) {
-            base.outWarn(`${gridManagerName}: 当前无用户记忆`);
             return false;
         }
         GridManagerMemory = JSON.parse(GridManagerMemory);
@@ -262,7 +260,7 @@ class Cache {
 
         // 清除后, 重新存储
         window.localStorage.setItem(MEMORY_KEY, JSON.stringify(GridManagerMemory));
-        base.outWarn(`${gridManagerName}用户记忆被清除: ${cleanText}`);
+        base.outInfo(`delete user memory of ${gridManagerName}`);
         return true;
     }
 
@@ -301,7 +299,7 @@ class Cache {
         let isError = false;
         settings.columnData.forEach((col, index) => {
             if (!col.key) {
-                base.outError(`配置项columnData内，索引为${index}的key字段未定义`);
+                base.outError(`columnData[${index}].key undefined`);
                 isError = true;
                 return;
             }
@@ -396,7 +394,7 @@ class Cache {
                 jTool.extend(true, columnMap, columnCache);
             } else {
                 // 清除用户记忆
-                this.delUserMemory(gridManagerName, '存储记忆项与配置项[columnData]不匹配');
+                this.delUserMemory(gridManagerName);
             }
         };
 
@@ -472,7 +470,7 @@ class Cache {
         }
         // 版本变更, 清除所有的用户记忆
         if (cacheVersion && cacheVersion !== store.version) {
-            this.delUserMemory(null, '版本已升级,原全部缓存被自动清除');
+            this.delUserMemory();
             window.localStorage.setItem(VERSION_KEY, store.version);
         }
     }

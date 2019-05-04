@@ -23,7 +23,7 @@ import filter from './filter';
 const isRendered = (table, fnName) => {
     const settings = cache.getSettings(base.getKey(table));
     if (!settings.rendered) {
-        base.outError(`${fnName}方法调用失败，请确认表格已经实例化`);
+        base.outError(`${fnName} failed，please check your table had been init`);
         return false;
     }
     return true;
@@ -57,7 +57,7 @@ export default class GridManager {
 	static
     set defaultOption(conf) {
 	    if (jTool.type(conf) !== 'object') {
-	        base.outError('defaultOption配置失败，配置的值只允许为object');
+	        base.outError('value type is not object');
 	        return;
         }
         defaultOption = conf;
@@ -70,7 +70,7 @@ export default class GridManager {
     static
     mergeDefaultOption(conf) {
         if (jTool.type(conf) !== 'object') {
-            base.outError('mergeDefaultOption配置失败，配置的值只允许为object');
+            base.outError('value type is not object');
             return;
         }
         defaultOption = jTool.extend(defaultOption, conf);
@@ -142,7 +142,7 @@ export default class GridManager {
         if (table && !isRendered(table, 'clear')) {
             return;
         }
-		return cache.delUserMemory(base.getKey(table), '通过clear()方法清除');
+		return cache.delUserMemory(base.getKey(table));
 	}
 
 	/**
@@ -189,7 +189,7 @@ export default class GridManager {
         const gridManagerName = base.getKey(table);
 
         if (!cache.getSettings(gridManagerName).supportConfig) {
-            base.outError('supportConfig未配置，setConfigVisible不可用');
+            base.outError('supportConfig not open, please set supportConfig into true');
             return;
         }
 
@@ -464,19 +464,19 @@ export default class GridManager {
 
 		// 校验: 初始参
 		if (!arg || jTool.isEmptyObject(arg)) {
-			base.outError('init()方法中未发现有效的参数');
+			base.outError('init method params error');
 			return;
 		}
 
 		// 校验: columnData
 		if (!arg.columnData || arg.columnData.length === 0) {
-			base.outError('请对参数columnData进行有效的配置');
+			base.outError('columnData invalid');
 			return;
 		}
 
 		// 参数变更提醒
 		if (arg.ajax_url) {
-			base.outWarn('ajax_url在之后将被废弃, 请使用ajax_data替代');
+			base.outWarn('ajax_url will be deprecated later, please use ajax_data instead');
 			arg.ajax_data = arg.ajax_url;
 		}
 
@@ -507,7 +507,7 @@ export default class GridManager {
 
 		// 校验: gridManagerName
 		if (gridManagerName.trim() === '') {
-			base.outError(`请在html标签中为属性[${TABLE_KEY}]赋值或在配置项中配置gridManagerName`);
+			base.outError('gridManagerName undefined');
 			return;
 		}
 

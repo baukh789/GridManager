@@ -262,11 +262,6 @@ class AjaxPage {
 	 * @private
      */
 	__getPageSizeOptionStr(sizeData) {
-        // error
-        if (!sizeData || sizeData.length === 0) {
-            base.outError('渲染失败：参数[sizeData]配置错误');
-            return '';
-        }
 		let pageSizeOptionStr = '';
 		jTool.each(sizeData, (index, value) => {
             pageSizeOptionStr += `<option value="${value}">${value}</option>`;
@@ -353,7 +348,6 @@ class AjaxPage {
             // 分页页码
             let toPage = pageAction.attr('to-page');
             if (!toPage || !Number(toPage) || pageAction.hasClass('disabled')) {
-                base.outInfo('指定页码无法跳转,已停止。原因:1、可能是当前页已处于选中状态; 2、所指向的页不存在');
                 return false;
             }
             toPage = window.parseInt(toPage);

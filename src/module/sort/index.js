@@ -42,11 +42,6 @@ class Sort {
             const thName = $th.attr('th-name');
             const settings = cache.getSettings(gridManagerName);
 
-            if (!thName || jTool.trim(thName) === '') {
-                base.outError('排序必要的参数丢失');
-                return false;
-            }
-
             const oldSort = settings.sortData[thName];
 
             const sortJson = {
@@ -68,7 +63,7 @@ class Sort {
 	 * */
 	__setSort(gridManagerName, sortJson, callback, refresh) {
 		if (!sortJson || jTool.type(sortJson) !== 'object' || jTool.isEmptyObject(sortJson)) {
-			base.outWarn('排序数据不可用');
+			base.outWarn('sortJson unavailable');
 			return false;
 		}
 
