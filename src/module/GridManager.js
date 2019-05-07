@@ -533,11 +533,18 @@ export default class GridManager {
         settings.rendered = true;
         cache.setSettings(settings);
 
+        const runCallback = () => {
+            typeof (callback) === 'function' ? callback(settings.query) : '';
+        };
+
         // 渲染tbodyDOM
         settings.firstLoading ? core.refresh(gridManagerName, () => {
             // 启用回调
-            typeof (callback) === 'function' ? callback(settings.query) : '';
-        }) : core.insertEmptyTemplate(settings, true);
+            runCallback();
+        }) : (() => {
+            core.insertEmptyTemplate(settings, true);
+            runCallback();
+        })();
 	}
 
 	/**
