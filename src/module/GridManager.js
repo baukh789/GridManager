@@ -267,7 +267,7 @@ export default class GridManager {
 	 * @param table
 	 * @param query: 配置的数据 [Object]
 	 * @param callback: 回调函数
-	 * @param isGotoFirstPage: 是否返回第一页[Boolean default=true]
+	 * @param gotoPage: [Boolean 是否跳转到第一页] or [Number 跳转的页码]，默认值=true
 	 * 注意事项:
 	 * - 当query的key与分页及排序等字段冲突时将会被忽略.
 	 * - setQuery() 执行后会立即触发刷新操作
@@ -275,7 +275,7 @@ export default class GridManager {
 	 * - setQuery方法中对query字段执行的操作是覆盖而不是合并, query参数位传递的任意值都会将原来的值覆盖.
 	 */
 	static
-	setQuery(table, query, isGotoFirstPage, callback) {
+	setQuery(table, query, gotoPage, callback) {
         if (!isRendered(table, 'setQuery')) {
             return;
         }
@@ -287,24 +287,32 @@ export default class GridManager {
             query = {};
         }
 
-        if (typeof (isGotoFirstPage) !== 'boolean') {
-			callback = isGotoFirstPage;
-			isGotoFirstPage = true;
+        // 无第三个参数时，将callback前移
+        if (typeof (gotoPage) !== 'boolean' && typeof (gotoPage) !== 'number') {
+			callback = gotoPage;
+			gotoPage = true;
 		}
 
 		// 更新过滤相关字段
         filter.enable && jTool.each(settings.columnMap, (index, column) => {
-            if (typeof query[column.key] === 'string' && column.filter) {
-                column.filter.selected = query[column.key];
+            if (column.filter) {
+                column.filter.selected = typeof query[column.key] === 'string' ? query[column.key] : '';
                 filter.update(jTool(`${base.getQuerySelector(gridManagerName)} th[th-name=${column.key}]`), column.filter);
             }
         });
 
 		// 更新settings.query
 		jTool.extend(settings, {query: query});
-		if (isGotoFirstPage) {
+
+		// 返回第一页
+		if (gotoPage === true) {
 			settings.pageData[settings.currentPageKey] = 1;
 		}
+
+		// 返回指定页
+		if (typeof (gotoPage) === 'number') {
+            settings.pageData[settings.currentPageKey] = gotoPage;
+        }
 		cache.setSettings(settings);
 		core.refresh(gridManagerName, callback);
 	}
