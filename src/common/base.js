@@ -154,7 +154,9 @@ class Base {
             }
 
             // 解析框架: React
-            // ...
+            if (typeof settings.compileReact === 'function' && compileList.length > 0) {
+                await settings.compileReact(compileList);
+            }
         } catch (err) {
             this.outError(`parse framework template error。${err}`);
         }
