@@ -30,7 +30,7 @@ const GM_PUBLISH_METHOD_MAP = {
         key: 'version',
         relyInit: false,
         title: '获取当前GridManager的版本号',
-        code: `GridManager.version;`
+        code: 'GridManager.version;'
     },
     getLocalStorage: {
         key: 'getLocalStorage',
@@ -264,10 +264,12 @@ const demo1 = {
 
             // 组合排序
             // isCombSorting: true,
+
+            // 合并排序
             // mergeSort: true,
 
             // 使用单选
-            useRadio: true,
+            // useRadio: true,
 
             // 使用行选中
             // useRowCheck: true,
@@ -276,7 +278,7 @@ const demo1 = {
             isIconFollowText: true,
 
             // 禁用缓存
-            // disableCache: true,
+            disableCache: false,
             ajax_data: function () {
                 return 'https://www.lovejavascript.com/blogManager/getBlogList';
             },
@@ -344,11 +346,15 @@ const demo1 = {
             },
 
             // 单行数据渲染时执行程序
-            rowRenderHandler: (row, index) => {
-                row.gm_checkbox = index === 2;
-                row.gm_checkbox_disabled = index === 1;
-                return row;
-            },
+            // rowRenderHandler: (row, index) => {
+            //     row.gm_checkbox = row.id === 92;
+            //     row.gm_checkbox_disabled = index === 1;
+            //     if (row.id === 92) {
+            //         row.title = 'hahaha';
+            //     }
+            //     row.gm_order = 1;
+            //     return row;
+            // },
 
             // 单个td的hover事件
             // cellHover: (row, rowIndex, colIndex) => {
