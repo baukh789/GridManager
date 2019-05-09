@@ -293,13 +293,19 @@ class Cache {
         // columnData 在此之后, 将不再被使用到
         // columnData 与 columnMap 已经过特殊处理, 不会彼此影响
         const columnMap = {};
-        // const columnLeftMap = {};
-        // const columnRightMap = {};
 
         let isError = false;
         settings.columnData.forEach((col, index) => {
+            // key字段不允许为空
             if (!col.key) {
                 base.outError(`columnData[${index}].key undefined`);
+                isError = true;
+                return;
+            }
+
+            // disableCustomize存在时，必须设置width
+            if (col.disableCustomize && !col.width) {
+                base.outError(`column ${col.key}: when disableCustomize exists, width must be set`);
                 isError = true;
                 return;
             }
@@ -316,14 +322,6 @@ class Cache {
 
             // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
             columnMap[col.key].__isShow = col.isShow;
-
-            // TODO fixed 暂时先不做
-            // if (col.fixed === 'left') {
-            //     columnLeftMap[col.key] = Object.assign(columnMap[col.key], {disableCustomize: true});
-            // }
-            // if (col.fixed === 'right') {
-            //     columnRightMap[col.key] = Object.assign(columnMap[col.key], {disableCustomize: true});
-            // }
         });
         if (isError) {
             return false;
