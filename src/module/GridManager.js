@@ -129,6 +129,7 @@ export default class GridManager {
         const { gridManagerName, supportAjaxPage } = cache.getSettings(base.getKey(table));
         base.calcLayout(gridManagerName, width, height, supportAjaxPage);
         base.updateScrollStatus(gridManagerName);
+        scroll.update(gridManagerName);
     }
 
 	/**
