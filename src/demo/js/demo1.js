@@ -18,7 +18,7 @@ const GM_PUBLISH_METHOD_MAP = {
         key: 'init',
         relyInit: false,
         title: '初始化',
-        code: `demo1.initGM(document.querySelector('table'));`
+        code: 'demo1.initGM(document.querySelector("table"));'
     },
     get: {
         key: 'get',
@@ -126,7 +126,7 @@ const GM_PUBLISH_METHOD_MAP = {
         key: 'setCheckedData',
         relyInit: true,
         title: '设置选中的数据',
-        code: `GridManager.setCheckedData('${gridManagerName}', []);`
+        code: `GridManager.setCheckedData('${gridManagerName}', [dataCache[1]]); //dataCache是返回数据的备份`
     },
     cleanData: {
         key: 'cleanData',
@@ -145,11 +145,11 @@ const demo1 = {
     /**
      * 初始化搜索区域
      */
-    initSearch: function() {
+    initSearch: function () {
         // 渲染下拉框
         var typeSelect = document.querySelector('.search-area select[name="type"]');
 
-        for(let key in TYPE_MAP){
+        for(let key in TYPE_MAP) {
             const option = document.createElement('option');
             option.value = key;
             option.innerText = TYPE_MAP[key];
@@ -163,7 +163,7 @@ const demo1 = {
                 type: document.querySelector('[name="type"]').value,
                 content: document.querySelector('[name="content"]').value
             };
-            table.GM('setQuery', _query, function(){
+            table.GM('setQuery', _query, function () {
                 console.log('setQuery执行成功');
             });
         });
@@ -198,13 +198,13 @@ const demo1 = {
         renderSelect(true);
 
         // bind input change event
-        fnSelect.addEventListener('change', function() {
+        fnSelect.addEventListener('change', function () {
             fnCode.value = GM_PUBLISH_METHOD_MAP[this.value].code;
             fnRun.setAttribute('now-fun', this.value);
         });
 
         // bind run event
-        fnRun.addEventListener('click', function() {
+        fnRun.addEventListener('click', function () {
             if (!fnCode.value) {
                 fnRunInfo.innerHTML = '请通过选择方法生成所需要执行的代码';
                 return;
@@ -241,13 +241,19 @@ const demo1 = {
     /**
      * 初始化表格
      */
-    initGM: function() {
+    initGM: function () {
         table.GM({
             gridManagerName: 'test',
             width: '100%',
             height: '100%',
+
+            // 初始渲染时是否加载数据
             // firstLoading: false,
+
+            // 是否使用无总条数模式
             // useNoTotalsMode: true,
+
+            // 是否开启分页
             supportAjaxPage: true,
 
             // 右键菜单
@@ -261,7 +267,7 @@ const demo1 = {
             // mergeSort: true,
 
             // 使用单选
-            // useRadio: true,
+            useRadio: true,
 
             // 使用行选中
             // useRowCheck: true,
@@ -274,55 +280,54 @@ const demo1 = {
             ajax_data: function () {
                 return 'https://www.lovejavascript.com/blogManager/getBlogList';
             },
-            // ,firstLoading: false // 初始渲染时是否加载数据
             ajax_type: 'POST',
 
             // 选择事件执行前事件
-            checkedBefore: function(checkedList){
+            checkedBefore: function (checkedList) {
                 console.log('checkedBefore==', checkedList);
             },
 
             // 选择事件执行后事件
-            checkedAfter: function(checkedList){
+            checkedAfter: function (checkedList) {
                 console.log('checkedAfter==', checkedList);
             },
 
             // 全选事件执行前事件
-            checkedAllBefore: function(checkedList){
+            checkedAllBefore: function (checkedList) {
                 console.log('checkedAllBefore==', checkedList);
             },
 
             // 全选事件执行后事件
-            checkedAllAfter: function(checkedList){
+            checkedAllAfter: function (checkedList) {
                 console.log('checkedAllAfter==', checkedList);
             },
 
             // 执行排序前事件
-            sortingBefore: function(query){
+            sortingBefore: function (query) {
                 console.log('sortingBefore', query);
             },
 
             // 排行排序后事件
-            sortingAfter: function(query){
+            sortingAfter: function (query) {
                 console.log('sortingAfter', query);
             },
 
             // AJAX请求前事件函数
-            ajax_beforeSend: function(promise){
+            ajax_beforeSend: function (promise) {
                 console.log('ajax_beforeSend');
             },
             // AJAX成功事件函数
-            ajax_success: function(response){
+            ajax_success: function (response) {
                 console.log('ajax_success');
             },
 
             // AJAX失败事件函数
-            ajax_error: function(error){
+            ajax_error: function (errorInfo) {
                 console.log('ajax_error');
             },
 
             // AJAX结束事件函数
-            ajax_complete: function(complete){
+            ajax_complete: function (complete) {
                 console.log('ajax_complete');
             },
             adjustBefore: query => {
@@ -331,13 +336,24 @@ const demo1 = {
             adjustAfter: query => {
                 console.log('adjustAfter=>', query);
             },
-            // responseHandler: res => {
-            //     return res;
-            // },
+
+            // 执行请求后执行程序
+            responseHandler: res => {
+                window.dataCache = res.data;
+                return res;
+            },
+
+            // 单行数据渲染时执行程序
+            rowRenderHandler: (row, index) => {
+                row.gm_checkbox = index === 2;
+                row.gm_checkbox_disabled = index === 1;
+                return row;
+            },
+
+            // 单个td的hover事件
             // cellHover: (row, rowIndex, colIndex) => {
             //     console.log(row, rowIndex, colIndex);
             // },
-            // firstLoading: false,
             columnData: [
                 {
                     key: 'pic',
@@ -443,9 +459,9 @@ const demo1 = {
                 }, {
                     key: 'action',
                     remind: 'the action',
-                    // width: '100px',
+                    width: '100px',
                     align: 'center',
-                    // disableCustomize: true,
+                    disableCustomize: true,
                     text: '<span style="color: red">操作</span>',
                     // 直接返回 通过函数返回
                     template: (action, row) => {
@@ -462,7 +478,7 @@ const demo1 = {
     /**
      * 删除功能
      */
-    delectRowData: function(title) {
+    delectRowData: function (title) {
         // 执行删除操作
         if (window.confirm(`确认要删除[${title}]?`)) {
             window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');

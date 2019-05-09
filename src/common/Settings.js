@@ -341,7 +341,10 @@ class Settings {
 			// 执行请求后执行程序, 通过该程序可以修改返回值格式. 仅有成功后该函数才会执行 @v2.3.14
 			responseHandler: response => response,
 
-			// 返回数据中列表数据的key键值,默认为data
+            // 单行数据渲染时执行程序
+            rowRenderHandler: (row, index) => row,
+
+            // 返回数据中列表数据的key键值,默认为data
 			dataKey: 'data',
 
 			// 为空时显示的html

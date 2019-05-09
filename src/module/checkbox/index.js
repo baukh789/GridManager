@@ -17,10 +17,15 @@ import { TABLE_KEY } from '../../common/constants';
 class Checkbox {
     eventMap = {};
 
-    // 全选的唯一标识
+    // 唯一标识
 	get key() {
 		return 'gm_checkbox';
 	}
+
+	// 禁用标识
+	get disabledKey() {
+        return this.key + '_disabled';
+    }
 
     // 选中ClassName
 	get checkedClassName() {
@@ -118,8 +123,8 @@ class Checkbox {
             disableCustomize: true,
 			width: CHECKBOX_WIDTH,
 			align: 'center',
-			template: checked => {
-                return this.getColumnTemplate({checked, useRadio: settings.useRadio});
+			template: (checked, row) => {
+                return this.getColumnTemplate({checked, disabled: row[this.disabledKey], useRadio: settings.useRadio});
 			}
 		};
 	}
@@ -131,8 +136,8 @@ class Checkbox {
      */
     @parseTpl(columnTpl)
 	getColumnTemplate(params) {
-	    const { checked, useRadio } = params;
-	    const template = useRadio ? this.getRadioTpl({checked}) : this.getCheckboxTpl({checked});
+	    const { checked, disabled, useRadio } = params;
+	    const template = useRadio ? this.getRadioTpl({checked, disabled}) : this.getCheckboxTpl({checked, disabled});
         return {
             template
         };
@@ -145,9 +150,10 @@ class Checkbox {
      */
     @parseTpl(checkboxTpl)
     getCheckboxTpl(params) {
-        const { checked, label, value } = params;
+        const { checked, disabled, label, value } = params;
         return {
             checked: checked ? 'checked' : 'unchecked',
+            disabled,
             label,
             value
         };
@@ -160,9 +166,10 @@ class Checkbox {
      */
     @parseTpl(radioTpl)
     getRadioTpl(params) {
-        const { checked, label, value } = params;
+        const { checked, disabled, label, value } = params;
         return {
             checked,
+            disabled,
             label,
             value
         };

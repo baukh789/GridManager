@@ -113,31 +113,31 @@ class Dom {
      * @param data
      */
     renderTableBody(settings, data) {
-        const { gridManagerName, pageData, supportAutoOrder, supportCheckbox, pageSizeKey, currentPageKey, columnData, columnMap, topFullColumn } = settings;
-        // add order
-        if (supportAutoOrder) {
-            let	orderBaseNumber = 1;
+        const { gridManagerName, rowRenderHandler, pageData, supportAutoOrder, supportCheckbox, pageSizeKey, currentPageKey, columnData, columnMap, topFullColumn } = settings;
 
-            // 验证是否存在分页数据
-            if (pageData && pageData[pageSizeKey] && pageData[currentPageKey]) {
-                orderBaseNumber = pageData[pageSizeKey] * (pageData[currentPageKey] - 1) + 1;
+        data = data.map((row, index) => {
+            // add order
+            if (supportAutoOrder) {
+                let	orderBaseNumber = 1;
+
+                // 验证是否存在分页数据
+                if (pageData && pageData[pageSizeKey] && pageData[currentPageKey]) {
+                    orderBaseNumber = pageData[pageSizeKey] * (pageData[currentPageKey] - 1) + 1;
+                }
+                row[order.key] = orderBaseNumber + index;
             }
-            data = data.map((item, index) => {
-                item[order.key] = orderBaseNumber + index;
-                return item;
-            });
-        }
 
-        // add checkbox
-        if (supportCheckbox) {
-            const checkedData = cache.getCheckedData(gridManagerName);
-            data = data.map(rowData => {
-                rowData[checkbox.key] = checkedData.some(item => {
-                    return base.equal(base.getCloneRowData(columnMap, item), base.getCloneRowData(columnMap, rowData));
+            // add checkbox
+            if (supportCheckbox) {
+                row[checkbox.key] = cache.getCheckedData(gridManagerName).some(item => {
+                    return base.equal(base.getCloneRowData(columnMap, item), base.getCloneRowData(columnMap, row));
                 });
-                return rowData;
-            });
-        }
+                row[checkbox.disabledKey] = false;
+            }
+
+            // 单行数据渲染时执行程序
+            return rowRenderHandler(row, index);
+        });
 
         // 存储表格数据
         cache.setTableData(gridManagerName, data);
