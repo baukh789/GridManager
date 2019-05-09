@@ -141,6 +141,7 @@ class Dom {
 
         // 存储表格数据
         cache.setTableData(gridManagerName, data);
+        cache.setCheckedData(gridManagerName, data);
 
         // tbody dom
         const _tbody = document.querySelector(`${base.getQuerySelector(gridManagerName)} tbody`);

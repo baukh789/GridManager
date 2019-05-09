@@ -261,11 +261,20 @@ describe('Settings', () => {
     it('验证属性[responseHandler]初始值', () => {
         expect(typeof settings.responseHandler).toBe('function');
     });
+
     it('验证属性[responseHandler]返回值', () => {
         expect(settings.responseHandler({'name': 'baukh'})).toEqual({'name': 'baukh'});
     });
 
-	it('验证属性[dataKey]初始值', () => {
+    it('验证属性[rowRenderHandler]初始值', () => {
+        expect(typeof settings.rowRenderHandler).toBe('function');
+    });
+
+    it('验证属性[rowRenderHandler]返回值', () => {
+        expect(settings.rowRenderHandler({'name': 'baukh'}, 1)).toEqual({'name': 'baukh'});
+    });
+
+    it('验证属性[dataKey]初始值', () => {
 		expect(settings.dataKey).toBe('data');
 	});
 
