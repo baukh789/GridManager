@@ -5,6 +5,7 @@ import './style.less';
 import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
+import { MENU_KEY } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import i18n from '../i18n';
 import exportFile from '../exportFile';
@@ -19,18 +20,12 @@ import getMenuEvent from './event';
 class Menu {
     eventMap = {};
 
-    // 唯一标识名
-    get keyName() {
-        return 'grid-master';
-    }
-
     /**
      * 初始化
      * @param gridManagerName
      */
     init(gridManagerName) {
         const settings = cache.getSettings(gridManagerName);
-        this.$body = jTool('body');
         this.eventMap[gridManagerName] = getMenuEvent(gridManagerName, this.getQuerySelector(gridManagerName));
 
         // 创建menu DOM
@@ -49,7 +44,7 @@ class Menu {
      * @returns {string}
      */
 	getQuerySelector(gridManagerName) {
-	    return `.grid-menu[${this.keyName}="${gridManagerName}"]`;
+	    return `.grid-menu[${MENU_KEY}="${gridManagerName}"]`;
     }
 
     /**
@@ -70,7 +65,7 @@ class Menu {
         const { gridManagerName, supportAjaxPage, supportExport, supportConfig } = settings;
         return {
             gridManagerName: gridManagerName,
-            keyName: this.keyName,
+            keyName: MENU_KEY,
             menuRefreshText: i18n.i18nText(settings, 'menu-refresh'),
             ajaxPageHtml: supportAjaxPage ? this.createAjaxPageHtml({settings}) : '',
             exportHtml: supportExport ? this.createExportHtml({settings}) : '',
@@ -127,9 +122,10 @@ class Menu {
 		const $menu = this.getMenuByJtool(gridManagerName);
 
 		const { openMenu, closeMenu, refresh, exportExcel, openConfig } = this.eventMap[gridManagerName];
+        const $closeTarget = jTool(closeMenu.target);
+        const closeEvents =  closeMenu.events;
 		// 绑定打开右键菜单栏
-        _this.$body.off(openMenu.events, openMenu.selector);
-        _this.$body.on(openMenu.events, openMenu.selector, function (e) {
+        jTool(openMenu.target).on(openMenu.events, function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -159,25 +155,23 @@ class Menu {
 			});
 
 			// 隐藏非当前展示表格的菜单项
-			jTool(`.grid-menu[${_this.keyName}]`).hide();
+			jTool(`[${MENU_KEY}]`).hide();
 			$menu.show();
 
 			// 点击空处关闭
-            _this.$body.off(closeMenu.events);
-            _this.$body.on(closeMenu.events, function (e) {
-                _this.$body.off(closeMenu.events);
+            $closeTarget.off(closeEvents);
+            $closeTarget.on(closeEvents, function (e) {
+                $closeTarget.off(closeEvents);
                 const eventSource = jTool(e.target);
 				if (eventSource.hasClass('grid-menu') || eventSource.closest('.grid-menu').length === 1) {
 					return;
 				}
-                _this.$body.off(closeMenu.events);
 				$menu.hide();
 			});
 		});
 
         // 绑定事件：上一页、下一页、重新加载
-        _this.$body.off(refresh.events, refresh.selector);
-        _this.$body.on(refresh.events, refresh.selector, function (e) {
+        jTool(refresh.target).on(refresh.events, refresh.selector, function (e) {
 			if (_this.isDisabled(this, e)) {
 				return false;
 			}
@@ -197,14 +191,13 @@ class Menu {
 			}
 
 			ajaxPage.gotoPage(_settings, cPage);
-            _this.$body.off(closeMenu.events);
+            $closeTarget.off(closeEvents);
 			$menu.hide();
 		});
 
 		// 绑定事件：另存为EXCEL、已选中表格另存为Excel
 		settings.supportExport && (() => {
-            _this.$body.off(exportExcel.events, exportExcel.selector);
-            _this.$body.on(exportExcel.events, exportExcel.selector, function (e) {
+            jTool(exportExcel.target).on(exportExcel.events, exportExcel.selector, function (e) {
 				if (_this.isDisabled(this, e)) {
 					return false;
 				}
@@ -213,20 +206,19 @@ class Menu {
 					onlyChecked = true;
 				}
                 exportFile.__exportGridToXls(gridManagerName, undefined, onlyChecked);
-                _this.$body.off(closeMenu.events);
+                $closeTarget.off(closeEvents);
                 $menu.hide();
 			});
 		})();
 
 		// 绑定事件：打开配置区域
 		settings.supportConfig && (() => {
-            _this.$body.off(openConfig.events, openConfig.selector);
-            _this.$body.on(openConfig.events, openConfig.selector, function (e) {
+            jTool(openConfig.target).on(openConfig.events, openConfig.selector, function (e) {
 				if (_this.isDisabled(this, e)) {
 					return false;
 				}
 				config.toggle(gridManagerName);
-                _this.$body.off(closeMenu.events);
+                $closeTarget.off(closeEvents);
 				$menu.hide();
 			});
 		})();
@@ -238,7 +230,7 @@ class Menu {
 	 */
 	updateMenuPageStatus(settings) {
 		// 右键菜单区上下页限制
-		const gridMenu = jTool(`.grid-menu[${this.keyName}="${settings.gridManagerName}"]`);
+		const gridMenu = jTool(`[${MENU_KEY}="${settings.gridManagerName}"]`);
 		if (!gridMenu || gridMenu.length === 0) {
 			return;
 		}
@@ -283,7 +275,7 @@ class Menu {
         base.clearBodyEvent(this.eventMap[gridManagerName]);
 
         // 删除DOM节点
-        jTool(`.grid-menu[${this.keyName}="${gridManagerName}"]`).remove();
+        jTool(`[${MENU_KEY}="${gridManagerName}"]`).remove();
 	}
 }
 export default new Menu();

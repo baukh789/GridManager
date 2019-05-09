@@ -20,7 +20,7 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-            'test/**/*_test.js'
+            'src/**/*_test.js'
 		],
 
 		// 使用端口
@@ -53,7 +53,7 @@ module.exports = function (config) {
 		preprocessors: {
 			// src/module/**/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/**/*.js 不需要通过 webpack 进行打包.
 			// 'src/module/**/*.js': ['sourcemap', 'coverage'],
-			'test/**/*_test.js': ['webpack']
+			'src/**/*_test.js': ['webpack']
 		},
 		// optionally, configure the reporter
 		coverageReporter: {
@@ -76,7 +76,9 @@ module.exports = function (config) {
 				extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
                 alias: {
                     '@common': path.join(__dirname, './src/common'),
-                    '@module': path.join(__dirname, './src/module')
+                    '@module': path.join(__dirname, './src/module'),
+                    '@test': path.join(__dirname, './test'),
+                    '@package.json': path.join(__dirname, './package.json')
                 }
 			},
 			plugins: [

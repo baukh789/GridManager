@@ -6,6 +6,6 @@
 export default function getSortEvent(gridManagerName, scope) {
     return {
         // 触发 #001
-        sortAction: {events: 'mouseup', selector: `${scope} .sorting-action`}
+        sortAction: {events: 'mouseup', target: scope, selector: '.sorting-action'}
     };
 }

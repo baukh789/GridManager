@@ -31,15 +31,12 @@ class Sort {
      */
 	init(gridManagerName) {
         this.eventMap[gridManagerName] = getSortEvent(gridManagerName, base.getQuerySelector(gridManagerName));
-        const { events, selector } = this.eventMap[gridManagerName].sortAction;
+        const { target, events, selector } = this.eventMap[gridManagerName].sortAction;
         const _this = this;
         // 绑定排序事件
-        jTool('body').on(events, selector, function () {
-            // 事件源所在的th
-            const $th = jTool(this).closest('th');
-
+        jTool(target).on(events, selector, function () {
             // th对应的名称
-            const thName = $th.attr('th-name');
+            const thName = base.getThName(jTool(this).closest('th'));
             const settings = cache.getSettings(gridManagerName);
 
             const oldSort = settings.sortData[thName];

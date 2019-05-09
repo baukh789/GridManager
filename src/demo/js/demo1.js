@@ -329,16 +329,20 @@ const demo1 = {
                 console.log('adjustBefore=>', query);
             },
             adjustAfter: query => {
-                console.log('adjustBefore=>', query);
+                console.log('adjustAfter=>', query);
             },
+            // responseHandler: res => {
+            //     return res;
+            // },
             // cellHover: (row, rowIndex, colIndex) => {
             //     console.log(row, rowIndex, colIndex);
             // },
+            // firstLoading: false,
             columnData: [
                 {
                     key: 'pic',
                     remind: 'the pic',
-                    width: '110px',
+                    // width: '110px',
                     align: 'center',
                     text: '缩略图',
                     // 使用函数返回 dom node
@@ -382,7 +386,7 @@ const demo1 = {
                     remind: 'the type',
                     text: '博文分类',
                     align: 'center',
-                    width: '150px',
+                    // width: '150px',
                     sorting: '',
                     // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。非必设项
                     filter: {
@@ -407,20 +411,20 @@ const demo1 = {
                 }, {
                     key: 'info',
                     remind: 'the info',
-                    width: '100px',
+                    // width: '100px',
                     text: '简介'
                 }, {
                     key: 'username',
                     remind: 'the username',
                     align: 'center',
-                    width: '100px',
+                    // width: '100px',
                     text: '作者',
                     template: username => {
                         return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
                     }
                 }, {
                     key: 'createDate',
-                    width: '130px',
+                    // width: '130px',
                     text: '创建时间',
                     sorting: 'DESC',
                     // 使用函数返回 htmlString
@@ -429,7 +433,7 @@ const demo1 = {
                     }
                 }, {
                     key: 'lastDate',
-                    width: '130px',
+                    // width: '130px',
                     text: '最后修改时间',
                     sorting: '',
                     // 使用函数返回 htmlString
@@ -439,9 +443,9 @@ const demo1 = {
                 }, {
                     key: 'action',
                     remind: 'the action',
-                    width: '100px',
+                    // width: '100px',
                     align: 'center',
-                    disableCustomize: true,
+                    // disableCustomize: true,
                     text: '<span style="color: red">操作</span>',
                     // 直接返回 通过函数返回
                     template: (action, row) => {

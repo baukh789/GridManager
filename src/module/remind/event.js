@@ -8,6 +8,6 @@
 export default function getRemindEvent(gridManagerName, scope) {
     return {
         // 触发 #001
-        remindStart: {events: 'mousemove', selector: `${scope} .remind-action`}
+        remindStart: {events: 'mousemove', target: scope, selector: '.remind-action'}
     };
 }

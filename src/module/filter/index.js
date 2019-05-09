@@ -13,8 +13,6 @@ import i18n from '../i18n';
 import filterTpl from './filter.tpl.html';
 import getFilterEvent from './event';
 
-// 在body上绑定的关闭事件名
-const closeEvent = 'mousedown.gmFilter';
 class Filter {
     eventMap = {};
 
@@ -28,16 +26,16 @@ class Filter {
     init(gridManagerName) {
         const _this = this;
         const $body = jTool('body');
-        const scopeQuerySelector = `${base.getQuerySelector(gridManagerName)} .filter-area`;
+        const tableSelector = base.getQuerySelector(gridManagerName);
 
-        this.eventMap[gridManagerName] = getFilterEvent(gridManagerName, scopeQuerySelector);
+        this.eventMap[gridManagerName] = getFilterEvent(gridManagerName, tableSelector);
         const { toggle, close, submit, reset, checkboxAction, radioAction } = this.eventMap[gridManagerName];
 
         // 事件: 切换可视状态
-        $body.on(toggle.events, toggle.selector, function (e) {
+        jTool(toggle.target).on(toggle.events, toggle.selector, function (e) {
             e.stopPropagation();
             e.preventDefault();
-            const $allFilterCon = jTool(`${scopeQuerySelector} .fa-con`);
+            const $allFilterCon = jTool(`${tableSelector} .fa-con`);
             const $action = jTool(this);
             const $filterAction = $action.closest('.filter-area');
             const $th = $action.closest('th[th-name]');
@@ -66,20 +64,19 @@ class Filter {
             }
 
             // 点击空处关闭
-            $body.off(close.events);
-            $body.on(close.events, function (e) {
+            jTool(close.target).on(close.events, function (e) {
                 const eventSource = jTool(e.target);
                 if (eventSource.hasClass('fa-con') || jTool(e.target).closest('.fa-con').length === 1) {
                     return false;
                 }
                 const $filterCon = $body.find('.fa-con');
                 $filterCon.hide();
-                $body.off(closeEvent);
+                jTool(close.target).off(close.events);
             });
         });
 
         // 事件: 提交选中结果
-        $body.on(submit.events, submit.selector, function () {
+        jTool(submit.target).on(submit.events, submit.selector, function () {
             const $action = jTool(this);
             const $filterCon = $action.closest('.fa-con');
             const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
@@ -99,11 +96,11 @@ class Filter {
             _this.update($th, settings.columnMap[thName].filter);
             core.refresh(gridManagerName);
             $filterCon.hide();
-            $body.unbind(closeEvent);
+            jTool(close.target).off(close.events);
         });
 
         // 事件: 清空选中结果
-        $body.on(reset.events, reset.selector, function () {
+        jTool(reset.target).on(reset.events, reset.selector, function () {
             const $action = jTool(this);
             const $filterCon = $action.closest('.fa-con');
             const $th = jTool(this).closest('th[th-name]');
@@ -117,17 +114,17 @@ class Filter {
             _this.update($th, settings.columnMap[thName].filter);
             core.refresh(gridManagerName);
             $filterCon.hide();
-            $body.unbind(closeEvent);
+            jTool(close.target).off(close.events);
         });
 
         // 事件: 复选框事件
-        $body.on(checkboxAction.events, checkboxAction.selector, function () {
+        jTool(checkboxAction.target).on(checkboxAction.events, checkboxAction.selector, function () {
             const $checkbox = jTool(this).closest('.filter-checkbox').find('.gm-checkbox');
             checkbox.updateCheckboxState($checkbox, this.checked ? 'checked' : 'unchecked');
         });
 
         // 事件: 单选框事件
-        $body.on(radioAction.events, radioAction.selector, function () {
+        jTool(radioAction.target).on(radioAction.events, radioAction.selector, function () {
             const $filterRadio = jTool(this).closest('.filter-list').find('.filter-radio');
             jTool.each($filterRadio, (index, item) => {
                 checkbox.updateRadioState(jTool(item).find('.gm-radio'), this === item.querySelector('.gm-radio-input'));

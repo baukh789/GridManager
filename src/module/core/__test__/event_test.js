@@ -1,6 +1,6 @@
-import getEventFN from '@module/sort/event';
+import getEventFN from '@module/core/event';
 
-describe('getSortEvent', () => {
+describe('getCoreEvent', () => {
     let events = null;
     beforeEach(() => {
     });
@@ -15,7 +15,8 @@ describe('getSortEvent', () => {
 
     it('执行验证', () => {
         events = getEventFN('test', '#baukh');
-        expect(events.sortAction.events).toBe('mouseup');
-        expect(events.sortAction.selector).toBe('#baukh .sorting-action');
+        expect(events.tdMousemove.events).toBe('mousemove');
+        expect(events.tdMousemove.target).toBe('#baukh');
+        expect(events.tdMousemove.selector).toBe('tbody td');
     });
 });

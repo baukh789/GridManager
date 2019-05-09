@@ -6,7 +6,6 @@ import { READY_CLASS_NAME, TR_CACHE_KEY } from '@common/constants';
 import cache from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
-// import fixed from '../fixed';
 import checkbox from '../checkbox';
 import adjust from '../adjust';
 import render from './render';
@@ -30,9 +29,6 @@ class Dom {
 
         // append tbody
         $table.append(document.createElement('tbody'));
-
-        // TODO 定位效果下个版本进行开发
-        // fixed.init($table, settings);
 
         // 绑定事件
         this.bindEvent(gridManagerName);
@@ -240,23 +236,29 @@ class Dom {
      * @param gridManagerName
      */
     bindEvent(gridManagerName) {
+        const settings = cache.getSettings(gridManagerName);
+
+        // 未设置该事件钩子时，不再进行事件绑定
+        if (typeof settings.cellHover !== 'function') {
+            return;
+        }
+
         this.eventMap[gridManagerName] = getCoreEvent(gridManagerName, base.getQuerySelector(gridManagerName));
-        const { events, selector } = this.eventMap[gridManagerName].tdMousemove;
+        const { target, events, selector } = this.eventMap[gridManagerName].tdMousemove;
 
         // 绑定td移入事件
         let hoverTd = null;
-        jTool('body').on(events, selector, function () {
+        jTool(target).on(events, selector, function () {
             if (hoverTd === this) {
                 return;
             }
-            const settings = cache.getSettings(gridManagerName);
             hoverTd = this;
             const tr = hoverTd.parentNode;
             const colIndex = hoverTd.cellIndex;
             const rowIndex = parseInt(tr.getAttribute(TR_CACHE_KEY), 10);
 
             // cellHover: 单个td的hover事件
-            typeof settings.cellHover === 'function' && settings.cellHover(cache.getRowData(gridManagerName, tr), rowIndex, colIndex);
+            settings.cellHover(cache.getRowData(gridManagerName, tr), rowIndex, colIndex);
         });
     }
 

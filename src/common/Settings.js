@@ -105,7 +105,7 @@ class Settings {
             disableHover: false, // v2.6.1新增
 
             // 单个td的hover事件
-            cellHover: jTool.noop
+            cellHover: null
         };
 
 		/**

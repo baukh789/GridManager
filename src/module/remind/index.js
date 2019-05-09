@@ -33,12 +33,10 @@ class Remind {
      */
 	init(gridManagerName) {
         this.eventMap[gridManagerName] = getRemindEvent(gridManagerName, `${base.getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
-        const { events, selector } = this.eventMap[gridManagerName].remindStart;
+        const { target, events, selector } = this.eventMap[gridManagerName].remindStart;
 
-        const $body = jTool('body');
         const $tableDiv = base.getDiv(gridManagerName);
-        $body.off(events, selector);
-        $body.on(events, selector, function () {
+        jTool(target).on(events, selector, function () {
 		    let $onlyRemind = jTool(this);
 			let $raArea = $onlyRemind.find('.ra-area');
 			let theLeft = ($tableDiv.get(0).offsetWidth - ($onlyRemind.offset().left - $tableDiv.offset().left)) > $raArea.get(0).offsetWidth + 20;

@@ -1,6 +1,6 @@
-import getEventFN from '@module/core/event';
+import getEventFN from '@module/remind/event';
 
-describe('getCoreEvent', () => {
+describe('getRemindEvent', () => {
     let events = null;
     beforeEach(() => {
     });
@@ -15,7 +15,8 @@ describe('getCoreEvent', () => {
 
     it('执行验证', () => {
         events = getEventFN('test', '#baukh');
-        expect(events.tdMousemove.events).toBe('mousemove');
-        expect(events.tdMousemove.selector).toBe('#baukh tbody td');
+        expect(events.remindStart.events).toBe('mousemove');
+        expect(events.remindStart.target).toBe('#baukh');
+        expect(events.remindStart.selector).toBe('.remind-action');
     });
 });

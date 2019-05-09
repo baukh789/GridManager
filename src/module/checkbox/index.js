@@ -39,12 +39,11 @@ class Checkbox {
      */
     init(gridManagerName, useRowCheck) {
         const _this = this;
-        const $body = jTool('body');
         this.eventMap[gridManagerName] = getCheckboxEvent(gridManagerName, base.getQuerySelector(gridManagerName));
         const { allChange, checkboxChange, radioChange, trChange } = this.eventMap[gridManagerName];
 
         // th内的全选
-        $body.on(allChange.events, allChange.selector, function () {
+        jTool(allChange.target).on(allChange.events, allChange.selector, function () {
             const settings = cache.getSettings(gridManagerName);
             let checkedData = cache.getCheckedData(gridManagerName);
             settings.checkedBefore(checkedData);
@@ -57,7 +56,7 @@ class Checkbox {
         });
 
         // td内的多选
-        $body.on(checkboxChange.events, checkboxChange.selector, function (e) {
+        jTool(checkboxChange.target).on(checkboxChange.events, checkboxChange.selector, function (e) {
             const settings = cache.getSettings(gridManagerName);
 
             settings.checkedBefore(cache.getCheckedData(gridManagerName));
@@ -67,7 +66,7 @@ class Checkbox {
         });
 
         // td内的单选
-        $body.on(radioChange.events, radioChange.selector, function (e) {
+        jTool(radioChange.target).on(radioChange.events, radioChange.selector, function (e) {
             const settings = cache.getSettings(gridManagerName);
 
             settings.checkedBefore(cache.getCheckedData(gridManagerName));
@@ -78,7 +77,7 @@ class Checkbox {
 
         // tr点击选中
         if (useRowCheck) {
-            $body.on(trChange.events, trChange.selector, function (e) {
+            jTool(trChange.target).on(trChange.events, trChange.selector, function (e) {
                 // 当前事件源为非单选框或多选框时，触发选中事件
                 if ([].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
                     this.querySelector('td[gm-checkbox="true"] input.gm-radio-checkbox-input').click();

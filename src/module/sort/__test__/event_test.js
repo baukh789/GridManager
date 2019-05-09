@@ -1,6 +1,6 @@
-import getEventFN from '@module/remind/event';
+import getEventFN from '@module/sort/event';
 
-describe('getRemindEvent', () => {
+describe('getSortEvent', () => {
     let events = null;
     beforeEach(() => {
     });
@@ -15,7 +15,8 @@ describe('getRemindEvent', () => {
 
     it('执行验证', () => {
         events = getEventFN('test', '#baukh');
-        expect(events.remindStart.events).toBe('mousemove');
-        expect(events.remindStart.selector).toBe('#baukh .remind-action');
+        expect(events.sortAction.events).toBe('mouseup');
+        expect(events.sortAction.target).toBe('#baukh');
+        expect(events.sortAction.selector).toBe('.sorting-action');
     });
 });

@@ -23,18 +23,17 @@ class Config {
      */
     init(gridManagerName) {
         const _this = this;
-        const $body = jTool('body');
         this.eventMap[gridManagerName] = getConfigEvent(gridManagerName, this.getQuerySelector(gridManagerName));
         const { closeConfig, liChange } = this.eventMap[gridManagerName];
 
         // 事件: 关闭
-        $body.on(closeConfig.events, closeConfig.selector, function () {
+        jTool(closeConfig.target).on(closeConfig.events, closeConfig.selector, function () {
             // 展示事件源
             _this.hide(gridManagerName);
         });
 
         // 事件: 设置
-        $body.on(liChange.events, liChange.selector, function (e) {
+        jTool(liChange.target).on(liChange.events, liChange.selector, function (e) {
             e.preventDefault();
 
             // 单个的设置项
@@ -182,17 +181,17 @@ class Config {
         $configArea.show();
         this.updateConfigListHeight(gridManagerName);
 
-        const { closeConfigByBody } = this.eventMap[gridManagerName];
+        const { target, events } = this.eventMap[gridManagerName].closeConfigByBody;
         // 点击空处关闭
-        const $body = jTool('body');
-        $body.off(closeConfigByBody.events);
-        $body.on(closeConfigByBody.events, function (e) {
+        const $target = jTool(target);
+        $target.off(events);
+        $target.on(events, function (e) {
             const eventSource = jTool(e.target);
             if (eventSource.hasClass('config-area') || eventSource.closest('.config-area').length === 1) {
                 return false;
             }
             $configArea.hide();
-            $body.off(closeConfigByBody.events);
+            $target.off(events);
         });
     }
 

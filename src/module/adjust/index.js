@@ -33,11 +33,10 @@ class Adjust {
         const _this = this;
 
         // 监听鼠标调整列宽度
-        this.$body = jTool('body');
         this.eventMap[gridManagerName] = getAdjustEvent(gridManagerName, base.getQuerySelector(gridManagerName));
 
-        const { events, selector } = this.eventMap[gridManagerName].adjustStart;
-        this.$body.on(events, selector, function (event) {
+        const { target, events, selector } = this.eventMap[gridManagerName].adjustStart;
+        jTool(target).on(events, selector, function (event) {
             const _dragAction = jTool(this);
             // 事件源所在的th
             let $th = _dragAction.closest('th');
@@ -106,9 +105,8 @@ class Adjust {
         let	_NextWidth = null;
         let _thMinWidth = base.getThTextWidth(gridManagerName, $th, isIconFollowText);
         let	_NextThMinWidth = base.getThTextWidth(gridManagerName, $nextTh, isIconFollowText);
-        const { events, selector } = this.eventMap[gridManagerName].adjusting;
-        this.$body.off(events, selector);
-        this.$body.on(events, selector, function (event) {
+        const { target, events, selector } = this.eventMap[gridManagerName].adjusting;
+        jTool(target).on(events, selector, function (event) {
             _thWidth = event.clientX - $th.offset().left;
             _thWidth = Math.ceil(_thWidth);
             _NextWidth = $nextTh.width() + $th.width() - _thWidth;
@@ -153,12 +151,10 @@ class Adjust {
      * @private
      */
     __runStopEvent(gridManagerName, $table, $th, $td, adjustAfter) {
-        const stopEventName = 'mouseup mouseleave';
-        $table.unbind(stopEventName);
-        $table.bind(stopEventName, event => {
-            const adjusting = this.eventMap[gridManagerName].adjusting;
-            $table.unbind(stopEventName);
-            this.$body.off(adjusting.events, adjusting.selector);
+        const { adjusting, adjustAbort } = this.eventMap[gridManagerName];
+        jTool(adjustAbort.target).on(adjustAbort.events, event => {
+            jTool(adjustAbort.target).off(adjustAbort.events);
+            jTool(adjusting.target).off(adjusting.events, adjusting.selector);
 
             // 宽度调整成功回调事件
             if ($th.hasClass(this.selectedClassName)) {

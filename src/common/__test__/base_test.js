@@ -2,8 +2,8 @@ import jTool from '@common/jTool';
 import base from '@common/base';
 import { trimTpl } from '@common/parse';
 import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_WARN, CONSOLE_STYLE } from '@common/constants';
-import tableTpl from '../table-test.tpl.html';
-import { getColumnMap } from '../table-config';
+import tableTpl from '@test/table-test.tpl.html';
+import { getColumnMap } from '@test/table-config';
 
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
@@ -1272,12 +1272,15 @@ describe('base.clearBodyEvent(eventMap)', () => {
     it('执行验证', () => {
         eventMap = {
             testeEvent: {
-                events: 'click', selector: '.table-wrap'
+                events: 'click',
+                target: 'body',
+                selector: '.table-wrap'
             }
         };
-        $body.on(eventMap.testeEvent.events, eventMap.testeEvent.selector, () => {});
-        expect($body.get(0).jToolEvent['click.table-wrap']).toBeDefined();
+        let $target = jTool(eventMap.testeEvent.target);
+        $target.on(eventMap.testeEvent.events, eventMap.testeEvent.selector, () => {});
+        expect($target.get(0).jToolEvent['click.table-wrap']).toBeDefined();
         base.clearBodyEvent(eventMap);
-        expect($body.get(0).jToolEvent['click.table-wrap']).toBeUndefined();
+        expect($target.get(0).jToolEvent['click.table-wrap']).toBeUndefined();
     });
 });

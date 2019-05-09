@@ -20,6 +20,9 @@ export const CONFIG_KEY = 'grid-manager-config';
 // 底部工具唯一key
 export const TOOLBAR_KEY = 'grid-manager-toolbar';
 
+// 菜单唯一key
+export const MENU_KEY = 'grid-master';
+
 // table head key
 export const TABLE_HEAD_KEY = 'grid-manager-thead';
 

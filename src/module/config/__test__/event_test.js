@@ -1,4 +1,5 @@
 import getEventFN from '@module/config/event';
+import { CONFIG_KEY } from '@common/constants';
 
 describe('getConfigEvent', () => {
     let events = null;
@@ -16,12 +17,15 @@ describe('getConfigEvent', () => {
     it('执行验证', () => {
         events = getEventFN('test', '#baukh');
         expect(events.closeConfig.events).toBe('click');
-        expect(events.closeConfig.selector).toBe('#baukh .config-action');
+        expect(events.closeConfig.target).toBe(`[${CONFIG_KEY}="test"]`);
+        expect(events.closeConfig.selector).toBe('.config-action');
 
         expect(events.liChange.events).toBe('click');
-        expect(events.liChange.selector).toBe('#baukh .config-list li');
+        expect(events.liChange.target).toBe(`[${CONFIG_KEY}="test"]`);
+        expect(events.liChange.selector).toBe('.config-list li');
 
         expect(events.closeConfigByBody.events).toBe('mousedown.closeConfig');
+        expect(events.liChange.target).toBe(`[${CONFIG_KEY}="test"]`);
         expect(events.closeConfigByBody.selector).toBeUndefined();
     });
 });

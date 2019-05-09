@@ -627,9 +627,9 @@ class Base {
      * @param eventMap
      */
     clearBodyEvent(eventMap) {
-        const $body = jTool('body');
         for (let key in eventMap) {
-            $body.off(eventMap[key].events, eventMap[key].selector);
+            const eve = eventMap[key];
+            jTool(eve.target).off(eve.events, eve.selector);
         }
     }
 }
