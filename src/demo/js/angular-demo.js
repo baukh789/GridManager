@@ -37,7 +37,8 @@ angular.module("myApp", ['gridManager'])
             key: 'version',
             relyInit: false,
             title: '获取当前GridManager的版本号',
-            code: `$gridManager.version;`
+            code: '$gridManager.version;'
+            // code: 'angular.module("gridManager").version;'
         },
         getLocalStorage: {
             key: 'getLocalStorage',
