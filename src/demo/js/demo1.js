@@ -275,7 +275,7 @@ const demo1 = {
             // useRowCheck: true,
 
             // 图标跟随文本
-            isIconFollowText: true,
+            // isIconFollowText: true,
 
             // 禁用缓存
             disableCache: false,

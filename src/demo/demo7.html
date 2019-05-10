@@ -241,6 +241,7 @@
 						width: '140px',
 						text: '<div class="type"><p>创建时间</p><p>与</p><p>最后修改时间</p></div>',
 						sorting: 'DESC',
+                        remind: '排序时，使用创建时间进行排序',
 						// 使用函数返回 htmlString
 						template: function(createDate, rowObject){
 							return `创建于: ${new Date(createDate).toLocaleDateString()} <br/>修改于: ${new Date(rowObject.lastDate).toLocaleDateString()}`;
