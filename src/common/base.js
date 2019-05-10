@@ -631,7 +631,8 @@ class Base {
     clearBodyEvent(eventMap) {
         for (let key in eventMap) {
             const eve = eventMap[key];
-            jTool(eve.target).off(eve.events, eve.selector);
+            const $target = jTool(eve.target);
+            $target.length && $target.off(eve.events, eve.selector);
         }
     }
 }
