@@ -1,6 +1,6 @@
 import { GM_VERSION, TABLE_KEY, WRAP_KEY, DIV_KEY, CONFIG_KEY,
     TOOLBAR_KEY, TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, ORDER_WIDTH,
-    CHECKBOX_WIDTH, GM_PUBLISH_METHOD_LIST } from '@common/constants';
+    CHECKBOX_WIDTH, GM_PUBLISH_METHOD_LIST, TR_CACHE_KEY, COL_PROP_DISABLED } from '@common/constants';
 
 describe('常量验证', () => {
     it('GM_VERSION', () => {
@@ -33,6 +33,14 @@ describe('常量验证', () => {
 
     it('FAKE_TABLE_HEAD_KEY', () => {
         expect(FAKE_TABLE_HEAD_KEY).toBe('grid-manager-mock-thead');
+    });
+
+    it('TR_CACHE_KEY', () => {
+        expect(TR_CACHE_KEY).toBe('cache-key');
+    });
+
+    it('TR_CACHE_KEY', () => {
+        expect(COL_PROP_DISABLED).toBe('gm_checkbox_disabled');
     });
 
     it('ORDER_WIDTH', () => {
