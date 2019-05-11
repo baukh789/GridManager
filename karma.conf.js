@@ -5,6 +5,7 @@
  */
 const webpack = require('webpack');
 const path = require('path');
+const CleanPlugin = require('clean-webpack-plugin');
 const { version } = require('./package.json');
 module.exports = function (config) {
 	// karma config: http://karma-runner.github.io/1.0/config/configuration-file.html
@@ -20,7 +21,7 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-            'src/**/*_test.js'
+            'test/**/*_test.js'
 		],
 
 		// 使用端口
@@ -53,7 +54,7 @@ module.exports = function (config) {
 		preprocessors: {
 			// src/module/**/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/**/*.js 不需要通过 webpack 进行打包.
 			// 'src/module/**/*.js': ['sourcemap', 'coverage'],
-			'src/**/*_test.js': ['webpack']
+			'test/**/*_test.js': ['webpack']
 		},
 		// optionally, configure the reporter
 		coverageReporter: {
@@ -82,6 +83,7 @@ module.exports = function (config) {
                 }
 			},
 			plugins: [
+                new CleanPlugin(['coverage']),
 				new webpack.ProvidePlugin({
 					'Promise': 'es6-promise'
 				}),
