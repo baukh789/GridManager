@@ -256,6 +256,12 @@ const demo1 = {
             // 是否开启分页
             supportAjaxPage: true,
 
+            // 是否开启配置功能
+            // supportConfig: false,
+
+            // 是否开启导出
+            // supportExport: false,
+
             // 右键菜单
             // supportMenu: false,
 
@@ -367,7 +373,6 @@ const demo1 = {
                     remind: 'the pic',
                     width: '110px',
                     align: 'center',
-                    isShow: false,
                     text: '缩略图',
                     // 使用函数返回 dom node
                     template: function (pic, row) {
@@ -393,7 +398,6 @@ const demo1 = {
                     remind: 'the title',
                     align: 'left',
                     text: '标题',
-                    width: '100px',
                     sorting: '',
                     // 使用函数返回 dom node
                     template: function (title, row) {

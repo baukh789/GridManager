@@ -2,7 +2,7 @@ import remind from '../remind';
 import order from '../order';
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { READY_CLASS_NAME, TR_CACHE_KEY } from '@common/constants';
+import { TABLE_PURE_LIST, TR_CACHE_KEY } from '@common/constants';
 import cache from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
@@ -278,8 +278,14 @@ class Dom {
                 return;
             }
 
-            $table.removeAttr('style');
-            $table.removeClass(READY_CLASS_NAME);
+            // 清除因为实例而修改的属性
+            const table = $table.get(0);
+            TABLE_PURE_LIST.forEach(item => {
+                let itemProp = table['__' + item];
+                itemProp ? $table.attr(item, itemProp) : $table.removeAttr(item);
+                delete table['__' + item];
+            });
+
             // 还原table
             $table.html('');
             $tableWrap.after($table);

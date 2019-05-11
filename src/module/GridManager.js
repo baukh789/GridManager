@@ -3,7 +3,7 @@
  * 构造类
  */
 import jTool from '@common/jTool';
-import { TABLE_KEY, CACHE_ERROR_KEY } from '@common/constants';
+import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST } from '@common/constants';
 import base from '@common/base';
 import cache from '@common/cache';
 import adjust from './adjust';
@@ -468,7 +468,12 @@ export default class GridManager {
 	 * @returns {*}
 	 */
     async init(table, arg, callback) {
-		const $table = jTool(table);
+        // 存储class style， 在消毁实例时使用
+        TABLE_PURE_LIST.forEach(item => {
+            table['__' + item] = table.getAttribute(item);
+        });
+
+        const $table = jTool(table);
 		arg = jTool.extend({}, GridManager.defaultOption, arg);
 
 		// 校验: 初始参

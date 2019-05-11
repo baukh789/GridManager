@@ -1,6 +1,7 @@
 import { GM_VERSION, TABLE_KEY, WRAP_KEY, DIV_KEY, CONFIG_KEY,
     TOOLBAR_KEY, TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, ORDER_WIDTH,
-    CHECKBOX_WIDTH, GM_PUBLISH_METHOD_LIST, TR_CACHE_KEY, COL_PROP_DISABLED } from '@common/constants';
+    CHECKBOX_WIDTH, GM_PUBLISH_METHOD_LIST, TR_CACHE_KEY, COL_PROP_DISABLED,
+    NO_SELECT_CLASS_NAME, EMPTY_DATA_CLASS_NAME, READY_CLASS_NAME, TABLE_PURE_LIST } from '@common/constants';
 
 describe('常量验证', () => {
     it('GM_VERSION', () => {
@@ -50,6 +51,23 @@ describe('常量验证', () => {
     it('CHECKBOX_WIDTH', () => {
         expect(CHECKBOX_WIDTH).toBe('40px');
     });
+
+    it('NO_SELECT_CLASS_NAME', () => {
+        expect(NO_SELECT_CLASS_NAME).toBe('no-select-text');
+    });
+
+    it('EMPTY_DATA_CLASS_NAME', () => {
+        expect(EMPTY_DATA_CLASS_NAME).toBe('empty-data');
+    });
+
+    it('READY_CLASS_NAME', () => {
+        expect(READY_CLASS_NAME).toBe('GridManager-ready');
+    });
+
+    it('TABLE_PURE_LIST', () => {
+        expect(TABLE_PURE_LIST).toEqual(['class', 'style']);
+    });
+
 
     it('GM_PUBLISH_METHOD_LIST', () => {
         let list = [
