@@ -4,6 +4,7 @@ import { trimTpl } from '@common/parse';
 import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_WARN, CONSOLE_STYLE } from '@common/constants';
 import tableTpl from '@test/table-test.tpl.html';
 import { getColumnMap } from '@test/table-config';
+import {TOOLBAR_KEY} from '../constants';
 
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
@@ -1218,16 +1219,25 @@ describe('base.updateScrollStatus(gridManagerName)', () => {
 describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () => {
     let $wrap = null;
     let $div = null;
+    let theadHeight = null;
+    let ajaxPageHeight = null;
+    let $tableHeader = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         $wrap = jTool('.table-wrap');
         $div = jTool('.table-div');
+        $tableHeader = jTool('.table-header', $wrap);
+        theadHeight = base.getThead('test').height();
+        ajaxPageHeight = jTool(`[${TOOLBAR_KEY}="test"]`).height();
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
         $wrap = null;
         $div = null;
+        theadHeight = null;
+        ajaxPageHeight = null;
+        $tableHeader = null;
     });
 
     it('基础验证', () => {
@@ -1239,7 +1249,8 @@ describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () 
         base.calcLayout('test', '1000px', '500px', true);
         expect($wrap.width()).toBe(1000);
         expect($wrap.height()).toBe(500);
-        expect($div.height()).toBe(460);
+        expect($div.height()).toBe(500 - ajaxPageHeight);
+        expect($tableHeader.height()).toBe(theadHeight);
     });
 
     it('无分页的验证', () => {
@@ -1247,20 +1258,18 @@ describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () 
         expect($wrap.width()).toBe(1000);
         expect($wrap.height()).toBe(500);
         expect($div.height()).toBe(500);
+        expect($tableHeader.height()).toBe(theadHeight);
     });
 });
 
 describe('base.clearBodyEvent(eventMap)', () => {
     let eventMap = null;
-    let $body = null;
     beforeEach(() => {
-        $body = jTool('body');
         document.body.innerHTML = tableTestTpl;
     });
 
     afterEach(() => {
         eventMap = null;
-        $body = null;
         document.body.innerHTML = '';
     });
 

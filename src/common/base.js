@@ -2,7 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from './jTool';
-import { CONSOLE_INFO, CONSOLE_WARN, CONSOLE_ERROR, FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY } from './constants';
+import { CONSOLE_INFO, CONSOLE_WARN, CONSOLE_ERROR, FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY, TOOLBAR_KEY } from './constants';
 
 /**
  * 输出日志
@@ -622,10 +622,17 @@ class Base {
      */
     calcLayout(gridManagerName, width, height, supportAjaxPage) {
         const tableWrap = this.getWrap(gridManagerName).get(0);
-        const tableDiv = this.getDiv(gridManagerName).get(0);
+        const theadHeight = this.getThead(gridManagerName).height();
+        const ajaxPageHeight = jTool(`[${TOOLBAR_KEY}="${gridManagerName}"]`).height();
+
+        // 包含calc的样式，无法通过jTool对像进行赋值，所以需要通过.style的方式赋值
         tableWrap.style.width = `calc(${width})`;
         tableWrap.style.height = `calc(${height})`;
-        tableDiv.style.height = `calc(100% - ${supportAjaxPage ? '40px' : '0px'})`;
+        tableWrap.style.paddingTop = theadHeight + 'px';
+
+        this.getDiv(gridManagerName).get(0).style.height = supportAjaxPage ? `calc(100% - ${ajaxPageHeight}px)` : '100%';
+        jTool('.table-header', tableWrap).height(theadHeight);
+        this.getTable(gridManagerName).css('margin-top',  -theadHeight);
     }
 
     /**
