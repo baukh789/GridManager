@@ -21,11 +21,11 @@ class Dom {
         // add wrap div
         $table.wrap(render.createWrapTpl({ settings }), '.table-div');
 
-        // 计算布局
-        base.calcLayout(gridManagerName, width, height, supportAjaxPage);
-
         // append thead
         $table.append(render.createTheadTpl({settings}));
+
+        // 计算布局
+        base.calcLayout(gridManagerName, width, height, supportAjaxPage);
 
         // append tbody
         $table.append(document.createElement('tbody'));

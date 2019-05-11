@@ -57,8 +57,6 @@ class Scroll {
         // 吸顶元素
         const $setTopHead = base.getFakeThead(gridManagerName);
 
-        jTool('.table-header').height($setTopHead.height());
-
         // 重置thead的宽度和位置
         $setTopHead.css({
             width: theadWidth,

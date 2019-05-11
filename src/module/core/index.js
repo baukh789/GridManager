@@ -189,7 +189,7 @@ class Core {
 
     /**
      * 等待容器可用
-     * @param tableWarp
+     * @param gridManagerName
      */
     waitContainerAvailable(gridManagerName) {
         const tableWarp = document.querySelector(`[${WRAP_KEY}="${gridManagerName}"]`);
