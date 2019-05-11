@@ -83,6 +83,9 @@ class Checkbox {
         // tr点击选中
         if (useRowCheck) {
             jTool(trChange.target).on(trChange.events, trChange.selector, function (e) {
+                // if (this.querySelector('.disabled-radio-checkbox')) {
+                //
+                // }
                 // 当前事件源为非单选框或多选框时，触发选中事件
                 if ([].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
                     this.querySelector('td[gm-checkbox="true"] input.gm-radio-checkbox-input').click();

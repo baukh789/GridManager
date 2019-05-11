@@ -66,11 +66,16 @@ class Base {
      */
     getCloneRowData(columnMap, obj) {
         let cloneObj = jTool.extend(true, {}, obj);
+
+        // 删除自定义参数: 通过columnMap设置的项
         for (let key in columnMap) {
             if (columnMap[key].isAutoCreate) {
                 delete cloneObj[key];
             }
         }
+
+        // 删除自定义参数: 非columnMap设置的项
+        delete cloneObj['gm_checkbox_disabled'];
         return cloneObj;
     }
 
@@ -459,7 +464,6 @@ class Base {
 
         const autoList = [];
 
-        // console.log(this.getThTextWidth('test', jTool('thead[grid-manager-thead="test"] th[th-name="pic"]'), true));
         // 存储首列
         let firstCol = null;
         jTool.each(columnMap, (key, col) => {
@@ -512,7 +516,7 @@ class Base {
         }
 
         // 存在自动列 且 存在剩余宽度: 平分剩余的宽度
-        if (autolen && overage) {
+        if (autolen && overage > 0) {
             const splitVal = Math.floor(overage / autolen);
             jTool.each(autoList, (index, col) => {
                 // 最后一项自动列: 将余值全部赋予

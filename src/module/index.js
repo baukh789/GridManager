@@ -65,16 +65,7 @@ import { PublishMethod, publishMethodArray } from './publish';
             return PublishMethod[name](this, arg, callback, condition) || this;
         }
 
-        const settings = this.getAttribute(TABLE_KEY) && GridManager.get(this);
-        // init: 当前已经实例化
-        if (settings && settings.rendered) {
-            base.outWarn(`${settings.gridManagerName} had been used`);
-
-            // 如果已经存在，则清除之前的数据。#001
-            PublishMethod.destroy(settings.gridManagerName);
-        }
-
-        // init: 执行
+        // init: gridManagerName
         const $table = jTool(this);
         // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
         if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
@@ -85,6 +76,17 @@ import { PublishMethod, publishMethodArray } from './publish';
             $table.attr(TABLE_KEY, arg.gridManagerName);
         }
 
+        const settings = GridManager.get(arg.gridManagerName);
+
+        // init: 当前已经实例化
+        if (settings && settings.rendered) {
+            base.outWarn(`${settings.gridManagerName} had been used`);
+
+            // 如果已经存在，则清除之前的数据。#001
+            PublishMethod.destroy(settings.gridManagerName);
+        }
+
+        // init: 执行
         base.SIV_waitTableAvailable[arg.gridManagerName] = setInterval(() => {
             let thisWidth = window.getComputedStyle(this).width;
             if (thisWidth.indexOf('px') !== -1) {

@@ -567,9 +567,6 @@ export default class GridManager {
 
         const gridManagerName = settings.gridManagerName;
 
-        // 通过缓存配置成功后, 重置宽度调整事件源dom
-        // settings.supportAdjust ? adjust.resetAdjust(gridManagerName) : '';
-
         // init adjust
         if (settings.supportAdjust) {
             adjust.init(gridManagerName);

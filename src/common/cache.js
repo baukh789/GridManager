@@ -322,6 +322,7 @@ class Cache {
 
             // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
             columnMap[col.key].__isShow = col.isShow;
+
         });
         if (isError) {
             return false;

@@ -272,7 +272,7 @@ const demo1 = {
             // useRadio: true,
 
             // 使用行选中
-            // useRowCheck: true,
+            useRowCheck: true,
 
             // 图标跟随文本
             // isIconFollowText: true,
@@ -346,15 +346,15 @@ const demo1 = {
             },
 
             // 单行数据渲染时执行程序
-            // rowRenderHandler: (row, index) => {
-            //     row.gm_checkbox = row.id === 92;
-            //     row.gm_checkbox_disabled = index === 1;
-            //     if (row.id === 92) {
-            //         row.title = 'hahaha';
-            //     }
-            //     row.gm_order = 1;
-            //     return row;
-            // },
+            rowRenderHandler: (row, index) => {
+                row.gm_checkbox = row.id === 92;
+                row.gm_checkbox_disabled = index === 1;
+                if (row.id === 92) {
+                    row.title = 'hahaha';
+                }
+                row.gm_order = 1;
+                return row;
+            },
 
             // 单个td的hover事件
             // cellHover: (row, rowIndex, colIndex) => {
@@ -366,6 +366,7 @@ const demo1 = {
                     remind: 'the pic',
                     // width: '110px',
                     align: 'center',
+                    isShow: false,
                     text: '缩略图',
                     // 使用函数返回 dom node
                     template: function (pic, row) {
@@ -391,6 +392,7 @@ const demo1 = {
                     remind: 'the title',
                     align: 'left',
                     text: '标题',
+                    // width: '100px',
                     sorting: '',
                     // 使用函数返回 dom node
                     template: function (title, row) {
@@ -465,9 +467,9 @@ const demo1 = {
                 }, {
                     key: 'action',
                     remind: 'the action',
-                    width: '100px',
+                    // width: '100px',
                     align: 'center',
-                    disableCustomize: true,
+                    // disableCustomize: true,
                     text: '<span style="color: red">操作</span>',
                     // 直接返回 通过函数返回
                     template: (action, row) => {
