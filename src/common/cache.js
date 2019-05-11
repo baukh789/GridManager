@@ -40,21 +40,29 @@ class Cache {
     /**
      * 获取当前行使用的数据
      * @param gridManagerName
-     * @param target 将要获取数据所对应的tr[Element or NodeList]
+     * @param target: 将要获取数据所对应的tr[Element or NodeList]
+     * @param useGmProp: 是否使用gm自定义的属性
      * @returns {*}
      */
-    getRowData(gridManagerName, target) {
+    getRowData(gridManagerName, target, useGmProp) {
         const tableData = this.getTableData(gridManagerName);
+        const columnMap = this.getSettings(gridManagerName).columnMap;
+
+        const getTrData = tr => {
+            const rowData = tableData[tr.getAttribute(TR_CACHE_KEY)] || {};
+            return useGmProp ? rowData : base.getCloneRowData(columnMap, rowData);
+        };
+
         // target type = Element 元素时, 返回单条数据对象;
         if (jTool.type(target) === 'element') {
-            return tableData[target.getAttribute(TR_CACHE_KEY)];
+            return getTrData(target);
         }
 
         // target type =  NodeList 类型时, 返回数组
         if (jTool.type(target) === 'nodeList') {
             let rodData = [];
-            jTool.each(target, function (i, v) {
-                rodData.push(tableData[v.getAttribute(TR_CACHE_KEY)]);
+            jTool.each(target, (i, tr) => {
+                rodData.push(getTrData(tr));
             });
             return rodData;
         }
@@ -303,7 +311,7 @@ class Cache {
                 return;
             }
 
-            // disableCustomize存在时，必须设置width
+            // 存在disableCustomize时，必须设置width
             if (col.disableCustomize && !col.width) {
                 base.outError(`column ${col.key}: when disableCustomize exists, width must be set`);
                 isError = true;

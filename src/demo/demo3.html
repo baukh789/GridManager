@@ -58,36 +58,38 @@
 	});
 
 	// test 2demo
-	document.querySelector('#test1').GM({
-		height: '400px'
-        ,gridManagerName: 'test1'
-		,i18n: 'en-us'
-		,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-		,ajax_type: 'POST'
-		,query: {tableName: 'test2', 'love': 'kouzi'}
-		,pageSize:20
-		,supportAjaxPage:true
-		,columnData: [{
-			key: 'name',
-			remind: 'the name',
-			width: '100px',
-			text: 'name',
-			sorting: 'up'
-		},{
-			key: 'info',
-			remind: 'the info',
-			text: 'info',
-			sorting: ''
-		},{
-			key: 'url',
-			remind: 'the url',
-			text: 'url'
-		}
-		]
-		,ajax_success: function (data) {
-			console.log('test2 ajax_success');
-		}
-	});
+    // setTimeout(() => {
+        document.querySelector('#test2').GM({
+            height: '400px'
+            ,gridManagerName: 'test2'
+            ,i18n: 'en-us'
+            ,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+            ,ajax_type: 'POST'
+            ,query: {tableName: 'test2', 'love': 'kouzi'}
+            ,pageSize:20
+            ,supportAjaxPage:true
+            ,columnData: [{
+                key: 'name',
+                remind: 'the name',
+                width: '100px',
+                text: 'name',
+                sorting: 'up'
+            },{
+                key: 'info',
+                remind: 'the info',
+                text: 'info',
+                sorting: ''
+            },{
+                key: 'url',
+                remind: 'the url',
+                text: 'url'
+            }
+            ]
+            ,ajax_success: function (data) {
+                console.log('test2 ajax_success');
+            }
+        });
+    // }, 3000);
 
 	// test 3demo
 	document.querySelector('#test3').GM({

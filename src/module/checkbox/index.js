@@ -2,7 +2,7 @@
  * checkbox: 数据选择/全选/返选
  * */
 import './style.less';
-import { CHECKBOX_WIDTH, TR_CACHE_KEY } from '@common/constants';
+import { CHECKBOX_WIDTH, TR_CACHE_KEY, COL_PROP_DISABLED } from '@common/constants';
 import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
@@ -83,11 +83,10 @@ class Checkbox {
         // tr点击选中
         if (useRowCheck) {
             jTool(trChange.target).on(trChange.events, trChange.selector, function (e) {
-                // if (this.querySelector('.disabled-radio-checkbox')) {
-                //
-                // }
-                // 当前事件源为非单选框或多选框时，触发选中事件
-                if ([].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
+                const rowData = cache.getRowData(gridManagerName, this, true);
+
+                // 触发选中事件: 1.当前行非禁止选中 2.当前事件源非单选框或多选框;
+                if (!rowData[COL_PROP_DISABLED] && [].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
                     this.querySelector('td[gm-checkbox="true"] input.gm-radio-checkbox-input').click();
                 }
             });
@@ -192,7 +191,10 @@ class Checkbox {
 		// 多选-全选
 		if (isAllCheck && !cacheKey) {
 			tableData.forEach(row => {
-				row[this.key] = status;
+			    // 仅选中未禁用的项
+			    if (!row[COL_PROP_DISABLED]) {
+                    row[this.key] = status;
+                }
 			});
 		}
 
@@ -227,19 +229,23 @@ class Checkbox {
 	    const $table = base.getTable(settings.gridManagerName);
 		// 更改tbody区域选中状态
         let checkedNum = 0;
+        let usableLen = tableData.length;
 		tableData && tableData.forEach((row, index) => {
+		    const isChecked = row[this.key];
 			const $tr = jTool(`tbody tr[${TR_CACHE_KEY}="${index}"]`, $table);
             const $checkSpan = jTool('td[gm-checkbox="true"] .gm-radio-checkbox', $tr);
-			$tr.attr('checked', row[this.key]);
-            useRadio ? this.updateRadioState($checkSpan, row[this.key]) : this.updateCheckboxState($checkSpan, row[this.key] ? 'checked' : 'unchecked');
-            row[this.key] && checkedNum++;
+			$tr.attr('checked', isChecked);
+            useRadio ? this.updateRadioState($checkSpan, isChecked) : this.updateCheckboxState($checkSpan, isChecked ? 'checked' : 'unchecked');
+
+            row[COL_PROP_DISABLED] && usableLen--;
+            isChecked && checkedNum++;
 		});
 
 		// 更新thead区域选中状态
         const $allCheckSpan = jTool('thead tr th[gm-checkbox="true"] .gm-checkbox ', $table);
 
         // [checked: 选中, indeterminate: 半选中, unchecked: 未选中]
-        !useRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === tableData.length ? 'checked' : 'indeterminate'));
+        !useRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === usableLen ? 'checked' : 'indeterminate'));
 
 		// 更新底部工具条选中描述信息
         ajaxPage.updateCheckedInfo(settings);

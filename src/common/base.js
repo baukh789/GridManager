@@ -2,7 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from './jTool';
-import { CONSOLE_INFO, CONSOLE_WARN, CONSOLE_ERROR, FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY, TOOLBAR_KEY } from './constants';
+import { CONSOLE_INFO, CONSOLE_WARN, CONSOLE_ERROR, FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY, TOOLBAR_KEY, COL_PROP_DISABLED } from './constants';
 
 /**
  * 输出日志
@@ -75,7 +75,7 @@ class Base {
         }
 
         // 删除自定义参数: 非columnMap设置的项
-        delete cloneObj['gm_checkbox_disabled'];
+        delete cloneObj[COL_PROP_DISABLED];
         return cloneObj;
     }
 

@@ -32,6 +32,9 @@ export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
 // tr 上 cache key
 export const TR_CACHE_KEY = 'cache-key';
 
+// 行属性 禁用
+export const COL_PROP_DISABLED = 'gm_checkbox_disabled';
+
 // 用户记忆 localStorage key
 export const MEMORY_KEY = 'GridManagerMemory';
 
