@@ -4,7 +4,7 @@ import { trimTpl } from '@common/parse';
 import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_WARN, CONSOLE_STYLE } from '@common/constants';
 import tableTpl from '@test/table-test.tpl.html';
 import { getColumnMap } from '@test/table-config';
-import {TOOLBAR_KEY} from '../constants';
+import {TOOLBAR_KEY} from '@common/constants';
 
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
@@ -142,7 +142,8 @@ describe('base.getDataForColumnMap(columnMap, obj)', () => {
             age: 32,
             content: 'this is content',
             info: 'this is info',
-            gm_checkbox: true
+            gm_checkbox: true,
+            gm_checkbox_disabled: true
         };
         let cloneData = {
             username: 'baukh',
@@ -302,9 +303,34 @@ describe('base.compileFramework(settings, compileList)', () => {
         expect(settings.compileAngularjs).toHaveBeenCalled();
     });
 
-    it('执行验证', () => {
+    it('react 单个解析', () => {
         settings = {
-            compileAngularjs: jasmine.createSpy('callback')
+            compileReact: jasmine.createSpy('callback')
+        };
+        compileList = document.querySelector('body');
+        base.compileFramework(settings, compileList);
+        expect(settings.compileReact).toHaveBeenCalled();
+    });
+
+    it('react 数组解析', () => {
+        settings = {
+            compileReact: jasmine.createSpy('callback')
+        };
+        compileList = [];
+        compileList.push(document.createElement('div'));
+        compileList.push(document.createElement('div'));
+        compileList.push(document.createElement('div'));
+        base.compileFramework(settings, compileList);
+        expect(settings.compileReact).toHaveBeenCalled();
+    });
+
+    it('结果验证: 正常', () => {
+        settings = {
+            compileAngularjs: () => {
+                return new Promise((resolve, reject) => {
+                    resolve('执行成功');
+                });
+            }
         };
         compileList = document.createElement('div');
         base.compileFramework(settings, compileList).then(res => {
@@ -312,7 +338,7 @@ describe('base.compileFramework(settings, compileList)', () => {
         });
     });
 
-    it('异常验证', () => {
+    it('结果验证: 异常', () => {
         settings = {
             compileVue: () => {
                 throw new Error('返回一个错误');

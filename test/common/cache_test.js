@@ -77,28 +77,44 @@ describe('getScope and setScope', () => {
     });
 });
 
-describe('getRowData(gridManagerName, target)', () => {
+describe('getRowData', () => {
     let tableData = null;
     beforeEach(() => {
         tableData = getTableData();
         document.body.innerHTML = tableTestTpl;
+        store.settings = {
+            test: {
+                gridManagerName: 'test',
+                columnMap: getColumnMap()
+            }
+        };
     });
     afterEach(() => {
         tableData = null;
         document.body.innerHTML = '';
         store.responseData = {};
+        store.settings = {};
     });
 
     it('基础验证', () => {
         expect(cache.getRowData).toBeDefined();
-        expect(cache.getRowData.length).toBe(2);
+        expect(cache.getRowData.length).toBe(3);
     });
 
     it('未存在数据时', () => {
-        expect(cache.getRowData('test', document.querySelector('tr[cache-key="9"]'))).toBeUndefined();
+        expect(cache.getRowData('test', document.querySelector('tr[cache-key="9"]'))).toEqual({});
     });
 
     it('参数为element', () => {
+        tableData.data[8].gm_checkbox = true;
+        tableData.data[8].gm_checkbox_disabled = true;
+        tableData.data[8].gm_order = 9;
+        store.responseData['test'] = tableData.data;
+        expect(cache.getRowData('test', document.querySelector('tr[cache-key="8"]'))).toEqual(new getTableData().data[8]);
+        expect(cache.getRowData('test', document.querySelector('tr[cache-key="8"]'), true)).toEqual(tableData.data[8]);
+    });
+
+    it('使用gm自定义的属性', () => {
         store.responseData['test'] = tableData.data;
         expect(cache.getRowData('test', document.querySelector('tr[cache-key="9"]'))).toEqual(tableData.data[9]);
     });
@@ -539,13 +555,20 @@ describe('initSettings', () => {
         expect(Object.keys(settings.columnMap)).toEqual(Object.keys(columnMap));
     });
 
-    it('异常配置', () => {
+    it('异常配置: 丢失key', () => {
         arg.supportAutoOrder = false;
         arg.supportCheckbox = false;
         delete arg.columnData[0].key;
         settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings).toBe(false);
         expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c columnData[0].key undefined ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
+    });
+
+    it('异常配置: 存在disableCustomize但无width', () => {
+        // 第8行数据存在disableCustomize配置
+        delete arg.columnData[7].width;
+        expect(cache.initSettings(arg, checkboxColumnFn, orderColumnFn)).toBe(false);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c column action: when disableCustomize exists, width must be set ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
     });
 
     it('开启缓存:当前无用户记忆', () => {
