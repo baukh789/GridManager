@@ -278,6 +278,7 @@ class Dom {
                 return;
             }
 
+            $table.removeAttr('style');
             $table.removeClass(READY_CLASS_NAME);
             // 还原table
             $table.html('');
