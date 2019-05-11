@@ -623,14 +623,13 @@ class Base {
     calcLayout(gridManagerName, width, height, supportAjaxPage) {
         const tableWrap = this.getWrap(gridManagerName).get(0);
         const theadHeight = this.getThead(gridManagerName).height();
-        const ajaxPageHeight = jTool(`[${TOOLBAR_KEY}="${gridManagerName}"]`).height();
 
         // 包含calc的样式，无法通过jTool对像进行赋值，所以需要通过.style的方式赋值
         tableWrap.style.width = `calc(${width})`;
         tableWrap.style.height = `calc(${height})`;
         tableWrap.style.paddingTop = theadHeight + 'px';
 
-        this.getDiv(gridManagerName).get(0).style.height = supportAjaxPage ? `calc(100% - ${ajaxPageHeight}px)` : '100%';
+        this.getDiv(gridManagerName).get(0).style.height = supportAjaxPage ? `calc(100% - ${jTool(`[${TOOLBAR_KEY}="${gridManagerName}"]`).height()}px)` : '100%';
         jTool('.table-header', tableWrap).height(theadHeight);
         this.getTable(gridManagerName).css('margin-top',  -theadHeight);
     }
