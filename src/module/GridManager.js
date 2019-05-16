@@ -32,7 +32,7 @@ const isRendered = (table, fnName) => {
 // 存储默认配置
 let defaultOption = {};
 export default class GridManager {
-	/**
+    /**
 	 * @静态方法
 	 * 版本号
 	 * GridManager.version || GM.version
@@ -43,7 +43,7 @@ export default class GridManager {
 		return cache.getVersion();
 	}
 
-    /**
+	/**
      * 获取默认配置项
      */
     static

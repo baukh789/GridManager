@@ -6,7 +6,6 @@ import jTool from '@common/jTool';
 import base from '@common/base';
 import { TABLE_KEY } from '@common/constants';
 import GridManager from './GridManager';
-import { PublishMethod, publishMethodArray } from './publish';
 /*
 *  捆绑至选择器对象
 * */
@@ -55,14 +54,14 @@ import { PublishMethod, publishMethodArray } from './publish';
             return;
         }
 
-		if (publishMethodArray.indexOf(name) === -1) {
-			base.outError(`${name} method undefined`);
-			return;
-		}
+        // 当前为查找版本号
+        if (name === 'version') {
+            return GridManager.version;
+        }
 
-        // no init: 执行
+		// no init: 执行
 		if (name !== 'init') {
-            return PublishMethod[name](this, arg, callback, condition) || this;
+            return GridManager[name](this, arg, callback, condition) || this;
         }
 
         // init: gridManagerName
@@ -83,7 +82,7 @@ import { PublishMethod, publishMethodArray } from './publish';
             base.outWarn(`${settings.gridManagerName} had been used`);
 
             // 如果已经存在，则清除之前的数据。#001
-            PublishMethod.destroy(settings.gridManagerName);
+            GridManager.destroy(settings.gridManagerName);
         }
 
         // init: 执行
@@ -92,7 +91,7 @@ import { PublishMethod, publishMethodArray } from './publish';
             if (thisWidth.indexOf('px') !== -1) {
                 clearInterval(base.SIV_waitTableAvailable[arg.gridManagerName]);
                 base.SIV_waitTableAvailable[arg.gridManagerName] = null;
-                PublishMethod[name](this, arg, callback, condition);
+                return new GridManager().init(this, arg, callback);
             }
         }, 50);
 	};
