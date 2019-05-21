@@ -24,17 +24,25 @@ class ExportFile {
 	}
 
 	/**
-	 * 添加后缀
+	 * 获取文件名称
 	 * @param gridManagerName
 	 * @param fileName: 文件名
-	 * @param suffix: 后缀名
+	 * @param query: 查询参数
+	 * @param exportConfig: 配置信息
      */
-    addSuffix(gridManagerName, fileName, suffix) {
+    getFileName(gridManagerName, fileName, query, exportConfig) {
+        // 未存在指定下载名称时, 使用exportConfig.fileName
 		if (!fileName) {
-			fileName = gridManagerName;
+		    const confName = exportConfig.fileName;
+		    fileName = typeof confName === 'function' ? confName(query) : confName;
 		}
 
-		return `${fileName}.${suffix}`;
+		// 未存在指定下载名称 且 未指定exportConfig.fileName时, 使用 gridManagerName
+		if (!fileName) {
+            fileName = gridManagerName;
+        }
+
+		return `${fileName}.${exportConfig.suffix}`;
 	}
 
     /**
@@ -105,12 +113,7 @@ class ExportFile {
 	    const settings = cache.getSettings(gridManagerName);
 	    const { query, loadingTemplate, exportConfig, pageData, sortData } = settings;
 
-        fileName = this.addSuffix(gridManagerName, fileName, exportConfig.suffix);
-
-        // 文件有误，导出失败
-        if (!fileName) {
-            return false;
-        }
+        fileName = this.getFileName(gridManagerName, fileName, query, exportConfig);
 
         const selectedList = onlyChecked ? cache.getCheckedData(gridManagerName) : undefined;
 
@@ -159,14 +162,14 @@ class ExportFile {
      * @param selectedList
      * @returns {Promise<void>}
      */
-	async downFilePath(fileName, exportHandler, pageData, sortData, selectedList) {
-        try {
-            const res = await exportHandler(fileName, pageData, sortData, selectedList);
-            this.dispatchDownload(fileName, res);
-        } catch (e) {
-            base.outError(e);
-        }
-    }
+    // async downFilePath(fileName, exportHandler, pageData, sortData, selectedList) {
+    //     try {
+    //         const res = await exportHandler(fileName, pageData, sortData, selectedList);
+    //         this.dispatchDownload(fileName, res);
+    //     } catch (e) {
+    //         base.outError(e);
+    //     }
+    // }
 
     /**
      * 下载方式: 文件流
@@ -177,15 +180,15 @@ class ExportFile {
      * @param selectedList
      * @returns {Promise<void>}
      */
-    async downFileStream(fileName, exportHandler, pageData, sortData, selectedList) {
-        try {
-            const res = await exportHandler(fileName, pageData, sortData, selectedList);
-            window.open(res);
-        } catch (e) {
-            base.outError(e);
-        }
-
-    }
+    // async downFileStream(fileName, exportHandler, pageData, sortData, selectedList) {
+    //     try {
+    //         const res = await exportHandler(fileName, pageData, sortData, selectedList);
+    //         window.open(res);
+    //     } catch (e) {
+    //         base.outError(e);
+    //     }
+    //
+    // }
 
     /**
      * 下载方式: 静态下载

@@ -301,6 +301,7 @@ describe('Settings', () => {
     it('验证属性[exportConfig]初始值', () => {
         expect(typeof settings.exportConfig).toBe('object');
         expect(settings.exportConfig.mode).toBe('static');
+        expect(settings.exportConfig.fileName).toBe(null);
         expect(settings.exportConfig.suffix).toBe('xls');
         expect(typeof settings.exportConfig.handler).toBe('function');
     });
