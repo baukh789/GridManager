@@ -1,6 +1,6 @@
 import { GM_VERSION, TABLE_KEY, WRAP_KEY, DIV_KEY, CONFIG_KEY,
     TOOLBAR_KEY, TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, ORDER_WIDTH,
-    CHECKBOX_WIDTH, GM_PUBLISH_METHOD_LIST, TR_CACHE_KEY, COL_PROP_DISABLED,
+    CHECKBOX_WIDTH, TR_CACHE_KEY, COL_PROP_DISABLED,
     NO_SELECT_CLASS_NAME, EMPTY_DATA_CLASS_NAME, READY_CLASS_NAME, TABLE_PURE_LIST } from '@common/constants';
 
 describe('常量验证', () => {
@@ -66,34 +66,5 @@ describe('常量验证', () => {
 
     it('TABLE_PURE_LIST', () => {
         expect(TABLE_PURE_LIST).toEqual(['class', 'style']);
-    });
-
-
-    it('GM_PUBLISH_METHOD_LIST', () => {
-        let list = [
-            'init',
-            'get',
-            'version',
-            'getLocalStorage',
-            'resetLayout',
-            'clear',
-            'getRowData',
-            'updateRowData',
-            'setSort',
-            'setConfigVisible',
-            'showTh',
-            'hideTh',
-            'exportGridToXls',
-            'setQuery',
-            'setAjaxData',
-            'refreshGrid',
-            'getCheckedTr',
-            'getCheckedData',
-            'setCheckedData',
-            'cleanData',
-            'destroy'
-        ];
-        expect(GM_PUBLISH_METHOD_LIST).toEqual(list);
-        list = null;
     });
 });
