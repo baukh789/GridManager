@@ -288,6 +288,19 @@ const demo1 = {
             ajax_data: function () {
                 return 'https://www.lovejavascript.com/blogManager/getBlogList';
             },
+
+            // 导出配置
+            exportConfig: {
+                fileName: query => {
+                    console.log(Object.keys(query));
+                    const date = new Date();
+                    let fileName = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+                    for (let key in query) {
+                        fileName = `${fileName}-${key}=${query[key]}`;
+                    }
+                    return fileName;
+                }
+            },
             ajax_type: 'POST',
 
             // 选择事件执行前事件

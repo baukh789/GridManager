@@ -494,7 +494,7 @@ export default class GridManager {
 			arg.ajax_data = arg.ajax_url;
 		}
 
-		// 相互冲突的参数项处理 TODO 这个功能为试点功能，现在与被禁用项冲突，后期还是想把这些冲突点解决掉
+		// 相互冲突的参数项处理
         if (arg.topFullColumn && arg.topFullColumn.template) {
             // 不使用配置功能
             arg.supportConfig = false;
