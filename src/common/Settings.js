@@ -365,7 +365,7 @@ const gridExport = {
         // 2.blob: 通过后端接口返回二进制流。`nodejs`可使用`js-xlsx`, `java`可使用 `org.apache.poi`生成二进制流。
         mode: 'static',
 
-        // 导出文件的名称, 不包含后缀名，该值不设置将默认使用gridManagerName
+        // 导出文件的名称, 字符串或函数类型，为函数时需返回一个字符串。该字符串不包含后缀名，该值不设置将默认使用gridManagerName
         fileName: null,
 
         // 导出的后缀名, 默认为`xls`。
