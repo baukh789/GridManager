@@ -292,7 +292,6 @@ const demo1 = {
             // 导出配置
             exportConfig: {
                 fileName: query => {
-                    console.log(Object.keys(query));
                     const date = new Date();
                     let fileName = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
                     for (let key in query) {
