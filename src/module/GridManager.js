@@ -10,6 +10,7 @@ import adjust from './adjust';
 import ajaxPage from './ajaxPage';
 import order from './order';
 import checkbox from './checkbox';
+import tree from './tree';
 import config from './config';
 import core, { coreDOM } from './core';
 import drag from './drag';
@@ -516,7 +517,7 @@ export default class GridManager {
 		cache.verifyVersion();
 
 		// 初始化设置相关: 合并, 存储
-		let settings = cache.initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order));
+		let settings = cache.initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order), tree.getColumn.bind(tree));
 		const gridManagerName = settings.gridManagerName;
 
 		// 校验: gridManagerName

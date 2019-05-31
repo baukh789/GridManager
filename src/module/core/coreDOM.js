@@ -113,31 +113,61 @@ class Dom {
      * @param data
      */
     renderTableBody(settings, data) {
-        const { gridManagerName, rowRenderHandler, pageData, supportAutoOrder, supportCheckbox, pageSizeKey, currentPageKey, columnData, columnMap, topFullColumn } = settings;
+        const {
+            gridManagerName,
+            rowRenderHandler,
+            pageData,
+            supportAutoOrder,
+            supportCheckbox,
+            pageSizeKey,
+            currentPageKey,
+            columnData,
+            columnMap,
+            topFullColumn,
+            treeConfig
+        } = settings;
 
-        data = data.map((row, index) => {
-            // add order
-            if (supportAutoOrder) {
-                let	orderBaseNumber = 1;
+        const resetData = (data, level) => {
+            return data.map((row, index) => {
+                // add order
+                if (supportAutoOrder) {
+                    let	orderBaseNumber = 1;
 
-                // 验证是否存在分页数据
-                if (pageData && pageData[pageSizeKey] && pageData[currentPageKey]) {
-                    orderBaseNumber = pageData[pageSizeKey] * (pageData[currentPageKey] - 1) + 1;
+                    // 验证是否存在分页数据
+                    if (pageData && pageData[pageSizeKey] && pageData[currentPageKey]) {
+                        orderBaseNumber = pageData[pageSizeKey] * (pageData[currentPageKey] - 1) + 1;
+                    }
+                    row[order.key] = orderBaseNumber + index;
                 }
-                row[order.key] = orderBaseNumber + index;
-            }
 
-            // add checkbox
-            if (supportCheckbox) {
-                row[checkbox.key] = cache.getCheckedData(gridManagerName).some(item => {
-                    return base.equal(base.getCloneRowData(columnMap, item), base.getCloneRowData(columnMap, row));
-                });
-                row[checkbox.disabledKey] = false;
-            }
+                // add checkbox
+                if (supportCheckbox) {
+                    row[checkbox.key] = cache.getCheckedData(gridManagerName).some(item => {
+                        return base.equal(base.getCloneRowData(columnMap, item), base.getCloneRowData(columnMap, row));
+                    });
+                    row[checkbox.disabledKey] = false;
+                }
 
-            // 单行数据渲染时执行程序
-            return rowRenderHandler(row, index);
-        });
+                // 非单层结构增加层级标识
+                if (treeConfig.level > 1) {
+                    row.gm_tree = level;
+                }
+
+                // 当前层级大于或等于最高层级， 删除子数据
+                if (treeConfig.level <= level) {
+                    delete row.children;
+                }
+
+                // reset children
+                if (row.children && row.children.length) {
+                    resetData(row.children, level + 1);
+                }
+
+                // 单行数据渲染时执行程序
+                return rowRenderHandler(row, index);
+            });
+        };
+        data = resetData(data, 1);
 
         // 存储表格数据
         cache.setTableData(gridManagerName, data);
@@ -151,68 +181,88 @@ class Dom {
 
         // 组装 tbody
         const compileList = []; // 需要通过框架解析td数据
-        try {
-            jTool.each(data, (index, row) => {
-                const trNode = document.createElement('tr');
-                trNode.setAttribute(TR_CACHE_KEY, index);
 
-                // 插入通栏: top-full-column
-                if (typeof topFullColumn.template !== 'undefined') {
-                    // 通栏tr
-                    const topTrNode = document.createElement('tr');
-                    topTrNode.setAttribute('top-full-column', 'true');
+        // 插入通栏: top-full-column
+        const installTopFull = (trNode, row, index) => {
+            // 通栏tr
+            const topTrNode = document.createElement('tr');
+            topTrNode.setAttribute('top-full-column', 'true');
 
-                    // 通栏用于向上的间隔的tr
-                    const intervalTrNode = document.createElement('tr');
-                    intervalTrNode.setAttribute('top-full-column-interval', 'true');
-                    intervalTrNode.innerHTML = `<td colspan="${columnData.length}"><div></div></td>`;
-                    _tbody.appendChild(intervalTrNode);
+            // 通栏用于向上的间隔的tr
+            const intervalTrNode = document.createElement('tr');
+            intervalTrNode.setAttribute('top-full-column-interval', 'true');
+            intervalTrNode.innerHTML = `<td colspan="${columnData.length}"><div></div></td>`;
+            _tbody.appendChild(intervalTrNode);
 
-                    // 为非通栏tr的添加标识
-                    trNode.setAttribute('top-full-column', 'false');
+            // 为非通栏tr的添加标识
+            trNode.setAttribute('top-full-column', 'false');
 
-                    let _template = topFullColumn.template;
-                    _template = typeof _template === 'function' ? _template(row) : _template;
+            let _template = topFullColumn.template;
+            _template = typeof _template === 'function' ? _template(row) : _template;
 
-                    topTrNode.innerHTML = `<td colspan="${columnData.length}"><div class="full-column-td">${_template}</div></td>`;
-                    compileList.push({el: topTrNode, row: row, index: index});
-                    _tbody.appendChild(topTrNode);
+            topTrNode.innerHTML = `<td colspan="${columnData.length}"><div class="full-column-td">${_template}</div></td>`;
+            compileList.push({el: topTrNode, row: row, index: index});
+            _tbody.appendChild(topTrNode);
+        };
+
+        // 插入正常的TR
+        const installNormal = (trNode, row, index) => {
+            // 与当前位置信息匹配的td列表
+            const tdList = [];
+            // td模板
+            let	tdTemplate = null;
+            jTool.each(columnMap, (key, col) => {
+                tdTemplate = col.template;
+                // td 模板
+                tdTemplate = typeof tdTemplate === 'function' ? tdTemplate(row[col.key], row, index) : (typeof tdTemplate === 'string' ? tdTemplate : row[col.key]);
+
+                // 插件自带列(序号,全选)
+                let tdNode = null;
+                if (col.isAutoCreate) {
+                    tdNode = jTool(tdTemplate).get(0);
+                } else {
+                    tdNode = jTool('<td gm-create="false"></td>').get(0);
+                    jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
                 }
 
-                // 与当前位置信息匹配的td列表
-                const tdList = [];
-                // td模板
-                let	tdTemplate = null;
-                jTool.each(columnMap, (key, col) => {
-                    tdTemplate = col.template;
-                    // td 模板
-                    tdTemplate = typeof tdTemplate === 'function' ? tdTemplate(row[col.key], row, index) : (typeof tdTemplate === 'string' ? tdTemplate : row[col.key]);
+                // td 文本对齐方向
+                col.align && tdNode.setAttribute('align', col.align);
 
-                    // 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
-                    let tdNode = null;
-                    if (col.isAutoCreate) {
-                        tdNode = jTool(tdTemplate).get(0);
-                    } else {
-                        tdNode = jTool('<td gm-create="false"></td>').get(0);
-                        jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
+                tdList[col.index] = tdNode;
+            });
+
+            tdList.forEach(td => {
+                trNode.appendChild(td);
+            });
+
+            compileList.push({el: trNode, row: row, index: index});
+
+            _tbody.appendChild(trNode);
+        };
+
+        try {
+            const installTr = (list, level) => {
+                jTool.each(list, (index, row) => {
+                    const trNode = document.createElement('tr');
+                    trNode.setAttribute(TR_CACHE_KEY, index);
+                    trNode.setAttribute('level', level);
+
+                    // 插入通栏: top-full-column
+                    if (typeof topFullColumn.template !== 'undefined') {
+                        installTopFull(trNode, row, index);
                     }
 
-                    // td 文本对齐方向
-                    col.align && tdNode.setAttribute('align', col.align);
-
-                    tdList[col.index] = tdNode;
+                    // 插入正常的TR
+                    installNormal(trNode, row, index);
+                    if (row.children && row.children.length) {
+                        installTr(row.children, level + 1);
+                    }
                 });
+            };
+            installTr(data, 1);
 
-                tdList.forEach(td => {
-                    trNode.appendChild(td);
-                });
-
-                compileList.push({el: trNode, row: row, index: index});
-
-                _tbody.appendChild(trNode);
-            });
         } catch (e) {
-            base.outError(e);
+            base.outError('render tbody error');
         }
 
         this.initVisible(gridManagerName, columnMap);

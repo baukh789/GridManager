@@ -67,7 +67,51 @@
 					"age": "28",
 					"createDate": "2015-03-12",
 					"info": "野生前端程序",
-					"operation": "修改"
+					"operation": "修改",
+                    "children": [
+                        {
+                            "id": 11,
+                            "name": "baukh-11",
+                            "age": "28",
+                            "createDate": "2015-03-12",
+                            "info": "野生前端程序",
+                            "operation": "修改",
+                            "children": [
+                                {
+                                    "id": 111,
+                                    "name": "baukh-111",
+                                    "age": "28",
+                                    "createDate": "2015-03-12",
+                                    "info": "野生前端程序",
+                                    "operation": "修改"
+                                },
+                                {
+                                    "id": 112,
+                                    "name": "baukh-112",
+                                    "age": "28",
+                                    "createDate": "2015-03-12",
+                                    "info": "野生前端程序",
+                                    "operation": "修改"
+                                }
+                            ]
+                        },
+                        {
+                            "id": 12,
+                            "name": "baukh-12",
+                            "age": "28",
+                            "createDate": "2015-03-12",
+                            "info": "野生前端程序",
+                            "operation": "修改"
+                        },
+                        {
+                            "id": 13,
+                            "name": "baukh-13",
+                            "age": "28",
+                            "createDate": "2015-03-12",
+                            "info": "野生前端程序",
+                            "operation": "修改"
+                        }
+                    ]
 				},
 				{
                     "id": 2,
@@ -174,6 +218,10 @@
                 gridManagerName:'test',
 				emptyTemplate: '<div class="gm-empty-template">什么也没有</div>',
 				ajax_data: ajaxData1,
+                treeConfig: {
+                    level: 3,
+                    openState: false
+                },
                 useRadio: true,
 				pageSize:20,
 				query: {ex: '用户自定义的查询参数,格式:{key:value}'},

@@ -34,7 +34,7 @@ class Order {
 			width: ORDER_WIDTH,
 			align: 'center',
 			template: nodeData => {
-				return `<td gm-order="true" gm-create="true">${nodeData}</td>`;
+				return `<td gm-tree="true" gm-create="true">${nodeData}</td>`;
 			}
 		};
 	}

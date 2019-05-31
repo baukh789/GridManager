@@ -230,10 +230,21 @@ const i18n = {
     i18n: 'zh-cn'
 };
 
+const treeConfig = {
+    // 树的层级
+    level: 1,
+
+    // 打开状态
+    openState: false
+};
+
 /**
  * 数据交互相关项
  */
 const gridData = {
+    // 表格grid-manager所对应的值[可在html中配置]
+    gridManagerName: '',
+
     // 列配置
     columnData: [],
     /* columnData示例
@@ -293,9 +304,6 @@ const gridData = {
 
     // tr区域顶部通栏
     topFullColumn: {},
-
-    // 表格grid-manager所对应的值[可在html中配置]
-    gridManagerName: '',
 
     // @2.5.8
     // 初次渲染时是否加载数据
@@ -393,6 +401,7 @@ export function Settings() {
         ...i18n,
         ...gridData,
         ...gridExport,
+        ...treeConfig,
         ...hover
     });
 }
