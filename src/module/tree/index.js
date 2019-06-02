@@ -2,11 +2,24 @@
  * 树结构
  */
 import './style.less';
+import jTool from '@common/jTool';
 import { parseTpl } from '@common/parse';
 import treeTpl from './tree.tpl.html';
 class Tree {
     get key() {
         return 'gm_tree';
+    }
+
+    init(gridManagerName) {
+        jTool('table').on('click', '.tree-action', function (e) {
+            const $action = jTool(this);
+            const openState = $action.attr('open-state') === 'true';
+            const cacheKey = $action.closest('tr').attr('cache-key');
+            jTool(`tr[father-cache-key="${cacheKey}"]`).attr('children-open-state', !openState);
+            $action.attr('open-state', !openState);
+            $action.removeClass(!openState ? 'icon-add' : 'icon-jianhao');
+            $action.addClass(!openState ? 'icon-jianhao' : 'icon-add');
+        });
     }
 
     /**
@@ -25,21 +38,19 @@ class Tree {
      * @returns {parseData}
      */
     getColumn(settings) {
-        const { level, openState } = settings.treeConfig;
+        const { treeKey, openState } = settings.treeConfig;
         return {
             key: this.key,
-            text: openState ? '-' : '+',
+            text: '',
             isAutoCreate: true,
             isShow: true,
             disableCustomize: true,
-            width: (level - 1) * 30 + 'px',
-            align: 'left',
-            template: (level, row) => {
-                const param = {
-                    sign: openState ? '-' : '+',
-                    style: `margin-left: ${(level - 1) * 30}px`
-                };
-                return `<td gm-order="true" gm-create="true">${row.children && row.children.length ? this.createHtml(param) : ''}</td>`;
+            width: '40px',
+            align: 'center',
+            template: (tree, row) => {
+                const children = row[treeKey];
+                const span = children && children.length ? this.createHtml({openState}) : '';
+                return `<td gm-tree="true" gm-create="true">${span}</td>`;
             }
         };
     }

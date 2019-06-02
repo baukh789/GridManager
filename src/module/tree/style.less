@@ -1,5 +1,14 @@
-.tree-level{
-    display: inline-block;
-    width: 30px;
-    text-align: center;
+.table-wrap .table-div table[grid-manager]{
+    .tree-action{
+        text-align: center;
+        font-size: 16px;
+        color: #1890ff;
+        cursor: pointer;
+    }
+    tr[children-open-state="false"]{
+        display: none;
+    }
+    tr[father-cache-key] td{
+        opacity: .7;
+    }
 }

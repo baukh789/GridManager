@@ -294,7 +294,7 @@ class Cache {
         }
 
         // 自动增加: 树折叠列
-        if (settings.treeConfig.level > 1) {
+        if (settings.supportTreeData) {
             settings.columnData.unshift(treeColumnFn(settings));
         }
 

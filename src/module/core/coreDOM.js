@@ -124,10 +124,12 @@ class Dom {
             columnData,
             columnMap,
             topFullColumn,
+            supportTreeData,
             treeConfig
         } = settings;
 
-        const resetData = (data, level) => {
+        const { treeKey, openState } = treeConfig;
+        const resetData = (data, isChildren) => {
             return data.map((row, index) => {
                 // add order
                 if (supportAutoOrder) {
@@ -148,26 +150,23 @@ class Dom {
                     row[checkbox.disabledKey] = false;
                 }
 
-                // 非单层结构增加层级标识
-                if (treeConfig.level > 1) {
-                    row.gm_tree = level;
-                }
-
-                // 当前层级大于或等于最高层级， 删除子数据
-                if (treeConfig.level <= level) {
-                    delete row.children;
-                }
-
                 // reset children
-                if (row.children && row.children.length) {
-                    resetData(row.children, level + 1);
+                if (supportTreeData) {
+                    // 清除非第一层的子数据
+                    if (isChildren) {
+                        delete row[treeKey];
+                    }
+                    const children = row[treeKey];
+                    if (children && children.length) {
+                        resetData(children, true);
+                    }
                 }
 
                 // 单行数据渲染时执行程序
                 return rowRenderHandler(row, index);
             });
         };
-        data = resetData(data, 1);
+        data = resetData(data);
 
         // 存储表格数据
         cache.setTableData(gridManagerName, data);
@@ -241,11 +240,15 @@ class Dom {
         };
 
         try {
-            const installTr = (list, level) => {
+            const installTr = (list, isChildren, fatherCacheKey) => {
                 jTool.each(list, (index, row) => {
                     const trNode = document.createElement('tr');
-                    trNode.setAttribute(TR_CACHE_KEY, index);
-                    trNode.setAttribute('level', level);
+                    // 非层级结构: 增加cache key
+                    !isChildren && trNode.setAttribute(TR_CACHE_KEY, index);
+
+                    // 层级结构: 增加初始打开状态
+                    isChildren && trNode.setAttribute('children-open-state', openState);
+                    isChildren && trNode.setAttribute('father-cache-key', fatherCacheKey);
 
                     // 插入通栏: top-full-column
                     if (typeof topFullColumn.template !== 'undefined') {
@@ -254,12 +257,18 @@ class Dom {
 
                     // 插入正常的TR
                     installNormal(trNode, row, index);
-                    if (row.children && row.children.length) {
-                        installTr(row.children, level + 1);
+
+                    // 处理层级结构
+                    if (supportTreeData) {
+                        const children = row[treeKey];
+                        if (children && children.length) {
+                            trNode.setAttribute('open-state', openState);
+                            installTr(children, true, index);
+                        }
                     }
                 });
             };
-            installTr(data, 1);
+            installTr(data);
 
         } catch (e) {
             base.outError('render tbody error');

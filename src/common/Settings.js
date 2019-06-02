@@ -230,12 +230,17 @@ const i18n = {
     i18n: 'zh-cn'
 };
 
-const treeConfig = {
-    // 树的层级
-    level: 1,
+const treeData = {
+    // 支持树型数据
+    supportTreeData: false,
 
-    // 打开状态
-    openState: false
+    treeConfig: {
+        // 层级关键字段
+        treeKey: 'children',
+
+        // 打开状态
+        openState: false
+    }
 };
 
 /**
@@ -401,7 +406,7 @@ export function Settings() {
         ...i18n,
         ...gridData,
         ...gridExport,
-        ...treeConfig,
+        ...treeData,
         ...hover
     });
 }

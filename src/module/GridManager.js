@@ -618,6 +618,11 @@ export default class GridManager {
             ajaxPage.init(gridManagerName);
         }
 
+        // 初始化树形结构
+        if (settings.supportTreeData) {
+            tree.init(gridManagerName);
+        }
+
         // 更新fake header
         scroll.update(gridManagerName);
 
