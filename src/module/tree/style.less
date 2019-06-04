@@ -1,14 +1,17 @@
 .table-wrap .table-div table[grid-manager]{
+    th[th-name="gm_tree"], td[gm-tree="true"]{
+        border-right: none;
+    }
     .tree-action{
         text-align: center;
         font-size: 16px;
-        color: #1890ff;
+        color: #008800;
         cursor: pointer;
     }
     tr[children-open-state="false"]{
         display: none;
     }
     tr[father-cache-key] td{
-        opacity: .7;
+        opacity: .3;
     }
 }

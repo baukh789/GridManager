@@ -403,18 +403,16 @@ export default class GridManager {
         const checkedList = Array.isArray(checkedData) ? checkedData : [checkedData];
         const settings = cache.getSettings(base.getKey(table));
         const { columnMap, useRadio, gridManagerName } = settings;
-        let tableData = cache.getTableData(gridManagerName);
-
-        tableData = tableData.map(rowData => {
+        const tableData = cache.getTableData(gridManagerName);
+        tableData.forEach(rowData => {
             let checked = checkedList.some(item => {
                 let cloneRow = base.getCloneRowData(columnMap, item);
                 let cloneItem = base.getCloneRowData(columnMap, rowData);
                 return base.equal(cloneRow, cloneItem);
             });
             rowData[checkbox.key] = checked;
-            return rowData;
         });
-        cache.setTableData(gridManagerName, tableData);
+        // cache.setTableData(gridManagerName, tableData);
         cache.setCheckedData(gridManagerName, checkedList, true);
         return checkbox.resetDOM(settings, tableData, useRadio);
     };

@@ -219,10 +219,14 @@
 				emptyTemplate: '<div class="gm-empty-template">什么也没有</div>',
 				ajax_data: ajaxData1,
                 supportTreeData: true,
+                supportAjaxPage: true,
+                supportCheckbox: false,
+                supportAutoOrder: false,
                 treeConfig: {
-                    openState: false
+                    openState: false,
+                    treeKey: 'children'
                 },
-                useRadio: true,
+                // useRadio: true,
 				pageSize:20,
 				query: {ex: '用户自定义的查询参数,格式:{key:value}'},
 				columnData: [{

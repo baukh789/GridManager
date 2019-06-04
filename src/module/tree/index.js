@@ -45,7 +45,7 @@ class Tree {
             isAutoCreate: true,
             isShow: true,
             disableCustomize: true,
-            width: '40px',
+            width: '20px',
             align: 'center',
             template: (tree, row) => {
                 const children = row[treeKey];

@@ -8,7 +8,7 @@ import jTool from './jTool';
 import base from './base';
 import { Settings, TextSettings } from './Settings';
 import store from './Store';
-import { TR_CACHE_KEY, CACHE_ERROR_KEY, MEMORY_KEY, VERSION_KEY } from './constants';
+import { TR_ROW_DATA, CACHE_ERROR_KEY, MEMORY_KEY, VERSION_KEY } from './constants';
 
 class Cache {
     /**
@@ -45,11 +45,12 @@ class Cache {
      * @returns {*}
      */
     getRowData(gridManagerName, target, useGmProp) {
-        const tableData = this.getTableData(gridManagerName);
+        // const tableData = this.getTableData(gridManagerName);
         const columnMap = this.getSettings(gridManagerName).columnMap;
 
         const getTrData = tr => {
-            const rowData = tableData[tr.getAttribute(TR_CACHE_KEY)] || {};
+            // const rowData = tableData[tr.getAttribute(TR_CACHE_KEY)] || {};
+            const rowData = tr[TR_ROW_DATA] || {};
             return useGmProp ? rowData : base.getCloneRowData(columnMap, rowData);
         };
 
@@ -88,7 +89,7 @@ class Cache {
             });
         });
         // 存储表格数据
-        this.setTableData(gridManagerName, tableData);
+        // this.setTableData(gridManagerName, tableData);
         return tableData;
     }
 

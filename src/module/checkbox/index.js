@@ -211,7 +211,7 @@ class Checkbox {
         }
 
 		// 存储数据
-		cache.setTableData(gridManagerName, tableData);
+		// cache.setTableData(gridManagerName, tableData);
 
 		// 更新选中数据
 		cache.setCheckedData(gridManagerName, tableData);
