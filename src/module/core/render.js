@@ -151,6 +151,7 @@ class Render {
         let thText = '';
         let checkboxAttr = '';
         let orderAttr = '';
+        let reactAttr = '';
         switch (col.key) {
             // 插件自动生成序号列
             case order.key:
@@ -171,6 +172,11 @@ class Render {
                 gmCreateAttr = 'gm-create="false"';
                 thName = col.key;
                 thText = col.text;
+                if (settings.isReact(col.text)) {
+                    thText = '';
+                    reactAttr = `data-react-key=${settings.reactList.length}`;
+                    settings.reactList.push({el: col.text, row: {}});
+                }
                 break;
         }
 
@@ -185,6 +191,7 @@ class Render {
         return {
             thName,
             thText,
+            reactAttr,
             checkboxAttr,
             orderAttr,
             sortingAttr,

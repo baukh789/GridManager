@@ -102,9 +102,6 @@ class Dom {
                 onlyThWarp.append(adjustDOM);
             }
         });
-
-        // 更新列宽
-        base.updateThWidth(settings, true);
     }
 
     /**
@@ -194,6 +191,10 @@ class Dom {
                         tdNode = jTool(tdTemplate).get(0);
                     } else {
                         tdNode = jTool('<td gm-create="false"></td>').get(0);
+                        if (settings.isReact(col.template) || settings.isReact(tdTemplate)) {
+                            tdNode.setAttribute('data-react-key', settings.reactList.length);
+                            settings.reactList.push({el: col.template, cell: row[col.key], row: row});
+                        }
                         jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
                     }
 
