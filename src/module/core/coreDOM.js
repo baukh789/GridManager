@@ -10,6 +10,7 @@ import checkbox from '../checkbox';
 import adjust from '../adjust';
 import render from './render';
 import getCoreEvent from './event';
+import framework from '@common/framework';
 /**
  * core dom
  */
@@ -182,19 +183,14 @@ class Dom {
                 let	tdTemplate = null;
                 jTool.each(columnMap, (key, col) => {
                     tdTemplate = col.template;
-                    // td 模板
-                    tdTemplate = typeof tdTemplate === 'function' ? tdTemplate(row[col.key], row, index) : (typeof tdTemplate === 'string' ? tdTemplate : row[col.key]);
-
                     // 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
                     let tdNode = null;
                     if (col.isAutoCreate) {
-                        tdNode = jTool(tdTemplate).get(0);
+                        tdNode = jTool(tdTemplate(row[col.key], row)).get(0);
                     } else {
                         tdNode = jTool('<td gm-create="false"></td>').get(0);
-                        if (settings.isReact(col.template) || settings.isReact(tdTemplate)) {
-                            tdNode.setAttribute('data-react-key', settings.reactList.length);
-                            settings.reactList.push({el: col.template, cell: row[col.key], row: row});
-                        }
+
+                        tdTemplate = framework.compileTemplate(settings, tdNode, row, index, key, tdTemplate);
                         jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
                     }
 

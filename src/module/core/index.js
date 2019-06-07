@@ -15,6 +15,7 @@ import scroll from '../scroll';
 import coreDOM from './coreDOM';
 import transformToPromise from './transformToPromise';
 import {TABLE_HEAD_KEY, WRAP_KEY, READY_CLASS_NAME, EMPTY_TPL_KEY} from '../../common/constants';
+import framework from '../../common/framework';
 
 class Core {
     /**
@@ -157,11 +158,12 @@ class Core {
         $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
         $tbody.html(base.getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style));
 
-        if (settings.isReact(emptyTemplate)) {
-            document.querySelector(`tr[${EMPTY_TPL_KEY}="${gridManagerName}"] td`).setAttribute('data-react-key', settings.reactList.length);
-            settings.reactList.push({el: emptyTemplate});
-        }
-        base.compileFramework(settings, {el: base.getEmpty(gridManagerName).get(0)});
+        // if (settings.isReact(emptyTemplate)) {
+        //     document.querySelector(`tr[${EMPTY_TPL_KEY}="${gridManagerName}"] td`).setAttribute(COMPILE_ID, settings.compileList.length);
+        //     settings.compileList.push({el: emptyTemplate});
+        // }
+        framework.compileTemplate(settings, document.querySelector(`tr[${EMPTY_TPL_KEY}="${gridManagerName}"] td`), {}, undefined, undefined, emptyTemplate);
+        base.compileFramework(settings, [{el: base.getEmpty(gridManagerName).get(0)}]);
     }
 
     /**
