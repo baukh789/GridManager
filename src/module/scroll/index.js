@@ -9,8 +9,9 @@
 import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
+import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import framework from '@common/framework';
 import config from '../config';
-import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '../../common/constants';
 class Scroll {
     /**
      * 初始化
@@ -35,6 +36,12 @@ class Scroll {
 
         $setTopHead = base.getFakeThead(gridManagerName);
         $setTopHead.removeAttr(TABLE_HEAD_KEY);
+
+        const settings = cache.getSettings(gridManagerName);
+        framework.compileFakeThead(settings, $setTopHead.get(0).querySelector('tr'));
+        // console.log('解析: fake thead');
+        // 解析: fake thead
+        // framework.sendFakeThead(settings, $setTopHead.get(0).querySelector('tr'));
     }
 
     /**

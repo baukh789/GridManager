@@ -170,7 +170,7 @@ class Dom {
                     topTrNode.innerHTML = `<td colspan="${columnData.length}"><div class="full-column-td"></div></td>`;
 
                     const fullColumnNode = topTrNode.querySelector('.full-column-td');
-                    const tdTemplate = framework.compileFullColumn(settings, topTrNode, row, index, topFullColumn.template);
+                    const tdTemplate = framework.compileFullColumn(settings, fullColumnNode, row, index, topFullColumn.template);
                     jTool.type(tdTemplate) === 'element' ? fullColumnNode.appendChild(tdTemplate) : fullColumnNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
 
                     _tbody.appendChild(topTrNode);
@@ -211,7 +211,8 @@ class Dom {
 
         this.initVisible(gridManagerName, columnMap);
 
-        // 解析框架
+        console.log('解析框架: tbody');
+        // 解析框架: tbody
         framework.send(settings);
     }
 

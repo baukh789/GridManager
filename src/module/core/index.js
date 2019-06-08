@@ -14,7 +14,7 @@ import checkbox from '../checkbox';
 import scroll from '../scroll';
 import coreDOM from './coreDOM';
 import transformToPromise from './transformToPromise';
-import { TABLE_HEAD_KEY, WRAP_KEY, READY_CLASS_NAME } from '@common/constants';
+import { WRAP_KEY, READY_CLASS_NAME } from '@common/constants';
 import framework from '@common/framework';
 
 class Core {
@@ -158,7 +158,10 @@ class Core {
         $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
         $tbody.html(base.getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style));
 
-        framework.compileEmptyTemplate(settings, base.getEmpty(gridManagerName).get(0), emptyTemplate);
+        framework.compileEmptyTemplate(settings, base.getEmpty(gridManagerName).get(0).querySelector('td'), emptyTemplate);
+
+        console.log('解析框架: 空模板');
+        // 解析框架: 空模板
         framework.send(settings);
     }
 
@@ -180,15 +183,16 @@ class Core {
         // 重绘thead
         coreDOM.redrawThead(settings);
 
+        // 初始化滚轴
+        scroll.init(gridManagerName);
+
+        console.log('解析框架: thead区域');
         // 解析框架: thead区域
-        framework.compileThead(settings, {el: document.querySelector(`thead[${TABLE_HEAD_KEY}="${gridManagerName}"] tr`)});
-        await framework.send(settings);
+        await framework.send(settings, true);
 
         // 更新列宽
         base.updateThWidth(settings, true);
 
-        // 初始化滚轴
-        scroll.init(gridManagerName);
 
         // 增加渲染完成标识
         $table.addClass(READY_CLASS_NAME);

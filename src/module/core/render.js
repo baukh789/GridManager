@@ -173,7 +173,7 @@ class Render {
                 gmCreateAttr = 'gm-create="false"';
                 thName = col.key;
                 thText = col.text;
-                compileAttr = framework.compileTh(settings, col);
+                compileAttr = framework.compileTh(settings, thText);
                 break;
         }
 
