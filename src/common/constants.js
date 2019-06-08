@@ -62,9 +62,6 @@ export const EMPTY_DATA_CLASS_NAME = 'empty-data';
 // 渲染完成标识 Class Name
 export const READY_CLASS_NAME = 'GridManager-ready';
 
-// 框架解析唯一值
-export const COMPILE_ID = 'data-compile-id';
-
 // table在实例化后，会更改到的属性值列表
 export const TABLE_PURE_LIST = ['class', 'style'];
 

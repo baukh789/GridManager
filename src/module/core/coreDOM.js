@@ -147,8 +147,6 @@ class Dom {
         // 清空 tbody
         _tbody.innerHTML = '';
 
-        // 组装 tbody
-        const compileList = []; // 需要通过框架解析td数据
         try {
             jTool.each(data, (index, row) => {
                 const trNode = document.createElement('tr');
@@ -169,11 +167,12 @@ class Dom {
                     // 为非通栏tr的添加标识
                     trNode.setAttribute('top-full-column', 'false');
 
-                    let _template = topFullColumn.template;
-                    _template = typeof _template === 'function' ? _template(row) : _template;
+                    topTrNode.innerHTML = `<td colspan="${columnData.length}"><div class="full-column-td"></div></td>`;
 
-                    topTrNode.innerHTML = `<td colspan="${columnData.length}"><div class="full-column-td">${_template}</div></td>`;
-                    compileList.push({el: topTrNode, row: row, index: index});
+                    const fullColumnNode = topTrNode.querySelector('.full-column-td');
+                    const tdTemplate = framework.compileFullColumn(settings, topTrNode, row, index, topFullColumn.template);
+                    jTool.type(tdTemplate) === 'element' ? fullColumnNode.appendChild(tdTemplate) : fullColumnNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
+
                     _tbody.appendChild(topTrNode);
                 }
 
@@ -190,7 +189,7 @@ class Dom {
                     } else {
                         tdNode = jTool('<td gm-create="false"></td>').get(0);
 
-                        tdTemplate = framework.compileTemplate(settings, tdNode, row, index, key, tdTemplate);
+                        tdTemplate = framework.compileTd(settings, tdNode, row, index, key, tdTemplate);
                         jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
                     }
 
@@ -204,8 +203,6 @@ class Dom {
                     trNode.appendChild(td);
                 });
 
-                compileList.push({el: trNode, row: row, index: index});
-
                 _tbody.appendChild(trNode);
             });
         } catch (e) {
@@ -215,7 +212,7 @@ class Dom {
         this.initVisible(gridManagerName, columnMap);
 
         // 解析框架
-        base.compileFramework(settings, compileList);
+        framework.send(settings);
     }
 
     /**

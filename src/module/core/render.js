@@ -172,9 +172,8 @@ class Render {
             default:
                 gmCreateAttr = 'gm-create="false"';
                 thName = col.key;
-                const compile = framework.compileTh(settings, col);
-                thText = compile.thText;
-                compileAttr = compile.compileAttr;
+                thText = col.text;
+                compileAttr = framework.compileTh(settings, col);
                 break;
         }
 

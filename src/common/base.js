@@ -2,7 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from './jTool';
-import { CONSOLE_INFO, CONSOLE_WARN, CONSOLE_ERROR, FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY, TOOLBAR_KEY, COL_PROP_DISABLED, COMPILE_ID } from './constants';
+import { CONSOLE_INFO, CONSOLE_WARN, CONSOLE_ERROR, FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY, TOOLBAR_KEY, COL_PROP_DISABLED } from './constants';
 
 /**
  * 输出日志
@@ -136,52 +136,6 @@ class Base {
      */
     cloneObject(object) {
         return JSON.parse(JSON.stringify(object));
-    }
-
-    compileList = [];
-    compileTemplate(settings, element, row, index, key, template) {
-        // Vue
-        if (typeof settings.compileVue === 'function') {
-        }
-
-        // Angular 1.x
-        if (typeof settings.compileAngularjs === 'function') {
-        }
-
-        // React
-        if (typeof settings.compileReact === 'function') {
-            element.setAttribute(COMPILE_ID, this.compileList.length);
-            this.compileList.push({el: template, cell: row[key], row: row, index});
-            return '';
-        }
-        return typeof template === 'function' ? template(row[key], row, index) : (typeof template === 'string' ? template : row[key]);
-    }
-
-    /**
-     * 根据不同的框架解析指定节点
-     * @param settings:
-     * @param compileList: 将要解析的数组
-     * @returns {promise}
-     */
-    async compileFramework(settings, compileList) {
-        try {
-            // 解析框架: Vue
-            if (typeof settings.compileVue === 'function' && compileList.length > 0) {
-                await settings.compileVue(compileList);
-            }
-
-            // 解析框架: Angular 1.x
-            if (typeof settings.compileAngularjs === 'function' && compileList.length > 0) {
-                await settings.compileAngularjs(compileList);
-            }
-
-            // 解析框架: React
-            if (typeof settings.compileReact === 'function' && compileList.length > 0) {
-                await settings.compileReact(compileList);
-            }
-        } catch (err) {
-            this.outError(`parse framework template error。${err}`);
-        }
     }
 
     /**

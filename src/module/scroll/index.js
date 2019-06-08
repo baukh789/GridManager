@@ -35,9 +35,6 @@ class Scroll {
 
         $setTopHead = base.getFakeThead(gridManagerName);
         $setTopHead.removeAttr(TABLE_HEAD_KEY);
-
-        // 解析框架: fake thead区域
-        // base.compileFramework(cache.getSettings(gridManagerName), {el: $setTopHead.get(0).querySelector('tr')});
     }
 
     /**

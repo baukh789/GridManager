@@ -14,8 +14,8 @@ import checkbox from '../checkbox';
 import scroll from '../scroll';
 import coreDOM from './coreDOM';
 import transformToPromise from './transformToPromise';
-import {TABLE_HEAD_KEY, WRAP_KEY, READY_CLASS_NAME, EMPTY_TPL_KEY} from '../../common/constants';
-import framework from '../../common/framework';
+import { TABLE_HEAD_KEY, WRAP_KEY, READY_CLASS_NAME } from '@common/constants';
+import framework from '@common/framework';
 
 class Core {
     /**
@@ -158,12 +158,8 @@ class Core {
         $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
         $tbody.html(base.getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style));
 
-        // if (settings.isReact(emptyTemplate)) {
-        //     document.querySelector(`tr[${EMPTY_TPL_KEY}="${gridManagerName}"] td`).setAttribute(COMPILE_ID, settings.compileList.length);
-        //     settings.compileList.push({el: emptyTemplate});
-        // }
-        framework.compileTemplate(settings, document.querySelector(`tr[${EMPTY_TPL_KEY}="${gridManagerName}"] td`), {}, undefined, undefined, emptyTemplate);
-        base.compileFramework(settings, [{el: base.getEmpty(gridManagerName).get(0)}]);
+        framework.compileEmptyTemplate(settings, base.getEmpty(gridManagerName).get(0), emptyTemplate);
+        framework.send(settings);
     }
 
     /**
@@ -185,7 +181,8 @@ class Core {
         coreDOM.redrawThead(settings);
 
         // 解析框架: thead区域
-        await base.compileFramework(settings, [{el: document.querySelector(`thead[${TABLE_HEAD_KEY}="${gridManagerName}"] tr`)}]);
+        framework.compileThead(settings, {el: document.querySelector(`thead[${TABLE_HEAD_KEY}="${gridManagerName}"] tr`)});
+        await framework.send(settings);
 
         // 更新列宽
         base.updateThWidth(settings, true);
