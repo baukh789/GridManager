@@ -120,11 +120,6 @@ class Framework {
             return '';
         }
 
-        // 模板为为符串
-        if (typeof template === 'string') {
-            return template;
-        }
-
         // React element or function
         if (settings.compileReact) {
             compileList.push({el, template, row, index, fnArg: [row, index]});
@@ -153,6 +148,7 @@ class Framework {
      */
     async send(settings, isRunElement) {
         const compileList = this.compileList;
+        this.compileList = [];
         if (compileList.length === 0) {
             return;
         }
@@ -181,8 +177,6 @@ class Framework {
             compileList.forEach(item => {
                 item.el.removeAttribute(`${this.getKey(settings.gridManagerName)}`);
             });
-
-            compileList.length = 0;
         } catch (err) {
             this.outError(`parse framework template error。${err}`);
         }
