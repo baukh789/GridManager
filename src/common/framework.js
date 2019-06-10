@@ -5,7 +5,7 @@ class Framework {
 
     // 框架解析唯一值
     getKey(gridManagerName) {
-        return `data-compile-id-${gridManagerName}`;
+        return `data-compile-id-${gridManagerName || ''}`;
     }
 
     /**

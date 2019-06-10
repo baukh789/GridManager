@@ -160,7 +160,6 @@ class Core {
 
         framework.compileEmptyTemplate(settings, base.getEmpty(gridManagerName).get(0).querySelector('td'), emptyTemplate);
 
-        console.log('解析框架: 空模板');
         // 解析框架: 空模板
         framework.send(settings);
     }
@@ -186,7 +185,6 @@ class Core {
         // 初始化滚轴
         scroll.init(gridManagerName);
 
-        console.log('解析框架: thead区域');
         // 解析框架: thead区域
         await framework.send(settings, true);
 

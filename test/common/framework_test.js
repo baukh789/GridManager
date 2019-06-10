@@ -10,6 +10,31 @@ describe('Framework', () => {
         settings = null;
         console.log = console._log;
     });
+
+    describe('getKey', () => {
+        it('基础验证', () => {
+            expect(framework.getKey).toBeDefined();
+            expect(framework.getKey.length).toBe(1);
+        });
+        it('执行验证', () => {
+            expect(framework.getKey()).toBe('data-compile-id-');
+            expect(framework.getKey('test')).toBe('data-compile-id-test');
+            expect(framework.getKey('cc')).toBe('data-compile-id-cc');
+        });
+    });
+
+    describe('compileFakeThead', () => {
+        it('基础验证', () => {
+            expect(framework.compileFakeThead).toBeDefined();
+            expect(framework.compileFakeThead.length).toBe(2);
+        });
+        it('执行验证', () => {
+            expect(framework.compileList.length).toBe(0);
+            // expect(framework.compileFakeThead(settings, el)).toBe('');
+            // expect(framework.compileList.length).toBe(0);
+        });
+    });
+
     describe('compileTh', () => {
         it('基础验证', () => {
             expect(framework.compileTh).toBeDefined();

@@ -211,7 +211,6 @@ class Dom {
 
         this.initVisible(gridManagerName, columnMap);
 
-        console.log('解析框架: tbody');
         // 解析框架: tbody
         framework.send(settings);
     }
