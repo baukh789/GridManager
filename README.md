@@ -49,6 +49,7 @@ import GridManager from 'gridmanager';
 ## 相关链接
 - [GridManager by Angular 1.x](https://github.com/baukh789/GridManager-Angular-1.x)
 - [GridManager by Vue](https://github.com/baukh789/GridManager-Vue)
+- [GridManager by React](https://github.com/baukh789/GridManager-React)
 
 ## 示例
 ### 使用默认配置
