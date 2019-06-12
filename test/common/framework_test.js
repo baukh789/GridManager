@@ -1,7 +1,6 @@
 import framework from '@common/framework';
 import tableTpl from '@test/table-test.tpl.html';
 import { trimTpl } from '@common/parse';
-import { CONSOLE_STYLE, CONSOLE_ERROR } from '@common/constants';
 
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
@@ -15,7 +14,7 @@ describe('Framework', () => {
     afterEach(() => {
         settings = null;
         gridManagerName = null;
-        framework.compileList = [];
+        framework.compileMap = {};
     });
 
     describe('getKey', () => {
@@ -27,6 +26,31 @@ describe('Framework', () => {
             expect(framework.getKey()).toBe('data-compile-id-');
             expect(framework.getKey(gridManagerName)).toBe('data-compile-id-test');
             expect(framework.getKey('cc')).toBe('data-compile-id-cc');
+        });
+    });
+
+    describe('getCompileList', () => {
+        it('基础验证', () => {
+            expect(framework.getCompileList).toBeDefined();
+            expect(framework.getCompileList.length).toBe(1);
+        });
+        it('执行验证', () => {
+            expect(framework.getCompileList()).toEqual([]);
+            expect(framework.getCompileList(gridManagerName)).toEqual([]);
+            framework.compileMap[gridManagerName] = [1, 2];
+            expect(framework.getCompileList(gridManagerName)).toEqual([1, 2]);
+        });
+    });
+
+    describe('clearCompileList', () => {
+        it('基础验证', () => {
+            expect(framework.clearCompileList).toBeDefined();
+            expect(framework.clearCompileList.length).toBe(1);
+        });
+        it('执行验证', () => {
+            expect(framework.compileMap[gridManagerName]).toBeUndefined();
+            framework.clearCompileList(gridManagerName);
+            expect(framework.compileMap[gridManagerName]).toEqual([]);
         });
     });
 
@@ -56,9 +80,9 @@ describe('Framework', () => {
             settings = {
                 gridManagerName
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             framework.compileFakeThead(settings, fakeTheadTr);
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('Angular-1.x', () => {
@@ -66,9 +90,9 @@ describe('Framework', () => {
                 gridManagerName,
                 compileAngularjs: jasmine.createSpy('callback')
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             framework.compileFakeThead(settings, fakeTheadTr);
-            expect(framework.compileList.length).toBe(8);
+            expect(framework.getCompileList(gridManagerName).length).toBe(8);
         });
 
         it('Vue', () => {
@@ -76,9 +100,9 @@ describe('Framework', () => {
                 gridManagerName,
                 compileVue: jasmine.createSpy('callback')
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             framework.compileFakeThead(settings, fakeTheadTr);
-            expect(framework.compileList.length).toBe(8);
+            expect(framework.getCompileList(gridManagerName).length).toBe(8);
         });
 
         it('React', () => {
@@ -86,9 +110,9 @@ describe('Framework', () => {
                 gridManagerName,
                 compileReact: jasmine.createSpy('callback')
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             framework.compileFakeThead(settings, fakeTheadTr);
-            expect(framework.compileList.length).toBe(8);
+            expect(framework.getCompileList(gridManagerName).length).toBe(8);
         });
     });
 
@@ -101,9 +125,9 @@ describe('Framework', () => {
             settings = {
                 gridManagerName
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTh(settings, '标题')).toBe('');
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
 
         });
         it('Angular-1.x', () => {
@@ -112,9 +136,9 @@ describe('Framework', () => {
                 compileAngularjs: jasmine.createSpy('callback')
             };
 
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTh(settings, '标题')).toBe('data-compile-id-test=0');
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
         it('Vue', () => {
@@ -123,9 +147,9 @@ describe('Framework', () => {
                 compileVue: jasmine.createSpy('callback')
             };
 
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTh(settings, '标题')).toBe('data-compile-id-test=0');
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
         it('React', () => {
@@ -134,9 +158,9 @@ describe('Framework', () => {
                 compileReact: jasmine.createSpy('callback')
             };
 
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTh(settings, '标题')).toBe('data-compile-id-test=0');
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
     });
 
@@ -185,9 +209,9 @@ describe('Framework', () => {
             tdTemplate = () => {
                 return 'this is function';
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('this is function');
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('无框架: 模板为字符串', () => {
@@ -195,18 +219,18 @@ describe('Framework', () => {
                 gridManagerName
             };
             tdTemplate = 'this is string';
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('this is string');
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('无框架: 模板为空', () => {
             settings = {
                 gridManagerName
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('/upload/blog/pic/9081_type.jpg');
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('Angular-1.x', () => {
@@ -215,9 +239,9 @@ describe('Framework', () => {
                 compileAngularjs: jasmine.createSpy('callback')
             };
 
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('/upload/blog/pic/9081_type.jpg');
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
         it('Vue', () => {
@@ -226,9 +250,9 @@ describe('Framework', () => {
                 compileVue: jasmine.createSpy('callback')
             };
 
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('/upload/blog/pic/9081_type.jpg');
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
         it('React: 无模板', () => {
@@ -237,9 +261,9 @@ describe('Framework', () => {
                 compileReact: jasmine.createSpy('callback')
             };
 
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('/upload/blog/pic/9081_type.jpg');
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('React: 有模板', () => {
@@ -251,9 +275,9 @@ describe('Framework', () => {
             tdTemplate = () => {
                 return 'this is function';
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('');
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
     });
 
@@ -279,9 +303,9 @@ describe('Framework', () => {
             settings = {
                 gridManagerName
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileEmptyTemplate(settings, emptyNode, template)).toBeUndefined();
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('Angular-1.x', () => {
@@ -290,9 +314,9 @@ describe('Framework', () => {
                 compileAngularjs: jasmine.createSpy('callback')
             };
 
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileEmptyTemplate(settings, emptyNode, template)).toBeUndefined();
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
         it('Vue', () => {
@@ -301,9 +325,9 @@ describe('Framework', () => {
                 compileVue: jasmine.createSpy('callback')
             };
 
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileEmptyTemplate(settings, emptyNode, template)).toBeUndefined();
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
         it('React', () => {
@@ -312,9 +336,9 @@ describe('Framework', () => {
                 compileReact: jasmine.createSpy('callback')
             };
 
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileEmptyTemplate(settings, emptyNode, template)).toBe('');
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
     });
 
@@ -359,9 +383,9 @@ describe('Framework', () => {
             settings = {
                 gridManagerName
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileFullColumn(settings, fullNode, row, 1, template)).toBe('');
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('无框架', () => {
@@ -373,16 +397,16 @@ describe('Framework', () => {
             template = () => {
                 return '<div>这个是通栏</div>';
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileFullColumn(settings, fullNode, row, 1, template)).toBe('<div>这个是通栏</div>');
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
 
 
             // 字符模板
             template = '<div>这个是通栏</div>';
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileFullColumn(settings, fullNode, row, 1, template)).toBe('<div>这个是通栏</div>');
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('Angular-1.x', () => {
@@ -394,9 +418,9 @@ describe('Framework', () => {
             template = () => {
                 return '<div>这个是通栏</div>';
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileFullColumn(settings, fullNode, row, 1, template)).toBe('<div>这个是通栏</div>');
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
         it('Vue', () => {
@@ -408,9 +432,9 @@ describe('Framework', () => {
             template = () => {
                 return '<div>这个是通栏</div>';
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileFullColumn(settings, fullNode, row, 1, template)).toBe('<div>这个是通栏</div>');
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
         it('React', () => {
@@ -422,25 +446,20 @@ describe('Framework', () => {
             template = () => {
                 return '<div>这个是通栏</div>';
             };
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileFullColumn(settings, fullNode, row, 1, template)).toBe('');
-            expect(framework.compileList.length).toBe(1);
+            expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
     });
 
 
     describe('send', () => {
         beforeEach(() => {
-            gridManagerName = 'test';
-            console._log = console.log;
-            console.log = jasmine.createSpy('log');
+            document.body.innerHTML = '<table><tbody><tr><td data-compile-id-test="1"></td><td data-compile-id-test="2"></td></tr></tbody></table>';
         });
 
         afterEach(() => {
-            settings = null;
-            gridManagerName = null;
-            console.log = console._log;
-            framework.compileList = [];
+            document.body.innerHTML = '';
         });
         it('基础验证', () => {
             expect(framework.send).toBeDefined();
@@ -452,66 +471,54 @@ describe('Framework', () => {
                 gridManagerName
             };
             framework.send(settings);
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('通过属性更新element', () => {
             settings = {
                 gridManagerName
             };
-            framework.compileList = [{template: '测试一下'}, {template: '测试二下'}];
+            framework.compileMap[gridManagerName] = [{template: '测试一下'}, {template: '测试二下'}];
             framework.send(settings, true);
-            expect(framework.compileList.length).toBe(0);
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('Angular-1.x', () => {
-            framework.compileList = [{template: '测试一下'}, {template: '测试二下'}];
+            framework.compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector('td[data-compile-id-test="1"]')}, {template: '测试二下', el: document.querySelector('td[data-compile-id-test="2"]')}];
             settings = {
                 gridManagerName,
                 compileAngularjs: jasmine.createSpy('callback')
             };
-            expect(framework.compileList.length).toBe(2);
+            expect(framework.getCompileList(gridManagerName).length).toBe(2);
             framework.send(settings).then(res => {
                 expect(settings.compileAngularjs).toHaveBeenCalled();
-                expect(framework.compileList.length).toBe(0);
+                expect(framework.getCompileList(gridManagerName).length).toBe(0);
             });
         });
 
         it('Vue', () => {
-            framework.compileList = [{template: '测试一下'}, {template: '测试二下'}];
+            framework.compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector('td[data-compile-id-test="1"]')}, {template: '测试二下', el: document.querySelector('td[data-compile-id-test="2"]')}];
             settings = {
                 gridManagerName,
                 compileVue: jasmine.createSpy('callback')
             };
-            expect(framework.compileList.length).toBe(2);
+            expect(framework.getCompileList(gridManagerName).length).toBe(2);
             framework.send(settings).then(res => {
                 expect(settings.compileVue).toHaveBeenCalled();
-                expect(framework.compileList.length).toBe(0);
+                expect(framework.getCompileList(gridManagerName).length).toBe(0);
             });
         });
 
         it('React', () => {
-            framework.compileList = [{template: '测试一下'}, {template: '测试二下'}];
+            framework.compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector('td[data-compile-id-test="1"]')}, {template: '测试二下', el: document.querySelector('td[data-compile-id-test="2"]')}];
             settings = {
                 gridManagerName,
                 compileReact: jasmine.createSpy('callback')
             };
-            expect(framework.compileList.length).toBe(2);
+            expect(framework.getCompileList(gridManagerName).length).toBe(2);
             framework.send(settings).then(res => {
                 expect(settings.compileReact).toHaveBeenCalled();
-                expect(framework.compileList.length).toBe(0);
-            });
-        });
-
-        it('结果验证: 异常', () => {
-            settings = {
-                compileVue: () => {
-                    throw new Error('返回一个错误');
-                }
-            };
-            framework.send(settings).catch(err => {
-                expect(err).toBe('返回一个错误');
-                expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c parse framework template error。 返回一个错误 ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
+                expect(framework.getCompileList(gridManagerName).length).toBe(0);
             });
         });
     });

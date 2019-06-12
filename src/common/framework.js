@@ -1,11 +1,31 @@
 
 class Framework {
     // 解析存储容器
-    compileList = [];
+    compileMap = {};
 
     // 框架解析唯一值
     getKey(gridManagerName) {
         return `data-compile-id-${gridManagerName || ''}`;
+    }
+
+    /**
+     * 获取当前表格解析列表
+     * @param gridManagerName
+     * @returns {*}
+     */
+    getCompileList(gridManagerName) {
+        if (!this.compileMap[gridManagerName]) {
+            this.compileMap[gridManagerName] = [];
+        }
+        return this.compileMap[gridManagerName];
+    }
+
+    /**
+     * 清空当前表格解析列表
+     * @param gridManagerName
+     */
+    clearCompileList(gridManagerName) {
+        this.compileMap[gridManagerName] = [];
     }
 
     /**
@@ -14,12 +34,13 @@ class Framework {
      * @param el
      */
     compileFakeThead(settings, el) {
-        const compileList = this.compileList;
-        if (settings.compileAngularjs || settings.compileVue || settings.compileReact) {
-            const thList = el.querySelectorAll(`[${this.getKey(settings.gridManagerName)}]`);
+        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+        const compileList = this.getCompileList(gridManagerName);
+        if (compileAngularjs || compileVue || compileReact) {
+            const thList = el.querySelectorAll(`[${this.getKey(gridManagerName)}]`);
             [].forEach.call(thList, item => {
-                const obj = compileList[item.getAttribute(`${this.getKey(settings.gridManagerName)}`)];
-                item.setAttribute(`${this.getKey(settings.gridManagerName)}`, compileList.length);
+                const obj = compileList[item.getAttribute(`${this.getKey(gridManagerName)}`)];
+                item.setAttribute(`${this.getKey(gridManagerName)}`, compileList.length);
                 compileList.push({...obj});
             });
         }
@@ -32,10 +53,12 @@ class Framework {
      * @returns {string}
      */
     compileTh(settings, template) {
+        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+        const compileList = this.getCompileList(gridManagerName);
         let compileAttr = '';
-        if (settings.compileAngularjs || settings.compileVue || settings.compileReact) {
-            compileAttr = `${this.getKey(settings.gridManagerName)}=${this.compileList.length}`;
-            this.compileList.push({template});
+        if (compileAngularjs || compileVue || compileReact) {
+            compileAttr = `${this.getKey(gridManagerName)}=${compileList.length}`;
+            compileList.push({template});
         }
 
         return compileAttr;
@@ -52,25 +75,27 @@ class Framework {
      * @returns {*}
      */
     compileTd(settings, el, row, index, key, template) {
+        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+        const compileList = this.getCompileList(gridManagerName);
         // React and not template
-        if (settings.compileReact && !template) {
+        if (compileReact && !template) {
             return row[key];
         }
 
         // React element or function
-        if (settings.compileReact) {
-            this.compileList.push({el, template, row, index, fnArg: [row[key], row, index]});
+        if (compileReact) {
+            compileList.push({el, template, row, index, fnArg: [row[key], row, index]});
             return '';
         }
 
         // 解析框架: Vue
-        if (settings.compileVue) {
-            this.compileList.push({el, row, index});
+        if (compileVue) {
+            compileList.push({el, row, index});
         }
 
         // 解析框架: Angular 1.x
-        if (settings.compileAngularjs) {
-            this.compileList.push({el, row, index});
+        if (compileAngularjs) {
+            compileList.push({el, row, index});
         }
 
         // not React
@@ -87,20 +112,22 @@ class Framework {
      * @returns {string}
      */
     compileEmptyTemplate(settings, el, template) {
+        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+        const compileList = this.getCompileList(gridManagerName);
         // React
-        if (settings.compileReact) {
-            this.compileList.push({el, template});
+        if (compileReact) {
+            compileList.push({el, template});
             return '';
         }
 
         // 解析框架: Vue
-        if (settings.compileVue) {
-            this.compileList.push({el});
+        if (compileVue) {
+            compileList.push({el});
         }
 
         // 解析框架: Angular 1.x
-        if (settings.compileAngularjs) {
-            this.compileList.push({el});
+        if (compileAngularjs) {
+            compileList.push({el});
         }
     }
 
@@ -114,25 +141,26 @@ class Framework {
      * @returns {*}
      */
     compileFullColumn(settings, el, row, index, template) {
-        const compileList = this.compileList;
+        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+        const compileList = this.getCompileList(gridManagerName);
         // 无模板
         if (!template) {
             return '';
         }
 
         // React element or function
-        if (settings.compileReact) {
+        if (compileReact) {
             compileList.push({el, template, row, index, fnArg: [row, index]});
             return '';
         }
 
         // 解析框架: Vue
-        if (settings.compileVue) {
+        if (compileVue) {
             compileList.push({el, row, index});
         }
 
         // 解析框架: Angular 1.x
-        if (settings.compileAngularjs) {
+        if (compileAngularjs) {
             compileList.push({el, row, index});
         }
 
@@ -147,39 +175,38 @@ class Framework {
      * @returns {Promise<void>}
      */
     async send(settings, isRunElement) {
-        const compileList = this.compileList;
-        this.compileList = [];
+        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+        const compileList = this.getCompileList(gridManagerName);
         if (compileList.length === 0) {
             return;
         }
         if (isRunElement) {
             compileList.forEach((item, index) => {
-                item.el = document.querySelector(`[${this.getKey(settings.gridManagerName)}="${index}"]`);
+                item.el = document.querySelector(`[${this.getKey(gridManagerName)}="${index}"]`);
             });
         }
-        try {
-            // 解析框架: Vue
-            if (settings.compileVue) {
-                await settings.compileVue(compileList);
-            }
-
-            // 解析框架: Angular 1.x
-            if (settings.compileAngularjs) {
-                await settings.compileAngularjs(compileList);
-            }
-
-            // 解析框架: React
-            if (settings.compileReact) {
-                await settings.compileReact(compileList);
-            }
-
-            // 清除解析数据及标识
-            compileList.forEach(item => {
-                item.el.removeAttribute(`${this.getKey(settings.gridManagerName)}`);
-            });
-        } catch (err) {
-            this.outError(`parse framework template error。${err}`);
+        // 解析框架: Vue
+        if (compileVue) {
+            await compileVue(compileList);
         }
+
+        // 解析框架: Angular 1.x
+        if (compileAngularjs) {
+            await compileAngularjs(compileList);
+        }
+
+        // 解析框架: React
+        if (compileReact) {
+            await compileReact(compileList);
+        }
+
+        // 清除解析数据及标识
+        compileList.forEach(item => {
+            item.el && item.el.removeAttribute(`${this.getKey(gridManagerName)}`);
+        });
+
+        // 清除
+        this.clearCompileList(gridManagerName);
     }
 }
 
