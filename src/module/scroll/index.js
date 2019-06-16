@@ -9,8 +9,9 @@
 import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
+import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import framework from '@common/framework';
 import config from '../config';
-import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '../../common/constants';
 class Scroll {
     /**
      * 初始化
@@ -36,8 +37,8 @@ class Scroll {
         $setTopHead = base.getFakeThead(gridManagerName);
         $setTopHead.removeAttr(TABLE_HEAD_KEY);
 
-        // 解析框架: fake thead区域
-        base.compileFramework(cache.getSettings(gridManagerName), {el: $setTopHead.get(0).querySelector('tr')});
+        const settings = cache.getSettings(gridManagerName);
+        framework.compileFakeThead(settings, $setTopHead.get(0).querySelector('tr'));
     }
 
     /**

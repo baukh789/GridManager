@@ -139,35 +139,6 @@ class Base {
     }
 
     /**
-     * 根据不同的框架解析指定节点
-     * @param settings:
-     * @param compile: 将要解析的节点, 对象或对象数组
-     * @returns {promise}
-     */
-    async compileFramework(settings, compile) {
-        try {
-            const compileList = Array.isArray(compile) ? compile : [compile];
-
-            // 解析框架: Vue
-            if (typeof settings.compileVue === 'function' && compileList.length > 0) {
-                await settings.compileVue(compileList);
-            }
-
-            // 解析框架: Angular 1.x
-            if (typeof settings.compileAngularjs === 'function' && compileList.length > 0) {
-                await settings.compileAngularjs(compileList);
-            }
-
-            // 解析框架: React
-            if (typeof settings.compileReact === 'function' && compileList.length > 0) {
-                await settings.compileReact(compileList);
-            }
-        } catch (err) {
-            this.outError(`parse framework template error。${err}`);
-        }
-    }
-
-    /**
      * 获取表的GM 唯一标识
      * @param target
      * @returns {*|string}

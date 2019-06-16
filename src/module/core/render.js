@@ -4,6 +4,7 @@ import ajaxPage from '../ajaxPage';
 import jTool from '@common/jTool';
 import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY } from '@common/constants';
 import base from '@common/base';
+import framework from '@common/framework';
 import { parseTpl } from '../../common/parse';
 import filter from '../filter';
 import config from '../config';
@@ -151,6 +152,7 @@ class Render {
         let thText = '';
         let checkboxAttr = '';
         let orderAttr = '';
+        let compileAttr = '';
         switch (col.key) {
             // 插件自动生成序号列
             case order.key:
@@ -171,6 +173,7 @@ class Render {
                 gmCreateAttr = 'gm-create="false"';
                 thName = col.key;
                 thText = col.text;
+                compileAttr = framework.compileTh(settings, thText);
                 break;
         }
 
@@ -185,6 +188,7 @@ class Render {
         return {
             thName,
             thText,
+            compileAttr,
             checkboxAttr,
             orderAttr,
             sortingAttr,

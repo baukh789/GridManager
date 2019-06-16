@@ -10,6 +10,7 @@ import checkbox from '../checkbox';
 import adjust from '../adjust';
 import render from './render';
 import getCoreEvent from './event';
+import framework from '@common/framework';
 /**
  * core dom
  */
@@ -178,9 +179,6 @@ class Dom {
         // 清空 tbody
         _tbody.innerHTML = '';
 
-        // 组装 tbody
-        const compileList = []; // 需要通过框架解析td数据
-
         // 插入通栏: top-full-column
         const installTopFull = (trNode, row, index) => {
             // 通栏tr
@@ -196,11 +194,13 @@ class Dom {
             // 为非通栏tr的添加标识
             trNode.setAttribute('top-full-column', 'false');
 
-            let _template = topFullColumn.template;
-            _template = typeof _template === 'function' ? _template(row) : _template;
+            topTrNode.innerHTML = `<td colspan="${columnData.length}"><div class="full-column-td"></div></td>`;
 
-            topTrNode.innerHTML = `<td colspan="${columnData.length}"><div class="full-column-td">${_template}</div></td>`;
-            compileList.push({el: topTrNode, row: row, index: index});
+            const fullColumnNode = topTrNode.querySelector('.full-column-td');
+            const tdTemplate = framework.compileFullColumn(settings, fullColumnNode, row, index, topFullColumn.template);
+            jTool.type(tdTemplate) === 'element' ? fullColumnNode.appendChild(tdTemplate) : fullColumnNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
+
+            console.log('new..');
             _tbody.appendChild(topTrNode);
         };
 
@@ -212,15 +212,14 @@ class Dom {
             let	tdTemplate = null;
             jTool.each(columnMap, (key, col) => {
                 tdTemplate = col.template;
-                // td 模板
-                tdTemplate = typeof tdTemplate === 'function' ? tdTemplate(row[col.key], row, index) : (typeof tdTemplate === 'string' ? tdTemplate : row[col.key]);
-
-                // 插件自带列(序号,全选)
+                // 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
                 let tdNode = null;
                 if (col.isAutoCreate) {
-                    tdNode = jTool(tdTemplate).get(0);
+                    tdNode = jTool(tdTemplate(row[col.key], row)).get(0);
                 } else {
                     tdNode = jTool('<td gm-create="false"></td>').get(0);
+
+                    tdTemplate = framework.compileTd(settings, tdNode, row, index, key, tdTemplate);
                     jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
                 }
 
@@ -234,8 +233,6 @@ class Dom {
                 trNode.appendChild(td);
             });
 
-            compileList.push({el: trNode, row: row, index: index});
-
             _tbody.appendChild(trNode);
         };
 
@@ -243,6 +240,7 @@ class Dom {
             const installTr = (list, isChildren, fatherCacheKey) => {
                 jTool.each(list, (index, row) => {
                     const trNode = document.createElement('tr');
+                    trNode.setAttribute(TR_CACHE_KEY, index);
                     // 非层级结构: 增加cache key
                     !isChildren && trNode.setAttribute(TR_CACHE_KEY, index);
 
@@ -278,7 +276,7 @@ class Dom {
         this.initVisible(gridManagerName, columnMap);
 
         // 解析框架
-        base.compileFramework(settings, compileList);
+        framework.send(settings);
     }
 
     /**
