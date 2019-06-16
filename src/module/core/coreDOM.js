@@ -243,7 +243,7 @@ class Dom {
                     // 非层级结构: 增加cache key
                     !isChildren && trNode.setAttribute(TR_CACHE_KEY, index);
 
-                    trNode[TR_ROW_DATA] = row;
+                    // trNode[TR_ROW_DATA] = row;
                     // 层级结构: 增加初始打开状态
                     isChildren && trNode.setAttribute('children-open-state', openState);
                     isChildren && trNode.setAttribute('father-cache-key', fatherCacheKey);
