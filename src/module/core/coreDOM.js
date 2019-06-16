@@ -200,7 +200,6 @@ class Dom {
             const tdTemplate = framework.compileFullColumn(settings, fullColumnNode, row, index, topFullColumn.template);
             jTool.type(tdTemplate) === 'element' ? fullColumnNode.appendChild(tdTemplate) : fullColumnNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
 
-            console.log('new..');
             _tbody.appendChild(topTrNode);
         };
 
