@@ -15,7 +15,6 @@ const frameworks = {
     // angularjs框架解析器，在gridmanager-angularjs项目中使用
     compileAngularjs: null,
 
-    // TODO 暂未使用
     // react框架解析器
     compileReact: null
 };

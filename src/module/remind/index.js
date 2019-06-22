@@ -10,8 +10,28 @@ import remindTpl from './remind.tpl.html';
 import getRemindEvent from './event';
 class Remind {
     eventMap = {};
-    // 启用状态
-    enable = false;
+    // 存储启用状态
+    enable = {};
+
+    /**
+     * 初始化表头提醒
+     * @param gridManagerName
+     */
+    init(gridManagerName) {
+        if (!this.enable[gridManagerName]) {
+            return;
+        }
+        this.eventMap[gridManagerName] = getRemindEvent(gridManagerName, `${base.getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
+        const { target, events, selector } = this.eventMap[gridManagerName].remindStart;
+
+        const $tableDiv = base.getDiv(gridManagerName);
+        jTool(target).on(events, selector, function () {
+            let $onlyRemind = jTool(this);
+            let $raArea = $onlyRemind.find('.ra-area');
+            let theLeft = ($tableDiv.get(0).offsetWidth - ($onlyRemind.offset().left - $tableDiv.offset().left)) > $raArea.get(0).offsetWidth + 20;
+            theLeft ? $raArea.removeClass('right-model') : $raArea.addClass('right-model');
+        });
+    }
 
     /**
      * 获取表头提醒所需HTML
@@ -25,23 +45,6 @@ class Remind {
             title,
             remind
         };
-	}
-
-	/**
-	 * 初始化表头提醒
-	 * @param gridManagerName
-     */
-	init(gridManagerName) {
-        this.eventMap[gridManagerName] = getRemindEvent(gridManagerName, `${base.getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
-        const { target, events, selector } = this.eventMap[gridManagerName].remindStart;
-
-        const $tableDiv = base.getDiv(gridManagerName);
-        jTool(target).on(events, selector, function () {
-		    let $onlyRemind = jTool(this);
-			let $raArea = $onlyRemind.find('.ra-area');
-			let theLeft = ($tableDiv.get(0).offsetWidth - ($onlyRemind.offset().left - $tableDiv.offset().left)) > $raArea.get(0).offsetWidth + 20;
-            theLeft ? $raArea.removeClass('right-model') : $raArea.addClass('right-model');
-		});
 	}
 
 	/**

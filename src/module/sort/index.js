@@ -13,26 +13,21 @@ import getSortEvent from './event';
 class Sort {
     eventMap = {};
 
-    // 启用状态
-    enable = false;
+    // 存储启用状态
+    enable = {};
 
-	/**
-	 * 获取排序所需HTML
-	 * @returns {parseData}
+    /**
+     * 初始化排序
+     * @param gridManagerName
      */
-	@parseTpl(sortTpl)
-	createHtml() {
-		return {};
-	}
-
-	/**
-	 * 初始化排序
-	 * @param gridManagerName
-     */
-	init(gridManagerName) {
+    init(gridManagerName) {
+        if (!this.enable[gridManagerName]) {
+            return;
+        }
         this.eventMap[gridManagerName] = getSortEvent(gridManagerName, base.getQuerySelector(gridManagerName));
         const { target, events, selector } = this.eventMap[gridManagerName].sortAction;
         const _this = this;
+
         // 绑定排序事件
         jTool(target).on(events, selector, function () {
             // th对应的名称
@@ -47,6 +42,15 @@ class Sort {
 
             _this.__setSort(gridManagerName, sortJson);
         });
+    }
+
+    /**
+	 * 获取排序所需HTML
+	 * @returns {parseData}
+     */
+	@parseTpl(sortTpl)
+	createHtml() {
+		return {};
 	}
 
 	/*

@@ -295,7 +295,7 @@ export default class GridManager {
 		}
 
 		// 更新过滤相关字段
-        filter.enable && jTool.each(settings.columnMap, (index, column) => {
+        filter.enable[gridManagerName] && jTool.each(settings.columnMap, (index, column) => {
             if (column.filter) {
                 column.filter.selected = typeof query[column.key] === 'string' ? query[column.key] : '';
                 filter.update(jTool(`${base.getQuerySelector(gridManagerName)} th[th-name=${column.key}]`), column.filter);
@@ -588,19 +588,13 @@ export default class GridManager {
         }
 
         // init sort
-        if (sort.enable) {
-            sort.init(gridManagerName);
-        }
+        sort.init(gridManagerName);
 
         // init remind
-        if (remind.enable) {
-            remind.init(gridManagerName);
-        }
+        remind.init(gridManagerName);
 
         // init filter
-        if (filter.enable) {
-            filter.init(gridManagerName);
-        }
+        filter.init(gridManagerName);
 
         // init config
         if (settings.supportConfig) {
