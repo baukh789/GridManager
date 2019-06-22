@@ -10,7 +10,11 @@
         "start": "node server",
         "lint": "eslint src",
         "test": "NODE_ENV=test karma start",
-        "build": "webpack --config webpack-config.js"
+        "build": "webpack --config webpack-config.js",
+        "release": "./scripts/release.sh",
+        "preversion": "npm test",
+        "version": "npm run build && npm publish dist",
+        "postversion": "git push && git push --tags"
     },
     "repository": {
         "type": "git",
