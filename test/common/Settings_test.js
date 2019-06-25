@@ -125,6 +125,10 @@ describe('Settings', () => {
 		expect(settings.sortDownText).toBe('DESC');
 	});
 
+    it('验证属性[sortMode]初始值', () => {
+        expect(settings.sortMode).toBe('overall');
+    });
+
 	it('验证属性[sortingBefore]初始值', () => {
 		expect(typeof settings.sortingBefore).toBe('function');
 	});
@@ -142,7 +146,7 @@ describe('Settings', () => {
     });
 
 	it('验证属性[sizeData]初始值', () => {
-		expect(settings.sizeData).toEqual([10,20,30,50,100]);
+		expect(settings.sizeData).toEqual([10, 20, 30, 50, 100]);
 	});
 
 	it('验证属性[pageSize]初始值', () => {
@@ -250,11 +254,11 @@ describe('Settings', () => {
 		expect(typeof settings.ajax_error).toBe('function');
 	});
 
-	it('验证属性[requestHandler]初始值', function() {
+	it('验证属性[requestHandler]初始值', () => {
 		expect(typeof settings.requestHandler).toBe('function');
 	});
 
-    it('验证属性[requestHandler]返回值', function() {
+    it('验证属性[requestHandler]返回值', () =>  {
         expect(settings.requestHandler({'name': 'baukh'})).toEqual({'name': 'baukh'});
     });
 

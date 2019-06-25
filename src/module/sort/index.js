@@ -29,15 +29,31 @@ class Sort {
         const _this = this;
 
         // 绑定排序事件
-        jTool(target).on(events, selector, function () {
+        jTool(target).on(events, selector, function (e) {
             // th对应的名称
             const thName = base.getThName(jTool(this).closest('th'));
             const settings = cache.getSettings(gridManagerName);
 
             const oldSort = settings.sortData[thName];
+            const sortMode = settings.sortMode;
 
+            let newSort = '';
+            // 升降序单一触发
+            if (sortMode === 'single') {
+                if ([].includes.call(e.target.classList, 'sa-up')) {
+                    newSort = oldSort === settings.sortUpText ? '' : settings.sortUpText;
+                }
+                if ([].includes.call(e.target.classList, 'sa-down')) {
+                    newSort = oldSort === settings.sortDownText ? '' : settings.sortDownText;
+                }
+            }
+
+            // 升降序整体触发
+            if (sortMode === 'overall') {
+                newSort = oldSort === settings.sortDownText ? settings.sortUpText : settings.sortDownText;
+            }
             const sortJson = {
-                [thName]: oldSort === settings.sortDownText ? settings.sortUpText : settings.sortDownText
+                [thName]: newSort
             };
 
             _this.__setSort(gridManagerName, sortJson);

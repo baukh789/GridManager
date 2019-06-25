@@ -142,6 +142,9 @@ const sort = {
     // 排序：降序标识[该标识将会传至数据接口]
     sortDownText: 'DESC',
 
+    // 排序模式: single(升降序单一触发) overall(升降序整体触发)
+    sortMode: 'overall',
+
     // 排序事件发生前
     sortingBefore: jTool.noop,
 

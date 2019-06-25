@@ -256,6 +256,9 @@ const demo1 = {
             // 是否开启分页
             supportAjaxPage: true,
 
+            // 排序模式，single(升降序单一触发) overall(升降序整体触发)
+            // sortMode: 'single',
+
             // 是否开启配置功能
             // supportConfig: false,
 
