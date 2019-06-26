@@ -49,7 +49,7 @@ import GridManager from './GridManager';
 			condition = arguments[3];
 		}
 
-        if (name === 'init' && (!arg.columnData || (!arg.ajaxData && !arg.ajaxData && !arg.ajax_url))) {
+        if (name === 'init' && (!arg.columnData || (!arg.ajaxData && !arg.ajax_data && !arg.ajax_url))) {
             base.outError('columnData or ajaxData undefined');
             return;
         }
