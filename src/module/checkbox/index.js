@@ -208,6 +208,9 @@ class Checkbox {
             tableData.forEach((row, index) => {
                 row[this.key] = index === parseInt(cacheKey, 10);
             });
+
+            // 清空当前选中项
+            cache.setCheckedData(gridManagerName, [], true);
         }
 
 		// 存储数据
