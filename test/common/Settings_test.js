@@ -226,32 +226,32 @@ describe('Settings', () => {
 		expect(settings.firstLoading).toBe(true);
 	});
 
-	it('验证属性[ajax_data]初始值', () => {
-		expect(settings.ajax_data).toBeUndefined();
+	it('验证属性[ajaxData]初始值', () => {
+		expect(settings.ajaxData).toBeUndefined();
 	});
 
-	it('验证属性[ajax_type]初始值', () => {
-		expect(settings.ajax_type).toBe('GET');
+	it('验证属性[ajaxType]初始值', () => {
+		expect(settings.ajaxType).toBe('GET');
 	});
 
-	it('验证属性[ajax_headers]初始值', () => {
-		expect(settings.ajax_headers).toEqual({});
+	it('验证属性[ajaxHeaders]初始值', () => {
+		expect(settings.ajaxHeaders).toEqual({});
 	});
 
-	it('验证属性[ajax_beforeSend]初始值', () => {
-		expect(typeof settings.ajax_beforeSend).toBe('function');
+	it('验证属性[ajaxBeforeSend]初始值', () => {
+		expect(typeof settings.ajaxBeforeSend).toBe('function');
 	});
 
-	it('验证属性[ajax_success]初始值', () => {
-		expect(typeof settings.ajax_success).toBe('function');
+	it('验证属性[ajaxSuccess]初始值', () => {
+		expect(typeof settings.ajaxSuccess).toBe('function');
 	});
 
-	it('验证属性[ajax_complete]初始值', () => {
-		expect(typeof settings.ajax_complete).toBe('function');
+	it('验证属性[ajaxComplete]初始值', () => {
+		expect(typeof settings.ajaxComplete).toBe('function');
 	});
 
-	it('验证属性[ajax_error]初始值', () => {
-		expect(typeof settings.ajax_error).toBe('function');
+	it('验证属性[ajaxError]初始值', () => {
+		expect(typeof settings.ajaxError).toBe('function');
 	});
 
 	it('验证属性[requestHandler]初始值', () => {

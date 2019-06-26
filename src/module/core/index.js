@@ -26,7 +26,7 @@ class Core {
      */
     refresh(gridManagerName, callback) {
         const settings = cache.getSettings(gridManagerName);
-        const { loadingTemplate, ajax_beforeSend, ajax_success, ajax_error, ajax_complete } = settings;
+        const { loadingTemplate, ajaxBeforeSend, ajaxSuccess, ajaxError, ajaxComplete } = settings;
         // 更新刷新图标状态
         ajaxPage.updateRefreshIconState(gridManagerName, true);
 
@@ -34,20 +34,20 @@ class Core {
 
         let ajaxPromise = transformToPromise(settings);
 
-        ajax_beforeSend(ajaxPromise);
+        ajaxBeforeSend(ajaxPromise);
         ajaxPromise
         .then(response => {
             // 异步重新获取settings
             const settings = cache.getSettings(gridManagerName);
             this.driveDomForSuccessAfter(settings, response, callback);
-            ajax_success(response);
-            ajax_complete(response);
+            ajaxSuccess(response);
+            ajaxComplete(response);
             base.hideLoading(gridManagerName);
             ajaxPage.updateRefreshIconState(gridManagerName, false);
         })
         .catch(error => {
-            ajax_error(error);
-            ajax_complete(error);
+            ajaxError(error);
+            ajaxComplete(error);
             base.hideLoading(gridManagerName);
             ajaxPage.updateRefreshIconState(gridManagerName, false);
         });
@@ -89,7 +89,7 @@ class Core {
         }
 
         if (!response) {
-            base.outError('response undefined！please check ajax_data');
+            base.outError('response undefined！please check ajaxData');
             return;
         }
 

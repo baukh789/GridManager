@@ -1,5 +1,5 @@
 /**
- * 将不同类型的ajax_data转换为promise
+ * 将不同类型的ajaxData转换为promise
  * #001:
  * settings.mergeSort: 是否合并排序字段
  * false: {sort_createDate: 'DESC', sort_title: 'ASC'}
@@ -15,7 +15,7 @@ import base from '@common/base';
 import cache from '@common/cache';
 
 /**
- * 将不同类型的ajax_data转换为promise
+ * 将不同类型的ajaxData转换为promise
  * @param settings
  * @returns promise
  */
@@ -34,7 +34,7 @@ export default function transformToPromise(settings) {
     });
     cache.setSettings(settings);
 
-    let ajaxData = typeof settings.ajax_data === 'function' ? settings.ajax_data(settings, params) : settings.ajax_data;
+    let ajaxData = typeof settings.ajaxData === 'function' ? settings.ajaxData(settings, params) : settings.ajaxData;
 
     // ajaxData === string url
     if (typeof ajaxData === 'string') {
@@ -86,21 +86,21 @@ export default function transformToPromise(settings) {
         return _params;
     }
 
-    // 获取Promise, 条件: ajax_data 为 url
+    // 获取Promise, 条件: ajaxData 为 url
     function getPromiseByUrl(Params) {
         // #002
         // 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
-        if (settings.ajax_type.toUpperCase() === 'POST' && !settings.ajax_headers['Content-Type']) {
-            settings.ajax_headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        if (settings.ajaxType.toUpperCase() === 'POST' && !settings.ajaxHeaders['Content-Type']) {
+            settings.ajaxHeaders['Content-Type'] = 'application/x-www-form-urlencoded';
         }
 
         return new Promise((resolve, reject) => {
             jTool.ajax({
                 url: ajaxData,
-                type: settings.ajax_type,
+                type: settings.ajaxType,
                 data: Params,
-                headers: settings.ajax_headers,
-                xhrFields: settings.ajax_xhrFields,
+                headers: settings.ajaxHeaders,
+                xhrFields: settings.ajaxXhrFields,
                 cache: true,
                 success: response => {
                     resolve(response);

@@ -173,7 +173,7 @@
 			table.GM({
                 gridManagerName:'test',
 				emptyTemplate: '<div class="gm-empty-template">什么也没有</div>',
-				ajax_data: ajaxData1,
+				ajaxData: ajaxData1,
                 useRadio: true,
 				pageSize:20,
 				query: {ex: '用户自定义的查询参数,格式:{key:value}'},
@@ -223,8 +223,8 @@
 				sortingAfter: function(query){
 					console.log('Event: 排序后', query);
 				},
-				ajax_success: function(data){
-					console.log('Event: ajax_success', data);
+				ajaxSuccess: function(data){
+					console.log('Event: ajaxSuccess', data);
 				}
 			}, function(query){
 				// 渲染完成后的回调函数

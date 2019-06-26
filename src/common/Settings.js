@@ -308,34 +308,34 @@ const gridData = {
     // ajax_url: '',
 
     // 后端API调用, [string url | function {retrun string url | promise | data}] @v2.6.0
-    ajax_data: undefined,
+    ajaxData: undefined,
 
     // ajax请求类型['GET', 'POST']默认GET
-    ajax_type: 'GET',
+    ajaxType: 'GET',
 
     // 其它需要带入的参数，该参数中设置的数据会在分页或排序事件中以参数形式传递
     // 过滤中的选中值将会覆盖query参数
     query: {},
 
     // ajax请求头信息
-    ajax_headers: {},
+    ajaxHeaders: {},
 
     // @v2.4.0
-    // 设置XHR对象, ajax_xhrFields 中的属性将追加至实例化后的XHR对象上
-    // 示例 -> ajax_xhrFields: {withCredentials: true}, 那么将会配置跨域访问时协带cookies, authorization headers(头部授权)
-    ajax_xhrFields: {},
+    // 设置XHR对象, ajaxXhrFields 中的属性将追加至实例化后的XHR对象上
+    // 示例 -> ajaxXhrFields: {withCredentials: true}, 那么将会配置跨域访问时协带cookies, authorization headers(头部授权)
+    ajaxXhrFields: {},
 
     // ajax请求之前,与jTool的beforeSend使用方法相同
-    ajax_beforeSend: jTool.noop,
+    ajaxBeforeSend: jTool.noop,
 
     // ajax成功后,与jTool的success使用方法相同
-    ajax_success: jTool.noop,
+    ajaxSuccess: jTool.noop,
 
     // ajax完成后,与jTool的complete使用方法相同
-    ajax_complete: jTool.noop,
+    ajaxComplete: jTool.noop,
 
     // ajax失败后,与jTool的error使用方法相同
-    ajax_error: jTool.noop,
+    ajaxError: jTool.noop,
 
     // 请求前处理程序, 可以通过该方法修改全部的请求参数 @v2.3.14
     requestHandler: request => request,

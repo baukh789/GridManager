@@ -31,8 +31,8 @@
 		height: '300px'
         ,gridManagerName: 'test1'
 		,supportAjaxPage:true
-		,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-		,ajax_type: 'POST'
+		,ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajaxType: 'POST'
 		,query: {tableName: 'test1', ccname: 'baukh'}
 		,pageSize:10
 		,columnData: [{
@@ -52,8 +52,8 @@
 			text: '地址'
 		}
 		]
-		,ajax_success: function () {
-			console.log('test1 ajax_success');
+		,ajaxSuccess: function () {
+			console.log('test1 ajaxSuccess');
 		}
 	});
 
@@ -63,8 +63,8 @@
             height: '400px'
             ,gridManagerName: 'test2'
             ,i18n: 'en-us'
-            ,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-            ,ajax_type: 'POST'
+            ,ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+            ,ajaxType: 'POST'
             ,query: {tableName: 'test2', 'love': 'kouzi'}
             ,pageSize:20
             ,supportAjaxPage:true
@@ -85,8 +85,8 @@
                 text: 'url'
             }
             ]
-            ,ajax_success: function (data) {
-                console.log('test2 ajax_success');
+            ,ajaxSuccess: function (data) {
+                console.log('test2 ajaxSuccess');
             }
         });
     // }, 3000);
@@ -96,8 +96,8 @@
 		height: '300px'
         ,gridManagerName: 'test3'
 		,i18n: 'zh-tw'
-		,ajax_data: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-		,ajax_type: 'POST'
+		,ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
+		,ajaxType: 'POST'
 		,query: {tableName: 'test3', baby: 'kouzi'}
 		,pageSize:30
 		,supportAjaxPage:true
@@ -118,8 +118,8 @@
 			text: '地址'
 		}
 		]
-		,ajax_success: function (data) {
-			console.log('test3 ajax_success');
+		,ajaxSuccess: function (data) {
+			console.log('test3 ajaxSuccess');
 		}
 	});
 

@@ -8,9 +8,9 @@
 [![coverage](https://img.shields.io/codecov/c/github/baukh789/GridManager.svg?style=flat-square)](https://codecov.io/gh/baukh789/GridManager)
 
 ## 实现功能
-| 功能 | 描述 | 
-| -: | :- | 
-| 宽度调整 | 表格的列宽度可进行拖拽式调整 | 
+| 功能 | 描述 |
+| -: | :- |
+| 宽度调整 | 表格的列宽度可进行拖拽式调整 |
 | 位置更换 | 表格的列位置进行拖拽式调整 |
 | 配置列 | 可通过配置对列进行显示隐藏转换 |
 | 表头吸顶 | 在表存在可视区域的情况下,表头将一直存在于顶部 |
@@ -61,8 +61,8 @@ import GridManager from 'gridmanager';
 ```javascript
 document.querySelector('table').GM({
 	gridManagerName: 'demo-baseCode',
-    ajax_url: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
-    ajax_type: 'POST',
+    ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
+    ajaxType: 'POST',
     query: {pluginId: 1},
     columnData: [
         {
@@ -86,8 +86,8 @@ document.querySelector('table').GM({
 ```javascript
 document.querySelector('table').GM({
 	gridManagerName: 'demo-ajaxPageCode',
-    ajax_url: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
-    ajax_type: 'POST'
+    ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
+    ajaxType: 'POST'
     query: {pluginId: 1},
     supportAjaxPage: true,
     columnData: [

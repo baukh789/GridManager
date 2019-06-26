@@ -145,7 +145,7 @@ new window.Vue({
             setAjaxData: {
                 key: 'setAjaxData',
                 relyInit: true,
-                title: '用于再次配置ajax_data数据',
+                title: '用于再次配置ajaxData数据',
                 code: 'this.$refs["grid"].$el.GM("setAjaxData", {data: [], totals: 0});'
             },
             refreshGrid: {
@@ -222,10 +222,10 @@ new window.Vue({
             supportAjaxPage: true,
             supportSorting: true,
             isCombSorting: false,
-            ajax_data: (settings, parsme) => {
+            ajaxData: (settings, parsme) => {
                 return getBlogList(parsme);
             },
-            ajax_type: 'POST',
+            ajaxType: 'POST',
             supportMenu: true,
             query: {test: 22},
             pageSize: 30,

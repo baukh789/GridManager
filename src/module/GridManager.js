@@ -320,7 +320,7 @@ export default class GridManager {
 
 	/**
 	 * @静态方法
-	 * 配置静态数ajaxData; 用于再次配置ajax_data数据, 配置后会根据参数ajaxData即时刷新表格
+	 * 配置静态数ajaxData; 用于再次配置ajaxData数据, 配置后会根据参数ajaxData即时刷新表格
 	 * @param table
 	 * @param ajaxData: 配置的数据
 	 */
@@ -330,7 +330,7 @@ export default class GridManager {
             return;
         }
 		const settings = cache.getSettings(base.getKey(table));
-		jTool.extend(settings, {ajax_data: ajaxData});
+		jTool.extend(settings, { ajaxData });
 		cache.setSettings(settings);
 		core.refresh(settings.gridManagerName, callback);
 	}
@@ -488,10 +488,18 @@ export default class GridManager {
 			return;
 		}
 
+		// ajax类的参数向下兼容下划线形式
+        Object.keys(arg).forEach(key => {
+            if (/ajax_/g.test(key)) {
+                arg[key.replace(/_\w/g, str => str.split('_')[1].toUpperCase())] = arg[key];
+                delete arg[key];
+            }
+        });
+
 		// 参数变更提醒
-		if (arg.ajax_url) {
-			base.outWarn('ajax_url will be deprecated later, please use ajax_data instead');
-			arg.ajax_data = arg.ajax_url;
+		if (arg.ajaxUrl) {
+			base.outWarn('ajax_url will be deprecated later, please use ajaxData instead');
+			arg.ajaxData = arg.ajaxUrl;
 		}
 
 		// 相互冲突的参数项处理
