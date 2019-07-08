@@ -110,8 +110,8 @@ class Render {
 
         // 表头提醒
         let remindAttr = '';
-        if (typeof (col.remind) === 'string' && col.remind !== '') {
-            remindAttr = `remind=${col.remind}`;
+        if (col.remind) {
+            remindAttr = 'remind';
             remind.enable[gridManagerName] = true;
         }
 

@@ -26,9 +26,9 @@ class Remind {
 
         const $tableDiv = base.getDiv(gridManagerName);
         jTool(target).on(events, selector, function () {
-            let $onlyRemind = jTool(this);
-            let $raArea = $onlyRemind.find('.ra-area');
-            let theLeft = ($tableDiv.get(0).offsetWidth - ($onlyRemind.offset().left - $tableDiv.offset().left)) > $raArea.get(0).offsetWidth + 20;
+            const $onlyRemind = jTool(this);
+            const $raArea = $onlyRemind.find('.ra-area');
+            const theLeft = ($tableDiv.get(0).offsetWidth - ($onlyRemind.offset().left - $tableDiv.offset().left)) > $raArea.get(0).offsetWidth + 20;
             theLeft ? $raArea.removeClass('right-model') : $raArea.addClass('right-model');
         });
     }
@@ -40,10 +40,25 @@ class Remind {
      */
     @parseTpl(remindTpl)
 	createHtml(params) {
-        const { title, remind } = params;
+        const { remind } = params;
+        let styleStr = '';
+        let text = '';
+        if (jTool.type(remind) === 'object') {
+            text = remind.text;
+        } else {
+            text = remind;
+        }
+
+        const style = remind.style;
+        if (jTool.type(style) === 'object') {
+            styleStr = 'style=';
+            Object.keys(style).forEach(key => {
+                styleStr = `${styleStr}${key}:${style[key]};`;
+            });
+        }
 	    return {
-            title,
-            remind
+            text,
+            styleStr
         };
 	}
 

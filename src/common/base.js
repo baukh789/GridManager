@@ -537,6 +537,10 @@ class Base {
         // isIconFollowText === false时，icon使用的是padding-right，所以无需进行计算
         let iconWidth = 0;
         if (isIconFollowText) {
+            // 表头提醒
+            const remindAction = jTool('.remind-action', $th);
+            remindAction.length && (iconWidth += remindAction.width());
+
             // 排序
             const sortingAction = jTool('.sorting-action', $th);
             sortingAction.length && (iconWidth += sortingAction.width());

@@ -384,7 +384,7 @@ const demo1 = {
             columnData: [
                 {
                     key: 'pic',
-                    remind: 'the pic',
+                    remind: '这一列显示了缩略图，可以通过点击跳转至对应的博客地址',
                     width: '110px',
                     align: 'center',
                     text: '缩略图',
@@ -426,9 +426,15 @@ const demo1 = {
                     }
                 }, {
                     key: 'type',
-                    remind: 'the type',
+                    remind: {
+                        text: '[HTML/CSS, nodeJS, javaScript, 前端鸡汤, PM Coffee, 前端框架, 前端相关]',
+                        style: {
+                            width: '400px',
+                            'text-align': 'left'
+                        }
+                    },
                     text: '博文分类',
-                    align: 'center',
+                    align: 'left',
                     width: '150px',
                     sorting: '',
                     // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。非必设项
