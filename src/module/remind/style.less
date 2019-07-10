@@ -5,7 +5,10 @@
  * @since 2019-02-20
  */
 @import "../../css/mixins";
-
+@remind-bg-color: #666;
+@remind-icon-color: #B9DAF8;
+@remind-hover-color: #2b669a;
+@remind-font-color: #f8f8f8;
 .table-wrap {
     .table-div {
         table[grid-manager] {
@@ -14,59 +17,55 @@
                     /* 表头提醒 */
                     .remind-action {
                         width: 16px;
-                        height: 16px;
+                        height: 18px;
                         position: absolute;
-                        top: calc(50% - 8px);
+                        top: calc(50% - 9px);
                         left: 4px;
-                        cursor: help;
                         .ra-area {
                             display: none;
-                            min-width: 150px;
-                            max-width: 300px;
+                            width: 150px;
                             position: absolute;
-                            top: 80%;
-                            left: 80%;
-                            padding: 12px;
-                            border: 3px solid #000;
+                            top: 24px;
+                            left: 0;
+                            padding: 4px 8px;
                             z-index: 9999;
-                            border-radius: 5px;
-                            box-shadow: 3px 3px 10px 0 #222;
-                            background-color: #000;
-                            opacity: 0.8;
-                            line-height: 14px;
-                            color: #fff;
+                            border-radius: 2px;
+                            background-color: @remind-bg-color;
+                            line-height: 18px;
+                            color: @remind-font-color;
+                            text-align: center;
+                            &:after {
+                                content: "";
+                                position: absolute;
+                                border: solid transparent;
+                                top: 0;
+                                left: 4px;
+                                margin-top: -3px;
+                                border-width: 0 3px 3px;
+                                border-bottom-color: @remind-bg-color;
+                            }
                             &.right-model {
                                 left: auto;
-                                right: 80%;
-                            }
-                            .ra-title {
-                                display: block;
-                                text-align: left;
-                                margin-bottom: 4px;
-                                font-weight: 600;
-                                font-size: 1.1em;
-                                color: #FF6;
-                                .text-overflow();
-                            }
-                            .ra-con {
-                                display: block;
-                                font-weight: 500;
-                                text-align: left;
-                                font-size: 0.9em;
-                                color: #fff;
+                                right: 0;
+                                &:after {
+                                    top: 0;
+                                    left: auto;
+                                    right: 4px;
+                                }
                             }
                         }
                         .ra-icon {
-                            display: block;
                             width: 16px;
                             height: 16px;
-                            font-size: @font-normal-size;
+                            font-size: 14px;
                             line-height: 18px;
-                            color: #666;
+                            cursor: help;
+                            color: @remind-icon-color;
                         }
                         &:hover {
                             .ra-icon {
-                                color: #2b669a;
+                                opacity: .3;
+                                color: #1890ff;
                             }
                             .ra-area {
                                 display: block;

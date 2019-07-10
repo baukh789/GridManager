@@ -13,40 +13,60 @@ import getSortEvent from './event';
 class Sort {
     eventMap = {};
 
-    // 启用状态
-    enable = false;
+    // 存储启用状态
+    enable = {};
 
-	/**
+    /**
+     * 初始化排序
+     * @param gridManagerName
+     */
+    init(gridManagerName) {
+        if (!this.enable[gridManagerName]) {
+            return;
+        }
+        this.eventMap[gridManagerName] = getSortEvent(gridManagerName, base.getQuerySelector(gridManagerName));
+        const { target, events, selector } = this.eventMap[gridManagerName].sortAction;
+        const _this = this;
+
+        // 绑定排序事件
+        jTool(target).on(events, selector, function (e) {
+            // th对应的名称
+            const thName = base.getThName(jTool(this).closest('th'));
+            const settings = cache.getSettings(gridManagerName);
+
+            const oldSort = settings.sortData[thName];
+            const sortMode = settings.sortMode;
+
+            let newSort = '';
+            // 升降序单一触发
+            if (sortMode === 'single') {
+                if ([].includes.call(e.target.classList, 'sa-up')) {
+                    newSort = oldSort === settings.sortUpText ? '' : settings.sortUpText;
+                }
+                if ([].includes.call(e.target.classList, 'sa-down')) {
+                    newSort = oldSort === settings.sortDownText ? '' : settings.sortDownText;
+                }
+            }
+
+            // 升降序整体触发
+            if (sortMode === 'overall') {
+                newSort = oldSort === settings.sortDownText ? settings.sortUpText : settings.sortDownText;
+            }
+            const sortJson = {
+                [thName]: newSort
+            };
+
+            _this.__setSort(gridManagerName, sortJson);
+        });
+    }
+
+    /**
 	 * 获取排序所需HTML
 	 * @returns {parseData}
      */
 	@parseTpl(sortTpl)
 	createHtml() {
 		return {};
-	}
-
-	/**
-	 * 初始化排序
-	 * @param gridManagerName
-     */
-	init(gridManagerName) {
-        this.eventMap[gridManagerName] = getSortEvent(gridManagerName, base.getQuerySelector(gridManagerName));
-        const { target, events, selector } = this.eventMap[gridManagerName].sortAction;
-        const _this = this;
-        // 绑定排序事件
-        jTool(target).on(events, selector, function () {
-            // th对应的名称
-            const thName = base.getThName(jTool(this).closest('th'));
-            const settings = cache.getSettings(gridManagerName);
-
-            const oldSort = settings.sortData[thName];
-
-            const sortJson = {
-                [thName]: oldSort === settings.sortDownText ? settings.sortUpText : settings.sortDownText
-            };
-
-            _this.__setSort(gridManagerName, sortJson);
-        });
 	}
 
 	/*

@@ -16,14 +16,17 @@ import getFilterEvent from './event';
 class Filter {
     eventMap = {};
 
-    // 启用状态
-    enable = false;
+    // 存储启用状态
+    enable = {};
 
     /**
      * 初始化
      * @param gridManagerName
      */
     init(gridManagerName) {
+        if (!this.enable[gridManagerName]) {
+            return;
+        }
         const _this = this;
         const $body = jTool('body');
         const tableSelector = base.getQuerySelector(gridManagerName);

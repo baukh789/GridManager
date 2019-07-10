@@ -101,7 +101,7 @@ const GM_PUBLISH_METHOD_MAP = {
     setAjaxData: {
         key: 'setAjaxData',
         relyInit: true,
-        title: '用于再次配置ajax_data数据',
+        title: '用于再次配置ajaxData数据',
         code: `GridManager.setAjaxData('${gridManagerName}', {data: [], totals: 0});`
     },
     refreshGrid: {
@@ -252,9 +252,11 @@ const demo1 = {
 
             // 是否使用无总条数模式
             // useNoTotalsMode: true,
-
             // 是否开启分页
             supportAjaxPage: true,
+
+            // 排序模式，single(升降序单一触发) overall(升降序整体触发)
+            // sortMode: 'single',
 
             // 是否开启配置功能
             // supportConfig: false,
@@ -285,7 +287,7 @@ const demo1 = {
 
             // 禁用缓存
             disableCache: false,
-            ajax_data: function () {
+            ajaxData: function () {
                 return 'https://www.lovejavascript.com/blogManager/getBlogList';
             },
 
@@ -300,7 +302,7 @@ const demo1 = {
                     return fileName;
                 }
             },
-            ajax_type: 'POST',
+            ajaxType: 'POST',
 
             // 选择事件执行前事件
             checkedBefore: function (checkedList) {
@@ -333,22 +335,22 @@ const demo1 = {
             },
 
             // AJAX请求前事件函数
-            ajax_beforeSend: function (promise) {
-                console.log('ajax_beforeSend');
+            ajaxBeforeSend: function (promise) {
+                console.log('ajaxBeforeSend');
             },
             // AJAX成功事件函数
-            ajax_success: function (response) {
-                console.log('ajax_success');
+            ajaxSuccess: function (response) {
+                console.log('ajaxSuccess');
             },
 
             // AJAX失败事件函数
-            ajax_error: function (errorInfo) {
-                console.log('ajax_error');
+            ajaxError: function (errorInfo) {
+                console.log('ajaxError');
             },
 
             // AJAX结束事件函数
-            ajax_complete: function (complete) {
-                console.log('ajax_complete');
+            ajaxComplete: function (complete) {
+                console.log('ajaxComplete');
             },
             adjustBefore: query => {
                 console.log('adjustBefore=>', query);
@@ -382,7 +384,7 @@ const demo1 = {
             columnData: [
                 {
                     key: 'pic',
-                    remind: 'the pic',
+                    remind: '这一列显示了缩略图，可以通过点击跳转至对应的博客地址',
                     width: '110px',
                     align: 'center',
                     text: '缩略图',
@@ -424,9 +426,15 @@ const demo1 = {
                     }
                 }, {
                     key: 'type',
-                    remind: 'the type',
+                    remind: {
+                        text: '[HTML/CSS, nodeJS, javaScript, 前端鸡汤, PM Coffee, 前端框架, 前端相关]',
+                        style: {
+                            width: '400px',
+                            'text-align': 'left'
+                        }
+                    },
                     text: '博文分类',
-                    align: 'center',
+                    align: 'left',
                     width: '150px',
                     sorting: '',
                     // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。非必设项

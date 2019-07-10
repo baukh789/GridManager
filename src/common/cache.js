@@ -389,7 +389,7 @@ class Cache {
                     || columnCache[key].sorting !== col.sorting
 
                     // 字段描述
-                    || columnCache[key].remind !== col.remind
+                    || JSON.stringify(columnCache[key].remind) !== JSON.stringify(col.remind)
 
                     // 禁止使用个性配置功能
                     || columnCache[key].disableCustomize !== col.disableCustomize

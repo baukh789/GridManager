@@ -109,7 +109,7 @@ angular.module("myApp", ['gridManager'])
         setAjaxData: {
             key: 'setAjaxData',
             relyInit: true,
-            title: '用于再次配置ajax_data数据',
+            title: '用于再次配置ajaxData数据',
             code: `$gridManager.setAjaxData('${$scope.gridManagerName}', {data: [], totals: 0});`
         },
         refreshGrid: {
@@ -232,13 +232,13 @@ angular.module("myApp", ['gridManager'])
         gridManagerName: $scope.gridManagerName,
         width: '100%',
         height: '100%',
-        supportAjaxPage:true,
+        supportAjaxPage: true,
         isCombSorting: true,
         disableCache: false,
-        ajax_data: function () {
+        ajaxData: function () {
             return 'https://www.lovejavascript.com/blogManager/getBlogList';
         },
-        ajax_type: 'POST',
+        ajaxType: 'POST',
 
         columnData: [
             {

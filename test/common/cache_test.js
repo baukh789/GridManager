@@ -486,8 +486,8 @@ describe('initSettings', () => {
         columnMap = getColumnMap();
         arg = {
             gridManagerName: 'test',
-            ajax_data: 'https://www.lovejavascript.com/blogManager/getBlogList',
-            ajax_type: 'POST',
+            ajaxData: 'https://www.lovejavascript.com/blogManager/getBlogList',
+            ajaxType: 'POST',
             columnData: columnData
         };
         console._log = console.log;

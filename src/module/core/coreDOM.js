@@ -47,10 +47,9 @@ class Dom {
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
         jTool.each($thList, (index, item) => {
-            let onlyTH = jTool(item);
+            const onlyTH = jTool(item);
             const onlyThWarp = jTool('.th-wrap', onlyTH);
             const thName = onlyTH.attr('th-name');
-            const onlyThText = onlyTH.text();
             const column = columnMap[thName];
 
             // 是否为GM自动添加的列
@@ -58,8 +57,8 @@ class Dom {
 
             // 嵌入表头提醒事件源
             // 插件自动生成的序号与选择列不做事件绑定
-            if (!isAutoCol && jTool.type(column.remind) === 'string') {
-                onlyThWarp.append(jTool(remind.createHtml({gridManagerName, title: onlyThText, remind: column.remind, column})));
+            if (!isAutoCol && column.remind) {
+                onlyThWarp.append(jTool(remind.createHtml({ remind: column.remind })));
             }
 
             // 嵌入排序事件源

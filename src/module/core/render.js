@@ -77,13 +77,13 @@ class Render {
         }
 
         // 将表头提醒启用状态重置
-        remind.enable = false;
+        remind.enable[gridManagerName] = false;
 
         // 将排序启用状态重置
-        sort.enable = false;
+        sort.enable[gridManagerName] = false;
 
         // 将筛选条件重置
-        filter.enable = false;
+        filter.enable[gridManagerName] = false;
 
         let thListTpl = '';
         // columnList 生成thead
@@ -106,24 +106,25 @@ class Render {
     @parseTpl(thTpl)
     createThTpl(params) {
         const { settings, col } = params;
+        const { gridManagerName, sortUpText, sortDownText } = settings;
 
         // 表头提醒
         let remindAttr = '';
-        if (typeof (col.remind) === 'string' && col.remind !== '') {
-            remindAttr = `remind=${col.remind}`;
-            remind.enable = true;
+        if (col.remind) {
+            remindAttr = 'remind';
+            remind.enable[gridManagerName] = true;
         }
 
         // 排序
         let sortingAttr = '';
         if (typeof (col.sorting) === 'string') {
-            sort.enable = true;
-            if (col.sorting === settings.sortDownText) {
-                sortingAttr = `sorting="${settings.sortDownText}"`;
-                settings.sortData[col.key] = settings.sortDownText;
-            } else if (col.sorting === settings.sortUpText) {
-                sortingAttr = `sorting="${settings.sortUpText}"`;
-                settings.sortData[col.key] = settings.sortUpText;
+            sort.enable[gridManagerName] = true;
+            if (col.sorting === sortDownText) {
+                sortingAttr = `sorting="${sortDownText}"`;
+                settings.sortData[col.key] = sortDownText;
+            } else if (col.sorting === sortUpText) {
+                sortingAttr = `sorting="${sortUpText}"`;
+                settings.sortData[col.key] = sortUpText;
             } else {
                 sortingAttr = 'sorting=""';
             }
@@ -132,7 +133,7 @@ class Render {
         // 过滤
         let filterAttr = '';
         if (jTool.type(col.filter) === 'object') {
-            filter.enable = true;
+            filter.enable[gridManagerName] = true;
             filterAttr = 'filter=""';
             if (typeof (col.filter.selected) === 'undefined') {
                 col.filter.selected = settings.query[col.key];
