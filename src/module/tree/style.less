@@ -1,6 +1,10 @@
 .table-wrap .table-div table[grid-manager]{
-    th[th-name="gm_tree"], td[gm-tree="true"]{
+    th[gm-tree], td[gm-tree]{
         border-right: none;
+        padding: 0;
+        .th-wrap{
+            padding: 0;
+        }
     }
     .tree-action{
         text-align: center;
@@ -12,6 +16,6 @@
         display: none;
     }
     tr[father-cache-key] td{
-        opacity: .3;
+        //opacity: .3;
     }
 }

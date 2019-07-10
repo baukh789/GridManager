@@ -45,12 +45,12 @@ class Tree {
             isAutoCreate: true,
             isShow: true,
             disableCustomize: true,
-            width: '30px',
+            width: '25px',
             align: 'center',
             template: (tree, row) => {
                 const children = row[treeKey];
                 const span = children && children.length ? this.createHtml({openState}) : '';
-                return `<td gm-tree="true" gm-create="true">${span}</td>`;
+                return `<td gm-create="true" gm-tree>${span}</td>`;
             }
         };
     }

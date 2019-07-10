@@ -6,12 +6,14 @@
  */
 @import "../../css/animation";
 
-.table-wrap {
-    table[grid-manager]{
-        th, td{
-            &[gm-checkbox="true"] input[type=checkbox] {
-                vertical-align: middle;
-            }
+.table-wrap .table-div table[grid-manager]{
+    th[gm-checkbox], td[gm-checkbox] {
+        padding: 0;
+        .th-wrap{
+            padding: 0;
+        }
+        input[type=checkbox] {
+            vertical-align: middle;
         }
     }
 

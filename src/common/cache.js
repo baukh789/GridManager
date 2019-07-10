@@ -50,7 +50,6 @@ class Cache {
 
         const getTrData = tr => {
             const rowData = tableData[tr.getAttribute(TR_CACHE_KEY)] || {};
-            // const rowData = tr[TR_ROW_DATA] || {};
             return useGmProp ? rowData : base.getCloneRowData(columnMap, rowData);
         };
 

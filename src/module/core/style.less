@@ -67,11 +67,6 @@
                         right: 25px;
                     }
                 }
-                &[gm-create="true"] {
-                    .th-wrap {
-                        padding: 6px 4px;
-                    }
-                }
                 .th-wrap {
                     /*减去的1px 为border-right. 原因是table元素存在特殊性, thead浮动后border的宽度不会计算到th内,而是会在原基础上将th的宽加1. */
                     width: calc(100% - 1px);
@@ -115,11 +110,6 @@
                     &[align="right"] {
                         text-align: right;
                     }
-                }
-                /* 由插件自动生成的列 */
-                &[gm-create="true"] {
-                    text-align: center;
-                    cursor: default;
                 }
             }
             thead {
@@ -192,18 +182,12 @@
                         background-color: #fff;
                         color: #3d3d3d;
                         padding: 11px;
-                        &[gm-create="true"]{
-                            padding: 0;
-                        }
                         vertical-align: middle;
                         &[td-visible="none"] {
                             display: none;
                         }
                         &[td-visible="visible"] {
                             display: table-cell;
-                        }
-                        &td[gm-create="true"] {
-                            background-color: #f8f8f8;
                         }
                         &:last-child{
                             border-right: none;

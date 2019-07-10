@@ -1,7 +1,6 @@
 /*
  * GridManager: 右键菜单
  */
-import './style.less';
 import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
@@ -16,6 +15,7 @@ import ajaxPageTpl from './ajaxPage.tpl.html';
 import configTpl from './config.tpl.html';
 import exportTpl from './export.tpl.html';
 import getMenuEvent from './event';
+import './style.less';
 
 class Menu {
     eventMap = {};

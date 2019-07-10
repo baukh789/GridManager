@@ -1,5 +1,6 @@
 import remind from '../remind';
 import order from '../order';
+import tree from '../tree';
 import ajaxPage from '../ajaxPage';
 import jTool from '@common/jTool';
 import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY } from '@common/constants';
@@ -151,23 +152,23 @@ class Render {
         let gmCreateAttr = '';
         let thName = '';
         let thText = '';
-        let checkboxAttr = '';
-        let orderAttr = '';
         let compileAttr = '';
         switch (col.key) {
             // 插件自动生成序号列
             case order.key:
-                gmCreateAttr = 'gm-create="true"';
+                gmCreateAttr = 'gm-create="true" gm-order';
                 thName = order.key;
-                orderAttr = 'gm-order="true"';
                 thText = order.getThContent(settings);
                 break;
             // 插件自动生成选择列
             case checkbox.key:
-                gmCreateAttr = 'gm-create="true"';
+                gmCreateAttr = 'gm-create="true" gm-checkbox="true"';  // TODO 需要将true进行移除
                 thName = checkbox.key;
-                checkboxAttr = 'gm-checkbox="true"';
                 thText = checkbox.getThContent(settings.useRadio);
+                break;
+            case tree.key:
+                gmCreateAttr = 'gm-create="true" gm-tree';
+                thName = tree.key;
                 break;
             // 普通列
             default:
@@ -190,8 +191,6 @@ class Render {
             thName,
             thText,
             compileAttr,
-            checkboxAttr,
-            orderAttr,
             sortingAttr,
             alignAttr,
             filterAttr,

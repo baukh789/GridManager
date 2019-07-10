@@ -32,9 +32,6 @@ export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
 // tr 上 cache key
 export const TR_CACHE_KEY = 'cache-key';
 
-// tr 对应的数据
-export const TR_ROW_DATA = 'tr_row_data';
-
 // 行属性 禁用
 export const COL_PROP_DISABLED = 'gm_checkbox_disabled';
 

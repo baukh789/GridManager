@@ -3,6 +3,7 @@
  * */
 import { ORDER_WIDTH } from '@common/constants';
 import i18n from '../i18n';
+import './style.less';
 class Order {
 	// 序号的唯一标识
 	get key() {
@@ -34,7 +35,7 @@ class Order {
 			width: ORDER_WIDTH,
 			align: 'center',
 			template: nodeData => {
-				return `<td gm-create="true">${nodeData}</td>`;
+				return `<td gm-create="true" gm-order>${nodeData}</td>`;
 			}
 		};
 	}
