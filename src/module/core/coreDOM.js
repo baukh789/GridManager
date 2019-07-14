@@ -152,7 +152,7 @@ class Dom {
 
                 // reset children
                 if (supportTreeData) {
-                    // 清除非第一层的子数据
+                    // 清除非第一层的子数据, 这里决定了树层数据只支持一层
                     if (isChildren) {
                         delete row[treeKey];
                     }
@@ -240,11 +240,16 @@ class Dom {
                     const trNode = document.createElement('tr');
                     trNode.setAttribute(TR_CACHE_KEY, index);
                     // 非层级结构: 增加cache key
-                    !isChildren && trNode.setAttribute(TR_CACHE_KEY, index);
+                    if (!isChildren) {
+                        trNode.setAttribute(TR_CACHE_KEY, index);
+                        trNode.setAttribute('odd', index % 2 === 0); // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
+                    }
 
                     // 层级结构: 增加初始打开状态
-                    isChildren && trNode.setAttribute('children-open-state', openState);
-                    isChildren && trNode.setAttribute('father-cache-key', fatherCacheKey);
+                    if (isChildren) {
+                        trNode.setAttribute('children-open-state', openState);
+                        trNode.setAttribute('father-cache-key', fatherCacheKey);
+                    }
 
                     // 插入通栏: top-full-column
                     if (typeof topFullColumn.template !== 'undefined') {

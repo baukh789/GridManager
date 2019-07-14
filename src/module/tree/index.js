@@ -13,12 +13,14 @@ class Tree {
     init(gridManagerName) {
         jTool('table').on('click', '.tree-action', function (e) {
             const $action = jTool(this);
-            const openState = $action.attr('open-state') === 'true';
-            const cacheKey = $action.closest('tr').attr('cache-key');
-            jTool(`tr[father-cache-key="${cacheKey}"]`).attr('children-open-state', !openState);
-            $action.attr('open-state', !openState);
-            $action.removeClass(!openState ? 'icon-add' : 'icon-jianhao');
-            $action.addClass(!openState ? 'icon-jianhao' : 'icon-add');
+            const openState = !($action.attr('open-state') === 'true');
+            const $tr = $action.closest('tr');
+            const cacheKey = $tr.attr('cache-key');
+            const $childrenTr = jTool(`tr[father-cache-key="${cacheKey}"]`);
+            $childrenTr.attr('children-open-state', openState);
+            $action.attr('open-state', openState);
+            $action.removeClass(openState ? 'icon-add' : 'icon-jianhao');
+            $action.addClass(openState ? 'icon-jianhao' : 'icon-add');
         });
     }
 
