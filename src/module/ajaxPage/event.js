@@ -4,7 +4,7 @@
  * @param scope: querySelector 域
  */
 import { TOOLBAR_KEY } from '@common/constants';
-export default function getAjaxEvent(gridManagerName, scope) {
+export default function getAjaxEvent(gridManagerName) {
     const target = `[${TOOLBAR_KEY}="${gridManagerName}"]`;
     return {
         // 快捷跳转

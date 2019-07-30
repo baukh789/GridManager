@@ -2,12 +2,13 @@ import remind from '../remind';
 import order from '../order';
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { TABLE_PURE_LIST, TR_CACHE_KEY } from '@common/constants';
+import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_PARENT_KEY, TR_CHILDREN_STATE } from '@common/constants';
 import cache from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
 import checkbox from '../checkbox';
 import adjust from '../adjust';
+import tree from '../tree';
 import render from './render';
 import getCoreEvent from './event';
 import framework from '@common/framework';
@@ -56,14 +57,11 @@ class Dom {
             const isAutoCol = column.isAutoCreate;
 
             // 嵌入表头提醒事件源
-            // 插件自动生成的序号与选择列不做事件绑定
             if (!isAutoCol && column.remind) {
                 onlyThWarp.append(jTool(remind.createHtml({ remind: column.remind })));
             }
 
             // 嵌入排序事件源
-            // 插件自动生成的序号列与选择列不做事件绑定
-            // 排序类型
             if (!isAutoCol && jTool.type(column.sorting) === 'string') {
                 const sortingDom = jTool(sort.createHtml());
 
@@ -129,7 +127,7 @@ class Dom {
         } = settings;
 
         const { treeKey, openState } = treeConfig;
-        const resetData = (data, isChildren) => {
+        const resetData = data => {
             return data.map((row, index) => {
                 // add order
                 if (supportAutoOrder) {
@@ -148,18 +146,6 @@ class Dom {
                         return base.equal(base.getCloneRowData(columnMap, item), base.getCloneRowData(columnMap, row));
                     });
                     row[checkbox.disabledKey] = false;
-                }
-
-                // reset children
-                if (supportTreeData) {
-                    // 清除非第一层的子数据, 这里决定了树层数据只支持一层
-                    if (isChildren) {
-                        delete row[treeKey];
-                    }
-                    const children = row[treeKey];
-                    if (children && children.length) {
-                        resetData(children, true);
-                    }
                 }
 
                 // 单行数据渲染时执行程序
@@ -203,7 +189,7 @@ class Dom {
         };
 
         // 插入正常的TR
-        const installNormal = (trNode, row, index) => {
+        const installNormal = (trNode, row, index, isTop) => {
             // 与当前位置信息匹配的td列表
             const tdList = [];
             // td模板
@@ -213,11 +199,11 @@ class Dom {
                 // 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
                 let tdNode = null;
                 if (col.isAutoCreate) {
-                    tdNode = jTool(tdTemplate(row[col.key], row)).get(0);
+                    tdNode = jTool(tdTemplate(row[col.key], row, index, isTop)).get(0);
                 } else {
                     tdNode = jTool('<td gm-create="false"></td>').get(0);
 
-                    tdTemplate = framework.compileTd(settings, tdNode, row, index, key, tdTemplate);
+                    tdTemplate = framework.compileTd(settings, tdNode, tdTemplate, row, index, key);
                     jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
                 }
 
@@ -235,21 +221,25 @@ class Dom {
         };
 
         try {
-            const installTr = (list, isChildren, fatherCacheKey) => {
+            const installTr = (list, level, pIndex) => {
+                const isTop = typeof pIndex === 'undefined';
                 jTool.each(list, (index, row) => {
                     const trNode = document.createElement('tr');
-                    trNode.setAttribute(TR_CACHE_KEY, index);
-                    // 非层级结构: 增加cache key
-                    if (!isChildren) {
-                        trNode.setAttribute(TR_CACHE_KEY, index);
-                        trNode.setAttribute('odd', index % 2 === 0); // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
+                    let cacheKey = index;
+
+                    // 非顶层
+                    if (!isTop) {
+                        trNode.setAttribute(TR_PARENT_KEY, pIndex);
+                        cacheKey = `${pIndex}-${index}`;
+                        trNode.setAttribute(TR_CHILDREN_STATE, openState);
                     }
 
-                    // 层级结构: 增加初始打开状态
-                    if (isChildren) {
-                        trNode.setAttribute('children-open-state', openState);
-                        trNode.setAttribute('father-cache-key', fatherCacheKey);
+                    // 顶层
+                    if (isTop) {
+                        index % 2 === 0 && trNode.setAttribute('odd', ''); // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
                     }
+
+                    trNode.setAttribute(TR_CACHE_KEY, cacheKey);
 
                     // 插入通栏: top-full-column
                     if (typeof topFullColumn.template !== 'undefined') {
@@ -257,19 +247,23 @@ class Dom {
                     }
 
                     // 插入正常的TR
-                    installNormal(trNode, row, index);
+                    installNormal(trNode, row, index, isTop);
 
                     // 处理层级结构
                     if (supportTreeData) {
                         const children = row[treeKey];
+
+                        // 插入tree dom
+                        tree.insertDOM(openState, trNode, level, children);
+
+                        // 递归处理层极结构
                         if (children && children.length) {
-                            trNode.setAttribute('open-state', openState);
-                            installTr(children, true, index);
+                            installTr(children, level + 1, cacheKey);
                         }
                     }
                 });
             };
-            installTr(data);
+            installTr(data, 0);
 
         } catch (e) {
             base.outError('render tbody error');

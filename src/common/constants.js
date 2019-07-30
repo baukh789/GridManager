@@ -29,8 +29,14 @@ export const TABLE_HEAD_KEY = 'grid-manager-thead';
 // 吸顶head所使用的key
 export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
 
-// tr 上 cache key
+// tr cache key
 export const TR_CACHE_KEY = 'cache-key';
+
+// tr 上一层级的 cache key
+export const TR_PARENT_KEY = 'parent-key';
+
+// tr 子行的展示状态
+export const TR_CHILDREN_STATE = 'children-state';
 
 // 行属性 禁用
 export const COL_PROP_DISABLED = 'gm_checkbox_disabled';

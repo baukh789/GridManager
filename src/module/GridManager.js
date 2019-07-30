@@ -23,6 +23,7 @@ import filter from './filter';
 
 const isRendered = (table, fnName) => {
     const settings = cache.getSettings(base.getKey(table));
+    // fnName !== 'destroy' &&
     if (!settings.rendered) {
         base.outError(`${fnName} failed，please check your table had been init`);
         return false;
@@ -402,17 +403,14 @@ export default class GridManager {
         }
         const checkedList = Array.isArray(checkedData) ? checkedData : [checkedData];
         const settings = cache.getSettings(base.getKey(table));
-        const { columnMap, useRadio, gridManagerName } = settings;
+        const { columnMap, useRadio, gridManagerName, treeConfig } = settings;
+        const treeKey = treeConfig.treeKey;
         const tableData = cache.getTableData(gridManagerName);
         tableData.forEach(rowData => {
-            let checked = checkedList.some(item => {
-                let cloneRow = base.getCloneRowData(columnMap, item);
-                let cloneItem = base.getCloneRowData(columnMap, rowData);
-                return base.equal(cloneRow, cloneItem);
-            });
-            rowData[checkbox.key] = checked;
+            let cloneRow = base.getCloneRowData(columnMap, rowData, [treeKey]);
+            rowData[checkbox.key] = checkedList.some(item => base.equal(cloneRow, base.getCloneRowData(columnMap, item, [treeKey])));
         });
-        // cache.setTableData(gridManagerName, tableData);
+
         cache.setCheckedData(gridManagerName, checkedList, true);
         return checkbox.resetDOM(settings, tableData, useRadio);
     };
@@ -523,7 +521,7 @@ export default class GridManager {
 		cache.verifyVersion();
 
 		// 初始化设置相关: 合并, 存储
-		let settings = cache.initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order), tree.getColumn.bind(tree));
+		let settings = cache.initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order));
 		const gridManagerName = settings.gridManagerName;
 
 		// 校验: gridManagerName
@@ -640,9 +638,9 @@ export default class GridManager {
      */
     static
     destroy(table) {
-        if (!isRendered(table, 'destroy')) {
-            return;
-        }
+        // if (!isRendered(table, 'destroy')) {
+        //     return;
+        // }
         let gridManagerName = '';
 
         // gridManagerName
@@ -661,20 +659,27 @@ export default class GridManager {
         base.SIV_waitTableAvailable[gridManagerName] = null;
         base.SIV_waitContainerAvailable[gridManagerName] = null;
 
-        // 清除各模块中的事件及部分DOM
-        adjust.destroy(gridManagerName);
-        ajaxPage.destroy(gridManagerName);
-        checkbox.destroy(gridManagerName);
-        config.destroy(gridManagerName);
-        drag.destroy(gridManagerName);
-        menu.destroy(gridManagerName);
-        remind.destroy(gridManagerName);
-        scroll.destroy(gridManagerName);
-        sort.destroy(gridManagerName);
-        filter.destroy(gridManagerName);
-        coreDOM.destroy(gridManagerName);
+        try {
+            // 清除各模块中的事件及部分DOM
+            adjust.destroy(gridManagerName);
+            ajaxPage.destroy(gridManagerName);
+            checkbox.destroy(gridManagerName);
+            config.destroy(gridManagerName);
+            drag.destroy(gridManagerName);
+            menu.destroy(gridManagerName);
+            remind.destroy(gridManagerName);
+            scroll.destroy(gridManagerName);
+            sort.destroy(gridManagerName);
+            filter.destroy(gridManagerName);
+            coreDOM.destroy(gridManagerName);
+            tree.destroy(gridManagerName);
+        } catch (e) {
+            console.error(e);
+        }
 
         // 清除实例及数据
         cache.clear(gridManagerName);
+
+        console.log('destroy:' + gridManagerName);
     }
 }

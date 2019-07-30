@@ -210,7 +210,7 @@ describe('Framework', () => {
                 return 'this is function';
             };
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('this is function');
+            expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('this is function');
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -220,7 +220,7 @@ describe('Framework', () => {
             };
             tdTemplate = 'this is string';
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('this is string');
+            expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('this is string');
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -229,7 +229,7 @@ describe('Framework', () => {
                 gridManagerName
             };
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('/upload/blog/pic/9081_type.jpg');
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -240,7 +240,7 @@ describe('Framework', () => {
             };
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('/upload/blog/pic/9081_type.jpg');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -251,7 +251,7 @@ describe('Framework', () => {
             };
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('/upload/blog/pic/9081_type.jpg');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -262,7 +262,7 @@ describe('Framework', () => {
             };
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('/upload/blog/pic/9081_type.jpg');
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -276,7 +276,7 @@ describe('Framework', () => {
                 return 'this is function';
             };
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTd(settings, tdNode, row, 1, 'pic', tdTemplate)).toBe('');
+            expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
     });

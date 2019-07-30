@@ -31,7 +31,7 @@ class AjaxPage {
      */
 	init(gridManagerName) {
         const settings = cache.getSettings(gridManagerName);
-        this.eventMap[gridManagerName] = getAjaxEvent(gridManagerName, this.getQuerySelector(gridManagerName));
+        this.eventMap[gridManagerName] = getAjaxEvent(gridManagerName);
 
 		// 根据本地缓存配置每页显示条数
 		if (!settings.disableCache) {

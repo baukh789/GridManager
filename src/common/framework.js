@@ -74,7 +74,7 @@ class Framework {
      * @param template
      * @returns {*}
      */
-    compileTd(settings, el, row, index, key, template) {
+    compileTd(settings, el, template, row, index, key) {
         const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
         const compileList = this.getCompileList(gridManagerName);
         // React and not template

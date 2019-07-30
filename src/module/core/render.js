@@ -1,6 +1,5 @@
 import remind from '../remind';
 import order from '../order';
-import tree from '../tree';
 import ajaxPage from '../ajaxPage';
 import jTool from '@common/jTool';
 import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY } from '@common/constants';
@@ -165,10 +164,6 @@ class Render {
                 gmCreateAttr = 'gm-create="true" gm-checkbox="true"';  // TODO 需要将true进行移除
                 thName = checkbox.key;
                 thText = checkbox.getThContent(settings.useRadio);
-                break;
-            case tree.key:
-                gmCreateAttr = 'gm-create="true" gm-tree';
-                thName = tree.key;
                 break;
             // 普通列
             default:

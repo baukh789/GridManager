@@ -217,17 +217,16 @@
 			table.GM({
                 gridManagerName:'test',
 				emptyTemplate: '<div class="gm-empty-template">什么也没有</div>',
-				ajax_data: ajaxData1,
                 supportTreeData: true,
                 supportAjaxPage: true,
                 // supportCheckbox: false,
-                supportAutoOrder: false,
+                // supportAutoOrder: false,
                 treeConfig: {
                     openState: false,
                     treeKey: 'children'
                 },
 				ajaxData: ajaxData1,
-                useRadio: true,
+                // useRadio: true,
 				pageSize:20,
 				query: {ex: '用户自定义的查询参数,格式:{key:value}'},
 				columnData: [{
@@ -278,11 +277,14 @@
 				},
 				ajaxSuccess: function(data){
 					console.log('Event: ajaxSuccess', data);
-				}
+				},
+                checkedAfter: function(list){
+                    console.log(list);
+                }
 			}, function(query){
 				// 渲染完成后的回调函数
 				console.log(query);
-				GM.setCheckedData('test', ajaxData1.data[2]);
+				// GM.setCheckedData('test', ajaxData1.data[2]);
 			});
 		}
 	</script>
@@ -321,6 +323,7 @@
 		initDOM.setAttribute('disabled', '');
 		destroyDOM.removeAttribute('disabled');
 		resetDOM.removeAttribute('disabled');
+
 	</script>
 </body>
 </html>

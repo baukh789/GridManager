@@ -125,21 +125,21 @@ class Checkbox {
             disableCustomize: true,
 			width: CHECKBOX_WIDTH,
 			align: 'center',
-			template: (checked, row) => {
-                return this.getColumnTemplate({checked, disabled: row[this.disabledKey], useRadio: settings.useRadio});
+			template: (checked, row, index, isTop) => {
+                return this.getColumnTemplate({checked, disabled: row[this.disabledKey], useRadio: settings.useRadio, isTop});
 			}
 		};
 	}
 
     /**
-     * 获取选行模板
+     * 获取模板
      * @param params
      * @returns {parseData}
      */
     @parseTpl(columnTpl)
 	getColumnTemplate(params) {
-	    const { checked, disabled, useRadio } = params;
-	    const template = useRadio ? this.getRadioTpl({checked, disabled}) : this.getCheckboxTpl({checked, disabled});
+	    const { checked, disabled, useRadio, isTop } = params;
+	    const template = isTop ? (useRadio ? this.getRadioTpl({checked, disabled}) : this.getCheckboxTpl({checked, disabled})) : '';
         return {
             template
         };
@@ -230,7 +230,8 @@ class Checkbox {
      */
 	resetDOM(settings, tableData, useRadio) {
 	    const $table = base.getTable(settings.gridManagerName);
-		// 更改tbody区域选中状态
+
+	    // 更改tbody区域选中状态
         let checkedNum = 0;
         let usableLen = tableData.length;
 		tableData && tableData.forEach((row, index) => {

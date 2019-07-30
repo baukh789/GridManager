@@ -112,14 +112,11 @@ describe('base.equal(obj1, obj2)', () => {
     });
 });
 
-describe('base.getDataForColumnMap(columnMap, obj)', () => {
-    it('基础验证', () => {
-        expect(base.getCloneRowData).toBeDefined();
-        expect(base.getCloneRowData.length).toBe(2);
-    });
-
-    it('返回值验证', () => {
-        let columnMap = {
+describe('base.getDataForColumnMap(columnMap, obj, cleanKeyList)', () => {
+    let columnMap = null;
+    let data = null;
+    beforeEach(() => {
+        columnMap = {
             info: {
                 key: 'info',
                 text: '介绍',
@@ -137,7 +134,7 @@ describe('base.getDataForColumnMap(columnMap, obj)', () => {
                 isShow: true
             }
         };
-        let data = {
+        data = {
             username: 'baukh',
             age: 32,
             content: 'this is content',
@@ -145,17 +142,30 @@ describe('base.getDataForColumnMap(columnMap, obj)', () => {
             gm_checkbox: true,
             gm_checkbox_disabled: true
         };
-        let cloneData = {
+    });
+    afterEach(() => {
+        columnMap = null;
+        data = null;
+    });
+    it('基础验证', () => {
+        expect(base.getCloneRowData).toBeDefined();
+        expect(base.getCloneRowData.length).toBe(3);
+    });
+
+    it('返回值验证: 未指定cleanKeyList', () => {
+        expect(base.getCloneRowData(columnMap, data)).toEqual({
             username: 'baukh',
             age: 32,
             content: 'this is content',
             info: 'this is info'
-        };
-        expect(base.getCloneRowData(columnMap, data)).toEqual(cloneData);
+        });
+    });
 
-        columnMap = null;
-        data = null;
-        cloneData = null;
+    it('返回值验证: 指定cleanKeyList', () => {
+        expect(base.getCloneRowData(columnMap, data, ['age', 'info'])).toEqual({
+            username: 'baukh',
+            content: 'this is content'
+        });
     });
 });
 

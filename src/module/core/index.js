@@ -171,10 +171,14 @@ class Core {
      * @returns {Promise<any>}
      */
     async createDOM($table, settings) {
+        const gridManagerName = settings.gridManagerName;
+
+        // 创建DOM前 先清空框架解析列表
+        framework.clearCompileList(gridManagerName);
+
         coreDOM.init($table, settings);
 
         cache.setSettings(settings);
-        const gridManagerName = settings.gridManagerName;
 
         // 等待容器可用
         await this.waitContainerAvailable(gridManagerName);

@@ -1,24 +1,24 @@
 .table-wrap .table-div table[grid-manager]{
-    th[gm-tree], td[gm-tree]{
-        border-right: none;
-        padding: 0;
-        .th-wrap{
-            padding: 0;
-        }
-    }
-    .tree-action{
-        text-align: center;
-        font-size: 14px;
-        cursor: pointer;
-        &:hover{
-            color: #1890ff;
+    [tree-element] {
+        display: inline-block;
+        text-align: right;
+        margin-right: 4px;
+        line-height: 14px;
+        vertical-align: middle;
+        .tree-action{
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
+            &:hover{
+                color: #1890ff;
+            }
         }
     }
     tbody {
-        tr[children-open-state="false"]{
+        tr[children-state="false"]{
             display: none;
         }
-        tr[father-cache-key] td{
+        tr[parent-key] td{
             background-color: #F1F8FB;
         }
     }

@@ -34,8 +34,8 @@ class Order {
             disableCustomize: true,
 			width: ORDER_WIDTH,
 			align: 'center',
-			template: nodeData => {
-				return `<td gm-create="true" gm-order>${nodeData}</td>`;
+			template: (order, row, index, isTop) => {
+				return `<td gm-create="true" gm-order>${isTop ? order : ''}</td>`;
 			}
 		};
 	}

@@ -277,9 +277,8 @@ class Cache {
      * @param arg
      * @param checkboxColumnFn
      * @param orderColumnFn
-     * @param treeColumnFn
      */
-    initSettings(arg, checkboxColumnFn, orderColumnFn, treeColumnFn) {
+    initSettings(arg, checkboxColumnFn, orderColumnFn) {
         // 合并参数
         const settings = new Settings();
         settings.textConfig = new TextSettings();
@@ -291,11 +290,6 @@ class Cache {
         // 自动增加: 序号列
         if (settings.supportAutoOrder) {
             settings.columnData.unshift(orderColumnFn(settings));
-        }
-
-        // 自动增加: 树折叠列
-        if (settings.supportTreeData) {
-            settings.columnData.unshift(treeColumnFn(settings));
         }
 
         // 自动增加: 选择列

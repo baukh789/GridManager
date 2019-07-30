@@ -63,8 +63,9 @@ class Base {
      * 获取clone行数据匹配，修改它并不会污染原数据。
      * @param columnMap
      * @param obj
+     * @param cleanKeyList: 指定从clone数据中清除字段列表
      */
-    getCloneRowData(columnMap, obj) {
+    getCloneRowData(columnMap, obj, cleanKeyList) {
         let cloneObj = jTool.extend(true, {}, obj);
 
         // 删除自定义参数: 通过columnMap设置的项
@@ -76,6 +77,9 @@ class Base {
 
         // 删除自定义参数: 非columnMap设置的项
         delete cloneObj[COL_PROP_DISABLED];
+
+        // 清除指定字段
+        cleanKeyList && cleanKeyList.forEach(item => delete cloneObj[item]);
         return cloneObj;
     }
 

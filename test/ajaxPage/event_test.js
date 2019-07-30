@@ -11,11 +11,11 @@ describe('getAjaxEvent', () => {
 
     it('基础验证', () => {
         expect(getEventFN).toBeDefined();
-        expect(getEventFN.length).toBe(2);
+        expect(getEventFN.length).toBe(1);
     });
 
     it('执行验证', () => {
-        events = getEventFN('test', '#baukh');
+        events = getEventFN('test');
         expect(events.gotoPage.events).toBe('keyup');
         expect(events.gotoPage.target).toBe(`[${TOOLBAR_KEY}="test"]`);
         expect(events.gotoPage.selector).toBe('.gp-input');

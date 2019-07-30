@@ -1,6 +1,6 @@
 import { GM_VERSION, TABLE_KEY, WRAP_KEY, DIV_KEY, CONFIG_KEY,
     TOOLBAR_KEY, TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, ORDER_WIDTH,
-    CHECKBOX_WIDTH, TR_CACHE_KEY, COL_PROP_DISABLED,
+    CHECKBOX_WIDTH, TR_CACHE_KEY, TR_PARENT_KEY, TR_CHILDREN_STATE, COL_PROP_DISABLED,
     NO_SELECT_CLASS_NAME, EMPTY_DATA_CLASS_NAME, READY_CLASS_NAME, TABLE_PURE_LIST } from '@common/constants';
 
 describe('常量验证', () => {
@@ -40,7 +40,15 @@ describe('常量验证', () => {
         expect(TR_CACHE_KEY).toBe('cache-key');
     });
 
-    it('TR_CACHE_KEY', () => {
+    it('TR_PARENT_KEY', () => {
+        expect(TR_PARENT_KEY).toBe('parent-key');
+    });
+
+    it('TR_CHILDREN_STATE', () => {
+        expect(TR_CHILDREN_STATE).toBe('children-state');
+    });
+
+    it('COL_PROP_DISABLED', () => {
         expect(COL_PROP_DISABLED).toBe('gm_checkbox_disabled');
     });
 
