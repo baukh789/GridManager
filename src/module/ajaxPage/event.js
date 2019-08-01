@@ -26,9 +26,6 @@ export default function getAjaxEvent(gridManagerName) {
         numberPage: {events: 'click', target, selector: '[pagination-number] li'},
 
         // 刷新
-        refresh: {events: 'click', target, selector: '.refresh-action'},
-
-        // 切换每页显示条数
-        changePageSize: {events: 'change', target, selector: 'select[name=pSizeArea]'}
+        refresh: {events: 'click', target, selector: '.refresh-action'}
     };
 }

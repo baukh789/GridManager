@@ -20,6 +20,7 @@ import { parseTpl } from '@common/parse';
 import { TOOLBAR_KEY } from '@common/constants';
 import core from '../core';
 import i18n from '../i18n';
+import dropdown from '../dropdown';
 import ajaxPageTpl from './ajax-page.tpl.html';
 import getAjaxEvent from './event';
 class AjaxPage {
@@ -44,6 +45,31 @@ class AjaxPage {
             jTool.extend(settings, {pageData: pageData});
             cache.setSettings(settings);
         }
+
+        // 初始化dropdown
+        const dropwownArg = {
+            gridManagerName,
+            defaultValue: settings.pageData[settings.pageSizeKey],
+            onChange: value => {
+                const settings = cache.getSettings(gridManagerName);
+                settings.pageData = {};
+                settings.pageData[settings.currentPageKey] = 1;
+                settings.pageData[settings.pageSizeKey] = window.parseInt(value);
+
+                cache.saveUserMemory(settings);
+
+                // 更新缓存
+                cache.setSettings(settings);
+
+                // 调用事件、渲染tbody
+                const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
+                settings.pagingBefore(query);
+                core.refresh(gridManagerName, () => {
+                    settings.pagingAfter(query);
+                });
+            }
+        };
+        dropdown.init(dropwownArg);
 
 		// 绑定事件
 		this.__bindPageEvent(gridManagerName);
@@ -76,7 +102,7 @@ class AjaxPage {
             previousPageText: i18n.i18nText(settings, 'previous-page'),
             nextPageText: i18n.i18nText(settings, 'next-page'),
             lastPageText: i18n.i18nText(settings, 'last-page'),
-            pageSizeOptionTpl: this.__getPageSizeOptionStr(settings.sizeData)
+            pageSizeOptionTpl: dropdown.createHtml(settings)
         };
     }
 
@@ -92,9 +118,6 @@ class AjaxPage {
 
 		// 更新底部DOM节点
 		this.__updateFooterDOM($footerToolbar, settings, pageData);
-
-		// 重置当前页显示条数
-        this.__resetPSize($footerToolbar, settings, pageData);
 
 		// 修改分页描述信息
         this.__resetPageInfo($footerToolbar, settings, pageData);
@@ -255,19 +278,6 @@ class AjaxPage {
 		return tHtml;
 	}
 
-	/**
-	 * 生成每页显示条数选择框据
-	 * @param sizeData
-	 * @private
-     */
-	__getPageSizeOptionStr(sizeData) {
-		let pageSizeOptionStr = '';
-		jTool.each(sizeData, (index, value) => {
-            pageSizeOptionStr += `<option value="${value}">${value}</option>`;
-		});
-		return pageSizeOptionStr;
-	}
-
     /**
      * 更新分页禁用状态
      * @param $footerToolbar
@@ -311,7 +321,7 @@ class AjaxPage {
 		const _this = this;
 
 		// 事件: 首页
-        const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage, changePageSize } = this.eventMap[gridManagerName];
+        const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage } = this.eventMap[gridManagerName];
         jTool(firstPage.target).on(firstPage.events, firstPage.selector, function () {
             _this.gotoPage(cache.getSettings(gridManagerName), 1);
         });
@@ -366,48 +376,6 @@ class AjaxPage {
             let _cPage = parseInt(this.value, 10);
             _this.gotoPage(cache.getSettings(gridManagerName), _cPage);
         });
-
-        // 事件: 切换每页显示条数
-        jTool(changePageSize.target).on(changePageSize.events, changePageSize.selector, function (event) {
-            const _size = jTool(event.target);
-            const settings = cache.getSettings(gridManagerName);
-            settings.pageData = {};
-            settings.pageData[settings.currentPageKey] = 1;
-            settings.pageData[settings.pageSizeKey] = window.parseInt(_size.val());
-
-            cache.saveUserMemory(settings);
-
-            // 更新缓存
-            cache.setSettings(settings);
-
-            // 调用事件、渲染tbody
-            const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
-            settings.pagingBefore(query);
-            core.refresh(gridManagerName, () => {
-                settings.pagingAfter(query);
-            });
-        });
-	}
-
-	/**
-	 * 重置每页显示条数, 重置条数文字信息 [注: 这个方法只做显示更新, 不操作Cache 数据]
-	 * @param $footerToolbar
-	 * @param settings
-	 * @param pageData 分页数据格式
-	 * @returns {boolean}
-	 * @private
-     */
-	__resetPSize($footerToolbar, settings, pageData) {
-		const pSizeArea = jTool('select[name="pSizeArea"]', $footerToolbar);
-		if (!pSizeArea || pSizeArea.length === 0) {
-			return false;
-		}
-
-		// 根据返回值修正单页条数显示值
-		pSizeArea.val(pageData[settings.pageSizeKey] || 10);
-
-		pSizeArea.show();
-		return true;
 	}
 
     /**

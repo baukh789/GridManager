@@ -8,6 +8,7 @@ import base from '@common/base';
 import cache from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
+import dropdown from './dropdown';
 import order from './order';
 import checkbox from './checkbox';
 import tree from './tree';
@@ -673,13 +674,12 @@ export default class GridManager {
             filter.destroy(gridManagerName);
             coreDOM.destroy(gridManagerName);
             tree.destroy(gridManagerName);
+            dropdown.destroy(gridManagerName);
         } catch (e) {
             console.error(e);
         }
 
         // 清除实例及数据
         cache.clear(gridManagerName);
-
-        console.log('destroy:' + gridManagerName);
     }
 }

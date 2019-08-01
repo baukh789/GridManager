@@ -43,9 +43,5 @@ describe('getAjaxEvent', () => {
         expect(events.refresh.events).toBe('click');
         expect(events.refresh.target).toBe(`[${TOOLBAR_KEY}="test"]`);
         expect(events.refresh.selector).toBe('.refresh-action');
-
-        expect(events.changePageSize.events).toBe('change');
-        expect(events.changePageSize.target).toBe(`[${TOOLBAR_KEY}="test"]`);
-        expect(events.changePageSize.selector).toBe('select[name=pSizeArea]');
     });
 });
