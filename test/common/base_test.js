@@ -751,9 +751,10 @@ describe('base.updateEmptyCol(gridManagerName)', () => {
     });
 });
 
-describe('base.getColTd($dom)', () => {
+describe('base.getColTd($dom, $context)', () => {
     let $table = null;
     let $dom = null;
+    let $tr = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         $table = jTool('table[grid-manager="test"]');
@@ -763,17 +764,25 @@ describe('base.getColTd($dom)', () => {
         document.body.innerHTML = '';
         $table = null;
         $dom = null;
+        $tr = null;
     });
 
     it('基础验证', () => {
         expect(base.getColTd).toBeDefined();
-        expect(base.getColTd.length).toBe(1);
+        expect(base.getColTd.length).toBe(2);
     });
 
     it('base.getColTd($th)', () => {
         $dom = $table.find('thead[grid-manager-thead] th[th-name="createDate"]');
         expect(base.getColTd($dom).length).toBe(10);
         expect(base.getColTd($dom).eq(2).text()).toBe('2018/5/14');
+    });
+
+    it('base.getColTd($th, $tr)', () => {
+        $dom = $table.find('thead[grid-manager-thead] th[th-name="createDate"]');
+        $tr = $table.find('tbody tr').eq(0);
+        expect(base.getColTd($dom, $tr).length).toBe(1);
+        expect(base.getColTd($dom, $tr).text()).toBe('2018/8/3');
     });
 
     it('base.getColTd($td)', () => {

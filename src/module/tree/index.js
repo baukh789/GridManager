@@ -58,14 +58,24 @@ class Tree {
 
     /**
      * 插入树事件DOM
+     * @param gridManagerName
      * @param openState
+     * @param insertTo
      * @param trNode
      * @param level
      * @param children
      */
-    insertDOM(openState, trNode, level, children) {
+    insertDOM(gridManagerName, openState, insertTo, trNode, level, children) {
         // 第一个非自动创建 且 可视的td
-        const firstTd = trNode.querySelector('td[gm-create="false"]');
+        let $insertTd = null;
+        if (typeof insertTo === 'string') {
+            $insertTd = base.getColTd(base.getTh(gridManagerName, insertTo), trNode);
+        }
+
+        // 未设置 insertTo 或 通过 insertTo 未找到dom时: 使用第一个非自动创建的TD
+        if (!$insertTd) {
+            $insertTd = jTool('td[gm-create="false"]', trNode);
+        }
         const treeDOM = document.createElement('span');
         treeDOM.setAttribute(this.key, openState);
         treeDOM.style.width = (level + 1) * 14 + 'px';
@@ -73,7 +83,7 @@ class Tree {
         if (children && children.length) {
             treeDOM.innerHTML = `<i class="tree-action iconfont ${getIconClass(openState)}"></i>`;
         }
-        firstTd.insertBefore(treeDOM, firstTd.firstChild);
+        $insertTd.prepend(treeDOM);
     }
 
     /**

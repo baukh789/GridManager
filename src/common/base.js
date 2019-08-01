@@ -362,11 +362,18 @@ class Base {
 
     /**
      * 获取同列的 td jTool 对象
-     * @param $th
+     * @param $dom: $th || $td
+     * @param $context: $tr || tr
      * @returns {jTool}
      */
-    getColTd($th) {
-        return jTool(`tbody tr td:nth-child(${$th.index() + 1})`, this.getTable($th, true));
+    getColTd($dom, $context) {
+        // 获取tbody下全部匹配的td
+        if (!$context) {
+            return jTool(`tbody tr td:nth-child(${$dom.index() + 1})`, this.getTable($dom, true));
+        }
+
+        // 获取指定tr下匹配的td
+        return jTool(`td:nth-child(${$dom.index() + 1})`, $context);
     }
 
     /**

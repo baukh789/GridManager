@@ -237,10 +237,13 @@ const treeData = {
     supportTreeData: false,
 
     treeConfig: {
+        // 树展开操作按键所属容器，此处配置columnData的key值。未配置时，将默认选择columnData的第一项
+        insertTo: null,
+
         // 层级关键字段
         treeKey: 'children',
 
-        // 打开状态
+        // 初始打开状态
         openState: false
     }
 };

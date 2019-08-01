@@ -210,6 +210,16 @@ describe('Settings', () => {
 		expect(settings.i18n).toBe('zh-cn');
 	});
 
+    it('验证属性[supportTreeData]初始值', () => {
+        expect(settings.supportTreeData).toBe(false);
+    });
+
+    it('验证属性[treeConfig]初始值', () => {
+        expect(settings.treeConfig.insertTo).toBe(null);
+        expect(settings.treeConfig.treeKey).toBe('children');
+        expect(settings.treeConfig.openState).toBe(false);
+    });
+
     it('验证属性[topFullColumn]初始值', () => {
         expect(settings.topFullColumn).toEqual({});
     });

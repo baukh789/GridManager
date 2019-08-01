@@ -126,7 +126,7 @@ class Dom {
             treeConfig
         } = settings;
 
-        const { treeKey, openState } = treeConfig;
+        const { treeKey, openState, insertTo } = treeConfig;
         const resetData = data => {
             return data.map((row, index) => {
                 // add order
@@ -254,7 +254,7 @@ class Dom {
                         const children = row[treeKey];
 
                         // 插入tree dom
-                        tree.insertDOM(openState, trNode, level, children);
+                        tree.insertDOM(gridManagerName, openState, insertTo, trNode, level, children);
 
                         // 递归处理层极结构
                         if (children && children.length) {

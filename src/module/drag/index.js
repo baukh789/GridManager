@@ -31,7 +31,6 @@ class Drag {
         const { dragStart, dragging, dragAbort } = this.eventMap[gridManagerName];
 
         // 拖拽事件仅绑在fake head th
-        // 指定拖拽换位事件源,配置拖拽样式
         jTool(dragStart.target).on(dragStart.events, dragStart.selector, function (event) {
             // 获取设置项
             let settings = cache.getSettings(gridManagerName);
@@ -61,8 +60,11 @@ class Drag {
             $th.addClass(draggingClassName);
             $colTd.addClass(draggingClassName);
 
-            $tableWrap.append('<div class="dreamland-div"></div>');
             let $dreamlandDIV = jTool('.dreamland-div', $tableWrap);
+            if ($dreamlandDIV.length === 0) {
+                $tableWrap.append('<div class="dreamland-div"></div>');
+                $dreamlandDIV = jTool('.dreamland-div', $tableWrap);
+            }
             // #001
             $dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({ $table,  $th, $colTd });
 
@@ -116,6 +118,7 @@ class Drag {
             jTool(dragAbort.target).on(dragAbort.events, function (event) {
                 jTool(dragging.target).off(dragging.events);
                 jTool(dragAbort.target).off(dragAbort.events);
+
                 // 清除临时展示被移动的列
                 if ($dreamlandDIV.length !== 0) {
                     $dreamlandDIV.animate({
@@ -124,7 +127,8 @@ class Drag {
                     }, animateTime, () => {
                         $th.removeClass(draggingClassName);
                         $colTd.removeClass(draggingClassName);
-                        $dreamlandDIV.remove();
+
+                        $dreamlandDIV.hide();
 
                         // 列拖拽成功回调事件
                         dragAfter(event);
