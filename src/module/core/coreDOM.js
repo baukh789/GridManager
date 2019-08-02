@@ -252,12 +252,13 @@ class Dom {
                     // 处理层级结构
                     if (supportTreeData) {
                         const children = row[treeKey];
+                        const hasChildren = children && children.length;
 
-                        // 插入tree dom
-                        tree.insertDOM(gridManagerName, openState, insertTo, trNode, level, children);
+                        // 添加tree map
+                        tree.add(gridManagerName, trNode, level, hasChildren);
 
                         // 递归处理层极结构
-                        if (children && children.length) {
+                        if (hasChildren) {
                             installTr(children, level + 1, cacheKey);
                         }
                     }
@@ -273,6 +274,9 @@ class Dom {
 
         // 解析框架
         framework.send(settings);
+
+        // 插入tree dom
+        tree.insertDOM(gridManagerName, openState, insertTo);
     }
 
     /**

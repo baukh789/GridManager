@@ -5,7 +5,7 @@ import './style.less';
 import jTool from '@common/jTool';
 import base from '@common/base';
 import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE } from '@common/constants';
-import getTreeEvent from './event';
+import getEvent from './event';
 const getIconClass = state => {
     return state ? 'icon-jianhao' : 'icon-add';
 };
@@ -13,8 +13,37 @@ const getIconClass = state => {
 class Tree {
     eventMap = {};
 
+    // 待添加tree dom存储器
+    map = {};
+
     get key() {
         return 'tree-element';
+    }
+
+    /**
+     * add map
+     * @param gridManagerName
+     * @param trNode
+     * @param level
+     * @param hasChildren
+     */
+    add(gridManagerName, trNode, level, hasChildren) {
+        if (!this.map[gridManagerName]) {
+            this.map[gridManagerName] = [];
+        }
+        this.map[gridManagerName].push({
+            trNode,
+            level,
+            hasChildren
+        });
+    }
+
+    /**
+     * clear map
+     * @param gridManagerName
+     */
+    clear(gridManagerName) {
+        delete this.map[gridManagerName];
     }
 
     init(gridManagerName) {
@@ -47,7 +76,7 @@ class Tree {
         };
 
         // 绑定事件
-        this.eventMap[gridManagerName] = getTreeEvent(gridManagerName, base.getQuerySelector(gridManagerName), this.key);
+        this.eventMap[gridManagerName] = getEvent(gridManagerName, base.getQuerySelector(gridManagerName), this.key);
         const { target, events, selector } = this.eventMap[gridManagerName].toggleState;
 
         jTool(target).on(events, selector, function () {
@@ -61,29 +90,42 @@ class Tree {
      * @param gridManagerName
      * @param openState
      * @param insertTo
-     * @param trNode
-     * @param level
-     * @param children
      */
-    insertDOM(gridManagerName, openState, insertTo, trNode, level, children) {
-        // 第一个非自动创建 且 可视的td
-        let $insertTd = null;
-        if (typeof insertTo === 'string') {
-            $insertTd = base.getColTd(base.getTh(gridManagerName, insertTo), trNode);
+    insertDOM(gridManagerName, openState, insertTo) {
+        const $table = base.getTable(gridManagerName);
+        let parentKeyList = [];
+        jTool.each(jTool('tr[parent-key]', $table), (index, item) => {
+            parentKeyList.push(item.getAttribute('parent-key'));
+        });
+
+        const insetList = this.map[gridManagerName];
+        if (!insetList || insetList.length === 0) {
+            return;
         }
 
-        // 未设置 insertTo 或 通过 insertTo 未找到dom时: 使用第一个非自动创建的TD
-        if (!$insertTd) {
-            $insertTd = jTool('td[gm-create="false"]', trNode).eq(0);
-        }
-        const treeDOM = document.createElement('span');
-        treeDOM.setAttribute(this.key, openState);
-        treeDOM.style.width = (level + 1) * 14 + 'px';
+        insetList.forEach(item => {
+            const { trNode, level, hasChildren } = item;
+            // 第一个非自动创建 且 可视的td
+            let $insertTd = null;
+            if (typeof insertTo === 'string') {
+                $insertTd = base.getColTd(base.getTh(gridManagerName, insertTo), trNode);
+            }
 
-        if (children && children.length) {
-            treeDOM.innerHTML = `<i class="tree-action iconfont ${getIconClass(openState)}"></i>`;
-        }
-        $insertTd.prepend(treeDOM);
+            // 未设置 insertTo 或 通过 insertTo 未找到dom时: 使用第一个非自动创建的TD
+            if (!$insertTd) {
+                $insertTd = jTool('td[gm-create="false"]', trNode).eq(0);
+            }
+            const treeDOM = document.createElement('span');
+            treeDOM.setAttribute(this.key, openState);
+            treeDOM.style.width = (level + 1) * 14 + 'px';
+
+            if (hasChildren) {
+                treeDOM.innerHTML = `<i class="tree-action iconfont ${getIconClass(openState)}"></i>`;
+            }
+            $insertTd.prepend(treeDOM);
+        });
+
+        this.clear(gridManagerName);
     }
 
     /**
@@ -92,6 +134,7 @@ class Tree {
      */
     destroy(gridManagerName) {
         base.clearBodyEvent(this.eventMap[gridManagerName]);
+        this.clear(gridManagerName);
     }
 }
 
