@@ -2,7 +2,7 @@
  * checkbox: 数据选择/全选/返选
  * */
 import './style.less';
-import { CHECKBOX_WIDTH, TR_CACHE_KEY, COL_PROP_DISABLED } from '@common/constants';
+import { CHECKBOX_WIDTH, TR_CACHE_KEY, COL_PROP_DISABLED, CHECKBOX_KEY, CHECKBOX_DISABLED_KEY } from '@common/constants';
 import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
@@ -16,16 +16,6 @@ import { TABLE_KEY } from '../../common/constants';
 
 class Checkbox {
     eventMap = {};
-
-    // 唯一标识
-	get key() {
-		return 'gm_checkbox';
-	}
-
-	// 禁用标识
-	get disabledKey() {
-        return this.key + '_disabled';
-    }
 
     // 选中ClassName
 	get checkedClassName() {
@@ -118,7 +108,7 @@ class Checkbox {
 	 */
 	getColumn(settings) {
 		return {
-			key: this.key,
+			key: CHECKBOX_KEY,
 			text: '',
 			isAutoCreate: true,
 			isShow: true,
@@ -126,7 +116,7 @@ class Checkbox {
 			width: CHECKBOX_WIDTH,
 			align: 'center',
 			template: (checked, row, index, isTop) => {
-                return this.getColumnTemplate({checked, disabled: row[this.disabledKey], useRadio: settings.useRadio, isTop});
+                return this.getColumnTemplate({checked, disabled: row[CHECKBOX_DISABLED_KEY], useRadio: settings.useRadio, isTop});
 			}
 		};
 	}
@@ -193,20 +183,20 @@ class Checkbox {
 			tableData.forEach(row => {
 			    // 仅选中未禁用的项
 			    if (!row[COL_PROP_DISABLED]) {
-                    row[this.key] = status;
+                    row[CHECKBOX_KEY] = status;
                 }
 			});
 		}
 
 		// 多选-单个操作
 		if (!isAllCheck && cacheKey) {
-			tableData[cacheKey][this.key] = status;
+			tableData[cacheKey][CHECKBOX_KEY] = status;
 		}
 
 		// 单选
         if (isRadio) {
             tableData.forEach((row, index) => {
-                row[this.key] = index === parseInt(cacheKey, 10);
+                row[CHECKBOX_KEY] = index === parseInt(cacheKey, 10);
             });
 
             // 清空当前选中项
@@ -235,7 +225,7 @@ class Checkbox {
         let checkedNum = 0;
         let usableLen = tableData.length;
 		tableData && tableData.forEach((row, index) => {
-		    const isChecked = row[this.key];
+		    const isChecked = row[CHECKBOX_KEY];
 			const $tr = jTool(`tbody tr[${TR_CACHE_KEY}="${index}"]`, $table);
             const $checkSpan = jTool('td[gm-checkbox="true"] .gm-radio-checkbox', $tr);
 			$tr.attr('checked', isChecked);

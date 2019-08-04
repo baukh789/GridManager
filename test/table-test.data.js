@@ -18,7 +18,26 @@ export default function () {
                 'praiseNumber': '0',
                 'commentSum': 0,
                 'username': '拭目以待',
-                'photo': '/upload/user/photo/8495_1.jpg'
+                'photo': '/upload/user/photo/8495_1.jpg',
+                'children': [
+                    {
+                        'id': 921,
+                        'title': 'Content-Type 对照表',
+                        'subtitle': 'Content-Type,Mime-Type',
+                        'pic': '/upload/blog/pic/9081_type.jpg',
+                        'createDate': 1533263664000,
+                        'lastDate': 1533276847970,
+                        'author': '33',
+                        'type': 3,
+                        'status': 1,
+                        'info': 'Content-Type(Mime-Type)对照表, 有不全的会继续更新',
+                        'readNumber': 331,
+                        'praiseNumber': '0',
+                        'commentSum': 0,
+                        'username': '拭目以待',
+                        'photo': '/upload/user/photo/8495_1.jpg'
+                    }
+                ]
             }, {
                 'id': 90,
                 'title': 'Vue框架内使用GridManager',

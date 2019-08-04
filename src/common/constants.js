@@ -32,6 +32,9 @@ export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
 // tr cache key
 export const TR_CACHE_KEY = 'cache-key';
 
+// tr cache row data
+export const TR_CACHE_ROW = 'cache-row';
+
 // tr 上一层级的 cache key
 export const TR_PARENT_KEY = 'parent-key';
 
@@ -53,11 +56,20 @@ export const CACHE_ERROR_KEY = 'grid-manager-cache-error';
 // 空模板属性 key
 export const EMPTY_TPL_KEY = 'empty-template';
 
-// 序号的列宽
+// order width
 export const ORDER_WIDTH = '50px';
 
-// 全选的列宽
+// order: key
+export const ORDER_KEY = 'gm_order';
+
+// checkbox width
 export const CHECKBOX_WIDTH = '40px';
+
+// checkbox key
+export const CHECKBOX_KEY = 'gm_checkbox';
+
+// checkbox 禁用标识
+export const CHECKBOX_DISABLED_KEY = CHECKBOX_KEY + '_disabled';
 
 // 禁用文本选中Class Name
 export const NO_SELECT_CLASS_NAME = 'no-select-text';

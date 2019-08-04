@@ -2,7 +2,7 @@ import remind from '../remind';
 import order from '../order';
 import ajaxPage from '../ajaxPage';
 import jTool from '@common/jTool';
-import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY } from '@common/constants';
+import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY } from '@common/constants';
 import base from '@common/base';
 import framework from '@common/framework';
 import { parseTpl } from '../../common/parse';
@@ -154,15 +154,15 @@ class Render {
         let compileAttr = '';
         switch (col.key) {
             // 插件自动生成序号列
-            case order.key:
+            case ORDER_KEY:
                 gmCreateAttr = 'gm-create="true" gm-order';
-                thName = order.key;
+                thName = ORDER_KEY;
                 thText = order.getThContent(settings);
                 break;
             // 插件自动生成选择列
-            case checkbox.key:
+            case CHECKBOX_KEY:
                 gmCreateAttr = 'gm-create="true" gm-checkbox="true"';  // TODO 需要将true进行移除
-                thName = checkbox.key;
+                thName = CHECKBOX_KEY;
                 thText = checkbox.getThContent(settings.useRadio);
                 break;
             // 普通列

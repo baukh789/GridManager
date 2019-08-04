@@ -8,7 +8,7 @@ import jTool from './jTool';
 import base from './base';
 import { Settings, TextSettings } from './Settings';
 import store from './Store';
-import { TR_CACHE_KEY, CACHE_ERROR_KEY, MEMORY_KEY, VERSION_KEY } from './constants';
+import { TR_CACHE_ROW, CACHE_ERROR_KEY, MEMORY_KEY, VERSION_KEY, ORDER_KEY, CHECKBOX_KEY, CHECKBOX_DISABLED_KEY } from './constants';
 
 class Cache {
     /**
@@ -45,11 +45,10 @@ class Cache {
      * @returns {*}
      */
     getRowData(gridManagerName, target, useGmProp) {
-        const tableData = this.getTableData(gridManagerName);
         const columnMap = this.getSettings(gridManagerName).columnMap;
 
         const getTrData = tr => {
-            const rowData = tableData[tr.getAttribute(TR_CACHE_KEY)] || {};
+            const rowData = tr[TR_CACHE_ROW] || {};
             return useGmProp ? rowData : base.getCloneRowData(columnMap, rowData);
         };
 
@@ -72,7 +71,7 @@ class Cache {
     }
 
     /**
-     * 更新列数据
+     * 更新行数据
      * @param gridManagerName
      * @param key: 列数据的主键
      * @param rowDataList: 需要更新的数据列表
@@ -80,15 +79,29 @@ class Cache {
      */
     updateRowData(gridManagerName, key, rowDataList) {
         const tableData = this.getTableData(gridManagerName);
-        tableData.forEach(item => {
-            rowDataList.forEach(newItem => {
-                if (newItem[key] === item[key]) {
+        const settings = this.getSettings(gridManagerName);
+        const supportTreeData = settings.supportTreeData;
+        const treeKey = settings.treeConfig.treeKey;
+
+        const updateData = (list, newItem) => {
+            list.some(item => {
+                if (item[key] === newItem[key]) {
                     jTool.extend(item, newItem);
+                    return true;
+                }
+
+                // 树型数据
+                if (supportTreeData) {
+                    const children = item[treeKey];
+                    if (children && children.length) {
+                        return updateData(children, newItem);
+                    }
                 }
             });
+        };
+        rowDataList.forEach(newItem => {
+            updateData(tableData, newItem);
         });
-        // 存储表格数据
-        // this.setTableData(gridManagerName, tableData);
         return tableData;
     }
 
@@ -107,6 +120,52 @@ class Cache {
      */
     setTableData(gridManagerName, data) {
         store.responseData[gridManagerName] = data;
+    }
+
+    /**
+     * 重置 table data 格式
+     * @param gridManagerName
+     * @param data
+     * @returns {*}
+     */
+    resetTableData(gridManagerName, data) {
+        const {
+            columnMap,
+            rowRenderHandler,
+            pageData,
+            supportAutoOrder,
+            supportCheckbox,
+            pageSizeKey,
+            currentPageKey
+        } = this.getSettings(gridManagerName);
+        const newData =  data.map((row, index) => {
+            // add order
+            if (supportAutoOrder) {
+                let	orderBaseNumber = 1;
+
+                // 验证是否存在分页数据
+                if (pageData && pageData[pageSizeKey] && pageData[currentPageKey]) {
+                    orderBaseNumber = pageData[pageSizeKey] * (pageData[currentPageKey] - 1) + 1;
+                }
+                row[ORDER_KEY] = orderBaseNumber + index;
+            }
+
+            // add checkbox
+            if (supportCheckbox) {
+                row[CHECKBOX_KEY] = this.getCheckedData(gridManagerName).some(item => {
+                    return base.equal(base.getCloneRowData(columnMap, item), base.getCloneRowData(columnMap, row));
+                });
+                row[CHECKBOX_DISABLED_KEY] = false;
+            }
+
+            // 单行数据渲染时执行程序
+            return rowRenderHandler(row, index);
+        });
+
+        // 存储表格数据
+        this.setTableData(gridManagerName, newData);
+        this.setCheckedData(gridManagerName, newData);
+        return newData;
     }
 
     /**

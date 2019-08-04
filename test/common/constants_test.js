@@ -1,6 +1,6 @@
 import { GM_VERSION, TABLE_KEY, WRAP_KEY, DIV_KEY, CONFIG_KEY,
-    TOOLBAR_KEY, TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, ORDER_WIDTH,
-    CHECKBOX_WIDTH, TR_CACHE_KEY, TR_PARENT_KEY, TR_CHILDREN_STATE, COL_PROP_DISABLED,
+    TOOLBAR_KEY, TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, ORDER_WIDTH, ORDER_KEY,
+    CHECKBOX_WIDTH, CHECKBOX_KEY, CHECKBOX_DISABLED_KEY, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_CHILDREN_STATE, COL_PROP_DISABLED,
     NO_SELECT_CLASS_NAME, EMPTY_DATA_CLASS_NAME, READY_CLASS_NAME, TABLE_PURE_LIST } from '@common/constants';
 
 describe('常量验证', () => {
@@ -40,6 +40,10 @@ describe('常量验证', () => {
         expect(TR_CACHE_KEY).toBe('cache-key');
     });
 
+    it('TR_CACHE_ROW', () => {
+        expect(TR_CACHE_ROW).toBe('cache-row');
+    });
+
     it('TR_PARENT_KEY', () => {
         expect(TR_PARENT_KEY).toBe('parent-key');
     });
@@ -56,8 +60,20 @@ describe('常量验证', () => {
         expect(ORDER_WIDTH).toBe('50px');
     });
 
+    it('ORDER_KEY', () => {
+        expect(ORDER_KEY).toBe('gm_order');
+    });
+
     it('CHECKBOX_WIDTH', () => {
         expect(CHECKBOX_WIDTH).toBe('40px');
+    });
+
+    it('CHECKBOX_KEY', () => {
+        expect(CHECKBOX_KEY).toBe('gm_checkbox');
+    });
+
+    it('CHECKBOX_DISABLED_KEY', () => {
+        expect(CHECKBOX_DISABLED_KEY).toBe(CHECKBOX_KEY + '_disabled');
     });
 
     it('NO_SELECT_CLASS_NAME', () => {

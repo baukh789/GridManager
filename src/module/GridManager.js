@@ -3,7 +3,7 @@
  * 构造类
  */
 import jTool from '@common/jTool';
-import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST } from '@common/constants';
+import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY } from '@common/constants';
 import base from '@common/base';
 import cache from '@common/cache';
 import adjust from './adjust';
@@ -409,7 +409,7 @@ export default class GridManager {
         const tableData = cache.getTableData(gridManagerName);
         tableData.forEach(rowData => {
             let cloneRow = base.getCloneRowData(columnMap, rowData, [treeKey]);
-            rowData[checkbox.key] = checkedList.some(item => base.equal(cloneRow, base.getCloneRowData(columnMap, item, [treeKey])));
+            rowData[CHECKBOX_KEY] = checkedList.some(item => base.equal(cloneRow, base.getCloneRowData(columnMap, item, [treeKey])));
         });
 
         cache.setCheckedData(gridManagerName, checkedList, true);

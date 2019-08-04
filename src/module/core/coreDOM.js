@@ -1,12 +1,10 @@
 import remind from '../remind';
-import order from '../order';
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_PARENT_KEY, TR_CHILDREN_STATE } from '@common/constants';
+import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_CHILDREN_STATE } from '@common/constants';
 import cache from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
-import checkbox from '../checkbox';
 import adjust from '../adjust';
 import tree from '../tree';
 import render from './render';
@@ -113,12 +111,6 @@ class Dom {
     renderTableBody(settings, data) {
         const {
             gridManagerName,
-            rowRenderHandler,
-            pageData,
-            supportAutoOrder,
-            supportCheckbox,
-            pageSizeKey,
-            currentPageKey,
             columnData,
             columnMap,
             topFullColumn,
@@ -127,42 +119,14 @@ class Dom {
         } = settings;
 
         const { treeKey, openState, insertTo } = treeConfig;
-        const resetData = data => {
-            return data.map((row, index) => {
-                // add order
-                if (supportAutoOrder) {
-                    let	orderBaseNumber = 1;
 
-                    // 验证是否存在分页数据
-                    if (pageData && pageData[pageSizeKey] && pageData[currentPageKey]) {
-                        orderBaseNumber = pageData[pageSizeKey] * (pageData[currentPageKey] - 1) + 1;
-                    }
-                    row[order.key] = orderBaseNumber + index;
-                }
-
-                // add checkbox
-                if (supportCheckbox) {
-                    row[checkbox.key] = cache.getCheckedData(gridManagerName).some(item => {
-                        return base.equal(base.getCloneRowData(columnMap, item), base.getCloneRowData(columnMap, row));
-                    });
-                    row[checkbox.disabledKey] = false;
-                }
-
-                // 单行数据渲染时执行程序
-                return rowRenderHandler(row, index);
-            });
-        };
-        data = resetData(data);
-
-        // 存储表格数据
-        cache.setTableData(gridManagerName, data);
-        cache.setCheckedData(gridManagerName, data);
+        data = cache.resetTableData(gridManagerName, data);
 
         // tbody dom
-        const _tbody = document.querySelector(`${base.getQuerySelector(gridManagerName)} tbody`);
+        const tbody = document.querySelector(`${base.getQuerySelector(gridManagerName)} tbody`);
 
         // 清空 tbody
-        _tbody.innerHTML = '';
+        tbody.innerHTML = '';
 
         // 插入通栏: top-full-column
         const installTopFull = (trNode, row, index) => {
@@ -174,7 +138,7 @@ class Dom {
             const intervalTrNode = document.createElement('tr');
             intervalTrNode.setAttribute('top-full-column-interval', 'true');
             intervalTrNode.innerHTML = `<td colspan="${columnData.length}"><div></div></td>`;
-            _tbody.appendChild(intervalTrNode);
+            tbody.appendChild(intervalTrNode);
 
             // 为非通栏tr的添加标识
             trNode.setAttribute('top-full-column', 'false');
@@ -185,7 +149,7 @@ class Dom {
             const tdTemplate = framework.compileFullColumn(settings, fullColumnNode, row, index, topFullColumn.template);
             jTool.type(tdTemplate) === 'element' ? fullColumnNode.appendChild(tdTemplate) : fullColumnNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
 
-            _tbody.appendChild(topTrNode);
+            tbody.appendChild(topTrNode);
         };
 
         // 插入正常的TR
@@ -217,7 +181,7 @@ class Dom {
                 trNode.appendChild(td);
             });
 
-            _tbody.appendChild(trNode);
+            tbody.appendChild(trNode);
         };
 
         try {
@@ -226,6 +190,8 @@ class Dom {
                 jTool.each(list, (index, row) => {
                     const trNode = document.createElement('tr');
                     let cacheKey = index;
+
+                    trNode[TR_CACHE_ROW] = row;
 
                     // 非顶层
                     if (!isTop) {
@@ -273,10 +239,52 @@ class Dom {
         this.initVisible(gridManagerName, columnMap);
 
         // 解析框架
-        framework.send(settings);
+        framework.send(settings).then(() => {
+            // 插入tree dom
+            tree.insertDOM(gridManagerName, openState, insertTo);
 
-        // 插入tree dom
-        tree.insertDOM(gridManagerName, openState, insertTo);
+            // 合并单元格
+            this.mergeRow(gridManagerName, columnMap);
+        });
+    }
+
+    /**
+     * 根据配置项[merge]合并行数据相同的单元格
+     * @param gridManagerName
+     * @param columnMap
+     */
+    mergeRow(gridManagerName, columnMap) {
+        jTool.each(columnMap, (key, col) => {
+            if (!col.merge) {
+                return true;
+            }
+            const $tdList = base.getColTd(base.getTh(gridManagerName, key));
+            let len = $tdList.length;
+            let mergeSum = 1;
+            while (len) {
+                const $td = $tdList.eq(len - 1);
+                len--;
+                if (len === 0) {
+                    if (mergeSum > 1) {
+                        $td.attr('rowspan', mergeSum);
+                        mergeSum = 1;
+                    }
+                    return;
+                }
+                const $prve = $tdList.eq(len - 1);
+
+                // 这里比较html而不比较数据的原因: 当前单元格所展示文本可能在template中未完全使用数据
+                if ($prve.html() === $td.html()) {
+                    $td.hide();
+                    mergeSum++;
+                } else {
+                    if (mergeSum > 1) {
+                        $td.attr('rowspan', mergeSum);
+                        mergeSum = 1;
+                    }
+                }
+            }
+        });
     }
 
     /**

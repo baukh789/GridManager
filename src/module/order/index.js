@@ -1,15 +1,10 @@
 /*
  * order: 序号
  * */
-import { ORDER_WIDTH } from '@common/constants';
+import { ORDER_WIDTH, ORDER_KEY } from '@common/constants';
 import i18n from '../i18n';
 import './style.less';
 class Order {
-	// 序号的唯一标识
-	get key() {
-		return 'gm_order';
-	}
-
 	/**
 	 * 获取TH内容
 	 * @param settings
@@ -27,7 +22,7 @@ class Order {
      */
 	getColumn(settings) {
 		return {
-			key: this.key,
+			key: ORDER_KEY,
 			text: i18n.getText(settings, 'order-text'),
 			isAutoCreate: true,
 			isShow: true,

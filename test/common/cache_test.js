@@ -1,7 +1,7 @@
 'use strict';
 import jTool from '@common/jTool';
 import { trimTpl } from '@common/parse';
-import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH} from '@common/constants';
+import {CACHE_ERROR_KEY, TR_CACHE_ROW, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '@common/constants';
 import cache from '@common/cache';
 import store from '@common/Store';
 import { version } from '@package.json';
@@ -9,6 +9,7 @@ import tableTpl from '@test/table-test.tpl.html';
 import getTableData from '@test/table-test.data.js';
 import { getColumnMap, getColumnData } from '@test/table-config';
 import i18n from '@module/i18n';
+import {CHECKBOX_KEY, ORDER_KEY} from '../../src/common/constants';
 
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
@@ -34,7 +35,7 @@ describe('cache 验证类的属性及方法总量', () => {
     });
     it('Function count', () => {
         // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(cache)))).toBe(20 + 1);
+        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(cache)))).toBe(21 + 1);
     });
 });
 
@@ -79,9 +80,15 @@ describe('getScope and setScope', () => {
 
 describe('getRowData', () => {
     let tableData = null;
+    let insertData = null;
     beforeEach(() => {
         tableData = getTableData();
         document.body.innerHTML = tableTestTpl;
+        insertData = () => {
+            jTool.each(jTool('table tbody tr'), (index, item) => {
+                item[TR_CACHE_ROW] = tableData.data[index];
+            });
+        };
         store.settings = {
             test: {
                 gridManagerName: 'test',
@@ -91,6 +98,7 @@ describe('getRowData', () => {
     });
     afterEach(() => {
         tableData = null;
+        insertData = null;
         document.body.innerHTML = '';
         store.responseData = {};
         store.settings = {};
@@ -109,23 +117,23 @@ describe('getRowData', () => {
         tableData.data[8].gm_checkbox = true;
         tableData.data[8].gm_checkbox_disabled = true;
         tableData.data[8].gm_order = 9;
-        store.responseData['test'] = tableData.data;
+        insertData();
         expect(cache.getRowData('test', document.querySelector('tr[cache-key="8"]'))).toEqual(new getTableData().data[8]);
         expect(cache.getRowData('test', document.querySelector('tr[cache-key="8"]'), true)).toEqual(tableData.data[8]);
     });
 
     it('使用gm自定义的属性', () => {
-        store.responseData['test'] = tableData.data;
+        insertData();
         expect(cache.getRowData('test', document.querySelector('tr[cache-key="9"]'))).toEqual(tableData.data[9]);
     });
 
     it('参数为NodeList', () => {
-        store.responseData['test'] = tableData.data;
+        insertData();
         expect(cache.getRowData('test', document.querySelectorAll('tr[cache-key]')).length).toBe(10);
     });
 
     it('参数异常', () => {
-        store.responseData['test'] = tableData.data;
+        insertData();
         expect(cache.getRowData('test', 'aa')).toEqual({});
     });
 });
@@ -135,12 +143,22 @@ describe('updateRowData(gridManagerName, key, rowDataList)', () => {
     beforeEach(() => {
         tableData = getTableData();
         store.responseData['test'] = tableData.data;
+        store.settings = {
+            test: {
+                gridManagerName: 'test',
+                supportTreeData: false,
+                treeConfig: {
+                    treeKey: 'children'
+                }
+            }
+        };
         document.body.innerHTML = tableTestTpl;
     });
     afterEach(() => {
         tableData = null;
         document.body.innerHTML = '';
         store.responseData = {};
+        store.settings = {};
     });
 
     it('基础验证', () => {
@@ -148,9 +166,16 @@ describe('updateRowData(gridManagerName, key, rowDataList)', () => {
         expect(cache.updateRowData.length).toBe(3);
     });
 
-    it('执行验证', () => {
+    it('执行验证: 常规数据', () => {
         expect(cache.updateRowData('test', 'id', [{id: 90, title: 'test updateRowData'}]).length).toBe(10);
         expect(cache.updateRowData('test', 'id', [{id: 90, title: 'test updateRowData'}])[1].title).toBe('test updateRowData');
+    });
+
+    it('执行验证: 树型数据', () => {
+        store.settings.test.supportTreeData = true;
+        expect(cache.updateRowData('test', 'id', [{id: 92, title: 'test updateRowData'}]).length).toBe(10);
+        expect(cache.updateRowData('test', 'id', [{id: 92, title: 'test updateRowData'}, {id: 921, title: 'test updateRowData'}])[0].title).toBe('test updateRowData');
+        expect(cache.updateRowData('test', 'id', [{id: 92, title: 'test updateRowData'}, {id: 921, title: 'test updateRowData'}])[0].children[0].title).toBe('test updateRowData');
     });
 });
 
@@ -175,6 +200,91 @@ describe('getTableData and setTableData', () => {
         expect(cache.getTableData('test')).toEqual([]);
         cache.setTableData('test', tableData.data);
         expect(cache.getTableData('test')).toEqual(tableData.data);
+    });
+});
+
+describe('resetTableData', () => {
+    let tableData = null;
+    let resetData = null;
+    beforeEach(() => {
+        tableData = getTableData().data;
+    });
+    afterEach(() => {
+        tableData = null;
+        resetData = null;
+        store.responseData = {};
+        store.settings = {};
+        store.checkedData = {};
+    });
+
+    it('基础验证', () => {
+        expect(cache.resetTableData).toBeDefined();
+        expect(cache.resetTableData.length).toBe(2);
+    });
+
+    it('执行验证: 无重置项', () => {
+        store.settings = {
+            test: {
+                gridManagerName: 'test',
+                columnMap: getColumnMap(),
+                rowRenderHandler: row => row,
+                pageData: {},
+                supportAutoOrder: false,
+                supportCheckbox: false,
+                pageSizeKey: 'pSize',
+                currentPageKey: 'cPage'
+            }
+        };
+        resetData = cache.resetTableData('test', tableData);
+        expect(resetData).toEqual(tableData);
+    });
+
+    it('执行验证: supportAutoOrder=true', () => {
+        store.settings = {
+            test: {
+                gridManagerName: 'test',
+                columnMap: getColumnMap(),
+                rowRenderHandler: row => row,
+                pageData: {
+                    pSize: 30,
+                    cPage: 2
+                },
+                supportAutoOrder: true,
+                supportCheckbox: false,
+                pageSizeKey: 'pSize',
+                currentPageKey: 'cPage'
+            }
+        };
+        resetData = cache.resetTableData('test', tableData);
+        expect(resetData[0][ORDER_KEY]).toBe(31);
+    });
+
+    it('执行验证: supportCheckbox=true', () => {
+        store.settings = {
+            test: {
+                gridManagerName: 'test',
+                columnMap: getColumnMap(),
+                rowRenderHandler: row => row,
+                supportAutoOrder: false,
+                supportCheckbox: true,
+                pageSizeKey: 'pSize',
+                currentPageKey: 'cPage'
+            }
+        };
+        store.checkedData = {
+            test: [
+                tableData[0], tableData[2]
+            ]
+        };
+        resetData = cache.resetTableData('test', tableData);
+        expect(resetData[0][CHECKBOX_KEY]).toBe(true);
+        expect(resetData[0][CHECKBOX_DISABLED_KEY]).toBe(false);
+
+        expect(resetData[1][CHECKBOX_KEY]).toBe(false);
+        expect(resetData[1][CHECKBOX_DISABLED_KEY]).toBe(false);
+
+        expect(resetData[2][CHECKBOX_KEY]).toBe(true);
+        expect(resetData[2][CHECKBOX_DISABLED_KEY]).toBe(false);
     });
 });
 
