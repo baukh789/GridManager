@@ -31,6 +31,13 @@
             border: 0;
             border-top: 1px solid #eee;
         }
+        .plugin-action{
+            display: inline-block;
+            color: steelblue;
+            margin-right: 10px;
+            cursor: pointer;
+            text-decoration: none;
+        }
 		.bottom-bar{
 			background: #f8f8f8;
 			padding: 10px;
@@ -237,10 +244,10 @@
 			table.GM({
                 gridManagerName:'test',
 				emptyTemplate: '<div class="gm-empty-template">什么也没有</div>',
-                supportTreeData: true,
                 supportAjaxPage: true,
                 // supportCheckbox: false,
                 // supportAutoOrder: false,
+                supportTreeData: true,
                 treeConfig: {
                     // insertTo: 'age',
                     openState: false,
@@ -280,7 +287,7 @@
 					width: '100px',
 					text: 'operation',
 					template: function(operation, rowObject){  //operation:当前key所对应的单条数据；rowObject：单个一行完整数据
-						return '<a href=javascript:alert("这是一个按纽");>'+operation+'</a>';
+						return `<span class="plugin-action">${operation}</span>`;
 					}
 				}
 				],
@@ -345,6 +352,10 @@
 		destroyDOM.removeAttribute('disabled');
 		resetDOM.removeAttribute('disabled');
 
+		jTool(table).on('click', '.plugin-action', function(e) {
+            const row = GM.getRowData('test', this.parentElement.parentElement);
+            GM.updateRowData('test', 'id', {id: row.id, name: 'ccc'});
+        });
 	</script>
 </body>
 </html>

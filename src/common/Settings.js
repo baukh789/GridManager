@@ -274,6 +274,10 @@ const gridData = {
         // 该列是否禁止使用个性配置功能(宽度调整、位置更换、列的显示隐藏)
         disableCustomize: false
 
+        // @2.8.12
+        // 是否将相同数据列合并，在配置template的情况下会比对template的执行结果
+        merge: false,
+
         // 列所占宽度, 字符串类型，非必设项
         // 需要注意的是:
         // 1.如果当前列的th内文本实际占用宽度大于该参数指定的宽度时， GridManager会自动进行适配。
