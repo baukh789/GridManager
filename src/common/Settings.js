@@ -294,8 +294,15 @@ const gridData = {
         // 3、'ASC': 该列支持排序，并在初始化时指定排序类型为升序。可通过参数[sortUpText]来指定升序所使用的字符串
         sorting: 'DESC',
 
-        // 列的表头提醒内容,字符串类型，非必设项
-        remind: '文本介绍',
+        // 列的表头提醒内容, [string | object]非必设项
+        // remind: '文本介绍',
+        remind: {  // object形式
+            text: '文本介绍',
+            style: {
+                'width': '100px',
+                'font-size': '14px'
+            }
+        },
 
         // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。非必设项
         filter: {

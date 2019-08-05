@@ -2,7 +2,23 @@
  * 项目中的一些基础方法
  */
 import jTool from './jTool';
-import { CONSOLE_INFO, CONSOLE_WARN, CONSOLE_ERROR, FAKE_TABLE_HEAD_KEY, TABLE_HEAD_KEY, TABLE_KEY, CONSOLE_STYLE, WRAP_KEY, DIV_KEY, CONFIG_KEY, EMPTY_TPL_KEY, TOOLBAR_KEY, COL_PROP_DISABLED } from './constants';
+import {
+    CONSOLE_INFO,
+    CONSOLE_WARN,
+    CONSOLE_ERROR,
+    FAKE_TABLE_HEAD_KEY,
+    TABLE_HEAD_KEY,
+    TABLE_KEY,
+    CONSOLE_STYLE,
+    WRAP_KEY,
+    DIV_KEY,
+    CONFIG_KEY,
+    EMPTY_TPL_KEY,
+    TOOLBAR_KEY,
+    COL_PROP_DISABLED,
+    TR_CACHE_KEY,
+    TR_LEVEL_KEY
+} from './constants';
 
 /**
  * 输出日志
@@ -75,8 +91,14 @@ class Base {
             }
         }
 
-        // 删除自定义参数: 非columnMap设置的项
+        // 删除自定义参数: 行禁用标识
         delete cloneObj[COL_PROP_DISABLED];
+
+        // 删除自定义参数: 行唯一标识
+        delete cloneObj[TR_CACHE_KEY];
+
+        // 删除自定义参数: 行层级标识
+        delete cloneObj[TR_LEVEL_KEY];
 
         // 清除指定字段
         cleanKeyList && cleanKeyList.forEach(item => delete cloneObj[item]);

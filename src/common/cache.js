@@ -8,7 +8,17 @@ import jTool from './jTool';
 import base from './base';
 import { Settings, TextSettings } from './Settings';
 import store from './Store';
-import { TR_CACHE_ROW, CACHE_ERROR_KEY, MEMORY_KEY, VERSION_KEY, ORDER_KEY, CHECKBOX_KEY, CHECKBOX_DISABLED_KEY } from './constants';
+import {
+    TR_CACHE_ROW,
+    CACHE_ERROR_KEY,
+    MEMORY_KEY,
+    VERSION_KEY,
+    ORDER_KEY,
+    CHECKBOX_KEY,
+    CHECKBOX_DISABLED_KEY,
+    TR_CACHE_KEY,
+    TR_LEVEL_KEY
+} from './constants';
 
 class Cache {
     /**
@@ -83,10 +93,13 @@ class Cache {
         const supportTreeData = settings.supportTreeData;
         const treeKey = settings.treeConfig.treeKey;
 
+        // 当前正在展示的被更新项
+        const updateCacheList = [];
         const updateData = (list, newItem) => {
             list.some(item => {
                 if (item[key] === newItem[key]) {
                     jTool.extend(item, newItem);
+                    updateCacheList.push(item);
                     return true;
                 }
 
@@ -102,7 +115,10 @@ class Cache {
         rowDataList.forEach(newItem => {
             updateData(tableData, newItem);
         });
-        return tableData;
+        return {
+            tableData,
+            updateCacheList
+        };
     }
 
     /**
@@ -136,8 +152,38 @@ class Cache {
             supportAutoOrder,
             supportCheckbox,
             pageSizeKey,
-            currentPageKey
+            currentPageKey,
+            supportTreeData,
+            treeConfig
         } = this.getSettings(gridManagerName);
+
+        // 为每一行数据增加唯一标识
+        const addCacheKey = (row, level, index, pIndex) => {
+            let cacheKey = index.toString();
+            if (typeof pIndex !== 'undefined') {
+                cacheKey = `${pIndex}-${index}`;
+            }
+
+            if (supportTreeData) {
+                const children = row[treeConfig.treeKey];
+                const hasChildren = children && children.length;
+
+                // 递归处理层极结构
+                if (hasChildren) {
+                    children.forEach((item, index) => {
+                        addCacheKey(item, level + 1, index, cacheKey);
+                    });
+                }
+
+            }
+
+            // 为每一行数据增加唯一标识
+            row[TR_CACHE_KEY] = cacheKey;
+
+            // 为每一行数据增加层级
+            row[TR_LEVEL_KEY] = level;
+        };
+
         const newData =  data.map((row, index) => {
             // add order
             if (supportAutoOrder) {
@@ -157,6 +203,9 @@ class Cache {
                 });
                 row[CHECKBOX_DISABLED_KEY] = false;
             }
+
+            // add cache key
+            addCacheKey(row, 0, index);
 
             // 单行数据渲染时执行程序
             return rowRenderHandler(row, index);
@@ -279,7 +328,35 @@ class Cache {
         }
 
         let _cache = {};
-        _cache.column = columnMap;
+        const cloneMap = jTool.extend(true, {}, columnMap);
+        const useTemplate = ['template', 'text'];
+
+        // 清除指定类型的字段
+        jTool.each(cloneMap, (undefind, col) => {
+            jTool.each(col, (key, item) => {
+                // 清除: undefined
+                if (jTool.type(col[key]) === 'undefined') {
+                    delete col[key];
+                }
+
+                // 未使用模板的字段直接跳出
+                if (useTemplate.indexOf(key) === -1) {
+                    return;
+                }
+
+                // delete template of function type
+                if (jTool.type(item) === 'function') {
+                    delete col[key];
+                }
+
+                // delete template of object type
+                if (jTool.type(item) === 'object') {
+                    delete col[key];
+                }
+            });
+        });
+
+        _cache.column = cloneMap;
 
         // 存储分页
         if (supportAjaxPage) {
@@ -288,9 +365,6 @@ class Cache {
             _cache.page = _pageCache;
         }
 
-        // 注意: 这行代码会将columnMap中以下情况的字段清除:
-        // 1.函数类型的模板
-        // 2.值为undefined
         const cacheString = JSON.stringify(_cache);
         let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
         if (!GridManagerMemory) {
@@ -426,7 +500,7 @@ class Cache {
             isUsable && jTool.each(columnMap, (key, col) => {
                 if (!columnCache[key]
                     // 显示文本
-                    || columnCache[key].text !== col.text
+                    || (columnCache[key].text && columnCache[key].text !== col.text)
 
                     // 宽度
                     || columnCache[key].__width !== col.width
@@ -445,6 +519,9 @@ class Cache {
 
                     // 禁止使用个性配置功能
                     || columnCache[key].disableCustomize !== col.disableCustomize
+
+                    // 相同数据列合并功能
+                    || columnCache[key].merge !== col.merge
 
                     || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)
 

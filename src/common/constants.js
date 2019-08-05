@@ -30,10 +30,13 @@ export const TABLE_HEAD_KEY = 'grid-manager-thead';
 export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
 
 // tr cache key
-export const TR_CACHE_KEY = 'cache-key';
+export const TR_CACHE_KEY = 'gm-cache-key';
 
 // tr cache row data
-export const TR_CACHE_ROW = 'cache-row';
+export const TR_CACHE_ROW = 'gm-cache-row';
+
+// tr level key
+export const TR_LEVEL_KEY = 'gm-level-key';
 
 // tr 上一层级的 cache key
 export const TR_PARENT_KEY = 'parent-key';

@@ -1,7 +1,7 @@
 import remind from '../remind';
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_CHILDREN_STATE } from '@common/constants';
+import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE } from '@common/constants';
 import cache from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
@@ -156,10 +156,9 @@ class Dom {
         const installNormal = (trNode, row, index, isTop) => {
             // 与当前位置信息匹配的td列表
             const tdList = [];
-            // td模板
-            let	tdTemplate = null;
             jTool.each(columnMap, (key, col) => {
-                tdTemplate = col.template;
+                let tdTemplate = col.template;
+
                 // 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
                 let tdNode = null;
                 if (col.isAutoCreate) {
@@ -189,14 +188,13 @@ class Dom {
                 const isTop = typeof pIndex === 'undefined';
                 jTool.each(list, (index, row) => {
                     const trNode = document.createElement('tr');
-                    let cacheKey = index;
+                    const cacheKey = row[TR_CACHE_KEY];
 
                     trNode[TR_CACHE_ROW] = row;
 
                     // 非顶层
                     if (!isTop) {
                         trNode.setAttribute(TR_PARENT_KEY, pIndex);
-                        cacheKey = `${pIndex}-${index}`;
                         trNode.setAttribute(TR_CHILDREN_STATE, openState);
                     }
 
@@ -208,7 +206,7 @@ class Dom {
                     trNode.setAttribute(TR_CACHE_KEY, cacheKey);
 
                     // 插入通栏: top-full-column
-                    if (typeof topFullColumn.template !== 'undefined') {
+                    if (isTop && typeof topFullColumn.template !== 'undefined') {
                         installTopFull(trNode, row, index);
                     }
 
@@ -241,10 +239,65 @@ class Dom {
         // 解析框架
         framework.send(settings).then(() => {
             // 插入tree dom
-            tree.insertDOM(gridManagerName, openState, insertTo);
+            supportTreeData && tree.insertDOM(gridManagerName, openState, insertTo);
 
             // 合并单元格
             this.mergeRow(gridManagerName, columnMap);
+        });
+    }
+
+    /**
+     * 更新 Tr DOM
+     * @param settings
+     * @param updateCacheList
+     */
+    updateTrDOM(settings, updateCacheList) {
+        const { gridManagerName, columnMap, supportTreeData, treeConfig } = settings;
+        const { treeKey, openState, insertTo } = treeConfig;
+        updateCacheList.forEach(row => {
+            const cacheKey = row[TR_CACHE_KEY];
+            const level = row[TR_LEVEL_KEY];
+            let index = cacheKey.split('-').pop();
+
+            const trNode = base.getTable(gridManagerName).find(`tbody tr[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
+
+            if (!trNode) {
+                return;
+            }
+
+            // 添加tree map
+            const children = row[treeKey];
+            const hasChildren = children && children.length;
+            tree.add(gridManagerName, trNode, level, hasChildren);
+
+            jTool.each(columnMap, (key, col) => {
+                // 不处理项: 自动添加列
+                if (col.isAutoCreate) {
+                    return;
+                }
+
+                // 不处理项: 未存在的值
+                if (typeof row[key] === 'undefined') {
+                    return;
+                }
+
+                let tdTemplate = col.template;
+                const tdNode = base.getColTd(base.getTh(gridManagerName, key), trNode).get(0);
+
+                // 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
+                const tdCloneNode = tdNode.cloneNode(true);
+                tdCloneNode.innerHTML = '';
+                tdTemplate = framework.compileTd(settings, tdCloneNode, tdTemplate, row, index, key);
+                jTool.type(tdTemplate) === 'element' ? tdCloneNode.appendChild(tdTemplate) : tdCloneNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
+                trNode.replaceChild(tdCloneNode, tdNode);
+            });
+        });
+
+
+        // 解析框架
+        framework.send(settings).then(() => {
+            // 插入tree dom
+            supportTreeData && tree.insertDOM(gridManagerName, openState, insertTo);
         });
     }
 

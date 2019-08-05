@@ -5,6 +5,7 @@ import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_WARN, CONSOLE_STYLE } from '@commo
 import tableTpl from '@test/table-test.tpl.html';
 import { getColumnMap } from '@test/table-config';
 import {TOOLBAR_KEY} from '@common/constants';
+import {COL_PROP_DISABLED, TR_CACHE_KEY, TR_LEVEL_KEY} from '../../src/common/constants';
 
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
@@ -112,7 +113,7 @@ describe('base.equal(obj1, obj2)', () => {
     });
 });
 
-describe('base.getDataForColumnMap(columnMap, obj, cleanKeyList)', () => {
+describe('base.getCloneRowData(columnMap, obj, cleanKeyList)', () => {
     let columnMap = null;
     let data = null;
     beforeEach(() => {
@@ -140,7 +141,9 @@ describe('base.getDataForColumnMap(columnMap, obj, cleanKeyList)', () => {
             content: 'this is content',
             info: 'this is info',
             gm_checkbox: true,
-            gm_checkbox_disabled: true
+            [COL_PROP_DISABLED]: true,
+            [TR_CACHE_KEY]: 1,
+            [TR_LEVEL_KEY]: 1
         };
     });
     afterEach(() => {

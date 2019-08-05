@@ -408,6 +408,7 @@ export default class GridManager {
         const treeKey = treeConfig.treeKey;
         const tableData = cache.getTableData(gridManagerName);
         tableData.forEach(rowData => {
+            // 获取比对数据时，需要清除子数据
             let cloneRow = base.getCloneRowData(columnMap, rowData, [treeKey]);
             rowData[CHECKBOX_KEY] = checkedList.some(item => base.equal(cloneRow, base.getCloneRowData(columnMap, item, [treeKey])));
         });
@@ -432,7 +433,7 @@ export default class GridManager {
         const settings = cache.getSettings(base.getKey(table));
         const { gridManagerName, columnMap, supportCheckbox } = settings;
         const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
-        const tableData = cache.updateRowData(gridManagerName, key, rowDataList);
+        const { tableData, updateCacheList } = cache.updateRowData(gridManagerName, key, rowDataList);
 
         // 更新选中数据
         if (supportCheckbox) {
@@ -440,7 +441,7 @@ export default class GridManager {
         }
 
         // 更新DOM
-        coreDOM.renderTableBody(settings, tableData);
+        coreDOM.updateTrDOM(settings, updateCacheList);
         return tableData;
     }
 

@@ -9,7 +9,7 @@ import tableTpl from '@test/table-test.tpl.html';
 import getTableData from '@test/table-test.data.js';
 import { getColumnMap, getColumnData } from '@test/table-config';
 import i18n from '@module/i18n';
-import {CHECKBOX_KEY, ORDER_KEY} from '../../src/common/constants';
+import {CHECKBOX_KEY, ORDER_KEY, TR_CACHE_KEY, TR_LEVEL_KEY} from '../../src/common/constants';
 
 // 清除空格
 const tableTestTpl = trimTpl(tableTpl);
@@ -139,10 +139,8 @@ describe('getRowData', () => {
 });
 
 describe('updateRowData(gridManagerName, key, rowDataList)', () => {
-    let tableData = null;
     beforeEach(() => {
-        tableData = getTableData();
-        store.responseData['test'] = tableData.data;
+        store.responseData['test'] = getTableData().data;
         store.settings = {
             test: {
                 gridManagerName: 'test',
@@ -155,7 +153,6 @@ describe('updateRowData(gridManagerName, key, rowDataList)', () => {
         document.body.innerHTML = tableTestTpl;
     });
     afterEach(() => {
-        tableData = null;
         document.body.innerHTML = '';
         store.responseData = {};
         store.settings = {};
@@ -167,15 +164,29 @@ describe('updateRowData(gridManagerName, key, rowDataList)', () => {
     });
 
     it('执行验证: 常规数据', () => {
-        expect(cache.updateRowData('test', 'id', [{id: 90, title: 'test updateRowData'}]).length).toBe(10);
-        expect(cache.updateRowData('test', 'id', [{id: 90, title: 'test updateRowData'}])[1].title).toBe('test updateRowData');
+        let { tableData, updateCacheList } = cache.updateRowData('test', 'id', [{id: 90, title: 'test updateRowData'}]);
+        expect(tableData.length).toBe(10);
+        expect(tableData[1].title).toBe('test updateRowData');
+
+        expect(updateCacheList.length).toBe(1);
+        expect(updateCacheList[0].id).toBe(90);
+        tableData = null;
+        updateCacheList = null;
     });
 
     it('执行验证: 树型数据', () => {
         store.settings.test.supportTreeData = true;
-        expect(cache.updateRowData('test', 'id', [{id: 92, title: 'test updateRowData'}]).length).toBe(10);
-        expect(cache.updateRowData('test', 'id', [{id: 92, title: 'test updateRowData'}, {id: 921, title: 'test updateRowData'}])[0].title).toBe('test updateRowData');
-        expect(cache.updateRowData('test', 'id', [{id: 92, title: 'test updateRowData'}, {id: 921, title: 'test updateRowData'}])[0].children[0].title).toBe('test updateRowData');
+        let { tableData, updateCacheList } = cache.updateRowData('test', 'id', [{id: 92, title: 'test updateRowData'}, {id: 921, title: 'test updateRowData'}]);
+
+        expect(tableData.length).toBe(10);
+        expect(tableData[0].title).toBe('test updateRowData');
+        expect(tableData[0].children[0].title).toBe('test updateRowData');
+
+        expect(updateCacheList.length).toBe(2);
+        expect(updateCacheList[0].id).toBe(92);
+        expect(updateCacheList[1].id).toBe(921);
+        tableData = null;
+        updateCacheList = null;
     });
 });
 
@@ -257,6 +268,8 @@ describe('resetTableData', () => {
         };
         resetData = cache.resetTableData('test', tableData);
         expect(resetData[0][ORDER_KEY]).toBe(31);
+        expect(resetData[0][TR_CACHE_KEY]).toBe('0');
+        expect(resetData[0][TR_LEVEL_KEY]).toBe(0);
     });
 
     it('执行验证: supportCheckbox=true', () => {
@@ -279,12 +292,76 @@ describe('resetTableData', () => {
         resetData = cache.resetTableData('test', tableData);
         expect(resetData[0][CHECKBOX_KEY]).toBe(true);
         expect(resetData[0][CHECKBOX_DISABLED_KEY]).toBe(false);
+        expect(resetData[0][TR_CACHE_KEY]).toBe('0');
+        expect(resetData[0][TR_LEVEL_KEY]).toBe(0);
+
+        expect(resetData[0].children[0][CHECKBOX_KEY]).toBeUndefined();
+        expect(resetData[0].children[0][CHECKBOX_DISABLED_KEY]).toBeUndefined();
+        expect(resetData[0].children[0][TR_CACHE_KEY]).toBeUndefined();
+        expect(resetData[0].children[0][TR_LEVEL_KEY]).toBeUndefined();
 
         expect(resetData[1][CHECKBOX_KEY]).toBe(false);
         expect(resetData[1][CHECKBOX_DISABLED_KEY]).toBe(false);
+        expect(resetData[1][TR_CACHE_KEY]).toBe('1');
+        expect(resetData[1][TR_LEVEL_KEY]).toBe(0);
 
         expect(resetData[2][CHECKBOX_KEY]).toBe(true);
         expect(resetData[2][CHECKBOX_DISABLED_KEY]).toBe(false);
+        expect(resetData[2][TR_CACHE_KEY]).toBe('2');
+        expect(resetData[2][TR_LEVEL_KEY]).toBe(0);
+    });
+
+
+    it('执行验证: supportTreeData=true', () => {
+        store.settings = {
+            test: {
+                gridManagerName: 'test',
+                columnMap: getColumnMap(),
+                rowRenderHandler: row => row,
+                supportAutoOrder: false,
+                supportCheckbox: false,
+                supportTreeData: true,
+                treeConfig: {
+                    // 树展开操作按键所属容器，此处配置columnData的key值。未配置时，将默认选择columnData的第一项
+                    insertTo: null,
+
+                    // 层级关键字段
+                    treeKey: 'children',
+
+                    // 初始打开状态
+                    openState: false
+                }
+            }
+        };
+        store.checkedData = {
+            test: [
+                tableData[0], tableData[2]
+            ]
+        };
+        resetData = cache.resetTableData('test', tableData);
+        expect(resetData[0][ORDER_KEY]).toBeUndefined();
+        expect(resetData[0][CHECKBOX_KEY]).toBeUndefined();
+        expect(resetData[0][CHECKBOX_DISABLED_KEY]).toBeUndefined();
+        expect(resetData[0][TR_CACHE_KEY]).toBe('0');
+        expect(resetData[0][TR_LEVEL_KEY]).toBe(0);
+
+        expect(resetData[0].children[0][ORDER_KEY]).toBeUndefined();
+        expect(resetData[0].children[0][CHECKBOX_KEY]).toBeUndefined();
+        expect(resetData[0].children[0][CHECKBOX_DISABLED_KEY]).toBeUndefined();
+        expect(resetData[0].children[0][TR_CACHE_KEY]).toBe('0-0');
+        expect(resetData[0].children[0][TR_LEVEL_KEY]).toBe(1);
+
+        expect(resetData[1][ORDER_KEY]).toBeUndefined();
+        expect(resetData[1][CHECKBOX_KEY]).toBeUndefined();
+        expect(resetData[1][CHECKBOX_DISABLED_KEY]).toBeUndefined();
+        expect(resetData[1][TR_CACHE_KEY]).toBe('1');
+        expect(resetData[1][TR_LEVEL_KEY]).toBe(0);
+
+        expect(resetData[2][ORDER_KEY]).toBeUndefined();
+        expect(resetData[2][CHECKBOX_KEY]).toBeUndefined();
+        expect(resetData[2][CHECKBOX_DISABLED_KEY]).toBeUndefined();
+        expect(resetData[2][TR_CACHE_KEY]).toBe('2');
+        expect(resetData[2][TR_LEVEL_KEY]).toBe(0);
     });
 });
 
@@ -506,6 +583,24 @@ describe('saveUserMemory', () => {
         }));
         cache.saveUserMemory(settings);
         expect(cache.getUserMemory('test')).toEqual({column: getColumnMap(), page: {pSize: 20}});
+    });
+
+    it('type === undefined', () => {
+        settings.columnMap.title.remind = undefined;
+        cache.saveUserMemory(settings);
+        expect(cache.getUserMemory('test').column.title.remind).toBeUndefined();
+    });
+
+    it('type === function', () => {
+        settings.columnMap.title.template = () => {};
+        cache.saveUserMemory(settings);
+        expect(cache.getUserMemory('test').column.title.template).toBeUndefined();
+    });
+
+    it('type === object', () => {
+        settings.columnMap.title.template = {};
+        cache.saveUserMemory(settings);
+        expect(cache.getUserMemory('test').column.title.template).toBeUndefined();
     });
 });
 
