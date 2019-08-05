@@ -500,7 +500,7 @@ const demo1 = {
                     text: '<span style="color: red">操作</span>',
                     // 直接返回 通过函数返回
                     template: (action, row) => {
-                        return `<span class="plugin-action" title="${row.title}" onclick="demo1.delectRowData(this.title)">删除</span>`;
+                        return `<span class="plugin-action" data-id="${row.id}" onclick="demo1.editRowData(this)">修改</span>`;
                     }
                 }
             ]
@@ -511,13 +511,10 @@ const demo1 = {
     },
 
     /**
-     * 删除功能
+     * 编辑功能
      */
-    delectRowData: function (title) {
-        // 执行删除操作
-        if (window.confirm(`确认要删除[${title}]?`)) {
-            window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
-        }
+    editRowData: function (dom) {
+        window.GridManager.updateRowData('test', 'id', {id: window.parseInt(dom.getAttribute('data-id')), lastDate: new Date().getTime()});
     }
 };
 

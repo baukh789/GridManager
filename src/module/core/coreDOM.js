@@ -298,6 +298,9 @@ class Dom {
         framework.send(settings).then(() => {
             // 插入tree dom
             supportTreeData && tree.insertDOM(gridManagerName, openState, insertTo);
+
+            // 合并单元格
+            this.mergeRow(gridManagerName, columnMap);
         });
     }
 
@@ -316,6 +319,8 @@ class Dom {
             let mergeSum = 1;
             while (len) {
                 const $td = $tdList.eq(len - 1);
+                $td.removeAttr('rowspan');
+                $td.show();
                 len--;
                 if (len === 0) {
                     if (mergeSum > 1) {
