@@ -93,6 +93,7 @@ class Filter {
             const settings = cache.getSettings(gridManagerName);
             const checkedStr = checkedList.join(',');
             settings.columnMap[thName].filter.selected = checkedStr;
+            settings.pageData[settings.currentPageKey] = 1;
             jTool.extend(settings.query, {[thName]: checkedStr});
             cache.setSettings(settings);
 
@@ -112,6 +113,7 @@ class Filter {
             const settings = cache.getSettings(gridManagerName);
             delete settings.query[thName];
             settings.columnMap[thName].filter.selected = '';
+            settings.pageData[settings.currentPageKey] = 1;
             cache.setSettings(settings);
 
             _this.update($th, settings.columnMap[thName].filter);
