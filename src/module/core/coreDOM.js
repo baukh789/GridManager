@@ -276,11 +276,6 @@ class Dom {
                     return;
                 }
 
-                // 不处理项: 未存在的值
-                if (typeof row[key] === 'undefined') {
-                    return;
-                }
-
                 let tdTemplate = col.template;
                 const tdNode = base.getColTd(base.getTh(gridManagerName, key), trNode).get(0);
 
