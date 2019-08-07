@@ -233,7 +233,7 @@ const i18n = {
 };
 
 const treeData = {
-    // 支持树型数据
+    // 用于配置是否支持树型表格
     supportTreeData: false,
 
     treeConfig: {
@@ -275,7 +275,7 @@ const gridData = {
         disableCustomize: false
 
         // @2.8.12
-        // 是否将相同数据列合并，在配置template的情况下会比对template的执行结果
+        // 是否将相同数据列合并，在配置template的情况下会以template的执行结果进行比对
         merge: false,
 
         // 列所占宽度, 字符串类型，非必设项
