@@ -367,11 +367,12 @@ const demo1 = {
 
             // 单行数据渲染时执行程序
             rowRenderHandler: (row, index) => {
-                if (row.id === 92) {
-                    row.gm_checkbox = true;
-                }
+                // if (row.id === 90) {
+                //     row.gm_checkbox = true;
+                // }
 
-                if (row.id === 88) {
+                // 指定第92行不可选中
+                if (row.id === 92) {
                     row.gm_checkbox_disabled = true;
                 }
                 return row;
