@@ -61,20 +61,13 @@ class Render {
     @parseTpl(theadTpl)
     createTheadTpl(params) {
         const settings = params.settings;
-        const { disableCache, columnMap, gridManagerName } = settings;
+        const { columnMap, gridManagerName } = settings;
 
-        // 将 columnMap 转换为 数组
-        // 转换的原因是为了处理用户记忆
         const columnList = [];
-        if (disableCache) {
-            jTool.each(columnMap, (key, col) => {
-                columnList.push(col);
-            });
-        } else {
-            jTool.each(columnMap, (key, col) => {
-                columnList[col.index] = col;
-            });
-        }
+
+        jTool.each(columnMap, (key, col) => {
+            columnList[col.index] = col;
+        });
 
         // 将表头提醒启用状态重置
         remind.enable[gridManagerName] = false;
