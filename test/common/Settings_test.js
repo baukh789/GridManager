@@ -94,7 +94,7 @@ describe('Settings', () => {
     });
 
     it('验证属性[loadingTemplate]初始值', () => {
-        expect(settings.loadingTemplate).toBe('<div class="loading"><div class="loadInner kernel"></div></div>');
+        expect(settings.loadingTemplate).toBe('<section class="loading"><div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none"></circle></svg></div></section>');
     });
 
     it('验证属性[disableCache]初始值', () => {

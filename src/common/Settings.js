@@ -87,8 +87,8 @@ const gridStyle = {
     // 配置是否禁用边框线
     disableBorder: false,  // v2.6.1新增
 
-    // 数据加载中模板
-    loadingTemplate: '<div class="loading"><div class="loadInner kernel"></div></div>', // v2.6.2新增
+    // 数据加载中模板 v2.6.2新增
+    loadingTemplate: '<section class="loading"><div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none"></circle></svg></div></section>',
 
     //  皮肤样式所使用的className
     skinClassName: '', // v2.7.0 新增

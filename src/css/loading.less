@@ -1,33 +1,44 @@
 @import './animation';
+
+@loading-bg: #fff;
+@loading-stroke-width: 3;
+@loading-stroke-color: #00aaf1;
 /* 加载中动画 */
 .table-wrap{
     .loading {
         width: 100%;
         height: 100%;
         position: absolute;
-        left: 0;
         top: 0;
-        z-index: 999;
-        background: #fff;
-        opacity: 0.7;
-        .kernel {
-            width: 20px;
-            height: 20px;
-            position: absolute;
-            top: calc(50% - 10px);
-            left: calc(50% - 10px);
-            border: 2px #4078c0 solid;
-            background-color: #fff;
-            animation: gm_fill_color 5s linear infinite;
-            &:after {
-                width: 4px;
-                height: 4px;
+        left: 0;
+        .loader {
+            width: 100%;
+            height: 100%;
+            &:before {
+                display: block;
+                background: @loading-bg;
+                opacity: 0.7;
+                content: '';
+                z-index: 999;
+                padding-top: 100%;
+            }
+            .circular {
+                width: 50px;
+                height: 50px;
                 position: absolute;
-                content: "";
-                background-color: #4078c0;
-                top: -8px;
-                left: 0;
-                animation: gm_square_check 1s ease-in-out infinite;
+                top: calc(50% - 25px);
+                left: calc(50% - 25px);
+                animation: gmCircleRotate 1s linear infinite;
+                transform-origin: center center;
+                .path {
+                    stroke-width: @loading-stroke-width;
+                    stroke-miterlimit: 10;
+                    stroke: @loading-stroke-color;
+                    stroke-dasharray: 80;
+                    stroke-dashoffset: 0;
+                    animation: dash 1s linear infinite;
+                    stroke-linecap: round;
+                }
             }
         }
     }
