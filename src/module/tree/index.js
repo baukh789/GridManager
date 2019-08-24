@@ -4,7 +4,7 @@
 import './style.less';
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE } from '@common/constants';
+import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
 import getEvent from './event';
 const getIconClass = state => {
     return state ? 'icon-jianhao' : 'icon-add';
@@ -60,7 +60,7 @@ class Tree {
             $action.addClass(getIconClass(openState));
             $treeEle.attr(this.key, openState);
 
-            const $childrenTr = $tr.closest('tbody').find(`tr[${TR_PARENT_KEY}="${cacheKey}"]`);
+            const $childrenTr = $tr.closest('tbody').find(`[${TR_PARENT_KEY}="${cacheKey}"]`);
             if ($childrenTr.length === 0) {
                 return;
             }
@@ -113,7 +113,7 @@ class Tree {
 
             // 未设置 insertTo 或 通过 insertTo 未找到dom时: 使用第一个非自动创建的TD
             if (!$insertTd) {
-                $insertTd = jTool('td[gm-create="false"]', trNode).eq(0);
+                $insertTd = jTool(`td[${GM_CREATE}="false"]`, trNode).eq(0);
             }
             const treeDOM = document.createElement('span');
             treeDOM.setAttribute(this.key, openState);

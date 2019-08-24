@@ -1,6 +1,5 @@
 'use strict';
 import jTool from '@common/jTool';
-import { trimTpl } from '@common/parse';
 import {CACHE_ERROR_KEY, TR_CACHE_ROW, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '@common/constants';
 import cache from '@common/cache';
 import store from '@common/Store';
@@ -9,10 +8,10 @@ import tableTpl from '@test/table-test.tpl.html';
 import getTableData from '@test/table-test.data.js';
 import { getColumnMap, getColumnData } from '@test/table-config';
 import i18n from '@module/i18n';
-import {CHECKBOX_KEY, ORDER_KEY, TR_CACHE_KEY, TR_LEVEL_KEY} from '../../src/common/constants';
+import {CHECKBOX_KEY, ORDER_KEY, TR_CACHE_KEY, TR_LEVEL_KEY} from '@common/constants';
 
 // 清除空格
-const tableTestTpl = trimTpl(tableTpl);
+const tableTestTpl = tableTpl;
 
 /**
  * 验证类的属性及方法总量

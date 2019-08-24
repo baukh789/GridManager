@@ -1,9 +1,8 @@
 import framework from '@common/framework';
 import tableTpl from '@test/table-test.tpl.html';
-import { trimTpl } from '@common/parse';
 
 // 清除空格
-const tableTestTpl = trimTpl(tableTpl);
+const tableTestTpl = tableTpl;
 describe('Framework', () => {
     let settings = null;
     let gridManagerName = null;

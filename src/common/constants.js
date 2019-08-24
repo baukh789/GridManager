@@ -83,6 +83,18 @@ export const EMPTY_DATA_CLASS_NAME = 'empty-data';
 // 渲染完成标识 Class Name
 export const READY_CLASS_NAME = 'GridManager-ready';
 
+// 加载中 Class Name
+export const LOADING_CLASS_NAME = 'gm-load-area';
+
+// 最后一列可视列 标识
+export const LAST_VISIBLE = 'last-visible';
+
+// th的可视状 标识
+export const TH_VISIBLE = 'th-visible';
+
+// GM自动创建 标识
+export const GM_CREATE = 'gm-create';
+
 // table在实例化后，会更改到的属性值列表
 export const TABLE_PURE_LIST = ['class', 'style'];
 

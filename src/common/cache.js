@@ -17,7 +17,8 @@ import {
     CHECKBOX_KEY,
     CHECKBOX_DISABLED_KEY,
     TR_CACHE_KEY,
-    TR_LEVEL_KEY
+    TR_LEVEL_KEY,
+    TH_VISIBLE
 } from './constants';
 
 class Cache {
@@ -251,7 +252,7 @@ class Cache {
 
         dataList.forEach(item => {
             let cloneObj = base.getCloneRowData(columnMap, item);
-            let checked = item['gm_checkbox'];
+            let checked = item[CHECKBOX_KEY];
             let index = base.getObjectIndexToArray(tableCheckedList, cloneObj);
 
             // 新增: 已选中 且 未存储
@@ -305,14 +306,14 @@ class Cache {
     getUserMemory(gridManagerName) {
         const memoryKey = this.getMemoryKey(gridManagerName);
 
-        let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
+        let memory = window.localStorage.getItem(MEMORY_KEY);
         // 如无数据，增加缓存错误标识
-        if (!GridManagerMemory || GridManagerMemory === '{}') {
+        if (!memory || memory === '{}') {
             base.getTable(gridManagerName).attr(CACHE_ERROR_KEY, 'error');
             return {};
         }
-        GridManagerMemory = JSON.parse(GridManagerMemory);
-        return JSON.parse(GridManagerMemory[memoryKey] || '{}');
+        memory = JSON.parse(memory);
+        return JSON.parse(memory[memoryKey] || '{}');
     }
 
     /**
@@ -366,14 +367,14 @@ class Cache {
         }
 
         const cacheString = JSON.stringify(_cache);
-        let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
-        if (!GridManagerMemory) {
-            GridManagerMemory = {};
+        let memory = window.localStorage.getItem(MEMORY_KEY);
+        if (!memory) {
+            memory = {};
         } else {
-            GridManagerMemory = JSON.parse(GridManagerMemory);
+            memory = JSON.parse(memory);
         }
-        GridManagerMemory[this.getMemoryKey(gridManagerName)] = cacheString;
-        window.localStorage.setItem(MEMORY_KEY, JSON.stringify(GridManagerMemory));
+        memory[this.getMemoryKey(gridManagerName)] = cacheString;
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
     }
 
     /**
@@ -389,18 +390,18 @@ class Cache {
             return true;
         }
 
-        let GridManagerMemory = window.localStorage.getItem(MEMORY_KEY);
-        if (!GridManagerMemory) {
+        let memory = window.localStorage.getItem(MEMORY_KEY);
+        if (!memory) {
             return false;
         }
-        GridManagerMemory = JSON.parse(GridManagerMemory);
+        memory = JSON.parse(memory);
 
         // 指定删除的table, 则定点清除
         const _key = this.getMemoryKey(gridManagerName);
-        delete GridManagerMemory[_key];
+        delete memory[_key];
 
         // 清除后, 重新存储
-        window.localStorage.setItem(MEMORY_KEY, JSON.stringify(GridManagerMemory));
+        window.localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
         base.outInfo(`delete user memory of ${gridManagerName}`);
         return true;
     }
@@ -590,7 +591,7 @@ class Cache {
             col.index = th.index();
 
             // 可视状态
-            col.isShow = th.attr('th-visible') === 'visible';
+            col.isShow = th.attr(TH_VISIBLE) === 'visible';
         });
 
         // 重置settings

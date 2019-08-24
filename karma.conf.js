@@ -130,7 +130,7 @@ module.exports = function (config) {
                         ]
                     }, {
                         test: /\.html$/,
-                        use: ['html-loader'],
+                        use: [path.join(__dirname, './webpack-loaders/html-clear-loader.js'), 'html-loader'],
                         include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')],
                         exclude: /(node_modules|bower_components)/
                     }, {

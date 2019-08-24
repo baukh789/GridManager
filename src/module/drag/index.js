@@ -24,8 +24,7 @@ class Drag {
      */
 	init(gridManagerName) {
         const _this = this;
-        const $table = base.getTable(gridManagerName);
-        const table = $table.get(0);
+        const table = base.getTable(gridManagerName).get(0);
         const $body = jTool('body');
         this.eventMap[gridManagerName] = getDragEvent(gridManagerName, `${base.getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
         const { dragStart, dragging, dragAbort } = this.eventMap[gridManagerName];
@@ -66,7 +65,7 @@ class Drag {
                 $dreamlandDIV = jTool('.dreamland-div', $tableWrap);
             }
             // #001
-            $dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({ $table,  $th, $colTd });
+            $dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({ table,  $th, $colTd });
 
             // 存储移动时的th所处的位置
             let _thIndex = 0;
@@ -164,7 +163,7 @@ class Drag {
      */
 	@parseTpl(dreamlandTpl)
 	createDreamlandHtml(params) {
-	    const { $table, $th, $colTd } = params;
+	    const { table, $th, $colTd } = params;
 
         // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
         let tbodyHtml = '';
@@ -176,7 +175,7 @@ class Drag {
         });
 
         return {
-            tableClassName: $table.attr('class'),
+            tableClassName: table.className,
             thOuterHtml: jTool('.drag-action', $th).get(0).outerHTML,
             thStyle: `style="height:${$th.height()}px"`,
             tbodyHtml: tbodyHtml

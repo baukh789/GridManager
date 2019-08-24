@@ -1,7 +1,7 @@
 import remind from '../remind';
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE } from '@common/constants';
+import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
 import cache from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
@@ -123,7 +123,7 @@ class Dom {
         data = cache.resetTableData(gridManagerName, data);
 
         // tbody dom
-        const tbody = document.querySelector(`${base.getQuerySelector(gridManagerName)} tbody`);
+        const tbody = base.getTbody(gridManagerName).get(0);
 
         // 清空 tbody
         tbody.innerHTML = '';
@@ -164,7 +164,7 @@ class Dom {
                 if (col.isAutoCreate) {
                     tdNode = jTool(tdTemplate(row[col.key], row, index, isTop)).get(0);
                 } else {
-                    tdNode = jTool('<td gm-create="false"></td>').get(0);
+                    tdNode = jTool(`<td ${GM_CREATE}="false"></td>`).get(0);
 
                     tdTemplate = framework.compileTd(settings, tdNode, tdTemplate, row, index, key);
                     jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
@@ -259,7 +259,7 @@ class Dom {
             const level = row[TR_LEVEL_KEY];
             let index = cacheKey.split('-').pop();
 
-            const trNode = base.getTable(gridManagerName).find(`tbody tr[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
+            const trNode = base.getTbody(gridManagerName).find(`[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
 
             if (!trNode) {
                 return;

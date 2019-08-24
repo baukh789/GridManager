@@ -1,14 +1,14 @@
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { trimTpl } from '@common/parse';
 import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_WARN, CONSOLE_STYLE } from '@common/constants';
 import tableTpl from '@test/table-test.tpl.html';
 import { getColumnMap } from '@test/table-config';
 import {TOOLBAR_KEY} from '@common/constants';
-import {COL_PROP_DISABLED, TR_CACHE_KEY, TR_LEVEL_KEY} from '../../src/common/constants';
+import {COL_PROP_DISABLED, TR_CACHE_KEY, TR_LEVEL_KEY} from '@common/constants';
+import {LOADING_CLASS_NAME} from '../../src/common/constants';
 
 // 清除空格
-const tableTestTpl = trimTpl(tableTpl);
+const tableTestTpl = tableTpl;
 describe('base 验证类的属性及方法总量', () => {
     let getPropertyCount = null;
     beforeEach(() => {
@@ -202,12 +202,16 @@ describe('base.showLoading(gridManagerName, loadingTemplate)', () => {
     });
 
     it('当前未存在loading dom', () => {
-        expect(base.showLoading(gridManagerName)).toBe(true);
+        expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(0);
+        base.showLoading(gridManagerName, '<div></div>');
+        expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
     });
 
     it('第二次执行(上一次执行未进行销毁)', () => {
-        jTool('.table-wrap').append('<div class="gm-load-area"></div>');
-        expect(base.showLoading(gridManagerName)).toBe(true);
+        jTool('.table-wrap').append(`<div class="${LOADING_CLASS_NAME}"></div>`);
+        expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
+        base.showLoading(gridManagerName, '<div></div>');
+        expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
     });
 });
 
@@ -216,7 +220,7 @@ describe('base.hideLoading(gridManagerName)', () => {
     beforeEach(() => {
         gridManagerName = 'test';
         document.body.innerHTML = tableTestTpl;
-        jTool('.table-wrap').append('<div class="gm-load-area"></div>');
+        jTool('.table-wrap').append(`<div class="${LOADING_CLASS_NAME}"></div>`);
     });
     afterEach(() => {
         gridManagerName = null;
@@ -229,10 +233,10 @@ describe('base.hideLoading(gridManagerName)', () => {
 
     it('执行验证', () => {
         jasmine.clock().install();
-        expect(base.hideLoading(gridManagerName)).toBe(true);
-        expect(document.querySelector('.gm-load-area').nodeName).toBe('DIV');
+        expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
+        base.hideLoading(gridManagerName);
         jasmine.clock().tick(500);
-        expect(document.querySelector('.gm-load-area')).toBeNull();
+        expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(0);
         jasmine.clock().uninstall();
     });
 });
@@ -292,8 +296,8 @@ describe('base.getQuerySelector(gridManagerName)', () => {
     });
 
     it('返回值验证 ', () => {
-        expect(base.getQuerySelector('test')).toBe('table[grid-manager="test"]');
-        expect(base.getQuerySelector('test2')).toBe('table[grid-manager="test2"]');
+        expect(base.getQuerySelector('test')).toBe('[grid-manager="test"]');
+        expect(base.getQuerySelector('test2')).toBe('[grid-manager="test2"]');
     });
 });
 
@@ -719,7 +723,7 @@ describe('base.updateEmptyCol(gridManagerName)', () => {
 
     it('验证异常情况', () => {
         document.body.innerHTML = `<table grid-manager="test-empty">
-                                        <thead grid-manager-thead>
+                                        <thead grid-manager-thead="test-empty">
                                             <tr>
                                                 <th th-visible="visible">1</th><th th-visible="visible">2</th>
                                             </tr>
@@ -730,14 +734,14 @@ describe('base.updateEmptyCol(gridManagerName)', () => {
                                             </tr>
                                         </tbody>
                                     </table>`;
-        $table = jTool('table[grid-manager="test-empty"]');
+        $table = jTool('[grid-manager="test-empty"]');
         base.updateEmptyCol(gridManagerName);
         expect($table.find('td').attr('colspan')).toBeUndefined();
     });
 
     it('验证正常情况', () => {
         document.body.innerHTML = `<table grid-manager="test-empty">
-                                        <thead grid-manager-thead>
+                                        <thead grid-manager-thead="test-empty">
                                             <tr>
                                                 <th th-visible="visible">1</th><th th-visible="visible">2</th>
                                             </tr>

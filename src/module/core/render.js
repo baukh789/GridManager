@@ -2,7 +2,7 @@ import remind from '../remind';
 import order from '../order';
 import ajaxPage from '../ajaxPage';
 import jTool from '@common/jTool';
-import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY } from '@common/constants';
+import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE } from '@common/constants';
 import base from '@common/base';
 import framework from '@common/framework';
 import { parseTpl } from '../../common/parse';
@@ -13,6 +13,7 @@ import checkbox from '../checkbox';
 import wrapTpl from './wrap.tpl.html';
 import theadTpl from './thead.tpl.html';
 import thTpl from './th.tpl.html';
+import {TH_VISIBLE} from '../../common/constants';
 
 /**
  * 生成构建时所需要的模板
@@ -139,7 +140,7 @@ class Render {
         const alignAttr = col.align ? `align="${col.align}"` : '';
 
         // th可视状态值
-        let thVisible = base.getVisibleState(col.isShow);
+        const thVisibleAttr = `${TH_VISIBLE}=${base.getVisibleState(col.isShow)}`;
 
         let gmCreateAttr = '';
         let thName = '';
@@ -148,19 +149,19 @@ class Render {
         switch (col.key) {
             // 插件自动生成序号列
             case ORDER_KEY:
-                gmCreateAttr = 'gm-create="true" gm-order';
+                gmCreateAttr = `${GM_CREATE}="true" gm-order`;
                 thName = ORDER_KEY;
                 thText = order.getThContent(settings);
                 break;
             // 插件自动生成选择列
             case CHECKBOX_KEY:
-                gmCreateAttr = 'gm-create="true" gm-checkbox="true"';  // TODO 需要将true进行移除
+                gmCreateAttr = `${GM_CREATE}="true" gm-checkbox="true"`;  // TODO 需要将true进行移除
                 thName = CHECKBOX_KEY;
                 thText = checkbox.getThContent(settings.useRadio);
                 break;
             // 普通列
             default:
-                gmCreateAttr = 'gm-create="false"';
+                gmCreateAttr = `${GM_CREATE}="false"`;
                 thName = col.key;
                 thText = col.text;
                 compileAttr = framework.compileTh(settings, thText);
@@ -184,7 +185,7 @@ class Render {
             filterAttr,
             remindAttr,
             dragClassName,
-            thVisible,
+            thVisibleAttr,
             gmCreateAttr,
             thStyle: `style="width:${col.width || 'auto'}"`
         };

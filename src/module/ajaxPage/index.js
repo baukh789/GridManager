@@ -81,7 +81,7 @@ class AjaxPage {
      * @returns {string}
      */
     getQuerySelector(gridManagerName) {
-        return `.footer-toolbar[${TOOLBAR_KEY}="${gridManagerName}"]`;
+        return `[${TOOLBAR_KEY}="${gridManagerName}"]`;
     }
 
     /**

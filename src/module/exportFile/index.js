@@ -5,6 +5,7 @@ import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
+import { GM_CREATE } from '@common/constants';
 import staticTpl from './static.tpl.html';
 class ExportFile {
 	/**
@@ -70,13 +71,13 @@ class ExportFile {
 	createExportHTML(params) {
 	    const { gridManagerName, onlyChecked } = params;
         const thDOM = base.getVisibleTh(gridManagerName, false);
-        const $table = base.getTable(gridManagerName);
+        const $tbody = base.getTbody(gridManagerName);
         let	trDOM = null;
         // 验证：是否只导出已选中的表格
         if (onlyChecked) {
-            trDOM = jTool('tbody tr[checked="true"]', $table);
+            trDOM = jTool('tr[checked="true"]', $tbody);
         } else {
-            trDOM = jTool('tbody tr', $table);
+            trDOM = jTool('tr', $tbody);
         }
         // 存储导出的thead
         let	theadHTML = '';
@@ -87,7 +88,7 @@ class ExportFile {
         // 存储导出的tbody
         let	tbodyHTML = '';
         jTool.each(trDOM, (i, v) => {
-            let tdDOM = jTool('td[gm-create="false"][td-visible="visible"]', v);
+            let tdDOM = jTool(`td[${GM_CREATE}="false"][td-visible="visible"]`, v);
             tbodyHTML += '<tr>';
             jTool.each(tdDOM, (i2, v2) => {
                 tbodyHTML += `<td>${v2.textContent}</td>`;

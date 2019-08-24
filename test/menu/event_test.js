@@ -11,13 +11,13 @@ describe('getMenuEvent', () => {
 
     it('基础验证', () => {
         expect(getEventFN).toBeDefined();
-        expect(getEventFN.length).toBe(2);
+        expect(getEventFN.length).toBe(1);
     });
 
     it('执行验证', () => {
         events = getEventFN('test', '#baukh');
         expect(events.openMenu.events).toBe('contextmenu');
-        expect(events.openMenu.target).toBe(`.table-wrap[${WRAP_KEY}="test"]`);
+        expect(events.openMenu.target).toBe(`[${WRAP_KEY}="test"]`);
 
         expect(events.closeMenu.events).toBe('mousedown.closeMenu');
         expect(events.closeMenu.target).toBe('body');

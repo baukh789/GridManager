@@ -1,7 +1,7 @@
 /*
  * order: 序号
  * */
-import { ORDER_WIDTH, ORDER_KEY } from '@common/constants';
+import { ORDER_WIDTH, ORDER_KEY, GM_CREATE } from '@common/constants';
 import i18n from '../i18n';
 import './style.less';
 class Order {
@@ -30,7 +30,7 @@ class Order {
 			width: ORDER_WIDTH,
 			align: 'center',
 			template: (order, row, index, isTop) => {
-				return `<td gm-create="true" gm-order>${isTop ? order : ''}</td>`;
+				return `<td ${GM_CREATE}="true" gm-order>${isTop ? order : ''}</td>`;
 			}
 		};
 	}

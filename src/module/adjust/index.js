@@ -5,7 +5,7 @@
 import './style.less';
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
+import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, TH_VISIBLE } from '@common/constants';
 import cache from '@common/cache';
 import getAdjustEvent from './event';
 
@@ -83,7 +83,7 @@ class Adjust {
      * @returns {boolean}
      */
     resetAdjust(gridManagerName) {
-        let _thList = jTool(`thead[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] [th-visible="visible"]`);
+        let _thList = jTool(`[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] [${TH_VISIBLE}="visible"]`);
         let	_adjustAction = jTool('.adjust-action', _thList);
         if (!_adjustAction || _adjustAction.length === 0) {
             return false;
@@ -133,7 +133,7 @@ class Adjust {
 
             // 当前宽度调整的事件原为表头置顶的thead th
             // 修改与置顶thead 对应的 thead
-            if ($th.closest(`thead[${FAKE_TABLE_HEAD_KEY}]`).length === 1) {
+            if ($th.closest(`[${FAKE_TABLE_HEAD_KEY}]`).length === 1) {
                 base.getTh(gridManagerName, $th).width(_thWidth);
                 base.getTh(gridManagerName, $nextTh).width(_NextWidth);
                 base.getFakeThead(gridManagerName).width(base.getThead(gridManagerName).width());

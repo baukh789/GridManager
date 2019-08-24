@@ -1,27 +1,9 @@
-import { parseTpl, trimTpl } from '@common/parse';
-
-describe('trimTpl', () => {
-    it('基础验证', () => {
-        let str = `<table class="dreamland-table {{vm.tableClassName}}">
-                        <tbody>
-                            {{vm.tbodyHtml}}
-                        </tbody>
-                    </table>`;
-        let trimStr = '<table class="dreamland-table {{vm.tableClassName}}"><tbody>{{vm.tbodyHtml}}</tbody></table>';
-        expect(trimTpl(str)).toBe(trimStr);
-        str = null;
-        trimStr = null;
-    });
-});
+import { parseTpl } from '@common/parse';
 
 describe('parseTpl', () => {
     it('基础验证', () => {
-        let str = `<table class="dreamland-table {{vm.tableClassName}}">
-                        <tbody>
-                            {{vm.tbodyHtml}}
-                        </tbody>
-                    </table>`;
-        let trimStr = '<table class="dreamland-table kouzi"><tbody>like kouzi</tbody></table>';
+        let str = '<table class="dreamland-table {{vm.tableClassName}}">{{vm.tbodyHtml}}</table>';
+        let trimStr = '<table class="dreamland-table kouzi">like kouzi</table>';
         let target = {};
         let key = 'testDecorator';
         let descriptor = {

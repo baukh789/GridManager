@@ -48,7 +48,7 @@ module.exports = () => {
             ]
         }, {
             test: /\.html$/,
-            use: ['html-loader'],
+            use: [path.join(__dirname, './webpack-loaders/html-clear-loader.js'), 'html-loader'],
             include: [path.join(__dirname, 'src')],
             exclude: /(node_modules|bower_components)/
         }, {

@@ -146,7 +146,7 @@ class Sort {
 
 		// 根据排序数据更新排序
         jTool.each(settings.sortData, (key, value) => {
-			const $th = jTool(`${base.getQuerySelector(gridManagerName)} thead th[th-name="${key}"]`);
+			const $th = jTool(`${base.getQuerySelector(gridManagerName)} th[th-name="${key}"]`);
             const $sortAction = jTool('.sorting-action', $th);
 
 			// 排序操作：升序

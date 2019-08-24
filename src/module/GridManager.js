@@ -302,6 +302,7 @@ export default class GridManager {
         filter.enable[gridManagerName] && jTool.each(settings.columnMap, (index, column) => {
             if (column.filter) {
                 column.filter.selected = typeof query[column.key] === 'string' ? query[column.key] : '';
+                // 这里不使用base.getTh的原因: 需要同时更新thead 和 fake-thead
                 filter.update(jTool(`${base.getQuerySelector(gridManagerName)} th[th-name=${column.key}]`), column.filter);
             }
         });
@@ -664,9 +665,6 @@ export default class GridManager {
      */
     static
     destroy(table) {
-        // if (!isRendered(table, 'destroy')) {
-        //     return;
-        // }
         let gridManagerName = '';
 
         // gridManagerName

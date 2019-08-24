@@ -17,7 +17,11 @@ import {
     TOOLBAR_KEY,
     COL_PROP_DISABLED,
     TR_CACHE_KEY,
-    TR_LEVEL_KEY
+    TR_LEVEL_KEY,
+    LOADING_CLASS_NAME,
+    LAST_VISIBLE,
+    TH_VISIBLE,
+    GM_CREATE
 } from './constants';
 
 /**
@@ -132,15 +136,14 @@ class Base {
     showLoading(gridManagerName, loadingTemplate) {
         const $tableWrap = this.getWrap(gridManagerName);
 
-        const $loading = $tableWrap.find('.gm-load-area');
+        const $loading = $tableWrap.find(`.${LOADING_CLASS_NAME}`);
         if ($loading.length > 0) {
             $loading.remove();
         }
 
         const $loadingDom = jTool(loadingTemplate);
-        $loadingDom.addClass('gm-load-area');
+        $loadingDom.addClass(LOADING_CLASS_NAME);
         $tableWrap.append($loadingDom);
-        return true;
     }
 
     /**
@@ -148,11 +151,9 @@ class Base {
      * @param gridManagerName
      */
     hideLoading(gridManagerName) {
-        const $tableWrap = this.getWrap(gridManagerName);
         window.setTimeout(() => {
-            jTool('.gm-load-area', $tableWrap).remove();
+            jTool(`.${LOADING_CLASS_NAME}`, this.getWrap(gridManagerName)).remove();
         }, 500);
-        return true;
     }
 
     /**
@@ -197,7 +198,7 @@ class Base {
      * @returns {string}
      */
     getQuerySelector(gridManagerName) {
-        return `table[${TABLE_KEY}="${gridManagerName}"]`;
+        return `[${TABLE_KEY}="${gridManagerName}"]`;
     }
 
     /**
@@ -208,9 +209,9 @@ class Base {
      */
     getTable($dom, isSelectUp) {
         if (typeof $dom === 'string') {
-            return jTool(`table[${TABLE_KEY}="${$dom}"]`);
+            return jTool(`[${TABLE_KEY}="${$dom}"]`);
         }
-        return isSelectUp ? $dom.closest(`table[${TABLE_KEY}]`) : jTool(`table[${TABLE_KEY}]`, $dom);
+        return isSelectUp ? $dom.closest(`[${TABLE_KEY}]`) : jTool(`[${TABLE_KEY}]`, $dom);
     }
 
     /**
@@ -221,9 +222,9 @@ class Base {
      */
     getWrap($dom, isSelectUp) {
         if (typeof $dom === 'string') {
-            return jTool(`.table-wrap[${WRAP_KEY}="${$dom}"]`);
+            return jTool(`[${WRAP_KEY}="${$dom}"]`);
         }
-        return isSelectUp ? $dom.closest(`.table-wrap[${WRAP_KEY}]`) : jTool(`.table-wrap[${WRAP_KEY}]`, $dom);
+        return isSelectUp ? $dom.closest(`[${WRAP_KEY}]`) : jTool(`[${WRAP_KEY}]`, $dom);
     }
 
     /**
@@ -234,9 +235,9 @@ class Base {
      */
     getDiv($dom, isSelectUp) {
         if (typeof $dom === 'string') {
-            return jTool(`.table-div[${DIV_KEY}="${$dom}"]`);
+            return jTool(`[${DIV_KEY}="${$dom}"]`);
         }
-        return isSelectUp ? $dom.closest(`.table-div[${DIV_KEY}]`) : jTool(`.table-div[${DIV_KEY}]`, $dom);
+        return isSelectUp ? $dom.closest(`[${DIV_KEY}]`) : jTool(`[${DIV_KEY}]`, $dom);
     }
 
     /**
@@ -245,7 +246,7 @@ class Base {
      * @returns {*}
      */
     getThead(gridManagerName) {
-        return jTool(`thead[${TABLE_HEAD_KEY}="${gridManagerName}"]`);
+        return jTool(`[${TABLE_HEAD_KEY}="${gridManagerName}"]`);
     }
 
     /**
@@ -254,7 +255,7 @@ class Base {
      * @returns {*}
      */
     getFakeThead(gridManagerName) {
-        return jTool(`thead[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"]`);
+        return jTool(`[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"]`);
     }
 
     /**
@@ -262,7 +263,7 @@ class Base {
      * @param gridManagerName
      */
     getTbody(gridManagerName) {
-        return jTool(`table[${TABLE_KEY}="${gridManagerName}"] tbody`);
+        return jTool(`[${TABLE_KEY}="${gridManagerName}"] tbody`);
     }
 
     /**
@@ -276,7 +277,7 @@ class Base {
         if (thName.jTool) {
             thName = this.getThName(thName);
         }
-        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${TABLE_HEAD_KEY}] th[th-name="${thName}"]`);
+        return this.getThead(gridManagerName).find(`th[th-name="${thName}"]`);
     }
 
     /**
@@ -285,7 +286,7 @@ class Base {
      * @returns {*}
      */
     getAllTh(gridManagerName) {
-        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${TABLE_HEAD_KEY}] th`);
+        return this.getThead(gridManagerName).find('th');
     }
 
     /**
@@ -298,11 +299,11 @@ class Base {
         let gmCreateStr = '';
         switch (isGmCreate) {
             case true: {
-                gmCreateStr = '[gm-create="true"]';
+                gmCreateStr = `[${GM_CREATE}="true"]`;
                 break;
             }
             case false: {
-                gmCreateStr = '[gm-create="false"]';
+                gmCreateStr = `[${GM_CREATE}="false"]`;
                 break;
             }
             default: {
@@ -310,7 +311,8 @@ class Base {
                 break;
             }
         }
-        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${TABLE_HEAD_KEY}] th[th-visible="visible"]${gmCreateStr}`);
+
+        return this.getThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]${gmCreateStr}`);
     }
 
     /**
@@ -324,7 +326,7 @@ class Base {
         if (thName.jTool) {
             thName = this.getThName(thName);
         }
-        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${FAKE_TABLE_HEAD_KEY}] th[th-name="${thName}"]`);
+        return this.getFakeThead(gridManagerName).find(`th[th-name="${thName}"]`);
     }
 
     /**
@@ -333,7 +335,7 @@ class Base {
      * @returns {*}
      */
     getFakeVisibleTh(gridManagerName) {
-        return jTool(`${this.getQuerySelector(gridManagerName)} thead[${FAKE_TABLE_HEAD_KEY}] th[th-visible="visible"]`);
+        return this.getFakeThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]`);
     }
 
     /**
@@ -366,7 +368,7 @@ class Base {
      * @param gridManagerName
      */
     getEmpty(gridManagerName) {
-        return jTool(`tr[${EMPTY_TPL_KEY}="${gridManagerName}"]`);
+        return jTool(`[${EMPTY_TPL_KEY}="${gridManagerName}"]`);
     }
 
     /**
@@ -412,10 +414,10 @@ class Base {
             const visibleState = this.getVisibleState(isVisible);
 
             // th
-            $th.attr('th-visible', visibleState);
+            $th.attr(TH_VISIBLE, visibleState);
 
             // fake th
-            this.getFakeTh(gridManagerName, thName).attr('th-visible', visibleState);
+            this.getFakeTh(gridManagerName, thName).attr(TH_VISIBLE, visibleState);
 
             // 所对应的td
             const $td = this.getColTd($th);
@@ -425,7 +427,7 @@ class Base {
 
             // config
             // 所对应的显示隐藏所在的li
-            const $checkLi = jTool(`.config-area[${CONFIG_KEY}="${gridManagerName}"] li[th-name="${thName}"]`);
+            const $checkLi = jTool(`[${CONFIG_KEY}="${gridManagerName}"] li[th-name="${thName}"]`);
 
             isVisible ? $checkLi.addClass('checked-li') : $checkLi.removeClass('checked-li');
             jTool('input[type="checkbox"]', $checkLi).prop('checked', isVisible);
@@ -444,16 +446,16 @@ class Base {
         const $lastFakeTh = $fakeVisibleThList.eq(index);
 
         // 清除所有列
-        jTool(`${this.getQuerySelector(gridManagerName)} [last-visible="true"]`).attr('last-visible', false);
+        jTool(`${this.getQuerySelector(gridManagerName)} [${LAST_VISIBLE}="true"]`).attr(LAST_VISIBLE, false);
 
         // fake th 最后一项增加标识
-        $lastFakeTh.attr('last-visible', true);
+        $lastFakeTh.attr(LAST_VISIBLE, true);
 
         // th 最后一项增加标识
-        this.getVisibleTh(gridManagerName).eq(index).attr('last-visible', true);
+        this.getVisibleTh(gridManagerName).eq(index).attr(LAST_VISIBLE, true);
 
         // td 最后一项增加标识
-        this.getColTd($lastFakeTh).attr('last-visible', true);
+        this.getColTd($lastFakeTh).attr(LAST_VISIBLE, true);
     }
 
     /**
@@ -596,7 +598,7 @@ class Base {
      * @returns {*}
      */
     getTextWidth(gridManagerName, content, cssObj) {
-        const $textDreamland = jTool(`.table-wrap[${WRAP_KEY}="${gridManagerName}"] .text-dreamland`);
+        const $textDreamland = jTool(`[${WRAP_KEY}="${gridManagerName}"] .text-dreamland`);
         $textDreamland.html(content);
         cssObj && $textDreamland.css(cssObj);
         return $textDreamland.width();

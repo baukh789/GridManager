@@ -87,7 +87,7 @@ class Config {
      * @returns {string}
      */
     getQuerySelector(gridManagerName) {
-        return `.config-area[${CONFIG_KEY}="${gridManagerName}"]`;
+        return `[${CONFIG_KEY}="${gridManagerName}"]`;
     }
 
     /**

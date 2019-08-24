@@ -516,7 +516,6 @@ const demo1 = {
      */
     editRowData: function (dom) {
         window.GridManager.updateRowData('test', 'id', {id: window.parseInt(dom.getAttribute('data-id')), lastDate: new Date().getTime()});
-        console.log('editRowData');
     }
 };
 

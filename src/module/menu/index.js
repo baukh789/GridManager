@@ -44,7 +44,7 @@ class Menu {
      * @returns {string}
      */
 	getQuerySelector(gridManagerName) {
-	    return `.grid-menu[${MENU_KEY}="${gridManagerName}"]`;
+	    return `[${MENU_KEY}="${gridManagerName}"]`;
     }
 
     /**
@@ -136,7 +136,7 @@ class Menu {
 
 			// 验证：当前是否存在已选中的项
 			const exportExcelOfChecked = jTool('[grid-action="export-excel"][only-checked="true"]');
-			if (jTool('tbody tr[checked="true"]', base.getTable(gridManagerName)).length === 0) {
+			if (jTool('tr[checked="true"]', base.getTbody(gridManagerName)).length === 0) {
 				exportExcelOfChecked.addClass('disabled');
 			} else {
 				exportExcelOfChecked.removeClass('disabled');
@@ -163,7 +163,7 @@ class Menu {
             $closeTarget.on(closeEvents, function (e) {
                 $closeTarget.off(closeEvents);
                 const eventSource = jTool(e.target);
-				if (eventSource.hasClass('grid-menu') || eventSource.closest('.grid-menu').length === 1) {
+                if (eventSource.attr(MENU_KEY) || eventSource.closest(`[${MENU_KEY}]`).length === 1) {
 					return;
 				}
 				$menu.hide();
