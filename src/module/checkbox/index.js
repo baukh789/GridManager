@@ -41,33 +41,40 @@ class Checkbox {
         jTool(allChange.target).on(allChange.events, allChange.selector, function () {
             const settings = cache.getSettings(gridManagerName);
             let checkedData = cache.getCheckedData(gridManagerName);
-            settings.checkedBefore(checkedData);
-            settings.checkedAllBefore(checkedData);
-            const tableData = _this.resetData(gridManagerName, this.checked, true);
+            const checked = this.checked;
+            settings.checkedBefore(checkedData, !checked);
+            settings.checkedAllBefore(checkedData, !checked);
+            const tableData = _this.resetData(gridManagerName, checked, true);
             _this.resetDOM(settings, tableData);
             checkedData = cache.getCheckedData(gridManagerName);
-            settings.checkedAfter(checkedData);
-            settings.checkedAllAfter(checkedData);
+            settings.checkedAfter(checkedData, checked);
+            settings.checkedAllAfter(checkedData, checked);
         });
 
         // td内的多选
-        jTool(checkboxChange.target).on(checkboxChange.events, checkboxChange.selector, function (e) {
+        jTool(checkboxChange.target).on(checkboxChange.events, checkboxChange.selector, function () {
             const settings = cache.getSettings(gridManagerName);
+            const tr = jTool(this).closest('tr').get(0);
+            const checked = this.checked;
 
-            settings.checkedBefore(cache.getCheckedData(gridManagerName));
-            const tableData = _this.resetData(gridManagerName, this.checked, false, jTool(this).closest('tr').attr(TR_CACHE_KEY));
+            settings.checkedBefore(cache.getCheckedData(gridManagerName), !checked, cache.getRowData(gridManagerName, tr));
+            const cacheKey = tr.getAttribute(TR_CACHE_KEY);
+            const tableData = _this.resetData(gridManagerName, checked, false, cacheKey);
             _this.resetDOM(settings, tableData);
-            settings.checkedAfter(cache.getCheckedData(gridManagerName));
+            settings.checkedAfter(cache.getCheckedData(gridManagerName), checked, cache.getRowData(gridManagerName, tr));
         });
 
         // td内的单选
-        jTool(radioChange.target).on(radioChange.events, radioChange.selector, function (e) {
+        jTool(radioChange.target).on(radioChange.events, radioChange.selector, function () {
             const settings = cache.getSettings(gridManagerName);
+            const tr = jTool(this).closest('tr').get(0);
 
-            settings.checkedBefore(cache.getCheckedData(gridManagerName));
-            const tableData = _this.resetData(gridManagerName, undefined, false, jTool(this).closest('tr').attr(TR_CACHE_KEY), true);
+            settings.checkedBefore(cache.getCheckedData(gridManagerName), false, cache.getRowData(gridManagerName, tr));
+            const cacheKey = tr.getAttribute(TR_CACHE_KEY);
+            const tableData = _this.resetData(gridManagerName, undefined, false, cacheKey, true);
             _this.resetDOM(settings, tableData, true);
-            settings.checkedAfter(cache.getCheckedData(gridManagerName));
+
+            settings.checkedAfter(cache.getCheckedData(gridManagerName), true, cache.getRowData(gridManagerName, tr));
         });
 
         // tr点击选中
