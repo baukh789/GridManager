@@ -134,4 +134,5 @@ import GridManager from './GridManager';
 	window.$ = jQuery || undefined;
 })(window.jQuery);
 
+export { jTool };
 export default GridManager;
