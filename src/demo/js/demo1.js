@@ -305,23 +305,23 @@ const demo1 = {
             ajaxType: 'POST',
 
             // 选择事件执行前事件
-            checkedBefore: function (checkedList) {
-                console.log('checkedBefore==', checkedList);
+            checkedBefore: function (checkedList, isChecked, row) {
+                console.log('checkedBefore==', checkedList, isChecked, row);
             },
 
             // 选择事件执行后事件
-            checkedAfter: function (checkedList) {
-                console.log('checkedAfter==', checkedList);
+            checkedAfter: function (checkedList, isChecked, row) {
+                console.log('checkedAfter==', checkedList, isChecked, row);
             },
 
             // 全选事件执行前事件
-            checkedAllBefore: function (checkedList) {
-                console.log('checkedAllBefore==', checkedList);
+            checkedAllBefore: function (checkedList, isChecked) {
+                console.log('checkedAllBefore==', checkedList, isChecked);
             },
 
             // 全选事件执行后事件
-            checkedAllAfter: function (checkedList) {
-                console.log('checkedAllAfter==', checkedList);
+            checkedAllAfter: function (checkedList, isChecked) {
+                console.log('checkedAllAfter==', checkedList, isChecked);
             },
 
             // 执行排序前事件
@@ -516,6 +516,7 @@ const demo1 = {
      */
     editRowData: function (dom) {
         window.GridManager.updateRowData('test', 'id', {id: window.parseInt(dom.getAttribute('data-id')), lastDate: new Date().getTime()});
+        console.log('editRowData');
     }
 };
 
