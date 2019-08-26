@@ -49,16 +49,17 @@ class Framework {
     /**
      * 解析: th
      * @param settings
+     * @param key: thName
      * @param template
      * @returns {string}
      */
-    compileTh(settings, template) {
+    compileTh(settings, key, template) {
         const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
         const compileList = this.getCompileList(gridManagerName);
         let compileAttr = '';
         if (compileAngularjs || compileVue || compileReact) {
             compileAttr = `${this.getKey(gridManagerName)}=${compileList.length}`;
-            compileList.push({template});
+            compileList.push({ key, template, type: 'text' });
         }
 
         return compileAttr;
@@ -84,7 +85,7 @@ class Framework {
 
         // React element or function
         if (compileReact) {
-            compileList.push({el, template, row, index, fnArg: [row[key], row, index]});
+            compileList.push({el, template, row, index, key, type: 'template', fnArg: [row[key], row, index]});
             return '';
         }
 
@@ -116,7 +117,7 @@ class Framework {
         const compileList = this.getCompileList(gridManagerName);
         // React
         if (compileReact) {
-            compileList.push({el, template});
+            compileList.push({el, template, type: 'empty'});
             return '';
         }
 
@@ -150,7 +151,7 @@ class Framework {
 
         // React element or function
         if (compileReact) {
-            compileList.push({el, template, row, index, fnArg: [row, index]});
+            compileList.push({el, template, row, index, type: 'full', fnArg: [row, index]});
             return '';
         }
 

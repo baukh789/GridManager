@@ -366,25 +366,16 @@ export default class GridManager {
 
     /**
      * @静态方法
-     * 使用现有数据重绘表格，对表格tbody区域进行重新渲染（如果需要，可以在后期修改为对全部区域进行重新渲染）
+     * 重置Column [比较危险的操作，会改变当前实例中的基础配置。只在处理特殊情况时使用]
      * @param table
-     * @param newColumnData: 新的columnData，非必传项；当存在时将会更新columnMap的text及template, 仅在react版本中使用到
+     * @param newSettings: 现仅在react版本中使用到
      */
 	static
-    redrawGrid(table, newColumnData) {
-        if (!isRendered(table, 'refreshGrid')) {
+    resetSettings(table, newSettings) {
+        if (!isRendered(table, 'resetSettings')) {
             return;
         }
-        const settings = cache.getSettings(base.getKey(table));
-        const { gridManagerName, columnMap } = settings;
-        newColumnData && newColumnData.forEach(item => {
-            columnMap[item.key].text = item.text;
-            columnMap[item.key].template = item.template;
-        });
-        cache.setSettings(settings);
-        const tableData = cache.getTableData(gridManagerName);
-
-        coreDOM.renderTableBody(settings, tableData);
+        cache.setSettings(newSettings);
     }
 
     /**
