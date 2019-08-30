@@ -118,7 +118,7 @@ describe('Framework', () => {
     describe('compileTh', () => {
         it('基础验证', () => {
             expect(framework.compileTh).toBeDefined();
-            expect(framework.compileTh.length).toBe(2);
+            expect(framework.compileTh.length).toBe(3);
         });
         it('无框架', () => {
             settings = {
@@ -147,7 +147,7 @@ describe('Framework', () => {
             };
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTh(settings, '标题')).toBe('data-compile-id-test=0');
+            expect(framework.compileTh(settings, '标题', '<span></span>')).toBe('data-compile-id-test=0');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
