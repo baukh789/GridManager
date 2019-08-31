@@ -4,7 +4,7 @@
  * */
 import jTool from '@common/jTool';
 import base from '@common/base';
-import { TABLE_KEY } from '@common/constants';
+import { TABLE_KEY, RENDERING_KEY } from '@common/constants';
 import GridManager from './GridManager';
 /*
 *  捆绑至选择器对象
@@ -16,6 +16,7 @@ import GridManager from './GridManager';
 			base.outError('nodeName !== "TABLE"');
 			return;
 		}
+
 		// 方法名
 		let name = null;
 
@@ -64,8 +65,15 @@ import GridManager from './GridManager';
             return GridManager[name](this, arg, callback, condition) || this;
         }
 
-        // init: gridManagerName
-        const $table = jTool(this);
+        /* ***********  以下为init *************** */
+
+        // 验证并设置正在渲染中标识，防止同时触发多次。渲染完成后将移除该标识
+        if (this[RENDERING_KEY]) {
+            return;
+        }
+        this[RENDERING_KEY] = true;
+
+		const $table = jTool(this);
         // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
         if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
             // 存储gridManagerName值

@@ -1,6 +1,7 @@
 import {
     GM_VERSION,
     TABLE_KEY,
+    RENDERING_KEY,
     WRAP_KEY,
     DIV_KEY,
     CONFIG_KEY,
@@ -35,6 +36,10 @@ describe('常量验证', () => {
 
     it('TABLE_KEY', () => {
         expect(TABLE_KEY).toBe('grid-manager');
+    });
+
+    it('RENDERING_KEY', () => {
+        expect(RENDERING_KEY).toBe('gm-rendering');
     });
 
     it('WRAP_KEY', () => {

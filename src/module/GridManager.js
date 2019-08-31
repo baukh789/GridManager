@@ -3,7 +3,7 @@
  * 构造类
  */
 import jTool from '@common/jTool';
-import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY } from '@common/constants';
+import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY } from '@common/constants';
 import base from '@common/base';
 import cache from '@common/cache';
 import adjust from './adjust';
@@ -565,6 +565,9 @@ export default class GridManager {
         }
 
         settings = cache.getSettings(gridManagerName);
+
+        // 删除dom渲染中标识
+        delete table[RENDERING_KEY];
 
         // 设置渲染完成标识
         settings.rendered = true;

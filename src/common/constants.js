@@ -8,6 +8,9 @@ export const GM_VERSION = process.env.VERSION;
 // 表格唯一key
 export const TABLE_KEY = 'grid-manager';
 
+// 正在渲染中的标识
+export const RENDERING_KEY = 'gm-rendering';
+
 // 表格外围唯一key
 export const WRAP_KEY = 'grid-manager-wrap';
 
