@@ -34,7 +34,7 @@ describe('cache 验证类的属性及方法总量', () => {
     });
     it('Function count', () => {
         // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(cache)))).toBe(21 + 1);
+        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(cache)))).toBe(22 + 1);
     });
 });
 
@@ -671,6 +671,68 @@ describe('delUserMemory', () => {
 
         expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of all ', ...CONSOLE_STYLE[CONSOLE_INFO]);
     });
+});
+
+describe('updateTemplate', () => {
+    let arg = null;
+    beforeEach(() => {
+        arg = {
+            disableCache: false,
+            emptyTemplate: 'test',
+            columnData: [
+                {
+                    key: 'one',
+                    text: 'one'
+                },
+                {
+                    key: 'two',
+                    text: 'two',
+                    template: 'two'
+                },
+                {
+                    key: 'three',
+                    text: 'three',
+                    template: () => {
+                        return 'three';
+                    }
+                },
+                {
+                    key: 'four',
+                    text: () => {
+                        return 'four';
+                    },
+                    template: 'four'
+                }
+            ]
+        };
+    });
+    afterEach(() => {
+        arg = null;
+    });
+
+    it('基础验证', () => {
+        expect(cache.updateTemplate).toBeDefined();
+        expect(cache.updateTemplate.length).toBe(1);
+    });
+
+    it('执行验证', () => {
+        arg =  cache.updateTemplate(arg);
+        expect(arg.disableCache).toBe(false);
+        expect(arg.emptyTemplate()).toEqual('test');
+
+        expect(arg.columnData[0].text()).toEqual('one');
+        expect(arg.columnData[0].template).toBeUndefined();
+
+        expect(arg.columnData[1].text()).toEqual('two');
+        expect(arg.columnData[1].template()).toEqual('two');
+
+        expect(arg.columnData[2].text()).toEqual('three');
+        expect(arg.columnData[2].template()).toEqual('three');
+
+        expect(arg.columnData[3].text()).toEqual('four');
+        expect(arg.columnData[3].template()).toEqual('four');
+    });
+
 });
 
 describe('initSettings', () => {

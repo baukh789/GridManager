@@ -156,9 +156,10 @@ class Core {
         const $tableDiv = base.getDiv(gridManagerName);
         const style = `height: ${$tableDiv.height() - 1}px;`;
         $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
-        $tbody.html(base.getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style));
+        $tbody.html(base.getEmptyHtml(gridManagerName, visibleNum, style));
+        const emptyTd = base.getEmpty(gridManagerName).get(0).querySelector('td');
 
-        framework.compileEmptyTemplate(settings, base.getEmpty(gridManagerName).get(0).querySelector('td'), emptyTemplate);
+        emptyTd.innerHTML = framework.compileEmptyTemplate(settings, emptyTd, emptyTemplate);
 
         // 解析框架: 空模板
         framework.send(settings);

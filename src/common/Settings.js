@@ -377,7 +377,7 @@ const gridData = {
     dataKey: 'data',
 
     // 为空时显示的html
-    emptyTemplate: '<div class="gm-empty-template">暂无数据</div>'
+    emptyTemplate: () => '<div class="gm-empty-template">暂无数据</div>'
 };
 
 /**

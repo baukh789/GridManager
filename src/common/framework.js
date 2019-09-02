@@ -49,7 +49,7 @@ class Framework {
     /**
      * 解析: th
      * @param settings
-     * @param key: thName
+     * @param key
      * @param template
      * @returns {string}
      */
@@ -62,7 +62,17 @@ class Framework {
             compileList.push({ key, template, type: 'text' });
         }
 
-        return compileAttr;
+        let thText = '';
+
+        // not React
+        if (!compileReact) {
+            thText = template();
+        }
+
+        return {
+            thText,
+            compileAttr
+        };
     }
 
     /**
@@ -79,7 +89,7 @@ class Framework {
         const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
         const compileList = this.getCompileList(gridManagerName);
         // React and not template
-        if (compileReact && !template) {
+        if (!template) {
             return row[key];
         }
 
@@ -89,19 +99,14 @@ class Framework {
             return '';
         }
 
-        // 解析框架: Vue
-        if (compileVue) {
-            compileList.push({el, row, index});
-        }
-
-        // 解析框架: Angular 1.x
-        if (compileAngularjs) {
+        // 解析框架: Angular 1.x || Vue
+        if (compileVue || compileAngularjs) {
             compileList.push({el, row, index});
         }
 
         // not React
-        if (!settings.compileReact) {
-            return typeof template === 'function' ? template(row[key], row, index) : (typeof template === 'string' ? template : row[key]);
+        if (!compileReact) {
+            return template(row[key], row, index);
         }
     }
 
@@ -130,6 +135,8 @@ class Framework {
         if (compileAngularjs) {
             compileList.push({el});
         }
+
+        return template();
     }
 
     /**
@@ -166,7 +173,7 @@ class Framework {
         }
 
         // not react
-        return typeof template === 'function' ? template(row, index) : template;
+        return template(row, index);
     }
 
     /**

@@ -407,12 +407,42 @@ class Cache {
     }
 
     /**
+     * 更新模板，将非函数类型的模板转换为函数类型
+     * @param arg
+     * @returns {*}
+     */
+    updateTemplate(arg) {
+        const { columnData, emptyTemplate } = arg;
+
+        // 强制转换模板为函数: emptyTemplate
+        if (emptyTemplate && typeof emptyTemplate !== 'function') {
+            arg.emptyTemplate = () => emptyTemplate;
+        }
+        columnData.forEach(col => {
+            // 强制转换模板为函数: text
+            const text = col.text;
+            if (text && typeof text !== 'function') {
+                col.text = () => text;
+            }
+
+            // 强制转换模板为函数: template
+            const template = col.template;
+            if (template && typeof template !== 'function') {
+                col.template = () => template;
+            }
+        });
+        return arg;
+    }
+
+    /**
      * 初始化设置相关: 合并, 存储
      * @param arg
      * @param checkboxColumnFn
      * @param orderColumnFn
      */
     initSettings(arg, checkboxColumnFn, orderColumnFn) {
+        arg = this.updateTemplate(arg);
+
         // 合并参数
         const settings = new Settings();
         settings.textConfig = new TextSettings();
@@ -421,14 +451,15 @@ class Cache {
         // 存储初始配置项
         this.setSettings(settings);
 
+        const { gridManagerName, columnData, supportAutoOrder, supportCheckbox } = settings;
         // 自动增加: 序号列
-        if (settings.supportAutoOrder) {
-            settings.columnData.unshift(orderColumnFn(settings));
+        if (supportAutoOrder) {
+            columnData.unshift(orderColumnFn(settings));
         }
 
         // 自动增加: 选择列
-        if (settings.supportCheckbox) {
-            settings.columnData.unshift(checkboxColumnFn(settings));
+        if (supportCheckbox) {
+            columnData.unshift(checkboxColumnFn(settings));
         }
 
         // 为 columnData 提供锚 => columnMap
@@ -437,9 +468,10 @@ class Cache {
         const columnMap = {};
 
         let isError = false;
-        settings.columnData.forEach((col, index) => {
+        columnData.forEach((col, index) => {
+            const colKey = col.key;
             // key字段不允许为空
-            if (!col.key) {
+            if (!colKey) {
                 base.outError(`columnData[${index}].key undefined`);
                 isError = true;
                 return;
@@ -447,25 +479,26 @@ class Cache {
 
             // 存在disableCustomize时，必须设置width
             if (col.disableCustomize && !col.width) {
-                base.outError(`column ${col.key}: when disableCustomize exists, width must be set`);
+                base.outError(`column ${colKey}: when disableCustomize exists, width must be set`);
                 isError = true;
                 return;
             }
-            columnMap[col.key] = col;
+            columnMap[colKey] = col;
 
             // 如果未设定, 设置默认值为true
-            columnMap[col.key].isShow = col.isShow || typeof (col.isShow) === 'undefined';
+            columnMap[colKey].isShow = col.isShow || typeof (col.isShow) === 'undefined';
 
             // 为列Map 增加索引
-            columnMap[col.key].index = index;
+            columnMap[colKey].index = index;
 
             // 存储由用户配置的列宽度值, 该值不随着之后的操作变更
-            columnMap[col.key].__width = col.width;
+            columnMap[colKey].__width = col.width;
 
             // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
-            columnMap[col.key].__isShow = col.isShow;
+            columnMap[colKey].__isShow = col.isShow;
 
         });
+
         if (isError) {
             return false;
         }
@@ -478,7 +511,7 @@ class Cache {
                 return;
             }
 
-            const { gridManagerName, columnMap } = settings;
+            const columnMap = settings.columnMap;
             const userMemory = this.getUserMemory(gridManagerName);
             const columnCache = userMemory.column || {};
             const columnCacheKeys = Object.keys(columnCache);
@@ -500,9 +533,6 @@ class Cache {
             // 与用户记忆项不匹配
             isUsable && jTool.each(columnMap, (key, col) => {
                 if (!columnCache[key]
-                    // 显示文本
-                    || (columnCache[key].text && columnCache[key].text !== col.text)
-
                     // 宽度
                     || columnCache[key].__width !== col.width
 
@@ -524,10 +554,7 @@ class Cache {
                     // 相同数据列合并功能
                     || columnCache[key].merge !== col.merge
 
-                    || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)
-
-                    // 字段模版: 仅对非函数类型的模板进行验证
-                    || (columnCache[key].template && columnCache[key].template !== col.template)) {
+                    || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)) {
                     isUsable = false;
                     return false;
                 }

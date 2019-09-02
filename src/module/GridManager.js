@@ -366,16 +366,26 @@ export default class GridManager {
 
     /**
      * @静态方法
-     * 重置Column [比较危险的操作，会改变当前实例中的基础配置。只在处理特殊情况时使用]
+     * 重置settings [比较危险的操作，会改变当前实例中的基础配置。只在处理特殊情况时使用,现仅在react版本中使用到]
      * @param table
-     * @param newSettings: 现仅在react版本中使用到
+     * @param settings
      */
 	static
-    resetSettings(table, newSettings) {
+    resetSettings(table, settings) {
         if (!isRendered(table, 'resetSettings')) {
             return;
         }
-        cache.setSettings(newSettings);
+        cache.setSettings(settings);
+    }
+
+    /**
+     * @静态方法
+     * 更新模板 [现仅在react版本中使用到]
+     * @param arg
+     */
+    static
+    updateTemplate(arg) {
+        return cache.updateTemplate(arg);
     }
 
     /**

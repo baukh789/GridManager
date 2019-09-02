@@ -125,7 +125,8 @@ describe('Framework', () => {
                 gridManagerName
             };
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTh(settings, '标题')).toBe('');
+            expect(framework.compileTh(settings, 'title', () => '标题').thText).toBe('标题');
+            expect(framework.compileTh(settings, 'title', () => '标题').compileAttr).toBe('');
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
 
         });
@@ -136,8 +137,11 @@ describe('Framework', () => {
             };
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTh(settings, '标题')).toBe('data-compile-id-test=0');
+            let obj = framework.compileTh(settings, 'title', () => '标题');
+            expect(obj.thText).toBe('标题');
+            expect(obj.compileAttr).toBe('data-compile-id-test=0');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
+            obj = null;
         });
 
         it('Vue', () => {
@@ -147,8 +151,11 @@ describe('Framework', () => {
             };
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTh(settings, '标题', '<span></span>')).toBe('data-compile-id-test=0');
+            let obj = framework.compileTh(settings, 'title', () => '标题');
+            expect(obj.thText).toBe('标题');
+            expect(obj.compileAttr).toBe('data-compile-id-test=0');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
+            obj = null;
         });
 
         it('React', () => {
@@ -158,8 +165,11 @@ describe('Framework', () => {
             };
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTh(settings, '标题')).toBe('data-compile-id-test=0');
+            let obj = framework.compileTh(settings, 'title', () => '标题');
+            expect(obj.thText).toBe('');
+            expect(obj.compileAttr).toBe('data-compile-id-test=0');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
+            obj = null;
         });
     });
 
@@ -213,16 +223,6 @@ describe('Framework', () => {
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
-        it('无框架: 模板为字符串', () => {
-            settings = {
-                gridManagerName
-            };
-            tdTemplate = 'this is string';
-            expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('this is string');
-            expect(framework.getCompileList(gridManagerName).length).toBe(0);
-        });
-
         it('无框架: 模板为空', () => {
             settings = {
                 gridManagerName
@@ -232,7 +232,7 @@ describe('Framework', () => {
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
-        it('Angular-1.x', () => {
+        it('Angular-1.x: 无模板', () => {
             settings = {
                 gridManagerName,
                 compileAngularjs: jasmine.createSpy('callback')
@@ -240,10 +240,24 @@ describe('Framework', () => {
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
+        });
+
+        it('Angular-1.x: 有模板', () => {
+            settings = {
+                gridManagerName,
+                compileAngularjs: jasmine.createSpy('callback')
+            };
+
+            tdTemplate = (pic, row, index) => {
+                return 'this is function' + pic + index;
+            };
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
+            expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('this is function/upload/blog/pic/9081_type.jpg1');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
-        it('Vue', () => {
+        it('Vue: 无模板', () => {
             settings = {
                 gridManagerName,
                 compileVue: jasmine.createSpy('callback')
@@ -251,6 +265,20 @@ describe('Framework', () => {
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
+        });
+
+        it('Vue: 有模板', () => {
+            settings = {
+                gridManagerName,
+                compileVue: jasmine.createSpy('callback')
+            };
+
+            tdTemplate = (pic, row, index) => {
+                return 'this is function' + pic + index;
+            };
+            expect(framework.getCompileList(gridManagerName).length).toBe(0);
+            expect(framework.compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('this is function/upload/blog/pic/9081_type.jpg1');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -284,7 +312,7 @@ describe('Framework', () => {
         let emptyNode = null;
         let template = null;
         beforeEach(() => {
-            template = '<div>空空的，什么也没有</div>';
+            template = () => '<div>空空的，什么也没有</div>';
             document.body.innerHTML = '<table><tbody><td empty-node></td></tbody></table>';
             emptyNode = document.querySelector('td[empty-node]');
         });
@@ -303,7 +331,7 @@ describe('Framework', () => {
                 gridManagerName
             };
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileEmptyTemplate(settings, emptyNode, template)).toBeUndefined();
+            expect(framework.compileEmptyTemplate(settings, emptyNode, template)).toBe('<div>空空的，什么也没有</div>');
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -314,7 +342,7 @@ describe('Framework', () => {
             };
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileEmptyTemplate(settings, emptyNode, template)).toBeUndefined();
+            expect(framework.compileEmptyTemplate(settings, emptyNode, template)).toBe('<div>空空的，什么也没有</div>');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -325,7 +353,7 @@ describe('Framework', () => {
             };
 
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileEmptyTemplate(settings, emptyNode, template)).toBeUndefined();
+            expect(framework.compileEmptyTemplate(settings, emptyNode, template)).toBe('<div>空空的，什么也没有</div>');
             expect(framework.getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -392,17 +420,9 @@ describe('Framework', () => {
                 gridManagerName
             };
 
-            // 函数模板
             template = () => {
                 return '<div>这个是通栏</div>';
             };
-            expect(framework.getCompileList(gridManagerName).length).toBe(0);
-            expect(framework.compileFullColumn(settings, fullNode, row, 1, template)).toBe('<div>这个是通栏</div>');
-            expect(framework.getCompileList(gridManagerName).length).toBe(0);
-
-
-            // 字符模板
-            template = '<div>这个是通栏</div>';
             expect(framework.getCompileList(gridManagerName).length).toBe(0);
             expect(framework.compileFullColumn(settings, fullNode, row, 1, template)).toBe('<div>这个是通栏</div>');
             expect(framework.getCompileList(gridManagerName).length).toBe(0);

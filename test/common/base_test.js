@@ -654,16 +654,14 @@ describe('base.getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style)',
 
     it('基础验证', () => {
         expect(base.getEmptyHtml).toBeDefined();
-        expect(base.getEmptyHtml.length).toBe(4);
+        expect(base.getEmptyHtml.length).toBe(3);
     });
 
     it('返回值验证', () => {
         tpl = `<tr empty-template="test-empty" style="height: 100px;">
-					<td colspan="5">
-					无内容
-					</td>
+					<td colspan="5"></td>
 				</tr>`;
-        expect(base.getEmptyHtml('test-empty', 5, '无内容', 'height: 100px;').replace(/\s/g, '')).toBe(tpl.replace(/\s/g, ''));
+        expect(base.getEmptyHtml('test-empty', 5, 'height: 100px;').replace(/\s/g, '')).toBe(tpl.replace(/\s/g, ''));
     });
 });
 

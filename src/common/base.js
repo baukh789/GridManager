@@ -351,15 +351,12 @@ class Base {
      * 获取空模版html
      * @param gridManagerName
      * @param visibleNum: 可视状态TH的数据
-     * @param emptyTemplate: 自定义的为空显示模版
      * @param style: 模版自定义样式
      * @returns {string}
      */
-    getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style) {
+    getEmptyHtml(gridManagerName, visibleNum, style) {
         return `<tr ${EMPTY_TPL_KEY}="${gridManagerName}" style="${style}">
-					<td colspan="${visibleNum}">
-					${emptyTemplate}
-					</td>
+					<td colspan="${visibleNum}"></td>
 				</tr>`;
     }
 

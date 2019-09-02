@@ -305,7 +305,7 @@ describe('Settings', () => {
 	});
 
 	it('验证属性[emptyTemplate]初始值', () => {
-		expect(settings.emptyTemplate).toBe('<div class="gm-empty-template">暂无数据</div>');
+		expect(settings.emptyTemplate()).toBe('<div class="gm-empty-template">暂无数据</div>');
 	});
 
     it('验证属性[supportExport]初始值', () => {
