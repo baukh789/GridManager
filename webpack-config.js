@@ -48,14 +48,14 @@ const config = {
     optimization: {
         minimizer: [
             // 压缩js
-            // new UglifyJsPlugin({
-            //     uglifyOptions: {
-            //         cache: true,
-            //         parallel: true,
-            //         sourceMap: true,
-            //         warnings: false
-            //     }
-            // }),
+            new UglifyJsPlugin({
+                uglifyOptions: {
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true,
+                    warnings: false
+                }
+            }),
 
             // 压缩css
             new OptimizeCssAssetsPlugin({
