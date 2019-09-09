@@ -56,17 +56,18 @@ class Framework {
     compileTh(settings, key, template) {
         const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
         const compileList = this.getCompileList(gridManagerName);
-        let compileAttr = '';
-        if (compileAngularjs || compileVue || compileReact) {
-            compileAttr = `${this.getKey(gridManagerName)}=${compileList.length}`;
-            compileList.push({ key, template, type: 'text' });
-        }
-
         let thText = '';
+        let compileAttr = '';
+        if (template) {
+            if (compileAngularjs || compileVue || compileReact) {
+                compileAttr = `${this.getKey(gridManagerName)}=${compileList.length}`;
+                compileList.push({ key, template, type: 'text' });
+            }
 
-        // not React
-        if (!compileReact) {
-            thText = template();
+            // not React
+            if (!compileReact) {
+                thText = template();
+            }
         }
 
         return {
