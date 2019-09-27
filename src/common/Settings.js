@@ -162,6 +162,10 @@ const ajaxPage = {
     // 是否使用无总条数模式
     useNoTotalsMode: false,
 
+    // 异步分页模式, 当useNoTotalsMode:true 时，该配置失效
+    // asyncTotals: {text: String, handler: Function(settings, params)}
+    asyncTotals: null,
+
     // 分页区域自定义模板
     ajaxPageTemplate: '',
 

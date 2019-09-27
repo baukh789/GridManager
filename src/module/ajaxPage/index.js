@@ -19,6 +19,7 @@ import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { TOOLBAR_KEY } from '@common/constants';
 import core from '../core';
+import { getParams } from '../core/tool';
 import i18n from '../i18n';
 import dropdown from '../dropdown';
 import ajaxPageTpl from './ajax-page.tpl.html';
@@ -43,6 +44,12 @@ class AjaxPage {
                 [settings.currentPageKey]: 1
             };
             jTool.extend(settings, {pageData: pageData});
+            cache.setSettings(settings);
+        }
+
+        // 当useNoTotalsMode:true 时，异步获取总页模式失效
+        if (settings.useNoTotalsMode) {
+            settings.asyncTotals = null;
             cache.setSettings(settings);
         }
 
@@ -113,20 +120,51 @@ class AjaxPage {
 	 * @param len 本次请求返回的总条数，该参数仅在totals为空时使用
 	 */
 	resetPageData(settings, totals, len) {
-		const pageData = this.__getPageData(settings, totals, len);
-        const $footerToolbar = jTool(this.getQuerySelector(settings.gridManagerName));
+	    const { gridManagerName, useNoTotalsMode, asyncTotals } = settings;
+        const $footerToolbar = jTool(this.getQuerySelector(gridManagerName));
+        const cPage = settings.pageData[settings.currentPageKey] || 1;
+        const pSize = settings.pageData[settings.pageSizeKey] || settings.pageSize;
 
-		// 更新底部DOM节点
-		this.__updateFooterDOM($footerToolbar, settings, pageData);
+        const update = (totals, asyncTotalsText) => {
+            const pageData = this.__getPageData(settings, totals, len);
 
-		// 修改分页描述信息
-        this.__resetPageInfo($footerToolbar, settings, pageData);
+            // 更新底部DOM节点
+            this.__updateFooterDOM($footerToolbar, settings, pageData);
 
-		// 更新Cache
-		cache.setSettings(jTool.extend(true, settings, {pageData}));
+            // 修改分页描述信息
+            this.__resetPageInfo($footerToolbar, settings, pageData, asyncTotalsText);
 
-		// 显示底部工具条
-        $footerToolbar.css('visibility', 'visible');
+            // 更新Cache
+            cache.setSettings(jTool.extend(true, settings, {pageData}));
+
+            // 显示底部工具条
+            $footerToolbar.css('visibility', 'visible');
+        };
+
+        // 异步总条数
+        if (asyncTotals) {
+            if (len < pSize) {
+                update((cPage - 1) * pSize + len);
+                return;
+            }
+
+            // 正在使用异步总条数的情况下，不再使用接口返回的totals字段
+            update(null, asyncTotals.text);
+            asyncTotals.handler(settings, getParams(settings)).then(totals => {
+                update(totals);
+            });
+            return;
+        }
+
+        // 无总条数
+        if (useNoTotalsMode) {
+            update();
+            return;
+        }
+
+        // 正常
+        update(totals);
+
 	}
 
     /**
@@ -264,7 +302,7 @@ class AjaxPage {
 		}
 
 		// 配置页码
-        if (!settings.useNoTotalsMode) {
+        if (pageData.tSize) {
             for (i; i <= maxI; i++) {
                 if (i === cPage) {
                     tHtml += `<li class="active">${ cPage }</li>`;
@@ -383,9 +421,10 @@ class AjaxPage {
      * @param $footerToolbar
      * @param settings
      * @param pageData
+     * @param asyncTotalText: 异步总页loading文本
      * @private
      */
-	__resetPageInfo($footerToolbar, settings, pageData) {
+	__resetPageInfo($footerToolbar, settings, pageData, asyncTotalText) {
 
         // 从多少开始
         const fromNum = pageData[settings.currentPageKey] === 1 ? 1 : (pageData[settings.currentPageKey] - 1) * pageData[settings.pageSizeKey] + 1;
@@ -394,13 +433,18 @@ class AjaxPage {
         const toNum = pageData[settings.currentPageKey] * pageData[settings.pageSizeKey];
 
         // 总共条数
-        const totalNum = pageData.tSize;
+        let totalNum = pageData.tSize;
 
         // 当前页
         const cPage = pageData[settings.currentPageKey];
 
         // 总页数
-        const tPage = pageData.tPage;
+        let tPage = pageData.tPage;
+
+        // 当前没有总条数 且 存在异步加载文本: 使用异步加载文本填充总条数与总页数
+        if (!totalNum && asyncTotalText) {
+            totalNum = tPage = asyncTotalText;
+        }
 
         const $pageInfo = jTool('.page-info', $footerToolbar);
         if ($pageInfo.length) {
@@ -412,35 +456,36 @@ class AjaxPage {
         // 更新实时更新数据: 当前页从多少条开始显示
         const $beginNumber = jTool('[begin-number-info]', $footerToolbar);
         if ($beginNumber.length) {
-            $beginNumber.text(fromNum);
+            $beginNumber.html(fromNum);
             $beginNumber.val(fromNum);
         }
 
         // 更新实时更新数据: 当前页到多少条结束显示
         const $endNumber = jTool('[end-number-info]', $footerToolbar);
         if ($endNumber.length) {
-            $endNumber.text(toNum);
+            $endNumber.html(toNum);
             $endNumber.val(toNum);
         }
 
         // 更新实时更新数据: 当前页
         const $currentPage = jTool('[current-page-info]', $footerToolbar);
         if ($currentPage.length) {
-            $currentPage.text(cPage);
+            $currentPage.html(cPage);
             $currentPage.val(cPage);
         }
 
         // 更新实时更新数据: 总条数
         const $totalsNumber = jTool('[totals-number-info]', $footerToolbar);
         if ($totalsNumber.length) {
-            $totalsNumber.text(totalNum);
+            $totalsNumber.html(totalNum);
             $totalsNumber.val(totalNum);
         }
 
         // 更新实时更新数据: 总页数
         const $totalsPage = jTool('[totals-page-info]', $footerToolbar);
         if ($totalsPage.length) {
-            $totalsPage.text(tPage).val(tPage);
+            $totalsPage.html(tPage);
+            $totalsPage.val(tPage);
         }
     }
 
@@ -457,7 +502,7 @@ class AjaxPage {
 		const _cPage = settings.pageData[settings.currentPageKey] || 1;
 
         let _tPage = null;
-        if (settings.useNoTotalsMode) {
+        if (!totals) {
             _tPage = len < _pSize ? _cPage : _cPage + 1;
         } else {
             _tPage = Math.ceil(totals / _pSize);

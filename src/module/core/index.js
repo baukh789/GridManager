@@ -13,7 +13,7 @@ import ajaxPage from '../ajaxPage';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
 import coreDOM from './coreDOM';
-import transformToPromise from './transformToPromise';
+import { transformToPromise } from './tool';
 import { WRAP_KEY, READY_CLASS_NAME } from '@common/constants';
 import framework from '@common/framework';
 
@@ -38,12 +38,16 @@ class Core {
         ajaxPromise
         .then(response => {
             // 异步重新获取settings
-            const settings = cache.getSettings(gridManagerName);
-            this.driveDomForSuccessAfter(settings, response, callback);
-            ajaxSuccess(response);
-            ajaxComplete(response);
-            base.hideLoading(gridManagerName);
-            ajaxPage.updateRefreshIconState(gridManagerName, false);
+            try {
+                const settings = cache.getSettings(gridManagerName);
+                this.driveDomForSuccessAfter(settings, response, callback);
+                ajaxSuccess(response);
+                ajaxComplete(response);
+                base.hideLoading(gridManagerName);
+                ajaxPage.updateRefreshIconState(gridManagerName, false);
+            } catch (e) {
+                console.error(e);
+            }
         })
         .catch(error => {
             ajaxError(error);
@@ -81,7 +85,7 @@ class Core {
      * @param callback
      */
     driveDomForSuccessAfter(settings, response, callback) {
-        const { gridManagerName, rendered, responseHandler, supportCheckbox, supportAjaxPage, dataKey, totalsKey, useNoTotalsMode, useRadio } = settings;
+        const { gridManagerName, rendered, responseHandler, supportCheckbox, supportAjaxPage, dataKey, totalsKey, useNoTotalsMode, asyncTotals, useRadio } = settings;
 
         // 用于防止在填tbody时，实例已经被消毁的情况。
         if (!rendered) {
@@ -107,8 +111,8 @@ class Core {
             return;
         }
 
-        // 数据校验: 未使用无总条数模式 且 总条数无效时直接跳出
-        if (supportAjaxPage && !useNoTotalsMode && isNaN(parseInt(totals, 10))) {
+        // 数据校验: 未使用无总条数模式 && 未使用异步总页 && 总条数无效时直接跳出
+        if (supportAjaxPage && !useNoTotalsMode && !asyncTotals && isNaN(parseInt(totals, 10))) {
             base.outError(`response.${totalsKey} undefined，please check totalsKey`);
             return;
         }

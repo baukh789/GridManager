@@ -108,13 +108,6 @@
         <input class="se-con" name="title"/>
     </div>
     <div class="sa-ele">
-        <label class="se-title">博文分类:</label>
-        <select class="se-con" name="type">
-            <option value="-1">请选择</option>
-            <!--通过js增加-->
-        </select>
-    </div>
-    <div class="sa-ele">
         <label class="se-title">内容:</label>
         <input class="se-con" name="content"/>
     </div>
@@ -278,21 +271,6 @@
             console.log('渲染完成后的回调函数:', query);
         });
     }
-
-    /**
-     * 渲染博文类型
-     */
-    (function () {
-        // 渲染下拉框
-        var typeSelect = document.querySelector('.search-area select[name="type"]');
-
-        for(var key in TYPE_MAP){
-            var option = document.createElement('option');
-            option.value = key;
-            option.innerText = TYPE_MAP[key];
-            typeSelect.appendChild(option);
-        }
-    })();
 
     /**
      * 提供demo中的搜索, 重置

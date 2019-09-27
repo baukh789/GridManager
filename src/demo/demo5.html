@@ -107,13 +107,6 @@
         <input class="se-con" name="title"/>
     </div>
     <div class="sa-ele">
-        <label class="se-title">博文分类:</label>
-        <select class="se-con" name="type">
-            <option value="-1">请选择</option>
-            <!--通过js增加-->
-        </select>
-    </div>
-    <div class="sa-ele">
         <label class="se-title">内容:</label>
         <input class="se-con" name="content"/>
     </div>
@@ -206,23 +199,6 @@
                     width: '120px',
                     align: 'center',
                     sorting: '',
-                    // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。非必设项
-                    filter: {
-                        // 筛选条件列表, 数组对象。格式: [{value: '1', text: 'HTML/CSS'}],在使用filter时该参数为必设项。
-                        option: [
-                            {value: '1', text: 'HTML/CSS'},
-                            {value: '2', text: 'nodeJS'},
-                            {value: '3', text: 'javaScript'},
-                            {value: '4', text: '前端鸡汤'},
-                            {value: '5', text: 'PM Coffee'},
-                            {value: '6', text: '前端框架'},
-                            {value: '7', text: '前端相关'}
-                        ],
-                        // 筛选选中项，字符串, 默认为''。 非必设项，选中的过滤条件将会覆盖query
-                        selected: '3',
-                        // 否为多选, 布尔值, 默认为false。非必设项
-                        isMultiple: false
-                    },
                     template: function(type, rowObject){
                         return TYPE_MAP[type];
                     }
@@ -280,21 +256,6 @@
             window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
         }
     }
-
-    /**
-     * 渲染博文类型
-     */
-    (function () {
-        // 渲染下拉框
-        var typeSelect = document.querySelector('.search-area select[name="type"]');
-
-        for(var key in TYPE_MAP){
-            var option = document.createElement('option');
-            option.value = key;
-            option.innerText = TYPE_MAP[key];
-            typeSelect.appendChild(option);
-        }
-    })();
 
     /**
      * 提供demo中的搜索, 重置

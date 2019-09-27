@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel="stylesheet" type="text/css" href="../css/gm.css">
 	<script type="text/javascript" src="../js/gm.js"></script>
-    <title>GridManager:无总条数</title>
+    <title>GridManager: 延迟总页模式</title>
     <style>
 		html, body{
 			width: 100%;
@@ -141,11 +141,21 @@
 				},
 				ajaxType: 'POST',
 
-                // 使用无总页模式
-                useNoTotalsMode: true,
+                // useNoTotalsMode: true,
 
-                // 指定接口返回无总页数据，这个参数仅是demo演示所需的数据，配置是否使用无总页模式的字段为: useNoTotalsMode
-				query: {noTotals: true},
+                // 异步总页
+                asyncTotals: {
+				    text: '<span style="color: #999">加载中...</span>',
+                    handler: (settings, params) => {
+				        console.log(params);
+                        return new Promise(resolve => {
+                            jTool.post('https://www.lovejavascript.com/blogManager/getBlogList', params, res => {
+                                resolve(JSON.parse(res).totals);
+                            });
+                        })
+                    }
+                },
+
 				dataKey: 'list',  // 注意: 这里是用来测试responseHandler 是否生效; 数据本身返回为data, 而在这里我把数据名模拟为list, 再通过responseHandler去更改
 
 				// 通过该方法修改全部的请求参数
@@ -248,16 +258,7 @@
 						template: function(lastDate, rowObject){
 							return new Date(lastDate).toLocaleDateString();
 						}
-					},{
-                        key: 'config',
-                        text: '<i class="iconfont icon-config" onclick="onShowConfig()"></i>',
-                        width: '50px',
-                        disableCustomize: true,
-                        align: 'center',
-                        template: () => {
-                            return '';
-                        }
-                    }
+					}
 				],
 				// 排序后事件
 				sortingAfter: function (data) {
@@ -273,10 +274,6 @@
 				console.log('渲染完成后的回调函数:', query);
 			});
 		}
-
-		function onShowConfig() {
-		    GridManager.setConfigVisible('test', true);
-        }
 
 		 /**
 		 * 提供demo中的搜索, 重置
