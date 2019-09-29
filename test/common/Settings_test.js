@@ -145,7 +145,12 @@ describe('Settings', () => {
         expect(settings.useNoTotalsMode).toBe(false);
     });
 
-	it('验证属性[sizeData]初始值', () => {
+    it('验证属性[asyncTotals]初始值', () => {
+        expect(settings.asyncTotals).toBe(null);
+    });
+
+
+    it('验证属性[sizeData]初始值', () => {
 		expect(settings.sizeData).toEqual([10, 20, 30, 50, 100]);
 	});
 
