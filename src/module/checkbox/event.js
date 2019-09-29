@@ -6,13 +6,13 @@
 export default function getCheckboxEvent(gridManagerName, scope) {
     return {
         // 全选框点击
-        allChange: {events: 'click', target: scope, selector: 'th[gm-checkbox="true"] input[type="checkbox"]'},
+        allChange: {events: 'click', target: scope, selector: 'th[gm-checkbox="true"] .gm-checkbox-wrapper'},
 
         // 复选框点击
-        checkboxChange: {events: 'click', target: scope, selector: 'td[gm-checkbox="true"] input[type="checkbox"]'},
+        checkboxChange: {events: 'click', target: scope, selector: 'td[gm-checkbox="true"] .gm-checkbox-wrapper'},
 
         // 单选框点击
-        radioChange: {events: 'click', target: scope, selector: 'td[gm-checkbox="true"] input[type="radio"]'},
+        radioChange: {events: 'click', target: scope, selector: 'td[gm-checkbox="true"] .gm-radio-wrapper'},
 
         // tr 点击选中
         trChange: {events: 'click', target: scope, selector: 'tbody > tr'}

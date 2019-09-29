@@ -6,7 +6,7 @@ import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { CONFIG_KEY } from '@common/constants';
+import { CONFIG_KEY, CHECKED_CLASS } from '@common/constants';
 import adjust from '../adjust';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
@@ -61,7 +61,7 @@ class Config {
             jTool('.config-list .no-click', $configArea).removeClass('no-click');
             let isVisible = !_checkbox.prop('checked');
 
-            isVisible ? $checkbox.addClass(checkbox.checkedClassName) : $checkbox.removeClass(checkbox.checkedClassName);
+            isVisible ? $checkbox.addClass(CHECKED_CLASS) : $checkbox.removeClass(CHECKED_CLASS);
 
             // 设置与当前th同列的td可视状态
             $tableDiv.addClass('config-editing');

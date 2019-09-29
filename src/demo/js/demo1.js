@@ -373,9 +373,9 @@ const demo1 = {
                 // }
 
                 // 指定第92行不可选中
-                if (row.id === 92) {
-                    row.gm_checkbox_disabled = true;
-                }
+                // if (row.id === 92) {
+                //     row.gm_checkbox_disabled = true;
+                // }
                 return row;
             },
 
@@ -454,7 +454,7 @@ const demo1 = {
                         // 筛选选中项，字符串, 未存在选中项时设置为''。 在此设置的选中的过滤条件将会覆盖query
                         selected: '3',
                         // 否为多选, 布尔值, 默认为false。非必设项
-                        isMultiple: false
+                        isMultiple: true
                     },
                     template: function (type, row) {
                         return TYPE_MAP[type];

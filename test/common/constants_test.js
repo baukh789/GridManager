@@ -26,7 +26,12 @@ import {
     LOADING_CLASS_NAME,
     LAST_VISIBLE,
     TH_VISIBLE,
-    GM_CREATE
+    GM_CREATE,
+    CHECKED,
+    INDETERMINATE,
+    UNCHECKED,
+    CHECKED_CLASS,
+    INDETERMINATE_CLASS
 } from '@common/constants';
 
 describe('常量验证', () => {
@@ -140,5 +145,25 @@ describe('常量验证', () => {
 
     it('TABLE_PURE_LIST', () => {
         expect(TABLE_PURE_LIST).toEqual(['class', 'style']);
+    });
+
+    it('CHECKED', () => {
+        expect(CHECKED).toBe('checked');
+    });
+
+    it('INDETERMINATE', () => {
+        expect(INDETERMINATE).toBe('indeterminate');
+    });
+
+    it('UNCHECKED', () => {
+        expect(UNCHECKED).toBe('unchecked');
+    });
+
+    it('CHECKED_CLASS', () => {
+        expect(CHECKED_CLASS).toBe('gm-checkbox-checked');
+    });
+
+    it('INDETERMINATE_CLASS', () => {
+        expect(INDETERMINATE_CLASS).toBe('gm-checkbox-indeterminate');
     });
 });

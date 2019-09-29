@@ -101,6 +101,21 @@ export const GM_CREATE = 'gm-create';
 // table在实例化后，会更改到的属性值列表
 export const TABLE_PURE_LIST = ['class', 'style'];
 
+// 选中
+export const CHECKED = 'checked';
+
+// 半选中
+export const INDETERMINATE = 'indeterminate';
+
+// 全选
+export const UNCHECKED = 'unchecked';
+
+// 选中ClassName
+export const CHECKED_CLASS = `gm-checkbox-${CHECKED}`;
+
+// 半选中ClassName
+export const INDETERMINATE_CLASS = `gm-checkbox-${INDETERMINATE}`;
+
 // 公开方法列表
 // export const GM_PUBLISH_METHOD_LIST = [
 // 	'init',

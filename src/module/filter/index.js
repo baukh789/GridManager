@@ -6,6 +6,7 @@ import './style.less';
 import jTool from '@common/jTool';
 import cache from '@common/cache';
 import base from '@common/base';
+import { CHECKED, UNCHECKED } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import core from '../core';
 import checkbox from '../checkbox';
@@ -125,7 +126,7 @@ class Filter {
         // 事件: 复选框事件
         jTool(checkboxAction.target).on(checkboxAction.events, checkboxAction.selector, function () {
             const $checkbox = jTool(this).closest('.filter-checkbox').find('.gm-checkbox');
-            checkbox.updateCheckboxState($checkbox, this.checked ? 'checked' : 'unchecked');
+            checkbox.updateCheckboxState($checkbox, this.checked ? CHECKED : UNCHECKED);
         });
 
         // 事件: 单选框事件
@@ -189,7 +190,7 @@ class Filter {
         jTool.each($filters, (index, item) => {
             let $radioOrCheckbox = jTool(item).closest('.gm-radio-checkbox');
             if (filter.isMultiple) {
-                checkbox.updateCheckboxState($radioOrCheckbox, filter.selected.indexOf(item.value)  >= 0 ? 'checked' : 'unchecked');
+                checkbox.updateCheckboxState($radioOrCheckbox, filter.selected.indexOf(item.value)  >= 0 ? CHECKED : UNCHECKED);
             } else {
                 checkbox.updateRadioState($radioOrCheckbox, item.value === filter.selected);
             }

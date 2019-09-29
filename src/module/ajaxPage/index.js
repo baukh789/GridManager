@@ -197,13 +197,12 @@ class AjaxPage {
      * 更新选中信息
      * @param settings
      */
-    updateCheckedInfo(settings) {
-        const gridManagerName = settings.gridManagerName;
+    updateCheckedInfo(gridManagerName) {
         const checkedInfo = jTool(`${this.getQuerySelector(gridManagerName)} .toolbar-info.checked-info`);
         if (checkedInfo.length === 0) {
             return;
         }
-        checkedInfo.html(i18n.i18nText(settings, 'checked-info', cache.getCheckedData(gridManagerName).length));
+        checkedInfo.html(i18n.i18nText(cache.getSettings(gridManagerName), 'checked-info', cache.getCheckedData(gridManagerName).length));
     }
 
 	/**

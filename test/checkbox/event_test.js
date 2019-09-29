@@ -17,15 +17,15 @@ describe('getCheckboxEvent', () => {
         events = getEventFN('test', '#baukh');
         expect(events.allChange.events).toBe('click');
         expect(events.allChange.target).toBe('#baukh');
-        expect(events.allChange.selector).toBe('th[gm-checkbox="true"] input[type="checkbox"]');
+        expect(events.allChange.selector).toBe('th[gm-checkbox="true"] .gm-checkbox-wrapper');
 
         expect(events.checkboxChange.events).toBe('click');
         expect(events.checkboxChange.target).toBe('#baukh');
-        expect(events.checkboxChange.selector).toBe('td[gm-checkbox="true"] input[type="checkbox"]');
+        expect(events.checkboxChange.selector).toBe('td[gm-checkbox="true"] .gm-checkbox-wrapper');
 
         expect(events.radioChange.events).toBe('click');
         expect(events.radioChange.target).toBe('#baukh');
-        expect(events.radioChange.selector).toBe('td[gm-checkbox="true"] input[type="radio"]');
+        expect(events.radioChange.selector).toBe('td[gm-checkbox="true"] .gm-radio-wrapper');
 
         expect(events.trChange.events).toBe('click');
         expect(events.trChange.target).toBe('#baukh');

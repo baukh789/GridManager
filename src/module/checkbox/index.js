@@ -2,7 +2,16 @@
  * checkbox: 数据选择/全选/返选
  * */
 import './style.less';
-import { CHECKBOX_WIDTH, TR_CACHE_KEY, COL_PROP_DISABLED, CHECKBOX_KEY, CHECKBOX_DISABLED_KEY } from '@common/constants';
+import { CHECKBOX_WIDTH,
+    TR_CACHE_KEY,
+    COL_PROP_DISABLED,
+    CHECKBOX_KEY,
+    CHECKBOX_DISABLED_KEY,
+    CHECKED,
+    INDETERMINATE,
+    UNCHECKED,
+    CHECKED_CLASS,
+    INDETERMINATE_CLASS } from '@common/constants';
 import jTool from '@common/jTool';
 import base from '@common/base';
 import cache from '@common/cache';
@@ -12,69 +21,68 @@ import columnTpl from './column.tpl.html';
 import checkboxTpl from './checkbox.tpl.html';
 import radioTpl from './radio.tpl.html';
 import getCheckboxEvent from './event';
-import { TABLE_KEY } from '../../common/constants';
 
 class Checkbox {
     eventMap = {};
-
-    // 选中ClassName
-	get checkedClassName() {
-	    return 'gm-checkbox-checked';
-    }
-
-    // 半选中ClassName
-    get indeterminateClassName() {
-        return 'gm-checkbox-indeterminate';
-    }
-
 	/**
      * 初始化选择框事件
      * @param gridManagerName
-     * @param useRowCheck: tr点击选中
      */
-    init(gridManagerName, useRowCheck) {
+    init(gridManagerName) {
         const _this = this;
         this.eventMap[gridManagerName] = getCheckboxEvent(gridManagerName, base.getQuerySelector(gridManagerName));
         const { allChange, checkboxChange, radioChange, trChange } = this.eventMap[gridManagerName];
+        const { useRowCheck, checkedBefore, checkedAllBefore, checkedAfter, checkedAllAfter } = cache.getSettings(gridManagerName);
 
         // th内的全选
         jTool(allChange.target).on(allChange.events, allChange.selector, function () {
-            const settings = cache.getSettings(gridManagerName);
             let checkedData = cache.getCheckedData(gridManagerName);
-            const checked = this.checked;
-            settings.checkedBefore(checkedData, !checked);
-            settings.checkedAllBefore(checkedData, !checked);
+            const input = this.querySelector('.gm-checkbox-input');
+            const checked = input.checked;
+            checkedBefore(checkedData, !checked);
+            if (checkedAllBefore(checkedData, !checked) === false) {
+                input.checked = !checked;
+                return;
+            }
             const tableData = _this.resetData(gridManagerName, checked, true);
-            _this.resetDOM(settings, tableData);
+            _this.resetDOM(gridManagerName, tableData);
             checkedData = cache.getCheckedData(gridManagerName);
-            settings.checkedAfter(checkedData, checked);
-            settings.checkedAllAfter(checkedData, checked);
+
+            checkedAfter(checkedData, checked);
+            checkedAllAfter(checkedData, checked);
         });
 
         // td内的多选
         jTool(checkboxChange.target).on(checkboxChange.events, checkboxChange.selector, function () {
-            const settings = cache.getSettings(gridManagerName);
             const tr = jTool(this).closest('tr').get(0);
-            const checked = this.checked;
+            const input = this.querySelector('.gm-checkbox-input');
+            const checked = input.checked;
 
-            settings.checkedBefore(cache.getCheckedData(gridManagerName), !checked, cache.getRowData(gridManagerName, tr));
+            if (checkedBefore(cache.getCheckedData(gridManagerName), !checked, cache.getRowData(gridManagerName, tr)) === false) {
+                input.checked = !checked;
+                return;
+            }
             const cacheKey = tr.getAttribute(TR_CACHE_KEY);
             const tableData = _this.resetData(gridManagerName, checked, false, cacheKey);
-            _this.resetDOM(settings, tableData);
-            settings.checkedAfter(cache.getCheckedData(gridManagerName), checked, cache.getRowData(gridManagerName, tr));
+            _this.resetDOM(gridManagerName, tableData);
+            checkedAfter(cache.getCheckedData(gridManagerName), checked, cache.getRowData(gridManagerName, tr));
         });
 
         // td内的单选
         jTool(radioChange.target).on(radioChange.events, radioChange.selector, function () {
-            const settings = cache.getSettings(gridManagerName);
             const tr = jTool(this).closest('tr').get(0);
+            const input = this.querySelector('.gm-radio-input');
+            const checked = input.checked;
 
-            settings.checkedBefore(cache.getCheckedData(gridManagerName), false, cache.getRowData(gridManagerName, tr));
+            if (checkedBefore(cache.getCheckedData(gridManagerName), !checked, cache.getRowData(gridManagerName, tr)) === false) {
+                input.checked = !checked;
+                return;
+            }
             const cacheKey = tr.getAttribute(TR_CACHE_KEY);
             const tableData = _this.resetData(gridManagerName, undefined, false, cacheKey, true);
-            _this.resetDOM(settings, tableData, true);
+            _this.resetDOM(gridManagerName, tableData, true);
 
-            settings.checkedAfter(cache.getCheckedData(gridManagerName), true, cache.getRowData(gridManagerName, tr));
+            checkedAfter(cache.getCheckedData(gridManagerName), true, cache.getRowData(gridManagerName, tr));
         });
 
         // tr点击选中
@@ -96,7 +104,7 @@ class Checkbox {
 	 * @returns {NodeListOf<Element>}
 	 */
 	getCheckedTr(gridManagerName) {
-		return document.querySelectorAll(`[${TABLE_KEY}="${gridManagerName}"] tbody tr[checked="true"]`);
+		return document.querySelectorAll(`${base.getQuerySelector(gridManagerName)} tbody tr[checked="true"]`);
 	}
 
 	/**
@@ -151,7 +159,7 @@ class Checkbox {
     getCheckboxTpl(params) {
         const { checked, disabled, label, value } = params;
         return {
-            checked: checked ? 'checked' : 'unchecked',
+            checked: checked ? CHECKED : UNCHECKED,
             disabled,
             label,
             value
@@ -221,12 +229,12 @@ class Checkbox {
 
 	/**
 	 * 重置选择框DOM
-	 * @param settings
+	 * @param gridManagerName
 	 * @param tableData
 	 * @param useRadio: 当前事件源为单选
      */
-	resetDOM(settings, tableData, useRadio) {
-	    const $table = base.getTable(settings.gridManagerName);
+	resetDOM(gridManagerName, tableData, useRadio) {
+	    const $table = base.getTable(gridManagerName);
 
 	    // 更改tbody区域选中状态
         let checkedNum = 0;
@@ -235,8 +243,8 @@ class Checkbox {
 		    const isChecked = row[CHECKBOX_KEY];
 			const $tr = jTool(`tbody tr[${TR_CACHE_KEY}="${index}"]`, $table);
             const $checkSpan = jTool('td[gm-checkbox="true"] .gm-radio-checkbox', $tr);
-			$tr.attr('checked', isChecked);
-            useRadio ? this.updateRadioState($checkSpan, isChecked) : this.updateCheckboxState($checkSpan, isChecked ? 'checked' : 'unchecked');
+			$tr.attr(CHECKED, isChecked);
+            useRadio ? this.updateRadioState($checkSpan, isChecked) : this.updateCheckboxState($checkSpan, isChecked ? CHECKED : UNCHECKED);
 
             row[COL_PROP_DISABLED] && usableLen--;
             isChecked && checkedNum++;
@@ -246,10 +254,10 @@ class Checkbox {
         const $allCheckSpan = jTool('thead tr th[gm-checkbox="true"] .gm-checkbox ', $table);
 
         // [checked: 选中, indeterminate: 半选中, unchecked: 未选中]
-        !useRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? 'unchecked' : (checkedNum === usableLen ? 'checked' : 'indeterminate'));
+        !useRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? UNCHECKED : (checkedNum === usableLen ? CHECKED : INDETERMINATE));
 
 		// 更新底部工具条选中描述信息
-        ajaxPage.updateCheckedInfo(settings);
+        ajaxPage.updateCheckedInfo(gridManagerName);
 	}
 
     /**
@@ -264,7 +272,7 @@ class Checkbox {
         } else {
             $radio.removeClass('gm-radio-checked');
         }
-        $input.prop('checked', state);
+        $input.prop(CHECKED, state);
     }
 
     /**
@@ -275,22 +283,23 @@ class Checkbox {
     updateCheckboxState($checkbox, state) {
         const $input = jTool('input[type="checkbox"]', $checkbox);
         switch (state) {
-            case 'checked': {
-                $checkbox.addClass(this.checkedClassName);
-                $checkbox.removeClass(this.indeterminateClassName);
-                $input.prop('checked', true);
+            case CHECKED: {
+                $checkbox.addClass(CHECKED_CLASS);
+                $checkbox.removeClass(INDETERMINATE_CLASS);
+                $input.prop(CHECKED, true);
+                // console.log($input.get(0),  $input.prop(CHECKED));
                 break;
             }
-            case 'indeterminate': {
-                $checkbox.removeClass(this.checkedClassName);
-                $checkbox.addClass(this.indeterminateClassName);
-                $input.prop('checked', false);
+            case INDETERMINATE: {
+                $checkbox.removeClass(CHECKED_CLASS);
+                $checkbox.addClass(INDETERMINATE_CLASS);
+                $input.prop(CHECKED, false);
                 break;
             }
-            case 'unchecked': {
-                $checkbox.removeClass(this.checkedClassName);
-                $checkbox.removeClass(this.indeterminateClassName);
-                $input.prop('checked', false);
+            case UNCHECKED: {
+                $checkbox.removeClass(CHECKED_CLASS);
+                $checkbox.removeClass(INDETERMINATE_CLASS);
+                $input.prop(CHECKED, false);
                 break;
             }
         }

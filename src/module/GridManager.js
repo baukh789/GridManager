@@ -620,7 +620,7 @@ export default class GridManager {
 
         // init checkbox
         if (settings.supportCheckbox) {
-            checkbox.init(gridManagerName, settings.useRowCheck);
+            checkbox.init(gridManagerName);
         }
 
         // init sort
