@@ -429,8 +429,7 @@ export default class GridManager {
             return;
         }
         const checkedList = Array.isArray(checkedData) ? checkedData : [checkedData];
-        const settings = cache.getSettings(base.getKey(table));
-        const { columnMap, useRadio, gridManagerName, treeConfig } = settings;
+        const { columnMap, useRadio, gridManagerName, treeConfig } = cache.getSettings(base.getKey(table));
         const treeKey = treeConfig.treeKey;
         const tableData = cache.getTableData(gridManagerName);
         tableData.forEach(rowData => {

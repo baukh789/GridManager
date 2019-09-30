@@ -229,15 +229,16 @@ class Menu {
 	 * @param settings
 	 */
 	updateMenuPageStatus(settings) {
+	    const { gridManagerName, pageData, currentPageKey } = settings;
 		// 右键菜单区上下页限制
-		const gridMenu = jTool(`[${MENU_KEY}="${settings.gridManagerName}"]`);
+		const gridMenu = jTool(`[${MENU_KEY}="${gridManagerName}"]`);
 		if (!gridMenu || gridMenu.length === 0) {
 			return;
 		}
 		const previousPage = jTool('[refresh-type="previous"]', gridMenu);
 		const nextPage = jTool('[refresh-type="next"]', gridMenu);
-		const cPage = settings.pageData[settings.currentPageKey];
-		const tPage = settings.pageData.tPage;
+		const cPage = pageData[currentPageKey];
+		const tPage = pageData.tPage;
 		if (cPage === 1 || tPage === 0) {
 			previousPage.addClass('disabled');
 		} else {
