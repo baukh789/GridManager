@@ -68,7 +68,7 @@ class Core {
 
         // 渲染选择框
         if (settings.supportCheckbox) {
-            checkbox.resetDOM(settings, []);
+            checkbox.resetDOM(gridManagerName, []);
         }
 
         // 渲染分页
@@ -130,7 +130,7 @@ class Core {
 
         // 渲染选择框
         if (supportCheckbox) {
-            checkbox.resetDOM(settings, _data, useRadio);
+            checkbox.resetDOM(gridManagerName, _data, useRadio);
         }
 
         // 渲染分页

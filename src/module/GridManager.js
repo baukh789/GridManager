@@ -440,7 +440,7 @@ export default class GridManager {
         });
 
         cache.setCheckedData(gridManagerName, checkedList, true);
-        return checkbox.resetDOM(settings, tableData, useRadio);
+        return checkbox.resetDOM(gridManagerName, tableData, useRadio);
     };
 
     /**
