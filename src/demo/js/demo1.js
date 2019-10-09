@@ -308,6 +308,10 @@ const demo1 = {
             // 选择事件执行前事件
             checkedBefore: function (checkedList, isChecked, row) {
                 console.log('checkedBefore==', checkedList, isChecked, row);
+                if (row && row.id === 90) {
+                    alert('该节点在checkedBefore中配置为不可选');
+                }
+                return row && row.id !== 90;
             },
 
             // 选择事件执行后事件
@@ -318,6 +322,11 @@ const demo1 = {
             // 全选事件执行前事件
             checkedAllBefore: function (checkedList, isChecked) {
                 console.log('checkedAllBefore==', checkedList, isChecked);
+                //
+                // if (isChecked) {
+                //     alert('不能取消全选');
+                // }
+                // return !isChecked;
             },
 
             // 全选事件执行后事件
@@ -373,9 +382,10 @@ const demo1 = {
                 // }
 
                 // 指定第92行不可选中
-                // if (row.id === 92) {
-                //     row.gm_checkbox_disabled = true;
-                // }
+                if (row.id === 92) {
+                        // row.gm_checkbox = true;
+                    row.gm_checkbox_disabled = true;
+                }
                 return row;
             },
 

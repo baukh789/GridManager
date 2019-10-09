@@ -60,7 +60,8 @@
 	<div class="bottom-bar">
 		<button id="init-gm" disabled>init</button>
 		<button id="destroy-gm" disabled>destroy</button>
-		<button id="reset-gm" disabled>reset data</button>
+		<button id="reset-gm" disabled>重置数据</button>
+		<button id="update-tree" disabled>切换展开状态</button>
 		<a href="https://github.com/baukh789/GridManager/blob/master/src/demo/demo2.html" target="_blank">查看源码</a>
 	</div>
 
@@ -311,6 +312,7 @@
 		var initDOM = document.getElementById('init-gm');
 		var destroyDOM = document.getElementById('destroy-gm');
 		var resetDOM = document.getElementById('reset-gm');
+		var updateTreeDOM = document.getElementById('update-tree');
 		// 绑定初始化事件
 		initDOM.onclick = function(){
 			init();
@@ -321,7 +323,7 @@
 
 		// 绑定消毁事件
 		destroyDOM.onclick = function(){
-			table.GM('destroy');
+            GM.destroy('test');
 			initDOM.removeAttribute('disabled');
 			destroyDOM.setAttribute('disabled', '');
 			resetDOM.setAttribute('disabled', '');
@@ -331,16 +333,24 @@
 		let newData = ajaxData1;
 		resetDOM.onclick = function(){
 			newData = newData === ajaxData2 ? ajaxData1 : ajaxData2;
-			table.GM('setAjaxData', newData, function(data){
+            GM.setAjaxData('test', newData, function(data){
 				console.log('setAjaxData', data);
 			});
 		};
+
+		// 绑定更新树打开状态事件
+        let openState = false;
+        updateTreeDOM.onclick = function(){
+            openState = !openState;
+            GM.updateTreeState('test', openState);
+        };
 
 		// 初始进入时, 执行init 方法
 		init();
 		initDOM.setAttribute('disabled', '');
 		destroyDOM.removeAttribute('disabled');
 		resetDOM.removeAttribute('disabled');
+        updateTreeDOM.removeAttribute('disabled');
 		jTool(table).on('click', '.plugin-action', function(e) {
             const row = GM.getRowData('test', this.parentElement.parentElement);
             GM.updateRowData('test', 'id', {id: row.id, createDate: new Date().toLocaleDateString()});
