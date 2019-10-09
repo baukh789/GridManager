@@ -19,15 +19,6 @@
         }
     }
 
-    // 禁止选择
-    .disabled-radio-checkbox{
-        opacity: .7;
-        pointer-events:none;
-        .gm-radio-checkbox-inner{
-            border-color: #ddd !important;
-            background-color: #e8e8e8 !important;
-        }
-    }
     .gm-checkbox-wrapper {
         display: inline-block;
         color: rgba(0, 0, 0, .65);
@@ -229,6 +220,24 @@
                 padding-right: 8px;
                 font-weight: 400;
                 line-height: 14px;
+            }
+        }
+    }
+
+    // 禁止选择
+    .gm-checkbox-wrapper, .gm-radio-wrapper {
+        &.disabled-radio-checkbox{
+            opacity: .7;
+            pointer-events:none;
+            .gm-radio-checkbox-inner{
+                border-color: #ddd !important;
+                background-color: #e8e8e8 !important;
+                &.gm-checkbox-inner:after{
+                    border-color: #B7B7B7;
+                }
+                &.gm-radio-inner:after{
+                    background-color: #B7B7B7;
+                }
             }
         }
     }

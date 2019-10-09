@@ -247,7 +247,7 @@ class Checkbox {
             useRadio ? this.updateRadioState($checkSpan, isChecked) : this.updateCheckboxState($checkSpan, isChecked ? CHECKED : UNCHECKED);
 
             row[COL_PROP_DISABLED] && usableLen--;
-            isChecked && checkedNum++;
+            (!row[COL_PROP_DISABLED] && isChecked) && checkedNum++;
 		});
 
 		// 更新thead区域选中状态
