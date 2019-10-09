@@ -118,7 +118,7 @@ class Dom {
             treeConfig
         } = settings;
 
-        const { treeKey, openState, insertTo } = treeConfig;
+        const { treeKey, openState } = treeConfig;
 
         data = cache.resetTableData(gridManagerName, data);
 
@@ -239,7 +239,7 @@ class Dom {
         // 解析框架
         framework.send(settings).then(() => {
             // 插入tree dom
-            supportTreeData && tree.insertDOM(gridManagerName, openState, insertTo);
+            supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
 
             // 合并单元格
             this.mergeRow(gridManagerName, columnMap);
@@ -253,7 +253,7 @@ class Dom {
      */
     updateTrDOM(settings, updateCacheList) {
         const { gridManagerName, columnMap, supportTreeData, treeConfig } = settings;
-        const { treeKey, openState, insertTo } = treeConfig;
+        const { treeKey } = treeConfig;
         updateCacheList.forEach(row => {
             const cacheKey = row[TR_CACHE_KEY];
             const level = row[TR_LEVEL_KEY];
@@ -292,7 +292,7 @@ class Dom {
         // 解析框架
         framework.send(settings).then(() => {
             // 插入tree dom
-            supportTreeData && tree.insertDOM(gridManagerName, openState, insertTo);
+            supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
 
             // 合并单元格
             this.mergeRow(gridManagerName, columnMap);
