@@ -62,6 +62,12 @@ const GM_PUBLISH_METHOD_MAP = {
         title: '更新指定行所使用的数据',
         code: `GridManager.updateRowData('${gridManagerName}', 'id', {id: 92, title: 'ccc'});`
     },
+    updateTreeState: {
+        key: 'updateTreeState',
+        relyInit: true,
+        title: '更新树的展开状态',
+        code: `GridManager.updateTreeState('${gridManagerName}', true);`
+    },
     setSort: {
         key: 'setSort',
         relyInit: true,
@@ -109,6 +115,12 @@ const GM_PUBLISH_METHOD_MAP = {
         relyInit: true,
         title: '刷新表格',
         code: `GridManager.refreshGrid('${gridManagerName}');`
+    },
+    renderGrid: {
+        key: 'renderGrid',
+        relyInit: true,
+        title: '渲染表格',
+        code: `GridManager.renderGrid('${gridManagerName}');`
     },
     getCheckedTr: {
         key: 'getCheckedTr',

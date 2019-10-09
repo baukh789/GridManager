@@ -27,7 +27,7 @@ const isRendered = (table, fnName) => {
     // fnName !== 'destroy' &&
     if (!settings.rendered) {
         base.outError(`${fnName} failed，please check your table had been init`);
-        return false;
+        return;
     }
     return true;
 };
@@ -352,17 +352,37 @@ export default class GridManager {
 	    if (!isRendered(table, 'refreshGrid')) {
 	        return;
         }
-		const settings = cache.getSettings(base.getKey(table));
+        const gridManagerName = base.getKey(table);
+		const settings = cache.getSettings(gridManagerName);
 		if (typeof (isGotoFirstPage) !== 'boolean') {
 			callback = isGotoFirstPage;
 			isGotoFirstPage = false;
 		}
 		if (isGotoFirstPage) {
-			settings.pageData['cPage'] = 1;
+			settings.pageData[settings.currentPageKey] = 1;
 			cache.setSettings(settings);
 		}
-		core.refresh(settings.gridManagerName, callback);
+		core.refresh(gridManagerName, callback);
 	};
+
+    /**
+     * @静态方法
+     * 渲染表格 使用现有数据，对表格进行渲染
+     * @param table
+     */
+    static
+	renderGrid(table) {
+        if (!isRendered(table, 'renderGrid')) {
+            return;
+        }
+        const settings = cache.getSettings(base.getKey(table));
+        const { gridManagerName, dataKey, totalsKey, pageData } = settings;
+        const response = {
+            [dataKey]: cache.getTableData(gridManagerName),
+            [totalsKey]: pageData.tSize
+        };
+        core.driveDomForSuccessAfter(settings, response);
+    }
 
     /**
      * @静态方法
