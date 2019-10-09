@@ -472,6 +472,19 @@ export default class GridManager {
 
     /**
      * @静态方法
+     * 更新树的展开状态
+     * @param table
+     * @param state
+     */
+    static updateTreeState(table, state) {
+        if (!isRendered(table, 'updateTreeState')) {
+            return;
+        }
+        tree.updateDOM(base.getKey(table), state);
+    }
+
+    /**
+     * @静态方法
      * 清空表格数据
      * @param table
      * @returns {*|void}

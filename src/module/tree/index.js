@@ -47,7 +47,26 @@ class Tree {
     }
 
     init(gridManagerName) {
-        // 由于存在递归操作，所以将事件执行内容从事件中抽取
+        const _this = this;
+        // 绑定事件
+        _this.eventMap[gridManagerName] = getEvent(gridManagerName, base.getQuerySelector(gridManagerName), this.key);
+        const { target, events, selector } = this.eventMap[gridManagerName].toggleState;
+
+        jTool(target).on(events, selector, function () {
+            const $tr = jTool(this).closest('tr');
+            _this.updateDOM(gridManagerName, undefined, $tr);
+        });
+    }
+
+    /**
+     * 更新树DOM
+     * @param gridManagerName
+     * @param state: 打开状态
+     * @param $tr: 更新的tr节点，未指定时将对tbody下所有节点进行更新(对外公开方法中，不包含开参数)
+     */
+    updateDOM(gridManagerName, state, $tr) {
+        const $tbody = base.getTbody(gridManagerName);
+
         const updateState = ($tr, openState) => {
             const $treeEle = jTool(`[${this.key}]`, $tr);
             const $action = jTool('.tree-action', $treeEle);
@@ -60,7 +79,7 @@ class Tree {
             $action.addClass(getIconClass(openState));
             $treeEle.attr(this.key, openState);
 
-            const $childrenTr = $tr.closest('tbody').find(`[${TR_PARENT_KEY}="${cacheKey}"]`);
+            const $childrenTr = $tbody.find(`[${TR_PARENT_KEY}="${cacheKey}"]`);
             if ($childrenTr.length === 0) {
                 return;
             }
@@ -69,29 +88,31 @@ class Tree {
             // 折叠时，需要将所有的子集全部折叠
             if (!openState) {
                 jTool.each($childrenTr, (index, tr) => {
-
                     updateState(jTool(tr), false);
                 });
             }
         };
 
-        // 绑定事件
-        this.eventMap[gridManagerName] = getEvent(gridManagerName, base.getQuerySelector(gridManagerName), this.key);
-        const { target, events, selector } = this.eventMap[gridManagerName].toggleState;
+        const updateAllState = openState => {
+            const $treeEle = jTool(`[${this.key}]`, $tbody);
+            const $action = jTool('.tree-action', $treeEle);
+            $action.removeClass(getIconClass(!openState));
+            $action.addClass(getIconClass(openState));
+            $treeEle.attr(this.key, openState);
+            const $childrenTr = $tbody.find(`[${TR_PARENT_KEY}]`);
+            $childrenTr.attr(TR_CHILDREN_STATE, openState);
+        };
 
-        jTool(target).on(events, selector, function () {
-            const $tr = jTool(this).closest('tr');
-            updateState($tr);
-        });
+        $tr ? updateState($tr, state) : updateAllState(state);
     }
 
     /**
      * 插入树事件DOM
      * @param gridManagerName
-     * @param openState
-     * @param insertTo
+     * @param config
      */
-    insertDOM(gridManagerName, openState, insertTo) {
+    insertDOM(gridManagerName, config) {
+        const { openState, insertTo } = config;
         const $table = base.getTable(gridManagerName);
         let parentKeyList = [];
         jTool.each(jTool('tr[parent-key]', $table), (index, item) => {

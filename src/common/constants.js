@@ -122,12 +122,12 @@ export const INDETERMINATE_CLASS = `gm-checkbox-${INDETERMINATE}`;
 // 	'get',
 // 	'version',
 // 	'getLocalStorage',
-//     'resetLayout',
+//  'resetLayout',
 // 	'clear',
 // 	'getRowData',
-//     'updateRowData',
+//  'updateRowData',
 // 	'setSort',
-//     'setConfigVisible',
+//  'setConfigVisible',
 // 	'showTh',
 // 	'hideTh',
 // 	'exportGridToXls',
@@ -137,6 +137,7 @@ export const INDETERMINATE_CLASS = `gm-checkbox-${INDETERMINATE}`;
 // 	'getCheckedTr',
 // 	'getCheckedData',
 // 	'setCheckedData',
+//  'updateTreeState',
 // 	'cleanData',
 // 	'destroy'
 // ];
