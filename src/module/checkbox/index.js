@@ -287,7 +287,6 @@ class Checkbox {
                 $checkbox.addClass(CHECKED_CLASS);
                 $checkbox.removeClass(INDETERMINATE_CLASS);
                 $input.prop(CHECKED, true);
-                // console.log($input.get(0),  $input.prop(CHECKED));
                 break;
             }
             case INDETERMINATE: {
@@ -310,7 +309,7 @@ class Checkbox {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-		base.clearBodyEvent(this.eventMap[gridManagerName]);
+		base.clearTargetEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new Checkbox();

@@ -261,7 +261,7 @@ class Config {
 	 */
 	destroy(gridManagerName) {
         // 清除事件
-        base.clearBodyEvent(this.eventMap[gridManagerName]);
+        base.clearTargetEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new Config();

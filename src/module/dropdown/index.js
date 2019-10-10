@@ -68,7 +68,7 @@ class Dropdown {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        base.clearBodyEvent(this.eventMap[gridManagerName]);
+        base.clearTargetEvent(this.eventMap[gridManagerName]);
     }
 }
 

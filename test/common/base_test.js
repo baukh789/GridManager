@@ -93,7 +93,7 @@ describe('outInfo, outWarn, outError', () => {
 });
 
 
-describe('base.equal(obj1, obj2)', () => {
+describe('base.equal(o1, o2)', () => {
     it('基础验证', () => {
         expect(base.equal).toBeDefined();
         expect(base.equal.length).toBe(2);
@@ -103,13 +103,21 @@ describe('base.equal(obj1, obj2)', () => {
         let obj1 = {a: 1, b: 2};
         let obj2 = {a: 1, b: 2};
         let obj3 = {a: 11, b: 22};
+        let obj4 = {b: 2, a: 1};
+        let obj5 = {'a': 1, 'b': 2};
+        let obj6 = {a: 11};
         expect(base.equal(obj1, obj2)).toBe(true);
-        expect(base.equal(obj2, obj3)).toBe(false);
         expect(base.equal(obj1, obj3)).toBe(false);
+        expect(base.equal(obj1, obj4)).toBe(true);
+        expect(base.equal(obj1, obj5)).toBe(true);
+        expect(base.equal(obj1, obj6)).toBe(false);
 
         obj1 = null;
         obj2 = null;
         obj3 = null;
+        obj4 = null;
+        obj5 = null;
+        obj6 = null;
     });
 });
 
@@ -1204,7 +1212,7 @@ describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () 
     });
 });
 
-describe('base.clearBodyEvent(eventMap)', () => {
+describe('base.clearTargetEvent(eventMap)', () => {
     let eventMap = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -1216,8 +1224,8 @@ describe('base.clearBodyEvent(eventMap)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.clearBodyEvent).toBeDefined();
-        expect(base.clearBodyEvent.length).toBe(1);
+        expect(base.clearTargetEvent).toBeDefined();
+        expect(base.clearTargetEvent.length).toBe(1);
     });
 
     it('执行验证', () => {
@@ -1231,7 +1239,7 @@ describe('base.clearBodyEvent(eventMap)', () => {
         let $target = jTool(eventMap.testeEvent.target);
         $target.on(eventMap.testeEvent.events, eventMap.testeEvent.selector, () => {});
         expect($target.get(0).jToolEvent['click.table-wrap']).toBeDefined();
-        base.clearBodyEvent(eventMap);
+        base.clearTargetEvent(eventMap);
         expect($target.get(0).jToolEvent['click.table-wrap']).toBeUndefined();
     });
 });

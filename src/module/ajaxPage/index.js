@@ -553,7 +553,7 @@ class AjaxPage {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-        base.clearBodyEvent(this.eventMap[gridManagerName]);
+        base.clearTargetEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new AjaxPage();

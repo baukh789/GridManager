@@ -273,7 +273,7 @@ class Menu {
 	 */
 	destroy(gridManagerName) {
 	    // 清除事件
-        base.clearBodyEvent(this.eventMap[gridManagerName]);
+        base.clearTargetEvent(this.eventMap[gridManagerName]);
 
         // 删除DOM节点
         jTool(`[${MENU_KEY}="${gridManagerName}"]`).remove();

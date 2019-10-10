@@ -71,12 +71,20 @@ class Base {
 
     /**
      * 验证两个Object是否相同
-     * @param obj1
-     * @param obj2
+     * @param o1
+     * @param o2
      * @returns {boolean}
      */
-    equal(obj1, obj2) {
-        return JSON.stringify(obj1) === JSON.stringify(obj2);
+    equal(o1, o2) {
+        const keys1 = Object.keys(o1);
+        const kesy2 = Object.keys(o2);
+        if (keys1.length !== kesy2.length)  {
+            return false;
+        }
+
+        return keys1.every(key => {
+            return JSON.stringify(o1[key]) === JSON.stringify(o2[key]);
+        });
     }
 
     /**
@@ -642,10 +650,10 @@ class Base {
     }
 
     /**
-     * 清除body上的事件，该事件在各个模块注册
+     * 清除目标元素上的事件，该事件在各个模块调用
      * @param eventMap
      */
-    clearBodyEvent(eventMap) {
+    clearTargetEvent(eventMap) {
         for (let key in eventMap) {
             const eve = eventMap[key];
             const $target = jTool(eve.target);
