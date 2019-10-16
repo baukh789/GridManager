@@ -130,9 +130,11 @@ export default class GridManager {
         if (!isRendered(table, 'resetLayout')) {
             return;
         }
-        const { gridManagerName, supportAjaxPage } = cache.getSettings(base.getKey(table));
-        base.calcLayout(gridManagerName, width, height, supportAjaxPage);
+        const gridManagerName = base.getKey(table);
+        const settings = cache.getSettings(gridManagerName);
+        base.calcLayout(gridManagerName, width, height, settings.supportAjaxPage);
         base.updateScrollStatus(gridManagerName);
+        base.updateThWidth(settings);
         scroll.update(gridManagerName);
     }
 
