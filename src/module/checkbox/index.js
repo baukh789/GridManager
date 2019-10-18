@@ -13,7 +13,7 @@ import { CHECKBOX_WIDTH,
     CHECKED_CLASS,
     INDETERMINATE_CLASS } from '@common/constants';
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { getQuerySelector, getTable, clearTargetEvent } from '@common/base';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
 import ajaxPage from '../ajaxPage';
@@ -30,7 +30,7 @@ class Checkbox {
      */
     init(gridManagerName) {
         const _this = this;
-        this.eventMap[gridManagerName] = getCheckboxEvent(gridManagerName, base.getQuerySelector(gridManagerName));
+        this.eventMap[gridManagerName] = getCheckboxEvent(gridManagerName, getQuerySelector(gridManagerName));
         const { allChange, checkboxChange, radioChange, trChange } = this.eventMap[gridManagerName];
         const { useRowCheck, checkedBefore, checkedAllBefore, checkedAfter, checkedAllAfter } = cache.getSettings(gridManagerName);
 
@@ -104,7 +104,7 @@ class Checkbox {
 	 * @returns {NodeListOf<Element>}
 	 */
 	getCheckedTr(gridManagerName) {
-		return document.querySelectorAll(`${base.getQuerySelector(gridManagerName)} tbody tr[checked="true"]`);
+		return document.querySelectorAll(`${getQuerySelector(gridManagerName)} tbody tr[checked="true"]`);
 	}
 
 	/**
@@ -234,7 +234,7 @@ class Checkbox {
 	 * @param useRadio: 当前事件源为单选
      */
 	resetDOM(gridManagerName, tableData, useRadio) {
-	    const $table = base.getTable(gridManagerName);
+	    const $table = getTable(gridManagerName);
 
 	    // 更改tbody区域选中状态
         let checkedNum = 0;
@@ -309,7 +309,7 @@ class Checkbox {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-		base.clearTargetEvent(this.eventMap[gridManagerName]);
+		clearTargetEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new Checkbox();

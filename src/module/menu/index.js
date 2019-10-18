@@ -2,7 +2,7 @@
  * GridManager: 右键菜单
  */
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { getTbody, clearTargetEvent } from '@common/base';
 import cache from '@common/cache';
 import { MENU_KEY } from '@common/constants';
 import { parseTpl } from '@common/parse';
@@ -66,7 +66,7 @@ class Menu {
         return {
             gridManagerName: gridManagerName,
             keyName: MENU_KEY,
-            menuRefreshText: i18n.i18nText(settings, 'menu-refresh'),
+            menuRefreshText: i18n(settings, 'menu-refresh'),
             ajaxPageHtml: supportAjaxPage ? this.createAjaxPageHtml({settings}) : '',
             exportHtml: supportExport ? this.createExportHtml({settings}) : '',
             configHtml: supportConfig ? this.createConfigHtml({settings}) : ''
@@ -81,8 +81,8 @@ class Menu {
     createAjaxPageHtml(params) {
         const settings = params.settings;
         return {
-            menuPreviousPageText: i18n.i18nText(settings, 'menu-previous-page'),
-            menuNextPageText: i18n.i18nText(settings, 'menu-next-page')
+            menuPreviousPageText: i18n(settings, 'menu-previous-page'),
+            menuNextPageText: i18n(settings, 'menu-next-page')
         };
     }
 
@@ -94,8 +94,8 @@ class Menu {
     createExportHtml(params) {
         const settings = params.settings;
         return {
-            menuSaveAsExcelText: i18n.i18nText(settings, 'menu-save-as-excel'),
-            menuSaveAsExcelForCheckedText: i18n.i18nText(settings, 'menu-save-as-excel-for-checked')
+            menuSaveAsExcelText: i18n(settings, 'menu-save-as-excel'),
+            menuSaveAsExcelForCheckedText: i18n(settings, 'menu-save-as-excel-for-checked')
         };
     }
 
@@ -107,7 +107,7 @@ class Menu {
     createConfigHtml(params) {
         const settings = params.settings;
         return {
-            menuConfigGridText: i18n.i18nText(settings, 'menu-config-grid')
+            menuConfigGridText: i18n(settings, 'menu-config-grid')
         };
     }
 
@@ -136,7 +136,7 @@ class Menu {
 
 			// 验证：当前是否存在已选中的项
 			const exportExcelOfChecked = jTool('[grid-action="export-excel"][only-checked="true"]');
-			if (jTool('tr[checked="true"]', base.getTbody(gridManagerName)).length === 0) {
+			if (jTool('tr[checked="true"]', getTbody(gridManagerName)).length === 0) {
 				exportExcelOfChecked.addClass('disabled');
 			} else {
 				exportExcelOfChecked.removeClass('disabled');
@@ -273,7 +273,7 @@ class Menu {
 	 */
 	destroy(gridManagerName) {
 	    // 清除事件
-        base.clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(this.eventMap[gridManagerName]);
 
         // 删除DOM节点
         jTool(`[${MENU_KEY}="${gridManagerName}"]`).remove();

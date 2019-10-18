@@ -4,7 +4,7 @@
  */
 import './style.less';
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { getQuerySelector, getTable, getTh, getFakeThead, getThead, getFakeVisibleTh, getColTd, getThTextWidth, updateScrollStatus, clearTargetEvent } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, TH_VISIBLE } from '@common/constants';
 import cache from '@common/cache';
 import getAdjustEvent from './event';
@@ -33,7 +33,7 @@ class Adjust {
         const _this = this;
 
         // 监听鼠标调整列宽度
-        this.eventMap[gridManagerName] = getAdjustEvent(gridManagerName, base.getQuerySelector(gridManagerName));
+        this.eventMap[gridManagerName] = getAdjustEvent(gridManagerName, getQuerySelector(gridManagerName));
 
         const { target, events, selector } = this.eventMap[gridManagerName].adjustStart;
         jTool(target).on(events, selector, function (event) {
@@ -42,19 +42,19 @@ class Adjust {
             let $th = _dragAction.closest('th');
 
             // 事件源所在的table
-            let	$table = base.getTable(gridManagerName);
+            let	$table = getTable(gridManagerName);
 
             // 当前存储属性
             const { adjustBefore, adjustAfter, isIconFollowText } = cache.getSettings(gridManagerName);
 
             // 事件源同层级下的所有th
-            let	$allTh = base.getFakeVisibleTh(gridManagerName);
+            let	$allTh = getFakeVisibleTh(gridManagerName);
 
             // 事件源下一个可视th
             let	$nextTh = $allTh.eq($th.index($allTh) + 1);
 
             // 存储与事件源同列的所有td
-            let	$td = base.getColTd($th);
+            let	$td = getColTd($th);
 
             // 宽度调整触发回调事件
             adjustBefore(event);
@@ -103,8 +103,8 @@ class Adjust {
     __runMoveEvent(gridManagerName, $th, $nextTh, isIconFollowText) {
         let _thWidth = null;
         let	_NextWidth = null;
-        let _thMinWidth = base.getThTextWidth(gridManagerName, $th, isIconFollowText);
-        let	_NextThMinWidth = base.getThTextWidth(gridManagerName, $nextTh, isIconFollowText);
+        let _thMinWidth = getThTextWidth(gridManagerName, $th, isIconFollowText);
+        let	_NextThMinWidth = getThTextWidth(gridManagerName, $nextTh, isIconFollowText);
         const { target, events, selector } = this.eventMap[gridManagerName].adjusting;
         jTool(target).on(events, selector, function (event) {
             _thWidth = event.clientX - $th.offset().left;
@@ -134,9 +134,9 @@ class Adjust {
             // 当前宽度调整的事件原为表头置顶的thead th
             // 修改与置顶thead 对应的 thead
             if ($th.closest(`[${FAKE_TABLE_HEAD_KEY}]`).length === 1) {
-                base.getTh(gridManagerName, $th).width(_thWidth);
-                base.getTh(gridManagerName, $nextTh).width(_NextWidth);
-                base.getFakeThead(gridManagerName).width(base.getThead(gridManagerName).width());
+                getTh(gridManagerName, $th).width(_thWidth);
+                getTh(gridManagerName, $nextTh).width(_NextWidth);
+                getFakeThead(gridManagerName).width(getThead(gridManagerName).width());
             }
         });
     }
@@ -165,7 +165,7 @@ class Adjust {
             $table.removeClass(NO_SELECT_CLASS_NAME);
 
             // 更新滚动轴状态
-            base.updateScrollStatus(gridManagerName);
+            updateScrollStatus(gridManagerName);
 
             // 更新存储信息
             cache.update(gridManagerName);
@@ -177,7 +177,7 @@ class Adjust {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        base.clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(this.eventMap[gridManagerName]);
     }
 }
 export default new Adjust();

@@ -3,7 +3,9 @@
  *  #001: 如果已经存在，则清除之前的实例，重新进行实例化。原因：如果不清除而直接返回错误，会让使用者存在不便。
  * */
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { getKey } from '@common/base';
+import cache from '@common/cache';
+import { outWarn, outError } from '@common/utils';
 import { TABLE_KEY, RENDERING_KEY } from '@common/constants';
 import GridManager from './GridManager';
 /*
@@ -13,7 +15,7 @@ import GridManager from './GridManager';
 	Element.prototype.GM = Element.prototype.GridManager = function () {
 		// 验证当前Element是否为table
 		if (this.nodeName !== 'TABLE') {
-			base.outError('nodeName !== "TABLE"');
+			outError('nodeName !== "TABLE"');
 			return;
 		}
 
@@ -51,7 +53,7 @@ import GridManager from './GridManager';
 		}
 
         if (name === 'init' && (!arg.columnData || (!arg.ajaxData && !arg.ajax_data && !arg.ajax_url))) {
-            base.outError('columnData or ajaxData undefined');
+            outError('columnData or ajaxData undefined');
             return;
         }
 
@@ -77,7 +79,7 @@ import GridManager from './GridManager';
         // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
         if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
             // 存储gridManagerName值
-            arg.gridManagerName = base.getKey($table);
+            arg.gridManagerName = getKey($table);
             // 参数中存在配置项 gridManagerName: 更新table DOM 的 grid-manager属性
         } else {
             $table.attr(TABLE_KEY, arg.gridManagerName);
@@ -87,18 +89,18 @@ import GridManager from './GridManager';
 
         // init: 当前已经实例化
         if (settings && settings.rendered) {
-            base.outWarn(`${settings.gridManagerName} had been used`);
+            outWarn(`${settings.gridManagerName} had been used`);
 
             // 如果已经存在，则清除之前的数据。#001
             GridManager.destroy(settings.gridManagerName);
         }
 
         // init: 执行
-        base.SIV_waitTableAvailable[arg.gridManagerName] = setInterval(() => {
+        cache.SIV_waitTableAvailable[arg.gridManagerName] = setInterval(() => {
             let thisWidth = window.getComputedStyle(this).width;
             if (thisWidth.indexOf('px') !== -1) {
-                clearInterval(base.SIV_waitTableAvailable[arg.gridManagerName]);
-                base.SIV_waitTableAvailable[arg.gridManagerName] = null;
+                clearInterval(cache.SIV_waitTableAvailable[arg.gridManagerName]);
+                cache.SIV_waitTableAvailable[arg.gridManagerName] = null;
                 return new GridManager().init(this, arg, callback);
             }
         }, 50);

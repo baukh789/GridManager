@@ -2,7 +2,8 @@
  * exportFile: 数据导出
  */
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { showLoading, hideLoading, getVisibleTh, getTbody } from '@common/base';
+import { outError } from '@common/utils';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { GM_CREATE } from '@common/constants';
@@ -70,8 +71,8 @@ class ExportFile {
 	@parseTpl(staticTpl)
 	createExportHTML(params) {
 	    const { gridManagerName, onlyChecked } = params;
-        const thDOM = base.getVisibleTh(gridManagerName, false);
-        const $tbody = base.getTbody(gridManagerName);
+        const thDOM = getVisibleTh(gridManagerName, false);
+        const $tbody = getTbody(gridManagerName);
         let	trDOM = null;
         // 验证：是否只导出已选中的表格
         if (onlyChecked) {
@@ -119,7 +120,7 @@ class ExportFile {
         const selectedList = onlyChecked ? cache.getCheckedData(gridManagerName) : undefined;
 
         if (jTool.type(exportConfig.handler) !== 'function') {
-            base.outError('exportConfig.handler not return promise');
+            outError('exportConfig.handler not return promise');
             return false;
         }
 
@@ -168,7 +169,7 @@ class ExportFile {
     //         const res = await exportHandler(fileName, pageData, sortData, selectedList);
     //         this.dispatchDownload(fileName, res);
     //     } catch (e) {
-    //         base.outError(e);
+    //         outError(e);
     //     }
     // }
 
@@ -186,7 +187,7 @@ class ExportFile {
     //         const res = await exportHandler(fileName, pageData, sortData, selectedList);
     //         window.open(res);
     //     } catch (e) {
-    //         base.outError(e);
+    //         outError(e);
     //     }
     //
     // }
@@ -214,11 +215,11 @@ class ExportFile {
      */
     async downBlob(gridManagerName, loadingTemplate, fileName, query, exportHandler, pageData, sortData, selectedList) {
         try {
-            base.showLoading(gridManagerName, loadingTemplate);
+            showLoading(gridManagerName, loadingTemplate);
 
             const res = await exportHandler(fileName, query, pageData, sortData, selectedList);
 
-            base.hideLoading(gridManagerName);
+            hideLoading(gridManagerName);
 
             const blobPrototype = Blob.prototype;
             let blob = null;
@@ -235,14 +236,14 @@ class ExportFile {
 
             // 当前返回的blob有误，直接跳出
             if (!blob || Object.getPrototypeOf(blob) !== blobPrototype) {
-                base.outError('response type not equal to Blob');
+                outError('response type not equal to Blob');
                 return;
             }
 
             this.dispatchDownload(fileName, URL.createObjectURL(blob));
         } catch (e) {
-            base.outError(e);
-            base.hideLoading(gridManagerName);
+            outError(e);
+            hideLoading(gridManagerName);
         }
     }
 }

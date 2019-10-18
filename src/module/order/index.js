@@ -11,7 +11,7 @@ class Order {
 	 * @returns {string}
 	 */
     getThContent(settings) {
-		return i18n.i18nText(settings, 'order-text');
+		return i18n(settings, 'order-text');
 	}
 
 	/**
@@ -23,7 +23,7 @@ class Order {
 	getColumn(settings) {
 		return {
 			key: ORDER_KEY,
-			text: i18n.getText(settings, 'order-text'),
+			text: i18n(settings, 'order-text'),
 			isAutoCreate: true,
 			isShow: true,
             disableCustomize: true,

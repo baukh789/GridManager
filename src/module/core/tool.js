@@ -11,7 +11,7 @@
  * 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
  */
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { cloneObject } from '@common/utils';
 import cache from '@common/cache';
 
 // 获取参数信息
@@ -43,7 +43,7 @@ export const getParams = settings => {
 
     // 请求前处理程序, 可以通过该方法增加 或 修改全部的请求参数
     // requestHandler方法内需返回修改后的参数
-    _params = settings.requestHandler(base.cloneObject(_params));
+    _params = settings.requestHandler(cloneObject(_params));
     return _params;
 };
 

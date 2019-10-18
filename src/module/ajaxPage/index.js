@@ -14,7 +14,7 @@
  */
 import './style.less';
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { clearTargetEvent } from '@common/base';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { TOOLBAR_KEY } from '@common/constants';
@@ -102,13 +102,13 @@ class AjaxPage {
         return {
             gridManagerName: settings.gridManagerName,
             keyName: TOOLBAR_KEY,
-            refreshActionText: i18n.i18nText(settings, 'refresh-action'),
-            gotoFirstText: i18n.i18nText(settings, 'goto-first-text'),
-            gotoLastText: i18n.i18nText(settings, 'goto-last-text'),
-            firstPageText: i18n.i18nText(settings, 'first-page'),
-            previousPageText: i18n.i18nText(settings, 'previous-page'),
-            nextPageText: i18n.i18nText(settings, 'next-page'),
-            lastPageText: i18n.i18nText(settings, 'last-page'),
+            refreshActionText: i18n(settings, 'refresh-action'),
+            gotoFirstText: i18n(settings, 'goto-first-text'),
+            gotoLastText: i18n(settings, 'goto-last-text'),
+            firstPageText: i18n(settings, 'first-page'),
+            previousPageText: i18n(settings, 'previous-page'),
+            nextPageText: i18n(settings, 'next-page'),
+            lastPageText: i18n(settings, 'last-page'),
             pageSizeOptionTpl: dropdown.createHtml(settings)
         };
     }
@@ -202,7 +202,7 @@ class AjaxPage {
         if (checkedInfo.length === 0) {
             return;
         }
-        checkedInfo.html(i18n.i18nText(cache.getSettings(gridManagerName), 'checked-info', cache.getCheckedData(gridManagerName).length));
+        checkedInfo.html(i18n(cache.getSettings(gridManagerName), 'checked-info', cache.getCheckedData(gridManagerName).length));
     }
 
 	/**
@@ -447,7 +447,7 @@ class AjaxPage {
 
         const $pageInfo = jTool('.page-info', $footerToolbar);
         if ($pageInfo.length) {
-            const info = i18n.i18nText(settings, 'page-info', [fromNum, toNum, totalNum, cPage, tPage]);
+            const info = i18n(settings, 'page-info', [fromNum, toNum, totalNum, cPage, tPage]);
             $pageInfo.html(info);
         }
 
@@ -553,7 +553,7 @@ class AjaxPage {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-        base.clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new AjaxPage();

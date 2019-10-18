@@ -5,16 +5,16 @@
  * 3.重置tbody
  */
 import './style.less';
-import base from '@common/base';
+import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmptyHtml, getEmpty, updateThWidth } from '@common/base';
+import { outError, cloneObject } from '@common/utils';
 import cache from '@common/cache';
-import { EMPTY_DATA_CLASS_NAME } from '@common/constants';
+import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, READY_CLASS_NAME } from '@common/constants';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
 import coreDOM from './coreDOM';
 import { transformToPromise } from './tool';
-import { WRAP_KEY, READY_CLASS_NAME } from '@common/constants';
 import framework from '@common/framework';
 
 class Core {
@@ -30,7 +30,7 @@ class Core {
         // 更新刷新图标状态
         ajaxPage.updateRefreshIconState(gridManagerName, true);
 
-        base.showLoading(gridManagerName, loadingTemplate);
+        showLoading(gridManagerName, loadingTemplate);
 
         let ajaxPromise = transformToPromise(settings);
 
@@ -43,7 +43,7 @@ class Core {
                 this.driveDomForSuccessAfter(settings, response, callback);
                 ajaxSuccess(response);
                 ajaxComplete(response);
-                base.hideLoading(gridManagerName);
+                hideLoading(gridManagerName);
                 ajaxPage.updateRefreshIconState(gridManagerName, false);
             } catch (e) {
                 console.error(e);
@@ -52,7 +52,7 @@ class Core {
         .catch(error => {
             ajaxError(error);
             ajaxComplete(error);
-            base.hideLoading(gridManagerName);
+            hideLoading(gridManagerName);
             ajaxPage.updateRefreshIconState(gridManagerName, false);
         });
     }
@@ -93,27 +93,27 @@ class Core {
         }
 
         if (!response) {
-            base.outError('response undefined！please check ajaxData');
+            outError('response undefined！please check ajaxData');
             return;
         }
 
         let parseRes = typeof (response) === 'string' ? JSON.parse(response) : response;
 
         // 执行请求后执行程序, 通过该程序可以修改返回值格式
-        parseRes = responseHandler(base.cloneObject(parseRes));
+        parseRes = responseHandler(cloneObject(parseRes));
 
         let _data = parseRes[dataKey];
         let totals = parseRes[totalsKey];
 
         // 数据校验: 数据异常
         if (!_data || !Array.isArray(_data)) {
-            base.outError(`response.${dataKey} is not Array，please check dataKey`);
+            outError(`response.${dataKey} is not Array，please check dataKey`);
             return;
         }
 
         // 数据校验: 未使用无总条数模式 && 未使用异步总页 && 总条数无效时直接跳出
         if (supportAjaxPage && !useNoTotalsMode && !asyncTotals && isNaN(parseInt(totals, 10))) {
-            base.outError(`response.${totalsKey} undefined，please check totalsKey`);
+            outError(`response.${totalsKey} undefined，please check totalsKey`);
             return;
         }
 
@@ -122,7 +122,7 @@ class Core {
             this.insertEmptyTemplate(settings);
             parseRes[totalsKey] = 0;
         } else {
-            const $div = base.getDiv(gridManagerName);
+            const $div = getDiv(gridManagerName);
             $div.removeClass(EMPTY_DATA_CLASS_NAME);
             $div.scrollTop(0);
             coreDOM.renderTableBody(settings, _data);
@@ -155,13 +155,13 @@ class Core {
             return;
         }
 
-        let visibleNum = base.getVisibleTh(gridManagerName).length;
-        const $tbody = base.getTbody(gridManagerName);
-        const $tableDiv = base.getDiv(gridManagerName);
+        let visibleNum = getVisibleTh(gridManagerName).length;
+        const $tbody = getTbody(gridManagerName);
+        const $tableDiv = getDiv(gridManagerName);
         const style = `height: ${$tableDiv.height() - 1}px;`;
         $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
-        $tbody.html(base.getEmptyHtml(gridManagerName, visibleNum, style));
-        const emptyTd = base.getEmpty(gridManagerName).get(0).querySelector('td');
+        $tbody.html(getEmptyHtml(gridManagerName, visibleNum, style));
+        const emptyTd = getEmpty(gridManagerName).get(0).querySelector('td');
 
         emptyTd.innerHTML = framework.compileEmptyTemplate(settings, emptyTd, emptyTemplate);
 
@@ -198,7 +198,7 @@ class Core {
         await framework.send(settings, true);
 
         // 更新列宽
-        base.updateThWidth(settings, true);
+        updateThWidth(settings, true);
 
 
         // 增加渲染完成标识
@@ -212,11 +212,11 @@ class Core {
     waitContainerAvailable(gridManagerName) {
         const tableWarp = document.querySelector(`[${WRAP_KEY}="${gridManagerName}"]`);
         return new Promise(resolve => {
-            base.SIV_waitContainerAvailable[gridManagerName] = setInterval(() => {
+            cache.SIV_waitContainerAvailable[gridManagerName] = setInterval(() => {
                 let tableWarpWidth = window.getComputedStyle(tableWarp).width;
                 if (tableWarpWidth !== '100%') {
-                    clearInterval(base.SIV_waitContainerAvailable[gridManagerName]);
-                    base.SIV_waitContainerAvailable[gridManagerName] = null;
+                    clearInterval(cache.SIV_waitContainerAvailable[gridManagerName]);
+                    cache.SIV_waitContainerAvailable[gridManagerName] = null;
                     resolve();
                 }
             }, 50);

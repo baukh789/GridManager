@@ -7,7 +7,7 @@
  * 且该事件可能在消毁的时候失败， 所以在注册事件时需要进行unbind。
  * */
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus } from '@common/base';
 import cache from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import framework from '@common/framework';
@@ -28,13 +28,13 @@ class Scroll {
      * @param gridManagerName
      */
     render(gridManagerName) {
-        let $setTopHead = base.getFakeThead(gridManagerName);
+        let $setTopHead = getFakeThead(gridManagerName);
         $setTopHead.length && $setTopHead.remove();
-        const $thead = base.getThead(gridManagerName);
+        const $thead = getThead(gridManagerName);
 
-        base.getTable(gridManagerName).append($thead.clone(true).attr(FAKE_TABLE_HEAD_KEY, gridManagerName));
+        getTable(gridManagerName).append($thead.clone(true).attr(FAKE_TABLE_HEAD_KEY, gridManagerName));
 
-        $setTopHead = base.getFakeThead(gridManagerName);
+        $setTopHead = getFakeThead(gridManagerName);
         $setTopHead.removeAttr(TABLE_HEAD_KEY);
 
         const settings = cache.getSettings(gridManagerName);
@@ -47,16 +47,16 @@ class Scroll {
      * @returns {boolean}
      */
     update(gridManagerName) {
-        const $tableDiv = base.getDiv(gridManagerName);
+        const $tableDiv = getDiv(gridManagerName);
         if ($tableDiv.length === 0) {
             return;
         }
-        const $thead = base.getThead(gridManagerName);
+        const $thead = getThead(gridManagerName);
         const theadWidth = $thead.width();
         // const tableDivWidth = $tableDiv.width();
 
         // 吸顶元素
-        const $setTopHead = base.getFakeThead(gridManagerName);
+        const $setTopHead = getFakeThead(gridManagerName);
 
         // 重置thead的宽度和位置
         $setTopHead.css({
@@ -76,7 +76,7 @@ class Scroll {
      * 存在多次渲染时, 将会存在多个resize事件. 每个事件对应处理一个table. 这样做的好处是, 多个表之间无关联. 保持了相对独立性
      */
 	bindResizeToTable(gridManagerName) {
-		const $tableDiv = base.getDiv(gridManagerName);
+		const $tableDiv = getDiv(gridManagerName);
 		let oldBodyWidth = document.querySelector('body').offsetWidth;
 
 		// 绑定resize事件: 对表头吸顶的列宽度进行修正
@@ -89,11 +89,11 @@ class Scroll {
             // 当可视宽度变化时，更新表头宽度
             const bodyWidth = document.querySelector('body').offsetWidth;
             if (bodyWidth !== oldBodyWidth) {
-                base.updateThWidth(settings);
+                updateThWidth(settings);
                 oldBodyWidth = bodyWidth;
                 cache.update(gridManagerName);
             }
-            base.updateScrollStatus(gridManagerName);
+            updateScrollStatus(gridManagerName);
 
             this.update(gridManagerName);
 
@@ -106,7 +106,7 @@ class Scroll {
 	 * @param gridManagerName
      */
 	bindScrollToTableDiv(gridManagerName) {
-		const tableDIV = base.getDiv(gridManagerName);
+		const tableDIV = getDiv(gridManagerName);
 		// 绑定滚动条事件 #001
 		tableDIV.unbind('scroll');
 		tableDIV.bind('scroll', () => {
@@ -123,7 +123,7 @@ class Scroll {
 		jTool(window).unbind(`resize.${gridManagerName}`);
 
 		// 清理: 表格滚动轴功能
-        base.getDiv(gridManagerName).unbind('scroll');
+        getDiv(gridManagerName).unbind('scroll');
 	}
 }
 export default new Scroll();

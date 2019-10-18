@@ -4,10 +4,11 @@
 * 1.Store: 渲染表格时所使用的json数据 [存储在GM实例]
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
-import jTool from './jTool';
-import base from './base';
-import { Settings, TextSettings } from './Settings';
-import store from './Store';
+import jTool from '@common/jTool';
+import { getCloneRowData, getTable, getTh } from '@common/base';
+import { outInfo, outError, equal, getObjectIndexToArray } from '@common/utils';
+import { Settings, TextSettings } from '@common/Settings';
+import store from '@common/Store';
 import {
     TR_CACHE_ROW,
     CACHE_ERROR_KEY,
@@ -22,6 +23,13 @@ import {
 } from './constants';
 
 class Cache {
+    // TODO 这两个需要优化
+    // 定时器: 等待容器可用, 在core.js中使用
+    SIV_waitContainerAvailable = {};
+
+    // 定时器: 等待表格可用，在index.js中使用
+    SIV_waitTableAvailable = {};
+
     /**
      * 版本信息
      * @returns {*}
@@ -60,7 +68,7 @@ class Cache {
 
         const getTrData = tr => {
             const rowData = tr[TR_CACHE_ROW] || {};
-            return useGmProp ? rowData : base.getCloneRowData(columnMap, rowData);
+            return useGmProp ? rowData : getCloneRowData(columnMap, rowData);
         };
 
         // target type = Element 元素时, 返回单条数据对象;
@@ -200,7 +208,7 @@ class Cache {
             // add checkbox
             if (supportCheckbox) {
                 row[CHECKBOX_KEY] = this.getCheckedData(gridManagerName).some(item => {
-                    return base.equal(base.getCloneRowData(columnMap, item), base.getCloneRowData(columnMap, row));
+                    return equal(getCloneRowData(columnMap, item), getCloneRowData(columnMap, row));
                 });
                 row[CHECKBOX_DISABLED_KEY] = false;
             }
@@ -240,7 +248,7 @@ class Cache {
         const { columnMap } = this.getSettings(gridManagerName);
         // 覆盖操作，清空原有的选中数据。 并且 dataList 将会按选中状态进行处理
         if (isClear) {
-            store.checkedData[gridManagerName] = dataList.map(item => base.getCloneRowData(columnMap, item));
+            store.checkedData[gridManagerName] = dataList.map(item => getCloneRowData(columnMap, item));
             return;
         }
 
@@ -251,9 +259,9 @@ class Cache {
         const tableCheckedList = store.checkedData[gridManagerName];
 
         dataList.forEach(item => {
-            let cloneObj = base.getCloneRowData(columnMap, item);
+            let cloneObj = getCloneRowData(columnMap, item);
             let checked = item[CHECKBOX_KEY];
-            let index = base.getObjectIndexToArray(tableCheckedList, cloneObj);
+            let index = getObjectIndexToArray(tableCheckedList, cloneObj);
 
             // 新增: 已选中 且 未存储
             if (checked && index === -1) {
@@ -282,7 +290,7 @@ class Cache {
         store.checkedData[gridManagerName] = store.checkedData[gridManagerName].map(item => {
             rowDataList.forEach(newItem => {
                 if (item[key] === newItem[key]) {
-                    jTool.extend(item, base.getCloneRowData(columnMap, newItem));
+                    jTool.extend(item, getCloneRowData(columnMap, newItem));
                 }
             });
             return item;
@@ -309,7 +317,7 @@ class Cache {
         let memory = window.localStorage.getItem(MEMORY_KEY);
         // 如无数据，增加缓存错误标识
         if (!memory || memory === '{}') {
-            base.getTable(gridManagerName).attr(CACHE_ERROR_KEY, 'error');
+            getTable(gridManagerName).attr(CACHE_ERROR_KEY, 'error');
             return {};
         }
         memory = JSON.parse(memory);
@@ -386,7 +394,7 @@ class Cache {
         // 如果未指定删除的table, 则全部清除
         if (!gridManagerName) {
             window.localStorage.removeItem(MEMORY_KEY);
-            base.outInfo('delete user memory of all');
+            outInfo('delete user memory of all');
             return true;
         }
 
@@ -402,7 +410,7 @@ class Cache {
 
         // 清除后, 重新存储
         window.localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
-        base.outInfo(`delete user memory of ${gridManagerName}`);
+        outInfo(`delete user memory of ${gridManagerName}`);
         return true;
     }
 
@@ -472,14 +480,14 @@ class Cache {
             const colKey = col.key;
             // key字段不允许为空
             if (!colKey) {
-                base.outError(`columnData[${index}].key undefined`);
+                outError(`columnData[${index}].key undefined`);
                 isError = true;
                 return;
             }
 
             // 存在disableCustomize时，必须设置width
             if (col.disableCustomize && !col.width) {
-                base.outError(`column ${colKey}: when disableCustomize exists, width must be set`);
+                outError(`column ${colKey}: when disableCustomize exists, width must be set`);
                 isError = true;
                 return;
             }
@@ -610,7 +618,7 @@ class Cache {
                 return;
             }
 
-            let th = base.getTh(gridManagerName, col.key);
+            let th = getTh(gridManagerName, col.key);
             // 宽度
             col.width = th.width() + 'px';
 

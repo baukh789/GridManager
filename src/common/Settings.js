@@ -2,6 +2,7 @@
  * Settings: 配置项
  */
 import jTool  from './jTool';
+const noop = jTool.noop;
 
 /**
  * 框架相关配置
@@ -27,10 +28,10 @@ const drag = {
     supportDrag: true,
 
     // 拖拽前事件
-    dragBefore: jTool.noop,
+    dragBefore: noop,
 
     // 拖拽后事件
-    dragAfter: jTool.noop
+    dragAfter: noop
 };
 
 /**
@@ -41,10 +42,10 @@ const adjust = {
     supportAdjust: true,
 
     // 宽度调整前事件
-    adjustBefore: jTool.noop,
+    adjustBefore: noop,
 
     // 宽度调整后事件
-    adjustAfter: jTool.noop
+    adjustAfter: noop
 };
 
 /**
@@ -146,10 +147,10 @@ const sort = {
     sortMode: 'overall',
 
     // 排序事件发生前
-    sortingBefore: jTool.noop,
+    sortingBefore: noop,
 
     // 排序事件发生后
-    sortingAfter: jTool.noop
+    sortingAfter: noop
 };
 
 /**
@@ -188,10 +189,10 @@ const ajaxPage = {
     pageSizeKey: 'pSize',
 
     // 分页事件发生前
-    pagingBefore: jTool.noop,
+    pagingBefore: noop,
 
     // 分页事件发生后
-    pagingAfter: jTool.noop
+    pagingAfter: noop
 };
 
 /**
@@ -216,16 +217,16 @@ const checkbox = {
     useRadio: false,
 
     // 选择事件执行前事件
-    checkedBefore: jTool.noop,
+    checkedBefore: noop,
 
     // 选择事件执行后事件
-    checkedAfter: jTool.noop,
+    checkedAfter: noop,
 
     // 全选事件执行前事件
-    checkedAllBefore: jTool.noop,
+    checkedAllBefore: noop,
 
     // 全选事件执行后事件
-    checkedAllAfter: jTool.noop
+    checkedAllAfter: noop
 };
 
 /**
@@ -357,16 +358,16 @@ const gridData = {
     ajaxXhrFields: {},
 
     // ajax请求之前,与jTool的beforeSend使用方法相同
-    ajaxBeforeSend: jTool.noop,
+    ajaxBeforeSend: noop,
 
     // ajax成功后,与jTool的success使用方法相同
-    ajaxSuccess: jTool.noop,
+    ajaxSuccess: noop,
 
     // ajax完成后,与jTool的complete使用方法相同
-    ajaxComplete: jTool.noop,
+    ajaxComplete: noop,
 
     // ajax失败后,与jTool的error使用方法相同
-    ajaxError: jTool.noop,
+    ajaxError: noop,
 
     // 请求前处理程序, 可以通过该方法修改全部的请求参数 @v2.3.14
     requestHandler: request => request,
@@ -405,7 +406,7 @@ const gridExport = {
         suffix: 'xls',
 
         // 导出处理器函数,该函数需要返回一个promise。当`exportType`为`static`时，该参数不生效。
-        handler: jTool.noop
+        handler: noop
     }
 };
 export function Settings() {

@@ -1,6 +1,7 @@
 import remind from '../remind';
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { calcLayout, updateThWidth, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
+import { outError } from '@common/utils';
 import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
 import cache from '@common/cache';
 import filter from '../filter';
@@ -25,7 +26,7 @@ class Dom {
         $table.append(render.createTheadTpl({settings}));
 
         // 计算布局
-        base.calcLayout(gridManagerName, width, height, supportAjaxPage);
+        calcLayout(gridManagerName, width, height, supportAjaxPage);
 
         // append tbody
         $table.append(document.createElement('tbody'));
@@ -41,7 +42,7 @@ class Dom {
     redrawThead(settings) {
         const { gridManagerName, columnMap, sortUpText, sortDownText, supportAdjust } = settings;
         // 单个table下的TH
-        const $thList = base.getAllTh(gridManagerName);
+        const $thList = getAllTh(gridManagerName);
 
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
@@ -100,7 +101,7 @@ class Dom {
         });
 
         // 更新列宽
-        base.updateThWidth(settings, true);
+        updateThWidth(settings, true);
     }
 
     /**
@@ -123,7 +124,7 @@ class Dom {
         data = cache.resetTableData(gridManagerName, data);
 
         // tbody dom
-        const tbody = base.getTbody(gridManagerName).get(0);
+        const tbody = getTbody(gridManagerName).get(0);
 
         // 清空 tbody
         tbody.innerHTML = '';
@@ -231,7 +232,7 @@ class Dom {
             installTr(data, 0);
 
         } catch (e) {
-            base.outError('render tbody error');
+            outError('render tbody error');
         }
 
         this.initVisible(gridManagerName, columnMap);
@@ -259,7 +260,7 @@ class Dom {
             const level = row[TR_LEVEL_KEY];
             let index = cacheKey.split('-').pop();
 
-            const trNode = base.getTbody(gridManagerName).find(`[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
+            const trNode = getTbody(gridManagerName).find(`[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
 
             if (!trNode) {
                 return;
@@ -277,7 +278,7 @@ class Dom {
                 }
 
                 let tdTemplate = col.template;
-                const tdNode = base.getColTd(base.getTh(gridManagerName, key), trNode).get(0);
+                const tdNode = getColTd(getTh(gridManagerName, key), trNode).get(0);
 
                 // 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
                 const tdCloneNode = tdNode.cloneNode(true);
@@ -309,7 +310,7 @@ class Dom {
             if (!col.merge) {
                 return true;
             }
-            const $tdList = base.getColTd(base.getTh(gridManagerName, key));
+            const $tdList = getColTd(getTh(gridManagerName, key));
             let len = $tdList.length;
             let mergeSum = 1;
             while (len) {
@@ -347,7 +348,7 @@ class Dom {
      */
     initVisible(gridManagerName, columnMap) {
         jTool.each(columnMap, (index, col) => {
-            base.setAreVisible(gridManagerName, [col.key], col.isShow);
+            setAreVisible(gridManagerName, [col.key], col.isShow);
         });
     }
 
@@ -363,7 +364,7 @@ class Dom {
             return;
         }
 
-        this.eventMap[gridManagerName] = getCoreEvent(gridManagerName, base.getQuerySelector(gridManagerName));
+        this.eventMap[gridManagerName] = getCoreEvent(gridManagerName, getQuerySelector(gridManagerName));
         const { target, events, selector } = this.eventMap[gridManagerName].tdMousemove;
 
         // 绑定td移入事件
@@ -387,11 +388,11 @@ class Dom {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        base.clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(this.eventMap[gridManagerName]);
 
         try {
-            const $table = base.getTable(gridManagerName);
-            const $tableWrap = base.getWrap(gridManagerName);
+            const $table = getTable(gridManagerName);
+            const $tableWrap = getWrap(gridManagerName);
             // DOM有可能在执行到这里时, 已经被框架中的消毁机制清除
             if (!$table.length || !$tableWrap.length) {
                 return;

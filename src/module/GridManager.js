@@ -4,7 +4,8 @@
  */
 import jTool from '@common/jTool';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY } from '@common/constants';
-import base from '@common/base';
+import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getQuerySelector, updateVisibleLast, updateScrollStatus } from '@common/base';
+import { outWarn, outError, equal } from '@common/utils';
 import cache from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
@@ -23,10 +24,10 @@ import sort from './sort';
 import filter from './filter';
 
 const isRendered = (table, fnName) => {
-    const settings = cache.getSettings(base.getKey(table));
+    const settings = cache.getSettings(getKey(table));
     // fnName !== 'destroy' &&
     if (!settings.rendered) {
-        base.outError(`${fnName} failed，please check your table had been init`);
+        outError(`${fnName} failed，please check your table had been init`);
         return;
     }
     return true;
@@ -60,7 +61,7 @@ export default class GridManager {
 	static
     set defaultOption(conf) {
 	    if (jTool.type(conf) !== 'object') {
-	        base.outError('value type is not object');
+	        outError('value type is not object');
 	        return;
         }
         defaultOption = conf;
@@ -73,7 +74,7 @@ export default class GridManager {
     static
     mergeDefaultOption(conf) {
         if (jTool.type(conf) !== 'object') {
-            base.outError('value type is not object');
+            outError('value type is not object');
             return;
         }
         defaultOption = jTool.extend(defaultOption, conf);
@@ -87,7 +88,7 @@ export default class GridManager {
 	 */
 	static
 	get(table) {
-        return cache.getSettings(base.getKey(table));
+        return cache.getSettings(getKey(table));
 	}
 
     /**
@@ -99,7 +100,7 @@ export default class GridManager {
      */
     static
     setScope(table, scope) {
-        return cache.setScope(base.getKey(table), scope);
+        return cache.setScope(getKey(table), scope);
     }
 
 	/**
@@ -114,7 +115,7 @@ export default class GridManager {
         if (!isRendered(table, 'getLocalStorage')) {
             return;
         }
-		return cache.getUserMemory(base.getKey(table));
+		return cache.getUserMemory(getKey(table));
 	}
 
     /**
@@ -130,11 +131,11 @@ export default class GridManager {
         if (!isRendered(table, 'resetLayout')) {
             return;
         }
-        const gridManagerName = base.getKey(table);
+        const gridManagerName = getKey(table);
         const settings = cache.getSettings(gridManagerName);
-        base.calcLayout(gridManagerName, width, height, settings.supportAjaxPage);
-        base.updateScrollStatus(gridManagerName);
-        base.updateThWidth(settings);
+        calcLayout(gridManagerName, width, height, settings.supportAjaxPage);
+        updateThWidth(settings);
+        updateScrollStatus(gridManagerName);
         scroll.update(gridManagerName);
     }
 
@@ -149,7 +150,7 @@ export default class GridManager {
         if (table && !isRendered(table, 'clear')) {
             return;
         }
-		return cache.delUserMemory(base.getKey(table));
+		return cache.delUserMemory(getKey(table));
 	}
 
 	/**
@@ -164,7 +165,7 @@ export default class GridManager {
         if (!isRendered(table, 'getRowData')) {
             return;
         }
-		return cache.getRowData(base.getKey(table), target);
+		return cache.getRowData(getKey(table), target);
 	}
 
 	/**
@@ -180,7 +181,7 @@ export default class GridManager {
 	    if (!isRendered(table, 'setSort')) {
 	        return;
         }
-		sort.__setSort(base.getKey(table), sortJson, callback, refresh);
+		sort.__setSort(getKey(table), sortJson, callback, refresh);
 	}
 
     /**
@@ -193,10 +194,10 @@ export default class GridManager {
         if (!isRendered(table, 'setConfigVisible')) {
             return;
         }
-        const gridManagerName = base.getKey(table);
+        const gridManagerName = getKey(table);
 
         if (!cache.getSettings(gridManagerName).supportConfig) {
-            base.outError('supportConfig not open, please set supportConfig into true');
+            outError('supportConfig not open, please set supportConfig into true');
             return;
         }
 
@@ -231,8 +232,8 @@ export default class GridManager {
         if (!isRendered(table, 'showTh')) {
             return;
         }
-        const gridManagerName = base.getKey(table);
-		base.setAreVisible(gridManagerName, Array.isArray(thName) ? thName : [thName], true);
+        const gridManagerName = getKey(table);
+		setAreVisible(gridManagerName, Array.isArray(thName) ? thName : [thName], true);
         config.noticeUpdate(gridManagerName);
 	}
 
@@ -247,8 +248,8 @@ export default class GridManager {
         if (!isRendered(table, 'hideTh')) {
             return;
         }
-        const gridManagerName = base.getKey(table);
-        base.setAreVisible(gridManagerName, Array.isArray(thName) ? thName : [thName], false);
+        const gridManagerName = getKey(table);
+        setAreVisible(gridManagerName, Array.isArray(thName) ? thName : [thName], false);
         config.noticeUpdate(gridManagerName);
 	}
 
@@ -265,7 +266,7 @@ export default class GridManager {
         if (!isRendered(table, 'exportGridToXls')) {
             return;
         }
-		return exportFile.__exportGridToXls(base.getKey(table), fileName, onlyChecked);
+		return exportFile.__exportGridToXls(getKey(table), fileName, onlyChecked);
 	}
 
 	/**
@@ -287,7 +288,7 @@ export default class GridManager {
             return;
         }
 
-        const gridManagerName = base.getKey(table);
+        const gridManagerName = getKey(table);
 		const settings = cache.getSettings(gridManagerName);
 
 		if (jTool.type(query) !== 'object') {
@@ -305,7 +306,7 @@ export default class GridManager {
             if (column.filter) {
                 column.filter.selected = typeof query[column.key] === 'string' ? query[column.key] : '';
                 // 这里不使用base.getTh的原因: 需要同时更新thead 和 fake-thead
-                filter.update(jTool(`${base.getQuerySelector(gridManagerName)} th[th-name=${column.key}]`), column.filter);
+                filter.update(jTool(`${getQuerySelector(gridManagerName)} th[th-name=${column.key}]`), column.filter);
             }
         });
 
@@ -336,7 +337,7 @@ export default class GridManager {
         if (!isRendered(table, 'setAjaxData')) {
             return;
         }
-		const settings = cache.getSettings(base.getKey(table));
+		const settings = cache.getSettings(getKey(table));
 		jTool.extend(settings, { ajaxData });
 		cache.setSettings(settings);
 		core.refresh(settings.gridManagerName, callback);
@@ -354,7 +355,7 @@ export default class GridManager {
 	    if (!isRendered(table, 'refreshGrid')) {
 	        return;
         }
-        const gridManagerName = base.getKey(table);
+        const gridManagerName = getKey(table);
 		const settings = cache.getSettings(gridManagerName);
 		if (typeof (isGotoFirstPage) !== 'boolean') {
 			callback = isGotoFirstPage;
@@ -377,7 +378,7 @@ export default class GridManager {
         if (!isRendered(table, 'renderGrid')) {
             return;
         }
-        const settings = cache.getSettings(base.getKey(table));
+        const settings = cache.getSettings(getKey(table));
         const { gridManagerName, dataKey, totalsKey, pageData } = settings;
         const response = {
             [dataKey]: cache.getTableData(gridManagerName),
@@ -421,7 +422,7 @@ export default class GridManager {
         if (!isRendered(table, 'getCheckedTr')) {
             return;
         }
-		return checkbox.getCheckedTr(base.getKey(table));
+		return checkbox.getCheckedTr(getKey(table));
 	};
 
 	/**
@@ -435,7 +436,7 @@ export default class GridManager {
         if (!isRendered(table, 'getCheckedData')) {
             return;
         }
-		return cache.getCheckedData(base.getKey(table));
+		return cache.getCheckedData(getKey(table));
 	};
 
     /**
@@ -451,13 +452,13 @@ export default class GridManager {
             return;
         }
         const checkedList = Array.isArray(checkedData) ? checkedData : [checkedData];
-        const { columnMap, useRadio, gridManagerName, treeConfig } = cache.getSettings(base.getKey(table));
+        const { columnMap, useRadio, gridManagerName, treeConfig } = cache.getSettings(getKey(table));
         const treeKey = treeConfig.treeKey;
         const tableData = cache.getTableData(gridManagerName);
         tableData.forEach(rowData => {
             // 获取比对数据时，需要清除子数据
-            let cloneRow = base.getCloneRowData(columnMap, rowData, [treeKey]);
-            rowData[CHECKBOX_KEY] = checkedList.some(item => base.equal(cloneRow, base.getCloneRowData(columnMap, item, [treeKey])));
+            let cloneRow = getCloneRowData(columnMap, rowData, [treeKey]);
+            rowData[CHECKBOX_KEY] = checkedList.some(item => equal(cloneRow, getCloneRowData(columnMap, item, [treeKey])));
         });
 
         cache.setCheckedData(gridManagerName, checkedList, true);
@@ -477,7 +478,7 @@ export default class GridManager {
         if (!isRendered(table, 'updateRowData')) {
             return;
         }
-        const settings = cache.getSettings(base.getKey(table));
+        const settings = cache.getSettings(getKey(table));
         const { gridManagerName, columnMap, supportCheckbox } = settings;
         const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
         const { tableData, updateCacheList } = cache.updateRowData(gridManagerName, key, rowDataList);
@@ -502,7 +503,7 @@ export default class GridManager {
         if (!isRendered(table, 'updateTreeState')) {
             return;
         }
-        tree.updateDOM(base.getKey(table), state);
+        tree.updateDOM(getKey(table), state);
     }
 
     /**
@@ -516,7 +517,7 @@ export default class GridManager {
         if (!isRendered(table, 'cleanData')) {
             return;
         }
-		return core.cleanData(base.getKey(table));
+		return core.cleanData(getKey(table));
 	}
 
 	/**
@@ -537,13 +538,13 @@ export default class GridManager {
 
 		// 校验: 初始参
 		if (!arg || jTool.isEmptyObject(arg)) {
-			base.outError('init method params error');
+			outError('init method params error');
 			return;
 		}
 
 		// 校验: columnData
 		if (!arg.columnData || arg.columnData.length === 0) {
-			base.outError('columnData invalid');
+			outError('columnData invalid');
 			return;
 		}
 
@@ -557,7 +558,7 @@ export default class GridManager {
 
 		// 参数变更提醒
 		if (arg.ajaxUrl) {
-			base.outWarn('ajax_url will be deprecated later, please use ajaxData instead');
+			outWarn('ajax_url will be deprecated later, please use ajaxData instead');
 			arg.ajaxData = arg.ajaxUrl;
 		}
 
@@ -588,7 +589,7 @@ export default class GridManager {
 
 		// 校验: gridManagerName
 		if (gridManagerName.trim() === '') {
-			base.outError('gridManagerName undefined');
+			outError('gridManagerName undefined');
 			return;
 		}
 
@@ -690,10 +691,10 @@ export default class GridManager {
         scroll.update(gridManagerName);
 
         // 更新最后一项可视列的标识
-        base.updateVisibleLast(gridManagerName);
+        updateVisibleLast(gridManagerName);
 
         // 更新滚动轴显示状态
-        base.updateScrollStatus(gridManagerName);
+        updateScrollStatus(gridManagerName);
 	}
 
     /**
@@ -716,10 +717,10 @@ export default class GridManager {
         }
 
         // 清除setInterval
-        base.SIV_waitTableAvailable[gridManagerName] && clearInterval(base.SIV_waitTableAvailable[gridManagerName]);
-        base.SIV_waitContainerAvailable[gridManagerName] && clearInterval(base.SIV_waitContainerAvailable[gridManagerName]);
-        base.SIV_waitTableAvailable[gridManagerName] = null;
-        base.SIV_waitContainerAvailable[gridManagerName] = null;
+        cache.SIV_waitTableAvailable[gridManagerName] && clearInterval(cache.SIV_waitTableAvailable[gridManagerName]);
+        cache.SIV_waitContainerAvailable[gridManagerName] && clearInterval(cache.SIV_waitContainerAvailable[gridManagerName]);
+        cache.SIV_waitTableAvailable[gridManagerName] = null;
+        cache.SIV_waitContainerAvailable[gridManagerName] = null;
 
         try {
             // 清除各模块中的事件及部分DOM

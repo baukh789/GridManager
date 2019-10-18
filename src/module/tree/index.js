@@ -3,7 +3,7 @@
  */
 import './style.less';
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { getQuerySelector, getTable, getTbody, getTh, getColTd, clearTargetEvent } from '@common/base';
 import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
 import getEvent from './event';
 const getIconClass = state => {
@@ -49,7 +49,7 @@ class Tree {
     init(gridManagerName) {
         const _this = this;
         // 绑定事件
-        _this.eventMap[gridManagerName] = getEvent(gridManagerName, base.getQuerySelector(gridManagerName), this.key);
+        _this.eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName), this.key);
         const { target, events, selector } = this.eventMap[gridManagerName].toggleState;
 
         jTool(target).on(events, selector, function () {
@@ -65,7 +65,7 @@ class Tree {
      * @param $tr: 更新的tr节点，未指定时将对tbody下所有节点进行更新(对外公开方法中，不包含开参数)
      */
     updateDOM(gridManagerName, state, $tr) {
-        const $tbody = base.getTbody(gridManagerName);
+        const $tbody = getTbody(gridManagerName);
 
         const updateState = ($tr, openState) => {
             const $treeEle = jTool(`[${this.key}]`, $tr);
@@ -113,7 +113,7 @@ class Tree {
      */
     insertDOM(gridManagerName, config) {
         const { openState, insertTo } = config;
-        const $table = base.getTable(gridManagerName);
+        const $table = getTable(gridManagerName);
         let parentKeyList = [];
         jTool.each(jTool('tr[parent-key]', $table), (index, item) => {
             parentKeyList.push(item.getAttribute('parent-key'));
@@ -129,7 +129,7 @@ class Tree {
             // 第一个非自动创建 且 可视的td
             let $insertTd = null;
             if (typeof insertTo === 'string') {
-                $insertTd = base.getColTd(base.getTh(gridManagerName, insertTo), trNode);
+                $insertTd = getColTd(getTh(gridManagerName, insertTo), trNode);
             }
 
             // 未设置 insertTo 或 通过 insertTo 未找到dom时: 使用第一个非自动创建的TD
@@ -154,7 +154,7 @@ class Tree {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        base.clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(this.eventMap[gridManagerName]);
         this.clear(gridManagerName);
     }
 }

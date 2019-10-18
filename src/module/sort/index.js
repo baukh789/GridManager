@@ -1,10 +1,10 @@
 /*
  * sort: 排序
  */
-
 import './style.less';
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { getQuerySelector, getThName, clearTargetEvent } from '@common/base';
+import { outWarn } from '@common/utils';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
 import core from '../core';
@@ -24,14 +24,14 @@ class Sort {
         if (!this.enable[gridManagerName]) {
             return;
         }
-        this.eventMap[gridManagerName] = getSortEvent(gridManagerName, base.getQuerySelector(gridManagerName));
+        this.eventMap[gridManagerName] = getSortEvent(gridManagerName, getQuerySelector(gridManagerName));
         const { target, events, selector } = this.eventMap[gridManagerName].sortAction;
         const _this = this;
 
         // 绑定排序事件
         jTool(target).on(events, selector, function (e) {
             // th对应的名称
-            const thName = base.getThName(jTool(this).closest('th'));
+            const thName = getThName(jTool(this).closest('th'));
             const settings = cache.getSettings(gridManagerName);
 
             const oldSort = settings.sortData[thName];
@@ -80,7 +80,7 @@ class Sort {
 	 * */
 	__setSort(gridManagerName, sortJson, callback, refresh) {
 		if (!sortJson || jTool.type(sortJson) !== 'object' || jTool.isEmptyObject(sortJson)) {
-			base.outWarn('sortJson unavailable');
+			outWarn('sortJson unavailable');
 			return false;
 		}
 
@@ -139,14 +139,14 @@ class Sort {
 		const settings = cache.getSettings(gridManagerName);
 
 		// 重置排序样式
-        jTool.each(jTool(`${base.getQuerySelector(gridManagerName)} .sorting-action`), (i, v) => {
+        jTool.each(jTool(`${getQuerySelector(gridManagerName)} .sorting-action`), (i, v) => {
             jTool(v).removeClass('sorting-up sorting-down');
             jTool(v).closest('th').attr('sorting', '');
 		});
 
 		// 根据排序数据更新排序
         jTool.each(settings.sortData, (key, value) => {
-			const $th = jTool(`${base.getQuerySelector(gridManagerName)} th[th-name="${key}"]`);
+			const $th = jTool(`${getQuerySelector(gridManagerName)} th[th-name="${key}"]`);
             const $sortAction = jTool('.sorting-action', $th);
 
 			// 排序操作：升序
@@ -170,7 +170,7 @@ class Sort {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-	    base.clearTargetEvent(this.eventMap[gridManagerName]);
+	    clearTargetEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new Sort();

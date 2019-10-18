@@ -5,7 +5,7 @@
 import './style.less';
 import jTool from '@common/jTool';
 import cache from '@common/cache';
-import base from '@common/base';
+import { getQuerySelector, getWrap, getDiv, getThName, clearTargetEvent } from '@common/base';
 import { CHECKED, UNCHECKED } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import core from '../core';
@@ -30,7 +30,7 @@ class Filter {
         }
         const _this = this;
         const $body = jTool('body');
-        const tableSelector = base.getQuerySelector(gridManagerName);
+        const tableSelector = getQuerySelector(gridManagerName);
 
         this.eventMap[gridManagerName] = getFilterEvent(gridManagerName, tableSelector);
         const { toggle, close, submit, reset, checkboxAction, radioAction } = this.eventMap[gridManagerName];
@@ -43,7 +43,7 @@ class Filter {
             const $action = jTool(this);
             const $filterAction = $action.closest('.filter-area');
             const $th = $action.closest('th[th-name]');
-            const thName = base.getThName($th);
+            const thName = getThName($th);
             const $filterCon = $filterAction.find('.fa-con');
 
             // 清除事件源的其它过滤体
@@ -59,7 +59,7 @@ class Filter {
             isShow ? $filterCon.hide() : $filterCon.show();
             const leftClass = 'direction-left';
             const rigthClass = 'direction-right';
-            if ($filterCon.offset().left + $filterCon.width() > base.getDiv(gridManagerName).width()) {
+            if ($filterCon.offset().left + $filterCon.width() > getDiv(gridManagerName).width()) {
                 $filterCon.addClass(rigthClass);
                 $filterCon.removeClass(leftClass);
             } else {
@@ -85,7 +85,7 @@ class Filter {
             const $filterCon = $action.closest('.fa-con');
             const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
             const $th = $filterCon.closest('th');
-            const thName = base.getThName($th);
+            const thName = getThName($th);
             const checkedList = [];
             jTool.each($filters, (index, item) => {
                 item.checked && checkedList.push(item.value);
@@ -109,7 +109,7 @@ class Filter {
             const $action = jTool(this);
             const $filterCon = $action.closest('.fa-con');
             const $th = jTool(this).closest('th[th-name]');
-            const thName = base.getThName($th);
+            const thName = getThName($th);
 
             const settings = cache.getSettings(gridManagerName);
             delete settings.query[thName];
@@ -146,7 +146,7 @@ class Filter {
     @parseTpl(filterTpl)
     createHtml(params) {
         const { settings, columnFilter } = params;
-        const tableWarpHeight = base.getWrap(settings.gridManagerName).height();
+        const tableWarpHeight = getWrap(settings.gridManagerName).height();
         let listHtml = '';
         columnFilter.selected = columnFilter.selected || '';
         columnFilter.option.forEach(item => {
@@ -173,8 +173,8 @@ class Filter {
         return {
             iconClass: columnFilter.selected ? ' filter-selected' : '',
             listStyle: `max-height: ${tableWarpHeight - 100 + 'px'}`,
-            okText: i18n.i18nText(settings, 'filter-ok'),
-            resetText: i18n.i18nText(settings, 'filter-reset'),
+            okText: i18n(settings, 'filter-ok'),
+            resetText: i18n(settings, 'filter-reset'),
             listHtml: listHtml
         };
     }
@@ -204,7 +204,7 @@ class Filter {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        base.clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(this.eventMap[gridManagerName]);
     }
 }
 export default new Filter();

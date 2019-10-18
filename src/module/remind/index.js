@@ -3,7 +3,7 @@
  */
 import './style.less';
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { getQuerySelector, getDiv, clearTargetEvent } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import remindTpl from './remind.tpl.html';
@@ -21,10 +21,10 @@ class Remind {
         if (!this.enable[gridManagerName]) {
             return;
         }
-        this.eventMap[gridManagerName] = getRemindEvent(gridManagerName, `${base.getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
+        this.eventMap[gridManagerName] = getRemindEvent(gridManagerName, `${getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
         const { target, events, selector } = this.eventMap[gridManagerName].remindStart;
 
-        const $tableDiv = base.getDiv(gridManagerName);
+        const $tableDiv = getDiv(gridManagerName);
         jTool(target).on(events, selector, function () {
             const $onlyRemind = jTool(this);
             const $raArea = $onlyRemind.find('.ra-area');
@@ -67,7 +67,7 @@ class Remind {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-	    base.clearTargetEvent(this.eventMap[gridManagerName]);
+	    clearTargetEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new Remind();

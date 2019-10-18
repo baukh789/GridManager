@@ -2,10 +2,10 @@ import remind from '../remind';
 import order from '../order';
 import ajaxPage from '../ajaxPage';
 import jTool from '@common/jTool';
-import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE } from '@common/constants';
-import base from '@common/base';
+import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, TH_VISIBLE } from '@common/constants';
+import { getVisibleState } from '@common/utils';
 import framework from '@common/framework';
-import { parseTpl } from '../../common/parse';
+import { parseTpl } from '@common/parse';
 import filter from '../filter';
 import config from '../config';
 import sort from '../sort';
@@ -13,7 +13,6 @@ import checkbox from '../checkbox';
 import wrapTpl from './wrap.tpl.html';
 import theadTpl from './thead.tpl.html';
 import thTpl from './th.tpl.html';
-import {TH_VISIBLE} from '../../common/constants';
 
 /**
  * 生成构建时所需要的模板
@@ -140,7 +139,7 @@ class Render {
         const alignAttr = col.align ? `align="${col.align}"` : '';
 
         // th可视状态值
-        const thVisibleAttr = `${TH_VISIBLE}=${base.getVisibleState(col.isShow)}`;
+        const thVisibleAttr = `${TH_VISIBLE}=${getVisibleState(col.isShow)}`;
 
         let gmCreateAttr = '';
         let thName = '';

@@ -1,5 +1,5 @@
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { getWrap, clearTargetEvent } from '@common/base';
 import { parseTpl } from '@common/parse';
 import { TOOLBAR_KEY } from '@common/constants';
 import dropdownTpl from './dropdown.tpl.html';
@@ -16,7 +16,7 @@ class Dropdown {
         this.eventMap[gridManagerName] = getEvent(gridManagerName, `[${TOOLBAR_KEY}="${gridManagerName}"]`);
         const { open, close, selected } = this.eventMap[gridManagerName];
 
-        const $wrap = base.getWrap(gridManagerName);
+        const $wrap = getWrap(gridManagerName);
         const $text = $wrap.find('.gm-dropdown .gm-dropdown-text');
         const $ul = $wrap.find('.gm-dropdown .gm-dropdown-list');
 
@@ -68,7 +68,7 @@ class Dropdown {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        base.clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(this.eventMap[gridManagerName]);
     }
 }
 

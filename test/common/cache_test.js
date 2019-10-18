@@ -38,6 +38,20 @@ describe('cache 验证类的属性及方法总量', () => {
     });
 });
 
+describe('cache.SIV_waitContainerAvailable', () => {
+    it('基础验证', () => {
+        expect(cache.SIV_waitContainerAvailable).toBeDefined();
+        expect(cache.SIV_waitContainerAvailable).toEqual({});
+    });
+});
+
+describe('cache.SIV_waitTableAvailable', () => {
+    it('基础验证', () => {
+        expect(cache.SIV_waitTableAvailable).toBeDefined();
+        expect(cache.SIV_waitTableAvailable).toEqual({});
+    });
+});
+
 describe('cache.getVersion()', () => {
     it('基础验证', () => {
         expect(cache.getVersion).toBeDefined();
@@ -776,7 +790,7 @@ describe('initSettings', () => {
         orderColumnFn = settings => {
             return {
                 key: 'gm_order',
-                text: i18n.getText(settings, 'order-text'),
+                text: i18n(settings, 'order-text'),
                 isAutoCreate: true,
                 isShow: true,
                 disableCustomize: true,

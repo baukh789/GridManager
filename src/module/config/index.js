@@ -3,7 +3,7 @@
  * */
 import './style.less';
 import jTool from '@common/jTool';
-import base from '@common/base';
+import { getDiv, updateThWidth, setAreVisible, updateVisibleLast, updateScrollStatus, getTh, getWrap, clearTargetEvent } from '@common/base';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { CONFIG_KEY, CHECKED_CLASS } from '@common/constants';
@@ -56,7 +56,7 @@ class Config {
             const $configArea = _this.getDOM(gridManagerName);
 
             // 所在的table-div
-            const $tableDiv	= base.getDiv(gridManagerName);
+            const $tableDiv	= getDiv(gridManagerName);
 
             jTool('.config-list .no-click', $configArea).removeClass('no-click');
             let isVisible = !_checkbox.prop('checked');
@@ -65,7 +65,7 @@ class Config {
 
             // 设置与当前th同列的td可视状态
             $tableDiv.addClass('config-editing');
-            base.setAreVisible(gridManagerName, [_thName], isVisible);
+            setAreVisible(gridManagerName, [_thName], isVisible);
             $tableDiv.removeClass('config-editing');
 
             // 当前处于选中状态的展示项
@@ -112,7 +112,7 @@ class Config {
         }
 
         // 重置当前可视th的宽度
-        base.updateThWidth(settings);
+        updateThWidth(settings);
 
         // 更新存储信息
         cache.update(gridManagerName);
@@ -121,10 +121,10 @@ class Config {
         scroll.update(gridManagerName);
 
         // 更新最后一项可视列的标识
-        base.updateVisibleLast(gridManagerName);
+        updateVisibleLast(gridManagerName);
 
         // 更新滚动轴显示状态
-        base.updateScrollStatus(gridManagerName);
+        updateScrollStatus(gridManagerName);
     }
 
 	/**
@@ -151,7 +151,7 @@ class Config {
         const { gridManagerName, key, isShow } = params;
 
         // 注意: 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
-        const label = base.getTh(gridManagerName, key).find('.th-text').text();
+        const label = getTh(gridManagerName, key).find('.th-text').text();
         const checkboxTpl = checkbox.getCheckboxTpl({checked: isShow, label});
 	    return {
             key,
@@ -244,7 +244,7 @@ class Config {
      * @param gridManagerName
      */
     updateConfigListHeight(gridManagerName) {
-        const $tableWrap = base.getWrap(gridManagerName);
+        const $tableWrap = getWrap(gridManagerName);
         const $configArea = this.getDOM(gridManagerName);
         const configList = $configArea.find('.config-list').get(0);
         const $configInfo = $configArea.find('.config-info');
@@ -261,7 +261,7 @@ class Config {
 	 */
 	destroy(gridManagerName) {
         // 清除事件
-        base.clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(this.eventMap[gridManagerName]);
 	}
 }
 export default new Config();

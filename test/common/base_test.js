@@ -1,127 +1,13 @@
 import jTool from '@common/jTool';
-import base from '@common/base';
-import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_WARN, CONSOLE_STYLE } from '@common/constants';
+import { getCloneRowData, showLoading, hideLoading, getWrap, getKey, getQuerySelector, getTable, getDiv, getThead, getFakeThead, getTbody, getTh, getAllTh, getVisibleTh, getFakeTh, getFakeVisibleTh, getThName, getEmptyHtml, getEmpty, updateEmptyCol, getColTd, setAreVisible, updateVisibleLast, updateThWidth, getThTextWidth, getTextWidth, updateScrollStatus, calcLayout, clearTargetEvent} from '@common/base';
 import tableTpl from '@test/table-test.tpl.html';
 import { getColumnMap } from '@test/table-config';
-import {TOOLBAR_KEY} from '@common/constants';
-import {COL_PROP_DISABLED, TR_CACHE_KEY, TR_LEVEL_KEY} from '@common/constants';
-import {LOADING_CLASS_NAME} from '../../src/common/constants';
+import { TOOLBAR_KEY, LOADING_CLASS_NAME, COL_PROP_DISABLED, TR_CACHE_KEY, TR_LEVEL_KEY } from '@common/constants';
 
 // 清除空格
 const tableTestTpl = tableTpl;
-describe('base 验证类的属性及方法总量', () => {
-    let getPropertyCount = null;
-    beforeEach(() => {
-        getPropertyCount = o => {
-            let n = 0;
-            let count = 0;
-            for (n in o) {
-                if(o.hasOwnProperty(n)) {
-                    count++;
-                }
-            }
-            return count;
-        };
-    });
-    afterEach(() => {
-        getPropertyCount = null;
-    });
-    it('Function count', () => {
-        // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(base)))).toBe(36 + 1);
-    });
-});
 
-describe('base.SIV_waitContainerAvailable', () => {
-    it('基础验证', () => {
-        expect(base.SIV_waitContainerAvailable).toBeDefined();
-        expect(base.SIV_waitContainerAvailable).toEqual({});
-    });
-});
-
-describe('base.SIV_waitTableAvailable', () => {
-    it('基础验证', () => {
-        expect(base.SIV_waitTableAvailable).toBeDefined();
-        expect(base.SIV_waitTableAvailable).toEqual({});
-    });
-});
-
-describe('outInfo, outWarn, outError', () => {
-    let table = null;
-    beforeEach(() => {
-        // 存储console, 用于在测方式完成后原还console对象
-        console._log = console.log;
-        console.log = jasmine.createSpy('log');
-
-        table = document.createElement('table');
-        document.body.appendChild(table);
-    });
-
-    afterEach(() => {
-        // 还原console
-        console.log = console._log;
-
-        document.body.innerHTML = '';
-        table = null;
-    });
-
-    it('基础验证', () => {
-        expect(base.outInfo).toBeDefined();
-        expect(base.outInfo.length).toBe(1);
-
-        expect(base.outWarn).toBeDefined();
-        expect(base.outWarn.length).toBe(1);
-
-        expect(base.outError).toBeDefined();
-        expect(base.outError.length).toBe(1);
-    });
-
-    it('info', () => {
-        base.outInfo('hello GridManager');
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c hello GridManager ', ...CONSOLE_STYLE[CONSOLE_INFO]);
-    });
-
-    it('warn', () => {
-        base.outWarn('hello GridManager');
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Warn %c hello GridManager ', ...CONSOLE_STYLE[CONSOLE_WARN]);
-    });
-
-    it('error', () => {
-        base.outError('hello GridManager');
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c hello GridManager ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
-    });
-});
-
-
-describe('base.equal(o1, o2)', () => {
-    it('基础验证', () => {
-        expect(base.equal).toBeDefined();
-        expect(base.equal.length).toBe(2);
-    });
-
-    it('返回值验证', () => {
-        let obj1 = {a: 1, b: 2};
-        let obj2 = {a: 1, b: 2};
-        let obj3 = {a: 11, b: 22};
-        let obj4 = {b: 2, a: 1};
-        let obj5 = {'a': 1, 'b': 2};
-        let obj6 = {a: 11};
-        expect(base.equal(obj1, obj2)).toBe(true);
-        expect(base.equal(obj1, obj3)).toBe(false);
-        expect(base.equal(obj1, obj4)).toBe(true);
-        expect(base.equal(obj1, obj5)).toBe(true);
-        expect(base.equal(obj1, obj6)).toBe(false);
-
-        obj1 = null;
-        obj2 = null;
-        obj3 = null;
-        obj4 = null;
-        obj5 = null;
-        obj6 = null;
-    });
-});
-
-describe('base.getCloneRowData(columnMap, obj, cleanKeyList)', () => {
+describe('getCloneRowData(columnMap, obj, cleanKeyList)', () => {
     let columnMap = null;
     let data = null;
     beforeEach(() => {
@@ -159,12 +45,12 @@ describe('base.getCloneRowData(columnMap, obj, cleanKeyList)', () => {
         data = null;
     });
     it('基础验证', () => {
-        expect(base.getCloneRowData).toBeDefined();
-        expect(base.getCloneRowData.length).toBe(3);
+        expect(getCloneRowData).toBeDefined();
+        expect(getCloneRowData.length).toBe(3);
     });
 
     it('返回值验证: 未指定cleanKeyList', () => {
-        expect(base.getCloneRowData(columnMap, data)).toEqual({
+        expect(getCloneRowData(columnMap, data)).toEqual({
             username: 'baukh',
             age: 32,
             content: 'this is content',
@@ -173,28 +59,14 @@ describe('base.getCloneRowData(columnMap, obj, cleanKeyList)', () => {
     });
 
     it('返回值验证: 指定cleanKeyList', () => {
-        expect(base.getCloneRowData(columnMap, data, ['age', 'info'])).toEqual({
+        expect(getCloneRowData(columnMap, data, ['age', 'info'])).toEqual({
             username: 'baukh',
             content: 'this is content'
         });
     });
 });
 
-
-describe('base.getObjectIndexToArray(arr, obj)', () => {
-    it('基础验证', () => {
-        expect(base.getObjectIndexToArray).toBeDefined();
-        expect(base.getObjectIndexToArray.length).toBe(2);
-    });
-
-    it('返回值验证', () => {
-        let arr = [{a: 1, b: 2}, {name: 'baukh', age: 31}, {name: 'kouzi', age: 28}];
-        let obj = {name: 'baukh', age: 31};
-        expect(base.getObjectIndexToArray(arr, obj)).toBe(1);
-    });
-});
-
-describe('base.showLoading(gridManagerName, loadingTemplate)', () => {
+describe('showLoading(gridManagerName, loadingTemplate)', () => {
     let gridManagerName = null;
     beforeEach(() => {
         gridManagerName = 'test';
@@ -205,25 +77,25 @@ describe('base.showLoading(gridManagerName, loadingTemplate)', () => {
         document.body.innerHTML = '';
     });
     it('基础验证', () => {
-        expect(base.showLoading).toBeDefined();
-        expect(base.showLoading.length).toBe(2);
+        expect(showLoading).toBeDefined();
+        expect(showLoading.length).toBe(2);
     });
 
     it('当前未存在loading dom', () => {
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(0);
-        base.showLoading(gridManagerName, '<div></div>');
+        showLoading(gridManagerName, '<div></div>');
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
     });
 
     it('第二次执行(上一次执行未进行销毁)', () => {
         jTool('.table-wrap').append(`<div class="${LOADING_CLASS_NAME}"></div>`);
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
-        base.showLoading(gridManagerName, '<div></div>');
+        showLoading(gridManagerName, '<div></div>');
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
     });
 });
 
-describe('base.hideLoading(gridManagerName)', () => {
+describe('hideLoading(gridManagerName)', () => {
     let gridManagerName = null;
     beforeEach(() => {
         gridManagerName = 'test';
@@ -235,39 +107,21 @@ describe('base.hideLoading(gridManagerName)', () => {
         document.body.innerHTML = '';
     });
     it('基础验证', () => {
-        expect(base.hideLoading).toBeDefined();
-        expect(base.hideLoading.length).toBe(1);
+        expect(hideLoading).toBeDefined();
+        expect(hideLoading.length).toBe(1);
     });
 
     it('执行验证', () => {
         jasmine.clock().install();
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
-        base.hideLoading(gridManagerName);
+        hideLoading(gridManagerName);
         jasmine.clock().tick(500);
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(0);
         jasmine.clock().uninstall();
     });
 });
 
-describe('base.cloneObject(object)', () => {
-    it('基础验证', () => {
-        expect(base.cloneObject).toBeDefined();
-        expect(base.cloneObject.length).toBe(1);
-    });
-
-    it('执行结果', () => {
-        let o1 = {name: 'cc', ename: 'baukh'};
-        let o2 = o1;
-        expect(o2 === o1).toBe(true);
-        expect(base.cloneObject(o2).name === o1.name).toBe(true);
-        expect(base.cloneObject(o2) === o1).toBe(false);
-
-        o1 = null;
-        o2 = null;
-    });
-});
-
-describe('base.getKey($table)', () => {
+describe('getKey($table)', () => {
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
     });
@@ -276,40 +130,40 @@ describe('base.getKey($table)', () => {
         document.body.innerHTML = '';
     });
     it('基础验证', () => {
-        expect(base.getKey).toBeDefined();
-        expect(base.getKey.length).toBe(1);
+        expect(getKey).toBeDefined();
+        expect(getKey.length).toBe(1);
     });
 
     it('参数为gridManagerName ', () => {
-        expect(base.getKey('test')).toBe('test');
+        expect(getKey('test')).toBe('test');
     });
 
     it('参数为table ', () => {
-        expect(base.getKey(document.querySelector('table[grid-manager="test"]'))).toBe('test');
+        expect(getKey(document.querySelector('table[grid-manager="test"]'))).toBe('test');
     });
 
     it('参数为$table ', () => {
-        expect(base.getKey(jTool('table[grid-manager="test"]'))).toBe('test');
+        expect(getKey(jTool('table[grid-manager="test"]'))).toBe('test');
     });
 
     it('错误情况验证 ', () => {
-        expect(base.getKey()).toBeUndefined();
+        expect(getKey()).toBeUndefined();
     });
 });
 
-describe('base.getQuerySelector(gridManagerName)', () => {
+describe('getQuerySelector(gridManagerName)', () => {
     it('基础验证', () => {
-        expect(base.getQuerySelector).toBeDefined();
-        expect(base.getQuerySelector.length).toBe(1);
+        expect(getQuerySelector).toBeDefined();
+        expect(getQuerySelector.length).toBe(1);
     });
 
     it('返回值验证 ', () => {
-        expect(base.getQuerySelector('test')).toBe('[grid-manager="test"]');
-        expect(base.getQuerySelector('test2')).toBe('[grid-manager="test2"]');
+        expect(getQuerySelector('test')).toBe('[grid-manager="test"]');
+        expect(getQuerySelector('test2')).toBe('[grid-manager="test2"]');
     });
 });
 
-describe('base.getTable($dom, isSelectUp)', () => {
+describe('getTable($dom, isSelectUp)', () => {
     let table = null;
     let $tableWrap = null;
     let $thead = null;
@@ -328,28 +182,28 @@ describe('base.getTable($dom, isSelectUp)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getTable).toBeDefined();
-        expect(base.getTable.length).toBe(2);
+        expect(getTable).toBeDefined();
+        expect(getTable.length).toBe(2);
     });
 
-    it('base.getTable($dom)', () => {
-        expect(base.getTable($tableWrap).get(0)).toBe(table);
+    it('getTable($dom)', () => {
+        expect(getTable($tableWrap).get(0)).toBe(table);
     });
 
-    it('base.getTable($dom, false)', () => {
-        expect(base.getTable($tableWrap).get(0)).toBe(table);
+    it('getTable($dom, false)', () => {
+        expect(getTable($tableWrap).get(0)).toBe(table);
     });
 
-    it('base.getTable($dom, true)', () => {
-        expect(base.getTable($thead, true).get(0)).toBe(table);
+    it('getTable($dom, true)', () => {
+        expect(getTable($thead, true).get(0)).toBe(table);
     });
 
-    it('base.getTable(gridManagerName)', () => {
-        expect(base.getTable('test').get(0)).toBe(table);
+    it('getTable(gridManagerName)', () => {
+        expect(getTable('test').get(0)).toBe(table);
     });
 });
 
-describe('base.getWrap($dom, isSelectUp)', () => {
+describe('getWrap($dom, isSelectUp)', () => {
     let tableWrap = null;
     let $body = null;
     let $table = null;
@@ -368,28 +222,28 @@ describe('base.getWrap($dom, isSelectUp)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getWrap).toBeDefined();
-        expect(base.getWrap.length).toBe(2);
+        expect(getWrap).toBeDefined();
+        expect(getWrap.length).toBe(2);
     });
 
-    it('base.getWrap($dom)', () => {
-        expect(base.getWrap($body).get(0)).toBe(tableWrap);
+    it('getWrap($dom)', () => {
+        expect(getWrap($body).get(0)).toBe(tableWrap);
     });
 
-    it('base.getWrap($dom, false)', () => {
-        expect(base.getWrap($body, false).get(0)).toBe(tableWrap);
+    it('getWrap($dom, false)', () => {
+        expect(getWrap($body, false).get(0)).toBe(tableWrap);
     });
 
-    it('base.getWrap($dom, true)', () => {
-        expect(base.getWrap($table, true).get(0)).toBe(tableWrap);
+    it('getWrap($dom, true)', () => {
+        expect(getWrap($table, true).get(0)).toBe(tableWrap);
     });
 
-    it('base.getWrap(gridManagerName)', () => {
-        expect(base.getWrap('test').get(0)).toBe(tableWrap);
+    it('getWrap(gridManagerName)', () => {
+        expect(getWrap('test').get(0)).toBe(tableWrap);
     });
 });
 
-describe('base.getDiv($dom, isSelectUp)', () => {
+describe('getDiv($dom, isSelectUp)', () => {
     let tableDiv = null;
     let $body = null;
     let $table = null;
@@ -408,28 +262,28 @@ describe('base.getDiv($dom, isSelectUp)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getDiv).toBeDefined();
-        expect(base.getDiv.length).toBe(2);
+        expect(getDiv).toBeDefined();
+        expect(getDiv.length).toBe(2);
     });
 
-    it('base.getDiv($dom)', () => {
-        expect(base.getDiv($body).get(0)).toBe(tableDiv);
+    it('getDiv($dom)', () => {
+        expect(getDiv($body).get(0)).toBe(tableDiv);
     });
 
-    it('base.getDiv($dom, false)', () => {
-        expect(base.getDiv($body, false).get(0)).toBe(tableDiv);
+    it('getDiv($dom, false)', () => {
+        expect(getDiv($body, false).get(0)).toBe(tableDiv);
     });
 
-    it('base.getDiv($dom, true)', () => {
-        expect(base.getDiv($table, true).get(0)).toBe(tableDiv);
+    it('getDiv($dom, true)', () => {
+        expect(getDiv($table, true).get(0)).toBe(tableDiv);
     });
 
-    it('base.getDiv(gridManagerName)', () => {
-        expect(base.getDiv('test').get(0)).toBe(tableDiv);
+    it('getDiv(gridManagerName)', () => {
+        expect(getDiv('test').get(0)).toBe(tableDiv);
     });
 });
 
-describe('base.getThead(gridManagerName)', () => {
+describe('getThead(gridManagerName)', () => {
     let thead = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -441,17 +295,17 @@ describe('base.getThead(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getThead).toBeDefined();
-        expect(base.getThead.length).toBe(1);
+        expect(getThead).toBeDefined();
+        expect(getThead.length).toBe(1);
     });
 
     it('返回值验证', () => {
         thead = document.querySelector('thead[grid-manager-thead="test"]');
-        expect(base.getThead('test').get(0)).toBe(thead);
+        expect(getThead('test').get(0)).toBe(thead);
     });
 });
 
-describe('base.getFakeThead(gridManagerName)', () => {
+describe('getFakeThead(gridManagerName)', () => {
     let fakeHead = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -463,17 +317,17 @@ describe('base.getFakeThead(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getFakeThead).toBeDefined();
-        expect(base.getFakeThead.length).toBe(1);
+        expect(getFakeThead).toBeDefined();
+        expect(getFakeThead.length).toBe(1);
     });
 
     it('返回值验证', () => {
         fakeHead = document.querySelector('thead[grid-manager-mock-thead="test"]');
-        expect(base.getFakeThead('test').get(0)).toBe(fakeHead);
+        expect(getFakeThead('test').get(0)).toBe(fakeHead);
     });
 });
 
-describe('base.getTbody(gridManagerName)', () => {
+describe('getTbody(gridManagerName)', () => {
     let tbody = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -485,17 +339,17 @@ describe('base.getTbody(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getTbody).toBeDefined();
-        expect(base.getTbody.length).toBe(1);
+        expect(getTbody).toBeDefined();
+        expect(getTbody.length).toBe(1);
     });
 
     it('返回值验证', () => {
         tbody = document.querySelector('table[grid-manager="test"] tbody');
-        expect(base.getTbody('test').get(0)).toBe(tbody);
+        expect(getTbody('test').get(0)).toBe(tbody);
     });
 });
 
-describe('base.getTh(gridManagerName, thName)', () => {
+describe('getTh(gridManagerName, thName)', () => {
     let th = null;
     let $fakeTh = null;
     beforeEach(() => {
@@ -511,20 +365,20 @@ describe('base.getTh(gridManagerName, thName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getTh).toBeDefined();
-        expect(base.getTh.length).toBe(2);
+        expect(getTh).toBeDefined();
+        expect(getTh.length).toBe(2);
     });
 
     it('执行验证: thName', () => {
-        expect(base.getTh('test', 'createDate').get(0)).toBe(th);
+        expect(getTh('test', 'createDate').get(0)).toBe(th);
     });
 
     it('执行验证: thDOM', () => {
-        expect(base.getTh('test', $fakeTh).get(0)).toBe(th);
+        expect(getTh('test', $fakeTh).get(0)).toBe(th);
     });
 });
 
-describe('base.getAllTh(gridManagerName)', () => {
+describe('getAllTh(gridManagerName)', () => {
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
     });
@@ -534,16 +388,16 @@ describe('base.getAllTh(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getAllTh).toBeDefined();
-        expect(base.getAllTh.length).toBe(1);
+        expect(getAllTh).toBeDefined();
+        expect(getAllTh.length).toBe(1);
     });
 
     it('测试返回长度', () => {
-        expect(base.getAllTh('test').length).toBe(10);
+        expect(getAllTh('test').length).toBe(10);
     });
 });
 
-describe('base.getVisibleTh(gridManagerName, isGmCreate)', () => {
+describe('getVisibleTh(gridManagerName, isGmCreate)', () => {
     let gridManagerName = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -556,24 +410,24 @@ describe('base.getVisibleTh(gridManagerName, isGmCreate)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getVisibleTh).toBeDefined();
-        expect(base.getVisibleTh.length).toBe(2);
+        expect(getVisibleTh).toBeDefined();
+        expect(getVisibleTh.length).toBe(2);
     });
 
-    it('base.getVisibleTh(gridManagerName)', () => {
-        expect(base.getVisibleTh(gridManagerName).length).toBe(10);
+    it('getVisibleTh(gridManagerName)', () => {
+        expect(getVisibleTh(gridManagerName).length).toBe(10);
     });
 
-    it('base.getVisibleTh(gridManagerName, true)', () => {
-        expect(base.getVisibleTh(gridManagerName, true).length).toBe(2);
+    it('getVisibleTh(gridManagerName, true)', () => {
+        expect(getVisibleTh(gridManagerName, true).length).toBe(2);
     });
 
-    it('base.getVisibleTh(gridManagerName, true)', () => {
-        expect(base.getVisibleTh(gridManagerName, false).length).toBe(8);
+    it('getVisibleTh(gridManagerName, true)', () => {
+        expect(getVisibleTh(gridManagerName, false).length).toBe(8);
     });
 });
 
-describe('base.getFakeTh(gridManagerName, thName)', () => {
+describe('getFakeTh(gridManagerName, thName)', () => {
     let gridManagerName = null;
     let fakeTh = null;
     let $fakeTh = null;
@@ -592,20 +446,20 @@ describe('base.getFakeTh(gridManagerName, thName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getFakeTh).toBeDefined();
-        expect(base.getFakeTh.length).toBe(2);
+        expect(getFakeTh).toBeDefined();
+        expect(getFakeTh.length).toBe(2);
     });
 
-    it('base.getFakeTh(gridManagerName, thName)', () => {
-        expect(base.getFakeTh(gridManagerName, 'createDate').get(0)).toBe(fakeTh);
+    it('getFakeTh(gridManagerName, thName)', () => {
+        expect(getFakeTh(gridManagerName, 'createDate').get(0)).toBe(fakeTh);
     });
 
-    it('base.getFakeTh(gridManagerName, $fakeTh)', () => {
-        expect(base.getFakeTh(gridManagerName, $fakeTh).get(0)).toBe(fakeTh);
+    it('getFakeTh(gridManagerName, $fakeTh)', () => {
+        expect(getFakeTh(gridManagerName, $fakeTh).get(0)).toBe(fakeTh);
     });
 });
 
-describe('base.getFakeVisibleTh(gridManagerName)', () => {
+describe('getFakeVisibleTh(gridManagerName)', () => {
     let gridManagerName = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -618,16 +472,16 @@ describe('base.getFakeVisibleTh(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getFakeVisibleTh).toBeDefined();
-        expect(base.getFakeVisibleTh.length).toBe(1);
+        expect(getFakeVisibleTh).toBeDefined();
+        expect(getFakeVisibleTh.length).toBe(1);
     });
 
     it('返回值验证', () => {
-        expect(base.getFakeVisibleTh(gridManagerName).length).toBe(10);
+        expect(getFakeVisibleTh(gridManagerName).length).toBe(10);
     });
 });
 
-describe('base.getThName($th)', () => {
+describe('getThName($th)', () => {
     let $thList = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -640,17 +494,17 @@ describe('base.getThName($th)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getThName).toBeDefined();
-        expect(base.getThName.length).toBe(1);
+        expect(getThName).toBeDefined();
+        expect(getThName.length).toBe(1);
     });
 
-    it('base.getThName($table)', () => {
-        expect(base.getThName($thList.eq(1))).toBe('gm_order');
-        expect(base.getThName($thList.eq(3))).toBe('createDate');
+    it('getThName($table)', () => {
+        expect(getThName($thList.eq(1))).toBe('gm_order');
+        expect(getThName($thList.eq(3))).toBe('createDate');
     });
 });
 
-describe('base.getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style)', () => {
+describe('getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style)', () => {
     let tpl = null;
     beforeEach(() => {
     });
@@ -661,20 +515,20 @@ describe('base.getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style)',
     });
 
     it('基础验证', () => {
-        expect(base.getEmptyHtml).toBeDefined();
-        expect(base.getEmptyHtml.length).toBe(3);
+        expect(getEmptyHtml).toBeDefined();
+        expect(getEmptyHtml.length).toBe(3);
     });
 
     it('返回值验证', () => {
         tpl = `<tr empty-template="test-empty" style="height: 100px;">
 					<td colspan="5"></td>
 				</tr>`;
-        expect(base.getEmptyHtml('test-empty', 5, 'height: 100px;').replace(/\s/g, '')).toBe(tpl.replace(/\s/g, ''));
+        expect(getEmptyHtml('test-empty', 5, 'height: 100px;').replace(/\s/g, '')).toBe(tpl.replace(/\s/g, ''));
     });
 });
 
 
-describe('base.getEmpty(gridManagerName)', () => {
+describe('getEmpty(gridManagerName)', () => {
     let tpl = null;
     beforeEach(() => {
         document.body.innerHTML = `<table grid-manager="test-empty">
@@ -697,19 +551,19 @@ describe('base.getEmpty(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getEmpty).toBeDefined();
-        expect(base.getEmpty.length).toBe(1);
+        expect(getEmpty).toBeDefined();
+        expect(getEmpty.length).toBe(1);
     });
 
     it('返回值验证', () => {
         tpl = `<tr empty-template="test-empty">
                  <td></td>
                </tr>`;
-        expect(base.getEmpty('test-empty').get(0).outerHTML.replace(/\s/g, '')).toBe(tpl.replace(/\s/g, ''));
+        expect(getEmpty('test-empty').get(0).outerHTML.replace(/\s/g, '')).toBe(tpl.replace(/\s/g, ''));
     });
 });
 
-describe('base.updateEmptyCol(gridManagerName)', () => {
+describe('updateEmptyCol(gridManagerName)', () => {
     let gridManagerName = null;
     let $table = null;
     beforeEach(() => {
@@ -723,8 +577,8 @@ describe('base.updateEmptyCol(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.updateEmptyCol).toBeDefined();
-        expect(base.updateEmptyCol.length).toBe(1);
+        expect(updateEmptyCol).toBeDefined();
+        expect(updateEmptyCol.length).toBe(1);
     });
 
     it('验证异常情况', () => {
@@ -741,7 +595,7 @@ describe('base.updateEmptyCol(gridManagerName)', () => {
                                         </tbody>
                                     </table>`;
         $table = jTool('[grid-manager="test-empty"]');
-        base.updateEmptyCol(gridManagerName);
+        updateEmptyCol(gridManagerName);
         expect($table.find('td').attr('colspan')).toBeUndefined();
     });
 
@@ -759,12 +613,12 @@ describe('base.updateEmptyCol(gridManagerName)', () => {
                                         </tbody>
                                     </table>`;
         $table = jTool('table[grid-manager="test-empty"]');
-        base.updateEmptyCol(gridManagerName);
+        updateEmptyCol(gridManagerName);
         expect($table.find('td').attr('colspan')).toBe('2');
     });
 });
 
-describe('base.getColTd($dom, $context)', () => {
+describe('getColTd($dom, $context)', () => {
     let $table = null;
     let $dom = null;
     let $tr = null;
@@ -781,31 +635,31 @@ describe('base.getColTd($dom, $context)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getColTd).toBeDefined();
-        expect(base.getColTd.length).toBe(2);
+        expect(getColTd).toBeDefined();
+        expect(getColTd.length).toBe(2);
     });
 
-    it('base.getColTd($th)', () => {
+    it('getColTd($th)', () => {
         $dom = $table.find('thead[grid-manager-thead] th[th-name="createDate"]');
-        expect(base.getColTd($dom).length).toBe(10);
-        expect(base.getColTd($dom).eq(2).text()).toBe('2018/5/14');
+        expect(getColTd($dom).length).toBe(10);
+        expect(getColTd($dom).eq(2).text()).toBe('2018/5/14');
     });
 
-    it('base.getColTd($th, $tr)', () => {
+    it('getColTd($th, $tr)', () => {
         $dom = $table.find('thead[grid-manager-thead] th[th-name="createDate"]');
         $tr = $table.find('tbody tr').eq(0);
-        expect(base.getColTd($dom, $tr).length).toBe(1);
-        expect(base.getColTd($dom, $tr).text()).toBe('2018/8/3');
+        expect(getColTd($dom, $tr).length).toBe(1);
+        expect(getColTd($dom, $tr).text()).toBe('2018/8/3');
     });
 
-    it('base.getColTd($td)', () => {
+    it('getColTd($td)', () => {
         $dom = $table.find('tbody tr[cache-key="1"] td').eq(3);
-        expect(base.getColTd($dom).length).toBe(10);
-        expect(base.getColTd($dom).eq(2).text()).toBe('2018/5/14');
+        expect(getColTd($dom).length).toBe(10);
+        expect(getColTd($dom).eq(2).text()).toBe('2018/5/14');
     });
 });
 
-describe('base.setAreVisible(gridManagerName, thNameList, isVisible, cb)', () => {
+describe('setAreVisible(gridManagerName, thNameList, isVisible, cb)', () => {
     let gridManagerName = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -818,31 +672,31 @@ describe('base.setAreVisible(gridManagerName, thNameList, isVisible, cb)', () =>
     });
 
     it('基础验证', () => {
-        expect(base.setAreVisible).toBeDefined();
-        expect(base.setAreVisible.length).toBe(3);
+        expect(setAreVisible).toBeDefined();
+        expect(setAreVisible.length).toBe(3);
     });
 
     it('执行验证', () => {
-        expect(base.getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
-        expect(base.getTh('test', 'title').attr('th-visible')).toBe('visible');
-        expect(base.getTh('test', 'pic').attr('th-visible')).toBe('visible');
+        expect(getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
+        expect(getTh('test', 'title').attr('th-visible')).toBe('visible');
+        expect(getTh('test', 'pic').attr('th-visible')).toBe('visible');
 
         // 设置gm_checkbox, pic不可见
-        base.setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], false);
+        setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], false);
 
-        expect(base.getTh('test', 'gm_checkbox').attr('th-visible')).toBe('none');
-        expect(base.getTh('test', 'title').attr('th-visible')).toBe('visible');
-        expect(base.getTh('test', 'pic').attr('th-visible')).toBe('none');
+        expect(getTh('test', 'gm_checkbox').attr('th-visible')).toBe('none');
+        expect(getTh('test', 'title').attr('th-visible')).toBe('visible');
+        expect(getTh('test', 'pic').attr('th-visible')).toBe('none');
 
         // 设置gm_checkbox, pic可见
-        base.setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], true);
-        expect(base.getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
-        expect(base.getTh('test', 'title').attr('th-visible')).toBe('visible');
-        expect(base.getTh('test', 'pic').attr('th-visible')).toBe('visible');
+        setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], true);
+        expect(getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
+        expect(getTh('test', 'title').attr('th-visible')).toBe('visible');
+        expect(getTh('test', 'pic').attr('th-visible')).toBe('visible');
     });
 });
 
-describe('base.updateVisibleLast(gridManagerName)', () => {
+describe('updateVisibleLast(gridManagerName)', () => {
     let $table = null;
     let gridManagerName = null;
     let $lastTh = null;
@@ -860,30 +714,30 @@ describe('base.updateVisibleLast(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.updateVisibleLast).toBeDefined();
-        expect(base.updateVisibleLast.length).toBe(1);
+        expect(updateVisibleLast).toBeDefined();
+        expect(updateVisibleLast.length).toBe(1);
     });
 
     it('执行验证', () => {
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
-        expect(base.getThName($lastTh)).toBe('action');
+        expect(getThName($lastTh)).toBe('action');
 
-        base.updateVisibleLast(gridManagerName);
+        updateVisibleLast(gridManagerName);
 
         // // 在未变更列的情况下，执行结果不会变化
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
-        expect(base.getThName($lastTh)).toBe('action');
+        expect(getThName($lastTh)).toBe('action');
 
         // 隐藏最后一列
-        base.setAreVisible(gridManagerName, [base.getThName($lastTh)], false);
+        setAreVisible(gridManagerName, [getThName($lastTh)], false);
 
-        base.updateVisibleLast(gridManagerName);
+        updateVisibleLast(gridManagerName);
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
-        expect(base.getThName($lastTh)).toBe('info');
+        expect(getThName($lastTh)).toBe('info');
     });
 });
 
-describe('base.updateThWidth(settings, isInit)', () => {
+describe('updateThWidth(settings, isInit)', () => {
     let testCon = null;
     let settings = null;
     beforeEach(() => {
@@ -911,12 +765,12 @@ describe('base.updateThWidth(settings, isInit)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.updateThWidth).toBeDefined();
-        expect(base.updateThWidth.length).toBe(2);
+        expect(updateThWidth).toBeDefined();
+        expect(updateThWidth.length).toBe(2);
     });
 
     it('初始化时的更新', () => {
-        base.updateThWidth(settings, true);
+        updateThWidth(settings, true);
         expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
         expect(settings.columnMap['gm_order'].width).toBe('50px');
         expect(settings.columnMap['pic'].width).toBe('110px');
@@ -930,7 +784,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
     });
 
     it('非初始化时的更新', () => {
-        base.updateThWidth(settings, false);
+        updateThWidth(settings, false);
         expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
         expect(settings.columnMap['gm_order'].width).toBe('50px');
         expect(settings.columnMap['pic'].width).toBe('110px');
@@ -944,7 +798,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
     });
 
     it('隐藏一个定制列', () => {
-        base.updateThWidth(settings, false);
+        updateThWidth(settings, false);
         expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
         expect(settings.columnMap['gm_order'].width).toBe('50px');
         expect(settings.columnMap['pic'].width).toBe('110px');
@@ -959,7 +813,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
 
     it('隐藏一个拥有宽度的可定制列', () => {
         settings.columnMap['pic'].isShow = false;
-        base.updateThWidth(settings, false);
+        updateThWidth(settings, false);
         expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
         expect(settings.columnMap['gm_order'].width).toBe('50px');
         expect(settings.columnMap['title'].width).toBe('400px');
@@ -976,7 +830,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
         settings.columnMap['type'].isShow = false;
         settings.columnMap['info'].isShow = false;
         settings.columnMap['username'].isShow = false;
-        base.updateThWidth(settings, false);
+        updateThWidth(settings, false);
         expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
         expect(settings.columnMap['gm_order'].width).toBe('50px');
         expect(settings.columnMap['title'].width).toBe('750px');
@@ -991,7 +845,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
         settings.columnMap['info'].isShow = false;
         settings.columnMap['username'].isShow = false;
         settings.columnMap['title'].isShow = false;
-        base.updateThWidth(settings, false);
+        updateThWidth(settings, false);
         expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
         expect(settings.columnMap['gm_order'].width).toBe('50px');
         expect(settings.columnMap['createDate'].width).toBe('880px');
@@ -1006,7 +860,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
         settings.columnMap['username'].isShow = false;
         settings.columnMap['title'].isShow = false;
         settings.columnMap['createDate'].isShow = false;
-        base.updateThWidth(settings, false);
+        updateThWidth(settings, false);
         expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
         expect(settings.columnMap['gm_order'].width).toBe('50px');
         expect(settings.columnMap['lastDate'].width).toBe('1010px');
@@ -1020,7 +874,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
         settings.columnMap['username'].isShow = false;
         settings.columnMap['title'].isShow = false;
         settings.columnMap['createDate'].isShow = false;
-        base.updateThWidth(settings, false);
+        updateThWidth(settings, false);
         expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
         expect(settings.columnMap['gm_order'].width).toBe('50px');
         expect(settings.columnMap['type'].width).toBe('880px');
@@ -1035,7 +889,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
         settings.columnMap['username'].isShow = false;
         settings.columnMap['title'].isShow = true;
         settings.columnMap['createDate'].isShow = false;
-        base.updateThWidth(settings, false);
+        updateThWidth(settings, false);
         expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
         expect(settings.columnMap['gm_order'].width).toBe('50px');
         expect(settings.columnMap['type'].width).toBe('150px');
@@ -1053,10 +907,10 @@ describe('base.updateThWidth(settings, isInit)', () => {
         settings.columnMap['title'].isShow = true;
         settings.columnMap['createDate'].isShow = false;
 
-        let picThTextWidth = base.getThTextWidth('test', jTool('[grid-manager-thead="test"] th[th-name="pic"]'), settings.columnMap['pic'].isIconFollowText);
-        let titleThTextWidth = base.getThTextWidth('test', jTool('[grid-manager-thead="test"] th[th-name="title"]'), settings.columnMap['title'].isIconFollowText);
+        let picThTextWidth = getThTextWidth('test', jTool('[grid-manager-thead="test"] th[th-name="pic"]'), settings.columnMap['pic'].isIconFollowText);
+        let titleThTextWidth = getThTextWidth('test', jTool('[grid-manager-thead="test"] th[th-name="title"]'), settings.columnMap['title'].isIconFollowText);
         let overage = 1200 - 40 - 50 - 150 - 130 - 100 - picThTextWidth - titleThTextWidth;
-        base.updateThWidth(settings, false);
+        updateThWidth(settings, false);
         expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
         expect(settings.columnMap['gm_order'].width).toBe('50px');
         expect(settings.columnMap['pic'].width).toBe(`${overage / 2 + picThTextWidth}px`);
@@ -1072,7 +926,7 @@ describe('base.updateThWidth(settings, isInit)', () => {
 });
 
 
-describe('base.getThTextWidth(gridManagerName, $th, isIconFollowText)', () => {
+describe('getThTextWidth(gridManagerName, $th, isIconFollowText)', () => {
     let $th;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -1093,17 +947,17 @@ describe('base.getThTextWidth(gridManagerName, $th, isIconFollowText)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getThTextWidth).toBeDefined();
-        expect(base.getThTextWidth.length).toBe(3);
+        expect(getThTextWidth).toBeDefined();
+        expect(getThTextWidth.length).toBe(3);
     });
 
     it('执行验证', () => {
-        expect(typeof base.getThTextWidth('test', $th)).toBe('number');
-        expect(typeof base.getThTextWidth('test', $th, true)).toBe('number');
+        expect(typeof getThTextWidth('test', $th)).toBe('number');
+        expect(typeof getThTextWidth('test', $th, true)).toBe('number');
     });
 });
 
-describe('base.getTextWidth(gridManagerName, content, cssObj)', () => {
+describe('getTextWidth(gridManagerName, content, cssObj)', () => {
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         document.querySelector('.text-dreamland').style.position = 'absolute';
@@ -1119,21 +973,21 @@ describe('base.getTextWidth(gridManagerName, content, cssObj)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.getTextWidth).toBeDefined();
-        expect(base.getTextWidth.length).toBe(3);
+        expect(getTextWidth).toBeDefined();
+        expect(getTextWidth.length).toBe(3);
     });
 
     it('执行验证', () => {
-        // expect(base.getTextWidth('test', '123456')).toBe(40);
-        // expect(base.getTextWidth('test', '123456', {'fontSize': '24px'})).toBe(80);
+        // expect(getTextWidth('test', '123456')).toBe(40);
+        // expect(getTextWidth('test', '123456', {'fontSize': '24px'})).toBe(80);
 
         // TODO CI 上跑测试无法精准到数值，所以用以下进行替代。 本地测试精准数值是通过的
-        expect(typeof base.getTextWidth('test', '123456')).toBe('number');
-        expect(typeof base.getTextWidth('test', '123456', {'fontSize': '24px'})).toBe('number');
+        expect(typeof getTextWidth('test', '123456')).toBe('number');
+        expect(typeof getTextWidth('test', '123456', {'fontSize': '24px'})).toBe('number');
     });
 });
 
-describe('base.updateScrollStatus(gridManagerName)', () => {
+describe('updateScrollStatus(gridManagerName)', () => {
     let $table = null;
     let $tableDiv = null;
     beforeEach(() => {
@@ -1149,24 +1003,24 @@ describe('base.updateScrollStatus(gridManagerName)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.updateScrollStatus).toBeDefined();
-        expect(base.updateScrollStatus.length).toBe(1);
+        expect(updateScrollStatus).toBeDefined();
+        expect(updateScrollStatus.length).toBe(1);
     });
 
     it('执行验证', () => {
         $table.width(1000);
         $tableDiv.width(1100);
-        base.updateScrollStatus('test');
+        updateScrollStatus('test');
         expect($tableDiv.css('overflow-x')).toBe('hidden');
 
         $table.width(1100);
         $tableDiv.width(1000);
-        base.updateScrollStatus('test');
+        updateScrollStatus('test');
         expect($tableDiv.css('overflow-x')).toBe('auto');
     });
 });
 
-describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () => {
+describe('calcLayout(gridManagerName, width, height, supportAjaxPage)', () => {
     let $wrap = null;
     let $div = null;
     let theadHeight = null;
@@ -1177,7 +1031,7 @@ describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () 
         $wrap = jTool('.table-wrap');
         $div = jTool('.table-div');
         $tableHeader = jTool('.table-header', $wrap);
-        theadHeight = base.getThead('test').height();
+        theadHeight = getThead('test').height();
         ajaxPageHeight = jTool(`[${TOOLBAR_KEY}="test"]`).height();
     });
 
@@ -1191,12 +1045,12 @@ describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () 
     });
 
     it('基础验证', () => {
-        expect(base.calcLayout).toBeDefined();
-        expect(base.calcLayout.length).toBe(4);
+        expect(calcLayout).toBeDefined();
+        expect(calcLayout.length).toBe(4);
     });
 
     it('有分页的验证', () => {
-        base.calcLayout('test', '1000px', '500px', true);
+        calcLayout('test', '1000px', '500px', true);
         expect($wrap.width()).toBe(1000);
         expect($wrap.height()).toBe(500);
         expect($div.height()).toBe(500 - ajaxPageHeight);
@@ -1204,7 +1058,7 @@ describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () 
     });
 
     it('无分页的验证', () => {
-        base.calcLayout('test', '1000px', '500px', false);
+        calcLayout('test', '1000px', '500px', false);
         expect($wrap.width()).toBe(1000);
         expect($wrap.height()).toBe(500);
         expect($div.height()).toBe(500);
@@ -1212,7 +1066,7 @@ describe('base.calcLayout(gridManagerName, width, height, supportAjaxPage)', () 
     });
 });
 
-describe('base.clearTargetEvent(eventMap)', () => {
+describe('clearTargetEvent(eventMap)', () => {
     let eventMap = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -1224,8 +1078,8 @@ describe('base.clearTargetEvent(eventMap)', () => {
     });
 
     it('基础验证', () => {
-        expect(base.clearTargetEvent).toBeDefined();
-        expect(base.clearTargetEvent.length).toBe(1);
+        expect(clearTargetEvent).toBeDefined();
+        expect(clearTargetEvent.length).toBe(1);
     });
 
     it('执行验证', () => {
@@ -1239,7 +1093,7 @@ describe('base.clearTargetEvent(eventMap)', () => {
         let $target = jTool(eventMap.testeEvent.target);
         $target.on(eventMap.testeEvent.events, eventMap.testeEvent.selector, () => {});
         expect($target.get(0).jToolEvent['click.table-wrap']).toBeDefined();
-        base.clearTargetEvent(eventMap);
+        clearTargetEvent(eventMap);
         expect($target.get(0).jToolEvent['click.table-wrap']).toBeUndefined();
     });
 });
