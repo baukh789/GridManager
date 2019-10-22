@@ -17,7 +17,7 @@ import jTool from '@common/jTool';
 import { clearTargetEvent } from '@common/base';
 import cache from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { TOOLBAR_KEY } from '@common/constants';
+import { TOOLBAR_KEY, DISABLED_CLASS_NAME } from '@common/constants';
 import core from '../core';
 import { getParams } from '../core/tool';
 import i18n from '../i18n';
@@ -33,22 +33,24 @@ class AjaxPage {
      */
 	init(gridManagerName) {
         const settings = cache.getSettings(gridManagerName);
+        const { disableCache, pageSizeKey, pageSize, currentPageKey, useNoTotalsMode } = settings;
         this.eventMap[gridManagerName] = getAjaxEvent(gridManagerName);
 
 		// 根据本地缓存配置每页显示条数
-		if (!settings.disableCache) {
+		if (!disableCache) {
 			this.__configPageForCache(settings);
 		} else {
-            const pageData = {
-                [settings.pageSizeKey]: settings.pageSize || 10,
-                [settings.currentPageKey]: 1
-            };
-            jTool.extend(settings, {pageData: pageData});
+            jTool.extend(settings, {
+                pageData: {
+                    [pageSizeKey]: pageSize || 10,
+                    [currentPageKey]: 1
+                }
+            });
             cache.setSettings(settings);
         }
 
         // 当useNoTotalsMode:true 时，异步获取总页模式失效
-        if (settings.useNoTotalsMode) {
+        if (useNoTotalsMode) {
             settings.asyncTotals = null;
             cache.setSettings(settings);
         }
@@ -56,12 +58,14 @@ class AjaxPage {
         // 初始化dropdown
         const dropwownArg = {
             gridManagerName,
-            defaultValue: settings.pageData[settings.pageSizeKey],
+            defaultValue: settings.pageData[pageSizeKey],
             onChange: value => {
+                // 事件中的settings需要重新获取最新数据
                 const settings = cache.getSettings(gridManagerName);
-                settings.pageData = {};
-                settings.pageData[settings.currentPageKey] = 1;
-                settings.pageData[settings.pageSizeKey] = window.parseInt(value);
+                settings.pageData = {
+                    [currentPageKey]: 1,
+                    [pageSizeKey]: parseInt(value, 10)
+                };
 
                 cache.saveUserMemory(settings);
 
@@ -164,7 +168,6 @@ class AjaxPage {
 
         // 正常
         update(totals);
-
 	}
 
     /**
@@ -215,23 +218,25 @@ class AjaxPage {
 			toPage = 1;
 		}
 
+		const { gridManagerName, useNoTotalsMode, currentPageKey, pageData, pageSize, pageSizeKey, sortData, query, pagingBefore, pagingAfter } = settings;
+		const { tPage } = pageData;
 		// 未使用使用无总条数模式 且 跳转的指定页大于总页数时，强制跳转至最后一页
-		if (!settings.useNoTotalsMode && toPage > settings.pageData.tPage) {
-			toPage = settings.pageData.tPage;
+		if (!useNoTotalsMode && toPage > tPage) {
+			toPage = tPage;
 		}
 
 		// 替换被更改的值
-		settings.pageData[settings.currentPageKey] = toPage;
-		settings.pageData[settings.pageSizeKey] = settings.pageData[settings.pageSizeKey] || settings.pageSize;
+		pageData[currentPageKey] = toPage;
+		pageData[pageSizeKey] = pageData[pageSizeKey] || pageSize;
 
 		// 更新缓存
 		cache.setSettings(settings);
 
 		// 调用事件、渲染DOM
-		const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
-		settings.pagingBefore(query);
-		core.refresh(settings.gridManagerName, () => {
-			settings.pagingAfter(query);
+		const newQuery = jTool.extend({}, query, sortData, pageData);
+		pagingBefore(newQuery);
+		core.refresh(gridManagerName, () => {
+			pagingAfter(newQuery);
 		});
 	}
 
@@ -333,19 +338,19 @@ class AjaxPage {
         const nextUsable = Boolean($nextPage.length);
         const lastUsable = Boolean($lastPage.length);
         if (toPage === 1) {
-            firstUsable && $firstPage.addClass('disabled');
-            previousUsable && $previousPage.addClass('disabled');
+            firstUsable && $firstPage.addClass(DISABLED_CLASS_NAME);
+            previousUsable && $previousPage.addClass(DISABLED_CLASS_NAME);
         } else {
-            firstUsable && $firstPage.removeClass('disabled');
-            previousUsable && $previousPage.removeClass('disabled');
+            firstUsable && $firstPage.removeClass(DISABLED_CLASS_NAME);
+            previousUsable && $previousPage.removeClass(DISABLED_CLASS_NAME);
         }
 
         if (toPage >= tPage) {
-            nextUsable && $nextPage.addClass('disabled');
-            lastUsable && $lastPage.addClass('disabled');
+            nextUsable && $nextPage.addClass(DISABLED_CLASS_NAME);
+            lastUsable && $lastPage.addClass(DISABLED_CLASS_NAME);
         } else {
-            nextUsable && $nextPage.removeClass('disabled');
-            lastUsable && $lastPage.removeClass('disabled');
+            nextUsable && $nextPage.removeClass(DISABLED_CLASS_NAME);
+            lastUsable && $lastPage.removeClass(DISABLED_CLASS_NAME);
         }
     }
 
@@ -393,10 +398,10 @@ class AjaxPage {
 
             // 分页页码
             let toPage = pageAction.attr('to-page');
-            if (!toPage || !Number(toPage) || pageAction.hasClass('disabled')) {
+            if (!toPage || !Number(toPage) || pageAction.hasClass(DISABLED_CLASS_NAME)) {
                 return false;
             }
-            toPage = window.parseInt(toPage);
+            toPage = parseInt(toPage, 10);
             _this.gotoPage(settings, toPage);
         });
 

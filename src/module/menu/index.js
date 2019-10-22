@@ -4,7 +4,7 @@
 import jTool from '@common/jTool';
 import { getTbody, clearTargetEvent } from '@common/base';
 import cache from '@common/cache';
-import { MENU_KEY } from '@common/constants';
+import { MENU_KEY, DISABLED_CLASS_NAME } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import i18n from '../i18n';
 import exportFile from '../exportFile';
@@ -35,7 +35,7 @@ class Menu {
         }
 
         // 绑定右键菜单事件
-        this.bindRightMenuEvent(gridManagerName, settings);
+        this.bindRightMenuEvent(gridManagerName, settings.supportExport, settings.supportConfig);
     }
 
     /**
@@ -114,9 +114,10 @@ class Menu {
 	/**
 	 * 绑定右键菜单事件
 	 * @param gridManagerName
-	 * @param settings
+	 * @param supportExport
+	 * @param supportConfig
      */
-	bindRightMenuEvent(gridManagerName, settings) {
+	bindRightMenuEvent(gridManagerName, supportExport, supportConfig) {
 		const _this = this;
 
 		const $menu = this.getMenuByJtool(gridManagerName);
@@ -137,9 +138,9 @@ class Menu {
 			// 验证：当前是否存在已选中的项
 			const exportExcelOfChecked = jTool('[grid-action="export-excel"][only-checked="true"]');
 			if (jTool('tr[checked="true"]', getTbody(gridManagerName)).length === 0) {
-				exportExcelOfChecked.addClass('disabled');
+				exportExcelOfChecked.addClass(DISABLED_CLASS_NAME);
 			} else {
-				exportExcelOfChecked.removeClass('disabled');
+				exportExcelOfChecked.removeClass(DISABLED_CLASS_NAME);
 			}
 
 			// 定位
@@ -176,27 +177,37 @@ class Menu {
 				return false;
 			}
 			const refreshType = this.getAttribute('refresh-type');
-			let _settings = cache.getSettings(gridManagerName);
-			let cPage = _settings.pageData[_settings.currentPageKey];
+            const settings = cache.getSettings(gridManagerName);
+			const { currentPageKey, pageData } = settings;
+			let cPage = pageData[currentPageKey];
 
-			// 上一页
-			if (refreshType === 'previous' && cPage > 1) {
-				cPage = cPage - 1;
-				// 下一页
-			} else if (refreshType === 'next' && cPage < _settings.pageData.tPage) {
-				cPage = cPage + 1;
-				// 重新加载
-			} else if (refreshType === 'refresh') {
-				cPage = cPage;
-			}
+			switch (refreshType) {
+                // 上一页
+                case 'previous': {
+                    cPage = cPage > 1 ? cPage - 1 : cPage;
+                    break;
+                }
 
-			ajaxPage.gotoPage(_settings, cPage);
+                // 下一页
+                case 'next': {
+                    cPage = cPage < pageData.tPage ? cPage + 1 : cPage;
+                    break;
+                }
+
+                // 重新加载 refresh
+                // case 'next': {
+                //     // 使用当前值
+                //     break;
+                // }
+            }
+
+			ajaxPage.gotoPage(settings, cPage);
             $closeTarget.off(closeEvents);
 			$menu.hide();
 		});
 
 		// 绑定事件：另存为EXCEL、已选中表格另存为Excel
-		settings.supportExport && (() => {
+		supportExport && (() => {
             jTool(exportExcel.target).on(exportExcel.events, exportExcel.selector, function (e) {
 				if (_this.isDisabled(this, e)) {
 					return false;
@@ -212,7 +223,7 @@ class Menu {
 		})();
 
 		// 绑定事件：打开配置区域
-		settings.supportConfig && (() => {
+		supportConfig && (() => {
             jTool(openConfig.target).on(openConfig.events, openConfig.selector, function (e) {
 				if (_this.isDisabled(this, e)) {
 					return false;
@@ -240,14 +251,14 @@ class Menu {
 		const cPage = pageData[currentPageKey];
 		const tPage = pageData.tPage;
 		if (cPage === 1 || tPage === 0) {
-			previousPage.addClass('disabled');
+			previousPage.addClass(DISABLED_CLASS_NAME);
 		} else {
-			previousPage.removeClass('disabled');
+			previousPage.removeClass(DISABLED_CLASS_NAME);
 		}
 		if (cPage === tPage || tPage === 0) {
-			nextPage.addClass('disabled');
+			nextPage.addClass(DISABLED_CLASS_NAME);
 		} else {
-			nextPage.removeClass('disabled');
+			nextPage.removeClass(DISABLED_CLASS_NAME);
 		}
 	}
 
@@ -258,7 +269,7 @@ class Menu {
 	 * @returns {boolean}
      */
 	isDisabled(dom, events) {
-		if (jTool(dom).hasClass('disabled')) {
+		if (jTool(dom).hasClass(DISABLED_CLASS_NAME)) {
 			events.stopPropagation();
 			events.preventDefault();
 			return true;

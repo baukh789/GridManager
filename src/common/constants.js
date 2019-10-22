@@ -116,6 +116,9 @@ export const CHECKED_CLASS = `gm-checkbox-${CHECKED}`;
 // 半选中ClassName
 export const INDETERMINATE_CLASS = `gm-checkbox-${INDETERMINATE}`;
 
+// 禁用ClassName
+export const DISABLED_CLASS_NAME = 'disabled';
+
 // 公开方法列表
 // export const GM_PUBLISH_METHOD_LIST = [
 // 	'init',
