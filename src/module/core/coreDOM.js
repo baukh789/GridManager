@@ -233,6 +233,7 @@ class Dom {
 
         } catch (e) {
             outError('render tbody error');
+            console.error(e);
         }
 
         this.initVisible(gridManagerName, columnMap);
