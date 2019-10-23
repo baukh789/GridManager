@@ -4,7 +4,7 @@
 import './style.less';
 import jTool from '@common/jTool';
 import { getDiv, updateThWidth, setAreVisible, updateVisibleLast, updateScrollStatus, getTh, getWrap, clearTargetEvent } from '@common/base';
-import cache from '@common/cache';
+import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { CONFIG_KEY, CHECKED_CLASS } from '@common/constants';
 import adjust from '../adjust';
@@ -104,7 +104,7 @@ class Config {
      */
     noticeUpdate(gridManagerName) {
         // 执行前，先对当前的columnMap进行更新
-        const settings = cache.update(gridManagerName);
+        const settings = updateCache(gridManagerName);
 
         // 重置调整宽度事件源
         if (settings.supportAdjust) {
@@ -115,7 +115,7 @@ class Config {
         updateThWidth(settings);
 
         // 更新存储信息
-        cache.update(gridManagerName);
+        updateCache(gridManagerName);
 
         // 处理置顶表头
         scroll.update(gridManagerName);
@@ -215,7 +215,7 @@ class Config {
         // 可视列计数
         let showNum = 0;
 
-        const settings = cache.getSettings(gridManagerName);
+        const settings = getSettings(gridManagerName);
         const columnList = [];
         jTool.each(settings.columnMap, (key, col) => {
             columnList[col.index] = col;

@@ -5,7 +5,7 @@ import './style.less';
 import jTool from '@common/jTool';
 import { getQuerySelector, getThName, clearTargetEvent } from '@common/base';
 import { outWarn } from '@common/utils';
-import cache from '@common/cache';
+import { getSettings, setSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import core from '../core';
 import sortTpl from './sort.tpl.html';
@@ -32,7 +32,7 @@ class Sort {
         jTool(target).on(events, selector, function (e) {
             // th对应的名称
             const thName = getThName(jTool(this).closest('th'));
-            const settings = cache.getSettings(gridManagerName);
+            const settings = getSettings(gridManagerName);
 
             const oldSort = settings.sortData[thName];
             const sortMode = settings.sortMode;
@@ -84,7 +84,7 @@ class Sort {
 			return false;
 		}
 
-        let settings = cache.getSettings(gridManagerName);
+        let settings = getSettings(gridManagerName);
 
 		// 单例排序: 清空原有排序数据
         if (!settings.isCombSorting) {
@@ -92,7 +92,7 @@ class Sort {
         }
 
         jTool.extend(settings.sortData, sortJson);
-		cache.setSettings(settings);
+		setSettings(settings);
 
 		// 回调函数为空时赋值空方法
 		if (typeof (callback) !== 'function') {
@@ -136,7 +136,7 @@ class Sort {
 	 * @param gridManagerName
      */
 	updateSortStyle(gridManagerName) {
-		const settings = cache.getSettings(gridManagerName);
+		const settings = getSettings(gridManagerName);
 
 		// 重置排序样式
         jTool.each(jTool(`${getQuerySelector(gridManagerName)} .sorting-action`), (i, v) => {

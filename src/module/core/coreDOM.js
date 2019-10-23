@@ -3,7 +3,7 @@ import jTool from '@common/jTool';
 import { calcLayout, updateThWidth, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
 import { outError } from '@common/utils';
 import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
-import cache from '@common/cache';
+import { resetTableData, getRowData, getSettings } from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
 import adjust from '../adjust';
@@ -121,7 +121,7 @@ class Dom {
 
         const { treeKey, openState } = treeConfig;
 
-        data = cache.resetTableData(gridManagerName, data);
+        data = resetTableData(gridManagerName, data);
 
         // tbody dom
         const tbody = getTbody(gridManagerName).get(0);
@@ -358,7 +358,7 @@ class Dom {
      * @param gridManagerName
      */
     bindEvent(gridManagerName) {
-        const settings = cache.getSettings(gridManagerName);
+        const settings = getSettings(gridManagerName);
 
         // 未设置该事件钩子时，不再进行事件绑定
         if (typeof settings.cellHover !== 'function') {
@@ -380,7 +380,7 @@ class Dom {
             const rowIndex = parseInt(tr.getAttribute(TR_CACHE_KEY), 10);
 
             // cellHover: 单个td的hover事件
-            settings.cellHover(cache.getRowData(gridManagerName, tr), rowIndex, colIndex);
+            settings.cellHover(getRowData(gridManagerName, tr), rowIndex, colIndex);
         });
     }
 

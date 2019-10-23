@@ -4,7 +4,7 @@
 import jTool from '@common/jTool';
 import { showLoading, hideLoading, getVisibleTh, getTbody } from '@common/base';
 import { outError } from '@common/utils';
-import cache from '@common/cache';
+import { getSettings, getCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { GM_CREATE } from '@common/constants';
 import staticTpl from './static.tpl.html';
@@ -112,12 +112,12 @@ class ExportFile {
      * @private
      */
 	async __exportGridToXls(gridManagerName, fileName, onlyChecked) {
-	    const settings = cache.getSettings(gridManagerName);
+	    const settings = getSettings(gridManagerName);
 	    const { query, loadingTemplate, exportConfig, pageData, sortData } = settings;
 
         fileName = this.getFileName(gridManagerName, fileName, query, exportConfig);
 
-        const selectedList = onlyChecked ? cache.getCheckedData(gridManagerName) : undefined;
+        const selectedList = onlyChecked ? getCheckedData(gridManagerName) : undefined;
 
         if (jTool.type(exportConfig.handler) !== 'function') {
             outError('exportConfig.handler not return promise');

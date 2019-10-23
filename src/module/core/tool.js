@@ -12,7 +12,7 @@
  */
 import jTool from '@common/jTool';
 import { cloneObject } from '@common/utils';
-import cache from '@common/cache';
+import { setSettings } from '@common/cache';
 
 // 获取参数信息
 export const getParams = settings => {
@@ -65,7 +65,7 @@ export const transformToPromise = settings =>  {
     jTool.each(settings.sortData, (key, value) => {
         settings.sortData[key] = params[`${settings.sortKey}${key}`] || value;
     });
-    cache.setSettings(settings);
+    setSettings(settings);
 
     let ajaxData = typeof settings.ajaxData === 'function' ? settings.ajaxData(settings, params) : settings.ajaxData;
 

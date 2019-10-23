@@ -3,7 +3,7 @@
  */
 import jTool from '@common/jTool';
 import { getTbody, clearTargetEvent } from '@common/base';
-import cache from '@common/cache';
+import { getSettings } from '@common/cache';
 import { MENU_KEY, DISABLED_CLASS_NAME } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import i18n from '../i18n';
@@ -17,6 +17,20 @@ import exportTpl from './export.tpl.html';
 import getMenuEvent from './event';
 import './style.less';
 
+/**
+ * 获取右键菜单中的某项 是为禁用状态. 若为禁用状态清除事件默认行为
+ * @param dom
+ * @param events
+ * @returns {boolean}
+ */
+const isDisabled = (dom, events) => {
+    if (jTool(dom).hasClass(DISABLED_CLASS_NAME)) {
+        events.stopPropagation();
+        events.preventDefault();
+        return true;
+    }
+};
+
 class Menu {
     eventMap = {};
 
@@ -25,7 +39,7 @@ class Menu {
      * @param gridManagerName
      */
     init(gridManagerName) {
-        const settings = cache.getSettings(gridManagerName);
+        const settings = getSettings(gridManagerName);
         this.eventMap[gridManagerName] = getMenuEvent(gridManagerName, this.getQuerySelector(gridManagerName));
 
         // 创建menu DOM
@@ -118,8 +132,6 @@ class Menu {
 	 * @param supportConfig
      */
 	bindRightMenuEvent(gridManagerName, supportExport, supportConfig) {
-		const _this = this;
-
 		const $menu = this.getMenuByJtool(gridManagerName);
 
 		const { openMenu, closeMenu, refresh, exportExcel, openConfig } = this.eventMap[gridManagerName];
@@ -173,11 +185,11 @@ class Menu {
 
         // 绑定事件：上一页、下一页、重新加载
         jTool(refresh.target).on(refresh.events, refresh.selector, function (e) {
-			if (_this.isDisabled(this, e)) {
+			if (isDisabled(this, e)) {
 				return false;
 			}
 			const refreshType = this.getAttribute('refresh-type');
-            const settings = cache.getSettings(gridManagerName);
+            const settings = getSettings(gridManagerName);
 			const { currentPageKey, pageData } = settings;
 			let cPage = pageData[currentPageKey];
 
@@ -209,7 +221,7 @@ class Menu {
 		// 绑定事件：另存为EXCEL、已选中表格另存为Excel
 		supportExport && (() => {
             jTool(exportExcel.target).on(exportExcel.events, exportExcel.selector, function (e) {
-				if (_this.isDisabled(this, e)) {
+				if (isDisabled(this, e)) {
 					return false;
 				}
 				let onlyChecked = false;
@@ -225,7 +237,7 @@ class Menu {
 		// 绑定事件：打开配置区域
 		supportConfig && (() => {
             jTool(openConfig.target).on(openConfig.events, openConfig.selector, function (e) {
-				if (_this.isDisabled(this, e)) {
+				if (isDisabled(this, e)) {
 					return false;
 				}
 				config.toggle(gridManagerName);
@@ -259,22 +271,6 @@ class Menu {
 			nextPage.addClass(DISABLED_CLASS_NAME);
 		} else {
 			nextPage.removeClass(DISABLED_CLASS_NAME);
-		}
-	}
-
-	/**
-	 * 获取右键菜单中的某项 是为禁用状态. 若为禁用状态清除事件默认行为
-	 * @param dom
-	 * @param events
-	 * @returns {boolean}
-     */
-	isDisabled(dom, events) {
-		if (jTool(dom).hasClass(DISABLED_CLASS_NAME)) {
-			events.stopPropagation();
-			events.preventDefault();
-			return true;
-		} else {
-			return false;
 		}
 	}
 

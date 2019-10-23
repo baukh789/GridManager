@@ -4,7 +4,7 @@
  * */
 import jTool from '@common/jTool';
 import { getKey } from '@common/base';
-import cache from '@common/cache';
+import { SIV_waitTableAvailable } from '@common/cache';
 import { outWarn, outError } from '@common/utils';
 import { TABLE_KEY, RENDERING_KEY } from '@common/constants';
 import GridManager from './GridManager';
@@ -76,31 +76,33 @@ import GridManager from './GridManager';
         this[RENDERING_KEY] = true;
 
 		const $table = jTool(this);
+		let gridManagerName = arg.gridManagerName;
         // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
-        if (typeof arg.gridManagerName !== 'string' || arg.gridManagerName.trim() === '') {
+        if (typeof gridManagerName !== 'string' || gridManagerName.trim() === '') {
             // 存储gridManagerName值
             arg.gridManagerName = getKey($table);
+            gridManagerName = arg.gridManagerName;
             // 参数中存在配置项 gridManagerName: 更新table DOM 的 grid-manager属性
         } else {
-            $table.attr(TABLE_KEY, arg.gridManagerName);
+            $table.attr(TABLE_KEY, gridManagerName);
         }
 
-        const settings = GridManager.get(arg.gridManagerName);
+        const settings = GridManager.get(gridManagerName);
 
         // init: 当前已经实例化
         if (settings && settings.rendered) {
-            outWarn(`${settings.gridManagerName} had been used`);
+            outWarn(`${gridManagerName} had been used`);
 
             // 如果已经存在，则清除之前的数据。#001
-            GridManager.destroy(settings.gridManagerName);
+            GridManager.destroy(gridManagerName);
         }
 
         // init: 执行
-        cache.SIV_waitTableAvailable[arg.gridManagerName] = setInterval(() => {
+        SIV_waitTableAvailable[gridManagerName] = setInterval(() => {
             let thisWidth = window.getComputedStyle(this).width;
             if (thisWidth.indexOf('px') !== -1) {
-                clearInterval(cache.SIV_waitTableAvailable[arg.gridManagerName]);
-                cache.SIV_waitTableAvailable[arg.gridManagerName] = null;
+                clearInterval(SIV_waitTableAvailable[gridManagerName]);
+                SIV_waitTableAvailable[gridManagerName] = null;
                 return new GridManager().init(this, arg, callback);
             }
         }, 50);

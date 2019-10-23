@@ -146,15 +146,15 @@ export const DISABLED_CLASS_NAME = 'disabled';
 // ];
 
 // console样式
-const __getStyle = bgColor => {
-    return [`background:${bgColor} ; height: 18px;line-height: 18px; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff`, 'background:#169fe6 ; height: 18px;line-height: 18px; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff'];
+const getStyle = bgColor => {
+    return [`background:${bgColor};height:18px;line-height:18px;padding:1px;border-radius:3px 0 0 3px;color:#fff`, 'background:#169fe6;height:18px;line-height:18px;padding:1px;border-radius:0 3px 3px 0;color:#fff'];
 };
 
 export const CONSOLE_INFO = 'Info';
 export const CONSOLE_WARN = 'Warn';
 export const CONSOLE_ERROR = 'Error';
 export const CONSOLE_STYLE = {
-    [CONSOLE_INFO]: __getStyle('#333'),
-    [CONSOLE_WARN]: __getStyle('#f90'),
-    [CONSOLE_ERROR]: __getStyle('#f00')
+    [CONSOLE_INFO]: getStyle('#333'),
+    [CONSOLE_WARN]: getStyle('#f90'),
+    [CONSOLE_ERROR]: getStyle('#f00')
 };

@@ -1,21 +1,10 @@
 /*
  * ajaxPage: 分页
 **/
-/**
- * #001:
- * 关于ajax-page.tpl.html 文件中的实时更新
- * 有效区域: <div class="footer-toolbar">标签内
- * 触发条件: 以下属性的标签将会触发实时更新，共有以下属性:
- * 1. begin-number-info: 当前页从多少条开始显示
- * 2. end-number-info: 当前页到多少条结束显示
- * 3. current-page-info: 当前页
- * 4. totals-number-info: 总条数
- * 5. totals-page-info: 总页数
- */
 import './style.less';
 import jTool from '@common/jTool';
 import { clearTargetEvent } from '@common/base';
-import cache from '@common/cache';
+import { getSettings, setSettings, getUserMemory, saveUserMemory, getCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { TOOLBAR_KEY, DISABLED_CLASS_NAME } from '@common/constants';
 import core from '../core';
@@ -23,37 +12,226 @@ import { getParams } from '../core/tool';
 import i18n from '../i18n';
 import dropdown from '../dropdown';
 import ajaxPageTpl from './ajax-page.tpl.html';
+import { getQuerySelector, getPageData, joinPaginationNumber } from './tool';
 import getAjaxEvent from './event';
+
+const eventMap = {};
+
+/**
+ * 修改分页描述信息
+ * @param $footerToolbar
+ * @param settings
+ * @param pageData
+ * @param asyncTotalText: 异步总页loading文本
+ * @private
+ */
+const resetPageInfo = ($footerToolbar, settings, pageData, asyncTotalText) => {
+    const { currentPageKey, pageSizeKey } = settings;
+    // 从多少开始
+    const fromNum = pageData[currentPageKey] === 1 ? 1 : (pageData[currentPageKey] - 1) * pageData[pageSizeKey] + 1;
+
+    // 到多少结束
+    const toNum = pageData[currentPageKey] * pageData[pageSizeKey];
+
+    // 总共条数
+    let totalNum = pageData.tSize;
+
+    // 当前页
+    const cPage = pageData[currentPageKey];
+
+    // 总页数
+    let tPage = pageData.tPage;
+
+    // 当前没有总条数 且 存在异步加载文本: 使用异步加载文本填充总条数与总页数
+    if (!totalNum && asyncTotalText) {
+        totalNum = tPage = asyncTotalText;
+    }
+
+    const $pageInfo = jTool('.page-info', $footerToolbar);
+    if ($pageInfo.length) {
+        const info = i18n(settings, 'page-info', [fromNum, toNum, totalNum, cPage, tPage]);
+        $pageInfo.html(info);
+    }
+
+    // #001
+    // 更新实时更新数据: 当前页从多少条开始显示
+    const $beginNumber = jTool('[begin-number-info]', $footerToolbar);
+    if ($beginNumber.length) {
+        $beginNumber.html(fromNum);
+        $beginNumber.val(fromNum);
+    }
+
+    // 更新实时更新数据: 当前页到多少条结束显示
+    const $endNumber = jTool('[end-number-info]', $footerToolbar);
+    if ($endNumber.length) {
+        $endNumber.html(toNum);
+        $endNumber.val(toNum);
+    }
+
+    // 更新实时更新数据: 当前页
+    const $currentPage = jTool('[current-page-info]', $footerToolbar);
+    if ($currentPage.length) {
+        $currentPage.html(cPage);
+        $currentPage.val(cPage);
+    }
+
+    // 更新实时更新数据: 总条数
+    const $totalsNumber = jTool('[totals-number-info]', $footerToolbar);
+    if ($totalsNumber.length) {
+        $totalsNumber.html(totalNum);
+        $totalsNumber.val(totalNum);
+    }
+
+    // 更新实时更新数据: 总页数
+    const $totalsPage = jTool('[totals-page-info]', $footerToolbar);
+    if ($totalsPage.length) {
+        $totalsPage.html(tPage);
+        $totalsPage.val(tPage);
+    }
+};
+
+/**
+ * 更新底部DOM节点
+ * @param $footerToolbar
+ * @param settings
+ * @param pageData 分页数据格式
+ * @private
+ */
+const updateFooterDOM = ($footerToolbar, settings, pageData) => {
+    const { useNoTotalsMode, currentPageKey } = settings;
+    useNoTotalsMode && $footerToolbar.attr('no-totals-mode', 'true');
+
+    // 分页码区域
+    const $paginationNumber = jTool('[pagination-number]', $footerToolbar);
+
+    // 重置分页码
+    $paginationNumber.html(joinPaginationNumber(currentPageKey, pageData));
+
+    // 更新分页禁用状态
+    const toPage = pageData[currentPageKey];
+    const $firstPage = jTool('[pagination-before] .first-page', $footerToolbar);
+    const $previousPage = jTool('[pagination-before] .previous-page', $footerToolbar);
+    const $nextPage = jTool('[pagination-after] .next-page', $footerToolbar);
+    const $lastPage = jTool('[pagination-after] .last-page', $footerToolbar);
+
+    const firstUsable = Boolean($firstPage.length);
+    const previousUsable = Boolean($previousPage.length);
+    const nextUsable = Boolean($nextPage.length);
+    const lastUsable = Boolean($lastPage.length);
+    if (toPage === 1) {
+        firstUsable && $firstPage.addClass(DISABLED_CLASS_NAME);
+        previousUsable && $previousPage.addClass(DISABLED_CLASS_NAME);
+    } else {
+        firstUsable && $firstPage.removeClass(DISABLED_CLASS_NAME);
+        previousUsable && $previousPage.removeClass(DISABLED_CLASS_NAME);
+    }
+
+    if (toPage >= pageData.tPage) {
+        nextUsable && $nextPage.addClass(DISABLED_CLASS_NAME);
+        lastUsable && $lastPage.addClass(DISABLED_CLASS_NAME);
+    } else {
+        nextUsable && $nextPage.removeClass(DISABLED_CLASS_NAME);
+        lastUsable && $lastPage.removeClass(DISABLED_CLASS_NAME);
+    }
+};
+
+/**
+ * 绑定分页点击事件
+ * @param gridManagerName
+ * @private
+ */
+const bindPageEvent = (gridManagerName, gotoPageFN) => {
+    // 事件: 首页
+    const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage } = eventMap[gridManagerName];
+    jTool(firstPage.target).on(firstPage.events, firstPage.selector, function () {
+        gotoPageFN(getSettings(gridManagerName), 1);
+    });
+
+    // 事件: 上一页
+    jTool(previousPage.target).on(previousPage.events, previousPage.selector, function () {
+        const settings = getSettings(gridManagerName);
+        const cPage = settings.pageData[settings.currentPageKey];
+        const toPage = cPage - 1;
+        gotoPageFN(settings, toPage < 1 ? 1 : toPage);
+    });
+
+    // 事件: 下一页
+    jTool(nextPage.target).on(nextPage.events, nextPage.selector, function () {
+        const settings = getSettings(gridManagerName);
+        const cPage = settings.pageData[settings.currentPageKey];
+        const tPage = settings.pageData.tPage;
+        const toPage = cPage + 1;
+        gotoPageFN(settings, toPage > tPage ? tPage : toPage);
+    });
+
+    // 事件: 尾页
+    jTool(lastPage.target).on(lastPage.events, lastPage.selector, function () {
+        const settings = getSettings(gridManagerName);
+        gotoPageFN(settings, settings.pageData.tPage);
+    });
+
+    // 事件: 页码
+    jTool(numberPage.target).on(numberPage.events, numberPage.selector, function () {
+        const settings = getSettings(gridManagerName);
+        const pageAction = jTool(this);
+
+        // 分页页码
+        let toPage = pageAction.attr('to-page');
+        if (!toPage || !Number(toPage) || pageAction.hasClass(DISABLED_CLASS_NAME)) {
+            return false;
+        }
+        gotoPageFN(settings, parseInt(toPage, 10));
+    });
+
+    // 事件: 刷新
+    jTool(refresh.target).on(refresh.events, refresh.selector, function () {
+        const settings = getSettings(gridManagerName);
+        gotoPageFN(settings, settings.pageData[settings.currentPageKey]);
+    });
+
+    // 事件: 快捷跳转
+    jTool(gotoPage.target).on(gotoPage.events, gotoPage.selector, function (event) {
+        if (event.which !== 13) {
+            return;
+        }
+        gotoPageFN(getSettings(gridManagerName), parseInt(this.value, 10));
+    });
+};
 class AjaxPage {
-    eventMap = {};
 
     /**
 	 * 初始化分页
 	 * @param gridManagerName
      */
 	init(gridManagerName) {
-        const settings = cache.getSettings(gridManagerName);
+        const settings = getSettings(gridManagerName);
         const { disableCache, pageSizeKey, pageSize, currentPageKey, useNoTotalsMode } = settings;
-        this.eventMap[gridManagerName] = getAjaxEvent(gridManagerName);
+        eventMap[gridManagerName] = getAjaxEvent(gridManagerName);
 
-		// 根据本地缓存配置每页显示条数
+        // 每页显示条数
+        let	pSize = pageSize || 10;
+        // 根据本地缓存配置每页显示条数
 		if (!disableCache) {
-			this.__configPageForCache(settings);
-		} else {
-            jTool.extend(settings, {
-                pageData: {
-                    [pageSizeKey]: pageSize || 10,
-                    [currentPageKey]: 1
-                }
-            });
-            cache.setSettings(settings);
-        }
+            const userMemory = getUserMemory(gridManagerName);
 
-        // 当useNoTotalsMode:true 时，异步获取总页模式失效
+            // 验证是否存在每页显示条数缓存数据
+            if (userMemory && userMemory.page && userMemory.page[pageSizeKey]) {
+                pSize = userMemory.page[pageSizeKey];
+            }
+		}
+
+        jTool.extend(settings, {
+            pageData: {
+                [pageSizeKey]: pSize,
+                [currentPageKey]: 1
+            }
+        });
+
+		// 当useNoTotalsMode:true 时，异步获取总页模式失效
         if (useNoTotalsMode) {
             settings.asyncTotals = null;
-            cache.setSettings(settings);
         }
+        setSettings(settings);
 
         // 初始化dropdown
         const dropwownArg = {
@@ -61,16 +239,16 @@ class AjaxPage {
             defaultValue: settings.pageData[pageSizeKey],
             onChange: value => {
                 // 事件中的settings需要重新获取最新数据
-                const settings = cache.getSettings(gridManagerName);
+                const settings = getSettings(gridManagerName);
                 settings.pageData = {
                     [currentPageKey]: 1,
                     [pageSizeKey]: parseInt(value, 10)
                 };
 
-                cache.saveUserMemory(settings);
+                saveUserMemory(settings);
 
                 // 更新缓存
-                cache.setSettings(settings);
+                setSettings(settings);
 
                 // 调用事件、渲染tbody
                 const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
@@ -83,17 +261,8 @@ class AjaxPage {
         dropdown.init(dropwownArg);
 
 		// 绑定事件
-		this.__bindPageEvent(gridManagerName);
+		bindPageEvent(gridManagerName, this.gotoPage);
 	}
-
-    /**
-     * 获取指定key的menu选择器
-     * @param gridManagerName
-     * @returns {string}
-     */
-    getQuerySelector(gridManagerName) {
-        return `[${TOOLBAR_KEY}="${gridManagerName}"]`;
-    }
 
     /**
      * 分页所需HTML
@@ -124,22 +293,22 @@ class AjaxPage {
 	 * @param len 本次请求返回的总条数，该参数仅在totals为空时使用
 	 */
 	resetPageData(settings, totals, len) {
-	    const { gridManagerName, useNoTotalsMode, asyncTotals } = settings;
-        const $footerToolbar = jTool(this.getQuerySelector(gridManagerName));
-        const cPage = settings.pageData[settings.currentPageKey] || 1;
-        const pSize = settings.pageData[settings.pageSizeKey] || settings.pageSize;
+	    const { gridManagerName, useNoTotalsMode, currentPageKey, pageData, asyncTotals, pageSizeKey, pageSize } = settings;
+        const $footerToolbar = jTool(getQuerySelector(gridManagerName));
+        const cPage = pageData[currentPageKey] || 1;
+        const pSize = pageData[pageSizeKey] || pageSize;
 
         const update = (totals, asyncTotalsText) => {
-            const pageData = this.__getPageData(settings, totals, len);
+            const pageData = getPageData(settings, totals, len);
 
             // 更新底部DOM节点
-            this.__updateFooterDOM($footerToolbar, settings, pageData);
+            updateFooterDOM($footerToolbar, settings, pageData);
 
             // 修改分页描述信息
-            this.__resetPageInfo($footerToolbar, settings, pageData, asyncTotalsText);
+            resetPageInfo($footerToolbar, settings, pageData, asyncTotalsText);
 
             // 更新Cache
-            cache.setSettings(jTool.extend(true, settings, {pageData}));
+            setSettings(jTool.extend(true, settings, {pageData}));
 
             // 显示底部工具条
             $footerToolbar.css('visibility', 'visible');
@@ -177,22 +346,23 @@ class AjaxPage {
      */
     updateRefreshIconState(gridManagerName, isRefresh) {
         // 刷新按纽
-        const refreshAction = jTool(`${this.getQuerySelector(gridManagerName)} .refresh-action`);
+        const refreshAction = jTool(`${getQuerySelector(gridManagerName)} .refresh-action`);
 
         // 当前刷新图标不存在
         if (refreshAction.length === 0) {
             return;
         }
 
+        const refreshClass = 'refreshing';
         // 启动刷新
 	    if (isRefresh) {
-            refreshAction.addClass('refreshing');
+            refreshAction.addClass(refreshClass);
             return;
         }
 
         // 停止刷新
         window.setTimeout(() => {
-            refreshAction.removeClass('refreshing');
+            refreshAction.removeClass(refreshClass);
         }, 3000);
     }
 
@@ -201,11 +371,11 @@ class AjaxPage {
      * @param settings
      */
     updateCheckedInfo(gridManagerName) {
-        const checkedInfo = jTool(`${this.getQuerySelector(gridManagerName)} .toolbar-info.checked-info`);
+        const checkedInfo = jTool(`${getQuerySelector(gridManagerName)} .toolbar-info.checked-info`);
         if (checkedInfo.length === 0) {
             return;
         }
-        checkedInfo.html(i18n(cache.getSettings(gridManagerName), 'checked-info', cache.getCheckedData(gridManagerName).length));
+        checkedInfo.html(i18n(getSettings(gridManagerName), 'checked-info', getCheckedData(gridManagerName).length));
     }
 
 	/**
@@ -230,7 +400,7 @@ class AjaxPage {
 		pageData[pageSizeKey] = pageData[pageSizeKey] || pageSize;
 
 		// 更新缓存
-		cache.setSettings(settings);
+		setSettings(settings);
 
 		// 调用事件、渲染DOM
 		const newQuery = jTool.extend({}, query, sortData, pageData);
@@ -241,324 +411,11 @@ class AjaxPage {
 	}
 
 	/**
-	 * 更新底部DOM节点
-	 * @param $footerToolbar
-	 * @param settings
-	 * @param pageData 分页数据格式
-	 * @private
-     */
-    __updateFooterDOM($footerToolbar, settings, pageData) {
-        settings.useNoTotalsMode && $footerToolbar.attr('no-totals-mode', 'true');
-
-		// 分页码区域
-		const $paginationNumber = jTool('[pagination-number]', $footerToolbar);
-
-		// 重置分页码
-        $paginationNumber.html(this.__joinPaginationNumber(settings, pageData));
-
-        // 更新分页禁用状态
-        this.__updatePageDisabledState($footerToolbar, pageData[settings.currentPageKey], pageData.tPage);
-	}
-
-	/**
-	 * 拼接页码字符串
-	 * @param settings
-	 * @param pageData 分页数据格式
-	 * @private
-     */
-    __joinPaginationNumber(settings, pageData) {
-		// 当前页
-		let cPage = Number(pageData[settings.currentPageKey] || 0);
-
-		// 总页数
-		let tPage = Number(pageData.tPage || 0);
-
-		// 临时存储分页HTML片段
-		let	tHtml = '';
-
-		// 临时存储末尾页码THML片段
-		let	lHtml = '';
-		// 循环开始数
-		let i = 1;
-
-		// 循环结束数
-		let	maxI = tPage;
-
-		// 配置 first端省略符
-		if (cPage > 4) {
-			tHtml += `<li to-page="1">
-						1
-					</li>
-					<li class="disabled">
-						...
-					</li>`;
-			i = cPage - 2;
-		}
-		// 配置 last端省略符
-		if ((tPage - cPage) > 4) {
-			maxI = cPage + 2;
-			lHtml += `<li class="disabled">
-						...
-					</li>
-					<li to-page="${ tPage }">
-						${ tPage }
-					</li>`;
-		}
-
-		// 配置页码
-        if (pageData.tSize) {
-            for (i; i <= maxI; i++) {
-                if (i === cPage) {
-                    tHtml += `<li class="active">${ cPage }</li>`;
-                    continue;
-                }
-                tHtml += `<li to-page="${ i }">${ i }</li>`;
-            }
-        }
-		tHtml += lHtml;
-
-		return tHtml;
-	}
-
-    /**
-     * 更新分页禁用状态
-     * @param $footerToolbar
-     * @param toPage
-     * @param tPage
-     * @private
-     */
-	__updatePageDisabledState($footerToolbar, toPage, tPage) {
-        const $firstPage = jTool('[pagination-before] .first-page', $footerToolbar);
-        const $previousPage = jTool('[pagination-before] .previous-page', $footerToolbar);
-        const $nextPage = jTool('[pagination-after] .next-page', $footerToolbar);
-        const $lastPage = jTool('[pagination-after] .last-page', $footerToolbar);
-
-        const firstUsable = Boolean($firstPage.length);
-        const previousUsable = Boolean($previousPage.length);
-        const nextUsable = Boolean($nextPage.length);
-        const lastUsable = Boolean($lastPage.length);
-        if (toPage === 1) {
-            firstUsable && $firstPage.addClass(DISABLED_CLASS_NAME);
-            previousUsable && $previousPage.addClass(DISABLED_CLASS_NAME);
-        } else {
-            firstUsable && $firstPage.removeClass(DISABLED_CLASS_NAME);
-            previousUsable && $previousPage.removeClass(DISABLED_CLASS_NAME);
-        }
-
-        if (toPage >= tPage) {
-            nextUsable && $nextPage.addClass(DISABLED_CLASS_NAME);
-            lastUsable && $lastPage.addClass(DISABLED_CLASS_NAME);
-        } else {
-            nextUsable && $nextPage.removeClass(DISABLED_CLASS_NAME);
-            lastUsable && $lastPage.removeClass(DISABLED_CLASS_NAME);
-        }
-    }
-
-	/**
-	 * 绑定分页点击事件
-	 * @param gridManagerName
-	 * @private
-     */
-    __bindPageEvent(gridManagerName) {
-		const _this = this;
-
-		// 事件: 首页
-        const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage } = this.eventMap[gridManagerName];
-        jTool(firstPage.target).on(firstPage.events, firstPage.selector, function () {
-            _this.gotoPage(cache.getSettings(gridManagerName), 1);
-        });
-
-        // 事件: 上一页
-        jTool(previousPage.target).on(previousPage.events, previousPage.selector, function () {
-            const settings = cache.getSettings(gridManagerName);
-            const cPage = settings.pageData[settings.currentPageKey];
-            const toPage = cPage - 1;
-            _this.gotoPage(settings, toPage < 1 ? 1 : toPage);
-        });
-
-        // 事件: 下一页
-        jTool(nextPage.target).on(nextPage.events, nextPage.selector, function () {
-            const settings = cache.getSettings(gridManagerName);
-            const cPage = settings.pageData[settings.currentPageKey];
-            const tPage = settings.pageData.tPage;
-            const toPage = cPage + 1;
-            _this.gotoPage(settings, toPage > tPage ? tPage : toPage);
-        });
-
-        // 事件: 尾页
-        jTool(lastPage.target).on(lastPage.events, lastPage.selector, function () {
-            const settings = cache.getSettings(gridManagerName);
-            _this.gotoPage(settings, settings.pageData.tPage);
-        });
-
-        // 事件: 页码
-        jTool(numberPage.target).on(numberPage.events, numberPage.selector, function () {
-            const settings = cache.getSettings(gridManagerName);
-            const pageAction = jTool(this);
-
-            // 分页页码
-            let toPage = pageAction.attr('to-page');
-            if (!toPage || !Number(toPage) || pageAction.hasClass(DISABLED_CLASS_NAME)) {
-                return false;
-            }
-            toPage = parseInt(toPage, 10);
-            _this.gotoPage(settings, toPage);
-        });
-
-        // 事件: 刷新
-        jTool(refresh.target).on(refresh.events, refresh.selector, function () {
-            core.refresh(gridManagerName);
-        });
-
-        // 事件: 快捷跳转
-        jTool(gotoPage.target).on(gotoPage.events, gotoPage.selector, function (event) {
-            if (event.which !== 13) {
-                return;
-            }
-            let _cPage = parseInt(this.value, 10);
-            _this.gotoPage(cache.getSettings(gridManagerName), _cPage);
-        });
-	}
-
-    /**
-     * 修改分页描述信息
-     * @param $footerToolbar
-     * @param settings
-     * @param pageData
-     * @param asyncTotalText: 异步总页loading文本
-     * @private
-     */
-	__resetPageInfo($footerToolbar, settings, pageData, asyncTotalText) {
-
-        // 从多少开始
-        const fromNum = pageData[settings.currentPageKey] === 1 ? 1 : (pageData[settings.currentPageKey] - 1) * pageData[settings.pageSizeKey] + 1;
-
-        // 到多少结束
-        const toNum = pageData[settings.currentPageKey] * pageData[settings.pageSizeKey];
-
-        // 总共条数
-        let totalNum = pageData.tSize;
-
-        // 当前页
-        const cPage = pageData[settings.currentPageKey];
-
-        // 总页数
-        let tPage = pageData.tPage;
-
-        // 当前没有总条数 且 存在异步加载文本: 使用异步加载文本填充总条数与总页数
-        if (!totalNum && asyncTotalText) {
-            totalNum = tPage = asyncTotalText;
-        }
-
-        const $pageInfo = jTool('.page-info', $footerToolbar);
-        if ($pageInfo.length) {
-            const info = i18n(settings, 'page-info', [fromNum, toNum, totalNum, cPage, tPage]);
-            $pageInfo.html(info);
-        }
-
-        // #001
-        // 更新实时更新数据: 当前页从多少条开始显示
-        const $beginNumber = jTool('[begin-number-info]', $footerToolbar);
-        if ($beginNumber.length) {
-            $beginNumber.html(fromNum);
-            $beginNumber.val(fromNum);
-        }
-
-        // 更新实时更新数据: 当前页到多少条结束显示
-        const $endNumber = jTool('[end-number-info]', $footerToolbar);
-        if ($endNumber.length) {
-            $endNumber.html(toNum);
-            $endNumber.val(toNum);
-        }
-
-        // 更新实时更新数据: 当前页
-        const $currentPage = jTool('[current-page-info]', $footerToolbar);
-        if ($currentPage.length) {
-            $currentPage.html(cPage);
-            $currentPage.val(cPage);
-        }
-
-        // 更新实时更新数据: 总条数
-        const $totalsNumber = jTool('[totals-number-info]', $footerToolbar);
-        if ($totalsNumber.length) {
-            $totalsNumber.html(totalNum);
-            $totalsNumber.val(totalNum);
-        }
-
-        // 更新实时更新数据: 总页数
-        const $totalsPage = jTool('[totals-page-info]', $footerToolbar);
-        if ($totalsPage.length) {
-            $totalsPage.html(tPage);
-            $totalsPage.val(tPage);
-        }
-    }
-
-	/**
-	 * 计算并返回分页数据
-	 * @param settings
-	 * @param totals
-     * @param len 本次请求返回的总条数，该参数仅在totals为空时使用
-	 * @returns {{tPage: number, cPage: *, pSize: *, tSize: *}}
-	 * @private
-     */
-	__getPageData(settings, totals, len) {
-		const _pSize = settings.pageData[settings.pageSizeKey] || settings.pageSize;
-		const _cPage = settings.pageData[settings.currentPageKey] || 1;
-
-        let _tPage = null;
-        if (!totals) {
-            _tPage = len < _pSize ? _cPage : _cPage + 1;
-        } else {
-            _tPage = Math.ceil(totals / _pSize);
-        }
-		const pageData = {};
-
-		// 总页数
-		pageData['tPage'] = _tPage || 1;
-
-		// 当前页
-		pageData[settings.currentPageKey] = _cPage > _tPage ? 1 : _cPage;
-
-		// 每页显示条数
-		pageData[settings.pageSizeKey] = _pSize;
-
-		// 总条数
-		pageData['tSize'] = totals;
-
-		return pageData;
-	}
-
-	/**
-	 * 根据本地缓存配置分页数据
-	 * @param settings
-	 * @private
-     */
-	__configPageForCache(settings) {
-		// 缓存对应
-		let	userMemory = cache.getUserMemory(settings.gridManagerName);
-
-		// 每页显示条数
-		let	_pSize = null;
-
-		// 验证是否存在每页显示条数缓存数据
-		if (!userMemory || !userMemory.page || !userMemory.page[settings.pageSizeKey]) {
-			_pSize = settings.pageSize || 10;
-		} else {
-			_pSize = userMemory.page[settings.pageSizeKey];
-		}
-		const pageData = {};
-		pageData[settings.pageSizeKey] = _pSize;
-		pageData[settings.currentPageKey] = 1;
-		jTool.extend(settings, {pageData: pageData});
-		cache.setSettings(settings);
-	}
-
-	/**
 	 * 消毁
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-        clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(eventMap[gridManagerName]);
 	}
 }
 export default new AjaxPage();

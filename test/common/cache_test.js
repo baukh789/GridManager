@@ -1,11 +1,11 @@
 'use strict';
 import jTool from '@common/jTool';
 import {CACHE_ERROR_KEY, TR_CACHE_ROW, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '@common/constants';
-import cache from '@common/cache';
+import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, resetTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, updateCache } from '@common/cache';
 import store from '@common/Store';
 import { version } from '@package.json';
 import tableTpl from '@test/table-test.tpl.html';
-import getTableData from '@test/table-test.data.js';
+import getTableTestData from '@test/table-test.data.js';
 import { getColumnMap, getColumnData } from '@test/table-config';
 import i18n from '@module/i18n';
 import {CHECKBOX_KEY, ORDER_KEY, TR_CACHE_KEY, TR_LEVEL_KEY} from '@common/constants';
@@ -13,53 +13,28 @@ import {CHECKBOX_KEY, ORDER_KEY, TR_CACHE_KEY, TR_LEVEL_KEY} from '@common/const
 // 清除空格
 const tableTestTpl = tableTpl;
 
-/**
- * 验证类的属性及方法总量
- */
-describe('cache 验证类的属性及方法总量', () => {
-    let getPropertyCount = null;
-    beforeEach(() => {
-        getPropertyCount = o => {
-            let count = 0;
-            for (let n in o) {
-                if (o.hasOwnProperty(n)) {
-                    count++;
-                }
-            }
-            return count;
-        };
-    });
-    afterEach(() => {
-        getPropertyCount = null;
-    });
-    it('Function count', () => {
-        // es6 中 constructor 也会算做为对象的属性, 所以总量上会增加1
-        expect(getPropertyCount(Object.getOwnPropertyNames(Object.getPrototypeOf(cache)))).toBe(22 + 1);
+describe('SIV_waitContainerAvailable', () => {
+    it('基础验证', () => {
+        expect(SIV_waitContainerAvailable).toBeDefined();
+        expect(SIV_waitContainerAvailable).toEqual({});
     });
 });
 
-describe('cache.SIV_waitContainerAvailable', () => {
+describe('SIV_waitTableAvailable', () => {
     it('基础验证', () => {
-        expect(cache.SIV_waitContainerAvailable).toBeDefined();
-        expect(cache.SIV_waitContainerAvailable).toEqual({});
+        expect(SIV_waitTableAvailable).toBeDefined();
+        expect(SIV_waitTableAvailable).toEqual({});
     });
 });
 
-describe('cache.SIV_waitTableAvailable', () => {
+describe('getVersion()', () => {
     it('基础验证', () => {
-        expect(cache.SIV_waitTableAvailable).toBeDefined();
-        expect(cache.SIV_waitTableAvailable).toEqual({});
-    });
-});
-
-describe('cache.getVersion()', () => {
-    it('基础验证', () => {
-        expect(cache.getVersion).toBeDefined();
-        expect(cache.getVersion.length).toBe(0);
+        expect(getVersion).toBeDefined();
+        expect(getVersion.length).toBe(0);
     });
 
     it('验证返回值', () => {
-        expect(cache.getVersion()).toBe(version);
+        expect(getVersion()).toBe(version);
     });
 });
 
@@ -75,19 +50,16 @@ describe('getScope and setScope', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.getScope).toBeDefined();
-        expect(cache.getScope.length).toBe(1);
-        expect(cache.setScope).toBeDefined();
-        expect(cache.setScope.length).toBe(2);
+        expect(setScope).toBeDefined();
+        expect(setScope.length).toBe(2);
     });
 
     it('验证值', () => {
-        expect(cache.getScope('test')).toBeUndefined();
         scope = {
             name: 'ccc'
         };
-        cache.setScope('test', scope);
-        expect(cache.getScope('test')).toEqual(scope);
+        setScope('test', scope);
+        expect(store.scope['test']).toEqual(scope);
     });
 });
 
@@ -95,7 +67,7 @@ describe('getRowData', () => {
     let tableData = null;
     let insertData = null;
     beforeEach(() => {
-        tableData = getTableData();
+        tableData = getTableTestData();
         document.body.innerHTML = tableTestTpl;
         insertData = () => {
             jTool.each(jTool('table tbody tr'), (index, item) => {
@@ -118,12 +90,12 @@ describe('getRowData', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.getRowData).toBeDefined();
-        expect(cache.getRowData.length).toBe(3);
+        expect(getRowData).toBeDefined();
+        expect(getRowData.length).toBe(3);
     });
 
     it('未存在数据时', () => {
-        expect(cache.getRowData('test', document.querySelector('tr[cache-key="9"]'))).toEqual({});
+        expect(getRowData('test', document.querySelector('tr[cache-key="9"]'))).toEqual({});
     });
 
     it('参数为element', () => {
@@ -131,29 +103,29 @@ describe('getRowData', () => {
         tableData.data[8].gm_checkbox_disabled = true;
         tableData.data[8].gm_order = 9;
         insertData();
-        expect(cache.getRowData('test', document.querySelector('tr[cache-key="8"]'))).toEqual(new getTableData().data[8]);
-        expect(cache.getRowData('test', document.querySelector('tr[cache-key="8"]'), true)).toEqual(tableData.data[8]);
+        expect(getRowData('test', document.querySelector('tr[cache-key="8"]'))).toEqual(new getTableTestData().data[8]);
+        expect(getRowData('test', document.querySelector('tr[cache-key="8"]'), true)).toEqual(tableData.data[8]);
     });
 
     it('使用gm自定义的属性', () => {
         insertData();
-        expect(cache.getRowData('test', document.querySelector('tr[cache-key="9"]'))).toEqual(tableData.data[9]);
+        expect(getRowData('test', document.querySelector('tr[cache-key="9"]'))).toEqual(tableData.data[9]);
     });
 
     it('参数为NodeList', () => {
         insertData();
-        expect(cache.getRowData('test', document.querySelectorAll('tr[cache-key]')).length).toBe(10);
+        expect(getRowData('test', document.querySelectorAll('tr[cache-key]')).length).toBe(10);
     });
 
     it('参数异常', () => {
         insertData();
-        expect(cache.getRowData('test', 'aa')).toEqual({});
+        expect(getRowData('test', 'aa')).toEqual({});
     });
 });
 
 describe('updateRowData(gridManagerName, key, rowDataList)', () => {
     beforeEach(() => {
-        store.responseData['test'] = getTableData().data;
+        store.responseData['test'] = getTableTestData().data;
         store.settings = {
             test: {
                 gridManagerName: 'test',
@@ -172,12 +144,12 @@ describe('updateRowData(gridManagerName, key, rowDataList)', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.updateRowData).toBeDefined();
-        expect(cache.updateRowData.length).toBe(3);
+        expect(updateRowData).toBeDefined();
+        expect(updateRowData.length).toBe(3);
     });
 
     it('执行验证: 常规数据', () => {
-        let { tableData, updateCacheList } = cache.updateRowData('test', 'id', [{id: 90, title: 'test updateRowData'}]);
+        let { tableData, updateCacheList } = updateRowData('test', 'id', [{id: 90, title: 'test updateRowData'}]);
         expect(tableData.length).toBe(10);
         expect(tableData[1].title).toBe('test updateRowData');
 
@@ -189,7 +161,7 @@ describe('updateRowData(gridManagerName, key, rowDataList)', () => {
 
     it('执行验证: 树型数据', () => {
         store.settings.test.supportTreeData = true;
-        let { tableData, updateCacheList } = cache.updateRowData('test', 'id', [{id: 92, title: 'test updateRowData'}, {id: 921, title: 'test updateRowData'}]);
+        let { tableData, updateCacheList } = updateRowData('test', 'id', [{id: 92, title: 'test updateRowData'}, {id: 921, title: 'test updateRowData'}]);
 
         expect(tableData.length).toBe(10);
         expect(tableData[0].title).toBe('test updateRowData');
@@ -206,7 +178,7 @@ describe('updateRowData(gridManagerName, key, rowDataList)', () => {
 describe('getTableData and setTableData', () => {
     let tableData = null;
     beforeEach(() => {
-        tableData = getTableData();
+        tableData = getTableTestData();
     });
     afterEach(() => {
         tableData = null;
@@ -214,16 +186,16 @@ describe('getTableData and setTableData', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.getTableData).toBeDefined();
-        expect(cache.getTableData.length).toBe(1);
-        expect(cache.setTableData).toBeDefined();
-        expect(cache.setTableData.length).toBe(2);
+        expect(getTableData).toBeDefined();
+        expect(getTableData.length).toBe(1);
+        expect(setTableData).toBeDefined();
+        expect(setTableData.length).toBe(2);
     });
 
     it('执行验证', () => {
-        expect(cache.getTableData('test')).toEqual([]);
-        cache.setTableData('test', tableData.data);
-        expect(cache.getTableData('test')).toEqual(tableData.data);
+        expect(getTableData('test')).toEqual([]);
+        setTableData('test', tableData.data);
+        expect(getTableData('test')).toEqual(tableData.data);
     });
 });
 
@@ -231,7 +203,7 @@ describe('resetTableData', () => {
     let tableData = null;
     let resetData = null;
     beforeEach(() => {
-        tableData = getTableData().data;
+        tableData = getTableTestData().data;
     });
     afterEach(() => {
         tableData = null;
@@ -242,8 +214,8 @@ describe('resetTableData', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.resetTableData).toBeDefined();
-        expect(cache.resetTableData.length).toBe(2);
+        expect(resetTableData).toBeDefined();
+        expect(resetTableData.length).toBe(2);
     });
 
     it('执行验证: 无重置项', () => {
@@ -259,7 +231,7 @@ describe('resetTableData', () => {
                 currentPageKey: 'cPage'
             }
         };
-        resetData = cache.resetTableData('test', tableData);
+        resetData = resetTableData('test', tableData);
         expect(resetData).toEqual(tableData);
     });
 
@@ -279,7 +251,7 @@ describe('resetTableData', () => {
                 currentPageKey: 'cPage'
             }
         };
-        resetData = cache.resetTableData('test', tableData);
+        resetData = resetTableData('test', tableData);
         expect(resetData[0][ORDER_KEY]).toBe(31);
         expect(resetData[0][TR_CACHE_KEY]).toBe('0');
         expect(resetData[0][TR_LEVEL_KEY]).toBe(0);
@@ -302,7 +274,7 @@ describe('resetTableData', () => {
                 tableData[0], tableData[2]
             ]
         };
-        resetData = cache.resetTableData('test', tableData);
+        resetData = resetTableData('test', tableData);
         expect(resetData[0][CHECKBOX_KEY]).toBe(true);
         expect(resetData[0][CHECKBOX_DISABLED_KEY]).toBe(false);
         expect(resetData[0][TR_CACHE_KEY]).toBe('0');
@@ -351,7 +323,7 @@ describe('resetTableData', () => {
                 tableData[0], tableData[2]
             ]
         };
-        resetData = cache.resetTableData('test', tableData);
+        resetData = resetTableData('test', tableData);
         expect(resetData[0][ORDER_KEY]).toBeUndefined();
         expect(resetData[0][CHECKBOX_KEY]).toBeUndefined();
         expect(resetData[0][CHECKBOX_DISABLED_KEY]).toBeUndefined();
@@ -382,7 +354,7 @@ describe('getCheckedData and setCheckedData', () => {
     let dataList = null;
     let tableData = null;
     beforeEach(() => {
-        tableData = getTableData();
+        tableData = getTableTestData();
         dataList = [];
         store.checkedData = {};
         store.settings = {
@@ -400,25 +372,25 @@ describe('getCheckedData and setCheckedData', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.getCheckedData).toBeDefined();
-        expect(cache.getCheckedData.length).toBe(1);
-        expect(cache.setCheckedData).toBeDefined();
-        expect(cache.setCheckedData.length).toBe(3);
+        expect(getCheckedData).toBeDefined();
+        expect(getCheckedData.length).toBe(1);
+        expect(setCheckedData).toBeDefined();
+        expect(setCheckedData.length).toBe(3);
     });
 
     it('设置一组全部未选中的数据', () => {
-        expect(cache.getCheckedData('test').length).toBe(0);
+        expect(getCheckedData('test').length).toBe(0);
 
-        cache.setCheckedData('test', tableData.data);
-        expect(cache.getCheckedData('test').length).toBe(0);
+        setCheckedData('test', tableData.data);
+        expect(getCheckedData('test').length).toBe(0);
     });
 
     it('设置一组全部选中的数据', () => {
         dataList = [tableData.data[0], tableData.data[2]];
-        cache.setCheckedData('test', dataList, true);  // 第三个参数为true时， checkedList默认为全部选中的数据
-        expect(cache.getCheckedData('test').length).toBe(2);
-        expect(cache.getCheckedData('test')[0].id).toBe(92);
-        expect(cache.getCheckedData('test')[1].id).toBe(89);
+        setCheckedData('test', dataList, true);  // 第三个参数为true时， checkedList默认为全部选中的数据
+        expect(getCheckedData('test').length).toBe(2);
+        expect(getCheckedData('test')[0].id).toBe(92);
+        expect(getCheckedData('test')[1].id).toBe(89);
     });
 
     it('设置一组存在两种状态的数据', () => {
@@ -427,21 +399,21 @@ describe('getCheckedData and setCheckedData', () => {
         dataList.push(jTool.extend(tableData.data[1], {gm_checkbox: false}));
         dataList.push(jTool.extend(tableData.data[2], {gm_checkbox: true}));
         dataList.push(jTool.extend(tableData.data[3], {gm_checkbox: false}));
-        cache.setCheckedData('test', dataList);
+        setCheckedData('test', dataList);
 
-        expect(cache.getCheckedData('test').length).toBe(2);
-        expect(cache.getCheckedData('test')[0].id).toBe(92);
-        expect(cache.getCheckedData('test')[1].id).toBe(89);
+        expect(getCheckedData('test').length).toBe(2);
+        expect(getCheckedData('test')[0].id).toBe(92);
+        expect(getCheckedData('test')[1].id).toBe(89);
 
         // 将已存储的值修改为未选中状态
         dataList[2].gm_checkbox = false;
-        cache.setCheckedData('test', dataList);
-        expect(cache.getCheckedData('test').length).toBe(1);
-        expect(cache.getCheckedData('test')[0].id).toBe(92);
+        setCheckedData('test', dataList);
+        expect(getCheckedData('test').length).toBe(1);
+        expect(getCheckedData('test')[0].id).toBe(92);
 
         // 清空
-        cache.setCheckedData('test', [], true);
-        expect(cache.getCheckedData('test').length).toBe(0);
+        setCheckedData('test', [], true);
+        expect(getCheckedData('test').length).toBe(0);
     });
 });
 
@@ -450,7 +422,7 @@ describe('updateCheckedData', () => {
     let columnMap = null;
     beforeEach(() => {
         columnMap = getColumnMap();
-        tableData = getTableData().data;
+        tableData = getTableTestData().data;
     });
     afterEach(() => {
         tableData = null;
@@ -459,13 +431,13 @@ describe('updateCheckedData', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.updateCheckedData).toBeDefined();
-        expect(cache.updateCheckedData.length).toBe(4);
+        expect(updateCheckedData).toBeDefined();
+        expect(updateCheckedData.length).toBe(4);
     });
 
     it('未存在选中数据时', () => {
         expect(store.checkedData['test']).toBeUndefined();
-        cache.updateCheckedData('test', columnMap, 'id', [{id: 92, title: 'this is new title'}]);
+        updateCheckedData('test', columnMap, 'id', [{id: 92, title: 'this is new title'}]);
         expect(store.checkedData['test']).toBeUndefined();
     });
 
@@ -478,7 +450,7 @@ describe('updateCheckedData', () => {
         expect(store.checkedData['test'][0].title).toBe('Content-Type 对照表');
         expect(store.checkedData['test'][1].title).toBe('js捕获错误信息');
 
-        cache.updateCheckedData('test', columnMap, 'id', [{id: 92, title: 'this is new title'}]);
+        updateCheckedData('test', columnMap, 'id', [{id: 92, title: 'this is new title'}]);
         expect(store.checkedData['test'].length).toBe(2);
         expect(store.checkedData['test'][0].title).toBe('this is new title');
         expect(store.checkedData['test'][1].title).toBe('js捕获错误信息');
@@ -497,12 +469,12 @@ describe('getMemoryKey', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.getMemoryKey).toBeDefined();
-        expect(cache.getMemoryKey.length).toBe(1);
+        expect(getMemoryKey).toBeDefined();
+        expect(getMemoryKey.length).toBe(1);
     });
 
     it('执行验证', () => {
-        expect(cache.getMemoryKey('test')).toBe('/context.html#userList-test');
+        expect(getMemoryKey('test')).toBe('/context.html#userList-test');
     });
 });
 
@@ -522,16 +494,16 @@ describe('getUserMemory', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.getUserMemory).toBeDefined();
-        expect(cache.getUserMemory.length).toBe(1);
+        expect(getUserMemory).toBeDefined();
+        expect(getUserMemory.length).toBe(1);
     });
 
     it('当前key值无效', () => {
-        expect(cache.getUserMemory('undefined')).toEqual({});
+        expect(getUserMemory('undefined')).toEqual({});
     });
 
     it('当前无存储字段', () => {
-        expect(cache.getUserMemory('test')).toEqual({});
+        expect(getUserMemory('test')).toEqual({});
         expect(document.querySelector('table').getAttribute(CACHE_ERROR_KEY)).toBe('error');
     });
 
@@ -539,7 +511,7 @@ describe('getUserMemory', () => {
         window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
             otherTable: JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
         }));
-        expect(cache.getUserMemory('test')).toEqual({});
+        expect(getUserMemory('test')).toEqual({});
     });
 });
 
@@ -575,45 +547,45 @@ describe('saveUserMemory', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.saveUserMemory).toBeDefined();
-        expect(cache.saveUserMemory.length).toBe(1);
+        expect(saveUserMemory).toBeDefined();
+        expect(saveUserMemory.length).toBe(1);
     });
 
     it('缓存被禁用', () => {
         settings.disableCache = true;
-        expect(cache.saveUserMemory(settings)).toBeUndefined();
-        expect(cache.getUserMemory('test')).toEqual({});
+        expect(saveUserMemory(settings)).toBeUndefined();
+        expect(getUserMemory('test')).toEqual({});
     });
 
     it('当前未存在其它存储', () => {
-        cache.saveUserMemory(settings);
-        expect(cache.getUserMemory('test')).toEqual({column: getColumnMap(), page: {pSize: 20}});
+        saveUserMemory(settings);
+        expect(getUserMemory('test')).toEqual({column: getColumnMap(), page: {pSize: 20}});
     });
 
     it('当前已存在其它存储', () => {
         window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
             '/context.html#userList-otherTable': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
         }));
-        cache.saveUserMemory(settings);
-        expect(cache.getUserMemory('test')).toEqual({column: getColumnMap(), page: {pSize: 20}});
+        saveUserMemory(settings);
+        expect(getUserMemory('test')).toEqual({column: getColumnMap(), page: {pSize: 20}});
     });
 
     it('type === undefined', () => {
         settings.columnMap.title.remind = undefined;
-        cache.saveUserMemory(settings);
-        expect(cache.getUserMemory('test').column.title.remind).toBeUndefined();
+        saveUserMemory(settings);
+        expect(getUserMemory('test').column.title.remind).toBeUndefined();
     });
 
     it('type === function', () => {
         settings.columnMap.title.template = () => {};
-        cache.saveUserMemory(settings);
-        expect(cache.getUserMemory('test').column.title.template).toBeUndefined();
+        saveUserMemory(settings);
+        expect(getUserMemory('test').column.title.template).toBeUndefined();
     });
 
     it('type === object', () => {
         settings.columnMap.title.template = {};
-        cache.saveUserMemory(settings);
-        expect(cache.getUserMemory('test').column.title.template).toBeUndefined();
+        saveUserMemory(settings);
+        expect(getUserMemory('test').column.title.template).toBeUndefined();
     });
 });
 
@@ -653,12 +625,12 @@ describe('delUserMemory', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.delUserMemory).toBeDefined();
-        expect(cache.delUserMemory.length).toBe(1);
+        expect(delUserMemory).toBeDefined();
+        expect(delUserMemory.length).toBe(1);
     });
 
     it('当前无用户记忆', () => {
-        expect(cache.delUserMemory('test')).toBe(false);
+        expect(delUserMemory('test')).toBe(false);
     });
 
     it('定点清除', () => {
@@ -666,8 +638,8 @@ describe('delUserMemory', () => {
             '/context.html#userList-otherTable': JSON.stringify({column: getColumnMap(), page: {pSize: 20}}),
             '/context.html#userList-test': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
         }));
-        cache.saveUserMemory(settings);
-        expect(cache.delUserMemory('test')).toBe(true);
+        saveUserMemory(settings);
+        expect(delUserMemory('test')).toBe(true);
         expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-otherTable']).toBe(JSON.stringify({column: getColumnMap(), page: {pSize: 20}}));
         expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-test']).toBeUndefined();
 
@@ -679,8 +651,8 @@ describe('delUserMemory', () => {
             '/context.html#userList-otherTable': JSON.stringify({column: getColumnMap(), page: {pSize: 20}}),
             '/context.html#userList-test': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
         }));
-        cache.saveUserMemory(settings);
-        expect(cache.delUserMemory()).toBe(true);
+        saveUserMemory(settings);
+        expect(delUserMemory()).toBe(true);
         expect(window.localStorage.getItem(MEMORY_KEY)).toBe(null);
 
         expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of all ', ...CONSOLE_STYLE[CONSOLE_INFO]);
@@ -725,12 +697,12 @@ describe('updateTemplate', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.updateTemplate).toBeDefined();
-        expect(cache.updateTemplate.length).toBe(1);
+        expect(updateTemplate).toBeDefined();
+        expect(updateTemplate.length).toBe(1);
     });
 
     it('执行验证', () => {
-        arg =  cache.updateTemplate(arg);
+        arg =  updateTemplate(arg);
         expect(arg.disableCache).toBe(false);
         expect(arg.emptyTemplate()).toEqual('test');
 
@@ -818,13 +790,13 @@ describe('initSettings', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.initSettings).toBeDefined();
-        expect(cache.initSettings.length).toBe(3);
+        expect(initSettings).toBeDefined();
+        expect(initSettings.length).toBe(3);
     });
 
     it('默认配置', () => {
         // settings 中对默认值都已经测试过了，这里只挑部分项进行测试
-        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
+        settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings.gridManagerName).toBe('test');
         expect(settings.supportAdjust).toBe(true);
         expect(settings.supportAjaxPage).toBe(false);
@@ -839,7 +811,7 @@ describe('initSettings', () => {
         arg.supportAutoOrder = false;
         arg.supportCheckbox = false;
         delete arg.columnData[0].key;
-        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
+        settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings).toBe(false);
         expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c columnData[0].key undefined ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
     });
@@ -847,14 +819,14 @@ describe('initSettings', () => {
     it('异常配置: 存在disableCustomize但无width', () => {
         // 第8行数据存在disableCustomize配置
         delete arg.columnData[7].width;
-        expect(cache.initSettings(arg, checkboxColumnFn, orderColumnFn)).toBe(false);
+        expect(initSettings(arg, checkboxColumnFn, orderColumnFn)).toBe(false);
         expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c column action: when disableCustomize exists, width must be set ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
     });
 
     it('开启缓存:当前无用户记忆', () => {
         // 当前无用户记忆
         arg.disableCache = false;
-        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
+        settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings.columnMap.pic.width).toBe('110px');
     });
 
@@ -865,7 +837,7 @@ describe('initSettings', () => {
         }));
 
         arg.disableCache = false;
-        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
+        settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings.columnMap.pic.width).toBe('120px');
     });
 
@@ -876,7 +848,7 @@ describe('initSettings', () => {
         }));
 
         arg.disableCache = false;
-        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
+        settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of test ', ...CONSOLE_STYLE[CONSOLE_INFO]);
     });
 
@@ -887,7 +859,7 @@ describe('initSettings', () => {
         }));
 
         arg.disableCache = false;
-        settings = cache.initSettings(arg, checkboxColumnFn, orderColumnFn);
+        settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of test ', ...CONSOLE_STYLE[CONSOLE_INFO]);
     });
 });
@@ -917,21 +889,21 @@ describe('getSettings or setSettings', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.getSettings).toBeDefined();
-        expect(cache.getSettings.length).toBe(1);
+        expect(getSettings).toBeDefined();
+        expect(getSettings.length).toBe(1);
 
-        expect(cache.setSettings).toBeDefined();
-        expect(cache.setSettings.length).toBe(1);
+        expect(setSettings).toBeDefined();
+        expect(setSettings.length).toBe(1);
     });
 
     it('settings 无值的情况', () => {
-        expect(cache.getSettings('test')).toEqual({});
+        expect(getSettings('test')).toEqual({});
     });
 
     it('设置 settings，后再获取', () => {
-        expect(cache.setSettings(settings)).toBeUndefined();
+        expect(setSettings(settings)).toBeUndefined();
 
-        expect(cache.getSettings('test')).toEqual(settings);
+        expect(getSettings('test')).toEqual(settings);
     });
 });
 
@@ -963,12 +935,12 @@ describe('update', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.update).toBeDefined();
-        expect(cache.update.length).toBe(1);
+        expect(updateCache).toBeDefined();
+        expect(updateCache.length).toBe(1);
     });
 
     it('执行验证', () => {
-        _settings = cache.update('test');
+        _settings = updateCache('test');
         expect(_settings.gridManagerName).toBe(settings.gridManagerName);
         expect(_settings.supportAjaxPage).toBe(settings.supportAjaxPage);
         expect(_settings.pageSizeKey).toBe(settings.pageSizeKey);
@@ -991,20 +963,20 @@ describe('verifyVersion', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.verifyVersion).toBeDefined();
-        expect(cache.verifyVersion.length).toBe(0);
+        expect(verifyVersion).toBeDefined();
+        expect(verifyVersion.length).toBe(0);
     });
 
     it('当前为第一次渲染', () => {
         // 当前为第一次渲染
         window.localStorage.removeItem(VERSION_KEY);
         expect(window.localStorage.getItem(VERSION_KEY)).toBeNull();
-        cache.verifyVersion();
+        verifyVersion();
         expect(window.localStorage.getItem(VERSION_KEY)).toBe(store.version);
 
         // 版本变更
         localStorage.setItem(VERSION_KEY, -1);
-        cache.verifyVersion();
+        verifyVersion();
         expect(localStorage.getItem(VERSION_KEY)).toBe(store.version);
         expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of all ', ...CONSOLE_STYLE[CONSOLE_INFO]);
 
@@ -1028,8 +1000,8 @@ describe('clear', () => {
     });
 
     it('基础验证', () => {
-        expect(cache.clear).toBeDefined();
-        expect(cache.clear.length).toBe(1);
+        expect(clearCache).toBeDefined();
+        expect(clearCache.length).toBe(1);
     });
 
     it('执行验证', () => {
@@ -1038,7 +1010,7 @@ describe('clear', () => {
         expect(store.checkedData['test']).toEqual({});
         expect(store.settings['test']).toEqual({});
 
-        cache.clear('test');
+        clearCache('test');
         expect(store.scope['test']).toBeUndefined();
         expect(store.responseData['test']).toBeUndefined();
         expect(store.checkedData['test']).toBeUndefined();

@@ -6,7 +6,7 @@
 import './style.less';
 import jTool from '@common/jTool';
 import { getTable, getQuerySelector, getFakeVisibleTh, getWrap, getColTd, getThName, getDiv, getTh, updateVisibleLast, updateScrollStatus, clearTargetEvent } from '@common/base';
-import cache from '@common/cache';
+import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
 import adjust from '../adjust';
@@ -32,7 +32,7 @@ class Drag {
         // 拖拽事件仅绑在fake head th
         jTool(dragStart.target).on(dragStart.events, dragStart.selector, function (event) {
             // 获取设置项
-            let settings = cache.getSettings(gridManagerName);
+            let settings = getSettings(gridManagerName);
 
             const { columnMap, dragBefore, animateTime, dragAfter, supportAdjust, supportConfig } = settings;
 
@@ -135,7 +135,7 @@ class Drag {
                 }
 
                 // 更新存储信息
-                cache.update(gridManagerName);
+                updateCache(gridManagerName);
 
                 // 重置调整宽度事件源
                 if (supportAdjust) {

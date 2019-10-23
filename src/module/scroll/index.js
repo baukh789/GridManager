@@ -8,7 +8,7 @@
  * */
 import jTool from '@common/jTool';
 import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus } from '@common/base';
-import cache from '@common/cache';
+import { getSettings, updateCache } from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import framework from '@common/framework';
 import config from '../config';
@@ -37,7 +37,7 @@ class Scroll {
         $setTopHead = getFakeThead(gridManagerName);
         $setTopHead.removeAttr(TABLE_HEAD_KEY);
 
-        const settings = cache.getSettings(gridManagerName);
+        const settings = getSettings(gridManagerName);
         framework.compileFakeThead(settings, $setTopHead.get(0).querySelector('tr'));
     }
 
@@ -81,7 +81,7 @@ class Scroll {
 
 		// 绑定resize事件: 对表头吸顶的列宽度进行修正
 		jTool(window).bind(`resize.${gridManagerName}`, () => {
-            const settings = cache.getSettings(gridManagerName);
+            const settings = getSettings(gridManagerName);
             if ($tableDiv.length !== 1) {
                 return;
             }
@@ -91,7 +91,7 @@ class Scroll {
             if (bodyWidth !== oldBodyWidth) {
                 updateThWidth(settings);
                 oldBodyWidth = bodyWidth;
-                cache.update(gridManagerName);
+                updateCache(gridManagerName);
             }
             updateScrollStatus(gridManagerName);
 

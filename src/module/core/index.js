@@ -7,7 +7,7 @@
 import './style.less';
 import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmptyHtml, getEmpty, updateThWidth } from '@common/base';
 import { outError, cloneObject } from '@common/utils';
-import cache from '@common/cache';
+import { getTableData, setTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, READY_CLASS_NAME } from '@common/constants';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';
@@ -25,7 +25,7 @@ class Core {
      * @private
      */
     refresh(gridManagerName, callback) {
-        const settings = cache.getSettings(gridManagerName);
+        const settings = getSettings(gridManagerName);
         const { loadingTemplate, ajaxBeforeSend, ajaxSuccess, ajaxError, ajaxComplete } = settings;
         // 更新刷新图标状态
         ajaxPage.updateRefreshIconState(gridManagerName, true);
@@ -39,7 +39,7 @@ class Core {
         .then(response => {
             // 异步重新获取settings
             try {
-                const settings = cache.getSettings(gridManagerName);
+                const settings = getSettings(gridManagerName);
                 this.driveDomForSuccessAfter(settings, response, callback);
                 ajaxSuccess(response);
                 ajaxComplete(response);
@@ -62,9 +62,9 @@ class Core {
      * @param gridManagerName
      */
     cleanData(gridManagerName) {
-        const settings = cache.getSettings(gridManagerName);
+        const settings = getSettings(gridManagerName);
         this.insertEmptyTemplate(settings);
-        cache.setTableData(gridManagerName, []);
+        setTableData(gridManagerName, []);
 
         // 渲染选择框
         if (settings.supportCheckbox) {
@@ -151,7 +151,7 @@ class Core {
         const { gridManagerName, emptyTemplate } = settings;
         // 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
         // 用于解决容器为不可见时，触发了setQuery的情况
-        if (isInit && cache.getTableData(gridManagerName).length !== 0) {
+        if (isInit && getTableData(gridManagerName).length !== 0) {
             return;
         }
 
@@ -183,7 +183,7 @@ class Core {
 
         coreDOM.init($table, settings);
 
-        cache.setSettings(settings);
+        setSettings(settings);
 
         // 等待容器可用
         await this.waitContainerAvailable(gridManagerName);
@@ -206,17 +206,17 @@ class Core {
     }
 
     /**
-     * 等待容器可用
+     * 等待容器可用: 防止因容器的宽度不可用，而导致的列宽出错
      * @param gridManagerName
      */
     waitContainerAvailable(gridManagerName) {
         const tableWarp = document.querySelector(`[${WRAP_KEY}="${gridManagerName}"]`);
         return new Promise(resolve => {
-            cache.SIV_waitContainerAvailable[gridManagerName] = setInterval(() => {
+            SIV_waitContainerAvailable[gridManagerName] = setInterval(() => {
                 let tableWarpWidth = window.getComputedStyle(tableWarp).width;
                 if (tableWarpWidth !== '100%') {
-                    clearInterval(cache.SIV_waitContainerAvailable[gridManagerName]);
-                    cache.SIV_waitContainerAvailable[gridManagerName] = null;
+                    clearInterval(SIV_waitContainerAvailable[gridManagerName]);
+                    SIV_waitContainerAvailable[gridManagerName] = null;
                     resolve();
                 }
             }, 50);

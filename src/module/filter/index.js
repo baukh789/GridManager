@@ -4,7 +4,7 @@
  */
 import './style.less';
 import jTool from '@common/jTool';
-import cache from '@common/cache';
+import { getSettings, setSettings } from '@common/cache';
 import { getQuerySelector, getWrap, getDiv, getThName, clearTargetEvent } from '@common/base';
 import { CHECKED, UNCHECKED } from '@common/constants';
 import { parseTpl } from '@common/parse';
@@ -52,7 +52,7 @@ class Filter {
             });
 
             // 更新当前表格下所有表过滤体的状态
-            const settings = cache.getSettings(gridManagerName);
+            const settings = getSettings(gridManagerName);
             _this.update($th, settings.columnMap[thName].filter);
 
             const isShow = $filterCon.css('display') !== 'none';
@@ -91,12 +91,12 @@ class Filter {
                 item.checked && checkedList.push(item.value);
             });
 
-            const settings = cache.getSettings(gridManagerName);
+            const settings = getSettings(gridManagerName);
             const checkedStr = checkedList.join(',');
             settings.columnMap[thName].filter.selected = checkedStr;
             settings.pageData[settings.currentPageKey] = 1;
             jTool.extend(settings.query, {[thName]: checkedStr});
-            cache.setSettings(settings);
+            setSettings(settings);
 
             _this.update($th, settings.columnMap[thName].filter);
             core.refresh(gridManagerName);
@@ -111,11 +111,11 @@ class Filter {
             const $th = jTool(this).closest('th[th-name]');
             const thName = getThName($th);
 
-            const settings = cache.getSettings(gridManagerName);
+            const settings = getSettings(gridManagerName);
             delete settings.query[thName];
             settings.columnMap[thName].filter.selected = '';
             settings.pageData[settings.currentPageKey] = 1;
-            cache.setSettings(settings);
+            setSettings(settings);
 
             _this.update($th, settings.columnMap[thName].filter);
             core.refresh(gridManagerName);

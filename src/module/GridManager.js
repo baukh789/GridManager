@@ -6,7 +6,7 @@ import jTool from '@common/jTool';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY } from '@common/constants';
 import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getQuerySelector, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
-import cache from '@common/cache';
+import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache } from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
 import dropdown from './dropdown';
@@ -24,7 +24,7 @@ import sort from './sort';
 import filter from './filter';
 
 const isRendered = (table, fnName) => {
-    const settings = cache.getSettings(getKey(table));
+    const settings = getSettings(getKey(table));
     // fnName !== 'destroy' &&
     if (!settings.rendered) {
         outError(`${fnName} failed，please check your table had been init`);
@@ -44,7 +44,7 @@ export default class GridManager {
 	 */
 	static
 	get version() {
-		return cache.getVersion();
+		return getVersion();
 	}
 
 	/**
@@ -88,7 +88,7 @@ export default class GridManager {
 	 */
 	static
 	get(table) {
-        return cache.getSettings(getKey(table));
+        return getSettings(getKey(table));
 	}
 
     /**
@@ -100,7 +100,7 @@ export default class GridManager {
      */
     static
     setScope(table, scope) {
-        return cache.setScope(getKey(table), scope);
+        return setScope(getKey(table), scope);
     }
 
 	/**
@@ -115,7 +115,7 @@ export default class GridManager {
         if (!isRendered(table, 'getLocalStorage')) {
             return;
         }
-		return cache.getUserMemory(getKey(table));
+		return getUserMemory(getKey(table));
 	}
 
     /**
@@ -132,7 +132,7 @@ export default class GridManager {
             return;
         }
         const gridManagerName = getKey(table);
-        const settings = cache.getSettings(gridManagerName);
+        const settings = getSettings(gridManagerName);
         calcLayout(gridManagerName, width, height, settings.supportAjaxPage);
         updateThWidth(settings);
         updateScrollStatus(gridManagerName);
@@ -150,7 +150,7 @@ export default class GridManager {
         if (table && !isRendered(table, 'clear')) {
             return;
         }
-		return cache.delUserMemory(getKey(table));
+		return delUserMemory(getKey(table));
 	}
 
 	/**
@@ -165,7 +165,7 @@ export default class GridManager {
         if (!isRendered(table, 'getRowData')) {
             return;
         }
-		return cache.getRowData(getKey(table), target);
+		return getRowData(getKey(table), target);
 	}
 
 	/**
@@ -196,7 +196,7 @@ export default class GridManager {
         }
         const gridManagerName = getKey(table);
 
-        if (!cache.getSettings(gridManagerName).supportConfig) {
+        if (!getSettings(gridManagerName).supportConfig) {
             outError('supportConfig not open, please set supportConfig into true');
             return;
         }
@@ -289,7 +289,7 @@ export default class GridManager {
         }
 
         const gridManagerName = getKey(table);
-		const settings = cache.getSettings(gridManagerName);
+		const settings = getSettings(gridManagerName);
 
 		if (jTool.type(query) !== 'object') {
             query = {};
@@ -322,7 +322,7 @@ export default class GridManager {
 		if (typeof (gotoPage) === 'number') {
             settings.pageData[settings.currentPageKey] = gotoPage;
         }
-		cache.setSettings(settings);
+		setSettings(settings);
 		core.refresh(gridManagerName, callback);
 	}
 
@@ -337,9 +337,9 @@ export default class GridManager {
         if (!isRendered(table, 'setAjaxData')) {
             return;
         }
-		const settings = cache.getSettings(getKey(table));
+		const settings = getSettings(getKey(table));
 		jTool.extend(settings, { ajaxData });
-		cache.setSettings(settings);
+		setSettings(settings);
 		core.refresh(settings.gridManagerName, callback);
 	}
 
@@ -356,14 +356,14 @@ export default class GridManager {
 	        return;
         }
         const gridManagerName = getKey(table);
-		const settings = cache.getSettings(gridManagerName);
+		const settings = getSettings(gridManagerName);
 		if (typeof (isGotoFirstPage) !== 'boolean') {
 			callback = isGotoFirstPage;
 			isGotoFirstPage = false;
 		}
 		if (isGotoFirstPage) {
 			settings.pageData[settings.currentPageKey] = 1;
-			cache.setSettings(settings);
+			setSettings(settings);
 		}
 		core.refresh(gridManagerName, callback);
 	};
@@ -378,10 +378,10 @@ export default class GridManager {
         if (!isRendered(table, 'renderGrid')) {
             return;
         }
-        const settings = cache.getSettings(getKey(table));
+        const settings = getSettings(getKey(table));
         const { gridManagerName, dataKey, totalsKey, pageData } = settings;
         const response = {
-            [dataKey]: cache.getTableData(gridManagerName),
+            [dataKey]: getTableData(gridManagerName),
             [totalsKey]: pageData.tSize
         };
         core.driveDomForSuccessAfter(settings, response);
@@ -398,7 +398,7 @@ export default class GridManager {
         if (!isRendered(table, 'resetSettings')) {
             return;
         }
-        cache.setSettings(settings);
+        setSettings(settings);
     }
 
     /**
@@ -408,7 +408,7 @@ export default class GridManager {
      */
     static
     updateTemplate(arg) {
-        return cache.updateTemplate(arg);
+        return updateTemplate(arg);
     }
 
     /**
@@ -436,7 +436,7 @@ export default class GridManager {
         if (!isRendered(table, 'getCheckedData')) {
             return;
         }
-		return cache.getCheckedData(getKey(table));
+		return getCheckedData(getKey(table));
 	};
 
     /**
@@ -452,16 +452,16 @@ export default class GridManager {
             return;
         }
         const checkedList = Array.isArray(checkedData) ? checkedData : [checkedData];
-        const { columnMap, useRadio, gridManagerName, treeConfig } = cache.getSettings(getKey(table));
+        const { columnMap, useRadio, gridManagerName, treeConfig } = getSettings(getKey(table));
         const treeKey = treeConfig.treeKey;
-        const tableData = cache.getTableData(gridManagerName);
+        const tableData = getTableData(gridManagerName);
         tableData.forEach(rowData => {
             // 获取比对数据时，需要清除子数据
             let cloneRow = getCloneRowData(columnMap, rowData, [treeKey]);
             rowData[CHECKBOX_KEY] = checkedList.some(item => equal(cloneRow, getCloneRowData(columnMap, item, [treeKey])));
         });
 
-        cache.setCheckedData(gridManagerName, checkedList, true);
+        setCheckedData(gridManagerName, checkedList, true);
         return checkbox.resetDOM(gridManagerName, tableData, useRadio);
     };
 
@@ -478,14 +478,14 @@ export default class GridManager {
         if (!isRendered(table, 'updateRowData')) {
             return;
         }
-        const settings = cache.getSettings(getKey(table));
+        const settings = getSettings(getKey(table));
         const { gridManagerName, columnMap, supportCheckbox } = settings;
         const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
-        const { tableData, updateCacheList } = cache.updateRowData(gridManagerName, key, rowDataList);
+        const { tableData, updateCacheList } = updateRowData(gridManagerName, key, rowDataList);
 
         // 更新选中数据
         if (supportCheckbox) {
-            cache.updateCheckedData(gridManagerName, columnMap, key, rowDataList);
+            updateCheckedData(gridManagerName, columnMap, key, rowDataList);
         }
 
         // 更新DOM
@@ -581,10 +581,10 @@ export default class GridManager {
         }
 
 		// 通过版本较验 清理缓存
-		cache.verifyVersion();
+		verifyVersion();
 
 		// 初始化设置相关: 合并, 存储
-		let settings = cache.initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order));
+		let settings = initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order));
 		const gridManagerName = settings.gridManagerName;
 
 		// 校验: gridManagerName
@@ -604,19 +604,19 @@ export default class GridManager {
         // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
         if (typeof $table.attr(CACHE_ERROR_KEY) !== 'undefined') {
             window.setTimeout(() => {
-                cache.saveUserMemory(settings);
+                saveUserMemory(settings);
                 $table.removeAttr(CACHE_ERROR_KEY);
             }, 1000);
         }
 
-        settings = cache.getSettings(gridManagerName);
+        settings = getSettings(gridManagerName);
 
         // 删除dom渲染中标识
         delete table[RENDERING_KEY];
 
         // 设置渲染完成标识
         settings.rendered = true;
-        cache.setSettings(settings);
+        setSettings(settings);
 
         const runCallback = () => {
             typeof (callback) === 'function' ? callback(settings.query) : '';
@@ -716,12 +716,6 @@ export default class GridManager {
             gridManagerName = table.getAttribute(TABLE_KEY);
         }
 
-        // 清除setInterval
-        cache.SIV_waitTableAvailable[gridManagerName] && clearInterval(cache.SIV_waitTableAvailable[gridManagerName]);
-        cache.SIV_waitContainerAvailable[gridManagerName] && clearInterval(cache.SIV_waitContainerAvailable[gridManagerName]);
-        cache.SIV_waitTableAvailable[gridManagerName] = null;
-        cache.SIV_waitContainerAvailable[gridManagerName] = null;
-
         try {
             // 清除各模块中的事件及部分DOM
             adjust.destroy(gridManagerName);
@@ -742,6 +736,6 @@ export default class GridManager {
         }
 
         // 清除实例及数据
-        cache.clear(gridManagerName);
+        clearCache(gridManagerName);
     }
 }
