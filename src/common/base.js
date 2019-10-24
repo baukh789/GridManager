@@ -18,7 +18,8 @@ import {
     LOADING_CLASS_NAME,
     LAST_VISIBLE,
     TH_VISIBLE,
-    GM_CREATE
+    GM_CREATE,
+    TH_NAME
 } from './constants';
 
 /**
@@ -191,7 +192,7 @@ export const getTh = (gridManagerName, thName) => {
     if (thName.jTool) {
         thName = getThName(thName);
     }
-    return getThead(gridManagerName).find(`th[th-name="${thName}"]`);
+    return getThead(gridManagerName).find(`th[${TH_NAME}="${thName}"]`);
 };
 
 /**
@@ -240,7 +241,7 @@ export const getFakeTh = (gridManagerName, thName) => {
     if (thName.jTool) {
         thName = getThName(thName);
     }
-    return getFakeThead(gridManagerName).find(`th[th-name="${thName}"]`);
+    return getFakeThead(gridManagerName).find(`th[${TH_NAME}="${thName}"]`);
 };
 
 /**
@@ -258,7 +259,7 @@ export const getFakeVisibleTh = gridManagerName => {
  * @returns {*}
  */
 export const getThName = $th => {
-    return $th.attr('th-name');
+    return $th.attr(TH_NAME);
 };
 
 /**
@@ -338,7 +339,7 @@ export const setAreVisible = (gridManagerName, thNameList, isVisible) => {
 
         // config
         // 所对应的显示隐藏所在的li
-        const $checkLi = jTool(`[${CONFIG_KEY}="${gridManagerName}"] li[th-name="${thName}"]`);
+        const $checkLi = jTool(`[${CONFIG_KEY}="${gridManagerName}"] li[${TH_NAME}="${thName}"]`);
 
         isVisible ? $checkLi.addClass('checked-li') : $checkLi.removeClass('checked-li');
         jTool('input[type="checkbox"]', $checkLi).prop('checked', isVisible);

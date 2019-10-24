@@ -4,17 +4,15 @@ import { parseTpl } from '@common/parse';
 import { TOOLBAR_KEY } from '@common/constants';
 import dropdownTpl from './dropdown.tpl.html';
 import './style.less';
-import getEvent from './event';
+import { getEvent, eventMap } from './event';
 class Dropdown {
-    eventMap = {};
-
     /**
      * 初始化下拉框
      * @param gridManagerName
      */
     init({ gridManagerName, defaultValue = '', onChange }) {
-        this.eventMap[gridManagerName] = getEvent(gridManagerName, `[${TOOLBAR_KEY}="${gridManagerName}"]`);
-        const { open, close, selected } = this.eventMap[gridManagerName];
+        eventMap[gridManagerName] = getEvent(gridManagerName, `[${TOOLBAR_KEY}="${gridManagerName}"]`);
+        const { open, close, selected } = eventMap[gridManagerName];
 
         const $wrap = getWrap(gridManagerName);
         const $text = $wrap.find('.gm-dropdown .gm-dropdown-text');
@@ -68,7 +66,7 @@ class Dropdown {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(eventMap[gridManagerName]);
     }
 }
 

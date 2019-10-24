@@ -3,16 +3,14 @@
  */
 import './style.less';
 import jTool from '@common/jTool';
-import { getQuerySelector, getThName, clearTargetEvent } from '@common/base';
-import { outWarn } from '@common/utils';
+import { getQuerySelector, getThName, clearTargetEvent, getTh } from '@common/base';
+import { outWarn, isUndefined } from '@common/utils';
 import { getSettings, setSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import core from '../core';
 import sortTpl from './sort.tpl.html';
-import getSortEvent from './event';
+import { getEvent, eventMap } from './event';
 class Sort {
-    eventMap = {};
-
     // 存储启用状态
     enable = {};
 
@@ -24,8 +22,8 @@ class Sort {
         if (!this.enable[gridManagerName]) {
             return;
         }
-        this.eventMap[gridManagerName] = getSortEvent(gridManagerName, getQuerySelector(gridManagerName));
-        const { target, events, selector } = this.eventMap[gridManagerName].sortAction;
+        eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName));
+        const { target, events, selector } = eventMap[gridManagerName].sortAction;
         const _this = this;
 
         // 绑定排序事件
@@ -100,7 +98,7 @@ class Sort {
 		}
 
 		// 默认执行完后进行刷新列表操作
-		if (typeof (refresh) === 'undefined') {
+		if (isUndefined(refresh)) {
 			refresh = true;
 		}
 
@@ -136,31 +134,35 @@ class Sort {
 	 * @param gridManagerName
      */
 	updateSortStyle(gridManagerName) {
-		const settings = getSettings(gridManagerName);
+		const { sortData, sortUpText, sortDownText } = getSettings(gridManagerName);
+
+		const upClass = 'sorting-up';
+		const downClass = 'sorting-down';
+		const thAttr = 'sorting';
 
 		// 重置排序样式
         jTool.each(jTool(`${getQuerySelector(gridManagerName)} .sorting-action`), (i, v) => {
-            jTool(v).removeClass('sorting-up sorting-down');
-            jTool(v).closest('th').attr('sorting', '');
+            jTool(v).removeClass(`${upClass} ${downClass}`);
+            jTool(v).closest('th').attr(thAttr, '');
 		});
 
 		// 根据排序数据更新排序
-        jTool.each(settings.sortData, (key, value) => {
-			const $th = jTool(`${getQuerySelector(gridManagerName)} th[th-name="${key}"]`);
+        jTool.each(sortData, (key, value) => {
+			const $th = getTh(gridManagerName, key);
             const $sortAction = jTool('.sorting-action', $th);
 
 			// 排序操作：升序
-			if (value === settings.sortUpText) {
-				$sortAction.addClass('sorting-up');
-				$sortAction.removeClass('sorting-down');
-				$th.attr('sorting', settings.sortUpText);
+			if (value === sortUpText) {
+				$sortAction.addClass(upClass);
+				$sortAction.removeClass(downClass);
+				$th.attr(thAttr, sortUpText);
 			}
 
 			// 排序操作：降序
-			if (value === settings.sortDownText) {
-				$sortAction.addClass('sorting-down');
-				$sortAction.removeClass('sorting-up');
-				$th.attr('sorting', settings.sortDownText);
+			if (value === sortDownText) {
+				$sortAction.addClass(downClass);
+				$sortAction.removeClass(upClass);
+				$th.attr(thAttr, sortDownText);
 			}
 		});
 	}
@@ -170,7 +172,7 @@ class Sort {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-	    clearTargetEvent(this.eventMap[gridManagerName]);
+	    clearTargetEvent(eventMap[gridManagerName]);
 	}
 }
 export default new Sort();

@@ -1,222 +1,217 @@
+// 解析存储容器
+export const compileMap = {};
 
-class Framework {
-    // 解析存储容器
-    compileMap = {};
+// 框架解析唯一值
+export const getKey = gridManagerName => {
+    return `data-compile-id-${gridManagerName || ''}`;
+};
 
-    // 框架解析唯一值
-    getKey(gridManagerName) {
-        return `data-compile-id-${gridManagerName || ''}`;
+/**
+ * 获取当前表格解析列表
+ * @param gridManagerName
+ * @returns {*}
+ */
+export const getCompileList = gridManagerName => {
+    if (!compileMap[gridManagerName]) {
+        compileMap[gridManagerName] = [];
     }
+    return compileMap[gridManagerName];
+};
 
-    /**
-     * 获取当前表格解析列表
-     * @param gridManagerName
-     * @returns {*}
-     */
-    getCompileList(gridManagerName) {
-        if (!this.compileMap[gridManagerName]) {
-            this.compileMap[gridManagerName] = [];
-        }
-        return this.compileMap[gridManagerName];
+/**
+ * 清空当前表格解析列表
+ * @param gridManagerName
+ */
+export const clearCompileList = gridManagerName => {
+    compileMap[gridManagerName] = [];
+};
+
+/**
+ * 解析: fake thead
+ * @param settings
+ * @param el
+ */
+export const compileFakeThead = (settings, el) => {
+    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(gridManagerName);
+    if (compileAngularjs || compileVue || compileReact) {
+        const thList = el.querySelectorAll(`[${getKey(gridManagerName)}]`);
+        [].forEach.call(thList, item => {
+            const obj = compileList[item.getAttribute(`${getKey(gridManagerName)}`)];
+            item.setAttribute(`${getKey(gridManagerName)}`, compileList.length);
+            compileList.push({...obj});
+        });
     }
+};
 
-    /**
-     * 清空当前表格解析列表
-     * @param gridManagerName
-     */
-    clearCompileList(gridManagerName) {
-        this.compileMap[gridManagerName] = [];
-    }
-
-    /**
-     * 解析: fake thead
-     * @param settings
-     * @param el
-     */
-    compileFakeThead(settings, el) {
-        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-        const compileList = this.getCompileList(gridManagerName);
+/**
+ * 解析: th
+ * @param settings
+ * @param key
+ * @param template
+ * @returns {string}
+ */
+export const compileTh = (settings, key, template) => {
+    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(gridManagerName);
+    let thText = '';
+    let compileAttr = '';
+    if (template) {
         if (compileAngularjs || compileVue || compileReact) {
-            const thList = el.querySelectorAll(`[${this.getKey(gridManagerName)}]`);
-            [].forEach.call(thList, item => {
-                const obj = compileList[item.getAttribute(`${this.getKey(gridManagerName)}`)];
-                item.setAttribute(`${this.getKey(gridManagerName)}`, compileList.length);
-                compileList.push({...obj});
-            });
-        }
-    }
-
-    /**
-     * 解析: th
-     * @param settings
-     * @param key
-     * @param template
-     * @returns {string}
-     */
-    compileTh(settings, key, template) {
-        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-        const compileList = this.getCompileList(gridManagerName);
-        let thText = '';
-        let compileAttr = '';
-        if (template) {
-            if (compileAngularjs || compileVue || compileReact) {
-                compileAttr = `${this.getKey(gridManagerName)}=${compileList.length}`;
-                compileList.push({ key, template, type: 'text' });
-            }
-
-            // not React
-            if (!compileReact) {
-                thText = template();
-            }
-        }
-
-        return {
-            thText,
-            compileAttr
-        };
-    }
-
-    /**
-     * 解析: td
-     * @param settings
-     * @param el
-     * @param row
-     * @param index
-     * @param key
-     * @param template
-     * @returns {*}
-     */
-    compileTd(settings, el, template, row, index, key) {
-        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-        const compileList = this.getCompileList(gridManagerName);
-        // React and not template
-        if (!template) {
-            return row[key];
-        }
-
-        // React element or function
-        if (compileReact) {
-            compileList.push({el, template, row, index, key, type: 'template', fnArg: [row[key], row, index]});
-            return '';
-        }
-
-        // 解析框架: Angular 1.x || Vue
-        if (compileVue || compileAngularjs) {
-            compileList.push({el, row, index});
+            compileAttr = `${getKey(gridManagerName)}=${compileList.length}`;
+            compileList.push({ key, template, type: 'text' });
         }
 
         // not React
         if (!compileReact) {
-            return template(row[key], row, index);
+            thText = template();
         }
     }
 
-    /**
-     * 解析: 空模板
-     * @param settings
-     * @param el
-     * @param template
-     * @returns {string}
-     */
-    compileEmptyTemplate(settings, el, template) {
-        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-        const compileList = this.getCompileList(gridManagerName);
-        // React
-        if (compileReact) {
-            compileList.push({el, template, type: 'empty'});
-            return '';
-        }
+    return {
+        thText,
+        compileAttr
+    };
+};
 
-        // 解析框架: Vue
-        if (compileVue) {
-            compileList.push({el});
-        }
-
-        // 解析框架: Angular 1.x
-        if (compileAngularjs) {
-            compileList.push({el});
-        }
-
-        return template();
+/**
+ * 解析: td
+ * @param settings
+ * @param el
+ * @param row
+ * @param index
+ * @param key
+ * @param template
+ * @returns {*}
+ */
+export const compileTd = (settings, el, template, row, index, key) => {
+    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(gridManagerName);
+    // React and not template
+    if (!template) {
+        return row[key];
     }
 
-    /**
-     * 解析: 通栏
-     * @param settings
-     * @param el
-     * @param row
-     * @param index
-     * @param template
-     * @returns {*}
-     */
-    compileFullColumn(settings, el, row, index, template) {
-        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-        const compileList = this.getCompileList(gridManagerName);
-        // 无模板
-        if (!template) {
-            return '';
-        }
-
-        // React element or function
-        if (compileReact) {
-            compileList.push({el, template, row, index, type: 'full', fnArg: [row, index]});
-            return '';
-        }
-
-        // 解析框架: Vue
-        if (compileVue) {
-            compileList.push({el, row, index});
-        }
-
-        // 解析框架: Angular 1.x
-        if (compileAngularjs) {
-            compileList.push({el, row, index});
-        }
-
-        // not react
-        return template(row, index);
+    // React element or function
+    if (compileReact) {
+        compileList.push({el, template, row, index, key, type: 'template', fnArg: [row[key], row, index]});
+        return '';
     }
 
-    /**
-     * 发送
-     * @param settings
-     * @param isRunElement: 是否通过属性更新element
-     * @returns {Promise<void>}
-     */
-    async send(settings, isRunElement) {
-        const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-        const compileList = this.getCompileList(gridManagerName);
-        if (compileList.length === 0) {
-            return;
-        }
-        if (isRunElement) {
-            compileList.forEach((item, index) => {
-                item.el = document.querySelector(`[${this.getKey(gridManagerName)}="${index}"]`);
-            });
-        }
-        // 解析框架: Vue
-        if (compileVue) {
-            await compileVue(compileList);
-        }
+    // 解析框架: Angular 1.x || Vue
+    if (compileVue || compileAngularjs) {
+        compileList.push({el, row, index});
+    }
 
-        // 解析框架: Angular 1.x
-        if (compileAngularjs) {
-            await compileAngularjs(compileList);
-        }
+    // not React
+    if (!compileReact) {
+        return template(row[key], row, index);
+    }
+};
 
-        // 解析框架: React
-        if (compileReact) {
-            await compileReact(compileList);
-        }
+/**
+ * 解析: 空模板
+ * @param settings
+ * @param el
+ * @param template
+ * @returns {string}
+ */
+export const compileEmptyTemplate = (settings, el, template) => {
+    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(gridManagerName);
+    // React
+    if (compileReact) {
+        compileList.push({el, template, type: 'empty'});
+        return '';
+    }
 
-        // 清除解析数据及标识
-        compileList.forEach(item => {
-            item.el && item.el.removeAttribute(`${this.getKey(gridManagerName)}`);
+    // 解析框架: Vue
+    if (compileVue) {
+        compileList.push({el});
+    }
+
+    // 解析框架: Angular 1.x
+    if (compileAngularjs) {
+        compileList.push({el});
+    }
+
+    return template();
+};
+
+/**
+ * 解析: 通栏
+ * @param settings
+ * @param el
+ * @param row
+ * @param index
+ * @param template
+ * @returns {*}
+ */
+export const compileFullColumn = (settings, el, row, index, template) => {
+    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(gridManagerName);
+    // 无模板
+    if (!template) {
+        return '';
+    }
+
+    // React element or function
+    if (compileReact) {
+        compileList.push({el, template, row, index, type: 'full', fnArg: [row, index]});
+        return '';
+    }
+
+    // 解析框架: Vue
+    if (compileVue) {
+        compileList.push({el, row, index});
+    }
+
+    // 解析框架: Angular 1.x
+    if (compileAngularjs) {
+        compileList.push({el, row, index});
+    }
+
+    // not react
+    return template(row, index);
+};
+
+/**
+ * 发送
+ * @param settings
+ * @param isRunElement: 是否通过属性更新element
+ * @returns {Promise<void>}
+ */
+export async function sendCompile(settings, isRunElement) {
+    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(gridManagerName);
+    if (compileList.length === 0) {
+        return;
+    }
+    if (isRunElement) {
+        compileList.forEach((item, index) => {
+            item.el = document.querySelector(`[${getKey(gridManagerName)}="${index}"]`);
         });
-
-        // 清除
-        this.clearCompileList(gridManagerName);
     }
-}
+    // 解析框架: Vue
+    if (compileVue) {
+        await compileVue(compileList);
+    }
 
-export default new Framework();
+    // 解析框架: Angular 1.x
+    if (compileAngularjs) {
+        await compileAngularjs(compileList);
+    }
+
+    // 解析框架: React
+    if (compileReact) {
+        await compileReact(compileList);
+    }
+
+    // 清除解析数据及标识
+    compileList.forEach(item => {
+        item.el && item.el.removeAttribute(`${getKey(gridManagerName)}`);
+    });
+
+    // 清除
+    clearCompileList(gridManagerName);
+}

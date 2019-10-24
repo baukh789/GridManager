@@ -4,7 +4,7 @@
  * @param scope: querySelector 域
  */
 import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
-export default function getDragEvent(gridManagerName, scope) {
+export const getEvent = (gridManagerName, scope) => {
     return {
         // 开始
         dragStart: {events: 'mousedown', target: scope, selector: `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .drag-action`},
@@ -15,4 +15,6 @@ export default function getDragEvent(gridManagerName, scope) {
         // 停止
         dragAbort: {events: 'mouseup', target: 'body'}
     };
-}
+};
+
+export const eventMap = {};

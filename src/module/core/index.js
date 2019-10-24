@@ -15,7 +15,7 @@ import checkbox from '../checkbox';
 import scroll from '../scroll';
 import coreDOM from './coreDOM';
 import { transformToPromise } from './tool';
-import framework from '@common/framework';
+import { sendCompile, compileEmptyTemplate, clearCompileList } from '@common/framework';
 
 class Core {
     /**
@@ -163,10 +163,10 @@ class Core {
         $tbody.html(getEmptyHtml(gridManagerName, visibleNum, style));
         const emptyTd = getEmpty(gridManagerName).get(0).querySelector('td');
 
-        emptyTd.innerHTML = framework.compileEmptyTemplate(settings, emptyTd, emptyTemplate);
+        emptyTd.innerHTML = compileEmptyTemplate(settings, emptyTd, emptyTemplate);
 
         // 解析框架: 空模板
-        framework.send(settings);
+        sendCompile(settings);
     }
 
     /**
@@ -179,7 +179,7 @@ class Core {
         const gridManagerName = settings.gridManagerName;
 
         // 创建DOM前 先清空框架解析列表
-        framework.clearCompileList(gridManagerName);
+        clearCompileList(gridManagerName);
 
         coreDOM.init($table, settings);
 
@@ -195,7 +195,7 @@ class Core {
         scroll.init(gridManagerName);
 
         // 解析框架: thead区域
-        await framework.send(settings, true);
+        await sendCompile(settings, true);
 
         // 更新列宽
         updateThWidth(settings, true);

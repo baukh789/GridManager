@@ -94,3 +94,12 @@ export const cloneObject = o => {
 export const getVisibleState = isShow => {
     return isShow ? 'visible' : 'none';
 };
+
+/**
+ * 是否为undefined
+ * @param o
+ * @returns {boolean}
+ */
+export const isUndefined = o => {
+    return typeof o === 'undefined';
+};

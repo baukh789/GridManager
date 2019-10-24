@@ -3,9 +3,11 @@
  * @param gridManagerName
  * @param scope: querySelector 域
  */
-export default function getCoreEvent(gridManagerName, scope) {
+export const getEvent = (gridManagerName, scope) => {
     return {
         // td移入
         tdMousemove: {events: 'mousemove', target: scope, selector: 'tbody td'}
     };
-}
+};
+
+export const eventMap = {};

@@ -5,21 +5,11 @@ import './style.less';
 import jTool from '@common/jTool';
 import { getQuerySelector, getTable, getTbody, getTh, getColTd, clearTargetEvent } from '@common/base';
 import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
-import getEvent from './event';
-const getIconClass = state => {
-    return state ? 'icon-jianhao' : 'icon-add';
-};
+import { isUndefined } from '@common/utils';
+import { getEvent, eventMap } from './event';
+import { treeKey, treeCacheMap, getIconClass } from './tool';
 
 class Tree {
-    eventMap = {};
-
-    // 待添加tree dom存储器
-    map = {};
-
-    get key() {
-        return 'tree-element';
-    }
-
     /**
      * add map
      * @param gridManagerName
@@ -28,10 +18,10 @@ class Tree {
      * @param hasChildren
      */
     add(gridManagerName, trNode, level, hasChildren) {
-        if (!this.map[gridManagerName]) {
-            this.map[gridManagerName] = [];
+        if (!treeCacheMap[gridManagerName]) {
+            treeCacheMap[gridManagerName] = [];
         }
-        this.map[gridManagerName].push({
+        treeCacheMap[gridManagerName].push({
             trNode,
             level,
             hasChildren
@@ -43,14 +33,14 @@ class Tree {
      * @param gridManagerName
      */
     clear(gridManagerName) {
-        delete this.map[gridManagerName];
+        delete treeCacheMap[gridManagerName];
     }
 
     init(gridManagerName) {
         const _this = this;
         // 绑定事件
-        _this.eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName), this.key);
-        const { target, events, selector } = this.eventMap[gridManagerName].toggleState;
+        eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName), treeKey);
+        const { target, events, selector } = eventMap[gridManagerName].toggleState;
 
         jTool(target).on(events, selector, function () {
             const $tr = jTool(this).closest('tr');
@@ -68,16 +58,16 @@ class Tree {
         const $tbody = getTbody(gridManagerName);
 
         const updateState = ($tr, openState) => {
-            const $treeEle = jTool(`[${this.key}]`, $tr);
+            const $treeEle = jTool(`[${treeKey}]`, $tr);
             const $action = jTool('.tree-action', $treeEle);
             const cacheKey = $tr.attr(TR_CACHE_KEY);
-            if (typeof openState === 'undefined') {
-                openState = !($treeEle.attr(this.key) === 'true');
+            if (isUndefined(openState)) {
+                openState = !($treeEle.attr(treeKey) === 'true');
             }
 
             $action.removeClass(getIconClass(!openState));
             $action.addClass(getIconClass(openState));
-            $treeEle.attr(this.key, openState);
+            $treeEle.attr(treeKey, openState);
 
             const $childrenTr = $tbody.find(`[${TR_PARENT_KEY}="${cacheKey}"]`);
             if ($childrenTr.length === 0) {
@@ -94,11 +84,11 @@ class Tree {
         };
 
         const updateAllState = openState => {
-            const $treeEle = jTool(`[${this.key}]`, $tbody);
+            const $treeEle = jTool(`[${treeKey}]`, $tbody);
             const $action = jTool('.tree-action', $treeEle);
             $action.removeClass(getIconClass(!openState));
             $action.addClass(getIconClass(openState));
-            $treeEle.attr(this.key, openState);
+            $treeEle.attr(treeKey, openState);
             const $childrenTr = $tbody.find(`[${TR_PARENT_KEY}]`);
             $childrenTr.attr(TR_CHILDREN_STATE, openState);
         };
@@ -115,11 +105,11 @@ class Tree {
         const { openState, insertTo } = config;
         const $table = getTable(gridManagerName);
         let parentKeyList = [];
-        jTool.each(jTool('tr[parent-key]', $table), (index, item) => {
-            parentKeyList.push(item.getAttribute('parent-key'));
+        jTool.each(jTool(`tr[${TR_PARENT_KEY}]`, $table), (index, item) => {
+            parentKeyList.push(item.getAttribute(TR_PARENT_KEY));
         });
 
-        const insetList = this.map[gridManagerName];
+        const insetList = treeCacheMap[gridManagerName];
         if (!insetList || insetList.length === 0) {
             return;
         }
@@ -137,7 +127,7 @@ class Tree {
                 $insertTd = jTool(`td[${GM_CREATE}="false"]`, trNode).eq(0);
             }
             const treeDOM = document.createElement('span');
-            treeDOM.setAttribute(this.key, openState);
+            treeDOM.setAttribute(treeKey, openState);
             treeDOM.style.width = (level + 1) * 14 + 'px';
 
             if (hasChildren) {
@@ -154,7 +144,7 @@ class Tree {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(eventMap[gridManagerName]);
         this.clear(gridManagerName);
     }
 }

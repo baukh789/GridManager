@@ -5,9 +5,11 @@
  *
  * #001: 这里不使用onmouseenter的原因： onmouseenter不支持事件冒泡，无法进行事件委托
  */
-export default function getRemindEvent(gridManagerName, scope) {
+export const getEvent = (gridManagerName, scope) => {
     return {
         // 触发 #001
         remindStart: {events: 'mouseover', target: scope, selector: '.remind-action'}
     };
-}
+};
+
+export const eventMap = {};

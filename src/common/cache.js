@@ -6,7 +6,7 @@
 * */
 import jTool from '@common/jTool';
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { outInfo, outError, equal, getObjectIndexToArray } from '@common/utils';
+import { outInfo, outError, equal, getObjectIndexToArray, isUndefined } from '@common/utils';
 import { Settings, TextSettings } from '@common/Settings';
 import store from '@common/Store';
 import {
@@ -163,7 +163,7 @@ export const resetTableData = (gridManagerName, data) => {
     // 为每一行数据增加唯一标识
     const addCacheKey = (row, level, index, pIndex) => {
         let cacheKey = index.toString();
-        if (typeof pIndex !== 'undefined') {
+        if (!isUndefined(pIndex)) {
             cacheKey = `${pIndex}-${index}`;
         }
 
@@ -338,7 +338,7 @@ export const saveUserMemory = settings => {
     jTool.each(cloneMap, (undefind, col) => {
         jTool.each(col, (key, item) => {
             // 清除: undefined
-            if (jTool.type(col[key]) === 'undefined') {
+            if (isUndefined(col[key])) {
                 delete col[key];
             }
 
@@ -489,7 +489,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
         columnMap[colKey] = col;
 
         // 如果未设定, 设置默认值为true
-        columnMap[colKey].isShow = col.isShow || typeof (col.isShow) === 'undefined';
+        columnMap[colKey].isShow = col.isShow || isUndefined(col.isShow);
 
         // 为列Map 增加索引
         columnMap[colKey].index = index;

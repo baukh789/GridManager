@@ -3,7 +3,7 @@
  * @param gridManagerName
  * @param scope: querySelector 域
  */
-export default function getFilterEvent(gridManagerName, scope) {
+export const getEvent = (gridManagerName, scope) => {
     return {
         // 切换可视状态
         toggle: {events: 'mousedown', target: scope, selector: '.filter-area .fa-icon'},
@@ -23,4 +23,6 @@ export default function getFilterEvent(gridManagerName, scope) {
         // 单选框点选
         radioAction: {events: 'click', target: scope, selector: '.filter-area .gm-radio-input'}
     };
-}
+};
+
+export const eventMap = {};

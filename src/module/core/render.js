@@ -3,8 +3,8 @@ import order from '../order';
 import ajaxPage from '../ajaxPage';
 import jTool from '@common/jTool';
 import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, TH_VISIBLE } from '@common/constants';
-import { getVisibleState } from '@common/utils';
-import framework from '@common/framework';
+import { getVisibleState, isUndefined } from '@common/utils';
+import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
 import filter from '../filter';
 import config from '../config';
@@ -128,7 +128,7 @@ class Render {
         if (jTool.type(col.filter) === 'object') {
             filter.enable[gridManagerName] = true;
             filterAttr = 'filter=""';
-            if (typeof (col.filter.selected) === 'undefined') {
+            if (isUndefined(col.filter.selected)) {
                 col.filter.selected = settings.query[col.key];
             } else {
                 settings.query[col.key] = col.filter.selected;
@@ -154,7 +154,7 @@ class Render {
                 break;
             // 插件自动生成选择列
             case CHECKBOX_KEY:
-                gmCreateAttr = `${GM_CREATE}="true" gm-checkbox="true"`;  // TODO 需要将true进行移除
+                gmCreateAttr = `${GM_CREATE}="true" gm-checkbox`;
                 thName = CHECKBOX_KEY;
                 thText = checkbox.getThContent(settings.useRadio);
                 break;
@@ -162,7 +162,7 @@ class Render {
             default:
                 gmCreateAttr = `${GM_CREATE}="false"`;
                 thName = col.key;
-                const obj = framework.compileTh(settings, thName, col.text);
+                const obj = compileTh(settings, thName, col.text);
                 thText = obj.thText;
                 compileAttr = obj.compileAttr;
                 break;

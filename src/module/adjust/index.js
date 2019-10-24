@@ -7,9 +7,7 @@ import jTool from '@common/jTool';
 import { getQuerySelector, getTable, getTh, getFakeThead, getThead, getFakeVisibleTh, getColTd, getThTextWidth, updateScrollStatus, clearTargetEvent } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, TH_VISIBLE } from '@common/constants';
 import { getSettings, updateCache } from '@common/cache';
-import getAdjustEvent from './event';
-
-const eventMap = {};
+import { getEvent, eventMap } from './event';
 
 // 选中class name
 const selectedClassName = 'adjust-selected';
@@ -109,7 +107,7 @@ class Adjust {
      */
     init(gridManagerName) {
         // 监听鼠标调整列宽度
-        eventMap[gridManagerName] = getAdjustEvent(gridManagerName, getQuerySelector(gridManagerName));
+        eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName));
 
         const { target, events, selector } = eventMap[gridManagerName].adjustStart;
 

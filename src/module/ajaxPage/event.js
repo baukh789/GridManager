@@ -4,7 +4,7 @@
  * @param scope: querySelector 域
  */
 import { TOOLBAR_KEY } from '@common/constants';
-export default function getAjaxEvent(gridManagerName) {
+export const getEvent = gridManagerName => {
     const target = `[${TOOLBAR_KEY}="${gridManagerName}"]`;
     return {
         // 快捷跳转
@@ -28,4 +28,6 @@ export default function getAjaxEvent(gridManagerName) {
         // 刷新
         refresh: {events: 'click', target, selector: '.refresh-action'}
     };
-}
+};
+
+export const eventMap = {};

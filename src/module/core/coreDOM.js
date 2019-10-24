@@ -1,22 +1,20 @@
 import remind from '../remind';
 import jTool from '@common/jTool';
 import { calcLayout, updateThWidth, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
-import { outError } from '@common/utils';
-import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
+import { outError, isUndefined } from '@common/utils';
+import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
 import adjust from '../adjust';
 import tree from '../tree';
 import render from './render';
-import getCoreEvent from './event';
-import framework from '@common/framework';
+import { getEvent, eventMap } from './event';
+import { sendCompile, compileFullColumn, compileTd } from '@common/framework';
 /**
  * core dom
  */
 class Dom {
-    eventMap = {};
-
     init($table, settings) {
         const { gridManagerName, width, height, supportAjaxPage } = settings;
         // add wrap div
@@ -49,7 +47,7 @@ class Dom {
         jTool.each($thList, (index, item) => {
             const onlyTH = jTool(item);
             const onlyThWarp = jTool('.th-wrap', onlyTH);
-            const thName = onlyTH.attr('th-name');
+            const thName = onlyTH.attr(TH_NAME);
             const column = columnMap[thName];
 
             // 是否为GM自动添加的列
@@ -147,8 +145,8 @@ class Dom {
             topTrNode.innerHTML = `<td colspan="${columnData.length}"><div class="full-column-td"></div></td>`;
 
             const fullColumnNode = topTrNode.querySelector('.full-column-td');
-            const tdTemplate = framework.compileFullColumn(settings, fullColumnNode, row, index, topFullColumn.template);
-            jTool.type(tdTemplate) === 'element' ? fullColumnNode.appendChild(tdTemplate) : fullColumnNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
+            const tdTemplate = compileFullColumn(settings, fullColumnNode, row, index, topFullColumn.template);
+            jTool.type(tdTemplate) === 'element' ? fullColumnNode.appendChild(tdTemplate) : fullColumnNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
 
             tbody.appendChild(topTrNode);
         };
@@ -167,8 +165,8 @@ class Dom {
                 } else {
                     tdNode = jTool(`<td ${GM_CREATE}="false"></td>`).get(0);
 
-                    tdTemplate = framework.compileTd(settings, tdNode, tdTemplate, row, index, key);
-                    jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
+                    tdTemplate = compileTd(settings, tdNode, tdTemplate, row, index, key);
+                    jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
                 }
 
                 // td 文本对齐方向
@@ -186,7 +184,7 @@ class Dom {
 
         try {
             const installTr = (list, level, pIndex) => {
-                const isTop = typeof pIndex === 'undefined';
+                const isTop = isUndefined(pIndex);
                 jTool.each(list, (index, row) => {
                     const trNode = document.createElement('tr');
                     const cacheKey = row[TR_CACHE_KEY];
@@ -207,7 +205,7 @@ class Dom {
                     trNode.setAttribute(TR_CACHE_KEY, cacheKey);
 
                     // 插入通栏: top-full-column
-                    if (isTop && typeof topFullColumn.template !== 'undefined') {
+                    if (isTop && !isUndefined(topFullColumn.template)) {
                         installTopFull(trNode, row, index);
                     }
 
@@ -239,7 +237,7 @@ class Dom {
         this.initVisible(gridManagerName, columnMap);
 
         // 解析框架
-        framework.send(settings).then(() => {
+        sendCompile(settings).then(() => {
             // 插入tree dom
             supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
 
@@ -284,15 +282,15 @@ class Dom {
                 // 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
                 const tdCloneNode = tdNode.cloneNode(true);
                 tdCloneNode.innerHTML = '';
-                tdTemplate = framework.compileTd(settings, tdCloneNode, tdTemplate, row, index, key);
-                jTool.type(tdTemplate) === 'element' ? tdCloneNode.appendChild(tdTemplate) : tdCloneNode.innerHTML = (typeof tdTemplate === 'undefined' ? '' : tdTemplate);
+                tdTemplate = compileTd(settings, tdCloneNode, tdTemplate, row, index, key);
+                jTool.type(tdTemplate) === 'element' ? tdCloneNode.appendChild(tdTemplate) : tdCloneNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
                 trNode.replaceChild(tdCloneNode, tdNode);
             });
         });
 
 
         // 解析框架
-        framework.send(settings).then(() => {
+        sendCompile(settings).then(() => {
             // 插入tree dom
             supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
 
@@ -365,8 +363,8 @@ class Dom {
             return;
         }
 
-        this.eventMap[gridManagerName] = getCoreEvent(gridManagerName, getQuerySelector(gridManagerName));
-        const { target, events, selector } = this.eventMap[gridManagerName].tdMousemove;
+        eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName));
+        const { target, events, selector } = eventMap[gridManagerName].tdMousemove;
 
         // 绑定td移入事件
         let hoverTd = null;
@@ -389,7 +387,7 @@ class Dom {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(eventMap[gridManagerName]);
 
         try {
             const $table = getTable(gridManagerName);

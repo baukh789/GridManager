@@ -13,9 +13,7 @@ import i18n from '../i18n';
 import dropdown from '../dropdown';
 import ajaxPageTpl from './ajax-page.tpl.html';
 import { getQuerySelector, getPageData, joinPaginationNumber } from './tool';
-import getAjaxEvent from './event';
-
-const eventMap = {};
+import { getEvent, eventMap } from './event';
 
 /**
  * 修改分页描述信息
@@ -135,68 +133,6 @@ const updateFooterDOM = ($footerToolbar, settings, pageData) => {
     }
 };
 
-/**
- * 绑定分页点击事件
- * @param gridManagerName
- * @private
- */
-const bindPageEvent = (gridManagerName, gotoPageFN) => {
-    // 事件: 首页
-    const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage } = eventMap[gridManagerName];
-    jTool(firstPage.target).on(firstPage.events, firstPage.selector, function () {
-        gotoPageFN(getSettings(gridManagerName), 1);
-    });
-
-    // 事件: 上一页
-    jTool(previousPage.target).on(previousPage.events, previousPage.selector, function () {
-        const settings = getSettings(gridManagerName);
-        const cPage = settings.pageData[settings.currentPageKey];
-        const toPage = cPage - 1;
-        gotoPageFN(settings, toPage < 1 ? 1 : toPage);
-    });
-
-    // 事件: 下一页
-    jTool(nextPage.target).on(nextPage.events, nextPage.selector, function () {
-        const settings = getSettings(gridManagerName);
-        const cPage = settings.pageData[settings.currentPageKey];
-        const tPage = settings.pageData.tPage;
-        const toPage = cPage + 1;
-        gotoPageFN(settings, toPage > tPage ? tPage : toPage);
-    });
-
-    // 事件: 尾页
-    jTool(lastPage.target).on(lastPage.events, lastPage.selector, function () {
-        const settings = getSettings(gridManagerName);
-        gotoPageFN(settings, settings.pageData.tPage);
-    });
-
-    // 事件: 页码
-    jTool(numberPage.target).on(numberPage.events, numberPage.selector, function () {
-        const settings = getSettings(gridManagerName);
-        const pageAction = jTool(this);
-
-        // 分页页码
-        let toPage = pageAction.attr('to-page');
-        if (!toPage || !Number(toPage) || pageAction.hasClass(DISABLED_CLASS_NAME)) {
-            return false;
-        }
-        gotoPageFN(settings, parseInt(toPage, 10));
-    });
-
-    // 事件: 刷新
-    jTool(refresh.target).on(refresh.events, refresh.selector, function () {
-        const settings = getSettings(gridManagerName);
-        gotoPageFN(settings, settings.pageData[settings.currentPageKey]);
-    });
-
-    // 事件: 快捷跳转
-    jTool(gotoPage.target).on(gotoPage.events, gotoPage.selector, function (event) {
-        if (event.which !== 13) {
-            return;
-        }
-        gotoPageFN(getSettings(gridManagerName), parseInt(this.value, 10));
-    });
-};
 class AjaxPage {
 
     /**
@@ -206,7 +142,7 @@ class AjaxPage {
 	init(gridManagerName) {
         const settings = getSettings(gridManagerName);
         const { disableCache, pageSizeKey, pageSize, currentPageKey, useNoTotalsMode } = settings;
-        eventMap[gridManagerName] = getAjaxEvent(gridManagerName);
+        eventMap[gridManagerName] = getEvent(gridManagerName);
 
         // 每页显示条数
         let	pSize = pageSize || 10;
@@ -261,8 +197,72 @@ class AjaxPage {
         dropdown.init(dropwownArg);
 
 		// 绑定事件
-		bindPageEvent(gridManagerName, this.gotoPage);
+        this.initEvent(gridManagerName);
+
 	}
+
+    /**
+     * 绑定分页事件
+     * @param gridManagerName
+     */
+	initEvent(gridManagerName) {
+	    const _this = this;
+	    // 事件: 首页
+        const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage } = eventMap[gridManagerName];
+        jTool(firstPage.target).on(firstPage.events, firstPage.selector, function () {
+            _this.gotoPage(getSettings(gridManagerName), 1);
+        });
+
+        // 事件: 上一页
+        jTool(previousPage.target).on(previousPage.events, previousPage.selector, function () {
+            const settings = getSettings(gridManagerName);
+            const cPage = settings.pageData[settings.currentPageKey];
+            const toPage = cPage - 1;
+            _this.gotoPage(settings, toPage < 1 ? 1 : toPage);
+        });
+
+        // 事件: 下一页
+        jTool(nextPage.target).on(nextPage.events, nextPage.selector, function () {
+            const settings = getSettings(gridManagerName);
+            const cPage = settings.pageData[settings.currentPageKey];
+            const tPage = settings.pageData.tPage;
+            const toPage = cPage + 1;
+            _this.gotoPage(settings, toPage > tPage ? tPage : toPage);
+        });
+
+        // 事件: 尾页
+        jTool(lastPage.target).on(lastPage.events, lastPage.selector, function () {
+            const settings = getSettings(gridManagerName);
+            _this.gotoPage(settings, settings.pageData.tPage);
+        });
+
+        // 事件: 页码
+        jTool(numberPage.target).on(numberPage.events, numberPage.selector, function () {
+            const settings = getSettings(gridManagerName);
+            const pageAction = jTool(this);
+
+            // 分页页码
+            let toPage = pageAction.attr('to-page');
+            if (!toPage || !Number(toPage) || pageAction.hasClass(DISABLED_CLASS_NAME)) {
+                return false;
+            }
+            _this.gotoPage(settings, parseInt(toPage, 10));
+        });
+
+        // 事件: 刷新
+        jTool(refresh.target).on(refresh.events, refresh.selector, function () {
+            const settings = getSettings(gridManagerName);
+            _this.gotoPage(settings, settings.pageData[settings.currentPageKey]);
+        });
+
+        // 事件: 快捷跳转
+        jTool(gotoPage.target).on(gotoPage.events, gotoPage.selector, function (event) {
+            if (event.which !== 13) {
+                return;
+            }
+            _this.gotoPage(getSettings(gridManagerName), parseInt(this.value, 10));
+        });
+    }
 
     /**
      * 分页所需HTML

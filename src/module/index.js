@@ -5,7 +5,7 @@
 import jTool from '@common/jTool';
 import { getKey } from '@common/base';
 import { SIV_waitTableAvailable } from '@common/cache';
-import { outWarn, outError } from '@common/utils';
+import { outWarn, outError, isUndefined } from '@common/utils';
 import { TABLE_KEY, RENDERING_KEY } from '@common/constants';
 import GridManager from './GridManager';
 /*
@@ -120,7 +120,7 @@ import GridManager from './GridManager';
 * 兼容jQuery
 * */
 (jQuery => {
-	if (typeof (jQuery) !== 'undefined' && jQuery.fn.extend) {
+	if (!isUndefined(jQuery) && jQuery.fn.extend) {
 		jQuery.fn.extend({
 			GridManager: function () {
 				if (arguments.length === 0) {

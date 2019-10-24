@@ -6,17 +6,15 @@ import './style.less';
 import jTool from '@common/jTool';
 import { getSettings, setSettings } from '@common/cache';
 import { getQuerySelector, getWrap, getDiv, getThName, clearTargetEvent } from '@common/base';
-import { CHECKED, UNCHECKED } from '@common/constants';
+import { CHECKED, UNCHECKED, TH_NAME } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import core from '../core';
 import checkbox from '../checkbox';
 import i18n from '../i18n';
 import filterTpl from './filter.tpl.html';
-import getFilterEvent from './event';
+import { getEvent, eventMap } from './event';
 
 class Filter {
-    eventMap = {};
-
     // 存储启用状态
     enable = {};
 
@@ -32,8 +30,8 @@ class Filter {
         const $body = jTool('body');
         const tableSelector = getQuerySelector(gridManagerName);
 
-        this.eventMap[gridManagerName] = getFilterEvent(gridManagerName, tableSelector);
-        const { toggle, close, submit, reset, checkboxAction, radioAction } = this.eventMap[gridManagerName];
+        eventMap[gridManagerName] = getEvent(gridManagerName, tableSelector);
+        const { toggle, close, submit, reset, checkboxAction, radioAction } = eventMap[gridManagerName];
 
         // 事件: 切换可视状态
         jTool(toggle.target).on(toggle.events, toggle.selector, function (e) {
@@ -42,7 +40,7 @@ class Filter {
             const $allFilterCon = jTool(`${tableSelector} .fa-con`);
             const $action = jTool(this);
             const $filterAction = $action.closest('.filter-area');
-            const $th = $action.closest('th[th-name]');
+            const $th = $action.closest(`th[${TH_NAME}]`);
             const thName = getThName($th);
             const $filterCon = $filterAction.find('.fa-con');
 
@@ -108,7 +106,7 @@ class Filter {
         jTool(reset.target).on(reset.events, reset.selector, function () {
             const $action = jTool(this);
             const $filterCon = $action.closest('.fa-con');
-            const $th = jTool(this).closest('th[th-name]');
+            const $th = jTool(this).closest(`th[${TH_NAME}]`);
             const thName = getThName($th);
 
             const settings = getSettings(gridManagerName);
@@ -204,7 +202,7 @@ class Filter {
      * @param gridManagerName
      */
     destroy(gridManagerName) {
-        clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(eventMap[gridManagerName]);
     }
 }
 export default new Filter();

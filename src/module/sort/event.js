@@ -3,9 +3,11 @@
  * @param gridManagerName
  * @param scope: querySelector 域
  */
-export default function getSortEvent(gridManagerName, scope) {
+export const getEvent = (gridManagerName, scope) => {
     return {
         // 触发 #001
         sortAction: {events: 'mouseup', target: scope, selector: '.sorting-action'}
     };
-}
+};
+
+export const eventMap = {};

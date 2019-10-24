@@ -1,7 +1,7 @@
 /*
  * i18n: 国际化
  * */
-import { outWarn } from '@common/utils';
+import { outWarn, isUndefined } from '@common/utils';
 /**
  * 获取所用语种，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
  * @param settings
@@ -53,7 +53,7 @@ export default function(settings, key, v1, v2, v3) {
         // 更换包含{}的文本
         _text = _text.replace(/{\d+}/g, word => {
             const _v = intrusion[word.match(/\d+/)];
-            return typeof _v === 'undefined' ? '' : _v;
+            return isUndefined(_v) ? '' : _v;
         });
         return _text;
     } catch (e) {

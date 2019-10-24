@@ -7,9 +7,8 @@ import { getQuerySelector, getDiv, clearTargetEvent } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import remindTpl from './remind.tpl.html';
-import getRemindEvent from './event';
+import { getEvent, eventMap } from './event';
 class Remind {
-    eventMap = {};
     // 存储启用状态
     enable = {};
 
@@ -21,8 +20,8 @@ class Remind {
         if (!this.enable[gridManagerName]) {
             return;
         }
-        this.eventMap[gridManagerName] = getRemindEvent(gridManagerName, `${getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
-        const { target, events, selector } = this.eventMap[gridManagerName].remindStart;
+        eventMap[gridManagerName] = getEvent(gridManagerName, `${getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
+        const { target, events, selector } = eventMap[gridManagerName].remindStart;
 
         const $tableDiv = getDiv(gridManagerName);
         jTool(target).on(events, selector, function () {
@@ -67,7 +66,7 @@ class Remind {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-	    clearTargetEvent(this.eventMap[gridManagerName]);
+	    clearTargetEvent(eventMap[gridManagerName]);
 	}
 }
 export default new Remind();

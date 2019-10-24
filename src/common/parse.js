@@ -5,7 +5,7 @@
  */
 /* 仅在该文件内使用 new Function */
 /* eslint no-new-func: "off"*/
-export function parseTpl(tpl) {
+export const parseTpl = tpl => {
     return (target, key, descriptor) => {
         const oldValue = descriptor.value;
         // params 中如果存在 tpl 则使用 params 中的进行渲染
@@ -19,4 +19,4 @@ export function parseTpl(tpl) {
             });
         };
     };
-}
+};

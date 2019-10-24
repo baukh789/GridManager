@@ -4,8 +4,8 @@
  */
 import jTool from '@common/jTool';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY } from '@common/constants';
-import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getQuerySelector, updateVisibleLast, updateScrollStatus } from '@common/base';
-import { outWarn, outError, equal } from '@common/utils';
+import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getTh, updateVisibleLast, updateScrollStatus } from '@common/base';
+import { outWarn, outError, equal, isUndefined } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache } from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
@@ -60,10 +60,6 @@ export default class GridManager {
      */
 	static
     set defaultOption(conf) {
-	    if (jTool.type(conf) !== 'object') {
-	        outError('value type is not object');
-	        return;
-        }
         defaultOption = conf;
     }
 
@@ -73,10 +69,6 @@ export default class GridManager {
      */
     static
     mergeDefaultOption(conf) {
-        if (jTool.type(conf) !== 'object') {
-            outError('value type is not object');
-            return;
-        }
         defaultOption = jTool.extend(defaultOption, conf);
     }
 
@@ -306,7 +298,7 @@ export default class GridManager {
             if (column.filter) {
                 column.filter.selected = typeof query[column.key] === 'string' ? query[column.key] : '';
                 // 这里不使用base.getTh的原因: 需要同时更新thead 和 fake-thead
-                filter.update(jTool(`${getQuerySelector(gridManagerName)} th[th-name=${column.key}]`), column.filter);
+                filter.update(getTh(gridManagerName, column.key), column.filter);
             }
         });
 
@@ -602,7 +594,7 @@ export default class GridManager {
         await this.initTable($table, settings);
 
         // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
-        if (typeof $table.attr(CACHE_ERROR_KEY) !== 'undefined') {
+        if (!isUndefined($table.attr(CACHE_ERROR_KEY))) {
             window.setTimeout(() => {
                 saveUserMemory(settings);
                 $table.removeAttr(CACHE_ERROR_KEY);

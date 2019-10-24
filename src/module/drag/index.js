@@ -8,16 +8,14 @@ import jTool from '@common/jTool';
 import { getTable, getQuerySelector, getFakeVisibleTh, getWrap, getColTd, getThName, getDiv, getTh, updateVisibleLast, updateScrollStatus, clearTargetEvent } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
+import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, TH_NAME } from '@common/constants';
 import adjust from '../adjust';
 import config from '../config';
 import dreamlandTpl from './dreamland.tpl.html';
-import getDragEvent from '../drag/event';
+import { getEvent, eventMap } from './event';
 
 const draggingClassName = 'drag-ongoing';
 class Drag {
-    eventMap = {};
-
     /**
 	 * 初始化拖拽
 	 * @param gridManagerName
@@ -26,8 +24,8 @@ class Drag {
         const _this = this;
         const table = getTable(gridManagerName).get(0);
         const $body = jTool('body');
-        this.eventMap[gridManagerName] = getDragEvent(gridManagerName, `${getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
-        const { dragStart, dragging, dragAbort } = this.eventMap[gridManagerName];
+        eventMap[gridManagerName] = getEvent(gridManagerName, `${getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
+        const { dragStart, dragging, dragAbort } = eventMap[gridManagerName];
 
         // 拖拽事件仅绑在fake head th
         jTool(dragStart.target).on(dragStart.events, dragStart.selector, function (event) {
@@ -91,7 +89,7 @@ class Drag {
                 // 当前移动的非最后一列
                 if (_thIndex < $allFakeVisibleTh.length - 1) {
                     $nextTh = $allFakeVisibleTh.eq(_thIndex + 1);
-                    nextThName = $nextTh.attr('th-name');
+                    nextThName = $nextTh.attr(TH_NAME);
                 }
 
                 // 禁用配置的列,不允许移动
@@ -236,7 +234,7 @@ class Drag {
 	 * @param gridManagerName
 	 */
 	destroy(gridManagerName) {
-        clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(eventMap[gridManagerName]);
 	}
 }
 export default new Drag();

@@ -14,7 +14,7 @@ import menuTpl from './menu.tpl.html';
 import ajaxPageTpl from './ajaxPage.tpl.html';
 import configTpl from './config.tpl.html';
 import exportTpl from './export.tpl.html';
-import getMenuEvent from './event';
+import { getEvent, eventMap } from './event';
 import './style.less';
 
 /**
@@ -32,15 +32,13 @@ const isDisabled = (dom, events) => {
 };
 
 class Menu {
-    eventMap = {};
-
     /**
      * 初始化
      * @param gridManagerName
      */
     init(gridManagerName) {
         const settings = getSettings(gridManagerName);
-        this.eventMap[gridManagerName] = getMenuEvent(gridManagerName, this.getQuerySelector(gridManagerName));
+        eventMap[gridManagerName] = getEvent(gridManagerName, this.getQuerySelector(gridManagerName));
 
         // 创建menu DOM
         const $menu = jTool(this.getQuerySelector(gridManagerName));
@@ -134,7 +132,7 @@ class Menu {
 	bindRightMenuEvent(gridManagerName, supportExport, supportConfig) {
 		const $menu = this.getMenuByJtool(gridManagerName);
 
-		const { openMenu, closeMenu, refresh, exportExcel, openConfig } = this.eventMap[gridManagerName];
+		const { openMenu, closeMenu, refresh, exportExcel, openConfig } = eventMap[gridManagerName];
         const $closeTarget = jTool(closeMenu.target);
         const closeEvents =  closeMenu.events;
 		// 绑定打开右键菜单栏
@@ -280,7 +278,7 @@ class Menu {
 	 */
 	destroy(gridManagerName) {
 	    // 清除事件
-        clearTargetEvent(this.eventMap[gridManagerName]);
+        clearTargetEvent(eventMap[gridManagerName]);
 
         // 删除DOM节点
         jTool(`[${MENU_KEY}="${gridManagerName}"]`).remove();

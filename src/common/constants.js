@@ -32,6 +32,9 @@ export const TABLE_HEAD_KEY = 'grid-manager-thead';
 // 吸顶head所使用的key
 export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
 
+// th唯一名称
+export const TH_NAME = 'th-name';
+
 // tr cache key
 export const TR_CACHE_KEY = 'gm-cache-key';
 
@@ -158,3 +161,5 @@ export const CONSOLE_STYLE = {
     [CONSOLE_WARN]: getStyle('#f90'),
     [CONSOLE_ERROR]: getStyle('#f00')
 };
+
+export const EVENT_CLICK = 'click';

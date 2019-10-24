@@ -3,7 +3,7 @@
  * @param gridManagerName
  * @param scope: querySelector 域
  */
-export default function getEvent(gridManagerName, scope) {
+export const getEvent = (gridManagerName, scope) => {
     return {
         // 切换展示状态
         open: {events: 'click', target: scope, selector: '.gm-dropdown .gm-dropdown-text'},
@@ -14,4 +14,6 @@ export default function getEvent(gridManagerName, scope) {
         // 点选事件
         selected: {events: 'click', target: scope, selector: '.gm-dropdown .gm-dropdown-list >li'}
     };
-}
+};
+
+export const eventMap = {};

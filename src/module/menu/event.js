@@ -3,7 +3,7 @@
  * @param gridManagerName
  */
 import { WRAP_KEY, MENU_KEY } from '@common/constants';
-export default function getMenuEvent(gridManagerName) {
+export const getEvent = gridManagerName => {
     const menuTarget = `[${MENU_KEY}="${gridManagerName}"]`;
     return {
         // 打开菜单
@@ -21,4 +21,6 @@ export default function getMenuEvent(gridManagerName) {
         // 打开配置区域
         openConfig: {events: 'click', target: menuTarget, selector: '[grid-action="config-grid"]'}
     };
-}
+};
+
+export const eventMap = {};

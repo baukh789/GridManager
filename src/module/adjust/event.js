@@ -7,7 +7,7 @@
  * 其中mouseleave的事件范围超出了querySelector的区域，所以该事件不再代理。
  */
 import { DIV_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
-export default function getAdjustEvent(gridManagerName, scope) {
+export function getEvent(gridManagerName, scope) {
     return {
         // 宽度调整触发
         adjustStart: {events: 'mousedown', target: scope, selector: `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .adjust-action`},
@@ -19,3 +19,5 @@ export default function getAdjustEvent(gridManagerName, scope) {
         adjustAbort: {events: 'mouseup mouseleave', target: scope}
     };
 }
+
+export const eventMap = {};

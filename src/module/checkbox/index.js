@@ -1,7 +1,6 @@
 /*
  * checkbox: 数据选择/全选/返选
  * */
-import './style.less';
 import { CHECKBOX_WIDTH,
     TR_CACHE_KEY,
     CHECKBOX_KEY,
@@ -20,18 +19,19 @@ import ajaxPage from '../ajaxPage';
 import columnTpl from './column.tpl.html';
 import checkboxTpl from './checkbox.tpl.html';
 import radioTpl from './radio.tpl.html';
-import getCheckboxEvent from './event';
+import { getEvent, eventMap } from './event';
 import { resetData } from './tool';
+import './style.less';
 
-const eventMap = {};
 class Checkbox {
 	/**
      * 初始化选择框事件
      * @param gridManagerName
      */
     init(gridManagerName) {
+        eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName));
+
         const _this = this;
-        eventMap[gridManagerName] = getCheckboxEvent(gridManagerName, getQuerySelector(gridManagerName));
         const { allChange, checkboxChange, radioChange, trChange } = eventMap[gridManagerName];
         const { useRowCheck, checkedBefore, checkedAllBefore, checkedAfter, checkedAllAfter } = getSettings(gridManagerName);
 
@@ -93,7 +93,7 @@ class Checkbox {
 
                 // 触发选中事件: 1.当前行非禁止选中 2.当前事件源非单选框或多选框;
                 if (!rowData[COL_PROP_DISABLED] && [].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
-                    this.querySelector('td[gm-checkbox="true"] input.gm-radio-checkbox-input').click();
+                    this.querySelector('td[gm-checkbox] input.gm-radio-checkbox-input').click();
                 }
             });
         }
@@ -198,7 +198,7 @@ class Checkbox {
 		tableData && tableData.forEach((row, index) => {
 		    const isChecked = row[CHECKBOX_KEY];
 			const $tr = jTool(`tbody tr[${TR_CACHE_KEY}="${index}"]`, $table);
-            const $checkSpan = jTool('td[gm-checkbox="true"] .gm-radio-checkbox', $tr);
+            const $checkSpan = jTool('td[gm-checkbox] .gm-radio-checkbox', $tr);
 			$tr.attr(CHECKED, isChecked);
             useRadio ? this.updateRadioState($checkSpan, isChecked) : this.updateCheckboxState($checkSpan, isChecked ? CHECKED : UNCHECKED);
 
@@ -207,7 +207,7 @@ class Checkbox {
 		});
 
 		// 更新thead区域选中状态
-        const $allCheckSpan = jTool('thead tr th[gm-checkbox="true"] .gm-checkbox ', $table);
+        const $allCheckSpan = jTool('thead tr th[gm-checkbox] .gm-checkbox ', $table);
 
         // [checked: 选中, indeterminate: 半选中, unchecked: 未选中]
         !useRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? UNCHECKED : (checkedNum === usableLen ? CHECKED : INDETERMINATE));
