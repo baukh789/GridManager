@@ -5,7 +5,7 @@ import './style.less';
 import jTool from '@common/jTool';
 import { getQuerySelector, getTable, getTbody, getTh, getColTd, clearTargetEvent } from '@common/base';
 import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
-import { isUndefined } from '@common/utils';
+import { isUndefined, isString, jEach } from '@common/utils';
 import { getEvent, eventMap } from './event';
 import { treeKey, treeCacheMap, getIconClass } from './tool';
 
@@ -77,7 +77,7 @@ class Tree {
 
             // 折叠时，需要将所有的子集全部折叠
             if (!openState) {
-                jTool.each($childrenTr, (index, tr) => {
+                jEach($childrenTr, (index, tr) => {
                     updateState(jTool(tr), false);
                 });
             }
@@ -105,7 +105,7 @@ class Tree {
         const { openState, insertTo } = config;
         const $table = getTable(gridManagerName);
         let parentKeyList = [];
-        jTool.each(jTool(`tr[${TR_PARENT_KEY}]`, $table), (index, item) => {
+        jEach(jTool(`tr[${TR_PARENT_KEY}]`, $table), (index, item) => {
             parentKeyList.push(item.getAttribute(TR_PARENT_KEY));
         });
 
@@ -118,7 +118,7 @@ class Tree {
             const { trNode, level, hasChildren } = item;
             // 第一个非自动创建 且 可视的td
             let $insertTd = null;
-            if (typeof insertTo === 'string') {
+            if (isString(insertTo)) {
                 $insertTd = getColTd(getTh(gridManagerName, insertTo), trNode);
             }
 

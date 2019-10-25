@@ -1,9 +1,8 @@
 import remind from '../remind';
 import order from '../order';
 import ajaxPage from '../ajaxPage';
-import jTool from '@common/jTool';
 import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, TH_VISIBLE } from '@common/constants';
-import { getVisibleState, isUndefined } from '@common/utils';
+import { getVisibleState, isUndefined, isString, isObject, jEach } from '@common/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
 import filter from '../filter';
@@ -29,7 +28,7 @@ class Render {
         const { gridManagerName, skinClassName, isIconFollowText, disableBorder, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
         const wrapClassList = [];
         // 根据参数增加皮肤标识
-        if (skinClassName && typeof skinClassName === 'string' && skinClassName.trim()) {
+        if (skinClassName && isString(skinClassName) && skinClassName.trim()) {
             wrapClassList.push(skinClassName);
         }
 
@@ -65,7 +64,7 @@ class Render {
 
         const columnList = [];
 
-        jTool.each(columnMap, (key, col) => {
+        jEach(columnMap, (key, col) => {
             columnList[col.index] = col;
         });
 
@@ -80,7 +79,7 @@ class Render {
 
         let thListTpl = '';
         // columnList 生成thead
-        jTool.each(columnList, (index, col) => {
+        jEach(columnList, (index, col) => {
             thListTpl += this.createThTpl({settings, col});
         });
 
@@ -110,7 +109,7 @@ class Render {
 
         // 排序
         let sortingAttr = '';
-        if (typeof (col.sorting) === 'string') {
+        if (isString(col.sorting)) {
             sort.enable[gridManagerName] = true;
             if (col.sorting === sortDownText) {
                 sortingAttr = `sorting="${sortDownText}"`;
@@ -125,7 +124,7 @@ class Render {
 
         // 过滤
         let filterAttr = '';
-        if (jTool.type(col.filter) === 'object') {
+        if (isObject(col.filter)) {
             filter.enable[gridManagerName] = true;
             filterAttr = 'filter=""';
             if (isUndefined(col.filter.selected)) {

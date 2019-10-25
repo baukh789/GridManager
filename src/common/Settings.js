@@ -1,8 +1,8 @@
 /**
  * Settings: 配置项
  */
-import jTool  from './jTool';
-const noop = jTool.noop;
+import { jExtend } from '@common/utils';
+const noop = () => {};
 
 /**
  * 框架相关配置
@@ -410,7 +410,7 @@ const gridExport = {
     }
 };
 export function Settings() {
-    jTool.extend(true, this, {
+    jExtend(true, this, {
         // 是否加载完成，用于调用公开方法确认
         rendered: false,
         ...frameworks,

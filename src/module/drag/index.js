@@ -8,6 +8,7 @@ import jTool from '@common/jTool';
 import { getTable, getQuerySelector, getFakeVisibleTh, getWrap, getColTd, getThName, getDiv, getTh, updateVisibleLast, updateScrollStatus, clearTargetEvent } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
+import { jEach } from '@common/utils';
 import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, TH_NAME } from '@common/constants';
 import adjust from '../adjust';
 import config from '../config';
@@ -165,7 +166,7 @@ class Drag {
 
         // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
         let tbodyHtml = '';
-        jTool.each($colTd, (i, v) => {
+        jEach($colTd, (i, v) => {
             let _cloneTd = v.cloneNode(true);
             _cloneTd.style.height = v.offsetHeight + 'px';
             let _cloneTr = jTool(v).closest('tr').clone();
@@ -196,7 +197,7 @@ class Drag {
             // 事件源对应的上一组td
 		    let prevTd = getColTd($prevTh);
             $prevTh.before($th);
-			jTool.each($colTd, (i, v) => {
+			jEach($colTd, (i, v) => {
 				prevTd.eq(i).before(v);
 			});
 
@@ -213,7 +214,7 @@ class Drag {
             // 事件源对应的下一组td
 		    let nextTd = getColTd($nextTh);
 			$nextTh.after($th);
-			jTool.each($colTd, (i, v) => {
+			jEach($colTd, (i, v) => {
 				nextTd.eq(i).after(v);
 			});
 

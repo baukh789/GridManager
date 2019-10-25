@@ -1,8 +1,38 @@
 import jTool from '@common/jTool';
-import { getCloneRowData, showLoading, hideLoading, getWrap, getKey, getQuerySelector, getTable, getDiv, getThead, getFakeThead, getTbody, getTh, getAllTh, getVisibleTh, getFakeTh, getFakeVisibleTh, getThName, getEmptyHtml, getEmpty, updateEmptyCol, getColTd, setAreVisible, updateVisibleLast, updateThWidth, getThTextWidth, getTextWidth, updateScrollStatus, calcLayout, clearTargetEvent} from '@common/base';
+import {
+    getCloneRowData,
+    showLoading,
+    hideLoading,
+    getWrap,
+    getKey,
+    getQuerySelector,
+    getTable,
+    getDiv,
+    getThead,
+    getFakeThead,
+    getTbody,
+    getTh,
+    getAllTh,
+    getVisibleTh,
+    getFakeTh,
+    getFakeVisibleTh,
+    getThName,
+    getEmptyHtml,
+    getEmpty,
+    updateEmptyCol,
+    getColTd,
+    setAreVisible,
+    updateVisibleLast,
+    updateThWidth,
+    getThTextWidth,
+    getTextWidth,
+    updateScrollStatus,
+    calcLayout,
+    clearTargetEvent
+} from '@common/base';
 import tableTpl from '@test/table-test.tpl.html';
-import { getColumnMap } from '@test/table-config';
-import { TOOLBAR_KEY, LOADING_CLASS_NAME, COL_PROP_DISABLED, TR_CACHE_KEY, TR_LEVEL_KEY } from '@common/constants';
+import {getColumnMap} from '@test/table-config';
+import {TOOLBAR_KEY, LOADING_CLASS_NAME, COL_PROP_DISABLED, TR_CACHE_KEY, TR_LEVEL_KEY} from '@common/constants';
 
 // 清除空格
 const tableTestTpl = tableTpl;
@@ -1091,7 +1121,8 @@ describe('clearTargetEvent(eventMap)', () => {
             }
         };
         let $target = jTool(eventMap.testeEvent.target);
-        $target.on(eventMap.testeEvent.events, eventMap.testeEvent.selector, () => {});
+        $target.on(eventMap.testeEvent.events, eventMap.testeEvent.selector, () => {
+        });
         expect($target.get(0).jToolEvent['click.table-wrap']).toBeDefined();
         clearTargetEvent(eventMap);
         expect($target.get(0).jToolEvent['click.table-wrap']).toBeUndefined();

@@ -4,7 +4,7 @@
 import './style.less';
 import jTool from '@common/jTool';
 import { getQuerySelector, getThName, clearTargetEvent, getTh } from '@common/base';
-import { outWarn, isUndefined } from '@common/utils';
+import { outWarn, isUndefined, isFunction, isObject, jEach, jExtend, isEmptyObject } from '@common/utils';
 import { getSettings, setSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import core from '../core';
@@ -77,7 +77,7 @@ class Sort {
 	 * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
 	 * */
 	__setSort(gridManagerName, sortJson, callback, refresh) {
-		if (!sortJson || jTool.type(sortJson) !== 'object' || jTool.isEmptyObject(sortJson)) {
+		if (!sortJson || !isObject(sortJson) || isEmptyObject(sortJson)) {
 			outWarn('sortJson unavailable');
 			return false;
 		}
@@ -89,11 +89,11 @@ class Sort {
             settings.sortData = {};
         }
 
-        jTool.extend(settings.sortData, sortJson);
+        jExtend(settings.sortData, sortJson);
 		setSettings(settings);
 
 		// 回调函数为空时赋值空方法
-		if (typeof (callback) !== 'function') {
+		if (!isFunction(callback)) {
 			callback = () => {};
 		}
 
@@ -103,7 +103,7 @@ class Sort {
 		}
 
         // 合并排序请求
-        const query = jTool.extend({}, settings.query, settings.sortData, settings.pageData);
+        const query = jExtend({}, settings.query, settings.sortData, settings.pageData);
 
         // 执行排序前事件
         settings.sortingBefore(query);
@@ -141,13 +141,13 @@ class Sort {
 		const thAttr = 'sorting';
 
 		// 重置排序样式
-        jTool.each(jTool(`${getQuerySelector(gridManagerName)} .sorting-action`), (i, v) => {
+        jEach(jTool(`${getQuerySelector(gridManagerName)} .sorting-action`), (i, v) => {
             jTool(v).removeClass(`${upClass} ${downClass}`);
             jTool(v).closest('th').attr(thAttr, '');
 		});
 
 		// 根据排序数据更新排序
-        jTool.each(sortData, (key, value) => {
+        jEach(sortData, (key, value) => {
 			const $th = getTh(gridManagerName, key);
             const $sortAction = jTool('.sorting-action', $th);
 

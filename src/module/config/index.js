@@ -6,6 +6,7 @@ import jTool from '@common/jTool';
 import { getDiv, updateThWidth, setAreVisible, updateVisibleLast, updateScrollStatus, getTh, getWrap, clearTargetEvent } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
+import { jEach } from '@common/utils';
 import { CONFIG_KEY, CHECKED_CLASS, TH_NAME } from '@common/constants';
 import adjust from '../adjust';
 import checkbox from '../checkbox';
@@ -207,13 +208,13 @@ class Config {
 
         const settings = getSettings(gridManagerName);
         const columnList = [];
-        jTool.each(settings.columnMap, (key, col) => {
+        jEach(settings.columnMap, (key, col) => {
             columnList[col.index] = col;
         });
 
         // 重置列的可视操作
         $configList.html('');
-        jTool.each(columnList, (index, col) => {
+        jEach(columnList, (index, col) => {
             let {key, isShow, disableCustomize} = col;
             if (disableCustomize) {
                 return;

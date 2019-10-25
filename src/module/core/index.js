@@ -6,7 +6,7 @@
  */
 import './style.less';
 import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmptyHtml, getEmpty, updateThWidth } from '@common/base';
-import { outError, cloneObject } from '@common/utils';
+import { outError, cloneObject, isString, isFunction, isArray } from '@common/utils';
 import { getTableData, setTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, READY_CLASS_NAME } from '@common/constants';
 import menu from '../menu';
@@ -97,7 +97,7 @@ class Core {
             return;
         }
 
-        let parseRes = typeof (response) === 'string' ? JSON.parse(response) : response;
+        let parseRes = isString(response) ? JSON.parse(response) : response;
 
         // 执行请求后执行程序, 通过该程序可以修改返回值格式
         parseRes = responseHandler(cloneObject(parseRes));
@@ -106,7 +106,7 @@ class Core {
         let totals = parseRes[totalsKey];
 
         // 数据校验: 数据异常
-        if (!_data || !Array.isArray(_data)) {
+        if (!_data || !isArray(_data)) {
             outError(`response.${dataKey} is not Array，please check dataKey`);
             return;
         }
@@ -139,7 +139,7 @@ class Core {
             menu.updateMenuPageStatus(settings);
         }
 
-        typeof callback === 'function' ? callback(parseRes) : '';
+        isFunction(callback) ? callback(parseRes) : '';
     };
 
     /**

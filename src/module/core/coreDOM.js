@@ -1,7 +1,7 @@
 import remind from '../remind';
 import jTool from '@common/jTool';
 import { calcLayout, updateThWidth, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
-import { outError, isUndefined } from '@common/utils';
+import { outError, isUndefined, isString, isFunction, isObject, isElement, jEach } from '@common/utils';
 import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
 import filter from '../filter';
@@ -44,7 +44,7 @@ class Dom {
 
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
-        jTool.each($thList, (index, item) => {
+        jEach($thList, (index, item) => {
             const onlyTH = jTool(item);
             const onlyThWarp = jTool('.th-wrap', onlyTH);
             const thName = onlyTH.attr(TH_NAME);
@@ -59,7 +59,7 @@ class Dom {
             }
 
             // 嵌入排序事件源
-            if (!isAutoCol && jTool.type(column.sorting) === 'string') {
+            if (!isAutoCol && isString(column.sorting)) {
                 const sortingDom = jTool(sort.createHtml());
 
                 // 依据 column.sorting 进行初始显示
@@ -78,7 +78,7 @@ class Dom {
 
             // 嵌入表头的筛选事件源
             // 插件自动生成的序号列与选择列不做事件绑定
-            if (!isAutoCol && column.filter && jTool.type(column.filter) === 'object') {
+            if (!isAutoCol && column.filter && isObject(column.filter)) {
                 const filterDom = jTool(filter.createHtml({settings, columnFilter: column.filter}));
                 onlyThWarp.append(filterDom);
             }
@@ -146,7 +146,7 @@ class Dom {
 
             const fullColumnNode = topTrNode.querySelector('.full-column-td');
             const tdTemplate = compileFullColumn(settings, fullColumnNode, row, index, topFullColumn.template);
-            jTool.type(tdTemplate) === 'element' ? fullColumnNode.appendChild(tdTemplate) : fullColumnNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
+            isElement(tdTemplate) ? fullColumnNode.appendChild(tdTemplate) : fullColumnNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
 
             tbody.appendChild(topTrNode);
         };
@@ -155,7 +155,7 @@ class Dom {
         const installNormal = (trNode, row, index, isTop) => {
             // 与当前位置信息匹配的td列表
             const tdList = [];
-            jTool.each(columnMap, (key, col) => {
+            jEach(columnMap, (key, col) => {
                 let tdTemplate = col.template;
 
                 // 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
@@ -166,7 +166,7 @@ class Dom {
                     tdNode = jTool(`<td ${GM_CREATE}="false"></td>`).get(0);
 
                     tdTemplate = compileTd(settings, tdNode, tdTemplate, row, index, key);
-                    jTool.type(tdTemplate) === 'element' ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
+                    isElement(tdTemplate) ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
                 }
 
                 // td 文本对齐方向
@@ -185,7 +185,7 @@ class Dom {
         try {
             const installTr = (list, level, pIndex) => {
                 const isTop = isUndefined(pIndex);
-                jTool.each(list, (index, row) => {
+                jEach(list, (index, row) => {
                     const trNode = document.createElement('tr');
                     const cacheKey = row[TR_CACHE_KEY];
 
@@ -270,7 +270,7 @@ class Dom {
             const hasChildren = children && children.length;
             tree.add(gridManagerName, trNode, level, hasChildren);
 
-            jTool.each(columnMap, (key, col) => {
+            jEach(columnMap, (key, col) => {
                 // 不处理项: 自动添加列
                 if (col.isAutoCreate) {
                     return;
@@ -283,7 +283,7 @@ class Dom {
                 const tdCloneNode = tdNode.cloneNode(true);
                 tdCloneNode.innerHTML = '';
                 tdTemplate = compileTd(settings, tdCloneNode, tdTemplate, row, index, key);
-                jTool.type(tdTemplate) === 'element' ? tdCloneNode.appendChild(tdTemplate) : tdCloneNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
+                isElement(tdTemplate) ? tdCloneNode.appendChild(tdTemplate) : tdCloneNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
                 trNode.replaceChild(tdCloneNode, tdNode);
             });
         });
@@ -305,7 +305,7 @@ class Dom {
      * @param columnMap
      */
     mergeRow(gridManagerName, columnMap) {
-        jTool.each(columnMap, (key, col) => {
+        jEach(columnMap, (key, col) => {
             if (!col.merge) {
                 return true;
             }
@@ -346,7 +346,7 @@ class Dom {
      * @param columnMap
      */
     initVisible(gridManagerName, columnMap) {
-        jTool.each(columnMap, (index, col) => {
+        jEach(columnMap, (index, col) => {
             setAreVisible(gridManagerName, [col.key], col.isShow);
         });
     }
@@ -359,7 +359,7 @@ class Dom {
         const settings = getSettings(gridManagerName);
 
         // 未设置该事件钩子时，不再进行事件绑定
-        if (typeof settings.cellHover !== 'function') {
+        if (!isFunction(settings.cellHover)) {
             return;
         }
 

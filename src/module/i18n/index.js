@@ -1,7 +1,7 @@
 /*
  * i18n: 国际化
  * */
-import { outWarn, isUndefined } from '@common/utils';
+import { outWarn, isUndefined, isArray } from '@common/utils';
 /**
  * 获取所用语种，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
  * @param settings
@@ -36,7 +36,7 @@ export default function(settings, key, v1, v2, v3) {
     let intrusion = [];
 
     // 处理参数，实现多态化
-    if (arguments.length === 3 && Array.isArray(arguments[2])) {
+    if (arguments.length === 3 && isArray(arguments[2])) {
         intrusion = arguments[2];
     } else if (arguments.length > 2) {
         for (let i = 2; i < arguments.length; i++) {

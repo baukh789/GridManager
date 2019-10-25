@@ -5,6 +5,7 @@ import './style.less';
 import jTool from '@common/jTool';
 import { getQuerySelector, getDiv, clearTargetEvent } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { isObject } from '@common/utils';
 import { parseTpl } from '@common/parse';
 import remindTpl from './remind.tpl.html';
 import { getEvent, eventMap } from './event';
@@ -42,14 +43,14 @@ class Remind {
         const { remind } = params;
         let styleStr = '';
         let text = '';
-        if (jTool.type(remind) === 'object') {
+        if (isObject(remind)) {
             text = remind.text;
         } else {
             text = remind;
         }
 
         const style = remind.style;
-        if (jTool.type(style) === 'object') {
+        if (isObject(style)) {
             styleStr = 'style=';
             Object.keys(style).forEach(key => {
                 styleStr = `${styleStr}${key}:${style[key]};`;

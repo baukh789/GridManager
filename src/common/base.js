@@ -2,7 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from './jTool';
-import { getVisibleState } from '@common/utils';
+import { getVisibleState, isString, jEach, jExtend } from '@common/utils';
 import {
     FAKE_TABLE_HEAD_KEY,
     TABLE_HEAD_KEY,
@@ -29,7 +29,7 @@ import {
  * @param cleanKeyList: 指定从clone数据中清除字段列表
  */
 export const getCloneRowData = (columnMap, obj, cleanKeyList) => {
-    let cloneObj = jTool.extend(true, {}, obj);
+    let cloneObj = jExtend(true, {}, obj);
 
     // 删除自定义参数: 通过columnMap设置的项
     for (let key in columnMap) {
@@ -87,7 +87,7 @@ export const hideLoading = gridManagerName => {
  * @returns {*}
  */
 export const getWrap = ($dom, isSelectUp) => {
-    if (typeof $dom === 'string') {
+    if (isString($dom)) {
         return jTool(`[${WRAP_KEY}="${$dom}"]`);
     }
     return isSelectUp ? $dom.closest(`[${WRAP_KEY}]`) : jTool(`[${WRAP_KEY}]`, $dom);
@@ -105,7 +105,7 @@ export const getKey = target => {
     }
 
     // gridManagerName
-    if (typeof target === 'string') {
+    if (isString(target)) {
         return target;
     }
 
@@ -136,7 +136,7 @@ export const getQuerySelector = gridManagerName => {
  * @returns {*}
  */
 export const getTable = ($dom, isSelectUp) => {
-    if (typeof $dom === 'string') {
+    if (isString($dom)) {
         return jTool(`[${TABLE_KEY}="${$dom}"]`);
     }
     return isSelectUp ? $dom.closest(`[${TABLE_KEY}]`) : jTool(`[${TABLE_KEY}]`, $dom);
@@ -149,7 +149,7 @@ export const getTable = ($dom, isSelectUp) => {
  * @returns {*}
  */
 export const getDiv = ($dom, isSelectUp) => {
-    if (typeof $dom === 'string') {
+    if (isString($dom)) {
         return jTool(`[${DIV_KEY}="${$dom}"]`);
     }
     return isSelectUp ? $dom.closest(`[${DIV_KEY}]`) : jTool(`[${DIV_KEY}]`, $dom);
@@ -319,7 +319,7 @@ export const getColTd = ($dom, $context) => {
  * @param isVisible: 是否可见
  */
 export const setAreVisible = (gridManagerName, thNameList, isVisible) => {
-    jTool.each(thNameList, (i, thName) => {
+    jEach(thNameList, (i, thName) => {
         const $th = getTh(gridManagerName, thName);
 
         // 可视状态值
@@ -333,7 +333,7 @@ export const setAreVisible = (gridManagerName, thNameList, isVisible) => {
 
         // 所对应的td
         const $td = getColTd($th);
-        jTool.each($td, (index, td) => {
+        jEach($td, (index, td) => {
             td.setAttribute('td-visible', visibleState);
         });
 
@@ -384,7 +384,7 @@ export const updateThWidth = (settings, isInit) => {
 
     // 存储首列
     let firstCol = null;
-    jTool.each(columnMap, (key, col) => {
+    jEach(columnMap, (key, col) => {
         const { __width, width, isShow, disableCustomize } = col;
 
         // 不可见列: 不处理
@@ -436,7 +436,7 @@ export const updateThWidth = (settings, isInit) => {
     // 存在自动列 且 存在剩余宽度: 平分剩余的宽度
     if (autolen && overage > 0) {
         const splitVal = Math.floor(overage / autolen);
-        jTool.each(autoList, (index, col) => {
+        jEach(autoList, (index, col) => {
             // 最后一项自动列: 将余值全部赋予
             if (index === autolen - 1) {
                 col.width = `${parseInt(col.width, 10) + overage}px`;
@@ -448,7 +448,7 @@ export const updateThWidth = (settings, isInit) => {
     }
 
     // 绘制th宽度
-    jTool.each(columnMap, (key, col) => {
+    jEach(columnMap, (key, col) => {
         // 可见 且 禁用定制列 不处理
         if (col.isShow && col.disableCustomize) {
             return;

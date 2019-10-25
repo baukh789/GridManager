@@ -10,13 +10,12 @@
  * 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
  * 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
  */
-import jTool from '@common/jTool';
-import { cloneObject } from '@common/utils';
+import { cloneObject, isString, isFunction, isObject, isArray, jEach, jExtend, jAjax, isEmptyObject } from '@common/utils';
 import { setSettings } from '@common/cache';
 
 // 获取参数信息
 export const getParams = settings => {
-    let _params = jTool.extend(true, {}, settings.query);
+    let _params = jExtend(true, {}, settings.query);
 
     // 合并分页信息至请求参
     if (settings.supportAjaxPage) {
@@ -25,16 +24,16 @@ export const getParams = settings => {
     }
 
     // 合并排序信息至请求参, 排序数据为空时则忽略
-    if (!jTool.isEmptyObject(settings.sortData)) {
+    if (!isEmptyObject(settings.sortData)) {
         // #001
         // settings.mergeSort: 是否合并排序字段
         if (settings.mergeSort) {
             _params[settings.sortKey] = '';
-            jTool.each(settings.sortData, (key, value) => {
+            jEach(settings.sortData, (key, value) => {
                 _params[settings.sortKey] = `${_params[settings.sortKey]}${_params[settings.sortKey] ? ',' : ''}${key}:${value}`;
             });
         } else {
-            jTool.each(settings.sortData, (key, value) => {
+            jEach(settings.sortData, (key, value) => {
                 // 增加sort_前缀,防止与搜索时的条件重叠
                 _params[`${settings.sortKey}${key}`] = value;
             });
@@ -56,31 +55,31 @@ export const transformToPromise = settings =>  {
     const params = getParams(settings);
     // 将 requestHandler 内修改的分页参数合并至 settings.pageData
     if (settings.supportAjaxPage) {
-        jTool.each(settings.pageData, (key, value) => {
+        jEach(settings.pageData, (key, value) => {
             settings.pageData[key] = params[key] || value;
         });
     }
 
     // 将 requestHandler 内修改的排序参数合并至 settings.sortData
-    jTool.each(settings.sortData, (key, value) => {
+    jEach(settings.sortData, (key, value) => {
         settings.sortData[key] = params[`${settings.sortKey}${key}`] || value;
     });
     setSettings(settings);
 
-    let ajaxData = typeof settings.ajaxData === 'function' ? settings.ajaxData(settings, params) : settings.ajaxData;
+    let ajaxData = isFunction(settings.ajaxData) ? settings.ajaxData(settings, params) : settings.ajaxData;
 
     // ajaxData === string url
-    if (typeof ajaxData === 'string') {
+    if (isString(ajaxData)) {
         return getPromiseByUrl(params);
     }
 
     // ajaxData === Promise
-    if (typeof ajaxData.then === 'function') {
+    if (isFunction(ajaxData.then)) {
         return ajaxData;
     }
 
     // 	ajaxData === 静态数据
-    if (jTool.type(ajaxData) === 'object' || jTool.type(ajaxData) === 'array') {
+    if (isObject(ajaxData) || isArray(ajaxData)) {
         return new Promise(resolve => {
             resolve(ajaxData);
         });
@@ -95,7 +94,7 @@ export const transformToPromise = settings =>  {
         }
 
         return new Promise((resolve, reject) => {
-            jTool.ajax({
+            jAjax({
                 url: ajaxData,
                 type: settings.ajaxType,
                 data: Params,

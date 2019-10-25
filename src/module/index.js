@@ -5,7 +5,7 @@
 import jTool from '@common/jTool';
 import { getKey } from '@common/base';
 import { SIV_waitTableAvailable } from '@common/cache';
-import { outWarn, outError, isUndefined } from '@common/utils';
+import { outWarn, outError, isUndefined, isString } from '@common/utils';
 import { TABLE_KEY, RENDERING_KEY } from '@common/constants';
 import GridManager from './GridManager';
 /*
@@ -37,7 +37,7 @@ import GridManager from './GridManager';
 			name = 'init';
 			arg = {};
 			callback = undefined;
-		} else if (jTool.type(arguments[0]) !== 'string') {
+		} else if (!isString(arguments[0])) {
 			// ex: document.querySelector('table').GridManager({arg}, callback)
 			name = 'init';
 			arg = arguments[0];
@@ -78,7 +78,7 @@ import GridManager from './GridManager';
 		const $table = jTool(this);
 		let gridManagerName = arg.gridManagerName;
         // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
-        if (typeof gridManagerName !== 'string' || gridManagerName.trim() === '') {
+        if (!isString(gridManagerName) || gridManagerName.trim() === '') {
             // 存储gridManagerName值
             arg.gridManagerName = getKey($table);
             gridManagerName = arg.gridManagerName;

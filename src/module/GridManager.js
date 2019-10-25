@@ -5,7 +5,7 @@
 import jTool from '@common/jTool';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY } from '@common/constants';
 import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getTh, updateVisibleLast, updateScrollStatus } from '@common/base';
-import { outWarn, outError, equal, isUndefined } from '@common/utils';
+import { outWarn, outError, equal, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, jEach, jExtend, isEmptyObject } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache } from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
@@ -69,7 +69,7 @@ export default class GridManager {
      */
     static
     mergeDefaultOption(conf) {
-        defaultOption = jTool.extend(defaultOption, conf);
+        defaultOption = jExtend(defaultOption, conf);
     }
 
 	/**
@@ -225,7 +225,7 @@ export default class GridManager {
             return;
         }
         const gridManagerName = getKey(table);
-		setAreVisible(gridManagerName, Array.isArray(thName) ? thName : [thName], true);
+		setAreVisible(gridManagerName, isArray(thName) ? thName : [thName], true);
         config.noticeUpdate(gridManagerName);
 	}
 
@@ -241,7 +241,7 @@ export default class GridManager {
             return;
         }
         const gridManagerName = getKey(table);
-        setAreVisible(gridManagerName, Array.isArray(thName) ? thName : [thName], false);
+        setAreVisible(gridManagerName, isArray(thName) ? thName : [thName], false);
         config.noticeUpdate(gridManagerName);
 	}
 
@@ -282,37 +282,37 @@ export default class GridManager {
 
         const gridManagerName = getKey(table);
 		const settings = getSettings(gridManagerName);
-
-		if (jTool.type(query) !== 'object') {
+		const { columnMap, pageData, currentPageKey } = settings;
+		if (!isObject(query)) {
             query = {};
         }
 
         // 无第三个参数时，将callback前移
-        if (typeof (gotoPage) !== 'boolean' && typeof (gotoPage) !== 'number') {
+        if (!isBoolean(gotoPage) && !isNumber(gotoPage)) {
 			callback = gotoPage;
 			gotoPage = true;
 		}
 
 		// 更新过滤相关字段
-        filter.enable[gridManagerName] && jTool.each(settings.columnMap, (index, column) => {
+        filter.enable[gridManagerName] && jEach(columnMap, (index, column) => {
             if (column.filter) {
-                column.filter.selected = typeof query[column.key] === 'string' ? query[column.key] : '';
+                column.filter.selected = isString(query[column.key]) ? query[column.key] : '';
                 // 这里不使用base.getTh的原因: 需要同时更新thead 和 fake-thead
                 filter.update(getTh(gridManagerName, column.key), column.filter);
             }
         });
 
 		// 更新settings.query
-		jTool.extend(settings, {query: query});
+		jExtend(settings, {query: query});
 
 		// 返回第一页
 		if (gotoPage === true) {
-			settings.pageData[settings.currentPageKey] = 1;
+			pageData[currentPageKey] = 1;
 		}
 
 		// 返回指定页
-		if (typeof (gotoPage) === 'number') {
-            settings.pageData[settings.currentPageKey] = gotoPage;
+		if (isNumber(gotoPage)) {
+            pageData[currentPageKey] = gotoPage;
         }
 		setSettings(settings);
 		core.refresh(gridManagerName, callback);
@@ -330,7 +330,7 @@ export default class GridManager {
             return;
         }
 		const settings = getSettings(getKey(table));
-		jTool.extend(settings, { ajaxData });
+		jExtend(settings, { ajaxData });
 		setSettings(settings);
 		core.refresh(settings.gridManagerName, callback);
 	}
@@ -349,7 +349,7 @@ export default class GridManager {
         }
         const gridManagerName = getKey(table);
 		const settings = getSettings(gridManagerName);
-		if (typeof (isGotoFirstPage) !== 'boolean') {
+		if (!isBoolean(isGotoFirstPage)) {
 			callback = isGotoFirstPage;
 			isGotoFirstPage = false;
 		}
@@ -443,7 +443,7 @@ export default class GridManager {
         if (!isRendered(table, 'setCheckedData')) {
             return;
         }
-        const checkedList = Array.isArray(checkedData) ? checkedData : [checkedData];
+        const checkedList = isArray(checkedData) ? checkedData : [checkedData];
         const { columnMap, useRadio, gridManagerName, treeConfig } = getSettings(getKey(table));
         const treeKey = treeConfig.treeKey;
         const tableData = getTableData(gridManagerName);
@@ -472,7 +472,7 @@ export default class GridManager {
         }
         const settings = getSettings(getKey(table));
         const { gridManagerName, columnMap, supportCheckbox } = settings;
-        const rowDataList = Array.isArray(rowData) ? rowData : [rowData];
+        const rowDataList = isArray(rowData) ? rowData : [rowData];
         const { tableData, updateCacheList } = updateRowData(gridManagerName, key, rowDataList);
 
         // 更新选中数据
@@ -526,10 +526,10 @@ export default class GridManager {
         });
 
         const $table = jTool(table);
-		arg = jTool.extend({}, GridManager.defaultOption, arg);
+		arg = jExtend({}, GridManager.defaultOption, arg);
 
 		// 校验: 初始参
-		if (!arg || jTool.isEmptyObject(arg)) {
+		if (!arg || isEmptyObject(arg)) {
 			outError('init method params error');
 			return;
 		}
@@ -611,7 +611,7 @@ export default class GridManager {
         setSettings(settings);
 
         const runCallback = () => {
-            typeof (callback) === 'function' ? callback(settings.query) : '';
+            isFunction(callback) ? callback(settings.query) : '';
         };
 
         // 渲染tbodyDOM
@@ -633,20 +633,20 @@ export default class GridManager {
 		// 渲染HTML，嵌入所需的事件源DOM
         await core.createDOM($table, settings);
 
-        const gridManagerName = settings.gridManagerName;
+        const { gridManagerName, supportAdjust, supportDrag, supportCheckbox, supportConfig, supportMenu, supportAjaxPage, supportTreeData } = settings;
 
         // init adjust
-        if (settings.supportAdjust) {
+        if (supportAdjust) {
             adjust.init(gridManagerName);
         }
 
         // init drag
-        if (settings.supportDrag) {
+        if (supportDrag) {
             drag.init(gridManagerName);
         }
 
         // init checkbox
-        if (settings.supportCheckbox) {
+        if (supportCheckbox) {
             checkbox.init(gridManagerName);
         }
 
@@ -660,22 +660,22 @@ export default class GridManager {
         filter.init(gridManagerName);
 
         // init config
-        if (settings.supportConfig) {
+        if (supportConfig) {
             config.init(gridManagerName);
         }
 
         // 初始化右键菜单事件
-        if (settings.supportMenu) {
+        if (supportMenu) {
             menu.init(gridManagerName);
         }
 
         // 初始化Ajax分页
-        if (settings.supportAjaxPage) {
+        if (supportAjaxPage) {
             ajaxPage.init(gridManagerName);
         }
 
         // 初始化树形结构
-        if (settings.supportTreeData) {
+        if (supportTreeData) {
             tree.init(gridManagerName);
         }
 
@@ -699,7 +699,7 @@ export default class GridManager {
         let gridManagerName = '';
 
         // gridManagerName
-        if (jTool.type(table) === 'string') {
+        if (isString(table)) {
             gridManagerName = table;
         }
 

@@ -4,9 +4,8 @@
 * 1.Store: 渲染表格时所使用的json数据 [存储在GM实例]
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
-import jTool from '@common/jTool';
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { outInfo, outError, equal, getObjectIndexToArray, isUndefined } from '@common/utils';
+import { outInfo, outError, equal, getObjectIndexToArray, isUndefined, isFunction, isObject, isElement, jEach, jExtend, isNodeList } from '@common/utils';
 import { Settings, TextSettings } from '@common/Settings';
 import store from '@common/Store';
 import {
@@ -65,14 +64,14 @@ export const getRowData = (gridManagerName, target, useGmProp) => {
     };
 
     // target type = Element 元素时, 返回单条数据对象;
-    if (jTool.type(target) === 'element') {
+    if (isElement(target)) {
         return getTrData(target);
     }
 
     // target type =  NodeList 类型时, 返回数组
-    if (jTool.type(target) === 'nodeList') {
+    if (isNodeList(target)) {
         let rodData = [];
-        jTool.each(target, (i, tr) => {
+        jEach(target, (i, tr) => {
             rodData.push(getTrData(tr));
         });
         return rodData;
@@ -100,7 +99,7 @@ export const updateRowData = (gridManagerName, key, rowDataList) => {
     const updateData = (list, newItem) => {
         list.some(item => {
             if (item[key] === newItem[key]) {
-                jTool.extend(item, newItem);
+                jExtend(item, newItem);
                 updateCacheList.push(item);
                 return true;
             }
@@ -229,7 +228,7 @@ export const getCheckedData = gridManagerName => {
     const checkedList = store.checkedData[gridManagerName] || [];
 
     // 返回clone后的数组，以防止在外部操作导致数据错误。
-    return checkedList.map(item => jTool.extend(true, {}, item));
+    return checkedList.map(item => jExtend(true, {}, item));
 };
 
 /**
@@ -284,7 +283,7 @@ export const updateCheckedData = (gridManagerName, columnMap, key, rowDataList) 
     store.checkedData[gridManagerName] = store.checkedData[gridManagerName].map(item => {
         rowDataList.forEach(newItem => {
             if (item[key] === newItem[key]) {
-                jTool.extend(item, getCloneRowData(columnMap, newItem));
+                jExtend(item, getCloneRowData(columnMap, newItem));
             }
         });
         return item;
@@ -331,12 +330,12 @@ export const saveUserMemory = settings => {
     }
 
     let _cache = {};
-    const cloneMap = jTool.extend(true, {}, columnMap);
+    const cloneMap = jExtend(true, {}, columnMap);
     const useTemplate = ['template', 'text'];
 
     // 清除指定类型的字段
-    jTool.each(cloneMap, (undefind, col) => {
-        jTool.each(col, (key, item) => {
+    jEach(cloneMap, (undefind, col) => {
+        jEach(col, (key, item) => {
             // 清除: undefined
             if (isUndefined(col[key])) {
                 delete col[key];
@@ -348,12 +347,12 @@ export const saveUserMemory = settings => {
             }
 
             // delete template of function type
-            if (jTool.type(item) === 'function') {
+            if (isFunction(item)) {
                 delete col[key];
             }
 
             // delete template of object type
-            if (jTool.type(item) === 'object') {
+            if (isObject(item)) {
                 delete col[key];
             }
         });
@@ -417,19 +416,19 @@ export const updateTemplate = arg => {
     const { columnData, emptyTemplate } = arg;
 
     // 强制转换模板为函数: emptyTemplate
-    if (emptyTemplate && typeof emptyTemplate !== 'function') {
+    if (emptyTemplate && !isFunction(emptyTemplate)) {
         arg.emptyTemplate = () => emptyTemplate;
     }
     columnData.forEach(col => {
         // 强制转换模板为函数: text
         const text = col.text;
-        if (text && typeof text !== 'function') {
+        if (text && !isFunction(text)) {
             col.text = () => text;
         }
 
         // 强制转换模板为函数: template
         const template = col.template;
-        if (template && typeof template !== 'function') {
+        if (template && !isFunction(template)) {
             col.template = () => template;
         }
     });
@@ -449,7 +448,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
     // 合并参数
     const settings = new Settings();
     settings.textConfig = new TextSettings();
-    jTool.extend(true, settings, arg);
+    jExtend(true, settings, arg);
 
     // 存储初始配置项
     setSettings(settings);
@@ -534,7 +533,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
         }
 
         // 与用户记忆项不匹配
-        isUsable && jTool.each(columnMap, (key, col) => {
+        isUsable && jEach(columnMap, (key, col) => {
             if (!columnCache[key]
                 // 宽度
                 || columnCache[key].__width !== col.width
@@ -565,7 +564,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
 
         // 将用户记忆并入 columnMap 内
         if (isUsable) {
-            jTool.extend(true, columnMap, columnCache);
+            jExtend(true, columnMap, columnCache);
         } else {
             // 清除用户记忆
             delUserMemory(gridManagerName);
@@ -587,14 +586,14 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
  */
 export const getSettings = gridManagerName => {
     // 返回的是 clone 对象 而非对象本身
-    return jTool.extend(true, {}, store.settings[gridManagerName] || {});
+    return jExtend(true, {}, store.settings[gridManagerName] || {});
 };
 /**
  * 设置配置项
  * @param settings
  */
 export const setSettings = settings => {
-    store.settings[settings.gridManagerName] = jTool.extend(true, {}, settings);
+    store.settings[settings.gridManagerName] = jExtend(true, {}, settings);
 };
 
 /**
@@ -606,7 +605,7 @@ export const updateCache = gridManagerName => {
     const columnMap = settings.columnMap;
 
     // 更新 columnMap , 适用操作[宽度调整, 位置调整, 可视状态调整]
-    jTool.each(columnMap, (key, col) => {
+    jEach(columnMap, (key, col) => {
         // 禁用定制列: 不处理
         if (col.disableCustomize) {
             return;

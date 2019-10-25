@@ -10,6 +10,7 @@ import jTool from '@common/jTool';
 import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus } from '@common/base';
 import { getSettings, updateCache } from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { jEach } from '@common/utils';
 import { compileFakeThead } from '@common/framework';
 import config from '../config';
 class Scroll {
@@ -65,7 +66,7 @@ class Scroll {
         });
 
         // 重置th的宽度
-        jTool.each(jTool('th', $thead), (i, th) => {
+        jEach(jTool('th', $thead), (i, th) => {
             jTool('th', $setTopHead).eq(i).width(jTool(th).width());
         });
     }

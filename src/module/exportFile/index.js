@@ -3,7 +3,7 @@
  */
 import jTool from '@common/jTool';
 import { showLoading, hideLoading, getVisibleTh, getTbody } from '@common/base';
-import { outError } from '@common/utils';
+import { outError, isFunction, jEach } from '@common/utils';
 import { getSettings, getCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { GM_CREATE } from '@common/constants';
@@ -36,7 +36,7 @@ class ExportFile {
         // 未存在指定下载名称时, 使用exportConfig.fileName
 		if (!fileName) {
 		    const confName = exportConfig.fileName;
-		    fileName = typeof confName === 'function' ? confName(query) : confName;
+		    fileName = isFunction(confName) ? confName(query) : confName;
 		}
 
 		// 未存在指定下载名称 且 未指定exportConfig.fileName时, 使用 gridManagerName
@@ -82,16 +82,16 @@ class ExportFile {
         }
         // 存储导出的thead
         let	theadHTML = '';
-        jTool.each(thDOM, (i, v) => {
+        jEach(thDOM, (i, v) => {
             theadHTML += `<th>${v.getElementsByClassName('th-text')[0].textContent}</th>`;
         });
 
         // 存储导出的tbody
         let	tbodyHTML = '';
-        jTool.each(trDOM, (i, v) => {
+        jEach(trDOM, (i, v) => {
             let tdDOM = jTool(`td[${GM_CREATE}="false"][td-visible="visible"]`, v);
             tbodyHTML += '<tr>';
-            jTool.each(tdDOM, (i2, v2) => {
+            jEach(tdDOM, (i2, v2) => {
                 tbodyHTML += `<td>${v2.textContent}</td>`;
             });
             tbodyHTML += '</tr>';
@@ -119,7 +119,7 @@ class ExportFile {
 
         const selectedList = onlyChecked ? getCheckedData(gridManagerName) : undefined;
 
-        if (jTool.type(exportConfig.handler) !== 'function') {
+        if (!isFunction(exportConfig.handler)) {
             outError('exportConfig.handler not return promise');
             return false;
         }
