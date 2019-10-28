@@ -99,15 +99,22 @@ const gridStyle = {
 };
 
 /**
- * hover选中
+ * 事件
+ * 这里初始值为null而非() => {}的原因: 未配置时不进行事件绑定，以降低性能消耗
  * @type {{disableHover: boolean}}
  */
-const hover = {
-    // 配置是否禁用hover选中样式
-    disableHover: false, // v2.6.1新增
+const events = {
+    // 单行hover事件
+    rowHover: null,
 
-    // 单个td的hover事件
-    cellHover: null
+    // 单行点击事件
+    rowClick: null,
+
+    // 单元格hover事件
+    cellHover: null,
+
+    // 单元格点击事件
+    cellClick: null
 };
 
 /**
@@ -428,7 +435,7 @@ export function Settings() {
         ...gridData,
         ...gridExport,
         ...treeData,
-        ...hover
+        ...events
     });
 }
 

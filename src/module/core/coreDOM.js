@@ -1,8 +1,8 @@
 import remind from '../remind';
 import jTool from '@common/jTool';
 import { calcLayout, updateThWidth, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
-import { outError, isUndefined, isString, isFunction, isObject, isElement, jEach } from '@common/utils';
-import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME } from '@common/constants';
+import { outError, isUndefined, isString, isObject, isElement, jEach } from '@common/utils';
+import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME, ROW_CLASS_NAME } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
@@ -191,6 +191,11 @@ class Dom {
 
                     trNode[TR_CACHE_ROW] = row;
 
+                    // 增加行 class name
+                    if (row[ROW_CLASS_NAME]) {
+                        trNode.className = row[ROW_CLASS_NAME];
+                    }
+
                     // 非顶层
                     if (!isTop) {
                         trNode.setAttribute(TR_PARENT_KEY, pIndex);
@@ -352,34 +357,84 @@ class Dom {
     }
 
     /**
-     * 为新增的单元格绑定事件
+     * 为新生成的table下属元素绑定事件
      * @param gridManagerName
      */
     bindEvent(gridManagerName) {
-        const settings = getSettings(gridManagerName);
-
-        // 未设置该事件钩子时，不再进行事件绑定
-        if (!isFunction(settings.cellHover)) {
-            return;
-        }
+        const { rowHover, rowClick, cellHover, cellClick } = getSettings(gridManagerName);
 
         eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName));
-        const { target, events, selector } = eventMap[gridManagerName].tdMousemove;
+        const event = eventMap[gridManagerName];
 
-        // 绑定td移入事件
-        let hoverTd = null;
-        jTool(target).on(events, selector, function () {
-            if (hoverTd === this) {
-                return;
-            }
-            hoverTd = this;
-            const tr = hoverTd.parentNode;
-            const colIndex = hoverTd.cellIndex;
-            const rowIndex = parseInt(tr.getAttribute(TR_CACHE_KEY), 10);
+        // 行事件透出参数
+        const getRowParams = tr => {
+            return [
+                // row
+                getRowData(gridManagerName, tr),
 
-            // cellHover: 单个td的hover事件
-            settings.cellHover(getRowData(gridManagerName, tr), rowIndex, colIndex);
-        });
+                // rowIndex
+                parseInt(tr.getAttribute(TR_CACHE_KEY), 10)
+            ];
+        };
+
+        // 行事件: hover
+        rowHover && (() => {
+            let hoverTr = null;
+            const { target, events, selector } = event.rowHover;
+            jTool(target).on(events, selector, function () {
+                // 防止hover在同一个行内多次触发
+                if (hoverTr === this) {
+                    return;
+                }
+                hoverTr = this;
+                rowHover(...getRowParams(this));
+            });
+        })();
+
+        // 行事件: click
+        rowClick && (() => {
+            const { target, events, selector } = event.rowClick;
+            jTool(target).on(events, selector, function () {
+                rowClick(...getRowParams(this));
+            });
+        })();
+
+        // 单元格透出参数
+        const getCellParams = td => {
+            const tr = td.parentNode;
+            return [
+                // row
+                getRowData(gridManagerName, tr),
+
+                // rowIndex
+                parseInt(tr.getAttribute(TR_CACHE_KEY), 10),
+
+                // colIndex
+                td.cellIndex
+            ];
+        };
+
+        // 单元格事件: hover
+        cellHover && (() => {
+            let hoverTd = null;
+            const { target, events, selector } = event.cellHover;
+            jTool(target).on(events, selector, function () {
+                // 防止hover在同一个单元格内多次触发
+                if (hoverTd === this) {
+                    return;
+                }
+                hoverTd = this;
+                cellHover(...getCellParams(hoverTd));
+            });
+        })();
+
+        // 单元格事件: click
+        cellClick && (() => {
+            const { target, events, selector } = event.cellClick;
+            jTool(target).on(events, selector, function () {
+                cellClick(...getCellParams(this));
+            });
+        })();
     }
 
     /**

@@ -14,11 +14,32 @@ describe('core', () => {
             expect(getEvent.length).toBe(2);
         });
 
-        it('执行验证', () => {
+        it('rowHover', () => {
             events = getEvent('test', '#baukh');
-            expect(events.tdMousemove.events).toBe('mousemove');
-            expect(events.tdMousemove.target).toBe('#baukh');
-            expect(events.tdMousemove.selector).toBe('tbody td');
+            expect(events.rowHover.events).toBe('mousemove');
+            expect(events.rowHover.target).toBe('#baukh');
+            expect(events.rowHover.selector).toBe('tbody tr');
+        });
+
+        it('rowClick', () => {
+            events = getEvent('test', '#baukh');
+            expect(events.rowClick.events).toBe('click');
+            expect(events.rowClick.target).toBe('#baukh');
+            expect(events.rowClick.selector).toBe('tbody tr');
+        });
+
+        it('cellHover', () => {
+            events = getEvent('test', '#baukh');
+            expect(events.cellHover.events).toBe('mousemove');
+            expect(events.cellHover.target).toBe('#baukh');
+            expect(events.cellHover.selector).toBe('tbody td');
+        });
+
+        it('cellClick', () => {
+            events = getEvent('test', '#baukh');
+            expect(events.cellClick.events).toBe('click');
+            expect(events.cellClick.target).toBe('#baukh');
+            expect(events.cellClick.selector).toBe('tbody td');
         });
     });
 

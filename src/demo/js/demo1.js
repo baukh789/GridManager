@@ -266,7 +266,6 @@ const demo1 = {
             // useNoTotalsMode: true,
             // 是否开启分页
             supportAjaxPage: true,
-
             // 排序模式，single(升降序单一触发) overall(升降序整体触发)
             // sortMode: 'single',
 
@@ -397,14 +396,15 @@ const demo1 = {
                 if (row.id === 92) {
                         // row.gm_checkbox = true;
                     row.gm_checkbox_disabled = true;
+                    row.gm_row_class_name = 'test-row-class';
                 }
                 return row;
             },
 
             // 单个td的hover事件
-            // cellHover: (row, rowIndex, colIndex) => {
-            //     console.log(row, rowIndex, colIndex);
-            // },
+            rowHover: (row, rowIndex, colIndex) => {
+                console.log(row, rowIndex, colIndex);
+            },
             columnData: [
                 {
                     key: 'pic',

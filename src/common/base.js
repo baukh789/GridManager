@@ -12,7 +12,7 @@ import {
     CONFIG_KEY,
     EMPTY_TPL_KEY,
     TOOLBAR_KEY,
-    COL_PROP_DISABLED,
+    ROW_DISABLED_CHECKBOX,
     TR_CACHE_KEY,
     TR_LEVEL_KEY,
     LOADING_CLASS_NAME,
@@ -39,7 +39,7 @@ export const getCloneRowData = (columnMap, obj, cleanKeyList) => {
     }
 
     // 删除自定义参数: 行禁用标识
-    delete cloneObj[COL_PROP_DISABLED];
+    delete cloneObj[ROW_DISABLED_CHECKBOX];
 
     // 删除自定义参数: 行唯一标识
     delete cloneObj[TR_CACHE_KEY];

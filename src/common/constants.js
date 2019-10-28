@@ -50,8 +50,11 @@ export const TR_PARENT_KEY = 'parent-key';
 // tr 子行的展示状态
 export const TR_CHILDREN_STATE = 'children-state';
 
-// 行属性 禁用
-export const COL_PROP_DISABLED = 'gm_checkbox_disabled';
+// 行 禁用选中
+export const ROW_DISABLED_CHECKBOX = 'gm_checkbox_disabled';
+
+// 行自定义class name
+export const ROW_CLASS_NAME = 'gm_row_class_name';
 
 // 用户记忆 localStorage key
 export const MEMORY_KEY = 'GridManagerMemory';

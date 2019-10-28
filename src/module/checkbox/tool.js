@@ -1,4 +1,4 @@
-import { CHECKBOX_KEY, COL_PROP_DISABLED } from '@common/constants';
+import { CHECKBOX_KEY, ROW_DISABLED_CHECKBOX } from '@common/constants';
 import { getTableData, setCheckedData } from '@common/cache';
 /**
  * 重置当前渲染数据中的选择状态
@@ -15,7 +15,7 @@ export const resetData = (gridManagerName, status, isAllCheck, cacheKey, isRadio
     if (isAllCheck && !cacheKey) {
         tableData.forEach(row => {
             // 仅选中未禁用的项
-            if (!row[COL_PROP_DISABLED]) {
+            if (!row[ROW_DISABLED_CHECKBOX]) {
                 row[CHECKBOX_KEY] = status;
             }
         });

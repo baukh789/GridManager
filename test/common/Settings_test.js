@@ -73,12 +73,20 @@ describe('Settings', () => {
         expect(settings.disableLine).toBe(false);
     });
 
-    it('验证属性[disableHover]初始值', () => {
-        expect(settings.disableHover).toBe(false);
+    it('验证属性[rowHover]初始值', () => {
+        expect(settings.rowHover).toBeNull();
+    });
+
+    it('验证属性[rowClick]初始值', () => {
+        expect(settings.rowClick).toBeNull();
     });
 
     it('验证属性[cellHover]初始值', () => {
         expect(settings.cellHover).toBeNull();
+    });
+
+    it('验证属性[cellClick]初始值', () => {
+        expect(settings.cellClick).toBeNull();
     });
 
     it('验证属性[disableBorder]初始值', () => {

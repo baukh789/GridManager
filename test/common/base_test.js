@@ -32,7 +32,7 @@ import {
 } from '@common/base';
 import tableTpl from '@test/table-test.tpl.html';
 import {getColumnMap} from '@test/table-config';
-import {TOOLBAR_KEY, LOADING_CLASS_NAME, COL_PROP_DISABLED, TR_CACHE_KEY, TR_LEVEL_KEY} from '@common/constants';
+import {TOOLBAR_KEY, LOADING_CLASS_NAME, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY, TR_LEVEL_KEY} from '@common/constants';
 
 // 清除空格
 const tableTestTpl = tableTpl;
@@ -65,7 +65,7 @@ describe('getCloneRowData(columnMap, obj, cleanKeyList)', () => {
             content: 'this is content',
             info: 'this is info',
             gm_checkbox: true,
-            [COL_PROP_DISABLED]: true,
+            [ROW_DISABLED_CHECKBOX]: true,
             [TR_CACHE_KEY]: 1,
             [TR_LEVEL_KEY]: 1
         };

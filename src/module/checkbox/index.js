@@ -4,7 +4,7 @@
 import { CHECKBOX_WIDTH,
     TR_CACHE_KEY,
     CHECKBOX_KEY,
-    COL_PROP_DISABLED,
+    ROW_DISABLED_CHECKBOX,
     CHECKBOX_DISABLED_KEY,
     CHECKED,
     INDETERMINATE,
@@ -92,7 +92,7 @@ class Checkbox {
                 const rowData = getRowData(gridManagerName, this, true);
 
                 // 触发选中事件: 1.当前行非禁止选中 2.当前事件源非单选框或多选框;
-                if (!rowData[COL_PROP_DISABLED] && [].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
+                if (!rowData[ROW_DISABLED_CHECKBOX] && [].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
                     this.querySelector('td[gm-checkbox] input.gm-radio-checkbox-input').click();
                 }
             });
@@ -202,8 +202,8 @@ class Checkbox {
 			$tr.attr(CHECKED, isChecked);
             useRadio ? this.updateRadioState($checkSpan, isChecked) : this.updateCheckboxState($checkSpan, isChecked ? CHECKED : UNCHECKED);
 
-            row[COL_PROP_DISABLED] && usableLen--;
-            (!row[COL_PROP_DISABLED] && isChecked) && checkedNum++;
+            row[ROW_DISABLED_CHECKBOX] && usableLen--;
+            (!row[ROW_DISABLED_CHECKBOX] && isChecked) && checkedNum++;
 		});
 
 		// 更新thead区域选中状态

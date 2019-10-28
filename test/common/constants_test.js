@@ -18,7 +18,8 @@ import {
     TR_CACHE_ROW,
     TR_PARENT_KEY,
     TR_CHILDREN_STATE,
-    COL_PROP_DISABLED,
+    ROW_DISABLED_CHECKBOX,
+    ROW_CLASS_NAME,
     NO_SELECT_CLASS_NAME,
     EMPTY_DATA_CLASS_NAME,
     READY_CLASS_NAME,
@@ -91,8 +92,12 @@ describe('常量验证', () => {
         expect(TR_CHILDREN_STATE).toBe('children-state');
     });
 
-    it('COL_PROP_DISABLED', () => {
-        expect(COL_PROP_DISABLED).toBe('gm_checkbox_disabled');
+    it('ROW_DISABLED_CHECKBOX', () => {
+        expect(ROW_DISABLED_CHECKBOX).toBe('gm_checkbox_disabled');
+    });
+
+    it('ROW_CLASS_NAME', () => {
+        expect(ROW_CLASS_NAME).toBe('gm_row_class_name');
     });
 
     it('ORDER_WIDTH', () => {
