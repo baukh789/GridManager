@@ -3,9 +3,10 @@
  */
 import './style.less';
 import jTool from '@common/jTool';
-import { getQuerySelector, getThName, clearTargetEvent, getTh } from '@common/base';
+import { getQuerySelector, getThName, clearTargetEvent } from '@common/base';
 import { outWarn, isUndefined, isFunction, isObject, jEach, jExtend, isEmptyObject } from '@common/utils';
 import { getSettings, setSettings } from '@common/cache';
+import { TH_NAME } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import core from '../core';
 import sortTpl from './sort.tpl.html';
@@ -30,25 +31,28 @@ class Sort {
         jTool(target).on(events, selector, function (e) {
             // th对应的名称
             const thName = getThName(jTool(this).closest('th'));
-            const settings = getSettings(gridManagerName);
+            const { sortData, sortMode, sortUpText, sortDownText } = getSettings(gridManagerName);
 
-            const oldSort = settings.sortData[thName];
-            const sortMode = settings.sortMode;
+            const oldSort = sortData[thName];
 
             let newSort = '';
-            // 升降序单一触发
+
+            // 升降序单一触发(点击同一个小箭头可取消)
             if (sortMode === 'single') {
-                if ([].includes.call(e.target.classList, 'sa-up')) {
-                    newSort = oldSort === settings.sortUpText ? '' : settings.sortUpText;
+                const $i = jTool(e.target);
+                // 触发源: 向上小箭头
+                if ($i.hasClass('sa-up')) {
+                    newSort = oldSort === sortUpText ? '' : sortUpText;
                 }
-                if ([].includes.call(e.target.classList, 'sa-down')) {
-                    newSort = oldSort === settings.sortDownText ? '' : settings.sortDownText;
+                // 触发源: 向下小箭头
+                if ($i.hasClass('sa-down')) {
+                    newSort = oldSort === sortDownText ? '' : sortDownText;
                 }
             }
 
             // 升降序整体触发
             if (sortMode === 'overall') {
-                newSort = oldSort === settings.sortDownText ? settings.sortUpText : settings.sortDownText;
+                newSort = oldSort === sortDownText ? sortUpText : sortDownText;
             }
             const sortJson = {
                 [thName]: newSort
@@ -82,7 +86,7 @@ class Sort {
 			return false;
 		}
 
-        let settings = getSettings(gridManagerName);
+        const settings = getSettings(gridManagerName);
 
 		// 单例排序: 清空原有排序数据
         if (!settings.isCombSorting) {
@@ -135,7 +139,6 @@ class Sort {
      */
 	updateSortStyle(gridManagerName) {
 		const { sortData, sortUpText, sortDownText } = getSettings(gridManagerName);
-
 		const upClass = 'sorting-up';
 		const downClass = 'sorting-down';
 		const thAttr = 'sorting';
@@ -148,7 +151,8 @@ class Sort {
 
 		// 根据排序数据更新排序
         jEach(sortData, (key, value) => {
-			const $th = getTh(gridManagerName, key);
+            // 这里未用getTh的原因: getTh方法只能获取th, 这里需要同时对th和 fake-th进行操作
+            const $th = jTool(`${getQuerySelector(gridManagerName)} th[${TH_NAME}="${key}"]`);
             const $sortAction = jTool('.sorting-action', $th);
 
 			// 排序操作：升序
