@@ -34,7 +34,6 @@ import tableTpl from '@test/table-test.tpl.html';
 import {getColumnMap} from '@test/table-config';
 import {TOOLBAR_KEY, LOADING_CLASS_NAME, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY, TR_LEVEL_KEY} from '@common/constants';
 
-// 清除空格
 const tableTestTpl = tableTpl;
 
 describe('getCloneRowData(columnMap, obj, cleanKeyList)', () => {

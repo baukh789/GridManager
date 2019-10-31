@@ -46,23 +46,13 @@ export const joinPaginationNumber = (currentPageKey, pageData) => {
 
     // 配置 first端省略符
     if (cPage > 4) {
-        tHtml += `<li to-page="1">
-						1
-					</li>
-					<li class="disabled">
-						...
-					</li>`;
+        tHtml += '<li to-page="1">1</li><li class="disabled">...</li>';
         i = cPage - 2;
     }
     // 配置 last端省略符
     if ((tPage - cPage) > 4) {
         maxI = cPage + 2;
-        lHtml += `<li class="disabled">
-						...
-					</li>
-					<li to-page="${ tPage }">
-						${ tPage }
-					</li>`;
+        lHtml += `<li class="disabled">...</li><li to-page="${ tPage }">${ tPage }</li>`;
     }
 
     // 配置页码
@@ -93,7 +83,7 @@ export const getPageData = (settings, totals, len) => {
     const pSize = pageData[pageSizeKey] || pageSize;
     const cPage = pageData[currentPageKey] || 1;
 
-    let tPage = null;
+    let tPage = 1;
     if (!totals) {
         tPage = len < pSize ? cPage : cPage + 1;
     } else {
@@ -102,7 +92,7 @@ export const getPageData = (settings, totals, len) => {
 
     return {
         // 总页数
-        tPage: tPage || 1,
+        tPage: tPage,
 
         // 当前页
         [currentPageKey]: cPage > tPage ? 1 : cPage,

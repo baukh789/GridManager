@@ -1,7 +1,7 @@
 import { getEvent, eventMap } from '@module/ajaxPage/event';
 import { TOOLBAR_KEY } from '@common/constants';
 
-describe('ajaxPage', () => {
+describe('ajaxPage event', () => {
     describe('getEvent', () => {
         let events = null;
         beforeEach(() => {
