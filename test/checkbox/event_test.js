@@ -1,6 +1,6 @@
 import { getEvent, eventMap } from '@module/checkbox/event';
 
-describe('checkbox', () => {
+describe('checkbox event', () => {
     describe('getEvent', () => {
         let events = null;
         beforeEach(() => {
