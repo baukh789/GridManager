@@ -1,5 +1,5 @@
 import { getEvent, eventMap } from '@module/tree/event';
-describe('tree', () => {
+describe('tree event', () => {
     describe('getEvent', () => {
         let events = null;
         beforeEach(() => {

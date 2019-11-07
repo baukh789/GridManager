@@ -7,7 +7,7 @@ import { getQuerySelector, getTable, getTbody, getTh, getColTd, clearTargetEvent
 import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
 import { isUndefined, isString, jEach } from '@common/utils';
 import { getEvent, eventMap } from './event';
-import { treeKey, treeCacheMap, getIconClass } from './tool';
+import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from './tool';
 
 class Tree {
     /**
@@ -18,10 +18,7 @@ class Tree {
      * @param hasChildren
      */
     add(gridManagerName, trNode, level, hasChildren) {
-        if (!treeCacheMap[gridManagerName]) {
-            treeCacheMap[gridManagerName] = [];
-        }
-        treeCacheMap[gridManagerName].push({
+        addTreeCache(gridManagerName, {
             trNode,
             level,
             hasChildren
@@ -33,7 +30,7 @@ class Tree {
      * @param gridManagerName
      */
     clear(gridManagerName) {
-        delete treeCacheMap[gridManagerName];
+        clearTreeCache(gridManagerName);
     }
 
     init(gridManagerName) {
@@ -109,7 +106,7 @@ class Tree {
             parentKeyList.push(item.getAttribute(TR_PARENT_KEY));
         });
 
-        const insetList = treeCacheMap[gridManagerName];
+        const insetList = getTreeCache(gridManagerName);
         if (!insetList || insetList.length === 0) {
             return;
         }

@@ -1,6 +1,6 @@
 import { getEvent, eventMap } from '@module/core/event';
 
-describe('core', () => {
+describe('core event', () => {
     describe('getEvent', () => {
         let events = null;
         beforeEach(() => {
