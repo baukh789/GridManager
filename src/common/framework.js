@@ -92,9 +92,10 @@ export const compileTd = (settings, el, template, row, index, key) => {
         return row[key];
     }
 
-    // React element or function
+    // React element or React function
+    // react 返回空字符串，将单元格内容交由react控制
     if (compileReact) {
-        compileList.push({el, template, row, index, key, type: 'template', fnArg: [row[key], row, index]});
+        compileList.push({el, template, row, index, key, type: 'template', fnArg: [row[key], row, index, key]});
         return '';
     }
 
@@ -104,8 +105,9 @@ export const compileTd = (settings, el, template, row, index, key) => {
     }
 
     // not React
+    // 非react时，返回函数执行结果
     if (!compileReact) {
-        return template(row[key], row, index);
+        return template(row[key], row, index, key);
     }
 };
 
