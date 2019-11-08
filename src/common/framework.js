@@ -101,7 +101,7 @@ export const compileTd = (settings, el, template, row, index, key) => {
 
     // 解析框架: Angular 1.x || Vue
     if (compileVue || compileAngularjs) {
-        compileList.push({el, row, index});
+        compileList.push({el, row, index, key});
     }
 
     // not React
