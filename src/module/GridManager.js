@@ -24,10 +24,11 @@ import sort from './sort';
 import filter from './filter';
 
 const isRendered = (table, fnName) => {
-    const settings = getSettings(getKey(table));
-    // fnName !== 'destroy' &&
+    const key = getKey(table);
+    const settings = getSettings(key);
+
     if (!settings.rendered) {
-        outError(`${fnName} failed，please check your table had been init`);
+        outError(`${key} ${fnName} failed，please check your table had been init`);
         return;
     }
     return true;
