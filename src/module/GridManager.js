@@ -6,7 +6,7 @@ import jTool from '@common/jTool';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY } from '@common/constants';
 import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, jEach, jExtend, isEmptyObject } from '@common/utils';
-import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache } from '@common/cache';
+import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
 import dropdown from './dropdown';
@@ -37,6 +37,162 @@ const isRendered = (table, fnName) => {
 // 存储默认配置
 let defaultOption = {};
 export default class GridManager {
+    /**
+     * [对外公开方法]
+     * @param table
+     * @param arg: 参数
+     * @param callback: 回调
+     * @returns {*}
+     */
+    constructor(table, arg, callback) {
+        // 验证并设置正在渲染中标识，防止同时触发多次。渲染完成后将移除该标识
+        if (table[RENDERING_KEY]) {
+            return;
+        }
+        table[RENDERING_KEY] = true;
+
+        // 存储class style， 在消毁实例时使用
+        TABLE_PURE_LIST.forEach(item => {
+            table['__' + item] = table.getAttribute(item);
+        });
+
+        const $table = jTool(table);
+        arg = jExtend({}, GridManager.defaultOption, arg);
+
+        let gridManagerName = arg.gridManagerName;
+        // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
+        if (!isString(gridManagerName)) {
+            // 存储gridManagerName值
+            gridManagerName = arg.gridManagerName = getKey($table);
+            // 参数中存在配置项 gridManagerName: 更新table DOM 的 grid-manager属性
+        } else {
+            $table.attr(TABLE_KEY, gridManagerName);
+        }
+
+        // 校验: gridManagerName
+        if (gridManagerName.trim() === '') {
+            outError('gridManagerName undefined');
+            return;
+        }
+
+        let settings = GridManager.get(gridManagerName);
+
+        // init: 当前已经实例化
+        if (settings && settings.rendered) {
+            outWarn(`${gridManagerName} had been used`);
+
+            // 如果已经存在，则清除之前的数据。#001
+            GridManager.destroy(gridManagerName);
+        }
+
+        // 校验: 初始参
+        if (!arg || isEmptyObject(arg)) {
+            outError('init method params error');
+            return;
+        }
+
+        // 校验: columnData
+        if (!isArray(arg.columnData) || arg.columnData.length === 0) {
+            outError('columnData invalid');
+            return;
+        }
+
+        // ajax类的参数向下兼容下划线形式
+        Object.keys(arg).forEach(key => {
+            if (/ajax_/g.test(key)) {
+                arg[key.replace(/_\w/g, str => str.split('_')[1].toUpperCase())] = arg[key];
+                delete arg[key];
+            }
+        });
+
+        // 参数变更提醒
+        if (arg.ajaxUrl) {
+            outWarn('ajax_url will be deprecated later, please use ajaxData instead');
+            arg.ajaxData = arg.ajaxUrl;
+        }
+
+        // 校验: ajaxData
+        if (!arg.ajaxData) {
+            outError('columnData undefined');
+            return;
+        }
+
+        // 相互冲突的参数项处理
+        if (arg.topFullColumn && arg.topFullColumn.template) {
+            // 不使用配置功能
+            arg.supportConfig = false;
+
+            // 不使用自动序号
+            arg.supportAutoOrder = false;
+
+            // 不使用全选功能
+            arg.supportCheckbox = false;
+
+            // 不使用拖拽功能
+            arg.supportDrag = false;
+
+            // 不使用宽度调整功能
+            arg.supportAdjust = false;
+        }
+
+        // 通过版本较验 清理缓存
+        verifyVersion();
+
+        // 初始化设置相关: 合并, 存储
+        settings = initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order));
+
+        // 根据参数增加禁用单元格分割线标识
+        if (settings.disableLine) {
+            $table.addClass('disable-line');
+        }
+
+        const initTableAfter = () => {
+            // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
+            if (!isUndefined($table.attr(CACHE_ERROR_KEY))) {
+                window.setTimeout(() => {
+                    saveUserMemory(settings);
+                    $table.removeAttr(CACHE_ERROR_KEY);
+                }, 1000);
+            }
+
+            settings = getSettings(gridManagerName);
+
+            // 删除dom渲染中标识
+            delete table[RENDERING_KEY];
+
+            // 设置渲染完成标识
+            settings.rendered = true;
+            setSettings(settings);
+
+            const runCallback = () => {
+                isFunction(callback) ? callback(settings.query) : '';
+            };
+
+            // 渲染tbodyDOM
+            settings.firstLoading ? core.refresh(gridManagerName, () => {
+                // 启用回调
+                runCallback();
+            }) : (() => {
+                core.insertEmptyTemplate(settings, true);
+                runCallback();
+            })();
+        };
+
+        // 初始化表格
+        // 表格不可用时进行等待
+        SIV_waitTableAvailable[gridManagerName] = setInterval(() => {
+            if (window.getComputedStyle(table).width.indexOf('px') === -1) {
+                return;
+            }
+
+            clearInterval(SIV_waitTableAvailable[gridManagerName]);
+            SIV_waitTableAvailable[gridManagerName] = null;
+
+            // 初始化表格, setInterval未停止前 initTable并不会执行
+            this.initTable($table, settings).then(initTableAfter);
+        }, 50);
+    }
+
     /**
 	 * @静态方法
 	 * 版本号
@@ -511,118 +667,6 @@ export default class GridManager {
             return;
         }
 		return core.cleanData(getKey(table));
-	}
-
-	/**
-	 * [对外公开方法]
-	 * @param table
-	 * @param arg: 参数
-	 * @param callback: 回调
-	 * @returns {*}
-	 */
-    async init(table, arg, callback) {
-        // 存储class style， 在消毁实例时使用
-        TABLE_PURE_LIST.forEach(item => {
-            table['__' + item] = table.getAttribute(item);
-        });
-
-        const $table = jTool(table);
-		arg = jExtend({}, GridManager.defaultOption, arg);
-
-		// 校验: 初始参
-		if (!arg || isEmptyObject(arg)) {
-			outError('init method params error');
-			return;
-		}
-
-		// 校验: columnData
-		if (!arg.columnData || arg.columnData.length === 0) {
-			outError('columnData invalid');
-			return;
-		}
-
-		// ajax类的参数向下兼容下划线形式
-        Object.keys(arg).forEach(key => {
-            if (/ajax_/g.test(key)) {
-                arg[key.replace(/_\w/g, str => str.split('_')[1].toUpperCase())] = arg[key];
-                delete arg[key];
-            }
-        });
-
-		// 参数变更提醒
-		if (arg.ajaxUrl) {
-			outWarn('ajax_url will be deprecated later, please use ajaxData instead');
-			arg.ajaxData = arg.ajaxUrl;
-		}
-
-		// 相互冲突的参数项处理
-        if (arg.topFullColumn && arg.topFullColumn.template) {
-            // 不使用配置功能
-            arg.supportConfig = false;
-
-            // 不使用自动序号
-            arg.supportAutoOrder = false;
-
-            // 不使用全选功能
-            arg.supportCheckbox = false;
-
-            // 不使用拖拽功能
-            arg.supportDrag = false;
-
-            // 不使用宽度调整功能
-            arg.supportAdjust = false;
-        }
-
-		// 通过版本较验 清理缓存
-		verifyVersion();
-
-		// 初始化设置相关: 合并, 存储
-		let settings = initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order));
-		const gridManagerName = settings.gridManagerName;
-
-		// 校验: gridManagerName
-		if (gridManagerName.trim() === '') {
-			outError('gridManagerName undefined');
-			return;
-		}
-
-		// 根据参数增加禁用单元格分割线标识
-        if (settings.disableLine) {
-            $table.addClass('disable-line');
-        }
-
-        // 初始化表格
-        await this.initTable($table, settings);
-
-        // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
-        if (!isUndefined($table.attr(CACHE_ERROR_KEY))) {
-            window.setTimeout(() => {
-                saveUserMemory(settings);
-                $table.removeAttr(CACHE_ERROR_KEY);
-            }, 1000);
-        }
-
-        settings = getSettings(gridManagerName);
-
-        // 删除dom渲染中标识
-        delete table[RENDERING_KEY];
-
-        // 设置渲染完成标识
-        settings.rendered = true;
-        setSettings(settings);
-
-        const runCallback = () => {
-            isFunction(callback) ? callback(settings.query) : '';
-        };
-
-        // 渲染tbodyDOM
-        settings.firstLoading ? core.refresh(gridManagerName, () => {
-            // 启用回调
-            runCallback();
-        }) : (() => {
-            core.insertEmptyTemplate(settings, true);
-            runCallback();
-        })();
 	}
 
 	/**

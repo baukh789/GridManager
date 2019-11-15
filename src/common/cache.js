@@ -22,12 +22,12 @@ import {
 } from './constants';
 
 /**
- * 等待table可用，不可用时不触发init方法
+ * 等待table-warp可用, 不可用时不进行表头重绘
  */
 export const SIV_waitContainerAvailable = {};
 
 /**
- * 等待table-warp可用, 不可用时不进行表头重绘
+ * 等待table可用，不可用时不触发init方法
  */
 export const SIV_waitTableAvailable =  {};
 

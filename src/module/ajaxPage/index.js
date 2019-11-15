@@ -179,7 +179,7 @@ class AjaxPage {
                 const settings = getSettings(gridManagerName);
                 settings.pageData = {
                     [currentPageKey]: 1,
-                    [pageSizeKey]: parseInt(value, 10)
+                    [pageSizeKey]: value
                 };
 
                 saveUserMemory(settings);

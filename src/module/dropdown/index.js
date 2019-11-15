@@ -36,8 +36,11 @@ class Dropdown {
 
         // 事件: 选中
         jTool(selected.target).on(selected.events, selected.selector, function () {
-            const oldValue = $text.text();
+            const oldValue = parseInt($text.text(), 10);
             const newValue = this.value;
+            if (oldValue === newValue) {
+                return;
+            }
             $text.text(newValue);
             onChange(newValue, oldValue);
         });

@@ -254,7 +254,7 @@ const demo1 = {
      * 初始化表格
      */
     initGM: function () {
-        table.GM({
+        new window.GridManager(table, {
             gridManagerName: 'test',
             width: '100%',
             height: '100%',

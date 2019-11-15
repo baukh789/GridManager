@@ -192,7 +192,7 @@
         //在in操作符左边的操作项不能用! 例如这样写不对的：if ( !a in b) { //dosomething }
         "no-negated-in-lhs": 2,
         //当我们使用new操作符去调用构造函数时，需要把调用结果赋值给一个变量。
-        "no-new": 2,
+        "no-new": 0,
         //该规则保证了不使用new Function(); 语句。
         "no-new-func": 2,
         //不要通过new Object（），来定义对象
