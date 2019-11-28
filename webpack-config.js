@@ -27,7 +27,8 @@ const config = {
 	resolve: {
 		extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
         alias: {
-            '@common': path.join(__dirname, './src/common')
+            '@common': path.join(__dirname, './src/common'),
+            '@module': path.join(__dirname, './src/module'),
         }
 	},
 
