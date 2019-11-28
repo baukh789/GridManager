@@ -146,7 +146,7 @@ class Menu {
 			}
 
 			// 验证：当前是否存在已选中的项
-			const exportExcelOfChecked = jTool('[grid-action="export-excel"][only-checked="true"]');
+			const exportExcelOfChecked = jTool('[menu-action="export-excel"][only-checked="true"]');
 			if (jTool('tr[checked="true"]', getTbody(gridManagerName)).length === 0) {
 				exportExcelOfChecked.addClass(DISABLED_CLASS_NAME);
 			} else {

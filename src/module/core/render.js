@@ -1,6 +1,7 @@
 import remind from '../remind';
 import order from '../order';
 import ajaxPage from '../ajaxPage';
+import { CLASS_DRAG_ACTION } from '../drag/constants';
 import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, TH_VISIBLE } from '@common/constants';
 import { getVisibleState, isUndefined, isString, isObject, jEach } from '@common/utils';
 import { compileTh } from '@common/framework';
@@ -34,7 +35,7 @@ class Render {
 
         // 根据参数，增加表头的icon图标是否跟随文本class
         if (isIconFollowText) {
-            wrapClassList.push('icon-follow-text');
+            wrapClassList.push('gm-icon-follow-text');
         }
 
         // 根据参数增加禁用禁用边框线标识
@@ -98,7 +99,7 @@ class Render {
     @parseTpl(thTpl)
     createThTpl(params) {
         const { settings, col } = params;
-        const { gridManagerName, sortUpText, sortDownText } = settings;
+        const { gridManagerName, query, supportDrag, sortData, sortUpText, sortDownText, useRadio } = settings;
 
         // 表头提醒
         let remindAttr = '';
@@ -113,10 +114,10 @@ class Render {
             sort.enable[gridManagerName] = true;
             if (col.sorting === sortDownText) {
                 sortingAttr = `sorting="${sortDownText}"`;
-                settings.sortData[col.key] = sortDownText;
+                sortData[col.key] = sortDownText;
             } else if (col.sorting === sortUpText) {
                 sortingAttr = `sorting="${sortUpText}"`;
-                settings.sortData[col.key] = sortUpText;
+                sortData[col.key] = sortUpText;
             } else {
                 sortingAttr = 'sorting=""';
             }
@@ -128,9 +129,9 @@ class Render {
             filter.enable[gridManagerName] = true;
             filterAttr = 'filter=""';
             if (isUndefined(col.filter.selected)) {
-                col.filter.selected = settings.query[col.key];
+                col.filter.selected = query[col.key];
             } else {
-                settings.query[col.key] = col.filter.selected;
+                query[col.key] = col.filter.selected;
             }
         }
 
@@ -155,7 +156,7 @@ class Render {
             case CHECKBOX_KEY:
                 gmCreateAttr = `${GM_CREATE}="true" gm-checkbox`;
                 thName = CHECKBOX_KEY;
-                thText = checkbox.getThContent(settings.useRadio);
+                thText = checkbox.getThContent(useRadio);
                 break;
             // 普通列
             default:
@@ -171,8 +172,8 @@ class Render {
         // 1.插件自动生成列
         // 2.禁止使用个性配置功能的列
         let dragClassName = '';
-        if (settings.supportDrag && !col.isAutoCreate && !col.disableCustomize) {
-            dragClassName = 'drag-action';
+        if (supportDrag && !col.isAutoCreate && !col.disableCustomize) {
+            dragClassName = CLASS_DRAG_ACTION;
         }
 
         return {

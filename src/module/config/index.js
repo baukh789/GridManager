@@ -14,7 +14,7 @@ import scroll from '../scroll';
 import configTpl from './config.tpl.html';
 import configColumnTpl from './config-column.tpl.html';
 import { getEvent, eventMap } from './event';
-
+import { CLASS_CONFIG, CLASS_CONFIG_ING, CLASS_NO_CLICK } from './constants';
 
 /**
  * 获取config 的 jtool对像
@@ -24,7 +24,6 @@ const getDOM = gridManagerName => {
     return jTool(`[${CONFIG_KEY}="${gridManagerName}"]`);
 };
 
-const noClickClass = 'no-click';
 class Config {
 
     /**
@@ -50,7 +49,7 @@ class Config {
             const _only = jTool(this);
 
             // 最后一项显示列不允许隐藏
-            if (_only.hasClass(noClickClass)) {
+            if (_only.hasClass(CLASS_NO_CLICK)) {
                 return false;
             }
 
@@ -65,7 +64,7 @@ class Config {
             // 所在的table-div
             const $tableDiv	= getDiv(gridManagerName);
 
-            jTool(`.config-list .${noClickClass}`, $configArea).removeClass(noClickClass);
+            jTool(`.config-list .${CLASS_NO_CLICK}`, $configArea).removeClass(CLASS_NO_CLICK);
 
             // 取反事件下的checkbox的checked
             let isVisible = !_only.find('input[type="checkbox"]').prop('checked');
@@ -73,16 +72,16 @@ class Config {
             isVisible ? $checkbox.addClass(CHECKED_CLASS) : $checkbox.removeClass(CHECKED_CLASS);
 
             // 设置与当前th同列的td可视状态
-            $tableDiv.addClass('config-editing');
+            $tableDiv.addClass(CLASS_CONFIG_ING);
             setAreVisible(gridManagerName, [_thName], isVisible);
-            $tableDiv.removeClass('config-editing');
+            $tableDiv.removeClass(CLASS_CONFIG_ING);
 
             // 当前处于选中状态的展示项
             const _checkedList = jTool('.checked-li', $configArea);
 
             // 限制最少显示一列
             if (_checkedList.length === 1) {
-                _checkedList.addClass(noClickClass);
+                _checkedList.addClass(CLASS_NO_CLICK);
             }
 
             // 通知相关组件进行更新
@@ -179,9 +178,10 @@ class Config {
         $target.off(events);
         $target.on(events, function (e) {
             const eventSource = jTool(e.target);
-            if (eventSource.hasClass('config-area') || eventSource.closest('.config-area').length === 1) {
+            if (eventSource.hasClass(CLASS_CONFIG) || eventSource.closest(`.${CLASS_CONFIG}`).length === 1) {
                 return false;
             }
+            console.log('aaaaa');
             $configArea.hide();
             $target.off(events);
         });
@@ -227,11 +227,11 @@ class Config {
 
         // 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示
         const checkedLi = jTool('.checked-li', $configArea);
-        showNum === 1 ? checkedLi.addClass(noClickClass) : checkedLi.removeClass(noClickClass);
+        showNum === 1 ? checkedLi.addClass(CLASS_NO_CLICK) : checkedLi.removeClass(CLASS_NO_CLICK);
     }
 
     /**
-     * 更新配置列表区的高度: 用于解决 config-list 无法继承 config-area 设置的 max-height问题
+     * 更新配置列表区的高度: 用于解决 config-list 无法继承 gm-config-area 设置的 max-height问题
      * @param gridManagerName
      */
     updateConfigListHeight(gridManagerName) {

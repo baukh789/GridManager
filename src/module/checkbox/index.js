@@ -22,6 +22,7 @@ import radioTpl from './radio.tpl.html';
 import { getEvent, eventMap } from './event';
 import { resetData } from './tool';
 import './style.less';
+import {jEach} from '../../common/utils';
 
 class Checkbox {
 	/**
@@ -33,7 +34,7 @@ class Checkbox {
 
         const _this = this;
         const { allChange, checkboxChange, radioChange, trChange } = eventMap[gridManagerName];
-        const { useRowCheck, checkedBefore, checkedAllBefore, checkedAfter, checkedAllAfter } = getSettings(gridManagerName);
+        const { useRowCheck, maxSelected, checkedBefore, checkedAllBefore, checkedAfter, checkedAllAfter } = getSettings(gridManagerName);
 
         // th内的全选
         jTool(allChange.target).on(allChange.events, allChange.selector, function () {
@@ -65,7 +66,7 @@ class Checkbox {
             }
             const cacheKey = tr.getAttribute(TR_CACHE_KEY);
             const tableData = resetData(gridManagerName, checked, false, cacheKey);
-            _this.resetDOM(gridManagerName, tableData);
+            _this.resetDOM(gridManagerName, tableData, false, maxSelected);
             checkedAfter(getCheckedData(gridManagerName), checked, getRowData(gridManagerName, tr));
         });
 
@@ -189,7 +190,7 @@ class Checkbox {
 	 * @param tableData
 	 * @param useRadio: 当前事件源为单选
      */
-	resetDOM(gridManagerName, tableData, useRadio) {
+	resetDOM(gridManagerName, tableData, useRadio, maxSelected) {
 	    const $table = getTable(gridManagerName);
 
 	    // 更改tbody区域选中状态
@@ -207,13 +208,26 @@ class Checkbox {
 		});
 
 		// 更新thead区域选中状态
-        const $allCheckSpan = jTool('thead tr th[gm-checkbox] .gm-checkbox ', $table);
+        const $allCheck = jTool('thead tr th[gm-checkbox] .gm-checkbox-wrapper', $table);
+        const $allCheckSpan = jTool('.gm-checkbox ', $allCheck);
 
         // [checked: 选中, indeterminate: 半选中, unchecked: 未选中]
         !useRadio && this.updateCheckboxState($allCheckSpan, checkedNum === 0 ? UNCHECKED : (checkedNum === usableLen ? CHECKED : INDETERMINATE));
 
 		// 更新底部工具条选中描述信息
         ajaxPage.updateCheckedInfo(gridManagerName);
+
+        if (!useRadio && maxSelected) {
+            const $tbodyCheckWrap = jTool('tbody .gm-checkbox-wrapper ', $table);
+            jEach($tbodyCheckWrap, (index, wrap) => {
+                const $wrap = jTool(wrap);
+                const checkbox = jTool('.gm-checkbox', $wrap);
+                if (!checkbox.hasClass('gm-checkbox-checked')) {
+                    checkedNum >= maxSelected  ? $wrap.addClass('disabled-selected') : $wrap.removeClass('disabled-selected');
+                }
+            });
+            $tbodyCheckWrap.length > maxSelected ? $allCheck.addClass('disabled-selected') : $allCheck.removeClass('disabled-selected');
+        }
 	}
 
     /**

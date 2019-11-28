@@ -18,7 +18,7 @@ describe('sort', () => {
             events = getEvent('test', '#baukh');
             expect(events.sortAction.events).toBe('mouseup');
             expect(events.sortAction.target).toBe('#baukh');
-            expect(events.sortAction.selector).toBe('.sorting-action');
+            expect(events.sortAction.selector).toBe('.gm-sorting-action');
         });
     });
 

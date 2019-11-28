@@ -6,7 +6,7 @@
 export const getEvent = (gridManagerName, scope) => {
     return {
         // 触发 #001
-        sortAction: {events: 'mouseup', target: scope, selector: '.sorting-action'}
+        sortAction: {events: 'mouseup', target: scope, selector: '.gm-sorting-action'}
     };
 };
 

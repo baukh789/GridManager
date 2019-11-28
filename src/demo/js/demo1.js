@@ -287,11 +287,17 @@ const demo1 = {
             // 合并排序
             // mergeSort: true,
 
+            // 禁用边框线
+            disableBorder: true,
+
             // 使用单选
             // useRadio: true,
 
             // 使用行选中
             // useRowCheck: true,
+
+            // 复选时最大可选数
+            maxSelected: 2,
 
             // 图标跟随文本
             // isIconFollowText: true,
@@ -402,9 +408,9 @@ const demo1 = {
             },
 
             // 单个td的hover事件
-            rowClick: (row, rowIndex, colIndex) => {
-                console.log(row, rowIndex, colIndex);
-            },
+            // rowHover: (row, rowIndex, colIndex) => {
+            //     console.log(row, rowIndex, colIndex);
+            // },
             columnData: [
                 {
                     key: 'pic',
@@ -501,6 +507,7 @@ const demo1 = {
                     width: '130px',
                     text: '创建时间',
                     sorting: 'DESC',
+                    align: 'left',
                     // 使用函数返回 htmlString
                     template: (createDate, row) => {
                         return new Date(createDate).toLocaleDateString();

@@ -5,24 +5,24 @@
  * @since 2019-02-20
  */
 
-.table-wrap {
-    .table-div {
-        table[grid-manager] {
-            th {
-                .th-wrap {
-                    /* 宽度调整事件源 */
-                    .adjust-action {
-                        display: block;
-                        width: 6px;
-                        height: 100%;
-                        position: absolute;
-                        top: 0;
-                        right: -4px;
-                        cursor: col-resize;
-                        //z-index: 2;
-                    }
-                }
-            }
-        }
-    }
+/* 宽度调整事件源 */
+.gm-adjust-action {
+    display: block;
+    width: 6px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: -4px;
+    cursor: col-resize;
+}
+
+/* 宽度调整选中 */
+.gm-adjust-selected {
+    border-right-width: 2px;
+    border-right-style: dashed;
+    border-right-color: #ccc;
+    // 调整 gm- 时注释的，需要验证是否还有必要
+    //&.drag-action {
+    //    cursor: col-resize;
+    //}
 }

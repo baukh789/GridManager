@@ -25,15 +25,15 @@ describe('menu', () => {
 
             expect(events.refresh.events).toBe('click');
             expect(events.refresh.target).toBe(`[${MENU_KEY}="test"]`);
-            expect(events.refresh.selector).toBe('[grid-action="refresh-page"]');
+            expect(events.refresh.selector).toBe('[menu-action="refresh-page"]');
 
             expect(events.exportExcel.events).toBe('click');
             expect(events.exportExcel.target).toBe(`[${MENU_KEY}="test"]`);
-            expect(events.exportExcel.selector).toBe('[grid-action="export-excel"]');
+            expect(events.exportExcel.selector).toBe('[menu-action="export-excel"]');
 
             expect(events.openConfig.events).toBe('click');
             expect(events.openConfig.target).toBe(`[${MENU_KEY}="test"]`);
-            expect(events.openConfig.selector).toBe('[grid-action="config-grid"]');
+            expect(events.openConfig.selector).toBe('[menu-action="config-grid"]');
         });
     });
 

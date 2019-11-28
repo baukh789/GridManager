@@ -6,70 +6,49 @@
  */
 @import "../../css/mixins";
 
-.table-wrap {
-    .table-div {
-        table[grid-manager] {
-            th {
-                .th-wrap {
-                    /* 拖拽换位 */
-                    .drag-action {
-                        cursor: all-scroll;
-                    }
-                }
-            }
-            th, td {
-                /* 宽度调整选中 */
-                &.adjust-selected {
-                    border-right-width: 2px;
-                    border-right-style: dashed;
-                    border-right-color: #ccc;
-                    &.drag-action {
-                        cursor: col-resize;
-                    }
-                }
-                /* 拖拽换位中 */
-                &.drag-ongoing {
-                    cursor: all-scroll;
-                    opacity: 1;
-                    animation: opacityChange 1s ease-in-out infinite;
-                }
-            }
-        }
-    }
-    /* 拖拽换位镜象 */
-    .dreamland-div {
-        display: none;
-        position: absolute;
-        padding: 0;
-        background: #fff;
-        cursor: all-scroll;
-        z-index: 9999;
-        .dreamland-table {
-            table-layout: fixed;
-            width: 100%;
-            margin: 0 !important;
-            padding: 0 !important;
-            background-color: #d8d8d8;
-            border-collapse: separate;
-            border-spacing: 1px;
-            font-size: @font-normal-size !important;
-            thead{
-                .bg-image();
-            }
-            tbody{
+/* 拖拽换位 */
+.gm-drag-action {
+    cursor: all-scroll;
+}
 
-                tr {
-                    td {
-                        background-color: #fff;
-                        padding: 11px;
-                        .text-overflow();
-                    }
-                    &:nth-child(odd) td{
-                        background-color: #fafafa;
-                    }
-                    &:hover td{
-                        background-color: #F1F8FB;
-                    }
+/* 拖拽换位中 */
+.table-div .gm-drag-ongoing {
+    cursor: all-scroll;
+    opacity: 1;
+    animation: opacityChange 1s ease-in-out infinite;
+}
+/* 拖拽换位镜象 */
+.gm-dreamland-div {
+    display: none;
+    position: absolute;
+    padding: 0;
+    background: #fff;
+    cursor: all-scroll;
+    z-index: 9999;
+    .dreamland-table {
+        table-layout: fixed;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #d8d8d8;
+        border-collapse: separate;
+        border-spacing: 1px;
+        font-size: @font-normal-size;
+        thead{
+            .bg-image();
+        }
+        tbody{
+            tr {
+                td {
+                    background-color: #fff;
+                    padding: 11px;
+                    .text-overflow();
+                }
+                &:nth-child(odd) td{
+                    background-color: #fafafa;
+                }
+                &:hover td{
+                    background-color: #F1F8FB;
                 }
             }
         }

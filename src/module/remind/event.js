@@ -8,7 +8,7 @@
 export const getEvent = (gridManagerName, scope) => {
     return {
         // 触发 #001
-        remindStart: {events: 'mouseover', target: scope, selector: '.remind-action'}
+        remindStart: {events: 'mouseover', target: scope, selector: '.gm-remind-action'}
     };
 };
 

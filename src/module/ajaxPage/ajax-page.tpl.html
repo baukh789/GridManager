@@ -1,4 +1,4 @@
-<div class="footer-toolbar" {{vm.keyName}}="{{vm.gridManagerName}}">
+<div class="gm-toolbar" {{vm.keyName}}="{{vm.gridManagerName}}">
     <!--刷新图标-->
     <span class="refresh-action">{{ vm.refreshActionText }}</span>
 
@@ -21,9 +21,9 @@
     <div class="toolbar-info page-info"></div>
 
     <!--分页切换-->
-    <div class="ajax-page">
+    <div class="pagination">
         <!--上一页、首页区-->
-        <ul class="pagination" pagination-before>
+        <ul pagination-before>
             <li class="first-page">
                 {{ vm.firstPageText }}
             </li>
@@ -32,9 +32,9 @@
             </li>
         </ul>
         <!--页码区-->
-        <ul class="pagination" pagination-number></ul>
+        <ul pagination-number></ul>
         <!--下一页、尾页区-->
-        <ul class="pagination" pagination-after>
+        <ul pagination-after>
             <li class="next-page">
                 {{ vm.nextPageText }}
             </li>

@@ -3,25 +3,26 @@
  * @param gridManagerName
  * @param scope: querySelector 域
  */
+import { CLASS_FILTER } from './constants';
 export const getEvent = (gridManagerName, scope) => {
     return {
         // 切换可视状态
-        toggle: {events: 'mousedown', target: scope, selector: '.filter-area .fa-icon'},
+        toggle: {events: 'mousedown', target: scope, selector: `.${CLASS_FILTER} .fa-icon`},
 
         // 关闭
         close: {events: 'mousedown.closeFitler', target: 'body'},
 
         // 提交
-        submit: {events: 'mouseup', target: scope, selector: '.filter-area .filter-submit'},
+        submit: {events: 'mouseup', target: scope, selector: `.${CLASS_FILTER} .filter-submit`},
 
         // 重置
-        reset: {events: 'mouseup', target: scope, selector: '.filter-area .filter-reset'},
+        reset: {events: 'mouseup', target: scope, selector: `.${CLASS_FILTER} .filter-reset`},
 
         // 复选框点选
-        checkboxAction: {events: 'click', target: scope, selector: '.filter-area .gm-checkbox-input'},
+        checkboxAction: {events: 'click', target: scope, selector: `.${CLASS_FILTER} .gm-checkbox-input`},
 
         // 单选框点选
-        radioAction: {events: 'click', target: scope, selector: '.filter-area .gm-radio-input'}
+        radioAction: {events: 'click', target: scope, selector: `.${CLASS_FILTER} .gm-radio-input`}
     };
 };
 

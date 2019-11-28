@@ -1,4 +1,5 @@
 import { getEvent, eventMap } from '@module/adjust/event';
+import { CLASS_ADJUST_ACTION } from '@module/adjust/constants';
 import { DIV_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 describe('adjust', () => {
     describe('getEvent', () => {
@@ -18,7 +19,7 @@ describe('adjust', () => {
             events = getEvent('test', '#baukh');
             expect(events.adjustStart.events).toBe('mousedown');
             expect(events.adjustStart.target).toBe('#baukh');
-            expect(events.adjustStart.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .adjust-action`);
+            expect(events.adjustStart.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${CLASS_ADJUST_ACTION}`);
 
             expect(events.adjusting.events).toBe('mousemove');
             expect(events.adjusting.target).toBe(`[${DIV_KEY}="test"]`);

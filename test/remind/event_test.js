@@ -18,7 +18,7 @@ describe('remind', () => {
             events = getEvent('test', '#baukh');
             expect(events.remindStart.events).toBe('mouseover');
             expect(events.remindStart.target).toBe('#baukh');
-            expect(events.remindStart.selector).toBe('.remind-action');
+            expect(events.remindStart.selector).toBe('.gm-remind-action');
         });
     });
 

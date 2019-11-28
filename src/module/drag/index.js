@@ -14,8 +14,8 @@ import adjust from '../adjust';
 import config from '../config';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
+import { CLASS_DRAG_ACTION, CLASS_DRAG_ING, CLASS_DREAMLAND } from './constants';
 
-const draggingClassName = 'drag-ongoing';
 class Drag {
     /**
 	 * 初始化拖拽
@@ -55,13 +55,13 @@ class Drag {
             $body.addClass(NO_SELECT_CLASS_NAME);
 
             // 增加拖拽中样式
-            $th.addClass(draggingClassName);
-            $colTd.addClass(draggingClassName);
+            $th.addClass(CLASS_DRAG_ING);
+            $colTd.addClass(CLASS_DRAG_ING);
 
-            let $dreamlandDIV = jTool('.dreamland-div', $tableWrap);
+            let $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
             if ($dreamlandDIV.length === 0) {
-                $tableWrap.append('<div class="dreamland-div"></div>');
-                $dreamlandDIV = jTool('.dreamland-div', $tableWrap);
+                $tableWrap.append(`<div class="${CLASS_DREAMLAND}"></div>`);
+                $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
             }
             // #001
             $dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({ table,  $th, $colTd });
@@ -123,8 +123,8 @@ class Drag {
                         top: `${table.offsetTop}px`,
                         left: `${th.offsetLeft - getDiv(gridManagerName).get(0).scrollLeft}px`
                     }, animateTime, () => {
-                        $th.removeClass(draggingClassName);
-                        $colTd.removeClass(draggingClassName);
+                        $th.removeClass(CLASS_DRAG_ING);
+                        $colTd.removeClass(CLASS_DRAG_ING);
 
                         $dreamlandDIV.hide();
 
@@ -167,15 +167,15 @@ class Drag {
         // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
         let tbodyHtml = '';
         jEach($colTd, (i, v) => {
-            let _cloneTd = v.cloneNode(true);
-            _cloneTd.style.height = v.offsetHeight + 'px';
-            let _cloneTr = jTool(v).closest('tr').clone();
-            tbodyHtml += _cloneTr.html(_cloneTd.outerHTML).get(0).outerHTML;
+            const cloneTd = v.cloneNode(true);
+            cloneTd.style.height = v.offsetHeight + 'px';
+            const cloneTr = jTool(v).closest('tr').clone();
+            tbodyHtml += cloneTr.html(cloneTd.outerHTML).get(0).outerHTML;
         });
 
         return {
             tableClassName: table.className,
-            thOuterHtml: jTool('.drag-action', $th).get(0).outerHTML,
+            thOuterHtml: jTool(`.${CLASS_DRAG_ACTION}`, $th).get(0).outerHTML,
             thStyle: `style="height:${$th.height()}px"`,
             tbodyHtml: tbodyHtml
         };

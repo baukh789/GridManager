@@ -21,6 +21,7 @@ import {
     GM_CREATE,
     TH_NAME
 } from './constants';
+import { CLASS_FILTER } from '@module/filter/constants';
 
 /**
  * 获取clone行数据匹配，修改它并不会污染原数据。
@@ -485,15 +486,15 @@ export const getThTextWidth = (gridManagerName, $th, isIconFollowText) => {
     let iconWidth = 0;
     if (isIconFollowText) {
         // 表头提醒
-        const remindAction = jTool('.remind-action', $th);
+        const remindAction = jTool('.gm-remind-action', $th);
         remindAction.length && (iconWidth += remindAction.width());
 
         // 排序
-        const sortingAction = jTool('.sorting-action', $th);
+        const sortingAction = jTool('.gm-sorting-action', $th);
         sortingAction.length && (iconWidth += sortingAction.width());
 
         // 筛选
-        const filterAction = jTool('.filter-area', $th);
+        const filterAction = jTool(`.${CLASS_FILTER}`, $th);
         filterAction.length && (iconWidth += filterAction.width());
     }
 

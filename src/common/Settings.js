@@ -223,6 +223,9 @@ const checkbox = {
     // 使用单选
     useRadio: false,
 
+    // 复选时最大可选数，生效条件: supportCheckbox === true && useRadio === false
+    maxSelected: null, // @2.9.8 新增
+
     // 选择事件执行前事件
     checkedBefore: noop,
 

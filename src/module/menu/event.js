@@ -13,13 +13,13 @@ export const getEvent = gridManagerName => {
         closeMenu: {events: 'mousedown.closeMenu', target: 'body'},
 
         // 上一页、下一页、重新加载
-        refresh: {events: 'click', target: menuTarget, selector: '[grid-action="refresh-page"]'},
+        refresh: {events: 'click', target: menuTarget, selector: '[menu-action="refresh-page"]'},
 
         // 导出、导出已选中
-        exportExcel: {events: 'click', target: menuTarget, selector: '[grid-action="export-excel"]'},
+        exportExcel: {events: 'click', target: menuTarget, selector: '[menu-action="export-excel"]'},
 
         // 打开配置区域
-        openConfig: {events: 'click', target: menuTarget, selector: '[grid-action="config-grid"]'}
+        openConfig: {events: 'click', target: menuTarget, selector: '[menu-action="config-grid"]'}
     };
 };
 

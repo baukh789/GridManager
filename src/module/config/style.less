@@ -3,81 +3,81 @@
  * @author wangbo
  * @since 2019-02-20
  */
-/* 表格列配置 */
-.table-wrap{
-    /* 配置列表功能 */
-    .config-editing {
-        overflow-x: hidden;
-    }
-    .config-area{
-        display: none;
-        width: 260px;
+
+// 配置中标识
+.gm-config-ing{
+    overflow-x: hidden;
+}
+
+// 配置区域样式
+.gm-config-area{
+    display: none;
+    width: 260px;
+    position: absolute;
+    top: 42px;
+    right: 0;
+    cursor: pointer;
+    z-index: 9999;
+    padding: 8px 0;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    .config-action{
+        display: block;
+        width: 20px;
+        height: calc(100% + 2px);
         position: absolute;
-        top: 42px;
-        right: 0;
-        cursor: pointer;
-        z-index: 9999;
-        padding: 8px 0;
-        border: 1px solid #ddd;
-        background-color: #fff;
-        .config-action{
-            display: block;
-            width: 20px;
-            height: calc(100% + 2px);
+        left: -20px;
+        top: -1px;
+        overflow: hidden;
+        text-align: center;
+        background-color: #09f;
+        i{
+            display: inline-block;
             position: absolute;
-            left: -20px;
-            top: -1px;
-            overflow: hidden;
-            text-align: center;
-            background-color: #09f;
-            i{
-                display: inline-block;
-                position: absolute;
-                left: 2px;
-                top: calc(50% - 9px);
-                font-size: 16px;
-                color: #ddd;
-            }
-            &:hover i{
-                color: #fff;
-            }
+            left: 2px;
+            top: calc(50% - 9px);
+            font-size: 16px;
+            color: #ddd;
         }
-        .config-info{
+        &:hover i{
+            color: #fff;
+        }
+    }
+    .config-info{
+        line-height: 20px;
+        padding: 0 18px;
+        color: #666;
+    }
+    .config-list{
+        display: block;
+        width: 100%;
+        list-style-type: none;
+        font-size: 12px;
+        margin: 0;
+        padding: 0 8px;
+        user-select: none;
+        overflow-y: auto;
+        >li{
+            display: inline-block;
+            width: calc(50% - 2px);
+            padding: 4px 10px;
             line-height: 20px;
-            padding: 0 18px;
-            color: #666;
-        }
-        .config-list{
-            display: block;
-            width: 100%;
-            list-style-type: none;
-            font-size: 12px;
-            margin: 0;
-            padding: 0 8px;
-            user-select: none;
-            overflow-y: auto;
-            >li{
-                display: inline-block;
-                width: calc(50% - 2px);
-                padding: 4px 10px;
-                line-height: 20px;
-                overflow: hidden;
-                text-overflow:ellipsis;
-                white-space: nowrap;
-                .gm-checkbox-input{
-                    pointer-events: none;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+            .gm-checkbox-input{
+                pointer-events: none;
+            }
+            &:hover{
+                color: #09f;
+            }
+            &.no-click{
+                cursor: not-allowed;
+                *{
+                    cursor: not-allowed;
                 }
                 &:hover{
-                    color: #09f;
-                }
-                &.no-click{
-                    cursor: not-allowed;
-                    *{
-                        cursor: not-allowed;
-                    }
-                    &:hover{
-                        color:#666;
-                    }
+                    color:#666;
                 }
             }
         }

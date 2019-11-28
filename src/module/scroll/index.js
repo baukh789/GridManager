@@ -13,6 +13,7 @@ import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { jEach } from '@common/utils';
 import { compileFakeThead } from '@common/framework';
 import config from '../config';
+import './style.less';
 class Scroll {
     /**
      * 初始化

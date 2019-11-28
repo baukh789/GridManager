@@ -97,7 +97,7 @@ export default class GridManager {
             return;
         }
 
-        // ajax类的参数向下兼容下划线形式
+        // 向下兼容: ajax类的参数向下兼容下划线形式
         Object.keys(arg).forEach(key => {
             if (/ajax_/g.test(key)) {
                 arg[key.replace(/_\w/g, str => str.split('_')[1].toUpperCase())] = arg[key];
@@ -601,7 +601,7 @@ export default class GridManager {
             return;
         }
         const checkedList = isArray(checkedData) ? checkedData : [checkedData];
-        const { columnMap, useRadio, gridManagerName, treeConfig } = getSettings(getKey(table));
+        const { columnMap, useRadio, maxSelected, gridManagerName, treeConfig } = getSettings(getKey(table));
         const treeKey = treeConfig.treeKey;
         const tableData = getTableData(gridManagerName);
         tableData.forEach(rowData => {
@@ -611,7 +611,7 @@ export default class GridManager {
         });
 
         setCheckedData(gridManagerName, checkedList, true);
-        return checkbox.resetDOM(gridManagerName, tableData, useRadio);
+        return checkbox.resetDOM(gridManagerName, tableData, useRadio, maxSelected);
     };
 
     /**

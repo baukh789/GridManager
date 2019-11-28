@@ -27,230 +27,146 @@
         &.empty-data{
             overflow-y: hidden;
         }
-        /* table */
-        table[grid-manager] {
-            table-layout: fixed;
-            word-wrap: break-word;
-            text-align: center;
-            width: 100%;
-            border-collapse: collapse;
-            tr {
-                border-bottom: @table-border;
-                [last-visible="true"]{
-                    border-right: none;
-                }
-            }
-            th {
-                text-align: center;
-                margin: 0;
-                padding: 0;
-                line-height: 18px;
-                font-weight: 400;
-                &[th-visible="none"] {
-                    display: none;
-                }
-                &[th-visible="visible"] {
-                    display: table-cell;
-                }
-                &[remind] .th-wrap {
-                    padding-left: 20px;
-                }
-                &[sorting] .th-wrap {
-                    padding-right: 20px;
-                }
-                &[filter] .th-wrap {
-                    padding-right: 20px;
-                }
-                &[sorting][filter] .th-wrap { /*排序与表头筛选同时存在时，需要将样式重置*/
-                    padding-right: 45px;
-                    .sorting-action{
-                        right: 25px;
-                    }
-                }
-                .th-wrap {
-                    /*减去的1px 为border-right. 原因是table元素存在特殊性, thead浮动后border的宽度不会计算到th内,而是会在原基础上将th的宽加1. */
-                    width: calc(100% - 1px);
-                    height: 100%;
-                    position: relative;
-                    padding: 6px 11px;
-                    .th-text {
-                        display: block;
-                        width: 100%;
-                        height: 100%;
-                        .text-overflow();
-                    }
-                    .iconfont{
-                        opacity: 0.7;
-                        cursor: pointer;
-                        &:hover{
-                            opacity: 1;
-                        }
-                    }
-                }
-            }
-            td {
-                text-align: left;
-            }
-            th, td {
-                border-right: @table-border;
-                &[th-visible="none"] {
-                    display: none;
-                }
-                &[th-visible="visible"] {
-                    display: table-cell;
-                }
-                /* 文本对齐 */
-                &[align] {
-                    &[align="left"] {
-                        text-align: left;
-                    }
-                    &[align="center"] {
-                        text-align: center;
-                    }
-                    &[align="right"] {
-                        text-align: right;
-                    }
-                }
-            }
-            thead {
-                tr {
-                    height: 40px;
-                    border-bottom: none;
-                }
-
-                &[grid-manager-thead]{
-                    visibility: hidden;
-                }
-                /* 表头置顶 */
-                &[grid-manager-mock-thead] {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                }
-            }
-            tbody {
-                tr {
-                    &[odd] td{
-                        background-color: #fafafa;
-                    }
-                    &:hover td{
-                        background-color: #F1F8FB;
-                    }
-                    &[empty-template]{
-                        border-bottom: none;
-                        td{
-                            background-color: #FFF;
-                            padding: 0;
-                        }
-                    }
-                    /*顶部通栏*/
-                    &[top-full-column="true"]{
-                        border-bottom: none;
-                        td:nth-child(1){
-                            border-left: @table-border;
-                            border-right: @table-border;
-                            padding: 0;
-                            .full-column-td{
-                                border-top: @table-border;
-                                .bg-image();
-                            }
-                        }
-                    }
-                    &[top-full-column-interval="true"]{
-                        border: none;
-                        td{
-                            background-color: #fff;
-                            padding: 0;
-                            >div{
-                                height: 10px;
-                            }
-                        }
-                    }
-                    &[top-full-column="false"]{
-                        border-bottom: @table-border;
-                        td{
-                            &:first-child{
-                                border-left: @table-border;
-                            }
-                            &:last-child{
-                                border-right: @table-border;
-                            }
-                        }
-                    }
-                    td {
-                        .text-overflow();
-                        background-color: #fff;
-                        color: #3d3d3d;
-                        padding: 11px;
-                        vertical-align: middle;
-                        &[td-visible="none"] {
-                            display: none;
-                        }
-                        &[td-visible="visible"] {
-                            display: table-cell;
-                        }
-                        &:last-child{
-                            border-right: none;
-                        }
-                        // 默认的空模板样式
-                        .gm-empty-template {
-                            width: 100%;
-                            height: 80px;
-                            line-height: 80px;
-                            text-align: center;
-                            font-size: 16px;
-                            color: #ddd;
-                        }
-                    }
-                }
-            }
-            // 禁用分割线模式
-            &.disable-line {
-                th, td{
-                    border-right: none;
-                }
-            }
-        }
     }
 
     // 配置是否禁用边框线
     &.disable-border {
         border: none;
     }
+}
 
-    // 表头的icon图标是否跟随文本
-    &.icon-follow-text{
-        .table-div table[grid-manager] thead th[th-name]{
-            .th-wrap{
-                display: inline-block;
-                vertical-align: middle;
-                padding-left: 5px;
-                padding-right: 5px;
-                .th-text{
-                    display: inline-block;
-                    width: auto;
-                    vertical-align: middle;
-                }
-                .remind-action, .sorting-action, .filter-area{
-                    display: inline-block;
-                    width: 18px;
-                    position: relative;
-                    top: 0;
-                    left: 0;
-                    vertical-align: middle;
-                    text-align: center;
-                    .sa-icon, .fa-icon{
-                        right: 4px;
-                    }
+/* table */
+table[grid-manager] {
+    table-layout: fixed;
+    word-wrap: break-word;
+    text-align: center;
+    width: 100%;
+    border-collapse: collapse;
+    tr {
+        border-bottom: @table-border;
+        [last-visible="true"]{
+            border-right: none;
+        }
+    }
+
+    th, td {
+        border-right: @table-border;
+        &[th-visible="none"] {
+            display: none;
+        }
+        &[th-visible="visible"] {
+            display: table-cell;
+        }
+        /* 文本对齐 */
+        &[align] {
+            &[align="left"] {
+                text-align: left;
+            }
+            &[align="center"] {
+                text-align: center;
+            }
+            &[align="right"] {
+                text-align: right;
+            }
+        }
+    }
+    th {
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        line-height: 18px;
+        font-weight: 400;
+        &[th-visible="none"] {
+            display: none;
+        }
+        &[th-visible="visible"] {
+            display: table-cell;
+        }
+        .th-wrap {
+            /*减去的1px 为border-right. 原因是table元素存在特殊性, thead浮动后border的宽度不会计算到th内,而是会在原基础上将th的宽加1. */
+            width: calc(100% - 1px);
+            height: 100%;
+            position: relative;
+            padding: 6px 11px;
+            .th-text {
+                display: block;
+                width: 100%;
+                height: 100%;
+                .text-overflow();
+            }
+        }
+    }
+    td {
+        .text-overflow();
+        background-color: #fff;
+        color: #3d3d3d;
+        padding: 11px;
+        vertical-align: middle;
+        text-align: left;
+        &[td-visible="none"] {
+            display: none;
+        }
+        &[td-visible="visible"] {
+            display: table-cell;
+        }
+        &:last-child{
+            border-right: none;
+        }
+        // 默认的空模板样式
+        .gm-empty-template {
+            width: 100%;
+            height: 80px;
+            line-height: 80px;
+            text-align: center;
+            font-size: 16px;
+            color: #ddd;
+        }
+    }
+    thead {
+        tr {
+            height: 40px;
+            border-bottom: none;
+        }
+
+        &[grid-manager-thead]{
+            visibility: hidden;
+        }
+    }
+    tbody {
+        tr {
+            &[odd] td{
+                background-color: #fafafa;
+            }
+            &:hover td{
+                background-color: #F1F8FB;
+            }
+            &[empty-template]{
+                border-bottom: none;
+                td{
+                    background-color: #FFF;
+                    padding: 0;
                 }
             }
         }
     }
-
-    // 文本镜像：用于实时获取th的文本宽度
-    .text-dreamland {
-        position: absolute;
-        visibility: hidden;
-        z-index: -1;
+    // 禁用分割线模式
+    &.disable-line {
+        th, td{
+            border-right: none;
+        }
+    }
+}
+// 表头的icon图标跟随文本
+.gm-icon-follow-text{
+    .th-wrap{
+        display: inline-block;
+        vertical-align: middle;
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+    .th-text{
+        display: inline-block!important;
+        width: auto!important;
+        vertical-align: middle;
     }
 }

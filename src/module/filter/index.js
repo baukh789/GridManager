@@ -14,6 +14,7 @@ import checkbox from '../checkbox';
 import i18n from '../i18n';
 import filterTpl from './filter.tpl.html';
 import { getEvent, eventMap } from './event';
+import { CLASS_FILTER, CLASS_FILTER_SELECTED, CLASS_FILTER_CONTENT } from './constants';
 
 class Filter {
     // 存储启用状态
@@ -38,12 +39,12 @@ class Filter {
         jTool(toggle.target).on(toggle.events, toggle.selector, function (e) {
             e.stopPropagation();
             e.preventDefault();
-            const $allFilterCon = jTool(`${tableSelector} .fa-con`);
+            const $allFilterCon = jTool(`${tableSelector} .${CLASS_FILTER_CONTENT}`);
             const $action = jTool(this);
-            const $filterAction = $action.closest('.filter-area');
+            const $filterAction = $action.closest(`.${CLASS_FILTER}`);
             const $th = $action.closest(`th[${TH_NAME}]`);
             const thName = getThName($th);
-            const $filterCon = $filterAction.find('.fa-con');
+            const $filterCon = $filterAction.find(`.${CLASS_FILTER_CONTENT}`);
 
             // 清除事件源的其它过滤体
             jEach($allFilterCon, (index, item) => {
@@ -69,10 +70,10 @@ class Filter {
             // 点击空处关闭
             jTool(close.target).on(close.events, function (e) {
                 const eventSource = jTool(e.target);
-                if (eventSource.hasClass('fa-con') || jTool(e.target).closest('.fa-con').length === 1) {
+                if (eventSource.hasClass(CLASS_FILTER_CONTENT) || jTool(e.target).closest(`.${CLASS_FILTER_CONTENT}`).length === 1) {
                     return false;
                 }
-                const $filterCon = $body.find('.fa-con');
+                const $filterCon = $body.find(`.${CLASS_FILTER_CONTENT}`);
                 $filterCon.hide();
                 jTool(close.target).off(close.events);
             });
@@ -81,7 +82,7 @@ class Filter {
         // 事件: 提交选中结果
         jTool(submit.target).on(submit.events, submit.selector, function () {
             const $action = jTool(this);
-            const $filterCon = $action.closest('.fa-con');
+            const $filterCon = $action.closest(`.${CLASS_FILTER_CONTENT}`);
             const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
             const $th = $filterCon.closest('th');
             const thName = getThName($th);
@@ -106,7 +107,7 @@ class Filter {
         // 事件: 清空选中结果
         jTool(reset.target).on(reset.events, reset.selector, function () {
             const $action = jTool(this);
-            const $filterCon = $action.closest('.fa-con');
+            const $filterCon = $action.closest(`.${CLASS_FILTER_CONTENT}`);
             const $th = jTool(this).closest(`th[${TH_NAME}]`);
             const thName = getThName($th);
 
@@ -170,7 +171,7 @@ class Filter {
             }
         });
         return {
-            iconClass: columnFilter.selected ? ' filter-selected' : '',
+            iconClass: columnFilter.selected ? ` ${CLASS_FILTER_SELECTED}` : '',
             listStyle: `max-height: ${tableWarpHeight - 100 + 'px'}`,
             okText: i18n(settings, 'filter-ok'),
             resetText: i18n(settings, 'filter-reset'),
@@ -185,7 +186,7 @@ class Filter {
      */
     update($th, filter) {
         const $filterIcon = jTool('.fa-icon', $th);
-        const $filters = jTool('.fa-con .gm-radio-checkbox-input', $th);
+        const $filters = jTool(`.${CLASS_FILTER_CONTENT} .gm-radio-checkbox-input`, $th);
         jEach($filters, (index, item) => {
             let $radioOrCheckbox = jTool(item).closest('.gm-radio-checkbox');
             if (filter.isMultiple) {
@@ -195,7 +196,7 @@ class Filter {
             }
         });
 
-        filter.selected ? $filterIcon.addClass('filter-selected') : $filterIcon.removeClass('filter-selected');
+        filter.selected ? $filterIcon.addClass(CLASS_FILTER_SELECTED) : $filterIcon.removeClass(CLASS_FILTER_SELECTED);
     }
 
     /**

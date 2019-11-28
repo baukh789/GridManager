@@ -6,77 +6,90 @@
  */
 @import "../../css/mixins";
 
-.table-wrap {
-    .table-div {
-        table[grid-manager] {
-            th {
-                .th-wrap {
-                    /*表头的筛选菜单*/
-                    .filter-area{
-                        display: block;
-                        width: 14px;
-                        height: 18px;
-                        position: absolute;
-                        top: calc(50% - 9px);
-                        right: 5px;
-                        cursor: default;
-                        //z-index: 2;
-                        color: #444;
-                        .fa-icon {
-                            display: block;
-                            position: absolute;
-                            font-size: @font-normal-size;
-                            line-height: 18px;
-                            &.filter-selected{
-                                color: @font-active-color;
-                            }
-                        }
-                        .fa-con{
-                            display: none;
-                            min-width: 100px;
-                            position: absolute;
-                            top: 100%;
-                            background: #fff;
-                            border: 1px solid #ccc;
-                            &.direction-left{
-                                left: 0;
-                            }
-                            &.direction-right{
-                                right: 0;
-                            }
-                            .filter-list{
-                                overflow-y: auto;
-                                li{
-                                    padding: 5px 12px;
-                                    > .gm-radio-wrapper, > .gm-checkbox-wrapper{
-                                        cursor: pointer;
-                                        display: flex;
-                                        word-break: keep-all;
-                                    }
-                                    &:hover{
-                                        background: #e6f7ff;
-                                    }
-                                }
-                            }
-                            .filter-bottom{
-                                border-top: @table-border;
-                                padding: 7px 8px;
-                                text-align: center;
-                                .filter-button{
-                                    cursor: pointer;
-                                    color: #1890ff;
-                                    &:hover{
-                                        color: #40a9ff;
-                                    }
-                                    &:first-child{
-                                        margin-right: 10px;
-                                    }
-                                }
-                            }
-                        }
-                    }
+table[grid-manager]{
+    th[filter] .th-wrap {
+        padding-right: 20px;
+    }
+}
+.gm-filter-area{
+    display: block;
+    width: 14px;
+    height: 18px;
+    position: absolute;
+    top: calc(50% - 9px);
+    right: 5px;
+    cursor: pointer;
+    color: #444;
+    .fa-icon {
+        display: block;
+        position: absolute;
+        font-size: @font-normal-size;
+        line-height: 18px;
+        opacity: .7;
+        &:hover{
+            opacity: 1;
+        }
+        &.filter-selected{
+            color: @font-active-color;
+        }
+    }
+    .fa-con{
+        display: none;
+        min-width: 100px;
+        position: absolute;
+        top: 100%;
+        background: #fff;
+        border: 1px solid #ccc;
+        &.direction-left{
+            left: 0;
+        }
+        &.direction-right{
+            right: 0;
+        }
+        .filter-list{
+            overflow-y: auto;
+            li{
+                padding: 5px 12px;
+                > .gm-radio-wrapper, > .gm-checkbox-wrapper{
+                    cursor: pointer;
+                    display: flex;
+                    word-break: keep-all;
+                }
+                &:hover{
+                    background: #e6f7ff;
                 }
             }
+        }
+        .filter-bottom{
+            border-top: @table-border;
+            padding: 7px 8px;
+            text-align: center;
+            .filter-button{
+                cursor: pointer;
+                color: #1890ff;
+                &:hover{
+                    color: #40a9ff;
+                }
+                &:first-child{
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+}
+
+// 表头的icon图标跟随文本
+.gm-icon-follow-text{
+    .gm-filter-area{
+        display: inline-block;
+        width: 18px;
+        position: relative;
+        top: 0;
+        left: 0;
+        vertical-align: middle;
+        text-align: center;
+        .fa-icon{
+            right: 4px;
         }
     }
 }

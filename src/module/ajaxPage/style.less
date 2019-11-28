@@ -1,127 +1,125 @@
 @import "../../css/mixins";
 
 /* 表格分页 */
-.table-wrap {
-    .footer-toolbar {
-        visibility: hidden;
-        width: 100%;
-        height: 40px;
-        position: relative;
-        padding: 5px 0;
-        color: #666;
-        .bg-image;
-        .refresh-action {
+.gm-toolbar {
+    visibility: hidden;
+    width: 100%;
+    height: 40px;
+    position: relative;
+    padding: 5px 0;
+    color: #666;
+    .bg-image;
+    .refresh-action {
+        display: inline-block;
+        height: 30px;
+        padding: 7px;
+        vertical-align: middle;
+        cursor: pointer;
+        text-align: center;
+        opacity: .7;
+        color: @font-active-color;
+        > i.icon-refresh {
             display: inline-block;
-            height: 30px;
-            padding: 7px;
-            vertical-align: middle;
-            cursor: pointer;
+            font-weight: bold;
+            line-height: 16px;
+            font-size: 14px;
+            vertical-align: text-bottom;
+        }
+        &:hover{
+            opacity: 1;
+        }
+        &.refreshing {
+            > i{
+                animation: rotationMedia 3s ease-in-out infinite;
+            }
+        }
+    }
+    .goto-page {
+        display: inline-block;
+        padding: 2px 10px;
+        vertical-align: middle;
+        .gp-input {
+            width: 50px;
+            height: 26px;
+            border: 1px solid #ddd;
+            padding: 0 5px;
+            margin: 0 5px;
             text-align: center;
-            opacity: .7;
-            color: @font-active-color;
-            > i.icon-refresh {
-                display: inline-block;
-                font-weight: bold;
-                line-height: 16px;
-                font-size: 14px;
-                vertical-align: text-bottom;
-            }
-            &:hover{
-                opacity: 1;
-            }
-            &.refreshing {
-                > i{
-                    animation: rotationMedia 3s ease-in-out infinite;
-                }
-            }
         }
-        .goto-page {
-            display: inline-block;
-            padding: 2px 10px;
-            vertical-align: middle;
-            .gp-input {
-                width: 50px;
-                height: 26px;
-                border: 1px solid #ddd;
-                padding: 0 5px;
-                margin: 0 5px;
-                text-align: center;
+    }
+    .change-size {
+        display: inline-block;
+        width: 65px;
+        padding: 0 10px;
+        vertical-align: middle;
+    }
+    .toolbar-info {
+        display: inline-block;
+        padding: 6px 5px;
+        vertical-align: middle;
+    }
+    &[no-totals-mode="true"]{
+        .page-info-totals, .goto-page{
+            display: none;
+        }
+    }
+    .pagination {
+        display: flex;
+        position: absolute;
+        height: 30px;
+        right: 5px;
+        bottom: 5px;
+        :after {
+            clear: both;
+        }
+        > ul {
+            display: block;
+            &[pagination-number] li:first-child{
+                border-left: none;
             }
-        }
-        .change-size {
-            display: inline-block;
-            width: 65px;
-            padding: 0 10px;
-            vertical-align: middle;
-        }
-        .toolbar-info {
-            display: inline-block;
-            padding: 6px 5px;
-            vertical-align: middle;
-        }
-        &[no-totals-mode="true"]{
-            .page-info-totals, .goto-page{
-                display: none;
+            &[pagination-number] li:last-child{
+                border-right: none;
             }
-        }
-        .ajax-page {
-            display: flex;
-            position: absolute;
-            height: 30px;
-            right: 5px;
-            bottom: 5px;
-            :after {
-                clear: both;
-            }
-            .pagination {
+            > li {
                 display: block;
-                &[pagination-number] li:first-child{
-                    border-left: none;
+                min-width: 30px;
+                height: 30px;
+                line-height: 18px;
+                float: left;
+                padding: 5px 10px;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-left: none;
+                color: @font-normal-color;
+                position: relative;
+                text-align: center;
+                cursor: pointer;
+                &:first-child {
+                    border-bottom-left-radius: 2px;
+                    border-top-left-radius: 2px;
+                    border-left: 1px solid #ddd;
                 }
-                &[pagination-number] li:last-child{
-                    border-right: none;
-                }
-                > li {
-                    display: block;
-                    min-width: 30px;
-                    height: 30px;
-                    line-height: 18px;
-                    float: left;
-                    padding: 5px 10px;
+                &.disabled{
                     background-color: #fff;
-                    border: 1px solid #ddd;
-                    border-left: none;
-                    color: @font-normal-color;
-                    position: relative;
-                    text-align: center;
-                    cursor: pointer;
-                    &:first-child {
-                        border-bottom-left-radius: 2px;
-                        border-top-left-radius: 2px;
-                        border-left: 1px solid #ddd;
-                    }
-                    &.disabled{
+                    border-color: #ddd;
+                    color: #999;
+                    cursor: not-allowed;
+                    pointer-events: none;
+                    &:focus, &:hover{
                         background-color: #fff;
                         border-color: #ddd;
                         color: #999;
-                        cursor: not-allowed;
-                        pointer-events: none;
-                        &:focus, &:hover{
-                            background-color: #fff;
-                            border-color: #ddd;
-                            color: #999;
-                        }
                     }
-                    &.active, &.active:focus, &.active:hover {
-                        background-color: @font-active-color;
-                        color: #fff;
-                        //z-index: 2;
-                    }
-                    &:focus, &:hover {
-                        background-color: #eee;
-                        border-color: #ddd;
-                        color: @font-active-color;
-                    }
+                }
+                &.active, &.active:focus, &.active:hover {
+                    background-color: @font-active-color;
+                    color: #fff;
+                    //z-index: 2;
+                }
+                &:focus, &:hover {
+                    background-color: #eee;
+                    border-color: #ddd;
+                    color: @font-active-color;
                 }
             }
         }

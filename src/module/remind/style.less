@@ -9,71 +9,79 @@
 @remind-icon-color: #B9DAF8;
 @remind-hover-color: #2b669a;
 @remind-font-color: #f8f8f8;
-.table-wrap {
-    .table-div {
-        table[grid-manager] {
-            th {
-                .th-wrap {
-                    /* 表头提醒 */
-                    .remind-action {
-                        width: 16px;
-                        height: 18px;
-                        position: absolute;
-                        top: calc(50% - 9px);
-                        left: 4px;
-                        .ra-area {
-                            display: none;
-                            width: 150px;
-                            position: absolute;
-                            top: 24px;
-                            left: 0;
-                            padding: 4px 8px;
-                            z-index: 9999;
-                            border-radius: 2px;
-                            background-color: @remind-bg-color;
-                            line-height: 18px;
-                            color: @remind-font-color;
-                            text-align: center;
-                            &:after {
-                                content: "";
-                                position: absolute;
-                                border: solid transparent;
-                                top: 0;
-                                left: 4px;
-                                margin-top: -3px;
-                                border-width: 0 3px 3px;
-                                border-bottom-color: @remind-bg-color;
-                            }
-                            &.right-model {
-                                left: auto;
-                                right: 0;
-                                &:after {
-                                    top: 0;
-                                    left: auto;
-                                    right: 4px;
-                                }
-                            }
-                        }
-                        .ra-icon {
-                            width: 16px;
-                            height: 16px;
-                            font-size: 14px;
-                            line-height: 18px;
-                            cursor: help;
-                            color: @remind-icon-color;
-                        }
-                        &:hover {
-                            .ra-icon {
-                                opacity: .3;
-                                color: #1890ff;
-                            }
-                            .ra-area {
-                                display: block;
-                            }
-                        }
-                    }
-                }
+
+table[grid-manager]{
+    th[remind] .th-wrap {
+        padding-left: 20px;
+    }
+}
+.gm-remind-action {
+    width: 16px;
+    height: 18px;
+    position: absolute;
+    top: calc(50% - 9px);
+    left: 4px;
+    .ra-area {
+        display: none;
+        width: 150px;
+        position: absolute;
+        top: 24px;
+        left: 0;
+        padding: 4px 8px;
+        z-index: 9999;
+        border-radius: 2px;
+        background-color: @remind-bg-color;
+        line-height: 18px;
+        color: @remind-font-color;
+        text-align: center;
+        &:after {
+            content: "";
+            position: absolute;
+            border: solid transparent;
+            top: 0;
+            left: 4px;
+            margin-top: -3px;
+            border-width: 0 3px 3px;
+            border-bottom-color: @remind-bg-color;
+        }
+        &.right-model {
+            left: auto;
+            right: 0;
+            &:after {
+                top: 0;
+                left: auto;
+                right: 4px;
             }
         }
+    }
+    .ra-icon {
+        width: 16px;
+        height: 16px;
+        font-size: 14px;
+        line-height: 18px;
+        opacity: .7;
+        cursor: help;
+        color: @remind-icon-color;
+    }
+    &:hover {
+        .ra-icon {
+            opacity: .3;
+            color: #1890ff;
+        }
+        .ra-area {
+            display: block;
+        }
+    }
+}
+// 表头的icon图标跟随文本
+.gm-icon-follow-text{
+    .gm-remind-action{
+        display: inline-block;
+        width: 18px;
+        position: relative;
+        top: 0;
+        left: 0;
+        vertical-align: middle;
+        text-align: center;
     }
 }

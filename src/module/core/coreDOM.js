@@ -1,4 +1,3 @@
-import remind from '../remind';
 import jTool from '@common/jTool';
 import { calcLayout, updateThWidth, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
 import { outError, isUndefined, isString, isObject, isElement, jEach } from '@common/utils';
@@ -8,9 +7,11 @@ import filter from '../filter';
 import sort from '../sort';
 import adjust from '../adjust';
 import tree from '../tree';
+import remind from '../remind';
 import render from './render';
+import { installTopFull } from '../fullColumn';
 import { getEvent, eventMap } from './event';
-import { sendCompile, compileFullColumn, compileTd } from '@common/framework';
+import { sendCompile, compileTd } from '@common/framework';
 /**
  * core dom
  */
@@ -127,31 +128,7 @@ class Dom {
         // 清空 tbody
         tbody.innerHTML = '';
 
-        // 插入通栏: top-full-column
-        const installTopFull = (trNode, row, index) => {
-            // 通栏tr
-            const topTrNode = document.createElement('tr');
-            topTrNode.setAttribute('top-full-column', 'true');
-
-            // 通栏用于向上的间隔的tr
-            const intervalTrNode = document.createElement('tr');
-            intervalTrNode.setAttribute('top-full-column-interval', 'true');
-            intervalTrNode.innerHTML = `<td colspan="${columnData.length}"><div></div></td>`;
-            tbody.appendChild(intervalTrNode);
-
-            // 为非通栏tr的添加标识
-            trNode.setAttribute('top-full-column', 'false');
-
-            topTrNode.innerHTML = `<td colspan="${columnData.length}"><div class="full-column-td"></div></td>`;
-
-            const fullColumnNode = topTrNode.querySelector('.full-column-td');
-            const tdTemplate = compileFullColumn(settings, fullColumnNode, row, index, topFullColumn.template);
-            isElement(tdTemplate) ? fullColumnNode.appendChild(tdTemplate) : fullColumnNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
-
-            tbody.appendChild(topTrNode);
-        };
-
-        // 插入正常的TR
+        // 插入常规的TR
         const installNormal = (trNode, row, index, isTop) => {
             // 与当前位置信息匹配的td列表
             const tdList = [];
@@ -210,8 +187,9 @@ class Dom {
                     trNode.setAttribute(TR_CACHE_KEY, cacheKey);
 
                     // 插入通栏: top-full-column
-                    if (isTop && !isUndefined(topFullColumn.template)) {
-                        installTopFull(trNode, row, index);
+                    const topFullTemplate = topFullColumn.template;
+                    if (isTop && !isUndefined(topFullTemplate)) {
+                        installTopFull(settings, columnData, tbody, topFullTemplate, trNode, row, index);
                     }
 
                     // 插入正常的TR

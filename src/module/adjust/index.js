@@ -6,11 +6,10 @@ import './style.less';
 import jTool from '@common/jTool';
 import { getQuerySelector, getTable, getTh, getFakeThead, getThead, getFakeVisibleTh, getColTd, getThTextWidth, updateScrollStatus, clearTargetEvent } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, TH_VISIBLE } from '@common/constants';
+import { CLASS_ADJUST_ACTION, CLASS_ADJUST_SELECT } from './constants';
 import { getSettings, updateCache } from '@common/cache';
 import { getEvent, eventMap } from './event';
 
-// 选中class name
-const selectedClassName = 'adjust-selected';
 
 /**
  * 执行移动事件
@@ -77,11 +76,11 @@ const runStopEvent = (gridManagerName, $table, $th, $td, adjustAfter) => {
         jTool(adjusting.target).off(adjusting.events, adjusting.selector);
 
         // 宽度调整成功回调事件
-        if ($th.hasClass(selectedClassName)) {
+        if ($th.hasClass(CLASS_ADJUST_SELECT)) {
             adjustAfter(event);
         }
-        $th.removeClass(selectedClassName);
-        $td.removeClass(selectedClassName);
+        $th.removeClass(CLASS_ADJUST_SELECT);
+        $td.removeClass(CLASS_ADJUST_SELECT);
         $table.removeClass(NO_SELECT_CLASS_NAME);
 
         // 更新滚动轴状态
@@ -97,7 +96,7 @@ class Adjust {
      * @returns {string}
      */
     get html() {
-        return '<span class="adjust-action"></span>';
+        return `<span class="${CLASS_ADJUST_ACTION}"></span>`;
     }
 
     /**
@@ -134,8 +133,8 @@ class Adjust {
             adjustBefore(event);
 
             // 增加宽度调整中样式
-            $th.addClass(selectedClassName);
-            $td.addClass(selectedClassName);
+            $th.addClass(CLASS_ADJUST_SELECT);
+            $td.addClass(CLASS_ADJUST_SELECT);
 
             // 禁用文本选中
             $table.addClass(NO_SELECT_CLASS_NAME);
@@ -158,7 +157,7 @@ class Adjust {
      */
     resetAdjust(gridManagerName) {
         let _thList = jTool(`[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] [${TH_VISIBLE}="visible"]`);
-        let	_adjustAction = jTool('.adjust-action', _thList);
+        let	_adjustAction = jTool(`.${CLASS_ADJUST_ACTION}`, _thList);
         if (!_adjustAction || _adjustAction.length === 0) {
             return false;
         }

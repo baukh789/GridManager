@@ -4,10 +4,11 @@
  * @param scope: querySelector 域
  */
 import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { CLASS_DRAG_ACTION } from './constants';
 export const getEvent = (gridManagerName, scope) => {
     return {
         // 开始
-        dragStart: {events: 'mousedown', target: scope, selector: `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .drag-action`},
+        dragStart: {events: 'mousedown', target: scope, selector: `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .${CLASS_DRAG_ACTION}`},
 
         // 调整中
         dragging: {events: 'mousemove.gmDrag', target: 'body'},

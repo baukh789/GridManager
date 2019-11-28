@@ -144,7 +144,7 @@ class Sort {
 		const thAttr = 'sorting';
 
 		// 重置排序样式
-        jEach(jTool(`${getQuerySelector(gridManagerName)} .sorting-action`), (i, v) => {
+        jEach(jTool(`${getQuerySelector(gridManagerName)} .gm-sorting-action`), (i, v) => {
             jTool(v).removeClass(`${upClass} ${downClass}`);
             jTool(v).closest('th').attr(thAttr, '');
 		});
@@ -153,7 +153,7 @@ class Sort {
         jEach(sortData, (key, value) => {
             // 这里未用getTh的原因: getTh方法只能获取th, 这里需要同时对th和 fake-th进行操作
             const $th = jTool(`${getQuerySelector(gridManagerName)} th[${TH_NAME}="${key}"]`);
-            const $sortAction = jTool('.sorting-action', $th);
+            const $sortAction = jTool('.gm-sorting-action', $th);
 
 			// 排序操作：升序
 			if (value === sortUpText) {

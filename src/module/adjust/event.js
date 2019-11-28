@@ -7,10 +7,11 @@
  * 其中mouseleave的事件范围超出了querySelector的区域，所以该事件不再代理。
  */
 import { DIV_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { CLASS_ADJUST_ACTION } from './constants';
 export function getEvent(gridManagerName, scope) {
     return {
         // 宽度调整触发
-        adjustStart: {events: 'mousedown', target: scope, selector: `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .adjust-action`},
+        adjustStart: {events: 'mousedown', target: scope, selector: `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .${CLASS_ADJUST_ACTION}`},
 
         // 宽度调整中
         adjusting: {events: 'mousemove', target: `[${DIV_KEY}="${gridManagerName}"]`, selector: scope},
