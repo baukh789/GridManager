@@ -99,7 +99,7 @@ class Render {
     @parseTpl(thTpl)
     createThTpl(params) {
         const { settings, col } = params;
-        const { gridManagerName, query, supportDrag, sortData, sortUpText, sortDownText, useRadio } = settings;
+        const { gridManagerName, query, supportDrag, sortData, sortUpText, sortDownText, checkboxConfig } = settings;
 
         // 表头提醒
         let remindAttr = '';
@@ -156,7 +156,7 @@ class Render {
             case CHECKBOX_KEY:
                 gmCreateAttr = `${GM_CREATE}="true" gm-checkbox`;
                 thName = CHECKBOX_KEY;
-                thText = checkbox.getThContent(useRadio);
+                thText = checkbox.getThContent(checkboxConfig.useRadio);
                 break;
             // 普通列
             default:

@@ -288,16 +288,24 @@ const demo1 = {
             // mergeSort: true,
 
             // 禁用边框线
-            disableBorder: true,
+            // disableBorder: true,
 
+            // 选择框配置
+            checkboxConfig: {
+                // 使用单选
+                // useRadio: true,
+
+                // 使用行选中
+                // useRowCheck: true,
+
+                // 复选时最大可选数
+                max: 2
+            },
             // 使用单选
             // useRadio: true,
 
             // 使用行选中
             // useRowCheck: true,
-
-            // 复选时最大可选数
-            maxSelected: 2,
 
             // 图标跟随文本
             // isIconFollowText: true,

@@ -214,17 +214,17 @@ const autoOrder = {
  * 选择与反选
  */
 const checkbox = {
-    // 是否支持选择与反选
+    // 是否支持选择框
     supportCheckbox: true,
 
-    // 使用行选中
-    useRowCheck: false,
+    // 选择框配置
+    checkboxConfig: {
+        useRowCheck: false,
+        useRadio: false,
 
-    // 使用单选
-    useRadio: false,
-
-    // 复选时最大可选数，生效条件: supportCheckbox === true && useRadio === false
-    maxSelected: null, // @2.9.8 新增
+        // 复选时最大可选数，生效条件: supportCheckbox === true && useRadio === false
+        max: null // @2.9.8 新增
+    },
 
     // 选择事件执行前事件
     checkedBefore: noop,

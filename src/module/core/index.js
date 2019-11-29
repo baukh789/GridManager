@@ -85,7 +85,7 @@ class Core {
      * @param callback
      */
     driveDomForSuccessAfter(settings, response, callback) {
-        const { gridManagerName, rendered, responseHandler, supportCheckbox, maxSelected, supportAjaxPage, dataKey, totalsKey, useNoTotalsMode, asyncTotals, useRadio } = settings;
+        const { gridManagerName, rendered, responseHandler, supportCheckbox, supportAjaxPage, checkboxConfig, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
 
         // 用于防止在填tbody时，实例已经被消毁的情况。
         if (!rendered) {
@@ -130,7 +130,7 @@ class Core {
 
         // 渲染选择框
         if (supportCheckbox) {
-            checkbox.resetDOM(gridManagerName, _data, useRadio, maxSelected);
+            checkbox.resetDOM(gridManagerName, _data, checkboxConfig.useRadio, checkboxConfig.max);
         }
 
         // 渲染分页

@@ -34,7 +34,8 @@ class Checkbox {
 
         const _this = this;
         const { allChange, checkboxChange, radioChange, trChange } = eventMap[gridManagerName];
-        const { useRowCheck, maxSelected, checkedBefore, checkedAllBefore, checkedAfter, checkedAllAfter } = getSettings(gridManagerName);
+        const { checkboxConfig, checkedBefore, checkedAllBefore, checkedAfter, checkedAllAfter } = getSettings(gridManagerName);
+        const { max, useRowCheck } = checkboxConfig;
 
         // th内的全选
         jTool(allChange.target).on(allChange.events, allChange.selector, function () {
@@ -66,7 +67,7 @@ class Checkbox {
             }
             const cacheKey = tr.getAttribute(TR_CACHE_KEY);
             const tableData = resetData(gridManagerName, checked, false, cacheKey);
-            _this.resetDOM(gridManagerName, tableData, false, maxSelected);
+            _this.resetDOM(gridManagerName, tableData, false, max);
             checkedAfter(getCheckedData(gridManagerName), checked, getRowData(gridManagerName, tr));
         });
 
@@ -120,10 +121,10 @@ class Checkbox {
 
 	/**
 	 * 获取TD: 选择列对象
-	 * @param settings
+	 * @param conf
 	 * @returns {parseData}
 	 */
-	getColumn(settings) {
+	getColumn(conf) {
 		return {
 			key: CHECKBOX_KEY,
 			text: '',
@@ -133,7 +134,7 @@ class Checkbox {
 			width: CHECKBOX_WIDTH,
 			align: 'center',
 			template: (checked, row, index, isTop) => {
-                return this.getColumnTemplate({checked, disabled: row[CHECKBOX_DISABLED_KEY], useRadio: settings.useRadio, isTop});
+                return this.getColumnTemplate({checked, disabled: row[CHECKBOX_DISABLED_KEY], useRadio: conf.useRadio, isTop});
 			}
 		};
 	}
@@ -190,7 +191,7 @@ class Checkbox {
 	 * @param tableData
 	 * @param useRadio: 当前事件源为单选
      */
-	resetDOM(gridManagerName, tableData, useRadio, maxSelected) {
+	resetDOM(gridManagerName, tableData, useRadio, max) {
 	    const $table = getTable(gridManagerName);
 
 	    // 更改tbody区域选中状态
@@ -217,16 +218,16 @@ class Checkbox {
 		// 更新底部工具条选中描述信息
         ajaxPage.updateCheckedInfo(gridManagerName);
 
-        if (!useRadio && maxSelected) {
+        if (!useRadio && max) {
             const $tbodyCheckWrap = jTool('tbody .gm-checkbox-wrapper ', $table);
             jEach($tbodyCheckWrap, (index, wrap) => {
                 const $wrap = jTool(wrap);
                 const checkbox = jTool('.gm-checkbox', $wrap);
                 if (!checkbox.hasClass('gm-checkbox-checked')) {
-                    checkedNum >= maxSelected  ? $wrap.addClass('disabled-selected') : $wrap.removeClass('disabled-selected');
+                    checkedNum >= max  ? $wrap.addClass('disabled-selected') : $wrap.removeClass('disabled-selected');
                 }
             });
-            $tbodyCheckWrap.length > maxSelected ? $allCheck.addClass('disabled-selected') : $allCheck.removeClass('disabled-selected');
+            $tbodyCheckWrap.length > max ? $allCheck.addClass('disabled-selected') : $allCheck.removeClass('disabled-selected');
         }
 	}
 

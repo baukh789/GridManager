@@ -453,7 +453,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
     // 存储初始配置项
     setSettings(settings);
 
-    const { gridManagerName, columnData, supportAutoOrder, supportCheckbox } = settings;
+    const { gridManagerName, columnData, supportAutoOrder, supportCheckbox, checkboxConfig } = settings;
     // 自动增加: 序号列
     if (supportAutoOrder) {
         columnData.unshift(orderColumnFn(settings));
@@ -461,7 +461,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
 
     // 自动增加: 选择列
     if (supportCheckbox) {
-        columnData.unshift(checkboxColumnFn(settings));
+        columnData.unshift(checkboxColumnFn(checkboxConfig));
     }
 
     // 为 columnData 提供锚 => columnMap

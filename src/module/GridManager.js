@@ -105,6 +105,15 @@ export default class GridManager {
             }
         });
 
+        // 向下兼容: useRowCheck, useRadio
+        if (!arg.checkboxConfig && (arg.useRowCheck || arg.useRadio)) {
+            outWarn('useRowCheck and useRadio will be deprecated later, please use checkboxConfig instead');
+            arg.checkboxConfig = {
+                useRowCheck: arg.useRowCheck || false,
+                useRadio: arg.useRadio || false
+            };
+        }
+
         // 参数变更提醒
         if (arg.ajaxUrl) {
             outWarn('ajax_url will be deprecated later, please use ajaxData instead');
@@ -601,7 +610,7 @@ export default class GridManager {
             return;
         }
         const checkedList = isArray(checkedData) ? checkedData : [checkedData];
-        const { columnMap, useRadio, maxSelected, gridManagerName, treeConfig } = getSettings(getKey(table));
+        const { columnMap, checkboxConfig, gridManagerName, treeConfig } = getSettings(getKey(table));
         const treeKey = treeConfig.treeKey;
         const tableData = getTableData(gridManagerName);
         tableData.forEach(rowData => {
@@ -611,7 +620,7 @@ export default class GridManager {
         });
 
         setCheckedData(gridManagerName, checkedList, true);
-        return checkbox.resetDOM(gridManagerName, tableData, useRadio, maxSelected);
+        return checkbox.resetDOM(gridManagerName, tableData, checkboxConfig.useRadio, checkboxConfig.maxSelected);
     };
 
     /**
