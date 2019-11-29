@@ -47,8 +47,8 @@ describe('tree tool', () => {
             expect(getIconClass.length).toBe(1);
         });
         it('执行验证', () => {
-            expect(getIconClass(true)).toBe('icon-jianhao');
-            expect(getIconClass(false)).toBe('icon-add');
+            expect(getIconClass(true)).toBe('gm-icon-sub');
+            expect(getIconClass(false)).toBe('gm-icon-add');
         });
     });
 

@@ -36,7 +36,7 @@
 }
 
 /* table */
-table[grid-manager] {
+[grid-manager] {
     table-layout: fixed;
     word-wrap: break-word;
     text-align: center;
@@ -123,13 +123,12 @@ table[grid-manager] {
         }
     }
     thead {
+        &[grid-manager-thead]{
+            visibility: hidden;
+        }
         tr {
             height: 40px;
             border-bottom: none;
-        }
-
-        &[grid-manager-thead]{
-            visibility: hidden;
         }
     }
     tbody {

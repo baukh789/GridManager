@@ -24,5 +24,5 @@ export const clearTreeCache = gridManagerName => {
 
 // 获取icon class name
 export const getIconClass = state => {
-    return state ? 'icon-jianhao' : 'icon-add';
+    return state ? 'gm-icon-sub' : 'gm-icon-add';
 };

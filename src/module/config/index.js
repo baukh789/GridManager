@@ -181,7 +181,6 @@ class Config {
             if (eventSource.hasClass(CLASS_CONFIG) || eventSource.closest(`.${CLASS_CONFIG}`).length === 1) {
                 return false;
             }
-            console.log('aaaaa');
             $configArea.hide();
             $target.off(events);
         });

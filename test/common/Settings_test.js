@@ -190,14 +190,11 @@ describe('Settings', () => {
 		expect(settings.supportCheckbox).toBe(true);
 	});
 
-    it('验证属性[useRowCheck]初始值', () => {
-        expect(settings.useRowCheck).toBe(false);
+    it('验证属性[checkboxConfig]初始值', () => {
+        expect(settings.checkboxConfig.useRadio).toBe(false);
+        expect(settings.checkboxConfig.useRowCheck).toBe(false);
+        expect(settings.checkboxConfig.max).toBeNull(null);
     });
-
-    it('验证属性[useRadio]初始值', () => {
-        expect(settings.useRadio).toBe(false);
-    });
-
 
     it('验证属性[checkedBefore]初始值', () => {
 		expect(typeof settings.checkedBefore).toBe('function');
@@ -357,9 +354,9 @@ describe('textConfig', () => {
 	});
 
     it('验证国际化文本[refresh-action]初始值', () => {
-        expect(textConfig['refresh-action']['zh-cn']).toBe('<i class="iconfont icon-refresh"></i>');
-        expect(textConfig['refresh-action']['zh-tw']).toBe('<i class="iconfont icon-refresh"></i>');
-        expect(textConfig['refresh-action']['en-us']).toBe('<i class="iconfont icon-refresh"></i>');
+        expect(textConfig['refresh-action']['zh-cn']).toBe('<i class="gm-icon gm-icon-refresh"></i>');
+        expect(textConfig['refresh-action']['zh-tw']).toBe('<i class="gm-icon gm-icon-refresh"></i>');
+        expect(textConfig['refresh-action']['en-us']).toBe('<i class="gm-icon gm-icon-refresh"></i>');
     });
 
     it('验证国际化文本[first-page]初始值', () => {

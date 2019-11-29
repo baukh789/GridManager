@@ -128,7 +128,7 @@ class Tree {
             treeDOM.style.width = (level + 1) * 14 + 'px';
 
             if (hasChildren) {
-                treeDOM.innerHTML = `<i class="tree-action iconfont ${getIconClass(openState)}"></i>`;
+                treeDOM.innerHTML = `<i class="tree-action gm-icon ${getIconClass(openState)}"></i>`;
             }
             $insertTd.prepend(treeDOM);
         });

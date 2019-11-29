@@ -453,9 +453,9 @@ export function TextSettings() {
 
     // ajax page
     this['refresh-action'] = {
-        'zh-cn': '<i class="iconfont icon-refresh"></i>',
-        'zh-tw': '<i class="iconfont icon-refresh"></i>',
-        'en-us': '<i class="iconfont icon-refresh"></i>'
+        'zh-cn': '<i class="gm-icon gm-icon-refresh"></i>',
+        'zh-tw': '<i class="gm-icon gm-icon-refresh"></i>',
+        'en-us': '<i class="gm-icon gm-icon-refresh"></i>'
     };
     this['first-page'] = {
         'zh-cn': '首页',

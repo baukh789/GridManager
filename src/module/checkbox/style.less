@@ -6,7 +6,8 @@
  */
 @import "../../css/animation";
 
-th[gm-checkbox], td[gm-checkbox] {
+// 复选、单选 共用样式
+[gm-checkbox] {
     padding: 0;
     .th-wrap{
         padding: 0;
@@ -33,6 +34,13 @@ th[gm-checkbox], td[gm-checkbox] {
         }
     }
 }
+// 根随在icon后的文本样式
+.gm-radio-checkbox-label {
+    padding-left: 8px;
+    padding-right: 8px;
+    font-weight: 400;
+    line-height: 14px;
+}
 
 // 复选
 .gm-checkbox-wrapper {
@@ -43,8 +51,15 @@ th[gm-checkbox], td[gm-checkbox] {
     line-height: 12px;
     cursor: pointer;
     border-collapse: collapse;
+    &:hover {
+        .gm-checkbox-inner {
+            border-color: #1890ff;
+        }
+        .gm-checkbox:after{
+            visibility: visible;
+        }
+    }
 }
-
 .gm-checkbox {
     display: inline-block;
     position: relative;
@@ -57,95 +72,88 @@ th[gm-checkbox], td[gm-checkbox] {
     outline: none;
     line-height: 1;
     vertical-align: middle;
-    .gm-checkbox-input {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        z-index: 1;
-        cursor: pointer;
-        opacity: 0;
-        margin: 0;
-    }
-    .gm-checkbox-inner {
-        display: block;
+}
+// 选中样式
+.gm-checkbox-checked {
+    &:after {
         width: 14px;
         height: 14px;
-        position: relative;
+        position: absolute;
         top: 0;
         left: 0;
-        border: 1px solid #d9d9d9;
         border-radius: 2px;
-        background-color: #fff;
-        transition: all .3s;
-        &:after {
-            display: table;
-            width: 5px;
-            height: 8px;
-            position: absolute;
-            left: 3px;
-            top: 1px;
-            -webkit-transform: rotate(45deg) scale(0);
-            transform: rotate(45deg) scale(0);
-            border: 2px solid #fff;
-            border-top: 0;
-            border-left: 0;
-            content: " ";
-        }
+        border: 1px solid #1890ff;
+        content: "";
+        animation: gmCheckboxEffect .36s ease-in-out;
+        animation-fill-mode: both;
+        visibility: hidden;
     }
-    & + span {
-        padding-left: 8px;
-        padding-right: 8px;
-        font-weight: 400;
-        line-height: 14px;
+    .gm-checkbox-inner:after {
+        display: table;
+        position: absolute;
+        transform: rotate(45deg) scale(1);
+        border: 2px solid #fff;
+        border-top: 0;
+        border-left: 0;
+        content: " ";
     }
+}
 
-    // 选中样式
-    &.gm-checkbox-checked {
-        &:after {
-            width: 14px;
-            height: 14px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 2px;
-            border: 1px solid #1890ff;
-            content: "";
-            animation: gmCheckboxEffect .36s ease-in-out;
-            animation-fill-mode: both;
-            visibility: hidden;
-        }
-        .gm-checkbox-inner:after {
-            display: table;
-            position: absolute;
-            transform: rotate(45deg) scale(1);
-            border: 2px solid #fff;
-            border-top: 0;
-            border-left: 0;
-            content: " ";
-        }
+// 半选
+.gm-checkbox-indeterminate {
+    .gm-checkbox-inner:after {
+        width: 8px;
+        height: 1.2px;
+        position: absolute;
+        left: 2px;
+        top: 5px;
+        content: " ";
+        transform: scale(1);
     }
-    &.gm-checkbox-indeterminate {
-        .gm-checkbox-inner:after {
-            width: 8px;
-            height: 1.2px;
-            position: absolute;
-            left: 2px;
-            top: 5px;
-            content: " ";
-            transform: scale(1);
-        }
-    }
-    &.gm-checkbox-checked .gm-checkbox-inner,
-    &.gm-checkbox-indeterminate .gm-checkbox-inner {
-        background-color: #1890ff;
-        border-color: #1890ff;
-    }
-    &:hover:after {
-        visibility: visible;
+}
+.gm-checkbox-checked .gm-checkbox-inner,
+.gm-checkbox-indeterminate .gm-checkbox-inner {
+    background-color: #1890ff;
+    border-color: #1890ff;
+}
+
+.gm-checkbox-input {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    cursor: pointer;
+    opacity: 0;
+    margin: 0;
+}
+.gm-checkbox-inner {
+    display: block;
+    width: 14px;
+    height: 14px;
+    position: relative;
+    top: 0;
+    left: 0;
+    border: 1px solid #d9d9d9;
+    border-radius: 2px;
+    background-color: #fff;
+    transition: all .3s;
+    &:after {
+        display: table;
+        width: 5px;
+        height: 8px;
+        position: absolute;
+        left: 3px;
+        top: 1px;
+        -webkit-transform: rotate(45deg) scale(0);
+        transform: rotate(45deg) scale(0);
+        border: 2px solid #fff;
+        border-top: 0;
+        border-left: 0;
+        content: " ";
     }
 }
 
@@ -158,6 +166,14 @@ th[gm-checkbox], td[gm-checkbox] {
     color: rgba(0, 0, 0, .65);
     padding: 0;
     cursor: pointer;
+    &:hover {
+        .gm-radio-inner {
+            border-color: #1890ff;
+        }
+        .gm-radio:after {
+            visibility: visible;
+        }
+    }
 }
 .gm-radio {
     display: inline-block;
@@ -170,87 +186,63 @@ th[gm-checkbox], td[gm-checkbox] {
     outline: none;
     line-height: 1;
     vertical-align: text-bottom;
-    .gm-radio-input {
-        position: absolute;
-        left: 1px;
-        top: 1px;
-        z-index: 1;
-        opacity: 0;
-        margin: 0;
-        cursor: pointer;
-    }
+}
+.gm-radio-input {
+    position: absolute;
+    left: 1px;
+    top: 1px;
+    z-index: 1;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+}
 
-    .gm-radio-inner {
-        display: block;
+.gm-radio-inner {
+    display: block;
+    width: 14px;
+    height: 14px;
+    position: relative;
+    top: 0;
+    left: 0;
+    border-radius: 100px;
+    border: 1px solid #d9d9d9;
+    background-color: #fff;
+    transition: all .3s;
+    &:after {
+        display: table;
+        width: 8px;
+        height: 8px;
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        border-radius: 4px;
+        border-top: 0;
+        border-left: 0;
+        content: " ";
+        background-color: #1890ff;
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+.gm-radio-checked {
+    &:after {
         width: 14px;
         height: 14px;
-        position: relative;
+        position: absolute;
         top: 0;
         left: 0;
-        border-radius: 100px;
-        border: 1px solid #d9d9d9;
-        background-color: #fff;
-        transition: all .3s;
+        border-radius: 50%;
+        border: 1px solid #1890ff;
+        content: "";
+        animation: gmRadioEffect .36s ease-in-out;
+        animation-fill-mode: both;
+        visibility: hidden;
+    }
+    .gm-radio-inner {
+        border-color: #1890ff;
         &:after {
-            display: table;
-            width: 8px;
-            height: 8px;
-            position: absolute;
-            left: 2px;
-            top: 2px;
-            border-radius: 4px;
-            border-top: 0;
-            border-left: 0;
-            content: " ";
-            background-color: #1890ff;
-            opacity: 0;
-            transform: scale(0);
+            transform: scale(.875);
+            opacity: 1;
         }
     }
-    &.gm-radio-checked {
-        &:after {
-            width: 14px;
-            height: 14px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 50%;
-            border: 1px solid #1890ff;
-            content: "";
-            animation: gmRadioEffect .36s ease-in-out;
-            animation-fill-mode: both;
-            visibility: hidden;
-        }
-        .gm-radio-inner {
-            border-color: #1890ff;
-            &:after {
-                transform: scale(.875);
-                opacity: 1;
-            }
-        }
-    }
-
-    & + span {
-        padding-left: 8px;
-        padding-right: 8px;
-        font-weight: 400;
-        line-height: 14px;
-    }
-}
-
-.gm-checkbox-input:focus + .gm-checkbox-inner,
-.gm-checkbox-wrapper:hover .gm-checkbox-inner,
-.gm-checkbox:hover .gm-checkbox-inner {
-    border-color: #1890ff;
-}
-
-.gm-radio-focused .gm-radio-inner,
-.gm-radio-wrapper:hover .gm-radio .gm-radio-inner,
-.gm-radio:hover .gm-radio-inner {
-    border-color: #1890ff;
-}
-
-.gm-radio-wrapper:hover .gm-radio:after,
-.gm-radio:hover:after {
-    visibility: visible;
 }
