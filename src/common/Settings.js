@@ -219,7 +219,10 @@ const checkbox = {
 
     // 选择框配置
     checkboxConfig: {
+        // 是否通过点击行来进行选中
         useRowCheck: false,
+
+        // 当前选中操作是否使用单选
         useRadio: false,
 
         // 复选时最大可选数，生效条件: supportCheckbox === true && useRadio === false
