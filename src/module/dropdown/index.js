@@ -23,10 +23,17 @@ class Dropdown {
         // 事件: 展示状态
         jTool(open.target).on(open.events, open.selector, function (e) {
             e.stopPropagation();
-            $ul.show();
-
             // 事件: 关闭
             const $body = jTool(close.target);
+            if ($ul.css('display') === 'block') {
+                $ul.hide();
+                $body.unbind(close.events);
+                return;
+            }
+
+            // 事件: 打开
+            $ul.show();
+
             $body.unbind(close.events);
             $body.bind(close.events, function () {
                 $body.unbind(close.events);
