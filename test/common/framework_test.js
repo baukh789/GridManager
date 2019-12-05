@@ -125,7 +125,7 @@ describe('Framework', () => {
                 gridManagerName
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileTh(settings, 'title', () => '标题').thText).toBe('标题');
+            expect(compileTh(settings, 'title', () => '标题').text).toBe('标题');
             expect(compileTh(settings, 'title', () => '标题').compileAttr).toBe('');
             expect(getCompileList(gridManagerName).length).toBe(0);
 
@@ -138,7 +138,7 @@ describe('Framework', () => {
 
             expect(getCompileList(gridManagerName).length).toBe(0);
             let obj = compileTh(settings, 'title', () => '标题');
-            expect(obj.thText).toBe('标题');
+            expect(obj.text).toBe('标题');
             expect(obj.compileAttr).toBe('data-compile-id-test=0');
             expect(getCompileList(gridManagerName).length).toBe(1);
             obj = null;
@@ -152,7 +152,7 @@ describe('Framework', () => {
 
             expect(getCompileList(gridManagerName).length).toBe(0);
             let obj = compileTh(settings, 'title', () => '标题');
-            expect(obj.thText).toBe('标题');
+            expect(obj.text).toBe('标题');
             expect(obj.compileAttr).toBe('data-compile-id-test=0');
             expect(getCompileList(gridManagerName).length).toBe(1);
             obj = null;
@@ -166,7 +166,7 @@ describe('Framework', () => {
 
             expect(getCompileList(gridManagerName).length).toBe(0);
             let obj = compileTh(settings, 'title', () => '标题');
-            expect(obj.thText).toBe('');
+            expect(obj.text).toBe('');
             expect(obj.compileAttr).toBe('data-compile-id-test=0');
             expect(getCompileList(gridManagerName).length).toBe(1);
             obj = null;
@@ -404,15 +404,6 @@ describe('Framework', () => {
         it('基础验证', () => {
             expect(compileFullColumn).toBeDefined();
             expect(compileFullColumn.length).toBe(5);
-        });
-
-        it('无模板', () => {
-            settings = {
-                gridManagerName
-            };
-            expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileFullColumn(settings, fullNode, row, 1, template)).toBe('');
-            expect(getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('无框架', () => {
