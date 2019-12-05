@@ -15,6 +15,7 @@ import jTool from '@common/jTool';
 import { getQuerySelector, getTable, clearTargetEvent } from '@common/base';
 import { getSettings, getCheckedData, getRowData } from '@common/cache';
 import { parseTpl } from '@common/parse';
+import { jEach } from '@common/utils';
 import ajaxPage from '../ajaxPage';
 import columnTpl from './column.tpl.html';
 import checkboxTpl from './checkbox.tpl.html';
@@ -22,8 +23,9 @@ import radioTpl from './radio.tpl.html';
 import { getEvent, eventMap } from './event';
 import { resetData } from './tool';
 import './style.less';
-import {jEach} from '../../common/utils';
 
+// 禁止选择class
+const disabledClass = 'disabled-selected';
 class Checkbox {
 	/**
      * 初始化选择框事件
@@ -77,7 +79,8 @@ class Checkbox {
             const input = this.querySelector('.gm-radio-input');
             const checked = input.checked;
 
-            if (checkedBefore(getCheckedData(gridManagerName), !checked, getRowData(gridManagerName, tr)) === false) {
+            // 未使用 checked 而用 tr.getAttribute('checked') === 'true'的原因: 单选取到的checked值永远为true
+            if (checkedBefore(getCheckedData(gridManagerName), tr.getAttribute('checked') === 'true', getRowData(gridManagerName, tr)) === false) {
                 input.checked = !checked;
                 return;
             }
@@ -92,10 +95,18 @@ class Checkbox {
         if (useRowCheck) {
             jTool(trChange.target).on(trChange.events, trChange.selector, function (e) {
                 const rowData = getRowData(gridManagerName, this, true);
+                const $checkboxWrap = jTool('td[gm-checkbox] label', this);
 
-                // 触发选中事件: 1.当前行非禁止选中 2.当前事件源非单选框或多选框;
-                if (!rowData[ROW_DISABLED_CHECKBOX] && [].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
-                    this.querySelector('td[gm-checkbox] input.gm-radio-checkbox-input').click();
+                if (
+                    // 当前行数据未指定禁止选中
+                    !rowData[ROW_DISABLED_CHECKBOX] &&
+
+                    // 当前选择框DOM上未被指定禁止选中
+                    !$checkboxWrap.hasClass(disabledClass) &&
+
+                    // 当前事件源非单选框或多选框(防止多次触发);
+                    [].indexOf.call(e.target.classList, 'gm-radio-checkbox-input') === -1) {
+                    $checkboxWrap.find('input').trigger('click');
                 }
             });
         }
@@ -220,15 +231,16 @@ class Checkbox {
 
         if (!useRadio && max) {
             const $tbodyCheckWrap = jTool('tbody .gm-checkbox-wrapper ', $table);
-            const disabled = 'disabled-selected';
             jEach($tbodyCheckWrap, (index, wrap) => {
                 const $wrap = jTool(wrap);
                 const checkbox = jTool('.gm-checkbox', $wrap);
                 if (!checkbox.hasClass('gm-checkbox-checked')) {
-                    getCheckedData(gridManagerName).length >= max  ? $wrap.addClass(disabled) : $wrap.removeClass(disabled);
+                    getCheckedData(gridManagerName).length >= max  ? $wrap.addClass(disabledClass) : $wrap.removeClass(disabledClass);
                 }
             });
-            $tbodyCheckWrap.length > max ? $allCheck.addClass(disabled) : $allCheck.removeClass(disabled);
+
+            // 设置全选禁用状态
+            $tbodyCheckWrap.length > max ? $allCheck.addClass(disabledClass) : $allCheck.removeClass(disabledClass);
         }
 	}
 
