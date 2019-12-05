@@ -3,7 +3,7 @@
  * 构造类
  */
 import jTool from '@common/jTool';
-import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY } from '@common/constants';
+import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME } from '@common/constants';
 import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, jEach, jExtend, isEmptyObject } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
@@ -168,6 +168,9 @@ export default class GridManager {
 
             // 删除dom渲染中标识
             delete table[RENDERING_KEY];
+
+            // 增加渲染完成 class name
+            $table.addClass(READY_CLASS_NAME);
 
             // 设置渲染完成标识
             settings.rendered = true;

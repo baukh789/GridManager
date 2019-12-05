@@ -8,7 +8,7 @@ import './style.less';
 import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmptyHtml, getEmpty } from '@common/base';
 import { outError, cloneObject, isString, isFunction, isArray } from '@common/utils';
 import { getTableData, setTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
-import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, READY_CLASS_NAME } from '@common/constants';
+import { EMPTY_DATA_CLASS_NAME, WRAP_KEY } from '@common/constants';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';
 import checkbox from '../checkbox';
@@ -196,12 +196,6 @@ class Core {
 
         // 解析框架: thead区域
         await sendCompile(settings, true);
-
-        // 更新列宽 todo 该后移至 GridManager.initTable 方法内了
-        // updateThWidth(settings, true);
-
-        // 增加渲染完成标识
-        $table.addClass(READY_CLASS_NAME);
     }
 
     /**

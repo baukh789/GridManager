@@ -90,7 +90,7 @@ export const NO_SELECT_CLASS_NAME = 'no-select-text';
 export const EMPTY_DATA_CLASS_NAME = 'empty-data';
 
 // 渲染完成标识 Class Name
-export const READY_CLASS_NAME = 'GridManager-ready';
+export const READY_CLASS_NAME = 'gm-ready';
 
 // 加载中 Class Name
 export const LOADING_CLASS_NAME = 'gm-load-area';

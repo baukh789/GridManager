@@ -98,9 +98,6 @@ class Dom {
                 onlyThWarp.append(adjustDOM);
             }
         });
-
-        // 更新列宽 todo 该方法在core.createDOM()方法中调用，所以无需在这里调用
-        // updateThWidth(settings, true);
     }
 
     /**
