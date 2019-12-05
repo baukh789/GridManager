@@ -1,5 +1,5 @@
 import jTool from '@common/jTool';
-import { calcLayout, updateThWidth, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
+import { calcLayout, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
 import { outError, isUndefined, isString, isObject, isElement, jEach } from '@common/utils';
 import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME, ROW_CLASS_NAME } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
@@ -99,8 +99,8 @@ class Dom {
             }
         });
 
-        // 更新列宽
-        updateThWidth(settings, true);
+        // 更新列宽 todo 该方法在core.createDOM()方法中调用，所以无需在这里调用
+        // updateThWidth(settings, true);
     }
 
     /**

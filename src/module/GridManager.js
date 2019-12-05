@@ -733,6 +733,8 @@ export default class GridManager {
             tree.init(gridManagerName);
         }
 
+        updateThWidth(settings, true);
+
         // 更新fake header
         scroll.update(gridManagerName);
 

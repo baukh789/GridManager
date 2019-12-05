@@ -299,7 +299,7 @@ const demo1 = {
                 // useRowCheck: true,
 
                 // 复选时最大可选数
-                // max: 2
+                max: 2
             },
             // 使用单选
             // useRadio: true,
