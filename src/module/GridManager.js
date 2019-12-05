@@ -620,7 +620,7 @@ export default class GridManager {
         });
 
         setCheckedData(gridManagerName, checkedList, true);
-        return checkbox.resetDOM(gridManagerName, tableData, checkboxConfig.useRadio, checkboxConfig.maxSelected);
+        return checkbox.resetDOM(gridManagerName, tableData, checkboxConfig.useRadio, checkboxConfig.max);
     };
 
     /**

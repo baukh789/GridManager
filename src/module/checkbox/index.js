@@ -220,14 +220,15 @@ class Checkbox {
 
         if (!useRadio && max) {
             const $tbodyCheckWrap = jTool('tbody .gm-checkbox-wrapper ', $table);
+            const disabled = 'disabled-selected';
             jEach($tbodyCheckWrap, (index, wrap) => {
                 const $wrap = jTool(wrap);
                 const checkbox = jTool('.gm-checkbox', $wrap);
                 if (!checkbox.hasClass('gm-checkbox-checked')) {
-                    checkedNum >= max  ? $wrap.addClass('disabled-selected') : $wrap.removeClass('disabled-selected');
+                    getCheckedData(gridManagerName).length >= max  ? $wrap.addClass(disabled) : $wrap.removeClass(disabled);
                 }
             });
-            $tbodyCheckWrap.length > max ? $allCheck.addClass('disabled-selected') : $allCheck.removeClass('disabled-selected');
+            $tbodyCheckWrap.length > max ? $allCheck.addClass(disabled) : $allCheck.removeClass(disabled);
         }
 	}
 
