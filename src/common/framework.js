@@ -152,10 +152,6 @@ export const compileEmptyTemplate = (settings, el, template) => {
 export const compileFullColumn = (settings, el, row, index, template) => {
     const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(gridManagerName);
-    // 无模板
-    if (!template) {
-        return '';
-    }
 
     // React element or function
     if (compileReact) {

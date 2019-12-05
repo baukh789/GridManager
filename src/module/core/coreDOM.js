@@ -111,9 +111,7 @@ class Dom {
     renderTableBody(settings, data) {
         const {
             gridManagerName,
-            columnData,
             columnMap,
-            topFullColumn,
             supportTreeData,
             treeConfig
         } = settings;
@@ -187,9 +185,11 @@ class Dom {
                     trNode.setAttribute(TR_CACHE_KEY, cacheKey);
 
                     // 插入通栏: top-full-column
-                    const topFullTemplate = topFullColumn.template;
-                    if (isTop && !isUndefined(topFullTemplate)) {
-                        installTopFull(settings, columnData, tbody, topFullTemplate, trNode, row, index);
+                    if (isTop) {
+                        installTopFull(settings, tbody, row, index, () => {
+                            // 添加成功后: 为非通栏tr的添加标识
+                            trNode.setAttribute('top-full-column', 'false');
+                        });
                     }
 
                     // 插入正常的TR
