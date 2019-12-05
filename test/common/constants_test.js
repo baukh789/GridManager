@@ -129,7 +129,7 @@ describe('常量验证', () => {
     });
 
     it('READY_CLASS_NAME', () => {
-        expect(READY_CLASS_NAME).toBe('GridManager-ready');
+        expect(READY_CLASS_NAME).toBe('gm-ready');
     });
 
     it('LOADING_CLASS_NAME', () => {
