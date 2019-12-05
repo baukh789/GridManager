@@ -442,7 +442,7 @@ export const updateTemplate = arg => {
  * @param orderColumnFn
  */
 export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
-
+    // 更新模板，将非函数类型的模板转换为函数类型
     arg = updateTemplate(arg);
 
     // 合并参数

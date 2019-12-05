@@ -54,7 +54,7 @@ export const compileFakeThead = (settings, el) => {
 export const compileTh = (settings, key, template) => {
     const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(gridManagerName);
-    let thText = '';
+    let text = '';
     let compileAttr = '';
     if (template) {
         if (compileAngularjs || compileVue || compileReact) {
@@ -64,12 +64,12 @@ export const compileTh = (settings, key, template) => {
 
         // not React
         if (!compileReact) {
-            thText = template();
+            text = template();
         }
     }
 
     return {
-        thText,
+        text,
         compileAttr
     };
 };

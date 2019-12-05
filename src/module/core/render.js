@@ -163,7 +163,7 @@ class Render {
                 gmCreateAttr = `${GM_CREATE}="false"`;
                 thName = col.key;
                 const obj = compileTh(settings, thName, col.text);
-                thText = obj.thText;
+                thText = obj.text;
                 compileAttr = obj.compileAttr;
                 break;
         }
