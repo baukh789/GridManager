@@ -9,9 +9,9 @@ import { getTable, getQuerySelector, getFakeVisibleTh, getWrap, getColTd, getThN
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { jEach } from '@common/utils';
-import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, TH_NAME } from '@common/constants';
-import adjust from '../adjust';
-import config from '../config';
+import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
+import adjust from '@module/adjust';
+import config from '@module/config';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ACTION, CLASS_DRAG_ING, CLASS_DREAMLAND } from './constants';
@@ -90,7 +90,7 @@ class Drag {
                 // 当前移动的非最后一列
                 if (_thIndex < $allFakeVisibleTh.length - 1) {
                     $nextTh = $allFakeVisibleTh.eq(_thIndex + 1);
-                    nextThName = $nextTh.attr(TH_NAME);
+                    nextThName = getThName($nextTh);
                 }
 
                 // 禁用配置的列,不允许移动
@@ -193,7 +193,7 @@ class Drag {
 	 */
 	updateDrag(gridManagerName, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh) {
 		// 处理向左拖拽
-		if ($prevTh && $prevTh.length !== 0 && $dreamlandDIV.offset().left < $prevTh.offset().left) {
+		if ($prevTh && $dreamlandDIV.offset().left < $prevTh.offset().left) {
             // 事件源对应的上一组td
 		    let prevTd = getColTd($prevTh);
             $prevTh.before($th);
@@ -210,7 +210,7 @@ class Drag {
 		}
 
 		// 处理向右拖拽
-		if ($nextTh && $nextTh.length !== 0 && $dreamlandDIV.offset().left + $dreamlandDIV.width() > $nextTh.offset().left) {
+		if ($nextTh && $dreamlandDIV.offset().left + $dreamlandDIV.width() > $nextTh.offset().left) {
             // 事件源对应的下一组td
 		    let nextTd = getColTd($nextTh);
 			$nextTh.after($th);

@@ -6,7 +6,7 @@ import jTool from '@common/jTool';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME } from '@common/constants';
 import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, jEach, jExtend, isEmptyObject } from '@common/utils';
-import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
+import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
 import dropdown from './dropdown';
@@ -16,6 +16,7 @@ import tree from './tree';
 import config from './config';
 import core, { coreDOM } from './core';
 import drag from './drag';
+import moveRow from './moveRow';
 import exportFile from './exportFile';
 import menu from './menu';
 import remind from './remind';
@@ -313,6 +314,20 @@ export default class GridManager {
         }
 		return delUserMemory(getKey(table));
 	}
+
+    /**
+     * @静态方法
+     * 获取当前渲染时使用的数据
+     * @param table
+     * @returns {{}}
+     */
+    static
+    getTableData(table) {
+        if (!isRendered(table, 'getTableData')) {
+            return;
+        }
+        return getTableData(getKey(table));
+    }
 
 	/**
 	 * @静态方法
@@ -622,6 +637,7 @@ export default class GridManager {
             rowData[CHECKBOX_KEY] = checkedList.some(item => equal(cloneRow, getCloneRowData(columnMap, item, [treeKey])));
         });
 
+        setTableData(gridManagerName, tableData);
         setCheckedData(gridManagerName, checkedList, true);
         return checkbox.resetDOM(gridManagerName, tableData, checkboxConfig.useRadio, checkboxConfig.max);
     };
@@ -690,7 +706,7 @@ export default class GridManager {
 		// 渲染HTML，嵌入所需的事件源DOM
         await core.createDOM($table, settings);
 
-        const { gridManagerName, supportAdjust, supportDrag, supportCheckbox, supportConfig, supportMenu, supportAjaxPage, supportTreeData } = settings;
+        const { gridManagerName, supportAdjust, supportDrag, supportMoveRow, supportCheckbox, supportConfig, supportMenu, supportAjaxPage, supportTreeData } = settings;
 
         // init adjust
         if (supportAdjust) {
@@ -700,6 +716,11 @@ export default class GridManager {
         // init drag
         if (supportDrag) {
             drag.init(gridManagerName);
+        }
+
+        // init moveRow
+        if (supportMoveRow) {
+            moveRow.init(gridManagerName);
         }
 
         // init checkbox
@@ -773,15 +794,16 @@ export default class GridManager {
             ajaxPage.destroy(gridManagerName);
             checkbox.destroy(gridManagerName);
             config.destroy(gridManagerName);
+            coreDOM.destroy(gridManagerName);
             drag.destroy(gridManagerName);
+            dropdown.destroy(gridManagerName);
+            filter.destroy(gridManagerName);
             menu.destroy(gridManagerName);
+            moveRow.destroy(gridManagerName);
             remind.destroy(gridManagerName);
             scroll.destroy(gridManagerName);
             sort.destroy(gridManagerName);
-            filter.destroy(gridManagerName);
-            coreDOM.destroy(gridManagerName);
             tree.destroy(gridManagerName);
-            dropdown.destroy(gridManagerName);
         } catch (e) {
             console.error(e);
         }

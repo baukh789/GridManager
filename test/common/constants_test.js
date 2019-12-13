@@ -32,7 +32,9 @@ import {
     INDETERMINATE,
     UNCHECKED,
     CHECKED_CLASS,
-    INDETERMINATE_CLASS
+    INDETERMINATE_CLASS,
+    DISABLED_CLASS_NAME,
+    ODD
 } from '@common/constants';
 
 describe('常量验证', () => {
@@ -170,5 +172,13 @@ describe('常量验证', () => {
 
     it('INDETERMINATE_CLASS', () => {
         expect(INDETERMINATE_CLASS).toBe('gm-checkbox-indeterminate');
+    });
+
+    it('DISABLED_CLASS_NAME', () => {
+        expect(DISABLED_CLASS_NAME).toBe('disabled');
+    });
+
+    it('ODD', () => {
+        expect(ODD).toBe('odd');
     });
 });

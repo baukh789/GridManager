@@ -50,6 +50,12 @@ const GM_PUBLISH_METHOD_MAP = {
         title: '清除表格记忆数据',
         code: `GridManager.clear('${gridManagerName}');`
     },
+    getTableData: {
+        key: 'getTableData',
+        relyInit: true,
+        title: '获取指定tr所使用的数据',
+        code: `GridManager.getTableData('${gridManagerName}');`
+    },
     getRowData: {
         key: 'getRowData',
         relyInit: true,
@@ -138,7 +144,7 @@ const GM_PUBLISH_METHOD_MAP = {
         key: 'setCheckedData',
         relyInit: true,
         title: '设置选中的数据',
-        code: `GridManager.setCheckedData('${gridManagerName}', [dataCache[1]]); //dataCache是返回数据的备份`
+        code: `GridManager.setCheckedData('${gridManagerName}', [GridManager.getTableData('${gridManagerName}')[1]]);`
     },
     cleanData: {
         key: 'cleanData',
@@ -290,6 +296,14 @@ const demo1 = {
             // 禁用边框线
             // disableBorder: true,
 
+            // 行移动
+            supportMoveRow: true,
+            moveRowConfig: {
+                key: 'order',
+                handler: (list, tableData) => {
+                    console.log(list, tableData);
+                }
+            },
             // 选择框配置
             checkboxConfig: {
                 // 使用单选
@@ -396,7 +410,9 @@ const demo1 = {
 
             // 执行请求后执行程序
             responseHandler: res => {
-                window.dataCache = res.data;
+                res.data.forEach((item, index) => {
+                    item.order = index + 100 + 1;
+                });
                 return res;
             },
 
@@ -506,7 +522,7 @@ const demo1 = {
                     align: 'center',
                     width: '100px',
                     text: '作者',
-                    merge: true,
+                    // merge: true,
                     template: username => {
                         return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
                     }
@@ -524,7 +540,7 @@ const demo1 = {
                     key: 'lastDate',
                     width: '130px',
                     text: '最后修改时间',
-                    merge: true,
+                    // merge: true,
                     sorting: '',
                     // 使用函数返回 htmlString
                     template: function (lastDate, row) {

@@ -14,7 +14,7 @@ export const getEvent = (gridManagerName, scope) => {
         dragging: {events: 'mousemove.gmDrag', target: 'body'},
 
         // 停止
-        dragAbort: {events: 'mouseup', target: 'body'}
+        dragAbort: {events: 'mouseup.gmDrag', target: 'body'}
     };
 };
 

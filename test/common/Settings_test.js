@@ -33,7 +33,16 @@ describe('Settings', () => {
 		expect(typeof settings.dragAfter).toBe('function');
 	});
 
-	it('验证属性[supportAdjust]初始值', () => {
+    it('验证属性[supportMoveRow]初始值', () => {
+        expect(settings.supportMoveRow).toBe(false);
+    });
+
+    it('验证属性[moveRowConfig]初始值', () => {
+        expect(settings.moveRowConfig.key).toBe(null);
+        expect(typeof settings.moveRowConfig.handler).toBe('function');
+    });
+
+    it('验证属性[supportAdjust]初始值', () => {
 		expect(settings.supportAdjust).toBe(true);
 	});
 

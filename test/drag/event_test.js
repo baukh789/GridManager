@@ -26,7 +26,7 @@ describe('drag', () => {
             expect(events.dragging.target).toBe('body');
             expect(events.dragging.selector).toBeUndefined();
 
-            expect(events.dragAbort.events).toBe('mouseup');
+            expect(events.dragAbort.events).toBe('mouseup.gmDrag');
             expect(events.dragAbort.target).toBe('body');
             expect(events.dragAbort.selector).toBeUndefined();
         });

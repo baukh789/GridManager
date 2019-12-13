@@ -1,7 +1,7 @@
 import jTool from '@common/jTool';
 import { calcLayout, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
 import { outError, isUndefined, isString, isObject, isElement, jEach } from '@common/utils';
-import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME, ROW_CLASS_NAME } from '@common/constants';
+import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME, ROW_CLASS_NAME, ODD } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
 import filter from '../filter';
 import sort from '../sort';
@@ -176,7 +176,7 @@ class Dom {
 
                     // 顶层
                     if (isTop) {
-                        index % 2 === 0 && trNode.setAttribute('odd', ''); // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
+                        index % 2 === 0 && trNode.setAttribute(ODD, ''); // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
                     }
 
                     trNode.setAttribute(TR_CACHE_KEY, cacheKey);

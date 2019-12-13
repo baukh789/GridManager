@@ -125,6 +125,9 @@ export const INDETERMINATE_CLASS = `gm-checkbox-${INDETERMINATE}`;
 // 禁用ClassName
 export const DISABLED_CLASS_NAME = 'disabled';
 
+// 偶数行标识，不直接使用css odd是由于存在层级数据时无法排除折叠元素
+export const ODD = 'odd';
+
 // 公开方法列表
 // export const GM_PUBLISH_METHOD_LIST = [
 // 	'init',

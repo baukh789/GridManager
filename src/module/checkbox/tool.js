@@ -1,5 +1,5 @@
 import { CHECKBOX_KEY, ROW_DISABLED_CHECKBOX } from '@common/constants';
-import { getTableData, setCheckedData } from '@common/cache';
+import { getTableData, setTableData, setCheckedData } from '@common/cache';
 /**
  * 重置当前渲染数据中的选择状态
  * @param gridManagerName
@@ -37,7 +37,7 @@ export const resetData = (gridManagerName, status, isAllCheck, cacheKey, isRadio
     }
 
     // 存储数据
-    // setTableData(gridManagerName, tableData);
+    setTableData(gridManagerName, tableData);
 
     // 更新选中数据
     setCheckedData(gridManagerName, tableData);

@@ -1,0 +1,41 @@
+@import "../../css/mixins";
+
+/* 拖拽换位中 */
+.table-div .gm-move-row-ongoing {
+    cursor: all-scroll;
+    opacity: 1;
+    animation: opacityChange 1s ease-in-out infinite;
+}
+.dreamland-row-div{
+    display: none;
+    position: absolute;
+    cursor: all-scroll;
+    z-index: 9999;
+    border: 1px solid;
+    border-color: #e8e8e8 transparent;
+    .dreamland-row {
+        table-layout: fixed;
+        width: 100%;
+        background-color: #d8d8d8;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: @font-normal-size;
+        tbody{
+            tr {
+                td {
+                    background-color: #fff;
+                    padding: 11px;
+                    border-right: 1px solid #e8e8e8;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    vertical-align: middle;
+                    .text-overflow();
+                }
+                &[odd] td{
+                    background-color: #fafafa;
+                }
+            }
+        }
+    }
+}

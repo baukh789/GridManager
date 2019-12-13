@@ -5,7 +5,7 @@
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { outInfo, outError, equal, getObjectIndexToArray, isUndefined, isFunction, isObject, isElement, jEach, jExtend, isNodeList } from '@common/utils';
+import { outInfo, outError, equal, getObjectIndexToArray, isUndefined, isFunction, isObject, isElement, jEach, jExtend, isNodeList, cloneObject } from '@common/utils';
 import { Settings, TextSettings } from '@common/Settings';
 import store from '@common/Store';
 import {
@@ -116,6 +116,8 @@ export const updateRowData = (gridManagerName, key, rowDataList) => {
     rowDataList.forEach(newItem => {
         updateData(tableData, newItem);
     });
+
+    setTableData(gridManagerName, tableData);
     return {
         tableData,
         updateCacheList
@@ -127,7 +129,7 @@ export const updateRowData = (gridManagerName, key, rowDataList) => {
  * @param gridManagerName
  */
 export const getTableData = gridManagerName => {
-    return store.responseData[gridManagerName] || [];
+    return cloneObject(store.responseData[gridManagerName] || []);
 };
 
 /**

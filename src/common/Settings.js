@@ -35,6 +35,23 @@ const drag = {
 };
 
 /**
+ * 行移动
+ */
+const moveRow = {
+    // 是否支持行移动
+    supportMoveRow: false,
+
+    // 行移动配置项
+    moveRowConfig: {
+        // 指定移动后需要更新的字段, 该字段未配置时将只对DOM进行更新
+        key: null,
+
+        // 移动后执行的程序，可在该程序中完成与后端的交互
+        handler: noop
+    }
+};
+
+/**
  * 宽度调整
  */
 const adjust = {
@@ -428,6 +445,7 @@ export function Settings() {
         rendered: false,
         ...frameworks,
         ...drag,
+        ...moveRow,
         ...adjust,
         ...menu,
         ...config,
