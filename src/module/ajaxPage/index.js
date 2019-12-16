@@ -276,7 +276,6 @@ class AjaxPage {
         return {
             gridManagerName: settings.gridManagerName,
             keyName: TOOLBAR_KEY,
-            refreshActionText: i18n(settings, 'refresh-action'),
             gotoFirstText: i18n(settings, 'goto-first-text'),
             gotoLastText: i18n(settings, 'goto-last-text'),
             firstPageText: i18n(settings, 'first-page'),

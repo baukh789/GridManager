@@ -1,7 +1,7 @@
 /**
  * 实例化数据的存储对象
  */
-import { GM_VERSION } from './constants';
+import { GM_VERSION } from '@common/constants';
 const Store = {
 	// 版本号
 	version: GM_VERSION,

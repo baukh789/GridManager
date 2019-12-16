@@ -309,7 +309,7 @@ export const getColTd = ($dom, $context) => {
         return jTool(`tbody tr td:nth-child(${$dom.index() + 1})`, getTable($dom, true));
     }
 
-    // 获取指定tr下匹配的td
+    // 获取指定$context下匹配的td
     return jTool(`td:nth-child(${$dom.index() + 1})`, $context);
 };
 

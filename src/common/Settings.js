@@ -93,9 +93,6 @@ const gridStyle = {
     // 高度配置
     height: '300px',
 
-    // 文本对齐方式
-    // textAlign: '',       // v2.3.15弃用
-
     // 动画效果时长
     animateTime: 300,
 
@@ -406,7 +403,7 @@ const gridData = {
     responseHandler: response => response,
 
     // 单行数据渲染时执行程序
-    rowRenderHandler: (row, index) => row,
+    rowRenderHandler: row => row,
 
     // 返回数据中列表数据的key键值,默认为data
     dataKey: 'data',
@@ -473,11 +470,6 @@ export function TextSettings() {
     };
 
     // ajax page
-    this['refresh-action'] = {
-        'zh-cn': '<i class="gm-icon gm-icon-refresh"></i>',
-        'zh-tw': '<i class="gm-icon gm-icon-refresh"></i>',
-        'en-us': '<i class="gm-icon gm-icon-refresh"></i>'
-    };
     this['first-page'] = {
         'zh-cn': '首页',
         'zh-tw': '首頁',

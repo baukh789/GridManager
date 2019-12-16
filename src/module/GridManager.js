@@ -309,7 +309,7 @@ export default class GridManager {
      */
 	static
 	clear(table) {
-        if (table && !isRendered(table, 'clear')) {
+        if (!isRendered(table, 'clear')) {
             return;
         }
 		return delUserMemory(getKey(table));
