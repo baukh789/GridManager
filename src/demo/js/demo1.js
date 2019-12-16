@@ -522,7 +522,7 @@ const demo1 = {
                     align: 'center',
                     width: '100px',
                     text: '作者',
-                    // merge: true,
+                    merge: true,
                     template: username => {
                         return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
                     }
@@ -540,7 +540,7 @@ const demo1 = {
                     key: 'lastDate',
                     width: '130px',
                     text: '最后修改时间',
-                    // merge: true,
+                    merge: true,
                     sorting: '',
                     // 使用函数返回 htmlString
                     template: function (lastDate, row) {

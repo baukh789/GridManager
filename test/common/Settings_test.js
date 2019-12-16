@@ -354,19 +354,13 @@ describe('textConfig', () => {
 		for(let key in textConfig) {
 			count++;
 		}
-		expect(count).toBe(18);
+		expect(count).toBe(17);
 	});
 	it('验证国际化文本[order-text]初始值', () => {
 		expect(textConfig['order-text']['zh-cn']).toBe('序号');
 		expect(textConfig['order-text']['zh-tw']).toBe('序號');
 		expect(textConfig['order-text']['en-us']).toBe('order');
 	});
-
-    it('验证国际化文本[refresh-action]初始值', () => {
-        expect(textConfig['refresh-action']['zh-cn']).toBe('<i class="gm-icon gm-icon-refresh"></i>');
-        expect(textConfig['refresh-action']['zh-tw']).toBe('<i class="gm-icon gm-icon-refresh"></i>');
-        expect(textConfig['refresh-action']['en-us']).toBe('<i class="gm-icon gm-icon-refresh"></i>');
-    });
 
     it('验证国际化文本[first-page]初始值', () => {
 		expect(textConfig['first-page']['zh-cn']).toBe('首页');

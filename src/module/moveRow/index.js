@@ -4,6 +4,7 @@ import { jEach, isUndefined, isFunction, isString, equal } from '@common/utils';
 import { getTable, getThead, getTbody, getQuerySelector, getWrap, getDiv, clearTargetEvent } from '@common/base';
 import { getTableData, setTableData, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
+import { mergeRow, clearMergeRow } from '../merge';
 import { TR_CACHE_KEY, NO_SELECT_CLASS_NAME, ODD } from '@common/constants';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
@@ -72,7 +73,7 @@ const update = (gridManagerName, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $
 class MoveRow {
     init(gridManagerName) {
         const _this = this;
-        const { supportAutoOrder, moveRowConfig, animateTime } = getSettings(gridManagerName);
+        const { supportAutoOrder, moveRowConfig, animateTime, columnMap } = getSettings(gridManagerName);
         const { key, handler } = moveRowConfig;
 
         const $body = jTool('body');
@@ -102,12 +103,17 @@ class MoveRow {
             const $tableWrap = getWrap(gridManagerName);
             const tableDiv = getDiv(gridManagerName).get(0);
             let $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
-            if ($dreamlandDIV.length === 0) {
-                $tableWrap.append(`<div class="${CLASS_DREAMLAND}"></div>`);
-                $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
+
+            // 防止频繁触发事件
+            if ($dreamlandDIV.length) {
+                return;
             }
+            $tableWrap.append(`<div class="${CLASS_DREAMLAND}"></div>`);
+            $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
 
             $dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({ table, tr });
+
+            clearMergeRow(gridManagerName, $dreamlandDIV);
 
             let trIndex = 0;
             // 事件: 行移动进行中
@@ -131,14 +137,18 @@ class MoveRow {
                     $nextTr = $allTr.eq(trIndex + 1);
                 }
 
-                $dreamlandDIV.show();
                 $dreamlandDIV.css({
                     width: tr.offsetWidth,
                     height: tr.offsetHeight + 2,
                     top: e2.clientY - $tableWrap.offset().top + window.pageYOffset - $dreamlandDIV.get(0).offsetHeight + theadHeight,
                     left: 0 - tableDiv.scrollLeft
                 });
+                $dreamlandDIV.show();
+
                 $allTr = update(gridManagerName, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData);
+
+                // 合并行数据相同的单元格
+                mergeRow(gridManagerName, columnMap);
             });
 
             // 事件: 行移动结束
@@ -147,14 +157,12 @@ class MoveRow {
                 jTool(dragging.target).off(dragging.events);
                 jTool(dragAbort.target).off(dragAbort.events);
 
-                if ($dreamlandDIV.length !== 0) {
-                    $dreamlandDIV.animate({
-                        top: `${tr.offsetTop - tableDiv.scrollTop}px`
-                    }, animateTime, () => {
-                        $tr.removeClass(CLASS_DRAG_ING);
-                        $dreamlandDIV.hide();
-                    });
-                }
+                $dreamlandDIV.animate({
+                    top: `${tr.offsetTop - tableDiv.scrollTop}px`
+                }, animateTime, () => {
+                    $tr.removeClass(CLASS_DRAG_ING);
+                    $dreamlandDIV.remove();
+                });
 
                 // 存储表格数据
                 setTableData(gridManagerName, tableData);
@@ -171,6 +179,9 @@ class MoveRow {
                         order.innerText = orderList[index];
                     });
                 }
+
+                // 合并行数据相同的单元格
+                mergeRow(gridManagerName, columnMap);
 
                 // 遍历被修改的项
                 const changeList = tableData.filter((item, index) => {

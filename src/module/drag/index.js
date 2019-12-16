@@ -57,12 +57,15 @@ class Drag {
             // 增加拖拽中样式
             $th.addClass(CLASS_DRAG_ING);
             $colTd.addClass(CLASS_DRAG_ING);
-
             let $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
-            if ($dreamlandDIV.length === 0) {
-                $tableWrap.append(`<div class="${CLASS_DREAMLAND}"></div>`);
-                $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
+
+            // 防止频繁触发事件
+            if ($dreamlandDIV.length) {
+                return;
             }
+            $tableWrap.append(`<div class="${CLASS_DREAMLAND}"></div>`);
+            $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
+
             // #001
             $dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({ table,  $th, $colTd });
 
@@ -100,13 +103,13 @@ class Drag {
                     $nextTh = undefined;
                 }
 
-                $dreamlandDIV.show();
                 $dreamlandDIV.css({
                     width: th.offsetWidth,
                     height: table.offsetHeight,
                     left: e2.clientX - $tableWrap.offset().left + window.pageXOffset - th.offsetWidth / 2,
                     top: e2.clientY - $tableWrap.offset().top + window.pageYOffset - $dreamlandDIV.find('th').get(0).offsetHeight / 2
                 });
+                $dreamlandDIV.show();
 
                 $allFakeVisibleTh = _this.updateDrag(gridManagerName, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh);
             });
@@ -117,21 +120,19 @@ class Drag {
                 jTool(dragging.target).off(dragging.events);
                 jTool(dragAbort.target).off(dragAbort.events);
 
-                // 清除临时展示被移动的列
-                if ($dreamlandDIV.length !== 0) {
-                    $dreamlandDIV.animate({
-                        top: `${table.offsetTop}px`,
-                        left: `${th.offsetLeft - getDiv(gridManagerName).get(0).scrollLeft}px`
-                    }, animateTime, () => {
-                        $th.removeClass(CLASS_DRAG_ING);
-                        $colTd.removeClass(CLASS_DRAG_ING);
+                // 清除镜像
+                $dreamlandDIV.animate({
+                    top: `${table.offsetTop}px`,
+                    left: `${th.offsetLeft - getDiv(gridManagerName).get(0).scrollLeft}px`
+                }, animateTime, () => {
+                    $th.removeClass(CLASS_DRAG_ING);
+                    $colTd.removeClass(CLASS_DRAG_ING);
 
-                        $dreamlandDIV.hide();
+                    $dreamlandDIV.remove();
 
-                        // 列拖拽成功回调事件
-                        dragAfter(event);
-                    });
-                }
+                    // 列拖拽成功回调事件
+                    dragAfter(event);
+                });
 
                 // 更新存储信息
                 updateCache(gridManagerName);

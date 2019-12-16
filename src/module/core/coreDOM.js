@@ -3,6 +3,7 @@ import { calcLayout, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, set
 import { outError, isUndefined, isString, isObject, isElement, jEach } from '@common/utils';
 import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME, ROW_CLASS_NAME, ODD } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
+import { mergeRow } from '../merge';
 import filter from '../filter';
 import sort from '../sort';
 import adjust from '../adjust';
@@ -222,7 +223,7 @@ class Dom {
             supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
 
             // 合并单元格
-            this.mergeRow(gridManagerName, columnMap);
+            mergeRow(gridManagerName, columnMap);
         });
     }
 
@@ -275,48 +276,7 @@ class Dom {
             supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
 
             // 合并单元格
-            this.mergeRow(gridManagerName, columnMap);
-        });
-    }
-
-    /**
-     * 根据配置项[merge]合并行数据相同的单元格
-     * @param gridManagerName
-     * @param columnMap
-     */
-    mergeRow(gridManagerName, columnMap) {
-        jEach(columnMap, (key, col) => {
-            if (!col.merge) {
-                return true;
-            }
-            const $tdList = getColTd(getTh(gridManagerName, key));
-            let len = $tdList.length;
-            let mergeSum = 1;
-            while (len) {
-                const $td = $tdList.eq(len - 1);
-                $td.removeAttr('rowspan');
-                $td.show();
-                len--;
-                if (len === 0) {
-                    if (mergeSum > 1) {
-                        $td.attr('rowspan', mergeSum);
-                        mergeSum = 1;
-                    }
-                    return;
-                }
-                const $prve = $tdList.eq(len - 1);
-
-                // 这里比较html而不比较数据的原因: 当前单元格所展示文本可能在template中未完全使用数据
-                if ($prve.html() === $td.html()) {
-                    $td.hide();
-                    mergeSum++;
-                } else {
-                    if (mergeSum > 1) {
-                        $td.attr('rowspan', mergeSum);
-                        mergeSum = 1;
-                    }
-                }
-            }
+            mergeRow(gridManagerName, columnMap);
         });
     }
 
