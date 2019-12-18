@@ -151,11 +151,6 @@ export default class GridManager {
         // 初始化设置相关: 合并, 存储
         settings = initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order));
 
-        // 根据参数增加禁用单元格分割线标识
-        if (settings.disableLine) {
-            $table.addClass('disable-line');
-        }
-
         const initTableAfter = () => {
             // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
             if (!isUndefined($table.attr(CACHE_ERROR_KEY))) {

@@ -1,11 +1,18 @@
 @import "../../css/mixins";
 
-/* 拖拽换位中 */
+// 拖拽换位中
 .table-div .gm-move-row-ongoing {
     cursor: all-scroll;
     opacity: 1;
     animation: opacityChange 1s ease-in-out infinite;
 }
+
+// 拖拽标识
+tbody.move-row tr{
+    cursor: all-scroll;
+}
+
+// 拖拽镜像
 .dreamland-row-div{
     display: none;
     position: absolute;
@@ -20,22 +27,18 @@
         border-collapse: separate;
         border-spacing: 0;
         font-size: @font-normal-size;
-        tbody{
-            tr {
-                td {
-                    background-color: #fff;
-                    padding: 11px;
-                    border-right: 1px solid #e8e8e8;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    vertical-align: middle;
-                    .text-overflow();
-                }
-                &[odd] td{
-                    background-color: #fafafa;
-                }
-            }
+        td {
+            background-color: #fff;
+            padding: 11px;
+            border-right: 1px solid #e8e8e8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: middle;
+            .text-overflow();
+        }
+        tr[odd] td{
+            background-color: #fafafa;
         }
     }
 }

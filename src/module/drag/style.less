@@ -25,6 +25,7 @@
     background: #fff;
     cursor: all-scroll;
     z-index: 9999;
+    border: 1px solid #e8e8e8;
     .dreamland-table {
         table-layout: fixed;
         width: 100%;
@@ -32,24 +33,22 @@
         padding: 0;
         background-color: #d8d8d8;
         border-collapse: separate;
-        border-spacing: 1px;
+        border-spacing: 0;
         font-size: @font-normal-size;
         thead{
             .bg-image();
         }
-        tbody{
-            tr {
-                td {
-                    background-color: #fff;
-                    padding: 11px;
-                    .text-overflow();
-                }
-                &:nth-child(odd) td{
-                    background-color: #fafafa;
-                }
-                &:hover td{
-                    background-color: #F1F8FB;
-                }
+        tr {
+            td {
+                background-color: #fff;
+                padding: 11px;
+                .text-overflow();
+            }
+            &:nth-child(odd) td{
+                background-color: #fafafa;
+            }
+            &:hover td{
+                background-color: #F1F8FB;
             }
         }
     }

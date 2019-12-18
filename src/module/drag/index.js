@@ -103,13 +103,12 @@ class Drag {
                     $nextTh = undefined;
                 }
 
-                $dreamlandDIV.css({
+                $dreamlandDIV.show().css({
                     width: th.offsetWidth,
                     height: table.offsetHeight,
                     left: e2.clientX - $tableWrap.offset().left + window.pageXOffset - th.offsetWidth / 2,
-                    top: e2.clientY - $tableWrap.offset().top + window.pageYOffset - $dreamlandDIV.find('th').get(0).offsetHeight / 2
+                    top: e2.clientY - $tableWrap.offset().top + window.pageYOffset - th.offsetHeight / 2
                 });
-                $dreamlandDIV.show();
 
                 $allFakeVisibleTh = _this.updateDrag(gridManagerName, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh);
             });

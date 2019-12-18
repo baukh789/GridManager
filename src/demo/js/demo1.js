@@ -284,7 +284,7 @@ const demo1 = {
             // 右键菜单
             // supportMenu: false,
 
-            // 禁用行
+            // 禁用分割线
             // disableLine: true,
 
             // 组合排序
@@ -299,7 +299,7 @@ const demo1 = {
             // 行移动
             supportMoveRow: true,
             moveRowConfig: {
-                key: 'order',
+                key: 'priority',
                 handler: (list, tableData) => {
                     console.log(list, tableData);
                 }
@@ -411,7 +411,7 @@ const demo1 = {
             // 执行请求后执行程序
             responseHandler: res => {
                 res.data.forEach((item, index) => {
-                    item.order = index + 100 + 1;
+                    item.priority = index + 100 + 1;
                 });
                 return res;
             },
@@ -436,6 +436,11 @@ const demo1 = {
             //     console.log(row, rowIndex, colIndex);
             // },
             columnData: [
+                {
+                    key: 'priority',
+                    text: 'priority',
+                    width: 100
+                },
                 {
                     key: 'pic',
                     remind: '这一列显示了缩略图，可以通过点击跳转至对应的博客地址',

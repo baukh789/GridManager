@@ -238,7 +238,7 @@ class Dom {
         updateCacheList.forEach(row => {
             const cacheKey = row[TR_CACHE_KEY];
             const level = row[TR_LEVEL_KEY];
-            let index = cacheKey.split('-').pop();
+            let index = parseInt(cacheKey.split('-').pop(), 10);
 
             const trNode = getTbody(gridManagerName).find(`[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
 

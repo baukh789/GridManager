@@ -1,7 +1,7 @@
 import './style.less';
 import jTool from '@common/jTool';
 import { jEach, isUndefined, isFunction, isString, equal } from '@common/utils';
-import { getTable, getThead, getTbody, getQuerySelector, getWrap, getDiv, clearTargetEvent } from '@common/base';
+import { getTable, getTbody, getQuerySelector, getWrap, getDiv, clearTargetEvent } from '@common/base';
 import { getTableData, setTableData, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { mergeRow, clearMergeRow } from '../merge';
@@ -9,6 +9,7 @@ import { TR_CACHE_KEY, NO_SELECT_CLASS_NAME, ODD } from '@common/constants';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ING, CLASS_DREAMLAND } from './constants';
+import { coreDOM } from '../core';
 
 /**
  * 更新移动
@@ -48,6 +49,8 @@ const update = (gridManagerName, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $
         // 替换数据
         const oldCache = tableData[oldCacheKey];
         const targetCache = tableData[targetCacheKey];
+        oldCache[TR_CACHE_KEY] = targetCacheKey;
+        targetCache[TR_CACHE_KEY] = oldCacheKey;
 
         // 当前未配置行排序字段时，仅处理前端展示，而不更新数据
         if (isString(key)) {
@@ -82,10 +85,19 @@ class MoveRow {
         const { dragStart, dragging, dragAbort } = eventMap[gridManagerName];
 
         const $tbody = getTbody(gridManagerName);
-        const theadHeight = getThead(gridManagerName).height();
+
+        const $tableWrap = getWrap(gridManagerName);
+        const tableDiv = getDiv(gridManagerName).get(0);
+
+        $tbody.addClass('move-row');
+
         let oldData = null;
         // 事件: 行移动触发
-        jTool(dragStart.target).on(dragStart.events, dragStart.selector, function () {
+        jTool(dragStart.target).on(dragStart.events, dragStart.selector, function (e) {
+            // 仅在事件触发源为td时生效: 用于规避模版内自定义的事件
+            if (e.target.nodeName !== 'TD') {
+                return;
+            }
             const tr = this;
             const $tr = jTool(tr);
             let $allTr = jTool('tr', $tbody);
@@ -99,9 +111,6 @@ class MoveRow {
             const tableData = getTableData(gridManagerName);
             oldData = [...tableData];
 
-            // 事件源所在的容器
-            const $tableWrap = getWrap(gridManagerName);
-            const tableDiv = getDiv(gridManagerName).get(0);
             let $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
 
             // 防止频繁触发事件
@@ -111,8 +120,11 @@ class MoveRow {
             $tableWrap.append(`<div class="${CLASS_DREAMLAND}"></div>`);
             $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
 
+            // 先清除再添加合并列，是为了达到mousedown时可以获取到一个完整的且列可对齐的行
+            clearMergeRow(gridManagerName);
             $dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({ table, tr });
 
+            mergeRow(gridManagerName, columnMap);
             clearMergeRow(gridManagerName, $dreamlandDIV);
 
             let trIndex = 0;
@@ -137,13 +149,12 @@ class MoveRow {
                     $nextTr = $allTr.eq(trIndex + 1);
                 }
 
-                $dreamlandDIV.css({
+                $dreamlandDIV.show().css({
                     width: tr.offsetWidth,
-                    height: tr.offsetHeight + 2,
-                    top: e2.clientY - $tableWrap.offset().top + window.pageYOffset - $dreamlandDIV.get(0).offsetHeight + theadHeight,
+                    height: tr.offsetHeight + 2, // 2为$dreamlandDIV的边框宽度
+                    top: e2.clientY - $tableWrap.offset().top + window.pageYOffset - $dreamlandDIV.height() / 2,
                     left: 0 - tableDiv.scrollLeft
                 });
-                $dreamlandDIV.show();
 
                 $allTr = update(gridManagerName, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData);
 
@@ -188,6 +199,11 @@ class MoveRow {
                     return !equal(item, oldData[index]);
                 });
                 isFunction(handler) && handler(changeList, tableData);
+
+                // 更新变更项DOM
+                coreDOM.updateTrDOM(getSettings(gridManagerName), changeList);
+
+                // todo @baukh2019118: 变更后，已选中数据中的 key 字段未变更
 
                 // 开启文字选中效果
                 $body.removeClass(NO_SELECT_CLASS_NAME);

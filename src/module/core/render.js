@@ -26,7 +26,7 @@ class Render {
     @parseTpl(wrapTpl)
     createWrapTpl(params) {
         const settings = params.settings;
-        const { gridManagerName, skinClassName, isIconFollowText, disableBorder, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
+        const { gridManagerName, skinClassName, isIconFollowText, disableBorder, disableLine, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
         const wrapClassList = [];
         // 根据参数增加皮肤标识
         if (skinClassName && isString(skinClassName) && skinClassName.trim()) {
@@ -42,7 +42,10 @@ class Render {
         if (disableBorder) {
             wrapClassList.push('disable-border');
         }
-
+        // 根据参数增加禁用单元格分割线标识
+        if (disableLine) {
+            wrapClassList.push('disable-line');
+        }
         return {
             wrapKey: WRAP_KEY,
             divKey: DIV_KEY,

@@ -33,6 +33,15 @@
     &.disable-border {
         border: none;
     }
+
+    // 禁用分割线模式
+    &.disable-line {
+        tr{
+            th, td{
+                border-right: none;
+            }
+        }
+    }
 }
 
 /* table */
@@ -146,12 +155,6 @@
                     padding: 0;
                 }
             }
-        }
-    }
-    // 禁用分割线模式
-    &.disable-line {
-        th, td{
-            border-right: none;
         }
     }
 }
