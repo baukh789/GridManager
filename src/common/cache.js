@@ -9,7 +9,6 @@ import { outInfo, outError, equal, getObjectIndexToArray, isUndefined, isFunctio
 import { Settings, TextSettings } from '@common/Settings';
 import store from '@common/Store';
 import {
-    TR_CACHE_ROW,
     CACHE_ERROR_KEY,
     MEMORY_KEY,
     VERSION_KEY,
@@ -57,9 +56,9 @@ export const setScope = (gridManagerName, scope) => {
  */
 export const getRowData = (gridManagerName, target, useGmProp) => {
     const columnMap = getSettings(gridManagerName).columnMap;
-
+    const tableData = getTableData(gridManagerName);
     const getTrData = tr => {
-        const rowData = tr[TR_CACHE_ROW] || {};
+        const rowData = tableData[tr.getAttribute(TR_CACHE_KEY)] || {};
         return useGmProp ? rowData : getCloneRowData(columnMap, rowData);
     };
 

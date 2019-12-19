@@ -1,7 +1,7 @@
 import jTool from '@common/jTool';
 import { calcLayout, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
 import { outError, isUndefined, isString, isObject, isElement, jEach } from '@common/utils';
-import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_CACHE_ROW, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME, ROW_CLASS_NAME, ODD } from '@common/constants';
+import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME, ROW_CLASS_NAME, ODD } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
 import { mergeRow } from '../merge';
 import filter from '../filter';
@@ -161,8 +161,6 @@ class Dom {
                 jEach(list, (index, row) => {
                     const trNode = document.createElement('tr');
                     const cacheKey = row[TR_CACHE_KEY];
-
-                    trNode[TR_CACHE_ROW] = row;
 
                     // 增加行 class name
                     if (row[ROW_CLASS_NAME]) {

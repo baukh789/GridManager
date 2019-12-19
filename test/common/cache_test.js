@@ -1,6 +1,6 @@
 'use strict';
 import jTool from '@common/jTool';
-import {CACHE_ERROR_KEY, TR_CACHE_ROW, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '@common/constants';
+import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '@common/constants';
 import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, resetTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, updateCache } from '@common/cache';
 import store from '@common/Store';
 import { version } from '@package.json';
@@ -65,15 +65,14 @@ describe('getScope and setScope', () => {
 
 describe('getRowData', () => {
     let tableData = null;
-    let insertData = null;
+    let tr = null;
     beforeEach(() => {
-        tableData = getTableTestData();
+        tableData = getTableTestData().data;
+        tableData[8].gm_checkbox = true;
+        tableData[8].gm_checkbox_disabled = true;
+        tableData[8].gm_order = 9;
         document.body.innerHTML = tableTestTpl;
-        insertData = () => {
-            jTool.each(jTool('table tbody tr'), (index, item) => {
-                item[TR_CACHE_ROW] = tableData.data[index];
-            });
-        };
+        tr = document.querySelectorAll('tbody tr');
         store.settings = {
             test: {
                 gridManagerName: 'test',
@@ -83,7 +82,7 @@ describe('getRowData', () => {
     });
     afterEach(() => {
         tableData = null;
-        insertData = null;
+        tr = null;
         document.body.innerHTML = '';
         store.responseData = {};
         store.settings = {};
@@ -95,30 +94,24 @@ describe('getRowData', () => {
     });
 
     it('未存在数据时', () => {
-        expect(getRowData('test', document.querySelector('tr[cache-key="9"]'))).toEqual({});
+        expect(getRowData('test', tr[0])).toEqual({});
     });
 
     it('参数为element', () => {
-        tableData.data[8].gm_checkbox = true;
-        tableData.data[8].gm_checkbox_disabled = true;
-        tableData.data[8].gm_order = 9;
-        insertData();
-        expect(getRowData('test', document.querySelector('tr[cache-key="8"]'))).toEqual(new getTableTestData().data[8]);
-        expect(getRowData('test', document.querySelector('tr[cache-key="8"]'), true)).toEqual(tableData.data[8]);
-    });
-
-    it('使用gm自定义的属性', () => {
-        insertData();
-        expect(getRowData('test', document.querySelector('tr[cache-key="9"]'))).toEqual(tableData.data[9]);
+        store.responseData['test'] = tableData;
+        expect(getRowData('test', tr[8])).toEqual(getTableTestData().data[8]);
     });
 
     it('参数为NodeList', () => {
-        insertData();
-        expect(getRowData('test', document.querySelectorAll('tr[cache-key]')).length).toBe(10);
+        expect(getRowData('test', tr).length).toBe(10);
+    });
+
+    it('使用gm自定义的属性', () => {
+        store.responseData['test'] = tableData;
+        expect(getRowData('test', tr[8], true)).toEqual(tableData[8]);
     });
 
     it('参数异常', () => {
-        insertData();
         expect(getRowData('test', 'aa')).toEqual({});
     });
 });

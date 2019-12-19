@@ -38,9 +38,6 @@ export const TH_NAME = 'th-name';
 // tr cache key
 export const TR_CACHE_KEY = 'gm-cache-key';
 
-// tr cache row data
-export const TR_CACHE_ROW = 'gm-cache-row';
-
 // tr level key
 export const TR_LEVEL_KEY = 'gm-level-key';
 

@@ -682,7 +682,7 @@ describe('getColTd($dom, $context)', () => {
     });
 
     it('getColTd($td)', () => {
-        $dom = $table.find('tbody tr[cache-key="1"] td').eq(3);
+        $dom = $table.find('tbody tr[gm-cache-key="1"] td').eq(3);
         expect(getColTd($dom).length).toBe(10);
         expect(getColTd($dom).eq(2).text()).toBe('2018/5/14');
     });

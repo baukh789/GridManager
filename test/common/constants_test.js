@@ -15,7 +15,6 @@ import {
     CHECKBOX_DISABLED_KEY,
     TR_CACHE_KEY,
     TR_LEVEL_KEY,
-    TR_CACHE_ROW,
     TR_PARENT_KEY,
     TR_CHILDREN_STATE,
     ROW_DISABLED_CHECKBOX,
@@ -76,10 +75,6 @@ describe('常量验证', () => {
 
     it('TR_CACHE_KEY', () => {
         expect(TR_CACHE_KEY).toBe('gm-cache-key');
-    });
-
-    it('TR_CACHE_ROW', () => {
-        expect(TR_CACHE_ROW).toBe('gm-cache-row');
     });
 
     it('TR_LEVEL_KEY', () => {

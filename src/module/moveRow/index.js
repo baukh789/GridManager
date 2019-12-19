@@ -1,8 +1,8 @@
 import './style.less';
 import jTool from '@common/jTool';
 import { jEach, isUndefined, isFunction, isString, equal } from '@common/utils';
-import { getTable, getTbody, getQuerySelector, getWrap, getDiv, clearTargetEvent } from '@common/base';
-import { getTableData, setTableData, getSettings } from '@common/cache';
+import { getTable, getTbody, getQuerySelector, getWrap, getDiv, clearTargetEvent, getCloneRowData } from '@common/base';
+import { getTableData, setTableData, getSettings, getCheckedData, setCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { mergeRow, clearMergeRow } from '../merge';
 import { TR_CACHE_KEY, NO_SELECT_CLASS_NAME, ODD } from '@common/constants';
@@ -73,10 +73,39 @@ const update = (gridManagerName, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $
     return jTool('tr', $tbody);
 };
 
+/**
+ * 将移动后的字段更新合并至已选中存储
+ * @param gridManagerName
+ * @param supportCheckbox
+ * @param key
+ * @param columnMap
+ * @param changeList
+ */
+const mergeToCheckedData = (gridManagerName, supportCheckbox, key, columnMap, changeList) => {
+    if (!supportCheckbox || !isString(key)) {
+        return;
+    }
+
+    const checkedData = getCheckedData(gridManagerName);
+
+    if (checkedData.length === 0) {
+        return;
+    }
+
+    checkedData.forEach(checked => {
+        changeList.forEach(change => {
+            if (equal(getCloneRowData(columnMap, checked, [key]), getCloneRowData(columnMap, change, [key]))) {
+                checked[key] = change[key];
+            }
+        });
+    });
+
+    setCheckedData(gridManagerName, checkedData, true);
+};
 class MoveRow {
     init(gridManagerName) {
         const _this = this;
-        const { supportAutoOrder, moveRowConfig, animateTime, columnMap } = getSettings(gridManagerName);
+        const { supportAutoOrder, supportCheckbox, moveRowConfig, animateTime, columnMap } = getSettings(gridManagerName);
         const { key, handler } = moveRowConfig;
 
         const $body = jTool('body');
@@ -203,7 +232,8 @@ class MoveRow {
                 // 更新变更项DOM
                 coreDOM.updateTrDOM(getSettings(gridManagerName), changeList);
 
-                // todo @baukh2019118: 变更后，已选中数据中的 key 字段未变更
+                // 将更新后的数据合并至已选中存储器
+                mergeToCheckedData(gridManagerName, supportCheckbox, key, columnMap, changeList);
 
                 // 开启文字选中效果
                 $body.removeClass(NO_SELECT_CLASS_NAME);
