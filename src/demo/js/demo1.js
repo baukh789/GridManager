@@ -410,8 +410,9 @@ const demo1 = {
 
             // 执行请求后执行程序
             responseHandler: res => {
-                res.data.forEach((item, index) => {
-                    item.priority = index + 100 + 1;
+                res.data.forEach(item => {
+                    // 用id模拟优先级字段
+                    item.priority = item.id;
                 });
                 return res;
             },
@@ -436,11 +437,6 @@ const demo1 = {
             //     console.log(row, rowIndex, colIndex);
             // },
             columnData: [
-                {
-                    key: 'priority',
-                    text: 'priority',
-                    width: 100
-                },
                 {
                     key: 'pic',
                     remind: '这一列显示了缩略图，可以通过点击跳转至对应的博客地址',
@@ -551,7 +547,13 @@ const demo1 = {
                     template: function (lastDate, row) {
                         return new Date(lastDate).toLocaleDateString();
                     }
-                }, {
+                },
+                {
+                    key: 'priority',
+                    text: '优先级',
+                    width: 100
+                },
+                {
                     key: 'action',
                     remind: 'the action',
                     width: '100px',
