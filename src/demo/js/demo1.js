@@ -523,9 +523,9 @@ const demo1 = {
                     align: 'center',
                     width: '100px',
                     text: '作者',
-                    merge: true,
-                    template: username => {
-                        return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
+                    merge: 'html',
+                    template: (username, row) => {
+                        return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" ${row.id} title="去看看${username}的github">${username}</a>`;
                     }
                 }, {
                     key: 'createDate',
@@ -541,7 +541,7 @@ const demo1 = {
                     key: 'lastDate',
                     width: '130px',
                     text: '最后修改时间',
-                    merge: true,
+                    merge: 'text',
                     sorting: '',
                     // 使用函数返回 htmlString
                     template: function (lastDate, row) {

@@ -12,10 +12,13 @@ const MERGE_TD = 'merge-td';
  */
 export const mergeRow = (gridManagerName, columnMap) => {
     jEach(columnMap, (key, col) => {
-        if (!col.merge) {
+        let merge = col.merge;
+        if (!merge || (merge !== 'text' &&  merge !== 'html')) {
             return true;
         }
+
         const $tdList = getColTd(getTh(gridManagerName, key));
+
         let len = $tdList.length;
         let mergeSum = 1;
         // 倒序进行处理: 添加rowspan需要增加至第一行的单元格，使用倒序可以很好的处理这个问题
@@ -34,7 +37,7 @@ export const mergeRow = (gridManagerName, columnMap) => {
             const $prve = $tdList.eq(len - 1);
 
             // 这里比较html而不比较数据的原因: 当前单元格所展示文本可能在template中未完全使用数据
-            if ($prve.html() === $td.html()) {
+            if ($prve[merge]() === $td[merge]()) {
                 $td.attr(MERGE_TD, '');
                 mergeSum++;
             } else {
