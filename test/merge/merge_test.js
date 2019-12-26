@@ -53,7 +53,7 @@ describe('mergeRow(gridManagerName, columnMap)', () => {
             username: {
                 key: 'username',
                 text: '作者',
-                merge: true
+                merge: 'text'
             },
             createDate: {
                 key: 'createDate',
@@ -77,7 +77,7 @@ describe('mergeRow(gridManagerName, columnMap)', () => {
             createDate: {
                 key: 'createDate',
                 text: '创建时间',
-                merge: true
+                merge: 'html'
             },
             lastDate: {
                 key: 'lastDate',
@@ -101,7 +101,7 @@ describe('mergeRow(gridManagerName, columnMap)', () => {
             lastDate: {
                 key: 'lastDate',
                 text: '最后修改时间',
-                merge: true
+                merge: 'html'
             }
         };
         mergeRow('test', columnMap);
