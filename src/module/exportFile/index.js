@@ -5,26 +5,8 @@ import jTool from '@common/jTool';
 import { showLoading, hideLoading, getVisibleTh, getTbody } from '@common/base';
 import { outError, isFunction, jEach } from '@common/utils';
 import { getSettings, getCheckedData } from '@common/cache';
-import { parseTpl } from '@common/parse';
 import { GM_CREATE } from '@common/constants';
-import staticTpl from './static.tpl.html';
 class ExportFile {
-	/**
-	 * uri type base64
-	 * @returns {string}
-     */
-	get URI() {
-		return 'data:application/vnd.ms-excel;base64,';
-	}
-
-	/**
-	 * 获取下载 url
-	 * @param exportHTML
-     */
-	getHref(exportHTML) {
-		return this.URI + window.btoa(unescape(encodeURIComponent(exportHTML || '')));
-	}
-
 	/**
 	 * 获取文件名称
 	 * @param gridManagerName
@@ -62,46 +44,6 @@ class ExportFile {
         e.initEvent('click', false, false);
         a.dispatchEvent(e);
     }
-
-	/**
-	 * 拼接要导出html格式数据
-     * @param params
-	 * @returns {parseData}
-     */
-	@parseTpl(staticTpl)
-	createExportHTML(params) {
-	    const { gridManagerName, onlyChecked } = params;
-        const thDOM = getVisibleTh(gridManagerName, false);
-        const $tbody = getTbody(gridManagerName);
-        let	trDOM = null;
-        // 验证：是否只导出已选中的表格
-        if (onlyChecked) {
-            trDOM = jTool('tr[checked="true"]', $tbody);
-        } else {
-            trDOM = jTool('tr', $tbody);
-        }
-        // 存储导出的thead
-        let	theadHTML = '';
-        jEach(thDOM, (i, v) => {
-            theadHTML += `<th>${v.getElementsByClassName('th-text')[0].textContent}</th>`;
-        });
-
-        // 存储导出的tbody
-        let	tbodyHTML = '';
-        jEach(trDOM, (i, v) => {
-            let tdDOM = jTool(`td[${GM_CREATE}="false"][td-visible="visible"]`, v);
-            tbodyHTML += '<tr>';
-            jEach(tdDOM, (i2, v2) => {
-                tbodyHTML += `<td>${v2.textContent}</td>`;
-            });
-            tbodyHTML += '</tr>';
-        });
-
-        return {
-            theadHTML,
-            tbodyHTML
-        };
-	}
 
 	/**
 	 * 导出表格 .xls
@@ -200,7 +142,40 @@ class ExportFile {
      * @returns {boolean}
      */
 	downStatic(gridManagerName, fileName, onlyChecked) {
-        this.dispatchDownload(fileName, this.getHref(this.createExportHTML({gridManagerName, onlyChecked})));
+        const thDOM = getVisibleTh(gridManagerName, false);
+        const $tbody = getTbody(gridManagerName);
+        let	trDOM = null;
+        // 验证：是否只导出已选中的表格
+        if (onlyChecked) {
+            trDOM = jTool('tr[checked="true"]', $tbody);
+        } else {
+            trDOM = jTool('tr', $tbody);
+        }
+        // 存储导出的thead
+        let thead = [];
+        jEach(thDOM, (i, v) => {
+            thead.push(v.getElementsByClassName('th-text')[0].textContent);
+        });
+
+        // 存储导出的tbody
+        let tbody = '';
+        jEach(trDOM, (i, v) => {
+            if (i !== 0) {
+                tbody += '\r\n';
+            }
+            const tdDOM = jTool(`td[${GM_CREATE}="false"][td-visible="visible"]`, v);
+            jEach(tdDOM, (i2, v2) => {
+                if (i2 !== 0) {
+                    tbody += ',';
+                }
+                tbody += `${v2.textContent.replace(/\,/g, '，')}`; // 将英文逗号替换为中文逗号的原因: 英文逗号会用于间隔单元格
+            });
+        });
+
+        let exportHTML = `${thead.join(',')}\r\n${tbody}`;
+
+
+        this.dispatchDownload(fileName, 'data:application/vnd.ms-excel;charset=utf-8,\ufeff' + exportHTML);
     }
 
     /**
