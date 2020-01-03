@@ -429,7 +429,7 @@ const gridExport = {
         // 导出文件的名称, 字符串或函数类型，为函数时需返回一个字符串。该字符串不包含后缀名，该值不设置将默认使用gridManagerName
         fileName: null,
 
-        // 导出的后缀名, 默认为`xls`。
+        // 导出的后缀名, 默认为`xls`。静态导出仅支持xls,cvs两种格式
         suffix: 'xls',
 
         // 导出处理器函数,该函数需要返回一个promise。当`exportType`为`static`时，该参数不生效。
@@ -535,15 +535,15 @@ export function TextSettings() {
         'zh-tw': '重新加載',
         'en-us': 'Refresh'
     };
-    this['menu-save-as-excel'] = {
-        'zh-cn': '另存为Excel',
-        'zh-tw': '另存為Excel',
-        'en-us': 'Save as Excel'
+    this['export'] = {
+        'zh-cn': '导出',
+        'zh-tw': '導出',
+        'en-us': 'Export'
     };
-    this['menu-save-as-excel-for-checked'] = {
-        'zh-cn': '已选中项另存为Excel',
-        'zh-tw': '已選中項另存為Excel',
-        'en-us': 'Save selected as Excel'
+    this['export-checked'] = {
+        'zh-cn': '导出选中项',
+        'zh-tw': '導出選中項',
+        'en-us': 'Export selected'
     };
     this['menu-config-grid'] = {
         'zh-cn': '配置表',

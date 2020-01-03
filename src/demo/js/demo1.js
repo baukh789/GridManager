@@ -98,11 +98,11 @@ const GM_PUBLISH_METHOD_MAP = {
         title: '设置列为隐藏状态',
         code: `GridManager.hideTh('${gridManagerName}', 'pic');`
     },
-    exportGridToXls: {
-        key: 'exportGridToXls',
+    exportGrid: {
+        key: 'exportGrid',
         relyInit: true,
         title: '导出指定表格',
-        code: `GridManager.exportGridToXls('${gridManagerName}', 'demo中使用的导出');`
+        code: `GridManager.exportGrid('${gridManagerName}', 'demo中使用的导出').then(res=>{console.log('success')}).catch(err=>{console.error('error', err)});`
     },
     setQuery: {
         key: 'setQuery',
@@ -340,7 +340,8 @@ const demo1 = {
                         fileName = `${fileName}-${key}=${query[key]}`;
                     }
                     return fileName;
-                }
+                },
+                suffix: 'csv'
             },
             ajaxType: 'POST',
 

@@ -53,7 +53,7 @@ class ExportFile {
 	 * @returns {boolean}
      * @private
      */
-	async __exportGridToXls(gridManagerName, fileName, onlyChecked) {
+	async exportGrid(gridManagerName, fileName, onlyChecked) {
 	    const settings = getSettings(gridManagerName);
 	    const { query, loadingTemplate, exportConfig, pageData, sortData } = settings;
 
@@ -62,11 +62,14 @@ class ExportFile {
         const selectedList = onlyChecked ? getCheckedData(gridManagerName) : undefined;
 
         if (!isFunction(exportConfig.handler)) {
-            outError('exportConfig.handler not return promise');
-            return false;
+            return Promise.reject('exportConfig.handler not return promise');
         }
 
 	    switch (exportConfig.mode) {
+            case 'static': {
+                this.downStatic(gridManagerName, fileName, onlyChecked, exportConfig.suffix);
+                break;
+            }
             case 'blob': {
                 await this.downBlob(gridManagerName, loadingTemplate, fileName, query, exportConfig.handler, pageData, sortData, selectedList);
                 break;
@@ -81,20 +84,10 @@ class ExportFile {
             //     await this.downFileStream(fileName, exportHandler, pageData, sortData, selectedList);
             //     break;
             // }
-
-            case 'static': {
-                this.downStatic(gridManagerName, fileName, onlyChecked);
-                break;
-            }
-
-            default: {
-                this.downStatic(gridManagerName, fileName, onlyChecked);
-                break;
-            }
         }
 
 		// 成功后返回true
-		return true;
+		// return true;
 	}
 
     /**
@@ -141,7 +134,7 @@ class ExportFile {
      * @param onlyChecked
      * @returns {boolean}
      */
-	downStatic(gridManagerName, fileName, onlyChecked) {
+	downStatic(gridManagerName, fileName, onlyChecked, suffix) {
         const thDOM = getVisibleTh(gridManagerName, false);
         const $tbody = getTbody(gridManagerName);
         let	trDOM = null;
@@ -152,30 +145,29 @@ class ExportFile {
             trDOM = jTool('tr', $tbody);
         }
         // 存储导出的thead
-        let thead = [];
+        const thead = [];
         jEach(thDOM, (i, v) => {
-            thead.push(v.getElementsByClassName('th-text')[0].textContent);
+            thead.push(`"${v.getElementsByClassName('th-text')[0].textContent || ''}"`);
         });
 
         // 存储导出的tbody
-        let tbody = '';
+        let exportHTML = thead.join(',');
         jEach(trDOM, (i, v) => {
-            if (i !== 0) {
-                tbody += '\r\n';
-            }
+            exportHTML += '\r\n';
             const tdDOM = jTool(`td[${GM_CREATE}="false"][td-visible="visible"]`, v);
             jEach(tdDOM, (i2, v2) => {
                 if (i2 !== 0) {
-                    tbody += ',';
+                    exportHTML += ',';
                 }
-                tbody += `${v2.textContent.replace(/\,/g, '，')}`; // 将英文逗号替换为中文逗号的原因: 英文逗号会用于间隔单元格
+                exportHTML += `"${v2.textContent || ''}"`; // 添加""的原因: 规避内容中英文逗号被识别为分割单元格的标识
             });
         });
 
-        let exportHTML = `${thead.join(',')}\r\n${tbody}`;
-
-
-        this.dispatchDownload(fileName, 'data:application/vnd.ms-excel;charset=utf-8,\ufeff' + exportHTML);
+        const dataType = {
+            csv: 'text/csv',
+            xls: 'application/vnd.ms-excel'
+        };
+        this.dispatchDownload(fileName, `data:${dataType[suffix]};charset=utf-8,\ufeff${encodeURIComponent(exportHTML)}`);
     }
 
     /**

@@ -106,8 +106,8 @@ class Menu {
     createExportHtml(params) {
         const settings = params.settings;
         return {
-            menuSaveAsExcelText: i18n(settings, 'menu-save-as-excel'),
-            menuSaveAsExcelForCheckedText: i18n(settings, 'menu-save-as-excel-for-checked')
+            menuSaveAsExcelText: i18n(settings, 'export'),
+            menuSaveAsExcelForCheckedText: i18n(settings, 'export-checked')
         };
     }
 
@@ -226,7 +226,7 @@ class Menu {
 				if (this.getAttribute('only-checked') === 'true') {
 					onlyChecked = true;
 				}
-                exportFile.__exportGridToXls(gridManagerName, undefined, onlyChecked);
+                exportFile.exportGrid(gridManagerName, undefined, onlyChecked);
                 $closeTarget.off(closeEvents);
                 $menu.hide();
 			});

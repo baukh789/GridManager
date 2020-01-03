@@ -428,16 +428,16 @@ describe('textConfig', () => {
 		expect(textConfig['menu-refresh']['en-us']).toBe('Refresh');
 	});
 
-	it('验证国际化文本[menu-save-as-excel]初始值', () => {
-		expect(textConfig['menu-save-as-excel']['zh-cn']).toBe('另存为Excel');
-		expect(textConfig['menu-save-as-excel']['zh-tw']).toBe('另存為Excel');
-		expect(textConfig['menu-save-as-excel']['en-us']).toBe('Save as Excel');
+	it('验证国际化文本[export]初始值', () => {
+		expect(textConfig['export']['zh-cn']).toBe('导出');
+		expect(textConfig['export']['zh-tw']).toBe('導出');
+		expect(textConfig['export']['en-us']).toBe('Export');
 	});
 
-	it('验证国际化文本[menu-save-as-excel-for-checked]初始值', () => {
-		expect(textConfig['menu-save-as-excel-for-checked']['zh-cn']).toBe('已选中项另存为Excel');
-		expect(textConfig['menu-save-as-excel-for-checked']['zh-tw']).toBe('已選中項另存為Excel');
-		expect(textConfig['menu-save-as-excel-for-checked']['en-us']).toBe('Save selected as Excel');
+	it('验证国际化文本[export-checked]初始值', () => {
+		expect(textConfig['export-checked']['zh-cn']).toBe('导出选中项');
+		expect(textConfig['export-checked']['zh-tw']).toBe('導出選中項');
+		expect(textConfig['export-checked']['en-us']).toBe('Export selected');
 	});
 
 	it('验证国际化文本[menu-config-grid]初始值', () => {
