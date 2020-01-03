@@ -78,7 +78,7 @@ class Menu {
         return {
             gridManagerName: gridManagerName,
             keyName: MENU_KEY,
-            menuRefreshText: i18n(settings, 'menu-refresh'),
+            menuRefreshText: i18n(settings, 'refresh'),
             ajaxPageHtml: supportAjaxPage ? this.createAjaxPageHtml({settings}) : '',
             exportHtml: supportExport ? this.createExportHtml({settings}) : '',
             configHtml: supportConfig ? this.createConfigHtml({settings}) : ''
@@ -93,8 +93,8 @@ class Menu {
     createAjaxPageHtml(params) {
         const settings = params.settings;
         return {
-            menuPreviousPageText: i18n(settings, 'menu-previous-page'),
-            menuNextPageText: i18n(settings, 'menu-next-page')
+            menuPreviousPageText: i18n(settings, 'previous-page'),
+            menuNextPageText: i18n(settings, 'next-page')
         };
     }
 
@@ -119,7 +119,7 @@ class Menu {
     createConfigHtml(params) {
         const settings = params.settings;
         return {
-            menuConfigGridText: i18n(settings, 'menu-config-grid')
+            menuConfigGridText: i18n(settings, 'config')
         };
     }
 

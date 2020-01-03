@@ -6,7 +6,8 @@
 * */
 import { getCloneRowData, getTable, getTh } from '@common/base';
 import { outInfo, outError, equal, getObjectIndexToArray, isUndefined, isFunction, isObject, isElement, jEach, jExtend, isNodeList, cloneObject } from '@common/utils';
-import { Settings, TextSettings } from '@common/Settings';
+import { Settings } from '@common/Settings';
+import textConfig from '@module/i18n/config';
 import store from '@common/Store';
 import {
     CACHE_ERROR_KEY,
@@ -448,7 +449,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
 
     // 合并参数
     const settings = new Settings();
-    settings.textConfig = new TextSettings();
+    settings.textConfig = textConfig;
     jExtend(true, settings, arg);
 
     // 存储初始配置项

@@ -2,7 +2,7 @@
  * Created by baukh on 17/3/12.
  */
 'use strict';
-import { Settings, TextSettings } from '@common/Settings';
+import { Settings } from '@common/Settings';
 
 describe('Settings', () => {
 	let settings = null;
@@ -337,124 +337,5 @@ describe('Settings', () => {
         expect(settings.exportConfig.fileName).toBe(null);
         expect(settings.exportConfig.suffix).toBe('xls');
         expect(typeof settings.exportConfig.handler).toBe('function');
-    });
-});
-describe('textConfig', () => {
-	let count = null;
-	var textConfig = null;
-	beforeEach(() => {
-		textConfig = new TextSettings();
-	});
-	afterEach(() => {
-		count = null;
-		textConfig = null;
-	});
-	it('验证国际化文本总数', () => {
-		count = 0;
-		for(let key in textConfig) {
-			count++;
-		}
-		expect(count).toBe(17);
-	});
-	it('验证国际化文本[order-text]初始值', () => {
-		expect(textConfig['order-text']['zh-cn']).toBe('序号');
-		expect(textConfig['order-text']['zh-tw']).toBe('序號');
-		expect(textConfig['order-text']['en-us']).toBe('order');
-	});
-
-    it('验证国际化文本[first-page]初始值', () => {
-		expect(textConfig['first-page']['zh-cn']).toBe('首页');
-		expect(textConfig['first-page']['zh-tw']).toBe('首頁');
-		expect(textConfig['first-page']['en-us']).toBe('first');
-	});
-
-	it('验证国际化文本[previous-page]初始值', () => {
-		expect(textConfig['previous-page']['zh-cn']).toBe('上一页');
-		expect(textConfig['previous-page']['zh-tw']).toBe('上一頁');
-		expect(textConfig['previous-page']['en-us']).toBe('previous');
-	});
-
-	it('验证国际化文本[next-page]初始值', () => {
-		expect(textConfig['next-page']['zh-cn']).toBe('下一页');
-		expect(textConfig['next-page']['zh-tw']).toBe('下一頁');
-		expect(textConfig['next-page']['en-us']).toBe('next');
-	});
-
-	it('验证国际化文本[last-page]初始值', () => {
-		expect(textConfig['last-page']['zh-cn']).toBe('尾页');
-		expect(textConfig['last-page']['zh-tw']).toBe('尾頁');
-		expect(textConfig['last-page']['en-us']).toBe('last');
-	});
-
-    it('验证国际化文本[checked-info]初始值', () => {
-        expect(textConfig['checked-info']['zh-cn']).toBe('已选 {0} 条');
-        expect(textConfig['checked-info']['zh-tw']).toBe('已選 {0} 條');
-        expect(textConfig['checked-info']['en-us']).toBe('selected {0}');
-    });
-
-    it('验证国际化文本[page-info]初始值', () => {
-		expect(textConfig['page-info']['zh-cn']).toBe('此页显示 {0}-{1}<span class="page-info-totals"> 共{2}条</span>');
-		expect(textConfig['page-info']['zh-tw']).toBe('此頁顯示 {0}-{1}<span class="page-info-totals"> 共{2}條</span>');
-		expect(textConfig['page-info']['en-us']).toBe('this page show {0}-{1}<span class="page-info-totals"> count {2}</span>');
-	});
-
-    it('验证国际化文本[goto-first-text]初始值', () => {
-		expect(textConfig['goto-first-text']['zh-cn']).toBe('跳转至');
-		expect(textConfig['goto-first-text']['zh-tw']).toBe('跳轉至');
-		expect(textConfig['goto-first-text']['en-us']).toBe('goto');
-	});
-
-	it('验证国际化文本[goto-last-text]初始值', () => {
-		expect(textConfig['goto-last-text']['zh-cn']).toBe('页');
-		expect(textConfig['goto-last-text']['zh-tw']).toBe('頁');
-		expect(textConfig['goto-last-text']['en-us']).toBe('page');
-	});
-
-    it('验证国际化文本[menu-previous-page]初始值', () => {
-        expect(textConfig['menu-previous-page']['zh-cn']).toBe('上一页');
-        expect(textConfig['menu-previous-page']['zh-tw']).toBe('上一頁');
-        expect(textConfig['menu-previous-page']['en-us']).toBe('previous');
-    });
-
-    it('验证国际化文本[menu-next-page]初始值', () => {
-        expect(textConfig['menu-next-page']['zh-cn']).toBe('下一页');
-        expect(textConfig['menu-next-page']['zh-tw']).toBe('下一頁');
-        expect(textConfig['menu-next-page']['en-us']).toBe('next');
-    });
-
-	it('验证国际化文本[menu-refresh]初始值', () => {
-		expect(textConfig['menu-refresh']['zh-cn']).toBe('重新加载');
-		expect(textConfig['menu-refresh']['zh-tw']).toBe('重新加載');
-		expect(textConfig['menu-refresh']['en-us']).toBe('Refresh');
-	});
-
-	it('验证国际化文本[export]初始值', () => {
-		expect(textConfig['export']['zh-cn']).toBe('导出');
-		expect(textConfig['export']['zh-tw']).toBe('導出');
-		expect(textConfig['export']['en-us']).toBe('Export');
-	});
-
-	it('验证国际化文本[export-checked]初始值', () => {
-		expect(textConfig['export-checked']['zh-cn']).toBe('导出选中项');
-		expect(textConfig['export-checked']['zh-tw']).toBe('導出選中項');
-		expect(textConfig['export-checked']['en-us']).toBe('Export selected');
-	});
-
-	it('验证国际化文本[menu-config-grid]初始值', () => {
-		expect(textConfig['menu-config-grid']['zh-cn']).toBe('配置表');
-		expect(textConfig['menu-config-grid']['zh-tw']).toBe('配置表');
-		expect(textConfig['menu-config-grid']['en-us']).toBe('Setting Grid');
-	});
-
-    it('验证国际化文本[filter-ok]初始值', () => {
-        expect(textConfig['filter-ok']['zh-cn']).toBe('确定');
-        expect(textConfig['filter-ok']['zh-tw']).toBe('確定');
-        expect(textConfig['filter-ok']['en-us']).toBe('OK');
-    });
-
-    it('验证国际化文本[filter-reset]初始值', () => {
-        expect(textConfig['filter-reset']['zh-cn']).toBe('重置');
-        expect(textConfig['filter-reset']['zh-tw']).toBe('重置');
-        expect(textConfig['filter-reset']['en-us']).toBe('Reset');
     });
 });

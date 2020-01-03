@@ -173,8 +173,8 @@ class Filter {
         return {
             iconClass: columnFilter.selected ? ` ${CLASS_FILTER_SELECTED}` : '',
             listStyle: `max-height: ${tableWarpHeight - 100 + 'px'}`,
-            okText: i18n(settings, 'filter-ok'),
-            resetText: i18n(settings, 'filter-reset'),
+            okText: i18n(settings, 'ok'),
+            resetText: i18n(settings, 'reset'),
             listHtml: listHtml
         };
     }
