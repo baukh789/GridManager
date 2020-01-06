@@ -18,8 +18,11 @@ import {
     LOADING_CLASS_NAME,
     LAST_VISIBLE,
     TH_VISIBLE,
+    TD_VISIBLE,
     GM_CREATE,
-    TH_NAME
+    TH_NAME,
+    REMIND_CLASS,
+    SORT_CLASS
 } from './constants';
 import { CLASS_FILTER } from '@module/filter/constants';
 
@@ -335,7 +338,7 @@ export const setAreVisible = (gridManagerName, thNameList, isVisible) => {
         // 所对应的td
         const $td = getColTd($th);
         jEach($td, (index, td) => {
-            td.setAttribute('td-visible', visibleState);
+            td.setAttribute(TD_VISIBLE, visibleState);
         });
 
         // config
@@ -486,11 +489,11 @@ export const getThTextWidth = (gridManagerName, $th, isIconFollowText) => {
     let iconWidth = 0;
     if (isIconFollowText) {
         // 表头提醒
-        const remindAction = jTool('.gm-remind-action', $th);
+        const remindAction = jTool(`.${REMIND_CLASS}`, $th);
         remindAction.length && (iconWidth += remindAction.width());
 
         // 排序
-        const sortingAction = jTool('.gm-sorting-action', $th);
+        const sortingAction = jTool(`.${SORT_CLASS}`, $th);
         sortingAction.length && (iconWidth += sortingAction.width());
 
         // 筛选

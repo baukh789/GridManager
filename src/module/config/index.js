@@ -214,7 +214,7 @@ class Config {
         // 重置列的可视操作
         $configList.html('');
         jEach(columnList, (index, col) => {
-            let {key, isShow, disableCustomize} = col;
+            let { key, isShow, disableCustomize } = col;
             if (disableCustomize) {
                 return;
             }

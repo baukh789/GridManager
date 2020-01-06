@@ -26,6 +26,7 @@ import {
     LOADING_CLASS_NAME,
     LAST_VISIBLE,
     TH_VISIBLE,
+    TD_VISIBLE,
     GM_CREATE,
     CHECKED,
     INDETERMINATE,
@@ -33,6 +34,8 @@ import {
     CHECKED_CLASS,
     INDETERMINATE_CLASS,
     DISABLED_CLASS_NAME,
+    REMIND_CLASS,
+    SORT_CLASS,
     ODD
 } from '@common/constants';
 
@@ -141,6 +144,10 @@ describe('常量验证', () => {
         expect(TH_VISIBLE).toBe('th-visible');
     });
 
+    it('TD_VISIBLE', () => {
+        expect(TD_VISIBLE).toBe('td-visible');
+    });
+
     it('GM_CREATE', () => {
         expect(GM_CREATE).toBe('gm-create');
     });
@@ -171,6 +178,14 @@ describe('常量验证', () => {
 
     it('DISABLED_CLASS_NAME', () => {
         expect(DISABLED_CLASS_NAME).toBe('disabled');
+    });
+
+    it('REMIND_CLASS', () => {
+        expect(REMIND_CLASS).toBe('gm-remind-action');
+    });
+
+    it('SORT_CLASS', () => {
+        expect(SORT_CLASS).toBe('gm-sorting-action');
     });
 
     it('ODD', () => {

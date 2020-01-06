@@ -5,7 +5,7 @@ import jTool from '@common/jTool';
 import { showLoading, hideLoading, getVisibleTh, getTbody } from '@common/base';
 import { outError, isFunction, jEach } from '@common/utils';
 import { getSettings, getCheckedData } from '@common/cache';
-import { GM_CREATE } from '@common/constants';
+import { GM_CREATE, TD_VISIBLE } from '@common/constants';
 class ExportFile {
 	/**
 	 * 获取文件名称
@@ -154,7 +154,7 @@ class ExportFile {
         let exportHTML = thead.join(',');
         jEach(trDOM, (i, v) => {
             exportHTML += '\r\n';
-            const tdDOM = jTool(`td[${GM_CREATE}="false"][td-visible="visible"]`, v);
+            const tdDOM = jTool(`td[${GM_CREATE}="false"][${TD_VISIBLE}="visible"]`, v);
             jEach(tdDOM, (i2, v2) => {
                 if (i2 !== 0) {
                     exportHTML += ',';

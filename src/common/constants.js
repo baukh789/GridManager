@@ -98,6 +98,9 @@ export const LAST_VISIBLE = 'last-visible';
 // th的可视状 标识
 export const TH_VISIBLE = 'th-visible';
 
+// td的可视状 标识
+export const TD_VISIBLE = 'td-visible';
+
 // GM自动创建 标识
 export const GM_CREATE = 'gm-create';
 
@@ -121,6 +124,12 @@ export const INDETERMINATE_CLASS = `gm-checkbox-${INDETERMINATE}`;
 
 // 禁用ClassName
 export const DISABLED_CLASS_NAME = 'disabled';
+
+// 表头提醒ClassName
+export const REMIND_CLASS = 'gm-remind-action';
+
+// 排序ClassName
+export const SORT_CLASS = 'gm-sorting-action';
 
 // 偶数行标识，不直接使用css odd是由于存在层级数据时无法排除折叠元素
 export const ODD = 'odd';

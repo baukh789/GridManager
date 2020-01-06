@@ -23,6 +23,7 @@ import remind from './remind';
 import scroll from './scroll';
 import sort from './sort';
 import filter from './filter';
+import print from './print';
 
 const isRendered = (table, fnName) => {
     const key = getKey(table);
@@ -698,7 +699,20 @@ export default class GridManager {
 		return core.cleanData(getKey(table));
 	}
 
-	/**
+    /**
+     * @静态方法
+     * 打印
+     * @param table
+     */
+    static
+    print(table) {
+        if (!isRendered(table, 'print')) {
+            return;
+        }
+        return print(getKey(table));
+    }
+
+    /**
 	 * 初始化表格
 	 * @param $table
 	 * @param settings

@@ -36,6 +36,9 @@ tbody.move-row tr{
             text-overflow: ellipsis;
             vertical-align: middle;
             .text-overflow();
+            &[td-visible="none"]{
+                display: none;
+            }
         }
         tr[odd] td{
             background-color: #fafafa;

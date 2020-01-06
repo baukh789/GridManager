@@ -203,12 +203,6 @@ class Menu {
                     cPage = cPage < pageData.tPage ? cPage + 1 : cPage;
                     break;
                 }
-
-                // 重新加载 refresh
-                // case 'next': {
-                //     // 使用当前值
-                //     break;
-                // }
             }
 
 			ajaxPage.gotoPage(settings, cPage);

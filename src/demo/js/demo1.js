@@ -152,6 +152,12 @@ const GM_PUBLISH_METHOD_MAP = {
         title: '清除指定表格数据',
         code: `GridManager.cleanData('${gridManagerName}');`
     },
+    print: {
+        key: 'print',
+        relyInit: true,
+        title: '打印当前页',
+        code: `GridManager.print('${gridManagerName}');`
+    },
     destroy: {
         key: 'destroy',
         relyInit: true,
@@ -524,7 +530,7 @@ const demo1 = {
                     align: 'center',
                     width: '100px',
                     text: '作者',
-                    merge: 'html',
+                    merge: 'text',
                     template: (username, row) => {
                         return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" ${row.id} title="去看看${username}的github">${username}</a>`;
                     }

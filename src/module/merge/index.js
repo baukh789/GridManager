@@ -3,8 +3,7 @@ import { jEach } from '@common/utils';
 import jTool from '@common/jTool';
 import './style.less';
 
-const ROW_SPAN = 'rowspan';
-const MERGE_TD = 'merge-td';
+import { ROW_SPAN, MERGE_TD } from './constants';
 /**
  * 根据配置项[merge]合并行数据相同的单元格
  * @param gridManagerName
