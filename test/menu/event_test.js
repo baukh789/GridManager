@@ -27,9 +27,13 @@ describe('menu', () => {
             expect(events.refresh.target).toBe(`[${MENU_KEY}="test"]`);
             expect(events.refresh.selector).toBe('[menu-action="refresh-page"]');
 
-            expect(events.exportExcel.events).toBe('click');
-            expect(events.exportExcel.target).toBe(`[${MENU_KEY}="test"]`);
-            expect(events.exportExcel.selector).toBe('[menu-action="export-excel"]');
+            expect(events.exportPage.events).toBe('click');
+            expect(events.exportPage.target).toBe(`[${MENU_KEY}="test"]`);
+            expect(events.exportPage.selector).toBe('[menu-action="export-page"]');
+
+            expect(events.printPage.events).toBe('click');
+            expect(events.printPage.target).toBe(`[${MENU_KEY}="test"]`);
+            expect(events.printPage.selector).toBe('[menu-action="print-page"]');
 
             expect(events.openConfig.events).toBe('click');
             expect(events.openConfig.target).toBe(`[${MENU_KEY}="test"]`);

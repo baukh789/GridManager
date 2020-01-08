@@ -77,7 +77,11 @@ export default {
         'zh-tw': '配置表',
         'en-us': 'Setting Grid'
     },
-
+    'print': {
+        'zh-cn': '打印',
+        'zh-tw': '打印',
+        'en-us': 'Print'
+    },
     'ok': {
         'zh-cn': '确定',
         'zh-tw': '確定',

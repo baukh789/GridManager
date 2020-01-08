@@ -6,9 +6,15 @@
     {{vm.exportHtml}}
 
     <!--重新加载当前页-->
-    <span menu-action="refresh-page" refresh-type="refresh">
-        {{vm.menuRefreshText}}
+    <span menu-action="refresh" refresh-type="refresh">
+        {{vm.refresh}}
         <i class="gm-icon gm-icon-refresh"></i>
+    </span>
+
+    <!--打印当前页-->
+    <span menu-action="print">
+        {{vm.print}}
+        <i class="gm-icon gm-icon-print"></i>
     </span>
 
     <!--配置类操作-->

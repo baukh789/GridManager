@@ -8,6 +8,7 @@ import { MENU_KEY, DISABLED_CLASS_NAME } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import i18n from '../i18n';
 import exportFile from '../exportFile';
+import print from '../print';
 import ajaxPage from '../ajaxPage';
 import config from '../config';
 import menuTpl from './menu.tpl.html';
@@ -78,7 +79,8 @@ class Menu {
         return {
             gridManagerName: gridManagerName,
             keyName: MENU_KEY,
-            menuRefreshText: i18n(settings, 'refresh'),
+            refresh: i18n(settings, 'refresh'),
+            print: i18n(settings, 'print'),
             ajaxPageHtml: supportAjaxPage ? this.createAjaxPageHtml({settings}) : '',
             exportHtml: supportExport ? this.createExportHtml({settings}) : '',
             configHtml: supportConfig ? this.createConfigHtml({settings}) : ''
@@ -93,8 +95,8 @@ class Menu {
     createAjaxPageHtml(params) {
         const settings = params.settings;
         return {
-            menuPreviousPageText: i18n(settings, 'previous-page'),
-            menuNextPageText: i18n(settings, 'next-page')
+            previous: i18n(settings, 'previous-page'),
+            next: i18n(settings, 'next-page')
         };
     }
 
@@ -106,8 +108,8 @@ class Menu {
     createExportHtml(params) {
         const settings = params.settings;
         return {
-            menuSaveAsExcelText: i18n(settings, 'export'),
-            menuSaveAsExcelForCheckedText: i18n(settings, 'export-checked')
+            export: i18n(settings, 'export'),
+            exportChecked: i18n(settings, 'export-checked')
         };
     }
 
@@ -119,7 +121,7 @@ class Menu {
     createConfigHtml(params) {
         const settings = params.settings;
         return {
-            menuConfigGridText: i18n(settings, 'config')
+            config: i18n(settings, 'config')
         };
     }
 
@@ -132,7 +134,7 @@ class Menu {
 	bindRightMenuEvent(gridManagerName, supportExport, supportConfig) {
 		const $menu = this.getMenuByJtool(gridManagerName);
 
-		const { openMenu, closeMenu, refresh, exportExcel, openConfig } = eventMap[gridManagerName];
+		const { openMenu, closeMenu, refresh, exportPage, openConfig, printPage } = eventMap[gridManagerName];
         const $closeTarget = jTool(closeMenu.target);
         const closeEvents =  closeMenu.events;
 		// 绑定打开右键菜单栏
@@ -146,11 +148,12 @@ class Menu {
 			}
 
 			// 验证：当前是否存在已选中的项
-			const exportExcelOfChecked = jTool('[menu-action="export-excel"][only-checked="true"]');
+			const exportPageOfChecked = jTool('[menu-action="export"][only-checked="true"]');
+			console.log(exportPageOfChecked);
 			if (jTool('tr[checked="true"]', getTbody(gridManagerName)).length === 0) {
-				exportExcelOfChecked.addClass(DISABLED_CLASS_NAME);
+                exportPageOfChecked.addClass(DISABLED_CLASS_NAME);
 			} else {
-				exportExcelOfChecked.removeClass(DISABLED_CLASS_NAME);
+                exportPageOfChecked.removeClass(DISABLED_CLASS_NAME);
 			}
 
 			// 定位
@@ -212,7 +215,7 @@ class Menu {
 
 		// 绑定事件：另存为EXCEL、已选中表格另存为Excel
 		supportExport && (() => {
-            jTool(exportExcel.target).on(exportExcel.events, exportExcel.selector, function (e) {
+            jTool(exportPage.target).on(exportPage.events, exportPage.selector, function (e) {
 				if (isDisabled(this, e)) {
 					return false;
 				}
@@ -226,7 +229,17 @@ class Menu {
 			});
 		})();
 
-		// 绑定事件：打开配置区域
+        // 绑定事件：打印功能
+        jTool(printPage.target).on(printPage.events, printPage.selector, function (e) {
+            if (isDisabled(this, e)) {
+                return false;
+            }
+            print(gridManagerName);
+            $closeTarget.off(closeEvents);
+            $menu.hide();
+        });
+
+        // 绑定事件：打开配置区域
 		supportConfig && (() => {
             jTool(openConfig.target).on(openConfig.events, openConfig.selector, function (e) {
 				if (isDisabled(this, e)) {

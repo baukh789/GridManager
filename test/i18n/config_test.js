@@ -12,7 +12,7 @@ describe('textConfig', () => {
         for(let key in textConfig) {
             count++;
         }
-        expect(count).toBe(15);
+        expect(count).toBe(16);
     });
     it('验证国际化文本[order-text]初始值', () => {
         expect(textConfig['order-text']['zh-cn']).toBe('序号');
@@ -90,6 +90,12 @@ describe('textConfig', () => {
         expect(textConfig['config']['zh-cn']).toBe('配置表');
         expect(textConfig['config']['zh-tw']).toBe('配置表');
         expect(textConfig['config']['en-us']).toBe('Setting Grid');
+    });
+
+    it('验证国际化文本[print]初始值', () => {
+        expect(textConfig['print']['zh-cn']).toBe('打印');
+        expect(textConfig['print']['zh-tw']).toBe('打印');
+        expect(textConfig['print']['en-us']).toBe('Print');
     });
 
     it('验证国际化文本[ok]初始值', () => {
