@@ -5,6 +5,7 @@
 import { WRAP_KEY, MENU_KEY } from '@common/constants';
 export const getEvent = gridManagerName => {
     const menuTarget = `[${MENU_KEY}="${gridManagerName}"]`;
+    const menuSelector = type => `[menu-action="${type}"]`;
     return {
         // 打开菜单
         openMenu: {events: 'contextmenu', target: `[${WRAP_KEY}="${gridManagerName}"]`},
@@ -13,16 +14,16 @@ export const getEvent = gridManagerName => {
         closeMenu: {events: 'mousedown.closeMenu', target: 'body'},
 
         // 上一页、下一页、重新加载
-        refresh: {events: 'click', target: menuTarget, selector: '[menu-action="refresh"]'},
+        refresh: {events: 'click', target: menuTarget, selector: menuSelector('refresh')},
 
         // 导出、导出已选中
-        exportPage: {events: 'click', target: menuTarget, selector: '[menu-action="export"]'},
+        exportPage: {events: 'click', target: menuTarget, selector: menuSelector('export')},
 
         // 打印
-        printPage: {events: 'click', target: menuTarget, selector: '[menu-action="print"]'},
+        printPage: {events: 'click', target: menuTarget, selector: menuSelector('print')},
 
         // 打开配置区域
-        openConfig: {events: 'click', target: menuTarget, selector: '[menu-action="config"]'}
+        openConfig: {events: 'click', target: menuTarget, selector: menuSelector('config')}
     };
 };
 
