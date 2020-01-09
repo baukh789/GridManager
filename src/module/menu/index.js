@@ -148,8 +148,7 @@ class Menu {
 			}
 
 			// 验证：当前是否存在已选中的项
-			const exportPageOfChecked = jTool('[menu-action="export"][only-checked="true"]');
-			console.log(exportPageOfChecked);
+			const exportPageOfChecked = jTool('[menu-action="export"][only-checked="true"]', $menu);
 			if (jTool('tr[checked="true"]', getTbody(gridManagerName)).length === 0) {
                 exportPageOfChecked.addClass(DISABLED_CLASS_NAME);
 			} else {
