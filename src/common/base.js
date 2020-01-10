@@ -22,6 +22,7 @@ import {
     GM_CREATE,
     TH_NAME,
     REMIND_CLASS,
+    ROW_CLASS_NAME,
     SORT_CLASS
 } from './constants';
 import { CLASS_FILTER } from '@module/filter/constants';
@@ -50,6 +51,9 @@ export const getCloneRowData = (columnMap, obj, cleanKeyList) => {
 
     // 删除自定义参数: 行层级标识
     delete cloneObj[TR_LEVEL_KEY];
+
+    // 删除自定义参数: 为当前行增加一个calssName
+    delete cloneObj[ROW_CLASS_NAME];
 
     // 清除指定字段
     cleanKeyList && cleanKeyList.forEach(item => delete cloneObj[item]);
@@ -259,11 +263,14 @@ export const getFakeVisibleTh = gridManagerName => {
 
 /**
  * get th name
- * @param $th
+ * @param $dom: $th or $td
  * @returns {*}
  */
-export const getThName = $th => {
-    return $th.attr(TH_NAME);
+export const getThName = $dom => {
+    if ($dom.get(0).nodeName === 'TD') {
+        return jTool(`[${TABLE_HEAD_KEY}] th:nth-child(${$dom.index() + 1})`, getTable($dom, true)).attr(TH_NAME);
+    }
+    return $dom.attr(TH_NAME);
 };
 
 /**
