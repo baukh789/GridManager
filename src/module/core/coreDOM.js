@@ -10,6 +10,7 @@ import adjust from '../adjust';
 import tree from '../tree';
 import remind from '../remind';
 import render from './render';
+import moveRow from '../moveRow';
 import { installTopFull } from '../fullColumn';
 import { getEvent, eventMap } from './event';
 import { sendCompile, compileTd } from '@common/framework';
@@ -111,6 +112,7 @@ class Dom {
             gridManagerName,
             columnMap,
             supportTreeData,
+            supportMoveRow,
             treeConfig
         } = settings;
 
@@ -144,6 +146,9 @@ class Dom {
 
                 // td 文本对齐方向
                 col.align && tdNode.setAttribute('align', col.align);
+
+                // td 行移动标识
+                supportMoveRow && moveRow.addSign(tdNode, col);
 
                 tdList[col.index] = tdNode;
             });
@@ -222,6 +227,8 @@ class Dom {
 
             // 合并单元格
             mergeRow(gridManagerName, columnMap);
+
+            // 添加行移动标识
         });
     }
 

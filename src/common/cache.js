@@ -549,15 +549,19 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
                 // 数据排序
                 || columnCache[key].sorting !== col.sorting
 
-                // 字段描述
-                || JSON.stringify(columnCache[key].remind) !== JSON.stringify(col.remind)
-
                 // 禁止使用个性配置功能
                 || columnCache[key].disableCustomize !== col.disableCustomize
+
+                // 禁止使用行移动
+                || columnCache[key].disableMoveRow !== col.disableMoveRow
 
                 // 相同数据列合并功能
                 || columnCache[key].merge !== col.merge
 
+                // 字段描述
+                || JSON.stringify(columnCache[key].remind) !== JSON.stringify(col.remind)
+
+                // 过滤
                 || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)) {
                 isUsable = false;
                 return false;

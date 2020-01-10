@@ -144,6 +144,9 @@ export default class GridManager {
 
             // 不使用宽度调整功能
             arg.supportAdjust = false;
+
+            // 不使用行移动功能
+            arg.supportMoveRow = false;
         }
 
         // 通过版本较验 清理缓存

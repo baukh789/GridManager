@@ -8,7 +8,7 @@ import { mergeRow, clearMergeRow } from '../merge';
 import { TR_CACHE_KEY, NO_SELECT_CLASS_NAME, ODD } from '@common/constants';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
-import { CLASS_DRAG_ING, CLASS_DREAMLAND } from './constants';
+import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from './constants';
 import { coreDOM } from '../core';
 
 /**
@@ -102,6 +102,7 @@ const mergeToCheckedData = (gridManagerName, supportCheckbox, key, columnMap, ch
 
     setCheckedData(gridManagerName, checkedData, true);
 };
+
 class MoveRow {
     init(gridManagerName) {
         const _this = this;
@@ -123,8 +124,13 @@ class MoveRow {
         let oldData = null;
         // 事件: 行移动触发
         jTool(dragStart.target).on(dragStart.events, dragStart.selector, function (e) {
-            // 仅在事件触发源为td时生效: 用于规避模版内自定义的事件
+            let $td = jTool(e.target);
             if (e.target.nodeName !== 'TD') {
+                $td = $td.closest('td');
+            }
+
+            // 当前事件源所在的列为禁止触发移动的列
+            if (isString($td.attr(DISABLE_MOVE))) {
                 return;
             }
             const tr = this;
@@ -239,6 +245,15 @@ class MoveRow {
                 $body.removeClass(NO_SELECT_CLASS_NAME);
             });
         });
+    }
+
+    /**
+     * 增加行移动标识
+     * @param td
+     * @param col
+     */
+    addSign(td, col) {
+        col.disableMoveRow && td.setAttribute(DISABLE_MOVE, '');
     }
 
     /**

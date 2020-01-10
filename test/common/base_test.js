@@ -510,16 +510,15 @@ describe('getFakeVisibleTh(gridManagerName)', () => {
     });
 });
 
-describe('getThName($th)', () => {
-    let $thList = null;
+describe('getThName($dom)', () => {
+    let $dom = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        $thList = jTool('table[grid-manager="test"] thead[grid-manager-thead] th');
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
-        $thList = null;
+        $dom = null;
     });
 
     it('基础验证', () => {
@@ -527,9 +526,18 @@ describe('getThName($th)', () => {
         expect(getThName.length).toBe(1);
     });
 
-    it('getThName($table)', () => {
-        expect(getThName($thList.eq(1))).toBe('gm_order');
-        expect(getThName($thList.eq(3))).toBe('createDate');
+    it('getThName($th)', () => {
+        $dom = jTool('table[grid-manager="test"] thead[grid-manager-thead] th').eq(1);
+        expect(getThName($dom)).toBe('gm_order');
+        $dom = jTool('table[grid-manager="test"] thead[grid-manager-thead] th').eq(3);
+        expect(getThName($dom)).toBe('createDate');
+    });
+
+    it('getThName($td)', () => {
+        $dom = jTool('table[grid-manager="test"] tbody tr').eq(0).find('td').eq(1);
+        expect(getThName($dom)).toBe('gm_order');
+        $dom = jTool('table[grid-manager="test"] tbody tr').eq(3).find('td').eq(3);
+        expect(getThName($dom)).toBe('createDate');
     });
 });
 

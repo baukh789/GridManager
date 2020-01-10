@@ -25,19 +25,19 @@ describe('menu', () => {
 
             expect(events.refresh.events).toBe('click');
             expect(events.refresh.target).toBe(`[${MENU_KEY}="test"]`);
-            expect(events.refresh.selector).toBe('[menu-action="refresh-page"]');
+            expect(events.refresh.selector).toBe('[menu-action="refresh"]');
 
             expect(events.exportPage.events).toBe('click');
             expect(events.exportPage.target).toBe(`[${MENU_KEY}="test"]`);
-            expect(events.exportPage.selector).toBe('[menu-action="export-page"]');
+            expect(events.exportPage.selector).toBe('[menu-action="export"]');
 
             expect(events.printPage.events).toBe('click');
             expect(events.printPage.target).toBe(`[${MENU_KEY}="test"]`);
-            expect(events.printPage.selector).toBe('[menu-action="print-page"]');
+            expect(events.printPage.selector).toBe('[menu-action="print"]');
 
             expect(events.openConfig.events).toBe('click');
             expect(events.openConfig.target).toBe(`[${MENU_KEY}="test"]`);
-            expect(events.openConfig.selector).toBe('[menu-action="config-grid"]');
+            expect(events.openConfig.selector).toBe('[menu-action="config"]');
         });
     });
 

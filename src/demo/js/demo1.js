@@ -450,6 +450,7 @@ const demo1 = {
                     width: '110px',
                     align: 'center',
                     text: '缩略图',
+                    disableMoveRow: true,
                     // 使用函数返回 dom node
                     template: function (pic, row) {
                         var picNode = document.createElement('a');
@@ -475,6 +476,7 @@ const demo1 = {
                     align: 'left',
                     text: '标题',
                     sorting: '',
+                    disableMoveRow: true,
                     // 使用函数返回 dom node
                     template: function (title, row) {
                         var titleNode = document.createElement('a');
@@ -499,6 +501,7 @@ const demo1 = {
                     align: 'left',
                     width: '150px',
                     sorting: '',
+                    disableMoveRow: true,
                     // 表头筛选条件, 该值由用户操作后会将选中的值以{key: value}的形式覆盖至query参数内。非必设项
                     filter: {
                         // 筛选条件列表, 数组对象。格式: [{value: '1', text: 'HTML/CSS'}],在使用filter时该参数为必设项。
@@ -565,7 +568,7 @@ const demo1 = {
                     remind: 'the action',
                     width: '100px',
                     align: 'center',
-                    // disableCustomize: true,
+                    disableMoveRow: true,
                     text: '<span style="color: red">操作</span>',
                     // 直接返回 通过函数返回
                     template: (action, row) => {
