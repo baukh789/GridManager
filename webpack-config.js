@@ -83,7 +83,6 @@ const config = {
         // 将文件复制到构建目录
 		// CopyWebpackPlugin-> https://github.com/webpack-contrib/copy-webpack-plugin
 		new CopyWebpackPlugin([
-            {from: __dirname + '/src/demo', to: 'demo'},
 			{from: path.join(__dirname, '/package.json'), to: '', toType: 'file'},
 			{from: path.join(__dirname, '/README.md'), to: '', toType: 'file'}
 		]),
