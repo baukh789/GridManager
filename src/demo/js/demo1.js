@@ -533,7 +533,6 @@ const demo1 = {
                     align: 'center',
                     width: '100px',
                     text: '作者',
-                    merge: 'text',
                     template: (username, row) => {
                         return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" ${row.id} title="去看看${username}的github">${username}</a>`;
                     }

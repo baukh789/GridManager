@@ -124,13 +124,13 @@ class MoveRow {
         let oldData = null;
         // 事件: 行移动触发
         jTool(dragStart.target).on(dragStart.events, dragStart.selector, function (e) {
-            let $td = jTool(e.target);
+            // 当前事件源为模板内节点
             if (e.target.nodeName !== 'TD') {
-                $td = $td.closest('td');
+                return;
             }
 
             // 当前事件源所在的列为禁止触发移动的列
-            if (isString($td.attr(DISABLE_MOVE))) {
+            if (isString(e.target.getAttribute(DISABLE_MOVE))) {
                 return;
             }
             const tr = this;

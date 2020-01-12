@@ -227,8 +227,6 @@ class Dom {
 
             // 合并单元格
             mergeRow(gridManagerName, columnMap);
-
-            // 添加行移动标识
         });
     }
 
