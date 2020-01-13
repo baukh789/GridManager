@@ -287,6 +287,9 @@ const demo1 = {
             // 是否开启导出
             // supportExport: false,
 
+            // 是否开启打印
+            // supportPrint: false,
+
             // 右键菜单
             // supportMenu: false,
 

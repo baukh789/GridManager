@@ -436,6 +436,12 @@ const gridExport = {
         handler: noop
     }
 };
+/**
+ * 表格打印
+ */
+const gridPrint = {
+    supportPrint: true
+};
 export function Settings() {
     jExtend(true, this, {
         // 是否加载完成，用于调用公开方法确认
@@ -455,6 +461,7 @@ export function Settings() {
         ...i18n,
         ...gridData,
         ...gridExport,
+        ...gridPrint,
         ...treeData,
         ...events
     });

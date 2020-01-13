@@ -15,6 +15,7 @@ import menuTpl from './menu.tpl.html';
 import ajaxPageTpl from './ajaxPage.tpl.html';
 import configTpl from './config.tpl.html';
 import exportTpl from './export.tpl.html';
+import printTpl from './print.tpl.html';
 import { getEvent, eventMap } from './event';
 import './style.less';
 
@@ -75,12 +76,12 @@ class Menu {
     @parseTpl(menuTpl)
     createMenuHtml(params) {
         const settings = params.settings;
-        const { gridManagerName, supportAjaxPage, supportExport, supportConfig } = settings;
+        const { gridManagerName, supportAjaxPage, supportExport, supportConfig, supportPrint } = settings;
         return {
             gridManagerName: gridManagerName,
             keyName: MENU_KEY,
             refresh: i18n(settings, 'refresh'),
-            print: i18n(settings, 'print'),
+            printHtml: supportPrint ? this.createPrintHtml({settings}) : '',
             ajaxPageHtml: supportAjaxPage ? this.createAjaxPageHtml({settings}) : '',
             exportHtml: supportExport ? this.createExportHtml({settings}) : '',
             configHtml: supportConfig ? this.createConfigHtml({settings}) : ''
@@ -110,6 +111,18 @@ class Menu {
         return {
             export: i18n(settings, 'export'),
             exportChecked: i18n(settings, 'export-checked')
+        };
+    }
+
+    /**
+     * 打印类操作
+     * @param params
+     */
+    @parseTpl(printTpl)
+    createPrintHtml(params) {
+        const settings = params.settings;
+        return {
+            print: i18n(settings, 'print')
         };
     }
 

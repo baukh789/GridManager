@@ -331,6 +331,10 @@ describe('Settings', () => {
         expect(settings.supportExport).toBe(true);
     });
 
+    it('验证属性[supportPrint]初始值', () => {
+        expect(settings.supportPrint).toBe(true);
+    });
+
     it('验证属性[exportConfig]初始值', () => {
         expect(typeof settings.exportConfig).toBe('object');
         expect(settings.exportConfig.mode).toBe('static');
