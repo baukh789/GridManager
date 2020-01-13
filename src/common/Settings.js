@@ -440,6 +440,7 @@ const gridExport = {
  * 表格打印
  */
 const gridPrint = {
+    // 支持打印功能
     supportPrint: true
 };
 export function Settings() {
