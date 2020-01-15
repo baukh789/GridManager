@@ -1,4 +1,5 @@
 import { getEvent, eventMap } from '@module/sort/event';
+import { SORT_CLASS, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 
 describe('sort', () => {
     describe('getEvent', () => {
@@ -18,7 +19,7 @@ describe('sort', () => {
             events = getEvent('test', '#baukh');
             expect(events.sortAction.events).toBe('mouseup');
             expect(events.sortAction.target).toBe('#baukh');
-            expect(events.sortAction.selector).toBe('.gm-sorting-action');
+            expect(events.sortAction.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${SORT_CLASS}`);
         });
     });
 

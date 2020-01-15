@@ -10,12 +10,11 @@ import { CLASS_ADJUST_ACTION, CLASS_ADJUST_SELECT } from './constants';
 import { getSettings, updateCache } from '@common/cache';
 import { getEvent, eventMap } from './event';
 
-
 /**
  * 执行移动事件
  * @param gridManagerName
- * @param $th
- * @param $nextTh
+ * @param $th: fake th
+ * @param $nextTh: fake th
  * @param isIconFollowText: 表头的icon图标是否跟随文本
  * @private
  */

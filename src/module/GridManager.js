@@ -4,7 +4,7 @@
  */
 import jTool from '@common/jTool';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME } from '@common/constants';
-import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getTh, updateVisibleLast, updateScrollStatus } from '@common/base';
+import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, jEach, jExtend, isEmptyObject } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
 import adjust from './adjust';
@@ -487,7 +487,7 @@ export default class GridManager {
             if (column.filter) {
                 column.filter.selected = isString(query[column.key]) ? query[column.key] : '';
                 // 这里不使用base.getTh的原因: 需要同时更新thead 和 fake-thead
-                filter.update(getTh(gridManagerName, column.key), column.filter);
+                filter.update(getFakeTh(gridManagerName, column.key), column.filter);
             }
         });
 

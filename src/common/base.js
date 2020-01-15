@@ -204,6 +204,20 @@ export const getTh = (gridManagerName, thName) => {
 };
 
 /**
+ * get fake th
+ * @param gridManagerName
+ * @param thName
+ * @returns {*}
+ */
+export const getFakeTh = (gridManagerName, thName) => {
+    // jTool object
+    if (thName.jTool) {
+        thName = getThName(thName);
+    }
+    return getFakeThead(gridManagerName).find(`th[${TH_NAME}="${thName}"]`);
+};
+
+/**
  * get all th
  * @param $table
  * @returns {*}
@@ -238,19 +252,6 @@ export const getVisibleTh = (gridManagerName, isGmCreate) => {
     return getThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]${gmCreateStr}`);
 };
 
-/**
- * get fake th
- * @param gridManagerName
- * @param thName
- * @returns {*}
- */
-export const getFakeTh = (gridManagerName, thName) => {
-    // jTool object
-    if (thName.jTool) {
-        thName = getThName(thName);
-    }
-    return getFakeThead(gridManagerName).find(`th[${TH_NAME}="${thName}"]`);
-};
 
 /**
  * get fake visible th
@@ -412,7 +413,7 @@ export const updateThWidth = (settings, isInit) => {
         // 自适应列: 更新为最小宽度，统计总宽，收录自适应列数组
         if ((isInit && (!width || width === 'auto')) ||
             (!isInit && (!__width || __width === 'auto'))) {
-            col.width = getThTextWidth(gridManagerName, getTh(gridManagerName, key), isIconFollowText);
+            col.width = getThTextWidth(gridManagerName, getFakeTh(gridManagerName, key), isIconFollowText);
             usedTotalWidth += parseInt(col.width, 10);
             autoList.push(col);
             return;
@@ -470,7 +471,7 @@ export const updateThWidth = (settings, isInit) => {
 
 /**
  * 获取TH中文本的宽度. 该宽度指的是文本所实际占用的宽度
- * @param $th
+ * @param $th: fake-th
  * @param isIconFollowText: 表头的icon图标是否跟随文本, 如果根随则需要加上两个icon所占的空间
  * @returns {*}
  */
