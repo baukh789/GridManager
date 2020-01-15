@@ -11,69 +11,61 @@
 </head>
 
 <body>
-	<h3>简体中文: { i18n: 'zh-cn' }</h3>
-	<div>
-		<table id="test1"></table>
-	</div>
-	<br/>
-	<h3>English: { i18n: 'en-us' }</h3>
-	<div>
-		<table id="test2"></table>
-	</div>
-	<br/>
-	<h3>繁體中文: { i18n: zh-tw' }</h3>
-	<div>
-		<table id="test3"></table>
-	</div>
 <script type="text/javascript">
-	// test1 demo
-	document.querySelector('#test1').GM({
-		height: '300px'
-        ,gridManagerName: 'test1'
-		,supportAjaxPage:true
-		,ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-		,ajaxType: 'POST'
-		,query: {tableName: 'test1', ccname: 'baukh'}
-		,pageSize:10
-		,columnData: [{
-			key: 'name',
-			remind: '网站标题',
-			width: '100px',
-			text: '标题',
-			sorting: 'up'
-		},{
-			key: 'info',
-			remind: '网站介绍',
-			text: '介绍',
-			sorting: ''
-		},{
-			key: 'url',
-			remind: '网站地址',
-			text: '地址'
-		}
-		]
-		,ajaxSuccess: function () {
-			console.log('test1 ajaxSuccess');
-		}
-	});
+    const createTable = (title, arg) => {
+        const h3 = document.createElement('h3');
+        h3.innerText = title;
+        document.body.appendChild(h3);
+        const div = document.createElement('div');
+        const table = document.createElement('table');
+        div.appendChild(table);
+        document.body.appendChild(div);
+        new GridManager(table, arg);
+    };
 
-	// test 2demo
-    // setTimeout(() => {
-        document.querySelector('#test2').GM({
-            height: '400px'
-            ,gridManagerName: 'test2'
-            ,i18n: 'en-us'
-            ,ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-            ,ajaxType: 'POST'
-            ,query: {tableName: 'test2', 'love': 'kouzi'}
-            ,pageSize:20
-            ,supportAjaxPage:true
-            ,columnData: [{
+    createTable('简体中文: { i18n: "zh-cn" }', {
+        height: '300px',
+        gridManagerName: 'test1',
+        supportAjaxPage:true,
+        ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
+        ajaxType: 'POST',
+        query: {tableName: 'test1', ccname: 'baukh'},
+        pageSize:10,
+        columnData: [
+            {
+                key: 'name',
+                remind: '网站标题',
+                width: '100px',
+                text: '标题',
+                sorting: 'up'
+            },{
+                key: 'info',
+                remind: '网站介绍',
+                text: '介绍',
+                sorting: ''
+            },{
+                key: 'url',
+                remind: '网站地址',
+                text: '地址'
+            }
+        ]
+    });
+    createTable('English: { i18n: "en-us" }', {
+        height: '400px',
+        gridManagerName: 'test2',
+        i18n: 'en-us',
+        ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
+        ajaxType: 'POST',
+        query: {tableName: 'test2', 'love': 'kouzi'},
+        pageSize:20,
+        supportAjaxPage:true,
+        columnData: [
+            {
                 key: 'name',
                 remind: 'the name',
                 width: '100px',
                 text: 'name',
-                sorting: 'up'
+                sorting: 'DESC'
             },{
                 key: 'info',
                 remind: 'the info',
@@ -84,46 +76,36 @@
                 remind: 'the url',
                 text: 'url'
             }
-            ]
-            ,ajaxSuccess: function (data) {
-                console.log('test2 ajaxSuccess');
+        ]
+    });
+    createTable('繁體中文: { i18n: "zh-tw" }', {
+        height: '300px',
+        gridManagerName: 'test3',
+        i18n: 'zh-tw',
+        ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
+        ajaxType: 'POST',
+        query: {tableName: 'test3', baby: 'kouzi'},
+        pageSize:30,
+        supportAjaxPage:true,
+        columnData: [
+            {
+                key: 'name',
+                remind: '網站名稱',
+                width: '100px',
+                text: '名稱',
+                sorting: 'DESC'
+            },{
+                key: 'info',
+                remind: '網站介紹',
+                text: '介紹',
+                sorting: ''
+            },{
+                key: 'url',
+                remind: '網站地址',
+                text: '地址'
             }
-        });
-    // }, 3000);
-
-	// test 3demo
-	document.querySelector('#test3').GM({
-		height: '300px'
-        ,gridManagerName: 'test3'
-		,i18n: 'zh-tw'
-		,ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList'
-		,ajaxType: 'POST'
-		,query: {tableName: 'test3', baby: 'kouzi'}
-		,pageSize:30
-		,supportAjaxPage:true
-		,columnData: [{
-			key: 'name',
-			remind: '網站名稱',
-			width: '100px',
-			text: '名稱',
-			sorting: 'up'
-		},{
-			key: 'info',
-			remind: '網站介紹',
-			text: '介紹',
-			sorting: ''
-		},{
-			key: 'url',
-			remind: '網站地址',
-			text: '地址'
-		}
-		]
-		,ajaxSuccess: function (data) {
-			console.log('test3 ajaxSuccess');
-		}
-	});
-
-
+        ]
+    });
 </script>
 
 </body>
