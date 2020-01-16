@@ -529,13 +529,15 @@ const demo1 = {
                     key: 'info',
                     remind: 'the info',
                     width: '100px',
-                    text: '简介'
+                    text: '简介',
+                    disableMoveRow: true
                 }, {
                     key: 'username',
                     remind: 'the username',
                     align: 'center',
                     width: '100px',
                     text: '作者',
+                    disableMoveRow: true,
                     template: (username, row) => {
                         return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" ${row.id} title="去看看${username}的github">${username}</a>`;
                     }
