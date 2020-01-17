@@ -229,37 +229,21 @@ export const getAllTh = gridManagerName => {
 /**
  * get visible th
  * @param $table
- * @param isGmCreate
  * @returns {*}
  */
-export const getVisibleTh = (gridManagerName, isGmCreate) => {
-    let gmCreateStr = '';
-    switch (isGmCreate) {
-        case true: {
-            gmCreateStr = `[${GM_CREATE}="true"]`;
-            break;
-        }
-        case false: {
-            gmCreateStr = `[${GM_CREATE}="false"]`;
-            break;
-        }
-        default: {
-            gmCreateStr = '';
-            break;
-        }
-    }
-
-    return getThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]${gmCreateStr}`);
+export const getVisibleTh = gridManagerName => {
+    return getThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]`);
 };
 
 
 /**
  * get fake visible th
  * @param gridManagerName
+ * @param isExcludeGmCreate: 是否排除自动创建的列
  * @returns {*}
  */
-export const getFakeVisibleTh = gridManagerName => {
-    return getFakeThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]`);
+export const getFakeVisibleTh = (gridManagerName, isExcludeGmCreate) => {
+    return getFakeThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]${isExcludeGmCreate ? `:not([${GM_CREATE}])` : ''}`);
 };
 
 /**
@@ -370,16 +354,16 @@ export const updateVisibleLast = gridManagerName => {
     const $lastFakeTh = $fakeVisibleThList.eq(index);
 
     // 清除所有列
-    jTool(`${getQuerySelector(gridManagerName)} [${LAST_VISIBLE}="true"]`).attr(LAST_VISIBLE, false);
+    jTool(`${getQuerySelector(gridManagerName)} [${LAST_VISIBLE}]`).removeAttr(LAST_VISIBLE);
 
     // fake th 最后一项增加标识
-    $lastFakeTh.attr(LAST_VISIBLE, true);
+    $lastFakeTh.attr(LAST_VISIBLE, '');
 
     // th 最后一项增加标识
-    getVisibleTh(gridManagerName).eq(index).attr(LAST_VISIBLE, true);
+    getVisibleTh(gridManagerName).eq(index).attr(LAST_VISIBLE, '');
 
     // td 最后一项增加标识
-    getColTd($lastFakeTh).attr(LAST_VISIBLE, true);
+    getColTd($lastFakeTh).attr(LAST_VISIBLE, '');
 };
 
 /**

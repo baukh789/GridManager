@@ -762,7 +762,7 @@ describe('initSettings', () => {
                 width: ORDER_WIDTH,
                 align: 'center',
                 template: nodeData => {
-                    return `<td gm-order="true" gm-create="true">${nodeData}</td>`;
+                    return `<td gm-order gm-create>${nodeData}</td>`;
                 }
             };
         };

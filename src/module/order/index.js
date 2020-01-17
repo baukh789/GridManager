@@ -30,7 +30,7 @@ class Order {
 			width: ORDER_WIDTH,
 			align: 'center',
 			template: (order, row, index, isTop) => {
-				return `<td ${GM_CREATE}="true" gm-order>${isTop ? order : ''}</td>`;
+				return `<td ${GM_CREATE} gm-order>${isTop ? order : ''}</td>`;
 			}
 		};
 	}

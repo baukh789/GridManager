@@ -151,19 +151,19 @@ class Render {
         switch (col.key) {
             // 插件自动生成序号列
             case ORDER_KEY:
-                gmCreateAttr = `${GM_CREATE}="true" gm-order`;
+                gmCreateAttr = `${GM_CREATE} gm-order`;
                 thName = ORDER_KEY;
                 thText = order.getThContent(settings);
                 break;
             // 插件自动生成选择列
             case CHECKBOX_KEY:
-                gmCreateAttr = `${GM_CREATE}="true" gm-checkbox`;
+                gmCreateAttr = `${GM_CREATE} gm-checkbox`;
                 thName = CHECKBOX_KEY;
                 thText = checkbox.getThContent(checkboxConfig.useRadio);
                 break;
             // 普通列
             default:
-                gmCreateAttr = `${GM_CREATE}="false"`;
+                gmCreateAttr = '';
                 thName = col.key;
                 const obj = compileTh(settings, thName, col.text);
                 thText = obj.text;

@@ -426,7 +426,7 @@ describe('getAllTh(gridManagerName)', () => {
     });
 });
 
-describe('getVisibleTh(gridManagerName, isGmCreate)', () => {
+describe('getVisibleTh(gridManagerName)', () => {
     let gridManagerName = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -440,19 +440,11 @@ describe('getVisibleTh(gridManagerName, isGmCreate)', () => {
 
     it('基础验证', () => {
         expect(getVisibleTh).toBeDefined();
-        expect(getVisibleTh.length).toBe(2);
+        expect(getVisibleTh.length).toBe(1);
     });
 
     it('getVisibleTh(gridManagerName)', () => {
         expect(getVisibleTh(gridManagerName).length).toBe(10);
-    });
-
-    it('getVisibleTh(gridManagerName, true)', () => {
-        expect(getVisibleTh(gridManagerName, true).length).toBe(2);
-    });
-
-    it('getVisibleTh(gridManagerName, true)', () => {
-        expect(getVisibleTh(gridManagerName, false).length).toBe(8);
     });
 });
 
@@ -488,7 +480,7 @@ describe('getFakeTh(gridManagerName, thName)', () => {
     });
 });
 
-describe('getFakeVisibleTh(gridManagerName)', () => {
+describe('getFakeVisibleTh(gridManagerName, isExcludeGmCreate)', () => {
     let gridManagerName = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -502,11 +494,15 @@ describe('getFakeVisibleTh(gridManagerName)', () => {
 
     it('基础验证', () => {
         expect(getFakeVisibleTh).toBeDefined();
-        expect(getFakeVisibleTh.length).toBe(1);
+        expect(getFakeVisibleTh.length).toBe(2);
     });
 
     it('返回值验证', () => {
         expect(getFakeVisibleTh(gridManagerName).length).toBe(10);
+    });
+
+    it('getFakeVisibleTh(gridManagerName, true)', () => {
+        expect(getFakeVisibleTh(gridManagerName, true).length).toBe(8);
     });
 });
 
@@ -756,20 +752,20 @@ describe('updateVisibleLast(gridManagerName)', () => {
     });
 
     it('执行验证', () => {
-        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
+        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible]');
         expect(getThName($lastTh)).toBe('action');
 
         updateVisibleLast(gridManagerName);
 
         // // 在未变更列的情况下，执行结果不会变化
-        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
+        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible]');
         expect(getThName($lastTh)).toBe('action');
 
         // 隐藏最后一列
         setAreVisible(gridManagerName, [getThName($lastTh)], false);
 
         updateVisibleLast(gridManagerName);
-        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
+        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible]');
         expect(getThName($lastTh)).toBe('info');
     });
 });

@@ -138,7 +138,7 @@ class Dom {
                 if (col.isAutoCreate) {
                     tdNode = jTool(tdTemplate(row[col.key], row, index, isTop)).get(0);
                 } else {
-                    tdNode = jTool(`<td ${GM_CREATE}="false"></td>`).get(0);
+                    tdNode = jTool('<td></td>').get(0);
 
                     tdTemplate = compileTd(settings, tdNode, tdTemplate, row, index, key);
                     isElement(tdTemplate) ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);

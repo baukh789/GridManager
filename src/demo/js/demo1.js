@@ -274,6 +274,8 @@ const demo1 = {
             // 初始渲染时是否加载数据
             // firstLoading: false,
 
+            // supportAutoOrder: false,
+            // supportCheckbox: false,
             // 是否使用无总条数模式
             // useNoTotalsMode: true,
             // 是否开启分页
@@ -342,6 +344,7 @@ const demo1 = {
 
             // 导出配置
             exportConfig: {
+                mode: 'url',
                 fileName: query => {
                     const date = new Date();
                     let fileName = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -350,7 +353,12 @@ const demo1 = {
                     }
                     return fileName;
                 },
-                suffix: 'csv'
+                handler: () => {
+                    return new Promise(resolve => {
+                        resolve('http://develop.lovejavascript.com/test.xlsx');
+                    });
+                },
+                suffix: 'xlsx'
             },
             ajaxType: 'POST',
 

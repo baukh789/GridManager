@@ -59,14 +59,14 @@ describe('Framework', () => {
             document.body.innerHTML = tableTestTpl;
             fakeTheadTr = document.querySelector('thead[grid-manager-mock-thead="test"] tr');
             // 模拟未渲染前效果
-            [].forEach.call(fakeTheadTr.querySelectorAll('th[gm-create="false"]'), (item, index) => {
+            [].forEach.call(fakeTheadTr.querySelectorAll('th:not([gm-create])'), (item, index) => {
                 item.setAttribute('data-compile-id-test', index);
             });
         });
 
         afterEach(() => {
             document.body.innerHTML = '';
-            [].forEach.call(fakeTheadTr.querySelectorAll('th[gm-create="false"]'), item => {
+            [].forEach.call(fakeTheadTr.querySelectorAll('th:not([gm-create])'), item => {
                 item.removeAttribute('data-compile-id-test');
             });
             fakeTheadTr = null;
@@ -180,7 +180,7 @@ describe('Framework', () => {
         beforeEach(() => {
             document.body.innerHTML = tableTestTpl;
             // 获取第一个非自动创建td
-            tdNode = document.querySelector('tbody tr td[gm-create="false"]');
+            tdNode = document.querySelector('tbody tr td:not([gm-create])');
             row = {
                 'id': 92,
                 'title': 'Content-Type 对照表',
