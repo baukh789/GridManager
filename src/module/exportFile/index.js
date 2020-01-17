@@ -2,7 +2,7 @@
  * exportFile: 数据导出
  */
 import jTool from '@common/jTool';
-import { showLoading, hideLoading, getVisibleTh, getTbody } from '@common/base';
+import { showLoading, hideLoading, getFakeVisibleTh, getTbody } from '@common/base';
 import { outError, isFunction, jEach } from '@common/utils';
 import { getSettings, getCheckedData } from '@common/cache';
 import { GM_CREATE, TD_VISIBLE } from '@common/constants';
@@ -61,7 +61,8 @@ class ExportFile {
 
         const selectedList = onlyChecked ? getCheckedData(gridManagerName) : undefined;
 
-        if (!isFunction(exportConfig.handler)) {
+        const handler = exportConfig.handler;
+        if (!isFunction(handler)) {
             return Promise.reject('exportConfig.handler not return promise');
         }
 
@@ -71,23 +72,15 @@ class ExportFile {
                 break;
             }
             case 'blob': {
-                await this.downBlob(gridManagerName, loadingTemplate, fileName, query, exportConfig.handler, pageData, sortData, selectedList);
+                await this.downBlob(gridManagerName, loadingTemplate, fileName, query, handler, pageData, sortData, selectedList);
                 break;
             }
-            // TODO 待添加
-            // case 'filePath': {
-            //     await this.downFilePath(fileName, exportHandler, pageData, sortData, selectedList);
-            //     break;
-            // }
-            //
-            // case 'fileStream': {
-            //     await this.downFileStream(fileName, exportHandler, pageData, sortData, selectedList);
-            //     break;
-            // }
-        }
 
-		// 成功后返回true
-		// return true;
+            case 'url': {
+                await this.downFilePath(fileName, handler, pageData, sortData, selectedList);
+                break;
+            }
+        }
 	}
 
     /**
@@ -99,33 +92,14 @@ class ExportFile {
      * @param selectedList
      * @returns {Promise<void>}
      */
-    // async downFilePath(fileName, exportHandler, pageData, sortData, selectedList) {
-    //     try {
-    //         const res = await exportHandler(fileName, pageData, sortData, selectedList);
-    //         this.dispatchDownload(fileName, res);
-    //     } catch (e) {
-    //         outError(e);
-    //     }
-    // }
-
-    /**
-     * 下载方式: 文件流
-     * @param fileName
-     * @param exportHandler
-     * @param pageData
-     * @param sortData
-     * @param selectedList
-     * @returns {Promise<void>}
-     */
-    // async downFileStream(fileName, exportHandler, pageData, sortData, selectedList) {
-    //     try {
-    //         const res = await exportHandler(fileName, pageData, sortData, selectedList);
-    //         window.open(res);
-    //     } catch (e) {
-    //         outError(e);
-    //     }
-    //
-    // }
+    async downFilePath(fileName, exportHandler, pageData, sortData, selectedList) {
+        try {
+            const res = await exportHandler(fileName, pageData, sortData, selectedList);
+            this.dispatchDownload(fileName, res);
+        } catch (e) {
+            outError(e);
+        }
+    }
 
     /**
      * 下载方式: 静态下载
@@ -135,7 +109,7 @@ class ExportFile {
      * @returns {boolean}
      */
 	downStatic(gridManagerName, fileName, onlyChecked, suffix) {
-        const thDOM = getVisibleTh(gridManagerName, false);
+        const thDOM = getFakeVisibleTh(gridManagerName, true);
         const $tbody = getTbody(gridManagerName);
         let	trDOM = null;
         // 验证：是否只导出已选中的表格
@@ -154,7 +128,7 @@ class ExportFile {
         let exportHTML = thead.join(',');
         jEach(trDOM, (i, v) => {
             exportHTML += '\r\n';
-            const tdDOM = jTool(`td[${GM_CREATE}="false"][${TD_VISIBLE}="visible"]`, v);
+            const tdDOM = jTool(`td:not([${GM_CREATE}])[${TD_VISIBLE}="visible"]`, v);
             jEach(tdDOM, (i2, v2) => {
                 if (i2 !== 0) {
                     exportHTML += ',';
