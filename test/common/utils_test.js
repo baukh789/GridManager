@@ -1,5 +1,5 @@
 import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_STYLE, CONSOLE_WARN } from '@common/constants';
-import { outInfo, outWarn, outError, equal, getObjectIndexToArray, cloneObject, getVisibleState, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isEmptyObject, isArray, isElement, isNodeList } from '@common/utils';
+import { outInfo, outWarn, outError, equal, getObjectIndexToArray, cloneObject, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isEmptyObject, isArray, isElement, isNodeList } from '@common/utils';
 import tableTpl from '@test/table-test.tpl.html';
 
 describe('outInfo, outWarn, outError', () => {
@@ -104,18 +104,6 @@ describe('cloneObject(object)', () => {
 
         o1 = null;
         o2 = null;
-    });
-});
-
-describe('getVisibleState(isShow)', () => {
-    it('基础验证', () => {
-        expect(getVisibleState).toBeDefined();
-        expect(getVisibleState.length).toBe(1);
-    });
-
-    it('执行结果', () => {
-        expect(getVisibleState(true)).toBe('visible');
-        expect(getVisibleState(false)).toBe('none');
     });
 });
 

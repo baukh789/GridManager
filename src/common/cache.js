@@ -5,7 +5,7 @@
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { outInfo, outError, equal, getObjectIndexToArray, isUndefined, isFunction, isObject, isElement, jEach, jExtend, isNodeList, cloneObject } from '@common/utils';
+import { outInfo, outError, equal, getObjectIndexToArray, isUndefined, isFunction, isString, isObject, isElement, jEach, jExtend, isNodeList, cloneObject } from '@common/utils';
 import { Settings } from '@common/Settings';
 import textConfig from '@module/i18n/config';
 import store from '@common/Store';
@@ -18,7 +18,7 @@ import {
     CHECKBOX_DISABLED_KEY,
     TR_CACHE_KEY,
     TR_LEVEL_KEY,
-    TH_VISIBLE
+    CELL_HIDDEN
 } from './constants';
 
 /**
@@ -625,7 +625,7 @@ export const updateCache = gridManagerName => {
         col.index = th.index();
 
         // 可视状态
-        col.isShow = th.attr(TH_VISIBLE) === 'visible';
+        col.isShow = !isString(th.attr(CELL_HIDDEN));
     });
 
     // 重置settings

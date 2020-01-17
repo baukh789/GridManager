@@ -2,7 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from './jTool';
-import { getVisibleState, isString, jEach, jExtend } from '@common/utils';
+import { isString, jEach, jExtend } from '@common/utils';
 import {
     FAKE_TABLE_HEAD_KEY,
     TABLE_HEAD_KEY,
@@ -17,8 +17,7 @@ import {
     TR_LEVEL_KEY,
     LOADING_CLASS_NAME,
     LAST_VISIBLE,
-    TH_VISIBLE,
-    TD_VISIBLE,
+    CELL_HIDDEN,
     GM_CREATE,
     TH_NAME,
     REMIND_CLASS,
@@ -232,7 +231,7 @@ export const getAllTh = gridManagerName => {
  * @returns {*}
  */
 export const getVisibleTh = gridManagerName => {
-    return getThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]`);
+    return getThead(gridManagerName).find(`th:not(${CELL_HIDDEN})`);
 };
 
 
@@ -243,7 +242,7 @@ export const getVisibleTh = gridManagerName => {
  * @returns {*}
  */
 export const getFakeVisibleTh = (gridManagerName, isExcludeGmCreate) => {
-    return getFakeThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]${isExcludeGmCreate ? `:not([${GM_CREATE}])` : ''}`);
+    return getFakeThead(gridManagerName).find(`th:not([${CELL_HIDDEN}])${isExcludeGmCreate ? `:not([${GM_CREATE}])` : ''}`);
 };
 
 /**
@@ -317,21 +316,19 @@ export const getColTd = ($dom, $context) => {
 export const setAreVisible = (gridManagerName, thNameList, isVisible) => {
     jEach(thNameList, (i, thName) => {
         const $th = getTh(gridManagerName, thName);
+        const $fakeTh = getFakeTh(gridManagerName, thName);
+        const $td = getColTd($th);
 
         // 可视状态值
-        const visibleState = getVisibleState(isVisible);
-
+        const fn = isVisible ? 'removeAttr' : 'attr';
         // th
-        $th.attr(TH_VISIBLE, visibleState);
+        $th[fn](CELL_HIDDEN, '');
 
         // fake th
-        getFakeTh(gridManagerName, thName).attr(TH_VISIBLE, visibleState);
+        $fakeTh[fn](CELL_HIDDEN, '');
 
-        // 所对应的td
-        const $td = getColTd($th);
-        jEach($td, (index, td) => {
-            td.setAttribute(TD_VISIBLE, visibleState);
-        });
+        // td
+        $td[fn](CELL_HIDDEN, '');
 
         // config
         // 所对应的显示隐藏所在的li

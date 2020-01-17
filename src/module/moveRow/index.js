@@ -268,7 +268,7 @@ class MoveRow {
 
         const cloneTd = cloneTr.querySelectorAll('td');
         jEach(jTool('td', tr), (index, td) => {
-            cloneTd[index].width = jTool(td).width();
+            cloneTd[index].width = jTool(td).width() || 0;
         });
 
         return {

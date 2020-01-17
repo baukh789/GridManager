@@ -8,7 +8,6 @@ import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { jEach } from '@common/utils';
 import { CONFIG_KEY, CHECKED_CLASS, TH_NAME } from '@common/constants';
-import adjust from '../adjust';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
 import configTpl from './config.tpl.html';
@@ -96,11 +95,6 @@ class Config {
     noticeUpdate(gridManagerName) {
         // 执行前，先对当前的columnMap进行更新
         const settings = updateCache(gridManagerName);
-
-        // 重置调整宽度事件源
-        if (settings.supportAdjust) {
-            adjust.resetAdjust(gridManagerName);
-        }
 
         // 重置当前可视th的宽度
         updateThWidth(settings);

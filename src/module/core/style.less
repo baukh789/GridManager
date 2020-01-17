@@ -60,13 +60,7 @@
 
     th, td {
         border-right: @table-border;
-        &[th-visible="none"] {
-            display: none;
-        }
-        &[th-visible="visible"] {
-            display: table-cell;
-        }
-        /* 文本对齐 */
+        // 文本对齐
         &[align] {
             &[align="left"] {
                 text-align: left;
@@ -78,6 +72,10 @@
                 text-align: right;
             }
         }
+        // 不可见单元格
+        &[cell-hidden]{
+            display: none;
+        }
     }
     th {
         text-align: center;
@@ -85,12 +83,6 @@
         padding: 0;
         line-height: 18px;
         font-weight: 400;
-        &[th-visible="none"] {
-            display: none;
-        }
-        &[th-visible="visible"] {
-            display: table-cell;
-        }
         .th-wrap {
             /*减去的1px 为border-right. 原因是table元素存在特殊性, thead浮动后border的宽度不会计算到th内,而是会在原基础上将th的宽加1. */
             width: calc(100% - 1px);
@@ -112,12 +104,6 @@
         padding: 11px;
         vertical-align: middle;
         text-align: left;
-        &[td-visible="none"] {
-            display: none;
-        }
-        &[td-visible="visible"] {
-            display: table-cell;
-        }
         &:last-child{
             border-right: none;
         }

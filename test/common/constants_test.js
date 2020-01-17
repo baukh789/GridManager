@@ -25,8 +25,7 @@ import {
     TABLE_PURE_LIST,
     LOADING_CLASS_NAME,
     LAST_VISIBLE,
-    TH_VISIBLE,
-    TD_VISIBLE,
+    CELL_HIDDEN,
     GM_CREATE,
     CHECKED,
     INDETERMINATE,
@@ -140,12 +139,8 @@ describe('常量验证', () => {
         expect(LAST_VISIBLE).toBe('last-visible');
     });
 
-    it('TH_VISIBLE', () => {
-        expect(TH_VISIBLE).toBe('th-visible');
-    });
-
-    it('TD_VISIBLE', () => {
-        expect(TD_VISIBLE).toBe('td-visible');
+    it('CELL_HIDDEN', () => {
+        expect(CELL_HIDDEN).toBe('cell-hidden');
     });
 
     it('GM_CREATE', () => {

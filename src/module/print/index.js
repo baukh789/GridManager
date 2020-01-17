@@ -3,7 +3,7 @@
  * @param gridManagerName
  */
 import { getTable } from '@common/base';
-import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, GM_CREATE, TH_VISIBLE, TD_VISIBLE } from '@common/constants';
+import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, GM_CREATE, CELL_HIDDEN } from '@common/constants';
 import { MERGE_TD } from '@module/merge/constants';
 import { jEach } from '@common/utils';
 export default function print(gridManagerName) {
@@ -18,8 +18,7 @@ export default function print(gridManagerName) {
     `;
     const printWindow = window.open();
     // 清除隐藏项
-    $table.find(`[${TH_VISIBLE}="none"]`).remove();
-    $table.find(`[${TD_VISIBLE}="none"]`).remove();
+    $table.find(`[${CELL_HIDDEN}]`).remove();
     $table.find(`[${MERGE_TD}]`).remove();
 
     // 清除表格自动创建项

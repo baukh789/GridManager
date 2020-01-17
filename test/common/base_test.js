@@ -32,7 +32,7 @@ import {
 } from '@common/base';
 import tableTpl from '@test/table-test.tpl.html';
 import { getColumnMap } from '@test/table-config';
-import { TOOLBAR_KEY, LOADING_CLASS_NAME, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY, TR_LEVEL_KEY } from '@common/constants';
+import { TOOLBAR_KEY, LOADING_CLASS_NAME, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY, TR_LEVEL_KEY, CELL_HIDDEN } from '@common/constants';
 
 const tableTestTpl = tableTpl;
 
@@ -567,7 +567,7 @@ describe('getEmpty(gridManagerName)', () => {
         document.body.innerHTML = `<table grid-manager="test-empty">
                                         <thead grid-manager-thead>
                                             <tr>
-                                                <th th-visible="visible">1</th><th th-visible="visible">2</th>
+                                                <th>1</th><th>2</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -618,7 +618,7 @@ describe('updateEmptyCol(gridManagerName)', () => {
         document.body.innerHTML = `<table grid-manager="test-empty">
                                         <thead grid-manager-thead="test-empty">
                                             <tr>
-                                                <th th-visible="visible">1</th><th th-visible="visible">2</th>
+                                                <th>1</th><th>2</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -636,7 +636,7 @@ describe('updateEmptyCol(gridManagerName)', () => {
         document.body.innerHTML = `<table grid-manager="test-empty">
                                         <thead grid-manager-thead="test-empty">
                                             <tr>
-                                                <th th-visible="visible">1</th><th th-visible="visible">2</th>
+                                                <th>1</th><th>2</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -710,22 +710,22 @@ describe('setAreVisible(gridManagerName, thNameList, isVisible, cb)', () => {
     });
 
     it('执行验证', () => {
-        expect(getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
-        expect(getTh('test', 'title').attr('th-visible')).toBe('visible');
-        expect(getTh('test', 'pic').attr('th-visible')).toBe('visible');
+        expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBeUndefined();
+        expect(getTh('test', 'title').attr(CELL_HIDDEN)).toBeUndefined();
+        expect(getTh('test', 'pic').attr(CELL_HIDDEN)).toBeUndefined();
 
         // 设置gm_checkbox, pic不可见
         setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], false);
 
-        expect(getTh('test', 'gm_checkbox').attr('th-visible')).toBe('none');
-        expect(getTh('test', 'title').attr('th-visible')).toBe('visible');
-        expect(getTh('test', 'pic').attr('th-visible')).toBe('none');
+        expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBe('');
+        expect(getTh('test', 'title').attr(CELL_HIDDEN)).toBeUndefined();
+        expect(getTh('test', 'pic').attr(CELL_HIDDEN)).toBe('');
 
         // 设置gm_checkbox, pic可见
         setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], true);
-        expect(getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
-        expect(getTh('test', 'title').attr('th-visible')).toBe('visible');
-        expect(getTh('test', 'pic').attr('th-visible')).toBe('visible');
+        expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBeUndefined();
+        expect(getTh('test', 'title').attr(CELL_HIDDEN)).toBeUndefined();
+        expect(getTh('test', 'pic').attr(CELL_HIDDEN)).toBeUndefined();
     });
 });
 

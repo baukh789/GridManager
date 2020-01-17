@@ -1,7 +1,7 @@
 import jTool from '@common/jTool';
 import { calcLayout, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
 import { outError, isUndefined, isString, isObject, isElement, jEach } from '@common/utils';
-import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME, ROW_CLASS_NAME, ODD } from '@common/constants';
+import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
 import { mergeRow } from '../merge';
 import filter from '../filter';
@@ -90,14 +90,7 @@ class Dom {
             // 1.插件自动生成的选择列不做事件绑定
             // 2.禁止使用个性配置功能的列
             if (supportAdjust && !isAutoCol && !column.disableCustomize) {
-                const adjustDOM = jTool(adjust.html);
-
-                // 最后一列不支持调整宽度
-                if (index === $thList.length - 1) {
-                    adjustDOM.hide();
-                }
-
-                onlyThWarp.append(adjustDOM);
+                onlyThWarp.append(jTool(adjust.html));
             }
         });
     }

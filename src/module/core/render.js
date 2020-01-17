@@ -2,8 +2,8 @@ import remind from '../remind';
 import order from '../order';
 import ajaxPage from '../ajaxPage';
 import { CLASS_DRAG_ACTION } from '../drag/constants';
-import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, TH_VISIBLE } from '@common/constants';
-import { getVisibleState, isUndefined, isString, isObject, jEach } from '@common/utils';
+import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, CELL_HIDDEN } from '@common/constants';
+import { isUndefined, isString, isObject, jEach } from '@common/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
 import filter from '../filter';
@@ -141,8 +141,8 @@ class Render {
         // 文本对齐
         const alignAttr = col.align ? `align="${col.align}"` : '';
 
-        // th可视状态值
-        const thVisibleAttr = `${TH_VISIBLE}=${getVisibleState(col.isShow)}`;
+        // th不可见状态值
+        const cellHiddenAttr = col.isShow ? '' : CELL_HIDDEN;
 
         let gmCreateAttr = '';
         let thName = '';
@@ -188,7 +188,7 @@ class Render {
             filterAttr,
             remindAttr,
             dragClassName,
-            thVisibleAttr,
+            cellHiddenAttr,
             gmCreateAttr,
             thStyle: `style="width:${col.width || 'auto'}"`
         };

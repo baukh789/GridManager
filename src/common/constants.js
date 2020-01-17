@@ -95,11 +95,8 @@ export const LOADING_CLASS_NAME = 'gm-load-area';
 // 最后一列可视列 标识
 export const LAST_VISIBLE = 'last-visible';
 
-// th的可视状 标识
-export const TH_VISIBLE = 'th-visible';
-
-// td的可视状 标识
-export const TD_VISIBLE = 'td-visible';
+// 单元格不可见 标识
+export const CELL_HIDDEN = 'cell-hidden';
 
 // GM自动创建 标识
 export const GM_CREATE = 'gm-create';
@@ -113,7 +110,7 @@ export const CHECKED = 'checked';
 // 半选中
 export const INDETERMINATE = 'indeterminate';
 
-// 全选
+// 未选中
 export const UNCHECKED = 'unchecked';
 
 // 选中ClassName
