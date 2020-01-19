@@ -77,29 +77,11 @@ class ExportFile {
             }
 
             case 'url': {
-                await this.downFilePath(fileName, handler, pageData, sortData, selectedList);
+                await this.downFilePath(gridManagerName, loadingTemplate, fileName, handler, pageData, sortData, selectedList);
                 break;
             }
         }
 	}
-
-    /**
-     * 下载方式: 文件路径
-     * @param fileName
-     * @param exportHandler
-     * @param pageData
-     * @param sortData
-     * @param selectedList
-     * @returns {Promise<void>}
-     */
-    async downFilePath(fileName, exportHandler, pageData, sortData, selectedList) {
-        try {
-            const res = await exportHandler(fileName, pageData, sortData, selectedList);
-            this.dispatchDownload(fileName, res);
-        } catch (e) {
-            outError(e);
-        }
-    }
 
     /**
      * 下载方式: 静态下载
@@ -145,6 +127,29 @@ class ExportFile {
     }
 
     /**
+     * 下载方式: 文件路径
+     * @param gridManagerName
+     * @param loadingTemplate: loading模板
+     * @param fileName
+     * @param exportHandler
+     * @param pageData
+     * @param sortData
+     * @param selectedList
+     * @returns {Promise<void>}
+     */
+    async downFilePath(gridManagerName, loadingTemplate, fileName, exportHandler, pageData, sortData, selectedList) {
+        try {
+            showLoading(gridManagerName, loadingTemplate);
+            const res = await exportHandler(fileName, pageData, sortData, selectedList);
+            this.dispatchDownload(fileName, res);
+        } catch (e) {
+            outError(e);
+        } finally {
+            hideLoading(gridManagerName);
+        }
+    }
+
+    /**
      * 下载方式: Blob格式
      * @param gridManagerName
      * @param loadingTemplate: loading模板
@@ -157,10 +162,7 @@ class ExportFile {
     async downBlob(gridManagerName, loadingTemplate, fileName, query, exportHandler, pageData, sortData, selectedList) {
         try {
             showLoading(gridManagerName, loadingTemplate);
-
             const res = await exportHandler(fileName, query, pageData, sortData, selectedList);
-
-            hideLoading(gridManagerName);
 
             const blobPrototype = Blob.prototype;
             let blob = null;
@@ -184,6 +186,7 @@ class ExportFile {
             this.dispatchDownload(fileName, URL.createObjectURL(blob));
         } catch (e) {
             outError(e);
+        } finally {
             hideLoading(gridManagerName);
         }
     }
