@@ -6,7 +6,7 @@ import jTool from '@common/jTool';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME } from '@common/constants';
 import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, jEach, jExtend, isEmptyObject } from '@common/utils';
-import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
+import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
 import dropdown from './dropdown';
@@ -251,18 +251,6 @@ export default class GridManager {
 	get(table) {
         return getSettings(getKey(table));
 	}
-
-    /**
-     * @静态方法
-     * 存储表格渲染所在的域
-     * @param table
-     * @param scope: 框架中指定的域
-     * @returns {*}
-     */
-    static
-    setScope(table, scope) {
-        return setScope(getKey(table), scope);
-    }
 
 	/**
 	 * @静态方法

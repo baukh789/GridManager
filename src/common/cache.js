@@ -40,15 +40,6 @@ export const getVersion = () => {
 };
 
 /**
- * 存储当前GM所在的域, 当前
- * @param gridManagerName
- * @param scope
- */
-export const setScope = (gridManagerName, scope) => {
-    store.scope[gridManagerName] = scope;
-};
-
-/**
  * 获取当前行使用的数据
  * @param gridManagerName
  * @param target: 将要获取数据所对应的tr[Element or NodeList]
@@ -658,7 +649,6 @@ export const verifyVersion = () => {
  * @param gridManagerName
  */
 export const clearCache = gridManagerName => {
-    delete store.scope[gridManagerName];
     delete store.responseData[gridManagerName];
     delete store.checkedData[gridManagerName];
     delete store.settings[gridManagerName];

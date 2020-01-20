@@ -1,7 +1,7 @@
 'use strict';
 import jTool from '@common/jTool';
 import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '@common/constants';
-import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, resetTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, updateCache } from '@common/cache';
+import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, resetTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, updateCache } from '@common/cache';
 import store from '@common/Store';
 import { version } from '@package.json';
 import tableTpl from '@test/table-test.tpl.html';
@@ -35,31 +35,6 @@ describe('getVersion()', () => {
 
     it('验证返回值', () => {
         expect(getVersion()).toBe(version);
-    });
-});
-
-describe('getScope and setScope', () => {
-    let scope = null;
-    beforeEach(() => {
-        document.body.innerHTML = tableTestTpl;
-    });
-    afterEach(() => {
-        document.body.innerHTML = '';
-        scope = null;
-        store.scope = {};
-    });
-
-    it('基础验证', () => {
-        expect(setScope).toBeDefined();
-        expect(setScope.length).toBe(2);
-    });
-
-    it('验证值', () => {
-        scope = {
-            name: 'ccc'
-        };
-        setScope('test', scope);
-        expect(store.scope['test']).toEqual(scope);
     });
 });
 
@@ -980,13 +955,11 @@ describe('verifyVersion', () => {
 
 describe('clear', () => {
     beforeEach(() => {
-        store.scope['test'] = {};
         store.responseData['test'] = {};
         store.checkedData['test'] = {};
         store.settings['test'] = {};
     });
     afterEach(() => {
-        store.scope = {};
         store.responseData = {};
         store.checkedData = {};
         store.settings = {};
@@ -998,13 +971,11 @@ describe('clear', () => {
     });
 
     it('执行验证', () => {
-        expect(store.scope['test']).toEqual({});
         expect(store.responseData['test']).toEqual({});
         expect(store.checkedData['test']).toEqual({});
         expect(store.settings['test']).toEqual({});
 
         clearCache('test');
-        expect(store.scope['test']).toBeUndefined();
         expect(store.responseData['test']).toBeUndefined();
         expect(store.checkedData['test']).toBeUndefined();
         expect(store.settings['test']).toBeUndefined();
