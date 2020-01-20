@@ -344,7 +344,6 @@ const demo1 = {
 
             // 导出配置
             exportConfig: {
-                mode: 'url',
                 fileName: query => {
                     const date = new Date();
                     let fileName = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -353,12 +352,7 @@ const demo1 = {
                     }
                     return fileName;
                 },
-                handler: () => {
-                    return new Promise(resolve => {
-                        resolve('http://develop.lovejavascript.com/test.xlsx');
-                    });
-                },
-                suffix: 'xlsx'
+                suffix: 'xls'
             },
             ajaxType: 'POST',
 
