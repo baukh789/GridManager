@@ -7,7 +7,7 @@
  * 且该事件可能在消毁的时候失败， 所以在注册事件时需要进行unbind。
  * */
 import jTool from '@common/jTool';
-import { getDiv, getTable, getThead, getFakeThead, updateThWidth, getAllTh, updateScrollStatus } from '@common/base';
+import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus } from '@common/base';
 import { getSettings, updateCache } from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { jEach } from '@common/utils';
@@ -41,11 +41,6 @@ class Scroll {
 
         const settings = getSettings(gridManagerName);
         compileFakeThead(settings, $setTopHead.get(0).querySelector('tr'));
-
-        // thead 下的 th 到这一步只存在控制列宽的作用，所以在这里将内容清除
-        jEach(getAllTh(gridManagerName), (i, item) => {
-            item.innerHTML = '';
-        });
     }
 
     /**

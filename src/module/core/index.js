@@ -5,8 +5,8 @@
  * 3.重置tbody
  */
 import './style.less';
-import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmptyHtml, getEmpty } from '@common/base';
-import { outError, cloneObject, isString, isFunction, isArray } from '@common/utils';
+import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmptyHtml, getAllTh, getEmpty } from '@common/base';
+import { outError, jEach, cloneObject, isString, isFunction, isArray } from '@common/utils';
 import { getTableData, setTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY } from '@common/constants';
 import menu from '../menu';
@@ -195,7 +195,12 @@ class Core {
         scroll.init(gridManagerName);
 
         // 解析框架: thead区域
-        await sendCompile(settings, true);
+        await sendCompile(settings, true).then(() => {
+            // thead 下的 th 到这一步只存在控制列宽的作用，所以在这里将内容清除
+            jEach(getAllTh(gridManagerName), (i, item) => {
+                item.innerHTML = '';
+            });
+        });
     }
 
     /**
