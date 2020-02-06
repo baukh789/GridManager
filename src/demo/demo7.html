@@ -87,6 +87,10 @@
         .grid-main {
             height: calc(100vh - 64px - 57px);
         }
+        .gm-child{
+            display:inline-block;
+            width: 50%;
+        }
     </style>
 	<script>
 		// 博文类型
@@ -146,6 +150,24 @@
 
                 disableCache: true,
 
+                exportConfig: {
+				    mode: 'static',
+                    handler: (fileName, query, pageData, sortData, selectedList, tableData) => {
+				        const array = [];
+                        array.push(['标题', '博文分类', '简介', '作者', '创建时间', '修改时间']);
+                        tableData.forEach(item => {
+                            array.push([
+                                `"${item.title}"`,
+                                `"${TYPE_MAP[item.type]}"`,
+                                `"${item.info}"`,
+                                `"${item.username}"`,
+                                `"${new Date(item.createDate).toLocaleDateString()}"`,
+                                `"${new Date(item.lastDate).toLocaleDateString()}"`
+                            ]);
+                        });
+				        return array;
+                    }
+                },
 				emptyTemplate: '<div class="void-template">通过 emptyTemplate 配置的空数据提示</div>',
 
 				columnData: [
@@ -214,13 +236,14 @@
 						}
 					},{
 						key: 'createDate',
-						width: '140px',
-						text: '<div class="type"><p>创建时间</p><p>与</p><p>最后修改时间</p></div>',
+						width: '200px',
+						text: '<p>操作时间</p><span class="gm-child">创建时间</span><span class="gm-child">修改时间</span>',
 						sorting: 'DESC',
                         remind: '排序时，使用创建时间进行排序',
+                        align: "center",
 						// 使用函数返回 htmlString
 						template: function(createDate, rowObject){
-							return `创建于: ${new Date(createDate).toLocaleDateString()} <br/>修改于: ${new Date(rowObject.lastDate).toLocaleDateString()}`;
+							return `<span class="gm-child">${new Date(createDate).toLocaleDateString()} </span><span class="gm-child">${new Date(rowObject.lastDate).toLocaleDateString()}</span>`;
 						}
 					}
 				]

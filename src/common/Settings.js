@@ -432,7 +432,7 @@ const gridExport = {
         // 导出的后缀名, 默认为`xls`。静态导出仅支持xls,cvs两种格式
         suffix: 'xls',
 
-        // 导出处理器函数,该函数需要返回一个promise。当`exportType`为`static`时，该参数不生效。
+        // 导出处理器函数: mode === 'static'时handler函数return 二维数组; mode !== 'static'时handler函数需要返回一个resolve(blob)的promise
         handler: noop
     }
 };

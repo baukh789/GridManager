@@ -3,8 +3,8 @@
  */
 import jTool from '@common/jTool';
 import { showLoading, hideLoading, getVisibleTh, getTbody } from '@common/base';
-import { outError, isFunction, jEach } from '@common/utils';
-import { getSettings, getCheckedData } from '@common/cache';
+import { outError, isFunction, jEach, isArray } from '@common/utils';
+import { getSettings, getCheckedData, getTableData } from '@common/cache';
 import { GM_CREATE, TD_VISIBLE } from '@common/constants';
 class ExportFile {
 	/**
@@ -59,19 +59,16 @@ class ExportFile {
 
         fileName = this.getFileName(gridManagerName, fileName, query, exportConfig);
 
-        const selectedList = onlyChecked ? getCheckedData(gridManagerName) : undefined;
-
-        if (!isFunction(exportConfig.handler)) {
-            return Promise.reject('exportConfig.handler not return promise');
-        }
+        const selectedList = onlyChecked ? getCheckedData(gridManagerName) : [];
+        const tableData = getTableData(gridManagerName);
 
 	    switch (exportConfig.mode) {
             case 'static': {
-                this.downStatic(gridManagerName, fileName, onlyChecked, exportConfig.suffix);
+                this.downStatic(gridManagerName, loadingTemplate, fileName, onlyChecked, exportConfig.suffix, exportConfig.handler, query, pageData, sortData, selectedList, tableData);
                 break;
             }
             case 'blob': {
-                await this.downBlob(gridManagerName, loadingTemplate, fileName, query, exportConfig.handler, pageData, sortData, selectedList);
+                await this.downBlob(gridManagerName, loadingTemplate, fileName, exportConfig.handler, query, pageData, sortData, selectedList, tableData);
                 break;
             }
             // TODO 待添加
@@ -130,44 +127,62 @@ class ExportFile {
     /**
      * 下载方式: 静态下载
      * @param gridManagerName
+     * @param loadingTemplate
      * @param fileName
      * @param onlyChecked
      * @returns {boolean}
      */
-	downStatic(gridManagerName, fileName, onlyChecked, suffix) {
-        const thDOM = getVisibleTh(gridManagerName, false);
-        const $tbody = getTbody(gridManagerName);
-        let	trDOM = null;
-        // 验证：是否只导出已选中的表格
-        if (onlyChecked) {
-            trDOM = jTool('tr[checked="true"]', $tbody);
-        } else {
-            trDOM = jTool('tr', $tbody);
-        }
-        // 存储导出的thead
-        const thead = [];
-        jEach(thDOM, (i, v) => {
-            thead.push(`"${v.getElementsByClassName('th-text')[0].textContent || ''}"`);
-        });
+	downStatic(gridManagerName, loadingTemplate, fileName, onlyChecked, suffix, exportHandler, query, pageData, sortData, selectedList, tableData) {
+        showLoading(gridManagerName, loadingTemplate);
 
-        // 存储导出的tbody
-        let exportHTML = thead.join(',');
-        jEach(trDOM, (i, v) => {
-            exportHTML += '\r\n';
-            const tdDOM = jTool(`td[${GM_CREATE}="false"][${TD_VISIBLE}="visible"]`, v);
-            jEach(tdDOM, (i2, v2) => {
-                if (i2 !== 0) {
-                    exportHTML += ',';
-                }
-                exportHTML += `"${v2.textContent || ''}"`; // 添加""的原因: 规避内容中英文逗号被识别为分割单元格的标识
+        let tableList = exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
+
+        // exportHandler 未返回数组表示当前exportHandler未被配置
+        if (!isArray(tableList)) {
+            const thDOM = getVisibleTh(gridManagerName, false);
+            const $tbody = getTbody(gridManagerName);
+            let	trDOM = null;
+            // 验证：是否只导出已选中的表格
+            if (onlyChecked) {
+                trDOM = jTool('tr[checked="true"]', $tbody);
+            } else {
+                trDOM = jTool('tr', $tbody);
+            }
+            tableList = [];
+            // 存储导出的thead
+            const thList = [];
+            jEach(thDOM, (i, v) => {
+                thList.push(`"${v.querySelector('.th-text').textContent || ''}"`);
             });
+            tableList.push(thList);
+
+            // 存储导出的tbody
+            jEach(trDOM, (i, v) => {
+                let tdList = [];
+                const tdDOM = jTool(`td[${GM_CREATE}="false"][${TD_VISIBLE}="visible"]`, v);
+                jEach(tdDOM, (i2, v2) => {
+                    tdList.push(`"${v2.textContent || ''}"`); // 添加""的原因: 规避内容中英文逗号被识别为分割单元格的标识
+                });
+                tableList.push(tdList);
+            });
+        }
+
+        let exportHTML = '';
+        jEach(tableList, (i, v) => {
+            if (i !== 0) {
+                exportHTML += '\r\n';
+            }
+            exportHTML += v.join(','); // 添加""的原因: 规避内容中英文逗号被识别为分割单元格的标识
         });
 
+        console.log(exportHTML);
         const dataType = {
             csv: 'text/csv',
             xls: 'application/vnd.ms-excel'
         };
         this.dispatchDownload(fileName, `data:${dataType[suffix]};charset=utf-8,\ufeff${encodeURIComponent(exportHTML)}`);
+
+        hideLoading(gridManagerName, loadingTemplate);
     }
 
     /**
@@ -175,16 +190,17 @@ class ExportFile {
      * @param gridManagerName
      * @param loadingTemplate: loading模板
      * @param fileName: 导出的文件名，不包含后缀名
+     * @param exportHandler: 执行函数
      * @param query: 请求参数信息
      * @param pageData: 分页信息
      * @param sortData: 排序信息
      * @param selectedList: 当前选中的列表
      */
-    async downBlob(gridManagerName, loadingTemplate, fileName, query, exportHandler, pageData, sortData, selectedList) {
+    async downBlob(gridManagerName, loadingTemplate, fileName, exportHandler, query, pageData, sortData, selectedList, tableData) {
         try {
             showLoading(gridManagerName, loadingTemplate);
 
-            const res = await exportHandler(fileName, query, pageData, sortData, selectedList);
+            const res = await exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
 
             hideLoading(gridManagerName);
 
