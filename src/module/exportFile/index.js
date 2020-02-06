@@ -175,7 +175,6 @@ class ExportFile {
             exportHTML += v.join(','); // 添加""的原因: 规避内容中英文逗号被识别为分割单元格的标识
         });
 
-        console.log(exportHTML);
         const dataType = {
             csv: 'text/csv',
             xls: 'application/vnd.ms-excel'
