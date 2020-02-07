@@ -3,8 +3,7 @@
  */
 import './style.less';
 import jTool from '@jTool';
-import { isUndefined, isFunction, isObject, each, isEmptyObject } from '@jTool/utils';
-import extend from '@jTool/extend';
+import { extend, isUndefined, isFunction, isObject, each, isEmptyObject } from '@jTool/utils';
 import { outWarn } from '@common/utils';
 import { getQuerySelector, getThName, clearTargetEvent } from '@common/base';
 import { getSettings, setSettings } from '@common/cache';

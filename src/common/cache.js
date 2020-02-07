@@ -5,8 +5,7 @@
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { isUndefined, isFunction, isObject, isElement, each, isNodeList } from '@jTool/utils';
-import extend from '@jTool/extend';
+import { isUndefined, isFunction, isObject, isElement, each, isNodeList, extend } from '@jTool/utils';
 import { outInfo, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
 import { Settings } from '@common/Settings';
 import textConfig from '@module/i18n/config';

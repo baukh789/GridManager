@@ -13,40 +13,23 @@
  * */
 import { each, isFunction, isUndefined, getStyle, noop } from './utils';
 import _Css from './Css';
+const INLINE_BLOCK = 'inline-block';
+const TABLE_CELL = 'table-cell';
+const DISPLAY_MAP = {
+    TABLE: 'table',
+    THEAD: 'table-header-group',
+    TBODY: 'table-row-group',
+    TR: 'table-row',
+    TH: TABLE_CELL,
+    TD: TABLE_CELL,
+    SPAN: INLINE_BLOCK,
+    A: INLINE_BLOCK,
+    FONT: INLINE_BLOCK,
+    I: INLINE_BLOCK
+};
 function show() {
-    each(this.DOMList, function (i, v) {
-        let _display = '';
-        const inlineArray = ['SPAN', 'A', 'FONT', 'I'];
-        // inline
-        if(v.nodeName.indexOf(inlineArray) !== -1) {
-            v.style.display = 'inline-block';
-            return this;
-        }
-        // table or block
-        switch (v.nodeName) {
-            case 'TABLE':
-                _display = 'table';
-                break;
-            case 'THEAD':
-                _display = 'table-header-group';
-                break;
-            case 'TBODY':
-                _display = 'table-row-group';
-                break;
-            case 'TR':
-                _display = 'table-row';
-                break;
-            case 'TH':
-                _display = 'table-cell';
-                break;
-            case 'TD':
-                _display = 'table-cell';
-                break;
-            default:
-                _display = 'block';
-                break;
-        }
-        v.style.display = _display;
+    each(this.DOMList,  (i, v) => {
+        v.style.display = DISPLAY_MAP[v.nodeName] || 'block';
     });
     return this;
 }
@@ -99,7 +82,7 @@ function animate(styleObj, time, callback) {
     jToolAnimate.textContent = jToolAnimate.textContent + animateText;
 
     // 启用动画
-    node.style.animation = 'jToolAnimate ' + time / 1000 + 's ease-in-out forwards';
+    node.style.animation = `jToolAnimate ${time / 1000}s ease-in-out forwards`;
 
     // 延时执行回调函数及清理操作
     window.setTimeout(() => {

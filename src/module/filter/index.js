@@ -4,8 +4,7 @@
  */
 import './style.less';
 import jTool from '@jTool';
-import extend from '@jTool/extend';
-import { each } from '@jTool/utils';
+import { each, extend } from '@jTool/utils';
 import { getSettings, setSettings } from '@common/cache';
 import { getQuerySelector, getWrap, getDiv, getThName, clearTargetEvent } from '@common/base';
 import { CHECKED, UNCHECKED, TH_NAME } from '@common/constants';

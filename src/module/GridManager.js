@@ -3,8 +3,7 @@
  * 构造类
  */
 import jTool from '@jTool';
-import { isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, each, isEmptyObject } from '@jTool/utils';
-import extend from '@jTool/extend';
+import { extend, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, each, isEmptyObject } from '@jTool/utils';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME } from '@common/constants';
 import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';

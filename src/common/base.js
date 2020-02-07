@@ -2,8 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from '@jTool';
-import { isString, each } from '@jTool/utils';
-import extend from '@jTool/extend';
+import { isString, each, extend } from '@jTool/utils';
 import { getVisibleState } from '@common/utils';
 import {
     FAKE_TABLE_HEAD_KEY,

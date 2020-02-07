@@ -10,9 +10,8 @@
  * 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
  * 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
  */
-import { isString, isFunction, each, isEmptyObject } from '@jTool/utils';
+import { isString, isFunction, each, isEmptyObject, extend } from '@jTool/utils';
 import ajax from '@jTool/ajax';
-import extend from '@jTool/extend';
 import { cloneObject } from '@common/utils';
 import { setSettings } from '@common/cache';
 

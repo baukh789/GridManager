@@ -3,7 +3,7 @@
 **/
 import './style.less';
 import jTool from '@jTool';
-import extend from '@jTool/extend';
+import { extend } from '@jTool/utils';
 import { clearTargetEvent } from '@common/base';
 import { getSettings, setSettings, getUserMemory, saveUserMemory, getCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';

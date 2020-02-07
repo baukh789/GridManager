@@ -1,8 +1,7 @@
 /**
  * Settings: 配置项
  */
-import extend from '@jTool/extend';
-import { noop } from '@jTool/utils';
+import { noop, extend } from '@jTool/utils';
 
 /**
  * 框架相关配置
