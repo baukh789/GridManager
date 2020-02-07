@@ -5,7 +5,7 @@
 import { getTable } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY, GM_CREATE, TH_VISIBLE, TD_VISIBLE } from '@common/constants';
 import { MERGE_TD } from '@module/merge/constants';
-import { jEach } from '@common/utils';
+import { each } from '@jTool/utils';
 export default function print(gridManagerName) {
     const $table = getTable(gridManagerName).clone(true);
     const style = `
@@ -31,7 +31,7 @@ export default function print(gridManagerName) {
     // 清除表格样式
     const $th = $table.find('th');
     $th.removeAttr('style');
-    jEach($th, (i, th) => {
+    each($th, (i, th) => {
         th.innerHTML = th.querySelector('.th-text').innerHTML;
     });
     $table.removeAttr('style');

@@ -5,8 +5,9 @@
  * 3.重置tbody
  */
 import './style.less';
+import { isString, isFunction, isArray } from '@jTool/utils';
 import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmptyHtml, getEmpty } from '@common/base';
-import { outError, cloneObject, isString, isFunction, isArray } from '@common/utils';
+import { cloneObject, outError } from '@common/utils';
 import { getTableData, setTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY } from '@common/constants';
 import menu from '../menu';

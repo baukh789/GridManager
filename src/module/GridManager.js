@@ -2,10 +2,12 @@
  * Created by baukh on 17/10/26.
  * 构造类
  */
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import { isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, each, isEmptyObject } from '@jTool/utils';
+import extend from '@jTool/extend';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME } from '@common/constants';
 import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getTh, updateVisibleLast, updateScrollStatus } from '@common/base';
-import { outWarn, outError, equal, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, jEach, jExtend, isEmptyObject } from '@common/utils';
+import { outWarn, outError, equal } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
@@ -59,7 +61,7 @@ export default class GridManager {
         });
 
         const $table = jTool(table);
-        arg = jExtend({}, GridManager.defaultOption, arg);
+        arg = extend({}, GridManager.defaultOption, arg);
 
         let gridManagerName = arg.gridManagerName;
         // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
@@ -238,7 +240,7 @@ export default class GridManager {
      */
     static
     mergeDefaultOption(conf) {
-        defaultOption = jExtend(defaultOption, conf);
+        defaultOption = extend(defaultOption, conf);
     }
 
 	/**
@@ -483,7 +485,7 @@ export default class GridManager {
 		}
 
 		// 更新过滤相关字段
-        filter.enable[gridManagerName] && jEach(columnMap, (index, column) => {
+        filter.enable[gridManagerName] && each(columnMap, (index, column) => {
             if (column.filter) {
                 column.filter.selected = isString(query[column.key]) ? query[column.key] : '';
                 // 这里不使用base.getTh的原因: 需要同时更新thead 和 fake-thead
@@ -492,7 +494,7 @@ export default class GridManager {
         });
 
 		// 更新settings.query
-		jExtend(settings, {query: query});
+		extend(settings, {query: query});
 
 		// 返回第一页
 		if (gotoPage === true) {
@@ -519,7 +521,7 @@ export default class GridManager {
             return;
         }
 		const settings = getSettings(getKey(table));
-		jExtend(settings, { ajaxData });
+		extend(settings, { ajaxData });
 		setSettings(settings);
 		core.refresh(settings.gridManagerName, callback);
 	}

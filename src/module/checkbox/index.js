@@ -11,11 +11,11 @@ import { CHECKBOX_WIDTH,
     UNCHECKED,
     CHECKED_CLASS,
     INDETERMINATE_CLASS } from '@common/constants';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import each from '@jTool/utils';
 import { getQuerySelector, getTable, clearTargetEvent } from '@common/base';
 import { getSettings, getCheckedData, getRowData } from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { jEach } from '@common/utils';
 import ajaxPage from '../ajaxPage';
 import columnTpl from './column.tpl.html';
 import checkboxTpl from './checkbox.tpl.html';
@@ -231,7 +231,7 @@ class Checkbox {
 
         if (!useRadio && max) {
             const $tbodyCheckWrap = jTool('tbody .gm-checkbox-wrapper ', $table);
-            jEach($tbodyCheckWrap, (index, wrap) => {
+            each($tbodyCheckWrap, (index, wrap) => {
                 const $wrap = jTool(wrap);
                 const checkbox = jTool('.gm-checkbox', $wrap);
                 if (!checkbox.hasClass('gm-checkbox-checked')) {

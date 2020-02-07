@@ -3,13 +3,12 @@
  * 宽度调整是通过 jTool 进行的事件绑定
  */
 import './style.less';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
 import { getQuerySelector, getTable, getTh, getFakeThead, getThead, getFakeVisibleTh, getColTd, getThTextWidth, updateScrollStatus, clearTargetEvent } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, TH_VISIBLE } from '@common/constants';
 import { CLASS_ADJUST_ACTION, CLASS_ADJUST_SELECT } from './constants';
 import { getSettings, updateCache } from '@common/cache';
 import { getEvent, eventMap } from './event';
-
 
 /**
  * 执行移动事件

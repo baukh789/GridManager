@@ -10,13 +10,16 @@
  * 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
  * 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
  */
-import { cloneObject, isString, isFunction, jEach, jExtend, jAjax, isEmptyObject } from '@common/utils';
+import { isString, isFunction, each, isEmptyObject } from '@jTool/utils';
+import ajax from '@jTool/ajax';
+import extend from '@jTool/extend';
+import { cloneObject } from '@common/utils';
 import { setSettings } from '@common/cache';
 
 // 获取参数信息
 export const getParams = settings => {
     const { query, supportAjaxPage, pageData, sortData, mergeSort, sortKey, currentPageKey, pageSizeKey, requestHandler } = settings;
-    const params = jExtend(true, {}, query);
+    const params = extend(true, {}, query);
     // 合并分页信息至请求参
     if (supportAjaxPage) {
         params[currentPageKey] = pageData[currentPageKey];
@@ -29,11 +32,11 @@ export const getParams = settings => {
         // settings.mergeSort: 是否合并排序字段
         if (mergeSort) {
             params[sortKey] = '';
-            jEach(sortData, (key, value) => {
+            each(sortData, (key, value) => {
                 params[sortKey] = `${params[sortKey]}${params[sortKey] ? ',' : ''}${key}:${value}`;
             });
         } else {
-            jEach(sortData, (key, value) => {
+            each(sortData, (key, value) => {
                 // 增加sort_前缀,防止与搜索时的条件重叠
                 params[`${sortKey}${key}`] = value;
             });
@@ -55,13 +58,13 @@ export const transformToPromise = settings =>  {
     const { supportAjaxPage, pageData, sortData, sortKey, ajaxType, ajaxHeaders, ajaxXhrFields, ajaxData } = settings;
     // 将 requestHandler 内修改的分页参数合并至 settings.pageData
     if (supportAjaxPage) {
-        jEach(pageData, (key, value) => {
+        each(pageData, (key, value) => {
             pageData[key] = params[key] || value;
         });
     }
 
     // 将 requestHandler 内修改的排序参数合并至 settings.sortData
-    jEach(sortData, (key, value) => {
+    each(sortData, (key, value) => {
         sortData[key] = params[`${sortKey}${key}`] || value;
     });
     setSettings(settings);
@@ -77,7 +80,7 @@ export const transformToPromise = settings =>  {
         }
 
         return new Promise((resolve, reject) => {
-            jAjax({
+            ajax({
                 url: data,
                 type: ajaxType,
                 data: params,

@@ -4,11 +4,11 @@
  * #001: 这里使用get(0).innerHTML 而不直接使用.html()的原因是: jTool中的html直接添加table标签存在BUG
  */
 import './style.less';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import { each } from '@jTool/utils';
 import { getTable, getQuerySelector, getFakeVisibleTh, getWrap, getColTd, getThName, getDiv, getTh, updateVisibleLast, updateScrollStatus, clearTargetEvent } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { jEach } from '@common/utils';
 import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
 import adjust from '@module/adjust';
 import config from '@module/config';
@@ -166,7 +166,7 @@ class Drag {
 
         // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
         let tbodyHtml = '';
-        jEach($colTd, (i, v) => {
+        each($colTd, (i, v) => {
             const cloneTd = v.cloneNode(true);
             cloneTd.style.height = v.offsetHeight + 'px';
             const cloneTr = jTool(v).closest('tr').clone();
@@ -197,7 +197,7 @@ class Drag {
             // 事件源对应的上一组td
 		    let prevTd = getColTd($prevTh);
             $prevTh.before($th);
-			jEach($colTd, (i, v) => {
+			each($colTd, (i, v) => {
 				prevTd.eq(i).before(v);
 			});
 
@@ -214,7 +214,7 @@ class Drag {
             // 事件源对应的下一组td
 		    let nextTd = getColTd($nextTh);
 			$nextTh.after($th);
-			jEach($colTd, (i, v) => {
+			each($colTd, (i, v) => {
 				nextTd.eq(i).after(v);
 			});
 

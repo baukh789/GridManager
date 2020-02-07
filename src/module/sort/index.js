@@ -2,9 +2,11 @@
  * sort: 排序
  */
 import './style.less';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import { isUndefined, isFunction, isObject, each, isEmptyObject } from '@jTool/utils';
+import extend from '@jTool/extend';
+import { outWarn } from '@common/utils';
 import { getQuerySelector, getThName, clearTargetEvent } from '@common/base';
-import { outWarn, isUndefined, isFunction, isObject, jEach, jExtend, isEmptyObject } from '@common/utils';
 import { getSettings, setSettings } from '@common/cache';
 import { TH_NAME } from '@common/constants';
 import { parseTpl } from '@common/parse';
@@ -93,7 +95,7 @@ class Sort {
             settings.sortData = {};
         }
 
-        jExtend(settings.sortData, sortJson);
+        extend(settings.sortData, sortJson);
 		setSettings(settings);
 
 		// 回调函数为空时赋值空方法
@@ -107,7 +109,7 @@ class Sort {
 		}
 
         // 合并排序请求
-        const query = jExtend({}, settings.query, settings.sortData, settings.pageData);
+        const query = extend({}, settings.query, settings.sortData, settings.pageData);
 
         // 执行排序前事件
         settings.sortingBefore(query);
@@ -144,13 +146,13 @@ class Sort {
 		const thAttr = 'sorting';
 
 		// 重置排序样式
-        jEach(jTool(`${getQuerySelector(gridManagerName)} .gm-sorting-action`), (i, v) => {
+        each(jTool(`${getQuerySelector(gridManagerName)} .gm-sorting-action`), (i, v) => {
             jTool(v).removeClass(`${upClass} ${downClass}`);
             jTool(v).closest('th').attr(thAttr, '');
 		});
 
 		// 根据排序数据更新排序
-        jEach(sortData, (key, value) => {
+        each(sortData, (key, value) => {
             // 这里未用getTh的原因: getTh方法只能获取th, 这里需要同时对th和 fake-th进行操作
             const $th = jTool(`${getQuerySelector(gridManagerName)} th[${TH_NAME}="${key}"]`);
             const $sortAction = jTool('.gm-sorting-action', $th);

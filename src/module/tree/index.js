@@ -2,10 +2,10 @@
  * 树结构
  */
 import './style.less';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import { isUndefined, isString, each } from '@jTool/utils';
 import { getQuerySelector, getTable, getTbody, getTh, getColTd, clearTargetEvent } from '@common/base';
 import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
-import { isUndefined, isString, jEach } from '@common/utils';
 import { getEvent, eventMap } from './event';
 import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from './tool';
 
@@ -74,7 +74,7 @@ class Tree {
 
             // 折叠时，需要将所有的子集全部折叠
             if (!openState) {
-                jEach($childrenTr, (index, tr) => {
+                each($childrenTr, (index, tr) => {
                     updateState(jTool(tr), false);
                 });
             }
@@ -102,7 +102,7 @@ class Tree {
         const { openState, insertTo } = config;
         const $table = getTable(gridManagerName);
         let parentKeyList = [];
-        jEach(jTool(`tr[${TR_PARENT_KEY}]`, $table), (index, item) => {
+        each(jTool(`tr[${TR_PARENT_KEY}]`, $table), (index, item) => {
             parentKeyList.push(item.getAttribute(TR_PARENT_KEY));
         });
 

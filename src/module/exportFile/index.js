@@ -1,9 +1,10 @@
 /*
  * exportFile: 数据导出
  */
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import { isFunction, each, isArray } from '@jTool/utils';
 import { showLoading, hideLoading, getVisibleTh, getTbody } from '@common/base';
-import { outError, isFunction, jEach, isArray } from '@common/utils';
+import { outError } from '@common/utils';
 import { getSettings, getCheckedData, getTableData } from '@common/cache';
 import { GM_CREATE, TD_VISIBLE } from '@common/constants';
 class ExportFile {
@@ -151,16 +152,16 @@ class ExportFile {
             tableList = [];
             // 存储导出的thead
             const thList = [];
-            jEach(thDOM, (i, v) => {
+            each(thDOM, (i, v) => {
                 thList.push(`"${v.querySelector('.th-text').textContent || ''}"`);
             });
             tableList.push(thList);
 
             // 存储导出的tbody
-            jEach(trDOM, (i, v) => {
+            each(trDOM, (i, v) => {
                 let tdList = [];
                 const tdDOM = jTool(`td[${GM_CREATE}="false"][${TD_VISIBLE}="visible"]`, v);
-                jEach(tdDOM, (i2, v2) => {
+                each(tdDOM, (i2, v2) => {
                     tdList.push(`"${v2.textContent || ''}"`); // 添加""的原因: 规避内容中英文逗号被识别为分割单元格的标识
                 });
                 tableList.push(tdList);
@@ -168,7 +169,7 @@ class ExportFile {
         }
 
         let exportHTML = '';
-        jEach(tableList, (i, v) => {
+        each(tableList, (i, v) => {
             if (i !== 0) {
                 exportHTML += '\r\n';
             }

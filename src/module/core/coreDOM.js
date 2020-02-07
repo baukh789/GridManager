@@ -1,6 +1,7 @@
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import { isUndefined, isString, isObject, isElement, each } from '@jTool/utils';
 import { calcLayout, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
-import { outError, isUndefined, isString, isObject, isElement, jEach } from '@common/utils';
+import { outError } from '@common/utils';
 import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, GM_CREATE, TH_NAME, ROW_CLASS_NAME, ODD } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
 import { mergeRow } from '../merge';
@@ -47,7 +48,7 @@ class Dom {
 
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
-        jEach($thList, (index, item) => {
+        each($thList, (index, item) => {
             const onlyTH = jTool(item);
             const onlyThWarp = jTool('.th-wrap', onlyTH);
             const thName = onlyTH.attr(TH_NAME);
@@ -130,7 +131,7 @@ class Dom {
         const installNormal = (trNode, row, index, isTop) => {
             // 与当前位置信息匹配的td列表
             const tdList = [];
-            jEach(columnMap, (key, col) => {
+            each(columnMap, (key, col) => {
                 let tdTemplate = col.template;
 
                 // 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
@@ -163,7 +164,7 @@ class Dom {
         try {
             const installTr = (list, level, pIndex) => {
                 const isTop = isUndefined(pIndex);
-                jEach(list, (index, row) => {
+                each(list, (index, row) => {
                     const trNode = document.createElement('tr');
                     const cacheKey = row[TR_CACHE_KEY];
 
@@ -254,7 +255,7 @@ class Dom {
             const hasChildren = children && children.length;
             tree.add(gridManagerName, trNode, level, hasChildren);
 
-            jEach(columnMap, (key, col) => {
+            each(columnMap, (key, col) => {
                 // 不处理项: 自动添加列
                 if (col.isAutoCreate) {
                     return;
@@ -289,7 +290,7 @@ class Dom {
      * @param columnMap
      */
     initVisible(gridManagerName, columnMap) {
-        jEach(columnMap, (index, col) => {
+        each(columnMap, (index, col) => {
             setAreVisible(gridManagerName, [col.key], col.isShow);
         });
     }

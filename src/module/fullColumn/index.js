@@ -1,5 +1,5 @@
 import { compileFullColumn } from '@common/framework';
-import { isUndefined, isElement } from '@common/utils';
+import { isUndefined, isElement } from '@jTool/utils';
 import './style.less';
 // 插入通栏: top-full-column
 export const installTopFull = (settings, tbody, row, index, callback) => {

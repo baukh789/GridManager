@@ -3,7 +3,8 @@ import order from '../order';
 import ajaxPage from '../ajaxPage';
 import { CLASS_DRAG_ACTION } from '../drag/constants';
 import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, TH_VISIBLE } from '@common/constants';
-import { getVisibleState, isUndefined, isString, isObject, jEach } from '@common/utils';
+import { isUndefined, isString, isObject, each } from '@jTool/utils';
+import { getVisibleState } from '@common/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
 import filter from '../filter';
@@ -68,7 +69,7 @@ class Render {
 
         const columnList = [];
 
-        jEach(columnMap, (key, col) => {
+        each(columnMap, (key, col) => {
             columnList[col.index] = col;
         });
 
@@ -83,7 +84,7 @@ class Render {
 
         let thListTpl = '';
         // columnList 生成thead
-        jEach(columnList, (index, col) => {
+        each(columnList, (index, col) => {
             thListTpl += this.createThTpl({settings, col});
         });
 

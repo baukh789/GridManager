@@ -2,11 +2,11 @@
  * ajaxPage: 分页
 **/
 import './style.less';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import extend from '@jTool/extend';
 import { clearTargetEvent } from '@common/base';
 import { getSettings, setSettings, getUserMemory, saveUserMemory, getCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { jExtend } from '@common/utils';
 import { TOOLBAR_KEY, DISABLED_CLASS_NAME } from '@common/constants';
 import core from '../core';
 import { getParams } from '../core/tool';
@@ -157,7 +157,7 @@ class AjaxPage {
             }
 		}
 
-        jExtend(settings, {
+        extend(settings, {
             pageData: {
                 [pageSizeKey]: pSize,
                 [currentPageKey]: 1
@@ -188,7 +188,7 @@ class AjaxPage {
                 setSettings(settings);
 
                 // 调用事件、渲染tbody
-                const query = jExtend({}, settings.query, settings.sortData, settings.pageData);
+                const query = extend({}, settings.query, settings.sortData, settings.pageData);
                 settings.pagingBefore(query);
                 core.refresh(gridManagerName, () => {
                     settings.pagingAfter(query);
@@ -308,7 +308,7 @@ class AjaxPage {
             resetPageInfo($footerToolbar, settings, pageData, asyncTotalsText);
 
             // 更新Cache
-            setSettings(jExtend(true, settings, {pageData}));
+            setSettings(extend(true, settings, {pageData}));
 
             // 显示底部工具条
             $footerToolbar.css('visibility', 'visible');
@@ -403,7 +403,7 @@ class AjaxPage {
 		setSettings(settings);
 
 		// 调用事件、渲染DOM
-		const newQuery = jExtend({}, query, sortData, pageData);
+		const newQuery = extend({}, query, sortData, pageData);
 		pagingBefore(newQuery);
 		core.refresh(gridManagerName, () => {
 			pagingAfter(newQuery);

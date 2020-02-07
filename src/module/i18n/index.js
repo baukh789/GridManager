@@ -1,7 +1,8 @@
 /*
  * i18n: 国际化
  * */
-import { outWarn, isUndefined, isArray } from '@common/utils';
+import { isUndefined, isArray } from '@jTool/utils';
+import { outWarn } from '@common/utils';
 /**
  * 获取所用语种，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
  * @param settings

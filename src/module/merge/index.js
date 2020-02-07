@@ -1,6 +1,6 @@
 import { getColTd, getTh, getTable } from '@common/base';
-import { jEach } from '@common/utils';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import { each } from '@jTool/utils';
 import './style.less';
 
 import { ROW_SPAN, MERGE_TD } from './constants';
@@ -10,7 +10,7 @@ import { ROW_SPAN, MERGE_TD } from './constants';
  * @param columnMap
  */
 export const mergeRow = (gridManagerName, columnMap) => {
-    jEach(columnMap, (key, col) => {
+    each(columnMap, (key, col) => {
         let merge = col.merge;
         if (!merge || (merge !== 'text' &&  merge !== 'html')) {
             return true;

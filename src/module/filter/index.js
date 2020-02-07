@@ -3,11 +3,12 @@
  * 表头的筛选菜单
  */
 import './style.less';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import extend from '@jTool/extend';
+import { each } from '@jTool/utils';
 import { getSettings, setSettings } from '@common/cache';
 import { getQuerySelector, getWrap, getDiv, getThName, clearTargetEvent } from '@common/base';
 import { CHECKED, UNCHECKED, TH_NAME } from '@common/constants';
-import { jEach, jExtend } from '@common/utils';
 import { parseTpl } from '@common/parse';
 import core from '../core';
 import checkbox from '../checkbox';
@@ -47,7 +48,7 @@ class Filter {
             const $filterCon = $filterAction.find(`.${CLASS_FILTER_CONTENT}`);
 
             // 清除事件源的其它过滤体
-            jEach($allFilterCon, (index, item) => {
+            each($allFilterCon, (index, item) => {
                 $filterCon.get(0) !== item ? item.style.display = 'none' : '';
             });
 
@@ -87,7 +88,7 @@ class Filter {
             const $th = $filterCon.closest('th');
             const thName = getThName($th);
             const checkedList = [];
-            jEach($filters, (index, item) => {
+            each($filters, (index, item) => {
                 item.checked && checkedList.push(item.value);
             });
 
@@ -95,7 +96,7 @@ class Filter {
             const checkedStr = checkedList.join(',');
             settings.columnMap[thName].filter.selected = checkedStr;
             settings.pageData[settings.currentPageKey] = 1;
-            jExtend(settings.query, {[thName]: checkedStr});
+            extend(settings.query, {[thName]: checkedStr});
             setSettings(settings);
 
             _this.update($th, settings.columnMap[thName].filter);
@@ -132,7 +133,7 @@ class Filter {
         // 事件: 单选框事件
         jTool(radioAction.target).on(radioAction.events, radioAction.selector, function () {
             const $filterRadio = jTool(this).closest('.filter-list').find('.filter-radio');
-            jEach($filterRadio, (index, item) => {
+            each($filterRadio, (index, item) => {
                 checkbox.updateRadioState(jTool(item).find('.gm-radio'), this === item.querySelector('.gm-radio-input'));
             });
         });
@@ -187,7 +188,7 @@ class Filter {
     update($th, filter) {
         const $filterIcon = jTool('.fa-icon', $th);
         const $filters = jTool(`.${CLASS_FILTER_CONTENT} .gm-radio-checkbox-input`, $th);
-        jEach($filters, (index, item) => {
+        each($filters, (index, item) => {
             let $radioOrCheckbox = jTool(item).closest('.gm-radio-checkbox');
             if (filter.isMultiple) {
                 checkbox.updateCheckboxState($radioOrCheckbox, filter.selected.indexOf(item.value)  >= 0 ? CHECKED : UNCHECKED);

@@ -1,7 +1,7 @@
 /*
  * GridManager: 右键菜单
  */
-import jTool from '@common/jTool';
+import jTool from '@jTool';
 import { getTbody, clearTargetEvent } from '@common/base';
 import { getSettings } from '@common/cache';
 import { MENU_KEY, DISABLED_CLASS_NAME } from '@common/constants';

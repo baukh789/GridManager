@@ -1,6 +1,7 @@
 import './style.less';
-import jTool from '@common/jTool';
-import { jEach, isUndefined, isFunction, isString, equal } from '@common/utils';
+import jTool from '@jTool';
+import { each, isUndefined, isFunction, isString } from '@jTool/utils';
+import { equal } from '@common/utils';
 import { getTable, getTbody, getQuerySelector, getWrap, getDiv, clearTargetEvent, getCloneRowData } from '@common/base';
 import { getTableData, setTableData, getSettings, getCheckedData, setCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
@@ -217,11 +218,11 @@ class MoveRow {
                 if (supportAutoOrder) {
                     const $orderDOM = jTool('[gm-order]', $allTr);
                     const orderList = [];
-                    jEach($orderDOM, (index, order) => {
+                    each($orderDOM, (index, order) => {
                         orderList.push(parseInt(order.innerText, 10));
                     });
                     orderList.sort((a, b) => a - b);
-                    jEach($orderDOM, (index, order) => {
+                    each($orderDOM, (index, order) => {
                         order.innerText = orderList[index];
                     });
                 }
@@ -267,7 +268,7 @@ class MoveRow {
         const cloneTr = tr.cloneNode(true);
 
         const cloneTd = cloneTr.querySelectorAll('td');
-        jEach(jTool('td', tr), (index, td) => {
+        each(jTool('td', tr), (index, td) => {
             cloneTd[index].width = jTool(td).width();
         });
 

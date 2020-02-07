@@ -2,8 +2,9 @@
  *  GridManager: 挂载至Element、window、jQuery
  *  #001: 如果已经存在，则清除之前的实例，重新进行实例化。原因：如果不清除而直接返回错误，会让使用者存在不便。
  * */
-import jTool from '@common/jTool';
-import { outError, isString } from '@common/utils';
+import jTool from '@jTool';
+import { isString } from '@jTool/utils';
+import { outError } from '@common/utils';
 import GridManager from './GridManager';
 
 /*

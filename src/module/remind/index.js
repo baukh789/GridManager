@@ -2,10 +2,10 @@
  * remind: 表头提醒
  */
 import './style.less';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import { isObject } from '@jTool/utils';
 import { getQuerySelector, getDiv, clearTargetEvent } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
-import { isObject } from '@common/utils';
 import { parseTpl } from '@common/parse';
 import remindTpl from './remind.tpl.html';
 import { getEvent, eventMap } from './event';

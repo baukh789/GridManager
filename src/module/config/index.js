@@ -2,11 +2,11 @@
  * config: th配置
  * */
 import './style.less';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import { each } from '@jTool/utils';
 import { getDiv, updateThWidth, setAreVisible, updateVisibleLast, updateScrollStatus, getTh, getWrap, clearTargetEvent } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { jEach } from '@common/utils';
 import { CONFIG_KEY, CHECKED_CLASS, TH_NAME } from '@common/constants';
 import adjust from '../adjust';
 import checkbox from '../checkbox';
@@ -207,13 +207,13 @@ class Config {
 
         const settings = getSettings(gridManagerName);
         const columnList = [];
-        jEach(settings.columnMap, (key, col) => {
+        each(settings.columnMap, (key, col) => {
             columnList[col.index] = col;
         });
 
         // 重置列的可视操作
         $configList.html('');
-        jEach(columnList, (index, col) => {
+        each(columnList, (index, col) => {
             let { key, isShow, disableCustomize } = col;
             if (disableCustomize) {
                 return;

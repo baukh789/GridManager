@@ -1,8 +1,8 @@
 /**
  * Settings: 配置项
  */
-import { jExtend } from '@common/utils';
-const noop = () => {};
+import extend from '@jTool/extend';
+import { noop } from '@jTool/utils';
 
 /**
  * 框架相关配置
@@ -444,7 +444,7 @@ const gridPrint = {
     supportPrint: true
 };
 export function Settings() {
-    jExtend(true, this, {
+    extend(true, this, {
         // 是否加载完成，用于调用公开方法确认
         rendered: false,
         ...frameworks,

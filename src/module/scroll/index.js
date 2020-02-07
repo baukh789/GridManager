@@ -6,11 +6,11 @@
  * 但是滚动事件的父级并未出现滚动, 所以无法进行事件委托。
  * 且该事件可能在消毁的时候失败， 所以在注册事件时需要进行unbind。
  * */
-import jTool from '@common/jTool';
+import jTool from '@jTool';
+import { each } from '@jTool/utils';
 import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus } from '@common/base';
 import { getSettings, updateCache } from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
-import { jEach } from '@common/utils';
 import { compileFakeThead } from '@common/framework';
 import config from '../config';
 import './style.less';
@@ -67,7 +67,7 @@ class Scroll {
         });
 
         // 重置th的宽度
-        jEach(jTool('th', $thead), (i, th) => {
+        each(jTool('th', $thead), (i, th) => {
             jTool('th', $setTopHead).eq(i).width(jTool(th).width());
         });
     }

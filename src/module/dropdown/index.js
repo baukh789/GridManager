@@ -1,4 +1,4 @@
-import jTool from '@common/jTool';
+import jTool from '@jTool';
 import { getWrap, clearTargetEvent } from '@common/base';
 import { parseTpl } from '@common/parse';
 import { TOOLBAR_KEY } from '@common/constants';

@@ -5,7 +5,9 @@
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { outInfo, outError, equal, getObjectIndexToArray, isUndefined, isFunction, isObject, isElement, jEach, jExtend, isNodeList, cloneObject } from '@common/utils';
+import { isUndefined, isFunction, isObject, isElement, each, isNodeList } from '@jTool/utils';
+import extend from '@jTool/extend';
+import { outInfo, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
 import { Settings } from '@common/Settings';
 import textConfig from '@module/i18n/config';
 import store from '@common/Store';
@@ -71,7 +73,7 @@ export const getRowData = (gridManagerName, target, useGmProp) => {
     // target type =  NodeList 类型时, 返回数组
     if (isNodeList(target)) {
         let rodData = [];
-        jEach(target, (i, tr) => {
+        each(target, (i, tr) => {
             rodData.push(getTrData(tr));
         });
         return rodData;
@@ -99,7 +101,7 @@ export const updateRowData = (gridManagerName, key, rowDataList) => {
     const updateData = (list, newItem) => {
         list.some(item => {
             if (item[key] === newItem[key]) {
-                jExtend(item, newItem);
+                extend(item, newItem);
                 updateCacheList.push(item);
                 return true;
             }
@@ -230,7 +232,7 @@ export const getCheckedData = gridManagerName => {
     const checkedList = store.checkedData[gridManagerName] || [];
 
     // 返回clone后的数组，以防止在外部操作导致数据错误。
-    return checkedList.map(item => jExtend(true, {}, item));
+    return checkedList.map(item => extend(true, {}, item));
 };
 
 /**
@@ -285,7 +287,7 @@ export const updateCheckedData = (gridManagerName, columnMap, key, rowDataList) 
     store.checkedData[gridManagerName] = store.checkedData[gridManagerName].map(item => {
         rowDataList.forEach(newItem => {
             if (item[key] === newItem[key]) {
-                jExtend(item, getCloneRowData(columnMap, newItem));
+                extend(item, getCloneRowData(columnMap, newItem));
             }
         });
         return item;
@@ -332,12 +334,12 @@ export const saveUserMemory = settings => {
     }
 
     let _cache = {};
-    const cloneMap = jExtend(true, {}, columnMap);
+    const cloneMap = extend(true, {}, columnMap);
     const useTemplate = ['template', 'text'];
 
     // 清除指定类型的字段
-    jEach(cloneMap, (undefind, col) => {
-        jEach(col, (key, item) => {
+    each(cloneMap, (undefind, col) => {
+        each(col, (key, item) => {
             // 清除: undefined
             if (isUndefined(col[key])) {
                 delete col[key];
@@ -450,7 +452,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
     // 合并参数
     const settings = new Settings();
     settings.textConfig = textConfig;
-    jExtend(true, settings, arg);
+    extend(true, settings, arg);
 
     // 存储初始配置项
     setSettings(settings);
@@ -535,7 +537,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
         }
 
         // 与用户记忆项不匹配
-        isUsable && jEach(columnMap, (key, col) => {
+        isUsable && each(columnMap, (key, col) => {
             if (!columnCache[key]
                 // 宽度
                 || columnCache[key].__width !== col.width
@@ -570,7 +572,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
 
         // 将用户记忆并入 columnMap 内
         if (isUsable) {
-            jExtend(true, columnMap, columnCache);
+            extend(true, columnMap, columnCache);
         } else {
             // 清除用户记忆
             delUserMemory(gridManagerName);
@@ -592,14 +594,14 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
  */
 export const getSettings = gridManagerName => {
     // 返回的是 clone 对象 而非对象本身
-    return jExtend(true, {}, store.settings[gridManagerName] || {});
+    return extend(true, {}, store.settings[gridManagerName] || {});
 };
 /**
  * 设置配置项
  * @param settings
  */
 export const setSettings = settings => {
-    store.settings[settings.gridManagerName] = jExtend(true, {}, settings);
+    store.settings[settings.gridManagerName] = extend(true, {}, settings);
 };
 
 /**
@@ -611,7 +613,7 @@ export const updateCache = gridManagerName => {
     const columnMap = settings.columnMap;
 
     // 更新 columnMap , 适用操作[宽度调整, 位置调整, 可视状态调整]
-    jEach(columnMap, (key, col) => {
+    each(columnMap, (key, col) => {
         // 禁用定制列: 不处理
         if (col.disableCustomize) {
             return;
