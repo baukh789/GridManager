@@ -18,7 +18,7 @@ export default {
 
 	// 获取当前元素在指定元素中的索引, 当无参数时为当前同级元素中的索引
 	index: function (nodeList) {
-		var node = this.DOMList[0];
+		const node = this.DOMList[0];
 		// 查找范围参数为空时,找寻同层节点
 		if (!nodeList) {
 			nodeList = node.parentNode.children;

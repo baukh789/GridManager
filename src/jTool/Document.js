@@ -2,14 +2,29 @@ import Sizzle from './Sizzle';
 import { each, createDOM, isUndefined, isString, isElement, isNumber } from './utils';
 
 export default {
+    /**
+     * 向元素的尾部添加节点
+     * @param childList
+     * @returns {default|*}
+     */
     append: function (childList) {
         return this.html(childList, 'append');
     },
 
+    /**
+     * 向元素的头部添加节点
+     * @param childList
+     * @returns {default|*}
+     */
     prepend: function (childList) {
         return this.html(childList, 'prepend');
     },
 
+    /**
+     * 向元素前方添加节点
+     * @param node
+     * @returns {default}
+     */
     before: function (node) {
         if(node.jTool) {
             node = node.DOMList[0];
@@ -20,19 +35,28 @@ export default {
         return this;
     },
 
+    /**
+     * 向元素后方添加节点
+     * @param node
+     */
     after: function (node) {
         if(node.jTool) {
             node = node.DOMList[0];
         }
-        var thisNode = this.DOMList[0];
-        var parentEl = thisNode.parentNode;
+        const thisNode = this.DOMList[0];
+        const parentEl = thisNode.parentNode;
         if (parentEl.lastChild === thisNode) {
             parentEl.appendChild(node);
         }else{
             parentEl.insertBefore(node, thisNode.nextSibling);
         }
-        //  parentEl.insertBefore(node, thisNode);
     },
+
+    /**
+     * 获取或设置元素的innerText
+     * @param text
+     * @returns {string|default}
+     */
     text: function (text) {
         // setter
         if (!isUndefined(text)) {
@@ -45,6 +69,13 @@ export default {
             return this.DOMList[0].textContent;
         }
     },
+
+    /**
+     * 获取或设置元素的innerHTML
+     * @param childList
+     * @param insertType
+     * @returns {default|*}
+     */
     html: function (childList, insertType) {
         // getter
         if (isUndefined(childList) && isUndefined(insertType)) {
@@ -91,6 +122,13 @@ export default {
         });
         return this;
     },
+
+    /**
+     * 为当前元素添加父元素
+     * @param elementText
+     * @param content
+     * @returns {default}
+     */
     wrap: function (elementText, content) {
         each(this.DOMList, function (i, v) {
             const wrap = new Sizzle(elementText, v.ownerDocument).get(0);
@@ -100,7 +138,10 @@ export default {
         });
         return this;
     },
-    // 向上寻找匹配节点
+    /**
+     * 向上寻找匹配节点
+     * @param selectorText
+     */
     closest: function (selectorText) {
         let parentDOM = this.DOMList[0].parentNode;
         if (isUndefined(selectorText)) {
@@ -129,19 +170,27 @@ export default {
         return new Sizzle(parentDOM);
     },
 
-    // 获取当前元素父级,返回jTool对象
+    /**
+     * 获取当前元素父级,返回jTool对象
+     * @returns {default}
+     */
     parent: function () {
         return this.closest();
     },
-    // 克隆节点: 参数deep克隆节点及其后代
+
+    /**
+     * 克隆节点: 参数deep克隆节点及其后代
+     * @param deep
+     */
     clone: function (deep) {
         return new Sizzle(this.DOMList[0].cloneNode(deep || false));
     },
-    // 批量删除节点
+
+    /**
+     * 批量删除节点
+     */
     remove: function () {
         each(this.DOMList, function (i, v) {
-            // v.remove IE 所有版本都不支持, 使用removeChild替换
-            // v.remove();
             v.parentNode.removeChild(v);
         });
     }

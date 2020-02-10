@@ -23,14 +23,82 @@
  * */
 import { isElement, isFunction, each, noop } from './utils';
 
+const EVENT_KEY = 'jToolEvent';
+
+const getEvents = element => {
+    return element[EVENT_KEY];
+};
+/**
+ * 获取 jTool Event 对象
+ * @param DOMList
+ * @param event
+ * @param querySelector
+ * @param callback
+ * @param useCapture
+ * @returns {[]|default}
+ */
+const getEventObject = (DOMList, event, querySelector, callback, useCapture) => {
+    // $(dom).on(event, callback);
+    if (isFunction(querySelector)) {
+        useCapture = callback || false;
+        callback = querySelector;
+        querySelector = undefined;
+    }
+
+    // 子选择器不存在 或 当前DOM对象包含Window Document 则将子选择器置空
+    if(!querySelector || !isElement(DOMList[0])) {
+        querySelector = '';
+    }
+    // #Event003 存在子选择器 -> 包装回调函数, 回调函数的参数
+    // 预绑定功能实现
+    if(querySelector !== '') {
+        const fn = callback;
+        callback = function (e) {
+            // 验证子选择器所匹配的nodeList中是否包含当前事件源 或 事件源的父级
+            // 注意: 这个方法为包装函数,此处的this为触发事件的Element
+            let target = e.target;
+            while(target && target !== this) {
+                if([].indexOf.call(this.querySelectorAll(querySelector), target) !== -1) {
+                    fn.apply(target, arguments);
+                    break;
+                }
+                target = target.parentNode;
+            }
+        };
+    }
+    const eventSplit = event.split(' ');
+    const eventList = [];
+    let	eventScopeSplit = null;
+    let	eventObj = null;
+
+    each(eventSplit, function (i, eventName) {
+        if (eventName.trim() === '') {
+            return true;
+        }
+
+        eventScopeSplit = eventName.split('.');
+        eventObj = {
+            eventName: eventName + querySelector,
+            type: eventScopeSplit[0],
+            querySelector: querySelector,
+            callback: callback || noop,
+            useCapture: useCapture || false,
+            // TODO: nameScope暂时不用, 因为nameScope中的值存在于eventName中，eventName已对同类型的事件进行了区分
+            nameScope: eventScopeSplit[1] || undefined
+        };
+        eventList.push(eventObj);
+    });
+    return eventList;
+};
+
 export default {
 	on: function (event, querySelector, callback, useCapture) {
 		// 将事件触发执行的函数存储于DOM上, 在清除事件时使用
-		return this.addEvent(this.getEventObject(event, querySelector, callback, useCapture));
+		return this.addEvent(getEventObject(this.DOMList, event, querySelector, callback, useCapture));
 	},
 
 	off: function (event, querySelector) {
-		return this.removeEvent(this.getEventObject(event, querySelector));
+		return this.removeEvent(getEventObject(this.DOMList, event, querySelector));
 	},
 
 	bind: function (event, callback, useCapture) {
@@ -38,119 +106,69 @@ export default {
 	},
 
 	unbind: function (event) {
-		return this.removeEvent(this.getEventObject(event));
+		return this.removeEvent(getEventObject(this.DOMList, event));
 	},
 
-	trigger: function (event) {
-		each(this.DOMList, function (index, element) {
+	trigger: function (eventName) {
+		each(this.DOMList, (index, element) => {
 			try {
 				// #Event001: trigger的事件是直接绑定在当前DOM上的
-				if (element.jToolEvent && element.jToolEvent[event].length > 0) {
-					var myEvent = new Event(event); // #Event002: 创建一个事件对象，用于模拟trigger效果
+				if (getEvents(element)[eventName].length > 0) {
+					const myEvent = new Event(eventName); // #Event002: 创建一个事件对象，用于模拟trigger效果
 					element.dispatchEvent(myEvent);
-				} else if (event !== 'click') { // 当前为预绑定: 非click
+				} else if (eventName !== 'click') { // 当前为预绑定: 非click
 					// 预绑定的事件只有click事件可以通过trigger进行调用
-				} else if (event === 'click') { // 当前为预绑定: click事件, 该事件为浏览器特性
-					element[event]();
+				} else if (eventName === 'click') { // 当前为预绑定: click事件, 该事件为浏览器特性
+					element[eventName]();
 				}
 			} catch(e) {
-				console.error(`Event:[${event}] error`);
+				console.error(`Event:[${eventName}] error`);
 			}
 		});
 		return this;
 	},
 
-	// 获取 jTool Event 对象
-	getEventObject: function (event, querySelector, callback, useCapture) {
-		// $(dom).on(event, callback);
-		if (isFunction(querySelector)) {
-			useCapture = callback || false;
-			callback = querySelector;
-			querySelector = undefined;
-		}
-		// event callback 为必要参数
-		if (!event) {
-			return this;
-		}
-
-		// 子选择器不存在 或 当前DOM对象包含Window Document 则将子选择器置空
-		if(!querySelector || !isElement(this.DOMList[0])) {
-			querySelector = '';
-		}
-		// #Event003 存在子选择器 -> 包装回调函数, 回调函数的参数
-		// 预绑定功能实现
-		if(querySelector !== '') {
-			var fn = callback;
-			callback = function (e) {
-				// 验证子选择器所匹配的nodeList中是否包含当前事件源 或 事件源的父级
-				// 注意: 这个方法为包装函数,此处的this为触发事件的Element
-				var target = e.target;
-				while(target && target !== this) {
-					if([].indexOf.call(this.querySelectorAll(querySelector), target) !== -1) {
-						fn.apply(target, arguments);
-						break;
-					}
-					target = target.parentNode;
-				}
-			};
-		}
-		const eventSplit = event.split(' ');
-		const eventList = [];
-		let	eventScopeSplit = null;
-		let	eventObj = null;
-
-		each(eventSplit, function (i, eventName) {
-			if (eventName.trim() === '') {
-				return true;
-			}
-
-			eventScopeSplit = eventName.split('.');
-			eventObj = {
-				eventName: eventName + querySelector,
-				type: eventScopeSplit[0],
-				querySelector: querySelector,
-				callback: callback || noop,
-				useCapture: useCapture || false,
-				// TODO: nameScope暂时不用, 因为nameScope中的值存在于eventName中，eventName已对同类型的事件进行了区分
-				nameScope: eventScopeSplit[1] || undefined
-			};
-			eventList.push(eventObj);
-		});
-		return eventList;
-	},
-
-	// 增加事件,并将事件对象存储至DOM节点
+    /**
+     * 增加事件,并将事件对象存储至DOM节点
+     * @param eventList
+     * @returns {default}
+     */
 	addEvent: function (eventList) {
-		var _this = this;
-		each(eventList, function (index, eventObj) {
-			each(_this.DOMList, function (i, v) {
-				v.jToolEvent = v.jToolEvent || {};
-				v.jToolEvent[eventObj.eventName] = v.jToolEvent[eventObj.eventName] || [];
-				v.jToolEvent[eventObj.eventName].push(eventObj);
-				v.addEventListener(eventObj.type, eventObj.callback, eventObj.useCapture);
+		each(eventList, (index, eventObj) => {
+			each(this.DOMList, (i, v) => {
+			    const events = getEvents(v) || {};
+			    const { eventName, type, callback, useCapture } = eventObj;
+                events[eventName] = events[eventName] || [];
+                events[eventName].push(eventObj);
+                v[EVENT_KEY] = events;
+				v.addEventListener(type, callback, useCapture);
 			});
 		});
-		return _this;
+		return this;
 	},
 
-	// 删除事件,并将事件对象移除出DOM节点
+    /**
+     * 删除事件,并将事件对象移除出DOM节点
+     * @param eventList
+     * @returns {default}
+     */
 	removeEvent: function (eventList) {
-		var _this = this;
-		var eventFnList; // 事件执行函数队列
-		each(eventList, function (index, eventObj) {
-			each(_this.DOMList, function (i, v) {
-				if (!v.jToolEvent) {
+		each(eventList, (index, eventObj) => {
+			each(this.DOMList, (i, v) => {
+			    const events = getEvents(v);
+				if (!events) {
 					return;
 				}
-				eventFnList = v.jToolEvent[eventObj.eventName];
+				const eventName = eventObj.eventName;
+				const eventFnList = events[eventName];
 				if (eventFnList) {
-					each(eventFnList, function (i2, v2) {
+					each(eventFnList, (i2, v2) => {
 						v.removeEventListener(v2.type, v2.callback);
 					});
-					delete v.jToolEvent[eventObj.eventName];
+					delete events[eventName];
 				}
 			});
 		});
-		return _this;
+		return this;
 	}
 };

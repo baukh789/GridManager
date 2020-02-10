@@ -11,7 +11,7 @@
  * --注意事项--
  * show与hide方法只是一个简单的实现,不支持参数及动画效果
  * */
-import { each, isFunction, isUndefined, getStyle, noop } from './utils';
+import { each, getStyle } from './utils';
 import _Css from './Css';
 const INLINE_BLOCK = 'inline-block';
 const TABLE_CELL = 'table-cell';
@@ -27,74 +27,55 @@ const DISPLAY_MAP = {
     FONT: INLINE_BLOCK,
     I: INLINE_BLOCK
 };
-function show() {
-    each(this.DOMList,  (i, v) => {
-        v.style.display = DISPLAY_MAP[v.nodeName] || 'block';
-    });
-    return this;
-}
-
-function hide() {
-    each(this.DOMList, function (i, v) {
-        v.style.display = 'none';
-    });
-    return this;
-}
-
-/**
- *  动画效果, 动画样式仅支持以对象类型传入且值需要存在有效的单位
- * @param styleObj
- * @param time
- * @param callback
- */
-function animate(styleObj, time, callback) {
-    let animateFromText = '';   // 动画执行前样式文本
-    let animateToText = '';     // 动画执行后样式文本
-    let node = this.DOMList[0];
-    // 无有效的参数, 直接跳出. 但并不返回错误.
-    if(!styleObj) {
-        return;
-    }
-    // 参数转换
-    if(isUndefined(callback) && isFunction(time)) {
-        callback = time;
-        time = 0;
-    }
-    if(isUndefined(callback)) {
-        callback = noop;
-    }
-    if(isUndefined(time)) {
-        time = 0;
-    }
-    // 组装动画 keyframes
-    each(styleObj, (key, v) => {
-        animateFromText += key + ':' + getStyle(node, key) + ';';
-        animateToText += key + ':' + v + ';';
-    });
-    // 拼接动画样式文本
-    const animateText = `@keyframes jToolAnimate {from {${animateFromText}}to {${animateToText}}}`;
-
-    // 引入动画样式至页面
-    const jToolAnimate = document.createElement('style');
-    jToolAnimate.className = 'jTool-animate-style';
-    jToolAnimate.type = 'text/css';
-    document.head.appendChild(jToolAnimate);
-    jToolAnimate.textContent = jToolAnimate.textContent + animateText;
-
-    // 启用动画
-    node.style.animation = `jToolAnimate ${time / 1000}s ease-in-out forwards`;
-
-    // 延时执行回调函数及清理操作
-    window.setTimeout(() => {
-        _Css.css.call(this, styleObj);
-        node.style.animation = '';
-        document.head.removeChild(jToolAnimate);
-        callback();
-    }, time);
-}
 
 export default {
-    animate,
-    show,
-    hide
+    /**
+     *  动画效果, 动画样式仅支持以对象类型传入且值需要存在有效的单位
+     * @param styleObj
+     * @param time
+     * @param callback
+     */
+    animate: function (styleObj, time, callback) {
+        let animateFromText = '';   // 动画执行前样式文本
+        let animateToText = '';     // 动画执行后样式文本
+        let node = this.DOMList[0];
+
+        // 组装动画 keyframes
+        each(styleObj, (key, v) => {
+            animateFromText += key + ':' + getStyle(node, key) + ';';
+            animateToText += key + ':' + v + ';';
+        });
+        // 拼接动画样式文本
+        const animateText = `@keyframes jToolAnimate {from {${animateFromText}}to {${animateToText}}}`;
+
+        // 引入动画样式至页面
+        const jToolAnimate = document.createElement('style');
+        jToolAnimate.className = 'jTool-animate-style';
+        jToolAnimate.type = 'text/css';
+        document.head.appendChild(jToolAnimate);
+        jToolAnimate.textContent = jToolAnimate.textContent + animateText;
+
+        // 启用动画
+        node.style.animation = `jToolAnimate ${time / 1000}s ease-in-out forwards`;
+
+        // 延时执行回调函数及清理操作
+        window.setTimeout(() => {
+            _Css.css.call(this, styleObj);
+            node.style.animation = '';
+            document.head.removeChild(jToolAnimate);
+            callback();
+        }, time);
+    },
+    show: function () {
+        each(this.DOMList,  (i, v) => {
+            v.style.display = DISPLAY_MAP[v.nodeName] || 'block';
+        });
+        return this;
+    },
+    hide: function () {
+        each(this.DOMList, function (i, v) {
+            v.style.display = 'none';
+        });
+        return this;
+    }
 };

@@ -72,6 +72,8 @@ class Drag {
             // 存储移动时的th所处的位置
             let _thIndex = 0;
 
+            $dreamlandDIV.show();
+
             // 绑定拖拽滑动事件
             jTool(dragging.target).off(dragging.events);
             jTool(dragging.target).on(dragging.events, function (e2) {
@@ -103,7 +105,7 @@ class Drag {
                     $nextTh = undefined;
                 }
 
-                $dreamlandDIV.show().css({
+                $dreamlandDIV.css({
                     width: th.offsetWidth,
                     height: table.offsetHeight,
                     left: e2.clientX - $tableWrap.offset().left + window.pageXOffset - th.offsetWidth / 2,
