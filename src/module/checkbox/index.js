@@ -12,7 +12,7 @@ import { CHECKBOX_WIDTH,
     CHECKED_CLASS,
     INDETERMINATE_CLASS } from '@common/constants';
 import jTool from '@jTool';
-import each from '@jTool/utils';
+import { each, isNumber } from '@jTool/utils';
 import { getQuerySelector, getTable, clearTargetEvent } from '@common/base';
 import { getSettings, getCheckedData, getRowData } from '@common/cache';
 import { parseTpl } from '@common/parse';
@@ -229,7 +229,7 @@ class Checkbox {
 		// 更新底部工具条选中描述信息
         ajaxPage.updateCheckedInfo(gridManagerName);
 
-        if (!useRadio && max) {
+        if (!useRadio && isNumber(max)) {
             const $tbodyCheckWrap = jTool('tbody .gm-checkbox-wrapper ', $table);
             each($tbodyCheckWrap, (index, wrap) => {
                 const $wrap = jTool(wrap);
