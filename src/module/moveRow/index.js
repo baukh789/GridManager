@@ -249,11 +249,14 @@ class MoveRow {
 
     /**
      * 增加行移动标识
-     * @param td
      * @param col
      */
-    addSign(td, col) {
-        col.disableMoveRow && td.setAttribute(DISABLE_MOVE, '');
+    addSign(col) {
+        if (!col.disableMoveRow) {
+            return '';
+        }
+        return DISABLE_MOVE;
+        // col.disableMoveRow && td.setAttribute(DISABLE_MOVE, '');
     }
 
     /**

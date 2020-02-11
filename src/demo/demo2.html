@@ -185,38 +185,36 @@
 			"totals": 8
 		};
 
+		const getData = num => {
+		    const data = [];
+		    let child = [];
+
+            for (let i = 1; i<= num; i++) {
+                child = [];
+                for (let j = 1; j<= 40; j++) {
+                    child.push({
+                        "id": parseInt((i.toString() + j.toString()), 10),
+                        "name": `baukh-${i}-${j}`,
+                        "age": "28",
+                        "createDate": "2015-03-12",
+                        "info": "野生前端程序"
+                    });
+                }
+                data.push({
+                    "id": i,
+                    "name": `baukh-${i}`,
+                    "age": "28",
+                    "createDate": "2015-03-12",
+                    "info": "野生前端程序",
+                    "children": child
+                });
+            }
+
+		    return data;
+        };
 		var ajaxData2 = {
-			"data":[
-				{
-				    "id": 1,
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序"
-				},
-				{
-                    "id": 2,
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序"
-				},
-				{
-                    "id": 3,
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序"
-				},
-				{
-                    "id": 4,
-					"name": "baukh",
-					"age": "28",
-					"createDate": "2015-03-12",
-					"info": "野生前端程序"
-				}
-			],
-			"totals": 4
+			"data": getData(20),
+			"totals": 20
 		};
 	</script>
 	<script type="text/javascript">
@@ -246,7 +244,7 @@
                 },
 				ajaxData: ajaxData1,
                 // useRadio: true,
-				pageSize:20,
+				pageSize: 20,
 				query: {ex: '用户自定义的查询参数,格式:{key:value}'},
 				columnData: [{
 					key: 'name',

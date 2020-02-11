@@ -84,31 +84,39 @@ export const compileTh = (settings, key, template) => {
  * @param template
  * @returns {*}
  */
-export const compileTd = (settings, el, template, row, index, key) => {
+export const compileTd = (settings, template, row, index, key) => {
     const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(gridManagerName);
-    // React and not template
-    if (!template) {
-        return row[key];
+
+    let text = '';
+    let compileAttr = '';
+    if (template) {
+        // React element or React function
+        // react 返回空字符串，将单元格内容交由react控制
+        if (compileReact) {
+            compileAttr = `${getKey(gridManagerName)}=${compileList.length}`;
+            compileList.push({template, row, index, key, type: 'template', fnArg: [row[key], row, index, key]});
+        }
+
+        // 解析框架: Angular 1.x || Vue
+        if (compileVue || compileAngularjs) {
+            compileAttr = `${getKey(gridManagerName)}=${compileList.length}`;
+            compileList.push({row, index, key});
+        }
+
+        // not React
+        // 非react时，返回函数执行结果
+        if (!compileReact) {
+            text = template(row[key], row, index, key);
+        }
+    } else {
+        text = row[key];
     }
 
-    // React element or React function
-    // react 返回空字符串，将单元格内容交由react控制
-    if (compileReact) {
-        compileList.push({el, template, row, index, key, type: 'template', fnArg: [row[key], row, index, key]});
-        return '';
-    }
-
-    // 解析框架: Angular 1.x || Vue
-    if (compileVue || compileAngularjs) {
-        compileList.push({el, row, index, key});
-    }
-
-    // not React
-    // 非react时，返回函数执行结果
-    if (!compileReact) {
-        return template(row[key], row, index, key);
-    }
+    return {
+        text,
+        compileAttr
+    };
 };
 
 /**
@@ -143,34 +151,41 @@ export const compileEmptyTemplate = (settings, el, template) => {
 /**
  * 解析: 通栏
  * @param settings
- * @param el
  * @param row
  * @param index
  * @param template
  * @returns {*}
  */
-export const compileFullColumn = (settings, el, row, index, template) => {
+export const compileFullColumn = (settings, row, index, template) => {
     const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(gridManagerName);
 
-    // React element or function
+    let text = '';
+    let compileAttr = '';
+
+    // React element or React function
+    // react 返回空字符串，将单元格内容交由react控制
     if (compileReact) {
-        compileList.push({el, template, row, index, type: 'full', fnArg: [row, index]});
-        return '';
+        compileAttr = `${getKey(gridManagerName)}=${compileList.length}`;
+        compileList.push({template, row, index, type: 'full', fnArg: [row, index]});
     }
 
-    // 解析框架: Vue
-    if (compileVue) {
-        compileList.push({el, row, index});
+    // 解析框架: Angular 1.x || Vue
+    if (compileVue || compileAngularjs) {
+        compileAttr = `${getKey(gridManagerName)}=${compileList.length}`;
+        compileList.push({row, index});
     }
 
-    // 解析框架: Angular 1.x
-    if (compileAngularjs) {
-        compileList.push({el, row, index});
+    // not React
+    // 非react时，返回函数执行结果
+    if (!compileReact) {
+        text = template(row, index);
     }
 
-    // not react
-    return template(row, index);
+    return {
+        text,
+        compileAttr
+    };
 };
 
 /**
