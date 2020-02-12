@@ -1,6 +1,6 @@
-import { compileMap, getKey, getCompileList, clearCompileList, compileFakeThead, compileTh, compileTd, compileEmptyTemplate, compileFullColumn, sendCompile } from '@common/framework';
+import { getCompileList, clearCompileList, compileFakeThead, compileTh, compileTd, compileEmptyTemplate, compileFullColumn, sendCompile } from '@common/framework';
 import tableTpl from '@test/table-test.tpl.html';
-
+const FRAMEWORK_KEY = 'data-compile-id';
 // 清除空格
 const tableTestTpl = tableTpl;
 describe('Framework', () => {
@@ -12,20 +12,8 @@ describe('Framework', () => {
 
     afterEach(() => {
         settings = null;
-        delete compileMap[gridManagerName];
+        clearCompileList(gridManagerName);
         gridManagerName = null;
-    });
-
-    describe('getKey', () => {
-        it('基础验证', () => {
-            expect(getKey).toBeDefined();
-            expect(getKey.length).toBe(1);
-        });
-        it('执行验证', () => {
-            expect(getKey()).toBe('data-compile-id-');
-            expect(getKey(gridManagerName)).toBe('data-compile-id-test');
-            expect(getKey('cc')).toBe('data-compile-id-cc');
-        });
     });
 
     describe('getCompileList', () => {
@@ -35,9 +23,6 @@ describe('Framework', () => {
         });
         it('执行验证', () => {
             expect(getCompileList()).toEqual([]);
-            expect(getCompileList(gridManagerName)).toEqual([]);
-            compileMap[gridManagerName] = [1, 2];
-            expect(getCompileList(gridManagerName)).toEqual([1, 2]);
         });
     });
 
@@ -47,9 +32,7 @@ describe('Framework', () => {
             expect(clearCompileList.length).toBe(1);
         });
         it('执行验证', () => {
-            expect(compileMap[gridManagerName]).toBeUndefined();
-            clearCompileList(gridManagerName);
-            expect(compileMap[gridManagerName]).toEqual([]);
+            expect(clearCompileList(gridManagerName)).toBeUndefined();
         });
     });
 
@@ -60,14 +43,14 @@ describe('Framework', () => {
             fakeTheadTr = document.querySelector('thead[grid-manager-mock-thead="test"] tr');
             // 模拟未渲染前效果
             [].forEach.call(fakeTheadTr.querySelectorAll('th[gm-create="false"]'), (item, index) => {
-                item.setAttribute('data-compile-id-test', index);
+                item.setAttribute(FRAMEWORK_KEY, index);
             });
         });
 
         afterEach(() => {
             document.body.innerHTML = '';
             [].forEach.call(fakeTheadTr.querySelectorAll('th[gm-create="false"]'), item => {
-                item.removeAttribute('data-compile-id-test');
+                item.removeAttribute(FRAMEWORK_KEY);
             });
             fakeTheadTr = null;
         });
@@ -139,7 +122,7 @@ describe('Framework', () => {
             expect(getCompileList(gridManagerName).length).toBe(0);
             let obj = compileTh(settings, 'title', () => '标题');
             expect(obj.text).toBe('标题');
-            expect(obj.compileAttr).toBe('data-compile-id-test=0');
+            expect(obj.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
             expect(getCompileList(gridManagerName).length).toBe(1);
             obj = null;
         });
@@ -153,7 +136,7 @@ describe('Framework', () => {
             expect(getCompileList(gridManagerName).length).toBe(0);
             let obj = compileTh(settings, 'title', () => '标题');
             expect(obj.text).toBe('标题');
-            expect(obj.compileAttr).toBe('data-compile-id-test=0');
+            expect(obj.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
             expect(getCompileList(gridManagerName).length).toBe(1);
             obj = null;
         });
@@ -167,20 +150,18 @@ describe('Framework', () => {
             expect(getCompileList(gridManagerName).length).toBe(0);
             let obj = compileTh(settings, 'title', () => '标题');
             expect(obj.text).toBe('');
-            expect(obj.compileAttr).toBe('data-compile-id-test=0');
+            expect(obj.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
             expect(getCompileList(gridManagerName).length).toBe(1);
             obj = null;
         });
     });
 
     describe('compileTd', () => {
-        let tdNode = null;
+        let data = null;
         let row = null;
         let tdTemplate = null;
         beforeEach(() => {
-            document.body.innerHTML = tableTestTpl;
             // 获取第一个非自动创建td
-            tdNode = document.querySelector('tbody tr td[gm-create="false"]');
             row = {
                 'id': 92,
                 'title': 'Content-Type 对照表',
@@ -201,14 +182,13 @@ describe('Framework', () => {
         });
 
         afterEach(() => {
-            document.body.innerHTML = '';
-            tdNode = null;
+            data = null;
             row = null;
             tdTemplate = null;
         });
         it('基础验证', () => {
             expect(compileTd).toBeDefined();
-            expect(compileTd.length).toBe(6);
+            expect(compileTd.length).toBe(5);
         });
 
         it('无框架: 模板为函数', () => {
@@ -219,7 +199,10 @@ describe('Framework', () => {
                 return 'this is function';
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('this is function');
+
+            data = compileTd(settings, tdTemplate, row, 1, 'pic');
+            expect(data.text).toBe('this is function');
+            expect(data.compileAttr).toBe('');
             expect(getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -228,7 +211,10 @@ describe('Framework', () => {
                 gridManagerName
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('/upload/blog/pic/9081_type.jpg');
+
+            data = compileTd(settings, tdTemplate, row, 1, 'pic');
+            expect(data.text).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(data.compileAttr).toBe('');
             expect(getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -239,7 +225,10 @@ describe('Framework', () => {
             };
 
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('/upload/blog/pic/9081_type.jpg');
+
+            data = compileTd(settings, tdTemplate, row, 1, 'pic');
+            expect(data.text).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(data.compileAttr).toBe('');
             expect(getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -253,8 +242,16 @@ describe('Framework', () => {
                 return 'this is function' + pic + index;
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('this is function/upload/blog/pic/9081_type.jpg1');
+
+            data = compileTd(settings, tdTemplate, row, 1, 'pic');
+            expect(data.text).toBe('this is function/upload/blog/pic/9081_type.jpg1');
+            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
             expect(getCompileList(gridManagerName).length).toBe(1);
+
+            data = compileTd(settings, tdTemplate, row, 1, 'pic');
+            expect(data.text).toBe('this is function/upload/blog/pic/9081_type.jpg1');
+            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=1`);
+            expect(getCompileList(gridManagerName).length).toBe(2);
         });
 
         it('Vue: 无模板', () => {
@@ -264,7 +261,10 @@ describe('Framework', () => {
             };
 
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('/upload/blog/pic/9081_type.jpg');
+
+            data = compileTd(settings, tdTemplate, row, 1, 'pic');
+            expect(data.text).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(data.compileAttr).toBe('');
             expect(getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -278,7 +278,10 @@ describe('Framework', () => {
                 return 'this is function' + pic + index;
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('this is function/upload/blog/pic/9081_type.jpg1');
+
+            data = compileTd(settings, tdTemplate, row, 1, 'pic');
+            expect(data.text).toBe('this is function/upload/blog/pic/9081_type.jpg1');
+            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
             expect(getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -289,7 +292,10 @@ describe('Framework', () => {
             };
 
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('/upload/blog/pic/9081_type.jpg');
+
+            data = compileTd(settings, tdTemplate, row, 1, 'pic');
+            expect(data.text).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(data.compileAttr).toBe('');
             expect(getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -303,7 +309,10 @@ describe('Framework', () => {
                 return 'this is function';
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileTd(settings, tdNode, tdTemplate, row, 1, 'pic')).toBe('');
+
+            data = compileTd(settings, tdTemplate, row, 1, 'pic');
+            expect(data.text).toBe('');
+            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
             expect(getCompileList(gridManagerName).length).toBe(1);
         });
     });
@@ -370,12 +379,10 @@ describe('Framework', () => {
     });
 
     describe('compileFullColumn', () => {
-        let fullNode = null;
+        let data = null;
         let row = null;
         let template = null;
         beforeEach(() => {
-            document.body.innerHTML = '<table><tbody><tr><td colspan="1"><div class="full-column-td"></div></td></tr></tbody></table>';
-            fullNode = document.querySelector('tbody div.full-column-td');
             row = {
                 'id': 92,
                 'title': 'Content-Type 对照表',
@@ -396,14 +403,13 @@ describe('Framework', () => {
         });
 
         afterEach(() => {
-            document.body.innerHTML = '';
-            fullNode = null;
+            data = null;
             row = null;
             template = null;
         });
         it('基础验证', () => {
             expect(compileFullColumn).toBeDefined();
-            expect(compileFullColumn.length).toBe(5);
+            expect(compileFullColumn.length).toBe(4);
         });
 
         it('无框架', () => {
@@ -415,7 +421,10 @@ describe('Framework', () => {
                 return '<div>这个是通栏</div>';
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileFullColumn(settings, fullNode, row, 1, template)).toBe('<div>这个是通栏</div>');
+
+            data = compileFullColumn(settings, row, 1, template);
+            expect(data.text).toBe('<div>这个是通栏</div>');
+            expect(data.compileAttr).toBe('');
             expect(getCompileList(gridManagerName).length).toBe(0);
         });
 
@@ -429,7 +438,10 @@ describe('Framework', () => {
                 return '<div>这个是通栏</div>';
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileFullColumn(settings, fullNode, row, 1, template)).toBe('<div>这个是通栏</div>');
+
+            data = compileFullColumn(settings, row, 1, template);
+            expect(data.text).toBe('<div>这个是通栏</div>');
+            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
             expect(getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -443,7 +455,10 @@ describe('Framework', () => {
                 return '<div>这个是通栏</div>';
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileFullColumn(settings, fullNode, row, 1, template)).toBe('<div>这个是通栏</div>');
+
+            data = compileFullColumn(settings, row, 1, template);
+            expect(data.text).toBe('<div>这个是通栏</div>');
+            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
             expect(getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -457,79 +472,82 @@ describe('Framework', () => {
                 return '<div>这个是通栏</div>';
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileFullColumn(settings, fullNode, row, 1, template)).toBe('');
+
+            data = compileFullColumn(settings, row, 1, template);
+            expect(data.text).toBe('');
+            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
             expect(getCompileList(gridManagerName).length).toBe(1);
         });
     });
 
 
-    describe('send', () => {
-        beforeEach(() => {
-            document.body.innerHTML = '<table><tbody><tr><td data-compile-id-test="1"></td><td data-compile-id-test="2"></td></tr></tbody></table>';
-        });
-
-        afterEach(() => {
-            document.body.innerHTML = '';
-        });
-        it('基础验证', () => {
-            expect(sendCompile).toBeDefined();
-            expect(sendCompile.length).toBe(2);
-        });
-
-        it('没有要发送的数据', () => {
-            settings = {
-                gridManagerName
-            };
-            sendCompile(settings);
-            expect(getCompileList(gridManagerName).length).toBe(0);
-        });
-
-        it('通过属性更新element', () => {
-            settings = {
-                gridManagerName
-            };
-            compileMap[gridManagerName] = [{template: '测试一下'}, {template: '测试二下'}];
-            sendCompile(settings, true);
-            expect(getCompileList(gridManagerName).length).toBe(0);
-        });
-
-        it('Angular-1.x', () => {
-            compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector('td[data-compile-id-test="1"]')}, {template: '测试二下', el: document.querySelector('td[data-compile-id-test="2"]')}];
-            settings = {
-                gridManagerName,
-                compileAngularjs: jasmine.createSpy('callback')
-            };
-            expect(getCompileList(gridManagerName).length).toBe(2);
-            sendCompile(settings).then(res => {
-                expect(settings.compileAngularjs).toHaveBeenCalled();
-                expect(getCompileList(gridManagerName).length).toBe(0);
-            });
-        });
-
-        it('Vue', () => {
-            compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector('td[data-compile-id-test="1"]')}, {template: '测试二下', el: document.querySelector('td[data-compile-id-test="2"]')}];
-            settings = {
-                gridManagerName,
-                compileVue: jasmine.createSpy('callback')
-            };
-            expect(getCompileList(gridManagerName).length).toBe(2);
-            sendCompile(settings).then(res => {
-                expect(settings.compileVue).toHaveBeenCalled();
-                expect(getCompileList(gridManagerName).length).toBe(0);
-            });
-        });
-
-        it('React', () => {
-            compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector('td[data-compile-id-test="1"]')}, {template: '测试二下', el: document.querySelector('td[data-compile-id-test="2"]')}];
-            settings = {
-                gridManagerName,
-                compileReact: jasmine.createSpy('callback')
-            };
-            expect(getCompileList(gridManagerName).length).toBe(2);
-            sendCompile(settings).then(res => {
-                expect(settings.compileReact).toHaveBeenCalled();
-                expect(getCompileList(gridManagerName).length).toBe(0);
-            });
-        });
-    });
+    // describe('send', () => {
+    //     beforeEach(() => {
+    //         document.body.innerHTML = `<table><tbody><tr><td ${FRAMEWORK_KEY}="1"></td><td ${FRAMEWORK_KEY}="2"></td></tr></tbody></table>`;
+    //     });
+    //
+    //     afterEach(() => {
+    //         document.body.innerHTML = '';
+    //     });
+    //     it('基础验证', () => {
+    //         expect(sendCompile).toBeDefined();
+    //         expect(sendCompile.length).toBe(2);
+    //     });
+    //
+    //     it('没有要发送的数据', () => {
+    //         settings = {
+    //             gridManagerName
+    //         };
+    //         sendCompile(settings);
+    //         expect(getCompileList(gridManagerName).length).toBe(0);
+    //     });
+    //
+    //     it('通过属性更新element', () => {
+    //         settings = {
+    //             gridManagerName
+    //         };
+    //         compileMap[gridManagerName] = [{template: '测试一下'}, {template: '测试二下'}];
+    //         sendCompile(settings, true);
+    //         expect(getCompileList(gridManagerName).length).toBe(0);
+    //     });
+    //
+    //     it('Angular-1.x', () => {
+    //         compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)}, {template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)}];
+    //         settings = {
+    //             gridManagerName,
+    //             compileAngularjs: jasmine.createSpy('callback')
+    //         };
+    //         expect(getCompileList(gridManagerName).length).toBe(2);
+    //         sendCompile(settings).then(res => {
+    //             expect(settings.compileAngularjs).toHaveBeenCalled();
+    //             expect(getCompileList(gridManagerName).length).toBe(0);
+    //         });
+    //     });
+    //
+    //     it('Vue', () => {
+    //         compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)}, {template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)}];
+    //         settings = {
+    //             gridManagerName,
+    //             compileVue: jasmine.createSpy('callback')
+    //         };
+    //         expect(getCompileList(gridManagerName).length).toBe(2);
+    //         sendCompile(settings).then(res => {
+    //             expect(settings.compileVue).toHaveBeenCalled();
+    //             expect(getCompileList(gridManagerName).length).toBe(0);
+    //         });
+    //     });
+    //
+    //     it('React', () => {
+    //         compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)}, {template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)}];
+    //         settings = {
+    //             gridManagerName,
+    //             compileReact: jasmine.createSpy('callback')
+    //         };
+    //         expect(getCompileList(gridManagerName).length).toBe(2);
+    //         sendCompile(settings).then(res => {
+    //             expect(settings.compileReact).toHaveBeenCalled();
+    //             expect(getCompileList(gridManagerName).length).toBe(0);
+    //         });
+    //     });
+    // });
 });

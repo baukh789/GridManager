@@ -52,15 +52,31 @@ export const setScope = (gridManagerName, scope) => {
  * 获取当前行使用的数据
  * @param gridManagerName
  * @param target: 将要获取数据所对应的tr[Element or NodeList]
- * @param useGmProp: 是否使用gm自定义的属性
+ * @param useSourceData: 使用原数据 或 克隆数据
  * @returns {*}
  */
-export const getRowData = (gridManagerName, target, useGmProp) => {
+export const getRowData = (gridManagerName, target, useSourceData) => {
     const columnMap = getSettings(gridManagerName).columnMap;
     const tableData = getTableData(gridManagerName);
+    const settings = getSettings(gridManagerName);
+    const supportTreeData = settings.supportTreeData;
     const getTrData = tr => {
-        const rowData = tableData[tr.getAttribute(TR_CACHE_KEY)] || {};
-        return useGmProp ? rowData : getCloneRowData(columnMap, rowData);
+        const cacheKey = tr.getAttribute(TR_CACHE_KEY);
+        let rowData = tableData[cacheKey] || {};
+
+        // 树型结构的数据
+        if (supportTreeData && cacheKey.indexOf('-') !== -1) {
+            const treeKey = settings.treeConfig.treeKey;
+            cacheKey.split('-').forEach((key, index) => {
+                if (index === 0) {
+                    rowData = tableData[key];
+                } else {
+                    rowData = rowData[treeKey][key];
+                }
+            });
+        }
+
+        return useSourceData ? rowData : getCloneRowData(columnMap, rowData);
     };
 
     // target type = Element 元素时, 返回单条数据对象;
@@ -94,7 +110,7 @@ export const updateRowData = (gridManagerName, key, rowDataList) => {
     const supportTreeData = settings.supportTreeData;
     const treeKey = settings.treeConfig.treeKey;
 
-    // 当前正在展示的被更新项
+    // 当前正在展示的被更新项getRowData
     const updateCacheList = [];
     const updateData = (list, newItem) => {
         list.some(item => {
@@ -113,6 +129,7 @@ export const updateRowData = (gridManagerName, key, rowDataList) => {
             }
         });
     };
+
     rowDataList.forEach(newItem => {
         updateData(tableData, newItem);
     });

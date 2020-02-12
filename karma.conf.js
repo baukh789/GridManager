@@ -97,9 +97,9 @@ module.exports = function (config) {
 				rules: [
                     {
                         test: /_test.js?$/,
-                        use: [{
-                            loader: path.join(__dirname, './webpack-loaders/karma-log-loader.js')
-                        }]
+                        // use: [{
+                        //     loader: path.join(__dirname, './webpack-loaders/karma-log-loader.js')
+                        // }]
                     },
 					{
 						test: /\.js?$/,

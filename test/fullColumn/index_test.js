@@ -1,35 +1,43 @@
-import { installTopFull } from '@module/fullColumn';
-import getTableTestData from '@test/table-test.data.js';
+import { getTopFull } from '@module/fullColumn';
 import { getColumnData } from '@test/table-config';
 
 describe('fullColumn', () => {
-    describe('installTopFull', () => {
-        let settgins = null;
-        let tbody = null;
-        let tableData = null;
+    describe('getTopFull', () => {
+        let settings = null;
         let callback = null;
-        let tbodyContent = null;
+        let list = null;
+        let intervalTrObject = null;
+        let topTrObject = null;
+
         beforeEach(() => {
             document.body.innerHTML = '<table><tbody></tbody></table>';
-            tbody = document.body.querySelector('tbody');
-            tableData = getTableTestData().data;
             callback = jasmine.createSpy('callback');
         });
 
         afterEach(() => {
             document.body.innerHTML = '';
-            tbody = null;
-            settgins = null;
-            tableData = null;
+            settings = null;
             callback = null;
-            tbodyContent = null;
+            list = null;
+            intervalTrObject = null;
+            topTrObject = null;
         });
         it('基础验证', () => {
-            expect(installTopFull.length).toBe(5);
+            expect(getTopFull.length).toBe(4);
         });
 
-        it('执行验证', () => {
-            settgins = {
+        it('执行验证: 未存在有效的通栏模板', () => {
+            settings = {
+                gridManagerName: 'test-fullColumn',
+                columnData: getColumnData(),
+                topFullColumn: {}
+            };
+            expect(getTopFull(settings, {id: 1}, 1, callback)).toEqual([]);
+            expect(callback).toHaveBeenCalledTimes(0);
+        });
+
+        it('执行验证: 存在通栏模板', () => {
+            settings = {
                 gridManagerName: 'test-fullColumn',
                 columnData: getColumnData(),
                 topFullColumn: {
@@ -38,66 +46,24 @@ describe('fullColumn', () => {
                     }
                 }
             };
-            tbodyContent = '';
-            expect(tbody.innerHTML).toBe(tbodyContent);
-            installTopFull(settgins, tbody, tableData[1], 1, callback);
 
-            expect(callback).toHaveBeenCalledTimes(1);
+            list = getTopFull(settings, {id: 1}, 1, callback);
+            expect(list.length).toBe(2);
+            expect(callback).toHaveBeenCalled();
 
-            tbodyContent = `
-                <tr top-full-column-interval="true">
-                    <td colspan="${settgins.columnData.length}"><div></div></td>
-                </tr>
-                <tr top-full-column="true">
-                    <td colspan="${settgins.columnData.length}"><div class="full-column-td"><div>我是通栏，哈哈</div></div></td>
-                </tr>
-            `;
-            expect(tbody.innerHTML.replace(/\s/g, '')).toBe(tbodyContent.replace(/\s/g, ''));
+            intervalTrObject = list[0];
+            expect(intervalTrObject.className.length).toBe(0);
+            expect(intervalTrObject.attribute.length).toBe(1);
+            expect(intervalTrObject.attribute[0]).toBe('top-full-column-interval="true"');
+            expect(intervalTrObject.tdList.length).toBe(1);
+            expect(intervalTrObject.tdList[0]).toBe(`<td colspan="${settings.columnData.length}"><div></div></td>`);
 
-
-            // 返回DOM
-            let tdContent = document.createElement('div');
-            tdContent.innerText = '我是DOM通栏，哈哈';
-            settgins = {
-                gridManagerName: 'test-fullColumn',
-                columnData: getColumnData(),
-                topFullColumn: {
-                    template: (row, index) => {
-                        return tdContent;
-                    }
-                }
-            };
-            installTopFull(settgins, tbody, tableData[2], 2, callback);
-            expect(callback).toHaveBeenCalledTimes(2);
-            tbodyContent = `
-                <tr top-full-column-interval="true">
-                    <td colspan="${settgins.columnData.length}"><div></div></td>
-                </tr>
-                <tr top-full-column="true">
-                    <td colspan="${settgins.columnData.length}"><div class="full-column-td"><div>我是通栏，哈哈</div></div></td>
-                </tr>
-                <tr top-full-column-interval="true">
-                    <td colspan="${settgins.columnData.length}"><div></div></td>
-                </tr>
-                <tr top-full-column="true">
-                    <td colspan="${settgins.columnData.length}"><div class="full-column-td"><div>我是DOM通栏，哈哈</div></div></td>
-                </tr>
-            `;
-            expect(tbody.innerHTML.replace(/\s/g, '')).toBe(tbodyContent.replace(/\s/g, ''));
-        });
-
-        it('错误验证', () => {
-            settgins = {
-                gridManagerName: 'test-fullColumn',
-                columnData: getColumnData(),
-                topFullColumn: {}
-            };
-            tbodyContent = '';
-            expect(tbody.innerHTML).toBe(tbodyContent);
-            installTopFull(settgins, tbody, tableData[1], 1, callback);
-
-            expect(tbody.innerHTML).toBe(tbodyContent);
-            expect(callback).toHaveBeenCalledTimes(0);
+            topTrObject = list[1];
+            expect(topTrObject.className.length).toBe(0);
+            expect(topTrObject.attribute.length).toBe(1);
+            expect(topTrObject.attribute[0]).toBe('top-full-column="true"');
+            expect(topTrObject.tdList.length).toBe(1);
+            expect(topTrObject.tdList[0]).toBe(`<td colspan="${settings.columnData.length}"><div class="full-column-td" ><div>我是通栏，哈哈</div></div></td>`);
         });
     });
 });

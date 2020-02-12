@@ -1,8 +1,8 @@
 import { compileFullColumn } from '@common/framework';
 import { isUndefined, isElement } from '@common/utils';
 import './style.less';
-// 插入通栏: top-full-column
-export const installTopFull = (settings, tbody, row, index, callback) => {
+// 获取通栏: top-full-column
+export const getTopFull = (settings, row, index, callback) => {
     const { columnData, topFullColumn } = settings;
 
     const template = topFullColumn.template;

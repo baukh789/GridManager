@@ -11,7 +11,7 @@ import tree from '../tree';
 import remind from '../remind';
 import render from './render';
 import moveRow from '../moveRow';
-import { installTopFull } from '../fullColumn';
+import { getTopFull } from '../fullColumn';
 import { getEvent, eventMap } from './event';
 import { sendCompile, compileTd } from '@common/framework';
 /**
@@ -180,7 +180,7 @@ class Dom {
 
                     // 插入通栏: top-full-column
                     if (isTop) {
-                        trObjectList = trObjectList.concat(installTopFull(settings, tbody, row, index, () => {
+                        trObjectList = trObjectList.concat(getTopFull(settings, row, index, () => {
                             // 添加成功后: 为非通栏tr的添加标识
                             // trNode.setAttribute('top-full-column', 'false');
                             trOjbect.attribute.push('top-full-column="false"');
@@ -207,11 +207,9 @@ class Dom {
                     }
                 });
             };
-            const now = Date.now();
 
             installTr(data, 0);
             let tbodyStr = '';
-            console.log('for before: ', Date.now() - now);
             trObjectList.forEach(item => {
                 const { className, attribute, tdList } = item;
                 let classStr = '';
@@ -223,9 +221,7 @@ class Dom {
                 const tdStr = tdList.join('');
                 tbodyStr = `${tbodyStr}<tr ${classStr} ${attrStr}>${tdStr}</tr>`;
             });
-            console.log('for after: ', Date.now() - now);
             tbody.innerHTML = tbodyStr;
-            console.log('end: ', Date.now() - now);
         } catch (e) {
             outError('render tbody error');
             console.error(e);
@@ -265,7 +261,7 @@ class Dom {
             // 添加tree map
             const children = row[treeKey];
             const hasChildren = children && children.length;
-            tree.add(gridManagerName, trNode, level, hasChildren);
+            tree.add(gridManagerName, cacheKey, level, hasChildren);
 
             jEach(columnMap, (key, col) => {
                 // 不处理项: 自动添加列
