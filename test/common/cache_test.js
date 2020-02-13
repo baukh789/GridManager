@@ -106,7 +106,18 @@ describe('getRowData', () => {
         expect(getRowData('test', tr).length).toBe(10);
     });
 
-    it('使用gm自定义的属性', () => {
+    it('使用原数据', () => {
+        store.responseData['test'] = tableData;
+        expect(getRowData('test', tr[8], true)).toEqual(tableData[8]);
+    });
+
+    it('使用树型数据', () => {
+        store.settings.supportTreeData = true;
+        store.settings.treeConfig = {
+            insertTo: null,
+            treeKey: 'children',
+            openState: false
+        };
         store.responseData['test'] = tableData;
         expect(getRowData('test', tr[8], true)).toEqual(tableData[8]);
     });

@@ -13,13 +13,13 @@ class Tree {
     /**
      * add map
      * @param gridManagerName
-     * @param trNode
+     * @param cacheKey
      * @param level
      * @param hasChildren
      */
-    add(gridManagerName, trNode, level, hasChildren) {
+    add(gridManagerName, cacheKey, level, hasChildren) {
         addTreeCache(gridManagerName, {
-            trNode,
+            cacheKey,
             level,
             hasChildren
         });
@@ -112,16 +112,19 @@ class Tree {
         }
 
         insetList.forEach(item => {
-            const { trNode, level, hasChildren } = item;
+            const { cacheKey, level, hasChildren } = item;
+
+            const $trNode = jTool(`tr[${TR_CACHE_KEY}="${cacheKey}"]`, $table);
+
             // 第一个非自动创建 且 可视的td
             let $insertTd = null;
             if (isString(insertTo)) {
-                $insertTd = getColTd(getTh(gridManagerName, insertTo), trNode);
+                $insertTd = getColTd(getTh(gridManagerName, insertTo), $trNode);
             }
 
             // 未设置 insertTo 或 通过 insertTo 未找到dom时: 使用第一个非自动创建的TD
             if (!$insertTd) {
-                $insertTd = jTool(`td[${GM_CREATE}="false"]`, trNode).eq(0);
+                $insertTd = jTool(`td[${GM_CREATE}="false"]`, $trNode).eq(0);
             }
             const treeDOM = document.createElement('span');
             treeDOM.setAttribute(treeKey, openState);

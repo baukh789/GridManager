@@ -449,7 +449,12 @@ const demo1 = {
             columnData: [
                 {
                     key: 'pic',
-                    remind: '这一列显示了缩略图，可以通过点击跳转至对应的博客地址',
+                    remind: {
+                        text: '这一列显示了缩略图，可以通过点击跳转至对应的博客地址',
+                        style: {
+                            'color': 'yellow'
+                        }
+                    },
                     width: '110px',
                     align: 'center',
                     text: '缩略图',
@@ -496,7 +501,7 @@ const demo1 = {
                     remind: {
                         text: '[HTML/CSS, nodeJS, javaScript, 前端鸡汤, PM Coffee, 前端框架, 前端相关]',
                         style: {
-                            width: '400px',
+                            width: '300px',
                             'text-align': 'left'
                         }
                     },

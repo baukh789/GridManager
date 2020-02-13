@@ -12,7 +12,7 @@ import tree from '../tree';
 import remind from '../remind';
 import render from './render';
 import moveRow from '../moveRow';
-import { installTopFull } from '../fullColumn';
+import { getTopFull } from '../fullColumn';
 import { getEvent, eventMap } from './event';
 import { sendCompile, compileTd } from '@common/framework';
 /**
@@ -127,83 +127,80 @@ class Dom {
         // 清空 tbody
         tbody.innerHTML = '';
 
+        // 存储tr对像列表
+        let trObjectList = [];
+
         // 插入常规的TR
-        const installNormal = (trNode, row, index, isTop) => {
+        const installNormal = (trObject, row, index, isTop) => {
             // 与当前位置信息匹配的td列表
-            const tdList = [];
+
+            const tdList = trObject.tdList;
             each(columnMap, (key, col) => {
                 let tdTemplate = col.template;
 
-                // 插件自带列(序号,全选) 的 templateHTML会包含, 所以需要特殊处理一下
-                let tdNode = null;
                 if (col.isAutoCreate) {
-                    tdNode = jTool(tdTemplate(row[col.key], row, index, isTop)).get(0);
-                } else {
-                    tdNode = jTool(`<td ${GM_CREATE}="false"></td>`).get(0);
-
-                    tdTemplate = compileTd(settings, tdNode, tdTemplate, row, index, key);
-                    isElement(tdTemplate) ? tdNode.appendChild(tdTemplate) : tdNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
+                    tdList[col.index] = tdTemplate(row[col.key], row, index, isTop);
+                    return;
                 }
 
-                // td 文本对齐方向
-                col.align && tdNode.setAttribute('align', col.align);
-
-                // td 行移动标识
-                supportMoveRow && moveRow.addSign(tdNode, col);
-
-                tdList[col.index] = tdNode;
+                let { text, compileAttr } = compileTd(settings, tdTemplate, row, index, key);
+                const alignAttr = col.align ? `align=${col.align}` : '';
+                const moveRowAttr = supportMoveRow ? moveRow.addSign(col) : '';
+                text = isElement(text) ? text.outerHTML : text;
+                tdList[col.index] = `<td ${GM_CREATE}="false" ${compileAttr} ${alignAttr} ${moveRowAttr}>${text}</td>`;
             });
-
-            tdList.forEach(td => {
-                trNode.appendChild(td);
-            });
-
-            tbody.appendChild(trNode);
         };
 
         try {
             const installTr = (list, level, pIndex) => {
                 const isTop = isUndefined(pIndex);
                 each(list, (index, row) => {
-                    const trNode = document.createElement('tr');
+                    const trOjbect = {
+                        className: [],
+                        attribute: [],
+                        tdList: []
+                    };
                     const cacheKey = row[TR_CACHE_KEY];
 
                     // 增加行 class name
                     if (row[ROW_CLASS_NAME]) {
-                        trNode.className = row[ROW_CLASS_NAME];
+                        trOjbect.className.push(row[ROW_CLASS_NAME]);
                     }
 
                     // 非顶层
                     if (!isTop) {
-                        trNode.setAttribute(TR_PARENT_KEY, pIndex);
-                        trNode.setAttribute(TR_CHILDREN_STATE, openState);
+                        trOjbect.attribute.push(`${TR_PARENT_KEY}="${pIndex}"`);
+                        trOjbect.attribute.push(`${TR_CHILDREN_STATE}="${openState}"`);
                     }
 
                     // 顶层
                     if (isTop) {
-                        index % 2 === 0 && trNode.setAttribute(ODD, ''); // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
+                        index % 2 === 0 && trOjbect.attribute.push(`${ODD}=""`); // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
                     }
 
-                    trNode.setAttribute(TR_CACHE_KEY, cacheKey);
+                    trOjbect.attribute.push(`${TR_CACHE_KEY}="${cacheKey}"`);
 
                     // 插入通栏: top-full-column
                     if (isTop) {
-                        installTopFull(settings, tbody, row, index, () => {
+                        trObjectList = trObjectList.concat(getTopFull(settings, row, index, () => {
                             // 添加成功后: 为非通栏tr的添加标识
-                            trNode.setAttribute('top-full-column', 'false');
-                        });
+                            // trNode.setAttribute('top-full-column', 'false');
+                            trOjbect.attribute.push('top-full-column="false"');
+                        }));
+
                     }
 
                     // 插入正常的TR
-                    installNormal(trNode, row, index, isTop);
+                    installNormal(trOjbect, row, index, isTop);
 
+                    trObjectList.push(trOjbect);
                     // 处理层级结构
                     if (supportTreeData) {
                         const children = row[treeKey];
                         const hasChildren = children && children.length;
 
                         // 添加tree map
-                        tree.add(gridManagerName, trNode, level, hasChildren);
+                        tree.add(gridManagerName, cacheKey, level, hasChildren);
 
                         // 递归处理层极结构
                         if (hasChildren) {
@@ -212,8 +209,21 @@ class Dom {
                     }
                 });
             };
-            installTr(data, 0);
 
+            installTr(data, 0);
+            let tbodyStr = '';
+            trObjectList.forEach(item => {
+                const { className, attribute, tdList } = item;
+                let classStr = '';
+                if (className.length) {
+                    classStr = `class="${className.join(' ')}"`;
+                }
+
+                const attrStr = attribute.join(' ');
+                const tdStr = tdList.join('');
+                tbodyStr = `${tbodyStr}<tr ${classStr} ${attrStr}>${tdStr}</tr>`;
+            });
+            tbody.innerHTML = tbodyStr;
         } catch (e) {
             outError('render tbody error');
             console.error(e);
@@ -222,7 +232,7 @@ class Dom {
         this.initVisible(gridManagerName, columnMap);
 
         // 解析框架
-        sendCompile(settings).then(() => {
+        sendCompile(settings, true).then(() => {
             // 插入tree dom
             supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
 
@@ -253,7 +263,7 @@ class Dom {
             // 添加tree map
             const children = row[treeKey];
             const hasChildren = children && children.length;
-            tree.add(gridManagerName, trNode, level, hasChildren);
+            tree.add(gridManagerName, cacheKey, level, hasChildren);
 
             each(columnMap, (key, col) => {
                 // 不处理项: 自动添加列
@@ -266,16 +276,24 @@ class Dom {
 
                 // 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
                 const tdCloneNode = tdNode.cloneNode(true);
-                tdCloneNode.innerHTML = '';
-                tdTemplate = compileTd(settings, tdCloneNode, tdTemplate, row, index, key);
-                isElement(tdTemplate) ? tdCloneNode.appendChild(tdTemplate) : tdCloneNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
+                // tdCloneNode.innerHTML = '';
+                // tdTemplate = compileTd(settings, tdTemplate, row, index, key);
+                // isElement(tdTemplate) ? tdCloneNode.appendChild(tdTemplate) : tdCloneNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
+                // trNode.replaceChild(tdCloneNode, tdNode);
+
+                let { text, compileAttr } = compileTd(settings, tdTemplate, row, index, key);
+                text = isElement(text) ? text.outerHTML : text;
+                if (compileAttr) {
+                    tdCloneNode.setAttribute(compileAttr.split('=')[0], compileAttr.split('=')[1]);
+                }
+                tdCloneNode.innerHTML = text;
                 trNode.replaceChild(tdCloneNode, tdNode);
             });
         });
 
 
         // 解析框架
-        sendCompile(settings).then(() => {
+        sendCompile(settings, true).then(() => {
             // 插入tree dom
             supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
 

@@ -1,10 +1,9 @@
-// 解析存储容器
-export const compileMap = {};
-
+import { getQuerySelector } from '@common/base';
 // 框架解析唯一值
-export const getKey = gridManagerName => {
-    return `data-compile-id-${gridManagerName || ''}`;
-};
+const FRAMEWORK_KEY = 'data-compile-id';
+
+// 解析存储容器
+const compileMap = {};
 
 /**
  * 获取当前表格解析列表
@@ -33,12 +32,12 @@ export const clearCompileList = gridManagerName => {
  */
 export const compileFakeThead = (settings, el) => {
     const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-    const compileList = getCompileList(gridManagerName);
     if (compileAngularjs || compileVue || compileReact) {
-        const thList = el.querySelectorAll(`[${getKey(gridManagerName)}]`);
+        const compileList = getCompileList(gridManagerName);
+        const thList = el.querySelectorAll(`[${FRAMEWORK_KEY}]`);
         [].forEach.call(thList, item => {
-            const obj = compileList[item.getAttribute(`${getKey(gridManagerName)}`)];
-            item.setAttribute(`${getKey(gridManagerName)}`, compileList.length);
+            const obj = compileList[item.getAttribute(FRAMEWORK_KEY)];
+            item.setAttribute(FRAMEWORK_KEY, compileList.length);
             compileList.push({...obj});
         });
     }
@@ -58,7 +57,7 @@ export const compileTh = (settings, key, template) => {
     let compileAttr = '';
     if (template) {
         if (compileAngularjs || compileVue || compileReact) {
-            compileAttr = `${getKey(gridManagerName)}=${compileList.length}`;
+            compileAttr = `${FRAMEWORK_KEY}=${compileList.length}`;
             compileList.push({ key, template, type: 'text' });
         }
 
@@ -77,38 +76,45 @@ export const compileTh = (settings, key, template) => {
 /**
  * 解析: td
  * @param settings
- * @param el
  * @param row
  * @param index
  * @param key
  * @param template
  * @returns {*}
  */
-export const compileTd = (settings, el, template, row, index, key) => {
+export const compileTd = (settings, template, row, index, key) => {
     const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(gridManagerName);
-    // React and not template
-    if (!template) {
-        return row[key];
+
+    let text = '';
+    let compileAttr = '';
+    if (template) {
+        // React element or React function
+        // react 返回空字符串，将单元格内容交由react控制
+        if (compileReact) {
+            compileAttr = `${FRAMEWORK_KEY}=${compileList.length}`;
+            compileList.push({template, row, index, key, type: 'template', fnArg: [row[key], row, index, key]});
+        }
+
+        // 解析框架: Angular 1.x || Vue
+        if (compileVue || compileAngularjs) {
+            compileAttr = `${FRAMEWORK_KEY}=${compileList.length}`;
+            compileList.push({row, index, key});
+        }
+
+        // not React
+        // 非react时，返回函数执行结果
+        if (!compileReact) {
+            text = template(row[key], row, index, key);
+        }
+    } else {
+        text = row[key];
     }
 
-    // React element or React function
-    // react 返回空字符串，将单元格内容交由react控制
-    if (compileReact) {
-        compileList.push({el, template, row, index, key, type: 'template', fnArg: [row[key], row, index, key]});
-        return '';
-    }
-
-    // 解析框架: Angular 1.x || Vue
-    if (compileVue || compileAngularjs) {
-        compileList.push({el, row, index, key});
-    }
-
-    // not React
-    // 非react时，返回函数执行结果
-    if (!compileReact) {
-        return template(row[key], row, index, key);
-    }
+    return {
+        text,
+        compileAttr
+    };
 };
 
 /**
@@ -143,34 +149,41 @@ export const compileEmptyTemplate = (settings, el, template) => {
 /**
  * 解析: 通栏
  * @param settings
- * @param el
  * @param row
  * @param index
  * @param template
  * @returns {*}
  */
-export const compileFullColumn = (settings, el, row, index, template) => {
+export const compileFullColumn = (settings, row, index, template) => {
     const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(gridManagerName);
 
-    // React element or function
+    let text = '';
+    let compileAttr = '';
+
+    // React element or React function
+    // react 返回空字符串，将单元格内容交由react控制
     if (compileReact) {
-        compileList.push({el, template, row, index, type: 'full', fnArg: [row, index]});
-        return '';
+        compileAttr = `${FRAMEWORK_KEY}=${compileList.length}`;
+        compileList.push({template, row, index, type: 'full', fnArg: [row, index]});
     }
 
-    // 解析框架: Vue
-    if (compileVue) {
-        compileList.push({el, row, index});
+    // 解析框架: Angular 1.x || Vue
+    if (compileVue || compileAngularjs) {
+        compileAttr = `${FRAMEWORK_KEY}=${compileList.length}`;
+        compileList.push({row, index});
     }
 
-    // 解析框架: Angular 1.x
-    if (compileAngularjs) {
-        compileList.push({el, row, index});
+    // not React
+    // 非react时，返回函数执行结果
+    if (!compileReact) {
+        text = template(row, index);
     }
 
-    // not react
-    return template(row, index);
+    return {
+        text,
+        compileAttr
+    };
 };
 
 /**
@@ -185,11 +198,14 @@ export async function sendCompile(settings, isRunElement) {
     if (compileList.length === 0) {
         return;
     }
+
     if (isRunElement) {
         compileList.forEach((item, index) => {
-            item.el = document.querySelector(`[${getKey(gridManagerName)}="${index}"]`);
+            item[FRAMEWORK_KEY] = index;
+            item.el = document.querySelector(`${getQuerySelector(gridManagerName)} [${FRAMEWORK_KEY}="${index}"]`);
         });
     }
+
     // 解析框架: Vue
     if (compileVue) {
         await compileVue(compileList);
@@ -207,7 +223,9 @@ export async function sendCompile(settings, isRunElement) {
 
     // 清除解析数据及标识
     compileList.forEach(item => {
-        item.el && item.el.removeAttribute(`${getKey(gridManagerName)}`);
+        [].forEach.call(document.querySelectorAll(`${getQuerySelector(gridManagerName)} [${FRAMEWORK_KEY}="${item[FRAMEWORK_KEY]}"]`), el => {
+            el.removeAttribute(FRAMEWORK_KEY);
+        });
     });
 
     // 清除

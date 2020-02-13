@@ -129,7 +129,7 @@ export default class GridManager {
             return;
         }
 
-        // 相互冲突的参数项处理
+        // 相互冲突的参数项处理: 通栏
         if (arg.topFullColumn && arg.topFullColumn.template) {
             // 不使用配置功能
             arg.supportConfig = false;
@@ -145,6 +145,16 @@ export default class GridManager {
 
             // 不使用宽度调整功能
             arg.supportAdjust = false;
+
+            // 不使用行移动功能
+            arg.supportMoveRow = false;
+
+            // 不使用树型数据
+            arg.supportTreeData = false;
+        }
+
+        // 相互冲突的参数项处理: 树型
+        if (arg.supportTreeData) {
 
             // 不使用行移动功能
             arg.supportMoveRow = false;
