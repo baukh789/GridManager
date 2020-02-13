@@ -14,6 +14,7 @@ export default function print(gridManagerName) {
             th,td{height: 18px;padding:11px;border: 1px solid #999;font-size: 12px;color: #666;}
             th{color: #333}
             a{color: #666; text-decoration:none;}
+            tr[empty-template] td{text-align: center}
         </style>
     `;
     const printWindow = window.open();

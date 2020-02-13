@@ -124,6 +124,10 @@ class MoveRow {
         let oldData = null;
         // 事件: 行移动触发
         jTool(dragStart.target).on(dragStart.events, dragStart.selector, function (e) {
+            // 不用e.button的原因: 1.兼容问题, 2.buttons可以在同时按下左键与其它键时依旧跳出
+            if (e.buttons !== 1) {
+                return;
+            }
             // 当前事件源为模板内节点
             if (e.target.nodeName !== 'TD') {
                 return;

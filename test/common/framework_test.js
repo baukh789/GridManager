@@ -481,73 +481,88 @@ describe('Framework', () => {
     });
 
 
-    // describe('send', () => {
-    //     beforeEach(() => {
-    //         document.body.innerHTML = `<table><tbody><tr><td ${FRAMEWORK_KEY}="1"></td><td ${FRAMEWORK_KEY}="2"></td></tr></tbody></table>`;
-    //     });
-    //
-    //     afterEach(() => {
-    //         document.body.innerHTML = '';
-    //     });
-    //     it('基础验证', () => {
-    //         expect(sendCompile).toBeDefined();
-    //         expect(sendCompile.length).toBe(2);
-    //     });
-    //
-    //     it('没有要发送的数据', () => {
-    //         settings = {
-    //             gridManagerName
-    //         };
-    //         sendCompile(settings);
-    //         expect(getCompileList(gridManagerName).length).toBe(0);
-    //     });
-    //
-    //     it('通过属性更新element', () => {
-    //         settings = {
-    //             gridManagerName
-    //         };
-    //         compileMap[gridManagerName] = [{template: '测试一下'}, {template: '测试二下'}];
-    //         sendCompile(settings, true);
-    //         expect(getCompileList(gridManagerName).length).toBe(0);
-    //     });
-    //
-    //     it('Angular-1.x', () => {
-    //         compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)}, {template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)}];
-    //         settings = {
-    //             gridManagerName,
-    //             compileAngularjs: jasmine.createSpy('callback')
-    //         };
-    //         expect(getCompileList(gridManagerName).length).toBe(2);
-    //         sendCompile(settings).then(res => {
-    //             expect(settings.compileAngularjs).toHaveBeenCalled();
-    //             expect(getCompileList(gridManagerName).length).toBe(0);
-    //         });
-    //     });
-    //
-    //     it('Vue', () => {
-    //         compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)}, {template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)}];
-    //         settings = {
-    //             gridManagerName,
-    //             compileVue: jasmine.createSpy('callback')
-    //         };
-    //         expect(getCompileList(gridManagerName).length).toBe(2);
-    //         sendCompile(settings).then(res => {
-    //             expect(settings.compileVue).toHaveBeenCalled();
-    //             expect(getCompileList(gridManagerName).length).toBe(0);
-    //         });
-    //     });
-    //
-    //     it('React', () => {
-    //         compileMap[gridManagerName] = [{template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)}, {template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)}];
-    //         settings = {
-    //             gridManagerName,
-    //             compileReact: jasmine.createSpy('callback')
-    //         };
-    //         expect(getCompileList(gridManagerName).length).toBe(2);
-    //         sendCompile(settings).then(res => {
-    //             expect(settings.compileReact).toHaveBeenCalled();
-    //             expect(getCompileList(gridManagerName).length).toBe(0);
-    //         });
-    //     });
-    // });
+    describe('send', () => {
+        let compileList = null;
+        beforeEach(() => {
+            compileList = getCompileList(gridManagerName);
+            document.body.innerHTML = `<table grid-manager="${gridManagerName}"><tbody><tr><td ${FRAMEWORK_KEY}="0"></td><td ${FRAMEWORK_KEY}="1"></td></tr></tbody></table>`;
+        });
+
+        afterEach(() => {
+            compileList = null;
+            document.body.innerHTML = '';
+        });
+        it('基础验证', () => {
+            expect(sendCompile).toBeDefined();
+            expect(sendCompile.length).toBe(2);
+        });
+
+        it('没有要发送的数据', () => {
+            settings = {
+                gridManagerName
+            };
+            expect(sendCompile(settings) instanceof Promise).toBe(true);
+            expect(getCompileList(gridManagerName).length).toBe(0);
+        });
+
+        it('通过属性更新element', () => {
+            settings = {
+                gridManagerName
+            };
+            compileList.push({template: '测试一下'});
+            compileList.push({template: '测试二下'});
+            expect(document.querySelectorAll(`[grid-manager="${gridManagerName}"] [${FRAMEWORK_KEY}]`).length).toBe(2);
+            sendCompile(settings, true);
+            expect(document.querySelectorAll(`[grid-manager="${gridManagerName}"] [${FRAMEWORK_KEY}]`).length).toBe(0);
+            expect(getCompileList(gridManagerName).length).toBe(0);
+        });
+
+        it('Angular-1.x', () => {
+            compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)});
+            compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)});
+            settings = {
+                gridManagerName,
+                compileAngularjs: jasmine.createSpy('callback')
+            };
+            expect(getCompileList(gridManagerName).length).toBe(2);
+            expect(document.querySelectorAll(`[grid-manager="${gridManagerName}"] [${FRAMEWORK_KEY}]`).length).toBe(2);
+            sendCompile(settings).then(res => {
+                expect(settings.compileAngularjs).toHaveBeenCalled();
+                expect(document.querySelectorAll(`[grid-manager="${gridManagerName}"] [${FRAMEWORK_KEY}]`).length).toBe(0);
+                expect(getCompileList(gridManagerName).length).toBe(0);
+            });
+        });
+
+        it('Vue', () => {
+            compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)});
+            compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)});
+            settings = {
+                gridManagerName,
+                compileVue: jasmine.createSpy('callback')
+            };
+            expect(getCompileList(gridManagerName).length).toBe(2);
+            expect(document.querySelectorAll(`[grid-manager="${gridManagerName}"] [${FRAMEWORK_KEY}]`).length).toBe(2);
+            sendCompile(settings).then(res => {
+                expect(settings.compileVue).toHaveBeenCalled();
+                expect(document.querySelectorAll(`[grid-manager="${gridManagerName}"] [${FRAMEWORK_KEY}]`).length).toBe(0);
+                expect(getCompileList(gridManagerName).length).toBe(0);
+            });
+        });
+
+        it('React', () => {
+            compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)});
+            compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)});
+            settings = {
+                gridManagerName,
+                compileReact: jasmine.createSpy('callback')
+            };
+            expect(getCompileList(gridManagerName).length).toBe(2);
+            expect(document.querySelectorAll(`[grid-manager="${gridManagerName}"] [${FRAMEWORK_KEY}]`).length).toBe(2);
+            sendCompile(settings).then(res => {
+                expect(settings.compileReact).toHaveBeenCalled();
+                expect(document.querySelectorAll(`[grid-manager="${gridManagerName}"] [${FRAMEWORK_KEY}]`).length).toBe(0);
+                expect(getCompileList(gridManagerName).length).toBe(0);
+            });
+        });
+    });
 });

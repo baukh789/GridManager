@@ -150,7 +150,14 @@ class Menu {
 		const { openMenu, closeMenu, refresh, exportPage, openConfig, printPage } = eventMap[gridManagerName];
         const $closeTarget = jTool(closeMenu.target);
         const closeEvents =  closeMenu.events;
-		// 绑定打开右键菜单栏
+
+        // 禁用菜单自身的右键
+        $menu.on(openMenu.events, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        // 绑定打开右键菜单栏
         jTool(openMenu.target).on(openMenu.events, function (e) {
 			e.preventDefault();
 			e.stopPropagation();
@@ -187,11 +194,11 @@ class Menu {
 			// 点击空处关闭
             $closeTarget.off(closeEvents);
             $closeTarget.on(closeEvents, function (e) {
-                $closeTarget.off(closeEvents);
                 const eventSource = jTool(e.target);
                 if (eventSource.attr(MENU_KEY) || eventSource.closest(`[${MENU_KEY}]`).length === 1) {
 					return;
 				}
+                $closeTarget.off(closeEvents);
 				$menu.hide();
 			});
 		});
