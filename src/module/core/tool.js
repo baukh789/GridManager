@@ -11,7 +11,7 @@
  * 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
  */
 import { isString, isFunction, each, isEmptyObject, extend } from '@jTool/utils';
-import ajax from '@jTool/ajax';
+import ajax from '@jTool/Ajax';
 import { cloneObject } from '@common/utils';
 import { setSettings } from '@common/cache';
 
