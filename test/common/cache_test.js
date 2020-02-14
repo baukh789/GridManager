@@ -1,5 +1,5 @@
 'use strict';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
 import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '@common/constants';
 import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, resetTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, updateCache } from '@common/cache';
 import store from '@common/Store';

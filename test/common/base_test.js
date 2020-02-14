@@ -1,4 +1,4 @@
-import jTool from '@common/jTool';
+import jTool from '@jTool';
 import {
     getCloneRowData,
     showLoading,

@@ -77,6 +77,7 @@ module.exports = function (config) {
 				extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
                 alias: {
                     '@common': path.join(__dirname, './src/common'),
+                    '@jTool': path.join(__dirname, './src/jTool'),
                     '@module': path.join(__dirname, './src/module'),
                     '@test': path.join(__dirname, './test'),
                     '@package.json': path.join(__dirname, './package.json')

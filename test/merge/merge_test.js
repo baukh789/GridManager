@@ -1,6 +1,6 @@
 import { mergeRow, clearMergeRow } from '@module/merge';
 import { TABLE_HEAD_KEY } from '@common/constants';
-import jTool from '@common/jTool';
+import jTool from '@jTool';
 describe('mergeRow(gridManagerName, columnMap)', () => {
     let columnMap = null;
     beforeEach(() => {
