@@ -1,6 +1,6 @@
 import Sizzle from './Sizzle';
 import utils, { extend, each } from './utils';
-import Ajax from './ajax';
+import Ajax from './Ajax';
 import _Event from './Event';
 import _Css from './Css';
 import _Class from './Class';
