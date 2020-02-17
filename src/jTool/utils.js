@@ -20,8 +20,8 @@ export const isWindow = object => {
     return object !== null && object === object.window;
 };
 
-export const type = value => {
-    return typeMap[Object.prototype.toString.call(value)] || (value instanceof Element ? 'element' : '');
+export const type = object => {
+    return typeMap[Object.prototype.toString.call(object)] || (object instanceof Element ? 'element' : '');
 };
 
 export const noop = () => {};

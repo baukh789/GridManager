@@ -11,7 +11,7 @@
  * --注意事项--
  * show与hide方法只是一个简单的实现,不支持参数及动画效果
  * */
-import { each, getStyle } from './utils';
+import { each, getStyle, noop } from './utils';
 import _Css from './Css';
 const INLINE_BLOCK = 'inline-block';
 const TABLE_CELL = 'table-cell';
@@ -35,7 +35,7 @@ export default {
      * @param time
      * @param callback
      */
-    animate: function (styleObj, time, callback) {
+    animate: function (styleObj, time = 0, callback = noop) {
         let animateFromText = '';   // 动画执行前样式文本
         let animateToText = '';     // 动画执行后样式文本
         let node = this.DOMList[0];

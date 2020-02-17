@@ -17,7 +17,7 @@ module.exports = function (config) {
 
 		// 使用框架
 		// 可用的框架：https://npmjs.org/browse/keyword/karma-adapter
-		frameworks: ['jasmine'],
+		frameworks: ['jasmine-ajax', 'jasmine'],
 
 		// 需要测试的文件列表
 		files: [

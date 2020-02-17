@@ -26,7 +26,7 @@ import { isElement, isFunction, each, noop } from './utils';
 const EVENT_KEY = 'jToolEvent';
 
 const getEvents = element => {
-    return element[EVENT_KEY];
+    return element[EVENT_KEY] || {};
 };
 /**
  * 获取 jTool Event 对象
@@ -113,7 +113,8 @@ export default {
 		each(this.DOMList, (index, element) => {
 			try {
 				// #Event001: trigger的事件是直接绑定在当前DOM上的
-				if (getEvents(element)[eventName].length > 0) {
+                const eve = getEvents(element)[eventName];
+				if (eve && eve.length > 0) {
 					const myEvent = new Event(eventName); // #Event002: 创建一个事件对象，用于模拟trigger效果
 					element.dispatchEvent(myEvent);
 				} else if (eventName !== 'click') { // 当前为预绑定: 非click
@@ -122,7 +123,7 @@ export default {
 					element[eventName]();
 				}
 			} catch(e) {
-				console.error(`Event:[${eventName}] error`);
+				console.error(`Event:[${eventName}] error`, e);
 			}
 		});
 		return this;
@@ -136,7 +137,7 @@ export default {
 	addEvent: function (eventList) {
 		each(eventList, (index, eventObj) => {
 			each(this.DOMList, (i, v) => {
-			    const events = getEvents(v) || {};
+			    const events = getEvents(v);
 			    const { eventName, type, callback, useCapture } = eventObj;
                 events[eventName] = events[eventName] || [];
                 events[eventName].push(eventObj);
@@ -156,9 +157,6 @@ export default {
 		each(eventList, (index, eventObj) => {
 			each(this.DOMList, (i, v) => {
 			    const events = getEvents(v);
-				if (!events) {
-					return;
-				}
 				const eventName = eventObj.eventName;
 				const eventFnList = events[eventName];
 				if (eventFnList) {
