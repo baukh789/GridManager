@@ -1,6 +1,6 @@
 import { getCompileList, clearCompileList, compileFakeThead, compileTh, compileTd, compileEmptyTemplate, compileFullColumn, sendCompile } from '@common/framework';
 import tableTpl from '@test/table-test.tpl.html';
-const FRAMEWORK_KEY = 'data-compile-id';
+const FRAMEWORK_KEY = 'data-compile-node';
 // 清除空格
 const tableTestTpl = tableTpl;
 describe('Framework', () => {
@@ -122,7 +122,7 @@ describe('Framework', () => {
             expect(getCompileList(gridManagerName).length).toBe(0);
             let obj = compileTh(settings, 'title', () => '标题');
             expect(obj.text).toBe('标题');
-            expect(obj.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
+            expect(obj.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(gridManagerName).length).toBe(1);
             obj = null;
         });
@@ -136,7 +136,7 @@ describe('Framework', () => {
             expect(getCompileList(gridManagerName).length).toBe(0);
             let obj = compileTh(settings, 'title', () => '标题');
             expect(obj.text).toBe('标题');
-            expect(obj.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
+            expect(obj.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(gridManagerName).length).toBe(1);
             obj = null;
         });
@@ -150,7 +150,7 @@ describe('Framework', () => {
             expect(getCompileList(gridManagerName).length).toBe(0);
             let obj = compileTh(settings, 'title', () => '标题');
             expect(obj.text).toBe('');
-            expect(obj.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
+            expect(obj.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(gridManagerName).length).toBe(1);
             obj = null;
         });
@@ -245,12 +245,12 @@ describe('Framework', () => {
 
             data = compileTd(settings, tdTemplate, row, 1, 'pic');
             expect(data.text).toBe('this is function/upload/blog/pic/9081_type.jpg1');
-            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
+            expect(data.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(gridManagerName).length).toBe(1);
 
             data = compileTd(settings, tdTemplate, row, 1, 'pic');
             expect(data.text).toBe('this is function/upload/blog/pic/9081_type.jpg1');
-            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=1`);
+            expect(data.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(gridManagerName).length).toBe(2);
         });
 
@@ -281,7 +281,7 @@ describe('Framework', () => {
 
             data = compileTd(settings, tdTemplate, row, 1, 'pic');
             expect(data.text).toBe('this is function/upload/blog/pic/9081_type.jpg1');
-            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
+            expect(data.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -312,7 +312,7 @@ describe('Framework', () => {
 
             data = compileTd(settings, tdTemplate, row, 1, 'pic');
             expect(data.text).toBe('');
-            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
+            expect(data.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(gridManagerName).length).toBe(1);
         });
     });
@@ -441,7 +441,7 @@ describe('Framework', () => {
 
             data = compileFullColumn(settings, row, 1, template);
             expect(data.text).toBe('<div>这个是通栏</div>');
-            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
+            expect(data.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -458,7 +458,7 @@ describe('Framework', () => {
 
             data = compileFullColumn(settings, row, 1, template);
             expect(data.text).toBe('<div>这个是通栏</div>');
-            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
+            expect(data.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(gridManagerName).length).toBe(1);
         });
 
@@ -475,7 +475,7 @@ describe('Framework', () => {
 
             data = compileFullColumn(settings, row, 1, template);
             expect(data.text).toBe('');
-            expect(data.compileAttr).toBe(`${FRAMEWORK_KEY}=0`);
+            expect(data.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(gridManagerName).length).toBe(1);
         });
     });
@@ -485,7 +485,7 @@ describe('Framework', () => {
         let compileList = null;
         beforeEach(() => {
             compileList = getCompileList(gridManagerName);
-            document.body.innerHTML = `<table grid-manager="${gridManagerName}"><tbody><tr><td ${FRAMEWORK_KEY}="0"></td><td ${FRAMEWORK_KEY}="1"></td></tr></tbody></table>`;
+            document.body.innerHTML = `<table grid-manager="${gridManagerName}"><tbody><tr><td ${FRAMEWORK_KEY}></td><td ${FRAMEWORK_KEY}></td></tr></tbody></table>`;
         });
 
         afterEach(() => {
@@ -494,7 +494,7 @@ describe('Framework', () => {
         });
         it('基础验证', () => {
             expect(sendCompile).toBeDefined();
-            expect(sendCompile.length).toBe(2);
+            expect(sendCompile.length).toBe(1);
         });
 
         it('没有要发送的数据', () => {
@@ -512,14 +512,14 @@ describe('Framework', () => {
             compileList.push({template: '测试一下'});
             compileList.push({template: '测试二下'});
             expect(document.querySelectorAll(`[grid-manager="${gridManagerName}"] [${FRAMEWORK_KEY}]`).length).toBe(2);
-            sendCompile(settings, true);
+            sendCompile(settings);
             expect(document.querySelectorAll(`[grid-manager="${gridManagerName}"] [${FRAMEWORK_KEY}]`).length).toBe(0);
             expect(getCompileList(gridManagerName).length).toBe(0);
         });
 
         it('Angular-1.x', () => {
-            compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)});
-            compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)});
+            compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
+            compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
             settings = {
                 gridManagerName,
                 compileAngularjs: jasmine.createSpy('callback')
@@ -534,8 +534,8 @@ describe('Framework', () => {
         });
 
         it('Vue', () => {
-            compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)});
-            compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)});
+            compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
+            compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
             settings = {
                 gridManagerName,
                 compileVue: jasmine.createSpy('callback')
@@ -550,8 +550,8 @@ describe('Framework', () => {
         });
 
         it('React', () => {
-            compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}="1"]`)});
-            compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}="2"]`)});
+            compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
+            compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
             settings = {
                 gridManagerName,
                 compileReact: jasmine.createSpy('callback')

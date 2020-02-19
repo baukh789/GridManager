@@ -28,7 +28,7 @@ class Order {
 			isShow: true,
             disableCustomize: true,
 			width: ORDER_WIDTH,
-			align: 'center',
+			// align: 'center',  // 调整为由样式控制
 			template: (order, row, index, isTop) => {
 				return `<td ${GM_CREATE}="true" gm-order>${isTop ? order : ''}</td>`;
 			}

@@ -1,6 +1,6 @@
 import Sizzle from './Sizzle';
 import utils, { extend, each } from './utils';
-import Ajax from './Ajax';
+import ajax from './Ajax';
 import _Event from './Event';
 import _Css from './Css';
 import _Class from './Class';
@@ -20,7 +20,7 @@ Sizzle.prototype = jTool.prototype = {};
 // 捆绑jTool 工具
 jTool.extend = jTool.prototype.extend = extend;
 jTool.extend(utils);
-jTool.extend(Ajax);
+jTool.ajax = ajax;
 
 // 捆绑jTool 方法
 each([_Event, _Css, _Class, _Document, _Offset, _Element, _Animate, _Data], (i, v) => {

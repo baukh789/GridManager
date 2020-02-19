@@ -238,8 +238,8 @@ class Config {
         const $configArea = getDOM(gridManagerName);
         const configList = $configArea.find('.config-list').get(0);
         const $configInfo = $configArea.find('.config-info');
+        $configArea.css('visibility', 'hidden');
         setTimeout(() => {
-            $configArea.css('visibility', 'hidden');
             configList.style.maxHeight = (($tableWrap.height() - 90 - 20 - $configInfo.height()) || 0) + 'px';
             $configArea.css('visibility', 'inherit');
         });

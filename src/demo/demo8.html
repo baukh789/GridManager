@@ -149,8 +149,12 @@
                     handler: (settings, params) => {
 				        console.log(params);
                         return new Promise(resolve => {
-                            jTool.post('https://www.lovejavascript.com/blogManager/getBlogList', params, res => {
-                                resolve(JSON.parse(res).totals);
+                            jTool.ajax({
+                                url: 'https://www.lovejavascript.com/blogManager/getBlogList',
+                                type: 'POST',
+                                success: res => {
+                                    resolve(JSON.parse(res).totals);
+                                }
                             });
                         })
                     }
