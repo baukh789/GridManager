@@ -230,7 +230,7 @@ class Dom {
         this.initVisible(gridManagerName, columnMap);
 
         // 解析框架
-        sendCompile(settings, true).then(() => {
+        sendCompile(settings).then(() => {
             // 插入tree dom
             supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
 
@@ -274,10 +274,6 @@ class Dom {
 
                 // 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
                 const tdCloneNode = tdNode.cloneNode(true);
-                // tdCloneNode.innerHTML = '';
-                // tdTemplate = compileTd(settings, tdTemplate, row, index, key);
-                // isElement(tdTemplate) ? tdCloneNode.appendChild(tdTemplate) : tdCloneNode.innerHTML = (isUndefined(tdTemplate) ? '' : tdTemplate);
-                // trNode.replaceChild(tdCloneNode, tdNode);
 
                 let { text, compileAttr } = compileTd(settings, tdTemplate, row, index, key);
                 text = isElement(text) ? text.outerHTML : text;
@@ -291,7 +287,7 @@ class Dom {
 
 
         // 解析框架
-        sendCompile(settings, true).then(() => {
+        sendCompile(settings).then(() => {
             // 插入tree dom
             supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
 

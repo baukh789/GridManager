@@ -35,16 +35,18 @@ class Core {
         let ajaxPromise = transformToPromise(settings);
 
         ajaxBeforeSend(ajaxPromise);
-        ajaxPromise
-        .then(response => {
+        ajaxPromise.then(response => {
             // 异步重新获取settings
             try {
                 const settings = getSettings(gridManagerName);
-                this.driveDomForSuccessAfter(settings, response, callback);
-                ajaxSuccess(response);
-                ajaxComplete(response);
-                hideLoading(gridManagerName);
-                ajaxPage.updateRefreshIconState(gridManagerName, false);
+                // setTimeout的作用: 当数据量过大时，用于保证表头提前显示
+                setTimeout(() => {
+                    this.driveDomForSuccessAfter(settings, response, callback);
+                    ajaxSuccess(response);
+                    ajaxComplete(response);
+                    hideLoading(gridManagerName);
+                    ajaxPage.updateRefreshIconState(gridManagerName, false);
+                });
             } catch (e) {
                 console.error(e);
             }
@@ -195,7 +197,7 @@ class Core {
         scroll.init(gridManagerName);
 
         // 解析框架: thead区域
-        await sendCompile(settings, true);
+        await sendCompile(settings);
     }
 
     /**
