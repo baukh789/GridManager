@@ -3,56 +3,51 @@ import Sizzle from '@jTool/Sizzle';
 import { extend } from '@jTool/utils';
 describe('Animate', () => {
 
-	let divEle = null;
     let jTool = null;
-    let animateCallbackHandler = null;
 	beforeEach(() => {
 		jTool = function (selector, context) {
 			return new Sizzle(selector, context);
 		};
+        document.body.innerHTML = '<div id="div1" style="height: 50px; width:50px;"></div>';
 
-        animateCallbackHandler = jasmine.createSpy('callback');
 		Sizzle.prototype = jTool.prototype = {};
 
 		jTool.extend = jTool.prototype.extend = extend;
 		jTool.prototype.extend(_Animate);
 
-		divEle = document.createElement('div');
-		divEle.id = 'div1';
-		divEle.style.height = '50px';
-		divEle.style.width = '50px';
-		document.body.appendChild(divEle);
 	});
 
 	afterEach(() => {
-		document.body.removeChild(divEle);
-		divEle = null;
+        document.body.innerHTML = '';
 		jTool = null;
-        animateCallbackHandler = null;
 	});
 
 	it('animate', () => {
+        let divEle = document.getElementById('div1');
 		jTool('#div1').animate({height: '100px', width: '200px'}, 1000);
 		setTimeout(() => {
 			expect(divEle.style.height).toBe('100px');
 			expect(divEle.style.width).toBe('200px');
+            divEle = null;
 		}, 1000);
 	});
 
 	it('animate回调函数', () => {
+        let animateCallbackHandler = jasmine.createSpy('callback');
 		jTool('#div1').animate({height: '100px', width: '200px'}, 1000, animateCallbackHandler);
 		setTimeout(() => {
 			expect(animateCallbackHandler.calls.count()).toBe(1);
+            animateCallbackHandler = null;
 		}, 1000);
 	});
 
 	it('show', () => {
 		jTool('#div1').show();
-		expect(divEle.style.display).toBe('block');
+		expect(window.getComputedStyle(document.getElementById('div1')).display).toBe('block');
 	});
 
 	it('hide', () => {
 		jTool('#div1').hide();
-		expect(divEle.style.display).toBe('none');
+		expect(window.getComputedStyle(document.getElementById('div1')).display).toBe('none');
 	});
 });

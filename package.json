@@ -11,6 +11,7 @@
         "lint": "eslint src",
         "test": "karma start",
         "build": "webpack --config webpack-config.js",
+        "preversion": "npm test",
         "version": "npm run build && npm publish dist",
         "postversion": "git push && git push --tags"
     },
