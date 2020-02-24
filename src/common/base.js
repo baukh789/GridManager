@@ -2,7 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from '@jTool';
-import { isString, each, extend } from '@jTool/utils';
+import { isString, isBoolean, each, extend } from '@jTool/utils';
 import { getVisibleState } from '@common/utils';
 import {
     FAKE_TABLE_HEAD_KEY,
@@ -90,43 +90,15 @@ export const hideLoading = gridManagerName => {
 };
 
 /**
- * get table wrap
- * @param $dom: 父级或子级jTool对象，或者是gridManagerName。如果是gridManagerName，则第二个参数无效。
- * @param isSelectUp: 是否为向上查找模式
- * @returns {*}
- */
-export const getWrap = ($dom, isSelectUp) => {
-    if (isString($dom)) {
-        return jTool(`[${WRAP_KEY}="${$dom}"]`);
-    }
-    return isSelectUp ? $dom.closest(`[${WRAP_KEY}]`) : jTool(`[${WRAP_KEY}]`, $dom);
-};
-
-/**
  * 获取表的GM 唯一标识
  * @param target
  * @returns {*|string}
  */
 export const getKey = target => {
-    // undefined
-    if (!target) {
-        return;
-    }
-
-    // gridManagerName
     if (isString(target)) {
         return target;
     }
-
-    // jTool table
-    if (target.jTool && target.length) {
-        return target.attr(TABLE_KEY);
-    }
-
-    // table element
-    if (target.nodeName === 'TABLE') {
-        return target.getAttribute(TABLE_KEY);
-    }
+    return target.getAttribute(TABLE_KEY);
 };
 
 /**
@@ -153,15 +125,20 @@ export const getTable = ($dom, isSelectUp) => {
 
 /**
  * get table div
- * @param $dom: 父级或子级jTool对象，或者是gridManagerName。如果是gridManagerName，则第二个参数无效。
- * @param isSelectUp: 是否为向上查找模式
+ * @param gridManagerName
  * @returns {*}
  */
-export const getDiv = ($dom, isSelectUp) => {
-    if (isString($dom)) {
-        return jTool(`[${DIV_KEY}="${$dom}"]`);
-    }
-    return isSelectUp ? $dom.closest(`[${DIV_KEY}]`) : jTool(`[${DIV_KEY}]`, $dom);
+export const getDiv = gridManagerName => {
+    return jTool(`[${DIV_KEY}="${gridManagerName}"]`);
+};
+
+/**
+ * get table wrap
+ * @param gridManagerName
+ * @returns {*}
+ */
+export const getWrap = gridManagerName => {
+    return jTool(`[${WRAP_KEY}="${gridManagerName}"]`);
 };
 
 /**
@@ -201,7 +178,7 @@ export const getTh = (gridManagerName, thName) => {
     if (thName.jTool) {
         thName = getThName(thName);
     }
-    return getThead(gridManagerName).find(`th[${TH_NAME}="${thName}"]`);
+    return jTool(`[${TABLE_HEAD_KEY}="${gridManagerName}"] th[${TH_NAME}="${thName}"]`);
 };
 
 /**
@@ -210,7 +187,7 @@ export const getTh = (gridManagerName, thName) => {
  * @returns {*}
  */
 export const getAllTh = gridManagerName => {
-    return getThead(gridManagerName).find('th');
+    return jTool(`[${TABLE_HEAD_KEY}="${gridManagerName}"] th`);
 };
 
 /**
@@ -220,23 +197,8 @@ export const getAllTh = gridManagerName => {
  * @returns {*}
  */
 export const getVisibleTh = (gridManagerName, isGmCreate) => {
-    let gmCreateStr = '';
-    switch (isGmCreate) {
-        case true: {
-            gmCreateStr = `[${GM_CREATE}="true"]`;
-            break;
-        }
-        case false: {
-            gmCreateStr = `[${GM_CREATE}="false"]`;
-            break;
-        }
-        default: {
-            gmCreateStr = '';
-            break;
-        }
-    }
-
-    return getThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]${gmCreateStr}`);
+    const gmCreateStr = isBoolean(isGmCreate) ? `[${GM_CREATE}="${isGmCreate}"]` : '';
+    return jTool(`[${TABLE_HEAD_KEY}="${gridManagerName}"] th[${TH_VISIBLE}="visible"]${gmCreateStr}`);
 };
 
 /**
@@ -246,11 +208,7 @@ export const getVisibleTh = (gridManagerName, isGmCreate) => {
  * @returns {*}
  */
 export const getFakeTh = (gridManagerName, thName) => {
-    // jTool object
-    if (thName.jTool) {
-        thName = getThName(thName);
-    }
-    return getFakeThead(gridManagerName).find(`th[${TH_NAME}="${thName}"]`);
+    return jTool(`[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] th[${TH_NAME}="${thName}"]`);
 };
 
 /**
@@ -259,7 +217,7 @@ export const getFakeTh = (gridManagerName, thName) => {
  * @returns {*}
  */
 export const getFakeVisibleTh = gridManagerName => {
-    return getFakeThead(gridManagerName).find(`th[${TH_VISIBLE}="visible"]`);
+    return jTool(`[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] th[${TH_VISIBLE}="visible"]`);
 };
 
 /**
@@ -268,23 +226,7 @@ export const getFakeVisibleTh = gridManagerName => {
  * @returns {*}
  */
 export const getThName = $dom => {
-    if ($dom.get(0).nodeName === 'TD') {
-        return jTool(`[${TABLE_HEAD_KEY}] th:nth-child(${$dom.index() + 1})`, getTable($dom, true)).attr(TH_NAME);
-    }
     return $dom.attr(TH_NAME);
-};
-
-/**
- * 获取空模版html
- * @param gridManagerName
- * @param visibleNum: 可视状态TH的数据
- * @param style: 模版自定义样式
- * @returns {string}
- */
-export const getEmptyHtml = (gridManagerName, visibleNum, style) => {
-    return `<tr ${EMPTY_TPL_KEY}="${gridManagerName}" style="${style}">
-                <td colspan="${visibleNum}"></td>
-            </tr>`;
 };
 
 /**
@@ -344,8 +286,7 @@ export const setAreVisible = (gridManagerName, thNameList, isVisible) => {
         getFakeTh(gridManagerName, thName).attr(TH_VISIBLE, visibleState);
 
         // 所对应的td
-        const $td = getColTd($th);
-        each($td, (index, td) => {
+        each(getColTd($th), (index, td) => {
             td.setAttribute(TD_VISIBLE, visibleState);
         });
 
@@ -389,7 +330,7 @@ export const updateVisibleLast = gridManagerName => {
  */
 export const updateThWidth = (settings, isInit) => {
     const { gridManagerName, columnMap, isIconFollowText } = settings;
-    let toltalWidth = getDiv(gridManagerName).width();
+    let totalWidth = getDiv(gridManagerName).width();
     let usedTotalWidth = 0;
 
     const autoList = [];
@@ -406,7 +347,7 @@ export const updateThWidth = (settings, isInit) => {
 
         // 禁用定制列: 仅统计总宽，不进行宽度处理
         if (disableCustomize) {
-            toltalWidth -= parseInt(width, 10);
+            totalWidth -= parseInt(width, 10);
             return;
         }
 
@@ -435,22 +376,22 @@ export const updateThWidth = (settings, isInit) => {
             firstCol = col;
         }
     });
-    const autolen = autoList.length;
+    const autoLen = autoList.length;
 
     // 剩余的值
-    let overage = toltalWidth - usedTotalWidth;
+    let overage = totalWidth - usedTotalWidth;
 
     // 未存在自动列 且 存在剩余的值: 将第一个可定制列宽度强制与剩余宽度相加
-    if (autolen === 0 && overage > 0) {
+    if (autoLen === 0 && overage > 0) {
         firstCol.width = `${parseInt(firstCol.width, 10) + overage}px`;
     }
 
     // 存在自动列 且 存在剩余宽度: 平分剩余的宽度
-    if (autolen && overage > 0) {
-        const splitVal = Math.floor(overage / autolen);
+    if (autoLen && overage > 0) {
+        const splitVal = Math.floor(overage / autoLen);
         each(autoList, (index, col) => {
             // 最后一项自动列: 将余值全部赋予
-            if (index === autolen - 1) {
+            if (index === autoLen - 1) {
                 col.width = `${parseInt(col.width, 10) + overage}px`;
                 return;
             }
@@ -518,13 +459,13 @@ export const getThTextWidth = (gridManagerName, $th, isIconFollowText) => {
  * 获取文本宽度
  * @param gridManagerName
  * @param content
- * @param cssObj: 样式对像，允许为空。示例: {fontSize: '12px', ...}
+ * @param cssObj: 样式对像，示例: {fontSize: '12px', ...}
  * @returns {*}
  */
 export const getTextWidth = (gridManagerName, content, cssObj) => {
     const $textDreamland = jTool(`[${WRAP_KEY}="${gridManagerName}"] .text-dreamland`);
     $textDreamland.html(content);
-    cssObj && $textDreamland.css(cssObj);
+    $textDreamland.css(cssObj);
     return $textDreamland.width();
 };
 

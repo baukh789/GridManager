@@ -136,7 +136,7 @@ class Dom {
 
             const tdList = trObject.tdList;
             each(columnMap, (key, col) => {
-                let tdTemplate = col.template;
+                const tdTemplate = col.template;
 
                 if (col.isAutoCreate) {
                     tdList[col.index] = tdTemplate(row[col.key], row, index, isTop);
@@ -155,7 +155,7 @@ class Dom {
             const installTr = (list, level, pIndex) => {
                 const isTop = isUndefined(pIndex);
                 each(list, (index, row) => {
-                    const trOjbect = {
+                    const trObject = {
                         className: [],
                         attribute: [],
                         tdList: []
@@ -164,36 +164,36 @@ class Dom {
 
                     // 增加行 class name
                     if (row[ROW_CLASS_NAME]) {
-                        trOjbect.className.push(row[ROW_CLASS_NAME]);
+                        trObject.className.push(row[ROW_CLASS_NAME]);
                     }
 
                     // 非顶层
                     if (!isTop) {
-                        trOjbect.attribute.push(`${TR_PARENT_KEY}="${pIndex}"`);
-                        trOjbect.attribute.push(`${TR_CHILDREN_STATE}="${openState}"`);
+                        trObject.attribute.push(`${TR_PARENT_KEY}="${pIndex}"`);
+                        trObject.attribute.push(`${TR_CHILDREN_STATE}="${openState}"`);
                     }
 
                     // 顶层
                     if (isTop) {
-                        index % 2 === 0 && trOjbect.attribute.push(`${ODD}=""`); // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
+                        index % 2 === 0 && trObject.attribute.push(`${ODD}=""`); // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
                     }
 
-                    trOjbect.attribute.push(`${TR_CACHE_KEY}="${cacheKey}"`);
+                    trObject.attribute.push(`${TR_CACHE_KEY}="${cacheKey}"`);
 
                     // 插入通栏: top-full-column
                     if (isTop) {
                         trObjectList = trObjectList.concat(getTopFull(settings, row, index, () => {
                             // 添加成功后: 为非通栏tr的添加标识
                             // trNode.setAttribute('top-full-column', 'false');
-                            trOjbect.attribute.push('top-full-column="false"');
+                            trObject.attribute.push('top-full-column="false"');
                         }));
 
                     }
 
                     // 插入正常的TR
-                    installNormal(trOjbect, row, index, isTop);
+                    installNormal(trObject, row, index, isTop);
 
-                    trObjectList.push(trOjbect);
+                    trObjectList.push(trObject);
                     // 处理层级结构
                     if (supportTreeData) {
                         const children = row[treeKey];

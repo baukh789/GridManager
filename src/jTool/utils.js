@@ -234,8 +234,9 @@ export function extend() {
         ex(options, target);
     }
     function ex(options, target) {
-        for (var key in options) {
+        for (let key in options) {
             if (options.hasOwnProperty(key)) {
+                // 数组不进行递归
                 if(deep && isObject(options[key])) {
                     if(!isObject(target[key])) {
                         target[key] = {};

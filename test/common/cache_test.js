@@ -805,7 +805,7 @@ describe('initSettings', () => {
         expect(settings.supportAdjust).toBe(true);
         expect(settings.supportAjaxPage).toBe(false);
 
-        expect(settings.columnData).toEqual(columnData);
+        expect(settings.columnData).toBe(columnData);
 
         // columnMap中存在template，该项未在这里进行测试
         expect(Object.keys(settings.columnMap)).toEqual(Object.keys(columnMap));

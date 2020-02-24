@@ -126,9 +126,10 @@ export const compileTd = (settings, template, row, index, key) => {
 export const compileEmptyTemplate = (settings, el, template) => {
     const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(gridManagerName);
+
     // React
     if (compileReact) {
-        compileList.push({el, template, type: 'empty'});
+        compileList.push({el, template, type: 'empty', fnArg: [settings]});
         return '';
     }
 
@@ -142,7 +143,7 @@ export const compileEmptyTemplate = (settings, el, template) => {
         compileList.push({el});
     }
 
-    return template();
+    return template(settings);
 };
 
 /**

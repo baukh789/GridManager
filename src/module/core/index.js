@@ -6,10 +6,10 @@
  */
 import './style.less';
 import { isString, isFunction, isArray } from '@jTool/utils';
-import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmptyHtml, getEmpty } from '@common/base';
+import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmpty } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
 import { getTableData, setTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
-import { EMPTY_DATA_CLASS_NAME, WRAP_KEY } from '@common/constants';
+import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, EMPTY_TPL_KEY } from '@common/constants';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';
 import checkbox from '../checkbox';
@@ -158,12 +158,10 @@ class Core {
             return;
         }
 
-        let visibleNum = getVisibleTh(gridManagerName).length;
         const $tbody = getTbody(gridManagerName);
         const $tableDiv = getDiv(gridManagerName);
-        const style = `height: ${$tableDiv.height() - 1}px;`;
         $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
-        $tbody.html(getEmptyHtml(gridManagerName, visibleNum, style));
+        $tbody.html(`<tr ${EMPTY_TPL_KEY}="${gridManagerName}" style="height: ${$tableDiv.height() - 1}px"><td colspan="${getVisibleTh(gridManagerName).length}"></td></tr>`);
         const emptyTd = getEmpty(gridManagerName).get(0).querySelector('td');
 
         emptyTd.innerHTML = compileEmptyTemplate(settings, emptyTd, emptyTemplate);

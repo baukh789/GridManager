@@ -411,11 +411,11 @@ const demo1 = {
             ajaxComplete: function (complete) {
                 console.log('ajaxComplete');
             },
-            adjustBefore: query => {
-                console.log('adjustBefore=>', query);
+            adjustBefore: eve => {
+                console.log('adjustBefore=>', eve);
             },
-            adjustAfter: query => {
-                console.log('adjustAfter=>', query);
+            adjustAfter: eve => {
+                console.log('adjustAfter=>', eve);
             },
 
             // 执行请求后执行程序
@@ -442,6 +442,9 @@ const demo1 = {
                 return row;
             },
 
+            emptyTemplate: settings => {
+                return `<div style="text-align: center;">${settings.query.title ? '搜索为空' : '暂无数据'}</div>`;
+            },
             // 单个td的hover事件
             // rowHover: (row, rowIndex, colIndex) => {
             //     console.log(row, rowIndex, colIndex);

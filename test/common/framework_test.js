@@ -321,7 +321,7 @@ describe('Framework', () => {
         let emptyNode = null;
         let template = null;
         beforeEach(() => {
-            template = () => '<div>空空的，什么也没有</div>';
+            template = settings => settings.query?.title ? '<div>查询结果为空</div>' : '<div>空空的，什么也没有</div>';
             document.body.innerHTML = '<table><tbody><td empty-node></td></tbody></table>';
             emptyNode = document.querySelector('td[empty-node]');
         });
@@ -337,10 +337,13 @@ describe('Framework', () => {
 
         it('无框架', () => {
             settings = {
-                gridManagerName
+                gridManagerName,
+                query: {
+                    title: '测试的'
+                }
             };
             expect(getCompileList(gridManagerName).length).toBe(0);
-            expect(compileEmptyTemplate(settings, emptyNode, template)).toBe('<div>空空的，什么也没有</div>');
+            expect(compileEmptyTemplate(settings, emptyNode, template)).toBe('<div>查询结果为空</div>');
             expect(getCompileList(gridManagerName).length).toBe(0);
         });
 

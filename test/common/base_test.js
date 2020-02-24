@@ -17,7 +17,6 @@ import {
     getFakeTh,
     getFakeVisibleTh,
     getThName,
-    getEmptyHtml,
     getEmpty,
     updateEmptyCol,
     getColTd,
@@ -166,18 +165,10 @@ describe('getKey($table)', () => {
     it('参数为gridManagerName ', () => {
         expect(getKey('test')).toBe('test');
     });
-
     it('参数为table ', () => {
         expect(getKey(document.querySelector('table[grid-manager="test"]'))).toBe('test');
     });
 
-    it('参数为$table ', () => {
-        expect(getKey(jTool('table[grid-manager="test"]'))).toBe('test');
-    });
-
-    it('错误情况验证 ', () => {
-        expect(getKey()).toBeUndefined();
-    });
 });
 
 describe('getQuerySelector(gridManagerName)', () => {
@@ -232,82 +223,46 @@ describe('getTable($dom, isSelectUp)', () => {
     });
 });
 
-describe('getWrap($dom, isSelectUp)', () => {
+describe('getWrap(gridManagerName)', () => {
     let tableWrap = null;
-    let $body = null;
-    let $table = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         tableWrap = document.querySelector('.table-wrap[grid-manager-wrap="test"]');
-        $body = jTool('body');
-        $table = jTool('table[grid-manager="test"]');
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
         tableWrap = null;
-        $body = null;
-        $table = null;
     });
 
     it('基础验证', () => {
         expect(getWrap).toBeDefined();
-        expect(getWrap.length).toBe(2);
+        expect(getWrap.length).toBe(1);
     });
 
-    it('getWrap($dom)', () => {
-        expect(getWrap($body).get(0)).toBe(tableWrap);
-    });
-
-    it('getWrap($dom, false)', () => {
-        expect(getWrap($body, false).get(0)).toBe(tableWrap);
-    });
-
-    it('getWrap($dom, true)', () => {
-        expect(getWrap($table, true).get(0)).toBe(tableWrap);
-    });
-
-    it('getWrap(gridManagerName)', () => {
+    it('返回值验证', () => {
         expect(getWrap('test').get(0)).toBe(tableWrap);
     });
 });
 
-describe('getDiv($dom, isSelectUp)', () => {
+describe('getDiv(gridManagerName)', () => {
     let tableDiv = null;
-    let $body = null;
-    let $table = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         tableDiv = document.querySelector('.table-div[grid-manager-div="test"]');
-        $body = jTool('body');
-        $table = jTool('table[grid-manager="test"]');
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
         tableDiv = null;
-        $body = null;
-        $table = null;
     });
 
     it('基础验证', () => {
         expect(getDiv).toBeDefined();
-        expect(getDiv.length).toBe(2);
+        expect(getDiv.length).toBe(1);
     });
 
-    it('getDiv($dom)', () => {
-        expect(getDiv($body).get(0)).toBe(tableDiv);
-    });
-
-    it('getDiv($dom, false)', () => {
-        expect(getDiv($body, false).get(0)).toBe(tableDiv);
-    });
-
-    it('getDiv($dom, true)', () => {
-        expect(getDiv($table, true).get(0)).toBe(tableDiv);
-    });
-
-    it('getDiv(gridManagerName)', () => {
+    it('返回值验证', () => {
         expect(getDiv('test').get(0)).toBe(tableDiv);
     });
 });
@@ -459,19 +414,16 @@ describe('getVisibleTh(gridManagerName, isGmCreate)', () => {
 describe('getFakeTh(gridManagerName, thName)', () => {
     let gridManagerName = null;
     let fakeTh = null;
-    let $fakeTh = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         gridManagerName = 'test';
         fakeTh = document.querySelector('table[grid-manager="test"] thead[grid-manager-mock-thead] tr th[th-name="createDate"]');
-        $fakeTh = jTool('table[grid-manager="test"] thead[grid-manager-mock-thead] tr th[th-name="createDate"]');
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
         gridManagerName = null;
         fakeTh = null;
-        $fakeTh = null;
     });
 
     it('基础验证', () => {
@@ -481,10 +433,6 @@ describe('getFakeTh(gridManagerName, thName)', () => {
 
     it('getFakeTh(gridManagerName, thName)', () => {
         expect(getFakeTh(gridManagerName, 'createDate').get(0)).toBe(fakeTh);
-    });
-
-    it('getFakeTh(gridManagerName, $fakeTh)', () => {
-        expect(getFakeTh(gridManagerName, $fakeTh).get(0)).toBe(fakeTh);
     });
 });
 
@@ -532,38 +480,7 @@ describe('getThName($dom)', () => {
         $dom = jTool('table[grid-manager="test"] thead[grid-manager-thead] th').eq(3);
         expect(getThName($dom)).toBe('createDate');
     });
-
-    it('getThName($td)', () => {
-        $dom = jTool('table[grid-manager="test"] tbody tr').eq(0).find('td').eq(1);
-        expect(getThName($dom)).toBe('gm_order');
-        $dom = jTool('table[grid-manager="test"] tbody tr').eq(3).find('td').eq(3);
-        expect(getThName($dom)).toBe('createDate');
-    });
 });
-
-describe('getEmptyHtml(gridManagerName, visibleNum, emptyTemplate, style)', () => {
-    let tpl = null;
-    beforeEach(() => {
-    });
-
-    afterEach(() => {
-        document.body.innerHTML = '';
-        tpl = '';
-    });
-
-    it('基础验证', () => {
-        expect(getEmptyHtml).toBeDefined();
-        expect(getEmptyHtml.length).toBe(3);
-    });
-
-    it('返回值验证', () => {
-        tpl = `<tr empty-template="test-empty" style="height: 100px;">
-					<td colspan="5"></td>
-				</tr>`;
-        expect(getEmptyHtml('test-empty', 5, 'height: 100px;').replace(/\s/g, '')).toBe(tpl.replace(/\s/g, ''));
-    });
-});
-
 
 describe('getEmpty(gridManagerName)', () => {
     let tpl = null;
@@ -952,7 +869,7 @@ describe('updateThWidth(settings, isInit)', () => {
         expect(settings.columnMap['gm_order'].width).toBe('50px');
 
         // windows 系统不执行以下脚本
-        if (navigator.platform !== 'Win32'){
+        if (navigator.platform !== 'Win32') {
             expect(settings.columnMap['pic'].width).toBe(`${overage / 2 + picThTextWidth}px`);
             expect(settings.columnMap['title'].width).toBe(`${overage / 2 + titleThTextWidth}px`);
         }
@@ -1023,7 +940,6 @@ describe('getTextWidth(gridManagerName, content, cssObj)', () => {
         // expect(getTextWidth('test', '123456', {'fontSize': '24px'})).toBe(80);
 
         // TODO CI 上跑测试无法精准到数值，所以用以下进行替代。 本地测试精准数值是通过的
-        expect(typeof getTextWidth('test', '123456')).toBe('number');
         expect(typeof getTextWidth('test', '123456', {'fontSize': '24px'})).toBe('number');
     });
 });

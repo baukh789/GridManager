@@ -66,7 +66,7 @@ export default class GridManager {
         // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
         if (!isString(gridManagerName)) {
             // 存储gridManagerName值
-            gridManagerName = arg.gridManagerName = getKey($table);
+            gridManagerName = arg.gridManagerName = getKey(table);
             // 参数中存在配置项 gridManagerName: 更新table DOM 的 grid-manager属性
         } else {
             $table.attr(TABLE_KEY, gridManagerName);
@@ -169,7 +169,7 @@ export default class GridManager {
         const initTableAfter = () => {
             // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
             if (!isUndefined($table.attr(CACHE_ERROR_KEY))) {
-                window.setTimeout(() => {
+                setTimeout(() => {
                     saveUserMemory(settings);
                     $table.removeAttr(CACHE_ERROR_KEY);
                 }, 1000);
