@@ -45,12 +45,15 @@
 }
 
 /* table */
-[grid-manager] {
+[grid-manager]{
     table-layout: fixed;
     word-wrap: break-word;
     text-align: center;
     width: 100%;
     border-collapse: collapse;
+}
+/* table: fixed模块也会使用到，所以不使用[grid-manager]做为根节点*/
+.table-wrap {
     tr {
         border-bottom: @table-border;
         [last-visible="true"]{
