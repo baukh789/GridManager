@@ -576,6 +576,9 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
                 // 相同数据列合并功能
                 || columnCache[key].merge !== col.merge
 
+                // 固定列
+                || columnCache[key].fixed !== col.fixed
+
                 // 字段描述
                 || JSON.stringify(columnCache[key].remind) !== JSON.stringify(col.remind)
 

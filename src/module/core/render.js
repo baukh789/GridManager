@@ -8,6 +8,7 @@ import { getVisibleState } from '@common/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
 import filter from '../filter';
+import fixed from '../fixed';
 import config from '../config';
 import sort from '../sort';
 import checkbox from '../checkbox';
@@ -82,6 +83,9 @@ class Render {
         // 将筛选条件重置
         filter.enable[gridManagerName] = false;
 
+        // 将列固定重置
+        fixed.enable[gridManagerName] = false;
+
         let thListTpl = '';
         // columnList 生成thead
         each(columnList, (index, col) => {
@@ -123,7 +127,7 @@ class Render {
                 sortingAttr = `sorting="${sortUpText}"`;
                 sortData[col.key] = sortUpText;
             } else {
-                sortingAttr = 'sorting=""';
+                sortingAttr = 'sorting';
             }
         }
 
@@ -131,7 +135,7 @@ class Render {
         let filterAttr = '';
         if (isObject(col.filter)) {
             filter.enable[gridManagerName] = true;
-            filterAttr = 'filter=""';
+            filterAttr = 'filter';
             if (isUndefined(col.filter.selected)) {
                 col.filter.selected = query[col.key];
             } else {
@@ -139,6 +143,12 @@ class Render {
             }
         }
 
+        // 固定列
+        let fixedAttr = '';
+        if (col.fixed === 'left' || col.fixed === 'right') {
+            fixed.enable[gridManagerName] = true;
+            fixedAttr = `fixed="${col.fixed}"`;
+        }
         // 文本对齐
         const alignAttr = col.align ? `align="${col.align}"` : '';
 
@@ -187,6 +197,7 @@ class Render {
             sortingAttr,
             alignAttr,
             filterAttr,
+            fixedAttr,
             remindAttr,
             dragClassName,
             thVisibleAttr,

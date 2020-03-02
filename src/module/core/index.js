@@ -15,7 +15,6 @@ import ajaxPage from '../ajaxPage';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
 import coreDOM from './coreDOM';
-import fixed from '../fixed';
 import { transformToPromise } from './tool';
 import { sendCompile, compileEmptyTemplate, clearCompileList } from '@common/framework';
 
@@ -198,8 +197,6 @@ class Core {
 
         // 解析框架: thead区域
         await sendCompile(settings);
-
-        fixed.init(gridManagerName);
     }
 
     /**

@@ -1,40 +1,30 @@
-import jTool from '@jTool';
-import { getWrap, getFakeTh, getFakeThead } from '@common/base';
-import { CHECKBOX_KEY, ORDER_KEY } from '@common/constants';
-import fixedTpl from './fixed.html';
+import { getDiv, getTh, getFakeThead } from '@common/base';
+import { each } from '@jTool/utils';
 import './style.less';
 
 class Fixed {
+    // 存储启用状态
+    enable = {};
+
     // todo 使用fixed 的列应该禁用宽度调整与位置更换功能
     // tbody区域使用的是模板，可以考虑在渲染模板时直接渲染至固定列中？
     init(gridManagerName) {
-        const $tableWrap = getWrap(gridManagerName);
+        // const $wrap = getWrap(gridManagerName);
+        const $fakeThead = getFakeThead(gridManagerName);
+        const $tableDiv = getDiv(gridManagerName);
+        const scrollLeft = $tableDiv.scrollLeft();
+        const $fixedList = $fakeThead.find('th[fixed="left"]');
+        each($fixedList, (index, item) => {
+            item.style.left = -(scrollLeft - getTh(gridManagerName, item.getAttribute('th-name')).get(0).offsetLeft) + 'px';
+        });
 
-        const fixedLeft = document.createElement('div');
-        fixedLeft.className = 'gm-fixed';
-        fixedLeft.setAttribute('fixed-left', gridManagerName);
-        fixedLeft.innerHTML = fixedTpl;
-        $tableWrap.append(fixedLeft);
-
-        const fixedRight = document.createElement('div');
-        fixedRight.className = 'gm-fixed';
-        fixedRight.setAttribute('fixed-right', gridManagerName);
-        fixedRight.innerHTML = fixedTpl;
-        $tableWrap.append(fixedRight);
-
-        const $leftThead = jTool(`[fixed-left="${gridManagerName}"] thead tr`);
-        const $rightThead = jTool(`[fixed-right="${gridManagerName}"] thead tr`);
-
-        console.log($leftThead);
-        // fixedLeft.find('.fixed-head').get(0).innerHTML = '<table><thead><tr></tr></thead></table>';
-        $leftThead.height(getFakeThead(gridManagerName).height());
-        $leftThead.append(getFakeTh(gridManagerName, CHECKBOX_KEY));
-        $leftThead.append(getFakeTh(gridManagerName, ORDER_KEY));
-
-        $rightThead.height(getFakeThead(gridManagerName).height());
-        $rightThead.append(getFakeTh(gridManagerName, 'action'));
-
-        console.log(getFakeTh(gridManagerName, CHECKBOX_KEY));
+        const $rightList = $fakeThead.find('th[fixed="right"]');
+        const theadWidth = $fakeThead.width();
+        each($rightList, (index, item) => {
+            // todo 需要处理由于滚动Y轴出现造成的right大10px的问题
+            const $th = getTh(gridManagerName, item.getAttribute('th-name'));
+            item.style.right = -(theadWidth - $th.get(0).offsetLeft - $th.width() - scrollLeft) + 'px';
+        });
     }
 }
 

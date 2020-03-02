@@ -1,27 +1,36 @@
-[fixed-wrap]{
-
-}
-.gm-fixed {
-    height: calc(100% - 40px);
-    position: absolute;
-    top: 0;
-    &[fixed-left]{
-        left: 0;
-        box-shadow: 6px 0 10px -6px #ddd;
-    }
-    &[fixed-right]{
-        right: 0;
-        box-shadow: -6px 0 10px -6px #ddd;
-    }
-    .fixed-head{
-        table{
-            table-layout: fixed;
-            word-wrap: break-word;
-            text-align: center;
-            border-collapse: collapse;
+@import "../../css/mixins";
+[grid-manager] {
+    [grid-manager-mock-thead] [fixed] {
+        position: sticky;
+        z-index: 3;
+        .table-bg();
+        &[fixed="left"]{
+            left: 0;
+            box-shadow: 1px 0 0 #e8e8e8;
+        }
+        &[fixed="right"]{
+            right: 0;
+            box-shadow: -1px 0 0 #e8e8e8;
         }
     }
-    .fixed-body{
-        height: calc(100% - 40px);
+}
+[grid-manager="test"] {
+    td:nth-child(1){
+        position: sticky;
+        left: 0px;
+        z-index: 3;
+        box-shadow: 1px 0 0 #e8e8e8;
+    }
+    td:nth-child(2){
+        position: sticky;
+        left: 40px;
+        z-index: 3;
+        box-shadow: 1px 0 0 #e8e8e8;
+    }
+    td:last-child{
+        position: sticky;
+        right: 0;
+        z-index: 3;
+        box-shadow: -1px 0 0 #e8e8e8;
     }
 }

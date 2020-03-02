@@ -13,6 +13,7 @@ import { getSettings, updateCache } from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { compileFakeThead } from '@common/framework';
 import config from '../config';
+import fixed from '../fixed';
 import './style.less';
 class Scroll {
     /**
@@ -70,6 +71,8 @@ class Scroll {
         each(jTool('th', $thead), (i, th) => {
             jTool('th', $setTopHead).eq(i).width(jTool(th).width());
         });
+
+        fixed.init(gridManagerName);
     }
 
 	/**
