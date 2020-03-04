@@ -72,7 +72,7 @@ class Scroll {
             jTool('th', $setTopHead).eq(i).width(jTool(th).width());
         });
 
-        fixed.init(gridManagerName);
+        fixed.updateFakeThead(gridManagerName);
     }
 
 	/**

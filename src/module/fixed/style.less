@@ -1,36 +1,24 @@
 @import "../../css/mixins";
-[grid-manager] {
-    [grid-manager-mock-thead] [fixed] {
+
+// th样式, 在JS中会动态的变更left | right值
+[grid-manager-mock-thead]{
+    [fixed]{
         position: sticky;
         z-index: 3;
         .table-bg();
-        &[fixed="left"]{
-            left: 0;
-            box-shadow: 1px 0 0 #e8e8e8;
-        }
-        &[fixed="right"]{
-            right: 0;
-            box-shadow: -1px 0 0 #e8e8e8;
+    }
+    [fixed="left"]{
+        box-shadow: 1px 0 0 #e8e8e8;
+        &[fixed-border]{
+            box-shadow: 2px -2px 3px #e8e8e8;
         }
     }
-}
-[grid-manager="test"] {
-    td:nth-child(1){
-        position: sticky;
-        left: 0px;
-        z-index: 3;
-        box-shadow: 1px 0 0 #e8e8e8;
-    }
-    td:nth-child(2){
-        position: sticky;
-        left: 40px;
-        z-index: 3;
-        box-shadow: 1px 0 0 #e8e8e8;
-    }
-    td:last-child{
-        position: sticky;
-        right: 0;
-        z-index: 3;
+    [fixed="right"]{
         box-shadow: -1px 0 0 #e8e8e8;
+        &[fixed-border]{
+            box-shadow: -2px -2px 3px #e8e8e8;
+        }
     }
 }
+
+// td 样式不在style.less中，是通过js动态添加

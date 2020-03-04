@@ -84,7 +84,5 @@
         "webpack-dev-middleware": "^3.7.0",
         "webpack-hot-middleware": "^2.25.0"
     },
-    "dependencies": {
-        "jtool": "^1.3.0"
-    }
+    "dependencies": {}
 }
