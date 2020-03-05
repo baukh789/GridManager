@@ -28,10 +28,13 @@ class Fixed {
 
         const $rightList = $fakeThead.find('th[fixed="right"]');
         const theadWidth = $fakeThead.width();
+
+        // const scrollWidth = $tableDiv.width() < $tableDiv.get(0).scrollHeight ? 10 : 0;
         each($rightList, (index, item) => {
             // todo 需要处理由于滚动Y轴出现造成的right大10px的问题
             const $th = getTh(gridManagerName, item.getAttribute('th-name'));
-            item.style.right = -(theadWidth - $th.get(0).offsetLeft - $th.width() - scrollLeft) + 'px';
+            item.style.right = (theadWidth - $th.get(0).offsetLeft + scrollLeft - $th.width())  + 'px';
+            // item.style.right = -(theadWidth - $th.get(0).offsetLeft - $th.width() - scrollLeft) + 'px';
             index === 0 && item.setAttribute('fixed-border', '');
         });
     }
@@ -55,14 +58,16 @@ class Fixed {
         }
         let styleStr = '';
         const $fixedLeft = $thead.find('th[fixed="left"]');
-        let shadowValue = '1px 0 0 #e8e8e8;';
+        let shadowValue = '';
         each($fixedLeft, (index, item) => {
             if (index === $fixedLeft.length - 1) {
-                shadowValue = '2px 0 3px 0px #e8e8e8';
+                shadowValue = '2px 0 3px #e8e8e8';
+            } else {
+                shadowValue = '1px 0 0 #e8e8e8;';
             }
 
             styleStr += `
-            [grid-manager="${gridManagerName}"] tr:not([empty-template]) td:nth-child(${jTool(item).index() + 1}){
+            [gm-overflow-x="true"] [grid-manager="${gridManagerName}"] tr:not([empty-template]) td:nth-child(${jTool(item).index() + 1}){
                 position: sticky;
                 left: ${item.offsetLeft}px;
                 z-index: 3;
@@ -72,10 +77,12 @@ class Fixed {
 
         each($thead.find('th[fixed="right"]'), (index, item) => {
             if (index === 0) {
-                shadowValue = '2px 0 3px 0px #e8e8e8';
+                shadowValue = '2px 0 3px #e8e8e8';
+            } else {
+                shadowValue = '1px 0 0 #e8e8e8;';
             }
             styleStr += `
-            [grid-manager="${gridManagerName}"] tr:not([empty-template]) td:nth-child(${jTool(item).index() + 1}){
+            [gm-overflow-x="true"] [grid-manager="${gridManagerName}"] tr:not([empty-template]) td:nth-child(${jTool(item).index() + 1}){
                 position: sticky;
                 right: ${theadWidth - item.offsetLeft - item.offsetWidth}px;
                 z-index: 3;

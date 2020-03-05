@@ -85,13 +85,3 @@ export const getObjectIndexToArray = (arr, obj) => {
 export const cloneObject = o => {
     return JSON.parse(JSON.stringify(o));
 };
-
-/**
- * 获取visible状态
- * @param isShow: 是否显示
- * @returns {string}
- */
-export const getVisibleState = isShow => {
-    return isShow ? 'visible' : 'none';
-};
-

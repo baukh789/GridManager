@@ -1,4 +1,5 @@
 import { getEvent, eventMap } from '@module/remind/event';
+import { REMIND_CLASS, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 
 describe('remind', () => {
     describe('getEvent', () => {
@@ -18,7 +19,7 @@ describe('remind', () => {
             events = getEvent('test', '#baukh');
             expect(events.remindStart.events).toBe('mouseover');
             expect(events.remindStart.target).toBe('#baukh');
-            expect(events.remindStart.selector).toBe('.gm-remind-action');
+            expect(events.remindStart.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${REMIND_CLASS}`);
         });
     });
 

@@ -181,7 +181,7 @@ class Filter {
 
     /**
      * 更新filter选中状态
-     * @param $th
+     * @param $th: fake-th
      * @param filter
      */
     update($th, filter) {

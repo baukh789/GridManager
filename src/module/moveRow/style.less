@@ -8,7 +8,7 @@
 }
 
 // 拖拽标识
-tbody.move-row tr td:not([disable-move]){
+tbody.move-row tr:not([empty-template]) td:not([disable-move]){
     cursor: all-scroll;
 }
 
@@ -17,7 +17,7 @@ tbody.move-row tr td:not([disable-move]){
     display: none;
     position: absolute;
     cursor: all-scroll;
-    z-index: 9999;
+    z-index: 4;
     border: 1px solid;
     border-color: #e8e8e8 transparent;
     .dreamland-row {
@@ -36,7 +36,7 @@ tbody.move-row tr td:not([disable-move]){
             text-overflow: ellipsis;
             vertical-align: middle;
             .text-overflow();
-            &[td-visible="none"]{
+            &[cell-hidden]{
                 display: none;
             }
         }

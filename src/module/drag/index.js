@@ -10,7 +10,6 @@ import { getTable, getQuerySelector, getFakeVisibleTh, getWrap, getColTd, getThN
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
-import adjust from '@module/adjust';
 import config from '@module/config';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
@@ -33,7 +32,7 @@ class Drag {
             // 获取设置项
             let settings = getSettings(gridManagerName);
 
-            const { columnMap, dragBefore, animateTime, dragAfter, supportAdjust, supportConfig } = settings;
+            const { columnMap, dragBefore, animateTime, dragAfter, supportConfig } = settings;
 
             // 事件源th
             const $th = jTool(this).closest('th');
@@ -137,11 +136,6 @@ class Drag {
 
                 // 更新存储信息
                 updateCache(gridManagerName);
-
-                // 重置调整宽度事件源
-                if (supportAdjust) {
-                    adjust.resetAdjust(gridManagerName);
-                }
 
                 // 重置配置区域
                 if (supportConfig) {

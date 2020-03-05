@@ -6,7 +6,7 @@ import { isFunction, each, isArray } from '@jTool/utils';
 import { showLoading, hideLoading, getVisibleTh, getTbody } from '@common/base';
 import { outError } from '@common/utils';
 import { getSettings, getCheckedData, getTableData } from '@common/cache';
-import { GM_CREATE, TD_VISIBLE } from '@common/constants';
+import { GM_CREATE, CELL_HIDDEN } from '@common/constants';
 class ExportFile {
 	/**
 	 * 获取文件名称
@@ -63,67 +63,24 @@ class ExportFile {
         const selectedList = onlyChecked ? getCheckedData(gridManagerName) : [];
         const tableData = getTableData(gridManagerName);
 
+        const handler = exportConfig.handler;
+
 	    switch (exportConfig.mode) {
             case 'static': {
-                this.downStatic(gridManagerName, loadingTemplate, fileName, onlyChecked, exportConfig.suffix, exportConfig.handler, query, pageData, sortData, selectedList, tableData);
+                this.downStatic(gridManagerName, loadingTemplate, fileName, onlyChecked, exportConfig.suffix, handler, query, pageData, sortData, selectedList, tableData);
                 break;
             }
             case 'blob': {
-                await this.downBlob(gridManagerName, loadingTemplate, fileName, exportConfig.handler, query, pageData, sortData, selectedList, tableData);
+                await this.downBlob(gridManagerName, loadingTemplate, fileName, handler, query, pageData, sortData, selectedList, tableData);
                 break;
             }
-            // TODO 待添加
-            // case 'filePath': {
-            //     await this.downFilePath(fileName, exportHandler, pageData, sortData, selectedList);
-            //     break;
-            // }
-            //
-            // case 'fileStream': {
-            //     await this.downFileStream(fileName, exportHandler, pageData, sortData, selectedList);
-            //     break;
-            // }
+
+            case 'url': {
+                await this.downFilePath(gridManagerName, loadingTemplate, fileName, handler, pageData, sortData, selectedList);
+                break;
+            }
         }
-
-		// 成功后返回true
-		// return true;
 	}
-
-    /**
-     * 下载方式: 文件路径
-     * @param fileName
-     * @param exportHandler
-     * @param pageData
-     * @param sortData
-     * @param selectedList
-     * @returns {Promise<void>}
-     */
-    // async downFilePath(fileName, exportHandler, pageData, sortData, selectedList) {
-    //     try {
-    //         const res = await exportHandler(fileName, pageData, sortData, selectedList);
-    //         this.dispatchDownload(fileName, res);
-    //     } catch (e) {
-    //         outError(e);
-    //     }
-    // }
-
-    /**
-     * 下载方式: 文件流
-     * @param fileName
-     * @param exportHandler
-     * @param pageData
-     * @param sortData
-     * @param selectedList
-     * @returns {Promise<void>}
-     */
-    // async downFileStream(fileName, exportHandler, pageData, sortData, selectedList) {
-    //     try {
-    //         const res = await exportHandler(fileName, pageData, sortData, selectedList);
-    //         window.open(res);
-    //     } catch (e) {
-    //         outError(e);
-    //     }
-    //
-    // }
 
     /**
      * 下载方式: 静态下载
@@ -140,7 +97,7 @@ class ExportFile {
 
         // exportHandler 未返回数组表示当前exportHandler未被配置
         if (!isArray(tableList)) {
-            const thDOM = getVisibleTh(gridManagerName, false);
+            const thDOM = getVisibleTh(gridManagerName);
             const $tbody = getTbody(gridManagerName);
             let	trDOM = null;
             // 验证：是否只导出已选中的表格
@@ -160,7 +117,7 @@ class ExportFile {
             // 存储导出的tbody
             each(trDOM, (i, v) => {
                 let tdList = [];
-                const tdDOM = jTool(`td[${GM_CREATE}="false"][${TD_VISIBLE}="visible"]`, v);
+                const tdDOM = jTool(`td:not([${GM_CREATE}]):not([${CELL_HIDDEN}])`, v);
                 each(tdDOM, (i2, v2) => {
                     tdList.push(`"${v2.textContent || ''}"`); // 添加""的原因: 规避内容中英文逗号被识别为分割单元格的标识
                 });
@@ -186,6 +143,29 @@ class ExportFile {
     }
 
     /**
+     * 下载方式: 文件路径
+     * @param gridManagerName
+     * @param loadingTemplate: loading模板
+     * @param fileName
+     * @param exportHandler
+     * @param pageData
+     * @param sortData
+     * @param selectedList
+     * @returns {Promise<void>}
+     */
+    async downFilePath(gridManagerName, loadingTemplate, fileName, exportHandler, pageData, sortData, selectedList) {
+        try {
+            showLoading(gridManagerName, loadingTemplate);
+            const res = await exportHandler(fileName, pageData, sortData, selectedList);
+            this.dispatchDownload(fileName, res);
+        } catch (e) {
+            outError(e);
+        } finally {
+            hideLoading(gridManagerName);
+        }
+    }
+
+    /**
      * 下载方式: Blob格式
      * @param gridManagerName
      * @param loadingTemplate: loading模板
@@ -201,9 +181,6 @@ class ExportFile {
             showLoading(gridManagerName, loadingTemplate);
 
             const res = await exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
-
-            hideLoading(gridManagerName);
-
             const blobPrototype = Blob.prototype;
             let blob = null;
 
@@ -226,6 +203,7 @@ class ExportFile {
             this.dispatchDownload(fileName, URL.createObjectURL(blob));
         } catch (e) {
             outError(e);
+        } finally {
             hideLoading(gridManagerName);
         }
     }

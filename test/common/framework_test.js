@@ -42,14 +42,14 @@ describe('Framework', () => {
             document.body.innerHTML = tableTestTpl;
             fakeTheadTr = document.querySelector('thead[grid-manager-mock-thead="test"] tr');
             // 模拟未渲染前效果
-            [].forEach.call(fakeTheadTr.querySelectorAll('th[gm-create="false"]'), (item, index) => {
+            [].forEach.call(fakeTheadTr.querySelectorAll('th:not([gm-create])'), (item, index) => {
                 item.setAttribute(FRAMEWORK_KEY, index);
             });
         });
 
         afterEach(() => {
             document.body.innerHTML = '';
-            [].forEach.call(fakeTheadTr.querySelectorAll('th[gm-create="false"]'), item => {
+            [].forEach.call(fakeTheadTr.querySelectorAll('th:not([gm-create])'), item => {
                 item.removeAttribute(FRAMEWORK_KEY);
             });
             fakeTheadTr = null;
@@ -161,7 +161,6 @@ describe('Framework', () => {
         let row = null;
         let tdTemplate = null;
         beforeEach(() => {
-            // 获取第一个非自动创建td
             row = {
                 'id': 92,
                 'title': 'Content-Type 对照表',
@@ -321,7 +320,7 @@ describe('Framework', () => {
         let emptyNode = null;
         let template = null;
         beforeEach(() => {
-            template = settings => settings.query?.title ? '<div>查询结果为空</div>' : '<div>空空的，什么也没有</div>';
+            template = settings => settings.query && settings.query.title ? '<div>查询结果为空</div>' : '<div>空空的，什么也没有</div>';
             document.body.innerHTML = '<table><tbody><td empty-node></td></tbody></table>';
             emptyNode = document.querySelector('td[empty-node]');
         });

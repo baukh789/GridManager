@@ -124,7 +124,7 @@ class Tree {
 
             // 未设置 insertTo 或 通过 insertTo 未找到dom时: 使用第一个非自动创建的TD
             if (!$insertTd) {
-                $insertTd = jTool(`td[${GM_CREATE}="false"]`, $trNode).eq(0);
+                $insertTd = jTool(`td:not([${GM_CREATE}])`, $trNode).eq(0);
             }
             const treeDOM = document.createElement('span');
             treeDOM.setAttribute(treeKey, openState);

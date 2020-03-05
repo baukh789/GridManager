@@ -1,7 +1,7 @@
 @import "../../css/mixins";
 
 // th样式, 在JS中会动态的变更left | right值
-[grid-manager-mock-thead]{
+[gm-overflow-x="true"] [grid-manager-mock-thead]{
     [fixed]{
         position: sticky;
         z-index: 3;
@@ -10,15 +10,23 @@
     [fixed="left"]{
         box-shadow: 1px 0 0 #e8e8e8;
         &[fixed-border]{
-            box-shadow: 2px -2px 3px #e8e8e8;
+            box-shadow: 2px 0 3px #e8e8e8;
         }
     }
     [fixed="right"]{
-        box-shadow: -1px 0 0 #e8e8e8;
+        box-shadow: -1px 0 0 red;
         &[fixed-border]{
-            box-shadow: -2px -2px 3px #e8e8e8;
+            box-shadow: -2px 0 3px red;
+        }
+        &:last-child:after{
+            display: block;
+            width: 10px;
+            height: 100%;
+            position: absolute;
+            right: -10px;
+            top: 0;
+            content: "";
+            .table-bg();
         }
     }
 }
-
-// td 样式不在style.less中，是通过js动态添加

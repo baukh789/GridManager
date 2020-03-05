@@ -31,7 +31,7 @@ import {
 } from '@common/base';
 import tableTpl from '@test/table-test.tpl.html';
 import { getColumnMap } from '@test/table-config';
-import { TOOLBAR_KEY, LOADING_CLASS_NAME, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY, TR_LEVEL_KEY } from '@common/constants';
+import { TOOLBAR_KEY, LOADING_CLASS_NAME, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY, TR_LEVEL_KEY, CELL_HIDDEN } from '@common/constants';
 
 const tableTestTpl = tableTpl;
 
@@ -381,7 +381,7 @@ describe('getAllTh(gridManagerName)', () => {
     });
 });
 
-describe('getVisibleTh(gridManagerName, isGmCreate)', () => {
+describe('getVisibleTh(gridManagerName)', () => {
     let gridManagerName = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -395,19 +395,11 @@ describe('getVisibleTh(gridManagerName, isGmCreate)', () => {
 
     it('基础验证', () => {
         expect(getVisibleTh).toBeDefined();
-        expect(getVisibleTh.length).toBe(2);
+        expect(getVisibleTh.length).toBe(1);
     });
 
     it('getVisibleTh(gridManagerName)', () => {
         expect(getVisibleTh(gridManagerName).length).toBe(10);
-    });
-
-    it('getVisibleTh(gridManagerName, true)', () => {
-        expect(getVisibleTh(gridManagerName, true).length).toBe(2);
-    });
-
-    it('getVisibleTh(gridManagerName, true)', () => {
-        expect(getVisibleTh(gridManagerName, false).length).toBe(8);
     });
 });
 
@@ -436,7 +428,7 @@ describe('getFakeTh(gridManagerName, thName)', () => {
     });
 });
 
-describe('getFakeVisibleTh(gridManagerName)', () => {
+describe('getFakeVisibleTh(gridManagerName, isExcludeGmCreate)', () => {
     let gridManagerName = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -450,11 +442,15 @@ describe('getFakeVisibleTh(gridManagerName)', () => {
 
     it('基础验证', () => {
         expect(getFakeVisibleTh).toBeDefined();
-        expect(getFakeVisibleTh.length).toBe(1);
+        expect(getFakeVisibleTh.length).toBe(2);
     });
 
     it('返回值验证', () => {
         expect(getFakeVisibleTh(gridManagerName).length).toBe(10);
+    });
+
+    it('getFakeVisibleTh(gridManagerName, true)', () => {
+        expect(getFakeVisibleTh(gridManagerName, true).length).toBe(8);
     });
 });
 
@@ -488,7 +484,7 @@ describe('getEmpty(gridManagerName)', () => {
         document.body.innerHTML = `<table grid-manager="test-empty">
                                         <thead grid-manager-thead>
                                             <tr>
-                                                <th th-visible="visible">1</th><th th-visible="visible">2</th>
+                                                <th>1</th><th>2</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -539,7 +535,7 @@ describe('updateEmptyCol(gridManagerName)', () => {
         document.body.innerHTML = `<table grid-manager="test-empty">
                                         <thead grid-manager-thead="test-empty">
                                             <tr>
-                                                <th th-visible="visible">1</th><th th-visible="visible">2</th>
+                                                <th>1</th><th>2</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -557,7 +553,7 @@ describe('updateEmptyCol(gridManagerName)', () => {
         document.body.innerHTML = `<table grid-manager="test-empty">
                                         <thead grid-manager-thead="test-empty">
                                             <tr>
-                                                <th th-visible="visible">1</th><th th-visible="visible">2</th>
+                                                <th>1</th><th>2</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -631,22 +627,22 @@ describe('setAreVisible(gridManagerName, thNameList, isVisible, cb)', () => {
     });
 
     it('执行验证', () => {
-        expect(getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
-        expect(getTh('test', 'title').attr('th-visible')).toBe('visible');
-        expect(getTh('test', 'pic').attr('th-visible')).toBe('visible');
+        expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBeUndefined();
+        expect(getTh('test', 'title').attr(CELL_HIDDEN)).toBeUndefined();
+        expect(getTh('test', 'pic').attr(CELL_HIDDEN)).toBeUndefined();
 
         // 设置gm_checkbox, pic不可见
         setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], false);
 
-        expect(getTh('test', 'gm_checkbox').attr('th-visible')).toBe('none');
-        expect(getTh('test', 'title').attr('th-visible')).toBe('visible');
-        expect(getTh('test', 'pic').attr('th-visible')).toBe('none');
+        expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBe('');
+        expect(getTh('test', 'title').attr(CELL_HIDDEN)).toBeUndefined();
+        expect(getTh('test', 'pic').attr(CELL_HIDDEN)).toBe('');
 
         // 设置gm_checkbox, pic可见
         setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], true);
-        expect(getTh('test', 'gm_checkbox').attr('th-visible')).toBe('visible');
-        expect(getTh('test', 'title').attr('th-visible')).toBe('visible');
-        expect(getTh('test', 'pic').attr('th-visible')).toBe('visible');
+        expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBeUndefined();
+        expect(getTh('test', 'title').attr(CELL_HIDDEN)).toBeUndefined();
+        expect(getTh('test', 'pic').attr(CELL_HIDDEN)).toBeUndefined();
     });
 });
 
@@ -673,20 +669,20 @@ describe('updateVisibleLast(gridManagerName)', () => {
     });
 
     it('执行验证', () => {
-        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
+        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible]');
         expect(getThName($lastTh)).toBe('action');
 
         updateVisibleLast(gridManagerName);
 
         // // 在未变更列的情况下，执行结果不会变化
-        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
+        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible]');
         expect(getThName($lastTh)).toBe('action');
 
         // 隐藏最后一列
         setAreVisible(gridManagerName, [getThName($lastTh)], false);
 
         updateVisibleLast(gridManagerName);
-        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible="true"]');
+        $lastTh = $table.find('thead[grid-manager-thead] th[last-visible]');
         expect(getThName($lastTh)).toBe('info');
     });
 });
@@ -968,12 +964,12 @@ describe('updateScrollStatus(gridManagerName)', () => {
         $table.width(1000);
         $tableDiv.width(1100);
         updateScrollStatus('test');
-        expect($tableDiv.css('overflow-x')).toBe('hidden');
+        expect($tableDiv.attr('gm-overflow-x')).toBe('false');
 
         $table.width(1100);
         $tableDiv.width(1000);
         updateScrollStatus('test');
-        expect($tableDiv.css('overflow-x')).toBe('auto');
+        expect($tableDiv.attr('gm-overflow-x')).toBe('true');
     });
 });
 

@@ -274,6 +274,8 @@ const demo1 = {
             // 初始渲染时是否加载数据
             // firstLoading: false,
 
+            // supportAutoOrder: false,
+            // supportCheckbox: false,
             // 是否使用无总条数模式
             // useNoTotalsMode: true,
             // 是否开启分页
@@ -350,7 +352,7 @@ const demo1 = {
                     }
                     return fileName;
                 },
-                suffix: 'csv'
+                suffix: 'xls'
             },
             ajaxType: 'POST',
 
@@ -537,13 +539,15 @@ const demo1 = {
                     key: 'info',
                     remind: 'the info',
                     width: '100px',
-                    text: '简介'
+                    text: '简介',
+                    disableMoveRow: true
                 }, {
                     key: 'username',
                     remind: 'the username',
                     align: 'center',
                     width: '100px',
                     text: '作者',
+                    disableMoveRow: true,
                     template: (username, row) => {
                         return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" ${row.id} title="去看看${username}的github">${username}</a>`;
                     }
@@ -571,7 +575,8 @@ const demo1 = {
                 {
                     key: 'priority',
                     text: '优先级',
-                    width: 100
+                    fixed: 'right',
+                    width: '100px'
                 },
                 {
                     key: 'action',

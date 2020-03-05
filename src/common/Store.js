@@ -6,9 +6,6 @@ const Store = {
 	// 版本号
 	version: GM_VERSION,
 
-    // GM所在的域
-    scope: {},
-
 	// GM使用的数据
 	responseData: {},
 

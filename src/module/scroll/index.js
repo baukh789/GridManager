@@ -56,7 +56,6 @@ class Scroll {
         }
         const $thead = getThead(gridManagerName);
         const theadWidth = $thead.width();
-        // const tableDivWidth = $tableDiv.width();
 
         // 吸顶元素
         const $setTopHead = getFakeThead(gridManagerName);

@@ -4,11 +4,10 @@
 import './style.less';
 import jTool from '@jTool';
 import { each } from '@jTool/utils';
-import { getDiv, updateThWidth, setAreVisible, updateVisibleLast, updateScrollStatus, getTh, getWrap, clearTargetEvent } from '@common/base';
+import { getDiv, updateThWidth, setAreVisible, updateVisibleLast, updateScrollStatus, getFakeTh, getWrap, clearTargetEvent } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { CONFIG_KEY, CHECKED_CLASS, TH_NAME } from '@common/constants';
-import adjust from '../adjust';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
 import configTpl from './config.tpl.html';
@@ -97,11 +96,6 @@ class Config {
         // 执行前，先对当前的columnMap进行更新
         const settings = updateCache(gridManagerName);
 
-        // 重置调整宽度事件源
-        if (settings.supportAdjust) {
-            adjust.resetAdjust(gridManagerName);
-        }
-
         // 重置当前可视th的宽度
         updateThWidth(settings);
 
@@ -142,7 +136,7 @@ class Config {
         const { gridManagerName, key, isShow } = params;
 
         // 注意: 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
-        const label = getTh(gridManagerName, key).find('.th-text').text();
+        const label = getFakeTh(gridManagerName, key).find('.th-text').text();
         const checkboxTpl = checkbox.getCheckboxTpl({checked: isShow, label});
 	    return {
             key,

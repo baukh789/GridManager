@@ -2,8 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from '@jTool';
-import { isString, isBoolean, each, extend } from '@jTool/utils';
-import { getVisibleState } from '@common/utils';
+import { isString, each, extend } from '@jTool/utils';
 import {
     FAKE_TABLE_HEAD_KEY,
     TABLE_HEAD_KEY,
@@ -18,8 +17,7 @@ import {
     TR_LEVEL_KEY,
     LOADING_CLASS_NAME,
     LAST_VISIBLE,
-    TH_VISIBLE,
-    TD_VISIBLE,
+    CELL_HIDDEN,
     GM_CREATE,
     TH_NAME,
     REMIND_CLASS,
@@ -182,6 +180,16 @@ export const getTh = (gridManagerName, thName) => {
 };
 
 /**
+ * get fake th
+ * @param gridManagerName
+ * @param thName
+ * @returns {*}
+ */
+export const getFakeTh = (gridManagerName, thName) => {
+    return jTool(`[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] th[${TH_NAME}="${thName}"]`);
+};
+
+/**
  * get all th
  * @param $table
  * @returns {*}
@@ -193,31 +201,20 @@ export const getAllTh = gridManagerName => {
 /**
  * get visible th
  * @param $table
- * @param isGmCreate
  * @returns {*}
  */
-export const getVisibleTh = (gridManagerName, isGmCreate) => {
-    const gmCreateStr = isBoolean(isGmCreate) ? `[${GM_CREATE}="${isGmCreate}"]` : '';
-    return jTool(`[${TABLE_HEAD_KEY}="${gridManagerName}"] th[${TH_VISIBLE}="visible"]${gmCreateStr}`);
-};
-
-/**
- * get fake th
- * @param gridManagerName
- * @param thName
- * @returns {*}
- */
-export const getFakeTh = (gridManagerName, thName) => {
-    return jTool(`[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] th[${TH_NAME}="${thName}"]`);
+export const getVisibleTh = gridManagerName => {
+    return jTool(`[${TABLE_HEAD_KEY}="${gridManagerName}"] th:not(${CELL_HIDDEN})`);
 };
 
 /**
  * get fake visible th
  * @param gridManagerName
+ * @param isExcludeGmCreate: 是否排除自动创建的列
  * @returns {*}
  */
-export const getFakeVisibleTh = gridManagerName => {
-    return jTool(`[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] th[${TH_VISIBLE}="visible"]`);
+export const getFakeVisibleTh = (gridManagerName, isExcludeGmCreate) => {
+    return jTool(`[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] th:not([${CELL_HIDDEN}])${isExcludeGmCreate ? `:not([${GM_CREATE}])` : ''}`);
 };
 
 /**
@@ -275,20 +272,19 @@ export const getColTd = ($dom, $context) => {
 export const setAreVisible = (gridManagerName, thNameList, isVisible) => {
     each(thNameList, (i, thName) => {
         const $th = getTh(gridManagerName, thName);
+        const $fakeTh = getFakeTh(gridManagerName, thName);
+        const $td = getColTd($th);
 
         // 可视状态值
-        const visibleState = getVisibleState(isVisible);
-
+        const fn = isVisible ? 'removeAttr' : 'attr';
         // th
-        $th.attr(TH_VISIBLE, visibleState);
+        $th[fn](CELL_HIDDEN, '');
 
         // fake th
-        getFakeTh(gridManagerName, thName).attr(TH_VISIBLE, visibleState);
+        $fakeTh[fn](CELL_HIDDEN, '');
 
-        // 所对应的td
-        each(getColTd($th), (index, td) => {
-            td.setAttribute(TD_VISIBLE, visibleState);
-        });
+        // td
+        $td[fn](CELL_HIDDEN, '');
 
         // config
         // 所对应的显示隐藏所在的li
@@ -311,16 +307,16 @@ export const updateVisibleLast = gridManagerName => {
     const $lastFakeTh = $fakeVisibleThList.eq(index);
 
     // 清除所有列
-    jTool(`${getQuerySelector(gridManagerName)} [${LAST_VISIBLE}="true"]`).attr(LAST_VISIBLE, false);
+    jTool(`${getQuerySelector(gridManagerName)} [${LAST_VISIBLE}]`).removeAttr(LAST_VISIBLE);
 
     // fake th 最后一项增加标识
-    $lastFakeTh.attr(LAST_VISIBLE, true);
+    $lastFakeTh.attr(LAST_VISIBLE, '');
 
     // th 最后一项增加标识
-    getVisibleTh(gridManagerName).eq(index).attr(LAST_VISIBLE, true);
+    getVisibleTh(gridManagerName).eq(index).attr(LAST_VISIBLE, '');
 
     // td 最后一项增加标识
-    getColTd($lastFakeTh).attr(LAST_VISIBLE, true);
+    getColTd($lastFakeTh).attr(LAST_VISIBLE, '');
 };
 
 /**
@@ -354,7 +350,7 @@ export const updateThWidth = (settings, isInit) => {
         // 自适应列: 更新为最小宽度，统计总宽，收录自适应列数组
         if ((isInit && (!width || width === 'auto')) ||
             (!isInit && (!__width || __width === 'auto'))) {
-            col.width = getThTextWidth(gridManagerName, getTh(gridManagerName, key), isIconFollowText);
+            col.width = getThTextWidth(gridManagerName, getFakeTh(gridManagerName, key), isIconFollowText);
             usedTotalWidth += parseInt(col.width, 10);
             autoList.push(col);
             return;
@@ -412,7 +408,7 @@ export const updateThWidth = (settings, isInit) => {
 
 /**
  * 获取TH中文本的宽度. 该宽度指的是文本所实际占用的宽度
- * @param $th
+ * @param $th: fake-th
  * @param isIconFollowText: 表头的icon图标是否跟随文本, 如果根随则需要加上两个icon所占的空间
  * @returns {*}
  */
@@ -476,7 +472,7 @@ export const getTextWidth = (gridManagerName, content, cssObj) => {
 export const updateScrollStatus = gridManagerName => {
     const $tableDiv = getDiv(gridManagerName);
     // 宽度: table的宽度大于 tableDiv的宽度时，显示滚动条
-    $tableDiv.css('overflow-x', getTable(gridManagerName).width() > $tableDiv.width() ? 'auto' : 'hidden');
+    $tableDiv.attr('gm-overflow-x', getTable(gridManagerName).width() > $tableDiv.width());
 };
 
 /**

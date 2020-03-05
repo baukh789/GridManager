@@ -5,7 +5,7 @@
 import './style.less';
 import jTool from '@jTool';
 import { getQuerySelector, getTable, getTh, getFakeThead, getThead, getFakeVisibleTh, getColTd, getThTextWidth, updateScrollStatus, clearTargetEvent } from '@common/base';
-import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, TH_VISIBLE } from '@common/constants';
+import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
 import { CLASS_ADJUST_ACTION, CLASS_ADJUST_SELECT } from './constants';
 import { getSettings, updateCache } from '@common/cache';
 import { getEvent, eventMap } from './event';
@@ -13,8 +13,8 @@ import { getEvent, eventMap } from './event';
 /**
  * 执行移动事件
  * @param gridManagerName
- * @param $th
- * @param $nextTh
+ * @param $th: fake th
+ * @param $nextTh: fake th
  * @param isIconFollowText: 表头的icon图标是否跟随文本
  * @private
  */
@@ -145,23 +145,6 @@ class Adjust {
             runStopEvent(gridManagerName, $table, $th, $td, adjustAfter);
             return false;
         });
-
-        this.resetAdjust(gridManagerName);
-    }
-
-    /**
-     * 通过缓存配置成功后, 重置宽度调整事件源dom 用于禁用最后一列调整宽度事件
-     * @param gridManagerName
-     * @returns {boolean}
-     */
-    resetAdjust(gridManagerName) {
-        let _thList = jTool(`[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] [${TH_VISIBLE}="visible"]`);
-        let	_adjustAction = jTool(`.${CLASS_ADJUST_ACTION}`, _thList);
-        if (!_adjustAction || _adjustAction.length === 0) {
-            return false;
-        }
-        _adjustAction.show();
-        _adjustAction.eq(_adjustAction.length - 1).hide();
     }
 
     /**

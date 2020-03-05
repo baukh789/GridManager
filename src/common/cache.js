@@ -5,7 +5,7 @@
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { isUndefined, isFunction, isObject, isElement, each, isNodeList, extend } from '@jTool/utils';
+import { isUndefined, isFunction, isObject, isString, isElement, each, isNodeList, extend } from '@jTool/utils';
 import { outInfo, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
 import { Settings } from '@common/Settings';
 import textConfig from '@module/i18n/config';
@@ -19,7 +19,7 @@ import {
     CHECKBOX_DISABLED_KEY,
     TR_CACHE_KEY,
     TR_LEVEL_KEY,
-    TH_VISIBLE
+    CELL_HIDDEN
 } from './constants';
 
 /**
@@ -38,15 +38,6 @@ export const SIV_waitTableAvailable =  {};
  */
 export const getVersion = () => {
     return store.version;
-};
-
-/**
- * 存储当前GM所在的域, 当前
- * @param gridManagerName
- * @param scope
- */
-export const setScope = (gridManagerName, scope) => {
-    store.scope[gridManagerName] = scope;
 };
 
 /**
@@ -499,6 +490,11 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
             return;
         }
 
+        // 固定列: 使用后 disableCustomize 将强制变更为true
+        if (col.fixed) {
+            col.disableCustomize = true;
+        }
+
         // 存在disableCustomize时，必须设置width
         if (col.disableCustomize && !col.width) {
             outError(`column ${colKey}: when disableCustomize exists, width must be set`);
@@ -646,7 +642,7 @@ export const updateCache = gridManagerName => {
         col.index = th.index();
 
         // 可视状态
-        col.isShow = th.attr(TH_VISIBLE) === 'visible';
+        col.isShow = !isString(th.attr(CELL_HIDDEN));
     });
 
     // 重置settings
@@ -679,7 +675,6 @@ export const verifyVersion = () => {
  * @param gridManagerName
  */
 export const clearCache = gridManagerName => {
-    delete store.scope[gridManagerName];
     delete store.responseData[gridManagerName];
     delete store.checkedData[gridManagerName];
     delete store.settings[gridManagerName];

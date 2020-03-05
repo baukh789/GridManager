@@ -319,6 +319,9 @@ const gridData = {
         // 三种值: 'left', 'center', 'right'
         align: '',
 
+        // 固定列, 使用后 disableCustomize 将强制变更为true
+        fixed: false,
+
         // 列的排序类型，字符串类型，非必设项
         // 1、'': 该列支持排序，但初始化时不指定排序类型
         // 2、'DESC': 该列支持排序，并在初始化时指定排序类型为降序。可通过参数[sortDownText]来指定降序所使用的字符串

@@ -9,10 +9,6 @@ describe('Store.js', () => {
 		expect(Store.version).toBe(version);
 	});
 
-	it('Store.scope', () => {
-		expect(Store.scope).toBeDefined();
-	});
-
 	it('Store.responseData', () => {
 		expect(Store.responseData).toBeDefined();
 	});

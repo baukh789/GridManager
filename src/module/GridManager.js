@@ -5,9 +5,9 @@
 import jTool from '@jTool';
 import { extend, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, each, isEmptyObject } from '@jTool/utils';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME } from '@common/constants';
-import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getTh, updateVisibleLast, updateScrollStatus } from '@common/base';
+import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
-import { getVersion, verifyVersion, initSettings, getSettings, setSettings, setScope, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
+import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
 import dropdown from './dropdown';
@@ -263,18 +263,6 @@ export default class GridManager {
         return getSettings(getKey(table));
 	}
 
-    /**
-     * @静态方法
-     * 存储表格渲染所在的域
-     * @param table
-     * @param scope: 框架中指定的域
-     * @returns {*}
-     */
-    static
-    setScope(table, scope) {
-        return setScope(getKey(table), scope);
-    }
-
 	/**
 	 * @静态方法
 	 * 获取指定表格的本地存储数据
@@ -498,7 +486,7 @@ export default class GridManager {
             if (column.filter) {
                 column.filter.selected = isString(query[column.key]) ? query[column.key] : '';
                 // 这里不使用base.getTh的原因: 需要同时更新thead 和 fake-thead
-                filter.update(getTh(gridManagerName, column.key), column.filter);
+                filter.update(getFakeTh(gridManagerName, column.key), column.filter);
             }
         });
 

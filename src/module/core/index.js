@@ -5,8 +5,8 @@
  * 3.重置tbody
  */
 import './style.less';
-import { isString, isFunction, isArray } from '@jTool/utils';
-import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmpty } from '@common/base';
+import { isString, isFunction, isArray, each } from '@jTool/utils';
+import { showLoading, hideLoading, getDiv, getTbody, getAllTh, getVisibleTh, getEmpty } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
 import { getTableData, setTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, EMPTY_TPL_KEY } from '@common/constants';
@@ -199,6 +199,10 @@ class Core {
         // 解析框架: thead区域
         await sendCompile(settings);
 
+        // thead 下的 th 到这一步只存在控制列宽的作用，所以在这里将内容清除
+        each(getAllTh(gridManagerName), (i, item) => {
+            item.innerHTML = '';
+        });
         fixed.init(gridManagerName);
     }
 
