@@ -1,5 +1,6 @@
 @import "../../css/mixins";
 
+@shadow-color: #e8e8e8;
 // th样式, 在JS中会动态的变更left | right值
 [gm-overflow-x="true"] [grid-manager-mock-thead]{
     [fixed]{
@@ -9,15 +10,15 @@
         border-right: none;
     }
     [fixed="left"]{
-        box-shadow: inset -1px 0 0 #e8e8e8;
+        box-shadow: inset -1px 0 @shadow-color;
         &[fixed-border]{
-            box-shadow: 2px -2px 3px #e8e8e8;
+            box-shadow: 2px -2px 3px @shadow-color;
         }
     }
     [fixed="right"]{
-        box-shadow: -1px 0 0 #e8e8e8;
+        box-shadow: -1px 0 0@shadow-color;
         &[fixed-border]{
-            box-shadow: -2px -2px 3px #e8e8e8;
+            box-shadow: -2px -2px 3px @shadow-color;
         }
         &:last-child:after{
             display: block;

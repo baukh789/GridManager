@@ -203,7 +203,11 @@ class Core {
         each(getAllTh(gridManagerName), (i, item) => {
             item.innerHTML = '';
         });
-        fixed.init(gridManagerName);
+
+        // 配置固定列功能
+        if (settings.__supportFixed) {
+            fixed.init(gridManagerName);
+        }
     }
 
     /**
@@ -214,7 +218,7 @@ class Core {
         const tableWarp = document.querySelector(`[${WRAP_KEY}="${gridManagerName}"]`);
         return new Promise(resolve => {
             SIV_waitContainerAvailable[gridManagerName] = setInterval(() => {
-                let tableWarpWidth = window.getComputedStyle(tableWarp).width;
+                let tableWarpWidth = getComputedStyle(tableWarp).width;
                 if (tableWarpWidth !== '100%') {
                     clearInterval(SIV_waitContainerAvailable[gridManagerName]);
                     SIV_waitContainerAvailable[gridManagerName] = null;

@@ -192,7 +192,7 @@ class MoveRow {
                 $dreamlandDIV.show().css({
                     width: tr.offsetWidth,
                     height: tr.offsetHeight + 2, // 2为$dreamlandDIV的边框宽度
-                    top: e2.clientY - $tableWrap.offset().top + window.pageYOffset - $dreamlandDIV.height() / 2,
+                    top: e2.clientY - $tableWrap.offset().top + pageYOffset - $dreamlandDIV.height() / 2,
                     left: 0 - tableDiv.scrollLeft
                 });
 

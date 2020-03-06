@@ -107,8 +107,8 @@ class Drag {
                 $dreamlandDIV.css({
                     width: th.offsetWidth,
                     height: table.offsetHeight,
-                    left: e2.clientX - $tableWrap.offset().left + window.pageXOffset - th.offsetWidth / 2,
-                    top: e2.clientY - $tableWrap.offset().top + window.pageYOffset - th.offsetHeight / 2
+                    left: e2.clientX - $tableWrap.offset().left + pageXOffset - th.offsetWidth / 2,
+                    top: e2.clientY - $tableWrap.offset().top + pageYOffset - th.offsetHeight / 2
                 });
 
                 $allFakeVisibleTh = _this.updateDrag(gridManagerName, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh);

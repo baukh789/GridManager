@@ -17,17 +17,11 @@ import { getEvent, eventMap } from './event';
 import { CLASS_FILTER, CLASS_FILTER_SELECTED, CLASS_FILTER_CONTENT } from './constants';
 
 class Filter {
-    // 存储启用状态
-    enable = {};
-
     /**
      * 初始化
      * @param gridManagerName
      */
     init(gridManagerName) {
-        if (!this.enable[gridManagerName]) {
-            return;
-        }
         const _this = this;
         const $body = jTool('body');
         const tableSelector = getQuerySelector(gridManagerName);

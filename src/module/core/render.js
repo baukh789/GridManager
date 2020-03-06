@@ -1,4 +1,3 @@
-import remind from '../remind';
 import order from '../order';
 import ajaxPage from '../ajaxPage';
 import { CLASS_DRAG_ACTION } from '../drag/constants';
@@ -6,10 +5,7 @@ import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, 
 import { isUndefined, isString, isObject, each } from '@jTool/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
-import filter from '../filter';
-import fixed from '../fixed';
 import config from '../config';
-import sort from '../sort';
 import checkbox from '../checkbox';
 import wrapTpl from './wrap.tpl.html';
 import theadTpl from './thead.tpl.html';
@@ -73,18 +69,6 @@ class Render {
             columnList[col.index] = col;
         });
 
-        // 将表头提醒启用状态重置
-        remind.enable[gridManagerName] = false;
-
-        // 将排序启用状态重置
-        sort.enable[gridManagerName] = false;
-
-        // 将筛选条件重置
-        filter.enable[gridManagerName] = false;
-
-        // 将列固定重置
-        fixed.enable[gridManagerName] = false;
-
         let thListTpl = '';
         // columnList 生成thead
         each(columnList, (index, col) => {
@@ -106,19 +90,17 @@ class Render {
     @parseTpl(thTpl)
     createThTpl(params) {
         const { settings, col } = params;
-        const { gridManagerName, query, supportDrag, sortData, sortUpText, sortDownText, checkboxConfig } = settings;
+        const { query, supportDrag, sortData, sortUpText, sortDownText, checkboxConfig } = settings;
 
         // 表头提醒
         let remindAttr = '';
         if (col.remind) {
             remindAttr = 'remind';
-            remind.enable[gridManagerName] = true;
         }
 
         // 排序
         let sortingAttr = '';
         if (isString(col.sorting)) {
-            sort.enable[gridManagerName] = true;
             if (col.sorting === sortDownText) {
                 sortingAttr = `sorting="${sortDownText}"`;
                 sortData[col.key] = sortDownText;
@@ -133,7 +115,6 @@ class Render {
         // 过滤
         let filterAttr = '';
         if (isObject(col.filter)) {
-            filter.enable[gridManagerName] = true;
             filterAttr = 'filter';
             if (isUndefined(col.filter.selected)) {
                 col.filter.selected = query[col.key];
@@ -145,7 +126,6 @@ class Render {
         // 固定列
         let fixedAttr = '';
         if (col.fixed === 'left' || col.fixed === 'right') {
-            fixed.enable[gridManagerName] = true;
             fixedAttr = `fixed="${col.fixed}"`;
         }
         // 文本对齐

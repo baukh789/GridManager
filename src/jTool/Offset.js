@@ -65,8 +65,8 @@ export default {
         position = node.getBoundingClientRect();
 		const docElement = node.ownerDocument.documentElement;
 		return {
-			top: position.top + window.pageYOffset - docElement.clientTop,
-			left: position.left + window.pageXOffset - docElement.clientLeft
+			top: position.top + pageYOffset - docElement.clientTop,
+			left: position.left + pageXOffset - docElement.clientLeft
 		};
 
 	},

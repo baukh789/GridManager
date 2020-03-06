@@ -17,7 +17,7 @@ export default function print(gridManagerName) {
             tr[empty-template] td{text-align: center}
         </style>
     `;
-    const printWindow = window.open();
+    const printWindow = open();
     // 清除隐藏项
     $table.find(`[${CELL_HIDDEN}]`).remove();
     $table.find(`[${MERGE_TD}]`).remove();

@@ -10,17 +10,11 @@ import { parseTpl } from '@common/parse';
 import remindTpl from './remind.tpl.html';
 import { getEvent, eventMap } from './event';
 class Remind {
-    // 存储启用状态
-    enable = {};
-
     /**
      * 初始化表头提醒
      * @param gridManagerName
      */
     init(gridManagerName) {
-        if (!this.enable[gridManagerName]) {
-            return;
-        }
         eventMap[gridManagerName] = getEvent(gridManagerName, `${getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
         const { target, events, selector } = eventMap[gridManagerName].remindStart;
 

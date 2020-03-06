@@ -204,7 +204,7 @@ export default class GridManager {
         // 初始化表格
         // 表格不可用时进行等待
         SIV_waitTableAvailable[gridManagerName] = setInterval(() => {
-            if (window.getComputedStyle(table).width.indexOf('px') === -1) {
+            if (getComputedStyle(table).width.indexOf('px') === -1) {
                 return;
             }
 
@@ -482,7 +482,7 @@ export default class GridManager {
 		}
 
 		// 更新过滤相关字段
-        filter.enable[gridManagerName] && each(columnMap, (index, column) => {
+        settings.__supportFilter && each(columnMap, (index, column) => {
             if (column.filter) {
                 column.filter.selected = isString(query[column.key]) ? query[column.key] : '';
                 // 这里不使用base.getTh的原因: 需要同时更新thead 和 fake-thead
@@ -723,54 +723,60 @@ export default class GridManager {
 		// 渲染HTML，嵌入所需的事件源DOM
         await core.createDOM($table, settings);
 
-        const { gridManagerName, supportAdjust, supportDrag, supportMoveRow, supportCheckbox, supportConfig, supportMenu, supportAjaxPage, supportTreeData } = settings;
+        const { gridManagerName } = settings;
 
         // init adjust
-        if (supportAdjust) {
+        if (settings.supportAdjust) {
             adjust.init(gridManagerName);
         }
 
         // init drag
-        if (supportDrag) {
+        if (settings.supportDrag) {
             drag.init(gridManagerName);
         }
 
         // init moveRow
-        if (supportMoveRow) {
+        if (settings.supportMoveRow) {
             moveRow.init(gridManagerName);
         }
 
         // init checkbox
-        if (supportCheckbox) {
+        if (settings.supportCheckbox) {
             checkbox.init(gridManagerName);
         }
 
         // init sort
-        sort.init(gridManagerName);
+        if (settings.__supportSort) {
+            sort.init(gridManagerName);
+        }
 
         // init remind
-        remind.init(gridManagerName);
+        if (settings.__supportRemind) {
+            remind.init(gridManagerName);
+        }
 
         // init filter
-        filter.init(gridManagerName);
+        if (settings.__supportFilter) {
+            filter.init(gridManagerName);
+        }
 
         // init config
-        if (supportConfig) {
+        if (settings.supportConfig) {
             config.init(gridManagerName);
         }
 
         // 初始化右键菜单事件
-        if (supportMenu) {
+        if (settings.supportMenu) {
             menu.init(gridManagerName);
         }
 
         // 初始化Ajax分页
-        if (supportAjaxPage) {
+        if (settings.supportAjaxPage) {
             ajaxPage.init(gridManagerName);
         }
 
         // 初始化树形结构
-        if (supportTreeData) {
+        if (settings.supportTreeData) {
             tree.init(gridManagerName);
         }
 

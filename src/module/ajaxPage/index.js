@@ -361,7 +361,7 @@ class AjaxPage {
         }
 
         // 停止刷新
-        window.setTimeout(() => {
+        setTimeout(() => {
             refreshAction.removeClass(refreshClass);
         }, 3000);
     }

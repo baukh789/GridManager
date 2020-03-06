@@ -59,7 +59,7 @@ export default {
         node.style.animation = `jToolAnimate ${time / 1000}s ease-in-out forwards`;
 
         // 延时执行回调函数及清理操作
-        window.setTimeout(() => {
+        setTimeout(() => {
             _Css.css.call(this, styleObj);
             node.style.animation = '';
             document.head.removeChild(jToolAnimate);

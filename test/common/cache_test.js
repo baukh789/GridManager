@@ -799,7 +799,7 @@ describe('initSettings', () => {
         // 第8行数据存在disableCustomize配置
         delete arg.columnData[7].width;
         expect(initSettings(arg, checkboxColumnFn, orderColumnFn)).toBe(false);
-        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c column action: when disableCustomize exists, width must be set ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
+        expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c column action: width must be set ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
     });
 
     it('开启缓存:当前无用户记忆', () => {

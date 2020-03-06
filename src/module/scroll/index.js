@@ -51,7 +51,7 @@ class Scroll {
      */
     update(gridManagerName) {
         const $tableDiv = getDiv(gridManagerName);
-        if ($tableDiv.length === 0) {
+        if (!$tableDiv.length) {
             return;
         }
         const $thead = getThead(gridManagerName);

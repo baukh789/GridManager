@@ -13,17 +13,11 @@ import core from '../core';
 import sortTpl from './sort.tpl.html';
 import { getEvent, eventMap } from './event';
 class Sort {
-    // 存储启用状态
-    enable = {};
-
     /**
      * 初始化排序
      * @param gridManagerName
      */
     init(gridManagerName) {
-        if (!this.enable[gridManagerName]) {
-            return;
-        }
         eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName));
         const { target, events, selector } = eventMap[gridManagerName].sortAction;
         const _this = this;

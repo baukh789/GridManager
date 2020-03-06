@@ -82,7 +82,7 @@ export const showLoading = (gridManagerName, loadingTemplate) => {
  * @param gridManagerName
  */
 export const hideLoading = gridManagerName => {
-    window.setTimeout(() => {
+    setTimeout(() => {
         jTool(`.${LOADING_CLASS_NAME}`, getWrap(gridManagerName)).remove();
     }, 500);
 };

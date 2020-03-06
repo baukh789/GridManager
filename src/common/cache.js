@@ -307,7 +307,7 @@ export const updateCheckedData = (gridManagerName, columnMap, key, rowDataList) 
  * @returns {*}
  */
 export const getMemoryKey = gridManagerName => {
-    return window.location.pathname + window.location.hash + '-' + gridManagerName;
+    return location.pathname + location.hash + '-' + gridManagerName;
 };
 
 /**
@@ -318,7 +318,7 @@ export const getMemoryKey = gridManagerName => {
 export const getUserMemory = gridManagerName => {
     const memoryKey = getMemoryKey(gridManagerName);
 
-    let memory = window.localStorage.getItem(MEMORY_KEY);
+    let memory = localStorage.getItem(MEMORY_KEY);
     // 如无数据，增加缓存错误标识
     if (!memory || memory === '{}') {
         getTable(gridManagerName).attr(CACHE_ERROR_KEY, 'error');
@@ -379,14 +379,14 @@ export const saveUserMemory = settings => {
     }
 
     const cacheString = JSON.stringify(_cache);
-    let memory = window.localStorage.getItem(MEMORY_KEY);
+    let memory = localStorage.getItem(MEMORY_KEY);
     if (!memory) {
         memory = {};
     } else {
         memory = JSON.parse(memory);
     }
     memory[getMemoryKey(gridManagerName)] = cacheString;
-    window.localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
+    localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
 };
 
 /**
@@ -397,12 +397,12 @@ export const saveUserMemory = settings => {
 export const delUserMemory = gridManagerName => {
     // 如果未指定删除的table, 则全部清除
     if (!gridManagerName) {
-        window.localStorage.removeItem(MEMORY_KEY);
+        localStorage.removeItem(MEMORY_KEY);
         outInfo('delete user memory of all');
         return true;
     }
 
-    let memory = window.localStorage.getItem(MEMORY_KEY);
+    let memory = localStorage.getItem(MEMORY_KEY);
     if (!memory) {
         return false;
     }
@@ -413,7 +413,7 @@ export const delUserMemory = gridManagerName => {
     delete memory[_key];
 
     // 清除后, 重新存储
-    window.localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
+    localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
     outInfo(`delete user memory of ${gridManagerName}`);
     return true;
 };
@@ -462,17 +462,19 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
     extend(true, settings, arg);
 
     // 存储初始配置项
-    setSettings(settings);
+    // setSettings(settings);
 
     const { gridManagerName, columnData, supportAutoOrder, supportCheckbox, checkboxConfig } = settings;
-    // 自动增加: 序号列
-    if (supportAutoOrder) {
-        columnData.unshift(orderColumnFn(settings));
-    }
 
+    const list = [];
     // 自动增加: 选择列
     if (supportCheckbox) {
-        columnData.unshift(checkboxColumnFn(checkboxConfig));
+        list.unshift(checkboxColumnFn(checkboxConfig));
+    }
+
+    // 自动增加: 序号列
+    if (supportAutoOrder) {
+        list.push(orderColumnFn(settings));
     }
 
     // 为 columnData 提供锚 => columnMap
@@ -481,39 +483,58 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
     const columnMap = {};
 
     let isError = false;
-    columnData.forEach((col, index) => {
-        const colKey = col.key;
+    list.concat(columnData).forEach((col, index) => {
+        col = extend(true, {}, col);
+        const key = col.key;
         // key字段不允许为空
-        if (!colKey) {
+        if (!key) {
             outError(`columnData[${index}].key undefined`);
             isError = true;
             return;
         }
 
-        // 固定列: 使用后 disableCustomize 将强制变更为true
-        if (col.fixed) {
+        // 属性: 表头提醒
+        if (col.remind) {
+            settings.__supportRemind = true;
+        }
+
+        // 属性: 排序
+        if (isString(col.sorting)) {
+            settings.__supportSort = true;
+        }
+
+        // 属性: 过滤
+        if (isObject(col.filter)) {
+            settings.__supportFilter = true;
+        }
+
+        // 属性: 固定列
+        if (isString(col.fixed)) {
+            settings.__supportFixed = true;
+
+            // 使用后 disableCustomize 将强制变更为true
             col.disableCustomize = true;
         }
 
         // 存在disableCustomize时，必须设置width
         if (col.disableCustomize && !col.width) {
-            outError(`column ${colKey}: when disableCustomize exists, width must be set`);
+            outError(`column ${key}: width must be set`);
             isError = true;
             return;
         }
-        columnMap[colKey] = col;
+        columnMap[key] = col;
 
         // 如果未设定, 设置默认值为true
-        columnMap[colKey].isShow = col.isShow || isUndefined(col.isShow);
+        columnMap[key].isShow = col.isShow || isUndefined(col.isShow);
 
         // 为列Map 增加索引
-        columnMap[colKey].index = index;
+        columnMap[key].index = index;
 
         // 存储由用户配置的列宽度值, 该值不随着之后的操作变更
-        columnMap[colKey].__width = col.width;
+        columnMap[key].__width = col.width;
 
         // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
-        columnMap[colKey].__isShow = col.isShow;
+        columnMap[key].__isShow = col.isShow;
 
     });
 
@@ -658,15 +679,15 @@ export const updateCache = gridManagerName => {
  * 验证版本号,如果版本号变更清除用户记忆
  */
 export const verifyVersion = () => {
-    const cacheVersion = window.localStorage.getItem(VERSION_KEY);
+    const cacheVersion = localStorage.getItem(VERSION_KEY);
     // 当前为第一次渲染, 存储版本号
     if (!cacheVersion) {
-        window.localStorage.setItem(VERSION_KEY, store.version);
+        localStorage.setItem(VERSION_KEY, store.version);
     }
     // 版本变更, 清除所有的用户记忆
     if (cacheVersion && cacheVersion !== store.version) {
         delUserMemory();
-        window.localStorage.setItem(VERSION_KEY, store.version);
+        localStorage.setItem(VERSION_KEY, store.version);
     }
 };
 
