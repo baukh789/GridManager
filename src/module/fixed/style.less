@@ -6,17 +6,18 @@
         position: sticky;
         z-index: 3;
         .table-bg();
+        border-right: none;
     }
     [fixed="left"]{
-        box-shadow: 1px 0 0 #e8e8e8;
+        box-shadow: inset -1px 0 0 #e8e8e8;
         &[fixed-border]{
-            box-shadow: 2px 0 3px #e8e8e8;
+            box-shadow: 2px -2px 3px #e8e8e8;
         }
     }
     [fixed="right"]{
-        box-shadow: -1px 0 0 red;
+        box-shadow: -1px 0 0 #e8e8e8;
         &[fixed-border]{
-            box-shadow: -2px 0 3px red;
+            box-shadow: -2px -2px 3px #e8e8e8;
         }
         &:last-child:after{
             display: block;
@@ -29,4 +30,7 @@
             .table-bg();
         }
     }
+}
+.disable-line [fixed]:not([fixed-border]){
+    box-shadow: none !important;
 }

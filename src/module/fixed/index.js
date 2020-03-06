@@ -2,7 +2,25 @@ import jTool from '@jTool';
 import { getDiv, getTh, getFakeThead, getThead } from '@common/base';
 import { each } from '@jTool/utils';
 import './style.less';
+import {getWrap} from '../../common/base';
 
+const getStyle = (gridManagerName, item, direction, shadowValue, theadWidth) => {
+    let directionValue = '';
+    if (direction === 'left') {
+        directionValue = item.offsetLeft;
+    }
+    if (direction === 'right') {
+        directionValue = theadWidth - item.offsetLeft - item.offsetWidth;
+    }
+    return `
+            [gm-overflow-x="true"] [grid-manager="${gridManagerName}"] tr:not([empty-template]) td:nth-child(${jTool(item).index() + 1}){
+                position: sticky;
+                ${direction}: ${directionValue}px;
+                border-right: none;
+                z-index: 3;
+                box-shadow: ${shadowValue};
+            }`;
+};
 class Fixed {
     // 存储启用状态
     enable = {};
@@ -49,7 +67,7 @@ class Fixed {
         }
         const $thead = getThead(gridManagerName);
         const $tableDiv = getDiv(gridManagerName);
-        const theadWidth = $thead.width();
+        const disableLine = getWrap(gridManagerName).hasClass('disable-line');
         let styleLink = $tableDiv.get(0).querySelector(`#fixed-style-${gridManagerName}`);
 
         if (!styleLink) {
@@ -58,36 +76,21 @@ class Fixed {
         }
         let styleStr = '';
         const $fixedLeft = $thead.find('th[fixed="left"]');
-        let shadowValue = '';
+        let shadowValue = disableLine ? '' : 'inset -1px 0 0 #e8e8e8';
         each($fixedLeft, (index, item) => {
             if (index === $fixedLeft.length - 1) {
-                shadowValue = '2px 0 3px #e8e8e8';
-            } else {
-                shadowValue = '1px 0 0 #e8e8e8;';
+                shadowValue = '2px 1px 3px #e8e8e8';
             }
 
-            styleStr += `
-            [gm-overflow-x="true"] [grid-manager="${gridManagerName}"] tr:not([empty-template]) td:nth-child(${jTool(item).index() + 1}){
-                position: sticky;
-                left: ${item.offsetLeft}px;
-                z-index: 3;
-                box-shadow: ${shadowValue};
-            }`;
+            styleStr += getStyle(gridManagerName, item, 'left', shadowValue);
         });
-
+        const theadWidth = $thead.width();
+        shadowValue = '-2px 1px 3px #e8e8e8';
         each($thead.find('th[fixed="right"]'), (index, item) => {
-            if (index === 0) {
-                shadowValue = '2px 0 3px #e8e8e8';
-            } else {
-                shadowValue = '1px 0 0 #e8e8e8;';
+            if (index !== 0) {
+                shadowValue = disableLine ? '' : '-1px 1px 0 #e8e8e8';
             }
-            styleStr += `
-            [gm-overflow-x="true"] [grid-manager="${gridManagerName}"] tr:not([empty-template]) td:nth-child(${jTool(item).index() + 1}){
-                position: sticky;
-                right: ${theadWidth - item.offsetLeft - item.offsetWidth}px;
-                z-index: 3;
-                box-shadow: -${shadowValue};
-            }`;
+            styleStr += getStyle(gridManagerName, item, 'right', shadowValue, theadWidth);
         });
         styleLink.innerHTML = styleStr;
         $tableDiv.append(styleLink);
