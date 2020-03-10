@@ -435,6 +435,7 @@ const gridExport = {
         // 导出的方式: 默认为static
         // 1.static: 前端静态导出, 无需后端提供接口，该方式导出的文件并不完美。
         // 2.blob: 通过后端接口返回二进制流。`nodejs`可使用`js-xlsx`, `java`可使用 `org.apache.poi`生成二进制流。
+        // 3.url: 通过配置或由后端返回下载地址
         mode: 'static',
 
         // 导出文件的名称, 字符串或函数类型，为函数时需返回一个字符串。该字符串不包含后缀名，该值不设置将默认使用gridManagerName
@@ -443,7 +444,19 @@ const gridExport = {
         // 导出的后缀名, 默认为`xls`。静态导出仅支持xls,cvs两种格式
         suffix: 'xls',
 
-        // 导出处理器函数: mode === 'static'时handler函数return 二维数组; mode !== 'static'时handler函数需要返回一个resolve(blob)的promise
+        // 导出处理器函数:
+        // mode === 'static'时，handler函数return 二维数组;
+        // return [["title", "content", "createData"],["typescript", "this is typescript", "2015-01-01"]]
+
+        // mode === 'blob'时，handler函数需要返回resolve(blob)的promise
+        // 需要通过promise中的resolve()返回二进制流(blob)，有两种返回格式:
+        // 1. return new Promise(resolve => {resolve(blob)});
+        // 2. return new Promise(resolve => {resolve({data: blob})});
+
+        // mode === 'url'时，handler函数需要返回url或返回resolve(url)的promise
+        // 1. return 'xxx.xxx.com/xxx.xls';
+        // 2. return new Promise(resolve => {resolve('xxx.xxx.com/xxx.xls')})
+
         handler: noop
     }
 };
