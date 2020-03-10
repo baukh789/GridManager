@@ -329,7 +329,8 @@ const gridData = {
         align: '',
 
         // 固定列, 使用后 disableCustomize 将强制变更为true
-        fixed: false,
+        // 两种值: 'left', 'right'
+        fixed: undefined,
 
         // 列的排序类型，字符串类型，非必设项
         // 1、'': 该列支持排序，但初始化时不指定排序类型
