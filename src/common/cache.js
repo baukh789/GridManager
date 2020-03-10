@@ -483,6 +483,9 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
     const columnMap = {};
 
     let isError = false;
+
+    // 如果仅有一列数据，则禁用固定列
+    const supportFixed = columnData.length > 1;
     list.concat(columnData).forEach((col, index) => {
         col = extend(true, {}, col);
         const key = col.key;
@@ -509,7 +512,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
         }
 
         // 属性: 固定列
-        if (isString(col.fixed)) {
+        if (supportFixed && isString(col.fixed)) {
             settings.__supportFixed = true;
 
             // 使用后 disableCustomize 将强制变更为true

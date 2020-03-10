@@ -114,7 +114,7 @@ const GM_PUBLISH_METHOD_MAP = {
         key: 'setAjaxData',
         relyInit: true,
         title: '用于再次配置ajaxData数据',
-        code: `GridManager.setAjaxData('${gridManagerName}', {data: [], totals: 0});`
+        code: `GridManager.setAjaxData('${gridManagerName}', {data: [{title: '通过setAjaxData动态添加的数据，其它项为空'}], totals: 1});`
     },
     refreshGrid: {
         key: 'refreshGrid',
@@ -275,7 +275,27 @@ const demo1 = {
             // firstLoading: false,
 
             // supportAutoOrder: false,
+            // 自动序号配置
+            autoOrderConfig: {
+                // 固定列
+                fixed: 'left'
+            },
             // supportCheckbox: false,
+            // 选择框配置
+            checkboxConfig: {
+                // 使用单选
+                // useRadio: true,
+
+                // 使用行选中
+                // useRowCheck: true,
+
+                // 复选时最大可选数
+                // max: 2,
+
+                // 固定列
+                fixed: 'left'
+            },
+
             // 是否使用无总条数模式
             // useNoTotalsMode: true,
             // 是否开启分页
@@ -315,25 +335,6 @@ const demo1 = {
                     console.log(list, tableData);
                 }
             },
-            // 选择框配置
-            checkboxConfig: {
-                // 使用单选
-                // useRadio: true,
-
-                // 使用行选中
-                // useRowCheck: true,
-
-                // 复选时最大可选数
-                // max: 2
-            },
-            // 使用单选
-            // useRadio: true,
-
-            // 使用行选中
-            // useRowCheck: true,
-
-            // 图标跟随文本
-            // isIconFollowText: true,
 
             // 禁用缓存
             disableCache: false,

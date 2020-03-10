@@ -143,7 +143,7 @@ class Checkbox {
 			isShow: true,
             disableCustomize: true,
 			width: CHECKBOX_WIDTH,
-            fixed: 'left',
+            fixed: conf.fixed,
             // align: 'center',  // 调整为由样式控制
 			template: (checked, row, index, isTop) => {
                 return this.getColumnTemplate({checked, disabled: row[CHECKBOX_DISABLED_KEY], useRadio: conf.useRadio, isTop});

@@ -3,7 +3,7 @@
  */
 import jTool from '@jTool';
 import { isFunction, each, isArray } from '@jTool/utils';
-import { showLoading, hideLoading, getVisibleTh, getTbody } from '@common/base';
+import { showLoading, hideLoading, getFakeVisibleTh, getTbody } from '@common/base';
 import { outError } from '@common/utils';
 import { getSettings, getCheckedData, getTableData } from '@common/cache';
 import { GM_CREATE, CELL_HIDDEN } from '@common/constants';
@@ -97,7 +97,7 @@ class ExportFile {
 
         // exportHandler 未返回数组表示当前exportHandler未被配置
         if (!isArray(tableList)) {
-            const thDOM = getVisibleTh(gridManagerName);
+            const thDOM = getFakeVisibleTh(gridManagerName, true);
             const $tbody = getTbody(gridManagerName);
             let	trDOM = null;
             // 验证：是否只导出已选中的表格

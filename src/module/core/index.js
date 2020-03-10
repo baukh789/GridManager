@@ -8,7 +8,7 @@ import './style.less';
 import { isString, isFunction, isArray, each } from '@jTool/utils';
 import { showLoading, hideLoading, getDiv, getTbody, getAllTh, getVisibleTh, getEmpty } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
-import { getTableData, setTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
+import { getTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, EMPTY_TPL_KEY } from '@common/constants';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';
@@ -59,27 +59,6 @@ class Core {
             hideLoading(gridManagerName);
             ajaxPage.updateRefreshIconState(gridManagerName, false);
         });
-    }
-
-    /**
-     * 清空当前表格数据
-     * @param gridManagerName
-     */
-    cleanData(gridManagerName) {
-        const settings = getSettings(gridManagerName);
-        this.insertEmptyTemplate(settings);
-        setTableData(gridManagerName, []);
-
-        // 渲染选择框
-        if (settings.supportCheckbox) {
-            checkbox.resetDOM(gridManagerName, []);
-        }
-
-        // 渲染分页
-        if (settings.supportAjaxPage) {
-            ajaxPage.resetPageData(settings, 0);
-            menu.updateMenuPageStatus(settings);
-        }
     }
 
     /**

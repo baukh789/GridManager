@@ -1,25 +1,32 @@
 import jTool from '@jTool';
-import { getDiv, getTh, getFakeThead, getThead } from '@common/base';
+import { getWrap, getDiv, getTh, getFakeThead, getThead } from '@common/base';
+import { TABLE_KEY, EMPTY_TPL_KEY, TH_NAME } from '@common/constants';
 import { each } from '@jTool/utils';
 import './style.less';
-import {getWrap} from '../../common/base';
 
+const LEFT = 'left';
+const RIGHT = 'right';
+const SHADOW_COLOR = '#e8e8e8';
 const getStyle = (gridManagerName, item, direction, shadowValue, theadWidth) => {
     let directionValue = '';
-    if (direction === 'left') {
+    if (direction === LEFT) {
         directionValue = item.offsetLeft;
     }
-    if (direction === 'right') {
+    if (direction === RIGHT) {
         directionValue = theadWidth - item.offsetLeft - item.offsetWidth;
     }
     return `
-            [gm-overflow-x="true"] [grid-manager="${gridManagerName}"] tr:not([empty-template]) td:nth-of-type(${jTool(item).index() + 1}){
-                position: sticky;
-                ${direction}: ${directionValue}px;
-                border-right: none;
-                z-index: 3;
-                box-shadow: ${shadowValue};
-            }`;
+        [gm-overflow-x="true"] [${TABLE_KEY}="${gridManagerName}"] tr:not([${EMPTY_TPL_KEY}]) td:nth-of-type(${jTool(item).index() + 1}){
+            position: sticky;
+            ${direction}: ${directionValue}px;
+            border-right: none;
+            z-index: 3;
+            box-shadow: ${shadowValue};
+        }`;
+};
+
+const getFixedQuerySelector = type => {
+    return `th[fixed="${type}"]`;
 };
 class Fixed {
     enable = {};
@@ -34,29 +41,30 @@ class Fixed {
         const $thead = getThead(gridManagerName);
         const $tableDiv = getDiv(gridManagerName);
         const disableLine = getWrap(gridManagerName).hasClass('disable-line');
-        let styleLink = $tableDiv.get(0).querySelector(`#fixed-style-${gridManagerName}`);
+        const styleId = `fixed-style-${gridManagerName}`;
+        let styleLink = document.getElementById(styleId);
 
         if (!styleLink) {
             styleLink = document.createElement('style');
-            styleLink.id = `fixed-style-${gridManagerName}`;
+            styleLink.id = styleId;
         }
         let styleStr = '';
-        const $fixedLeft = $thead.find('th[fixed="left"]');
-        let shadowValue = disableLine ? '' : 'inset -1px 0 #e8e8e8';
+        const $fixedLeft = $thead.find(getFixedQuerySelector(LEFT));
+        let shadowValue = disableLine ? '' : `inset -1px 0 ${SHADOW_COLOR}`;
         each($fixedLeft, (index, item) => {
             if (index === $fixedLeft.length - 1) {
-                shadowValue = '2px 1px 3px #e8e8e8';
+                shadowValue = `2px 1px 3px ${SHADOW_COLOR}`;
             }
 
-            styleStr += getStyle(gridManagerName, item, 'left', shadowValue);
+            styleStr += getStyle(gridManagerName, item, LEFT, shadowValue);
         });
         const theadWidth = $thead.width();
-        shadowValue = '-2px 1px 3px #e8e8e8';
-        each($thead.find('th[fixed="right"]'), (index, item) => {
+        shadowValue = `-2px 1px 3px ${SHADOW_COLOR}`;
+        each($thead.find(getFixedQuerySelector(RIGHT)), (index, item) => {
             if (index !== 0) {
-                shadowValue = disableLine ? '' : '-1px 1px 0 #e8e8e8';
+                shadowValue = disableLine ? '' : `-1px 1px 0 ${SHADOW_COLOR}`;
             }
-            styleStr += getStyle(gridManagerName, item, 'right', shadowValue, theadWidth);
+            styleStr += getStyle(gridManagerName, item, RIGHT, shadowValue, theadWidth);
         });
         styleLink.innerHTML = styleStr;
         $tableDiv.append(styleLink);
@@ -71,23 +79,24 @@ class Fixed {
             return;
         }
 
+        const fixedBorderAttr = 'fixed-border';
         const $fakeThead = getFakeThead(gridManagerName);
         const $tableDiv = getDiv(gridManagerName);
         const scrollLeft = $tableDiv.scrollLeft();
-        const $fixedList = $fakeThead.find('th[fixed="left"]');
+        const $fixedList = $fakeThead.find(getFixedQuerySelector(LEFT));
 
         each($fixedList, (index, item) => {
-            item.style.left = -(scrollLeft - getTh(gridManagerName, item.getAttribute('th-name')).get(0).offsetLeft) + 'px';
-            index === $fixedList.length - 1 && item.setAttribute('fixed-border', '');
+            item.style.left = -(scrollLeft - getTh(gridManagerName, item.getAttribute(TH_NAME)).get(0).offsetLeft) + 'px';
+            index === $fixedList.length - 1 && item.setAttribute(fixedBorderAttr, '');
         });
 
-        const $rightList = $fakeThead.find('th[fixed="right"]');
+        const $rightList = $fakeThead.find(getFixedQuerySelector(RIGHT));
         const theadWidth = $fakeThead.width();
 
         each($rightList, (index, item) => {
-            const $th = getTh(gridManagerName, item.getAttribute('th-name'));
+            const $th = getTh(gridManagerName, item.getAttribute(TH_NAME));
             item.style.right = (theadWidth - $th.get(0).offsetLeft + scrollLeft - $th.width())  + 'px';
-            index === 0 && item.setAttribute('fixed-border', '');
+            index === 0 && item.setAttribute(fixedBorderAttr, '');
         });
     }
 }

@@ -472,7 +472,7 @@ export const getTextWidth = (gridManagerName, content, cssObj) => {
 export const updateScrollStatus = gridManagerName => {
     const $tableDiv = getDiv(gridManagerName);
     // 宽度: table的宽度大于 tableDiv的宽度时，显示滚动条
-    $tableDiv.attr('gm-overflow-x', getTable(gridManagerName).width() > $tableDiv.width());
+    $tableDiv.attr('gm-overflow-x', getThead(gridManagerName).width() > $tableDiv.width());
 };
 
 /**
@@ -484,7 +484,7 @@ export const updateScrollStatus = gridManagerName => {
  */
 export const calcLayout = (gridManagerName, width, height, supportAjaxPage) => {
     const tableWrap = getWrap(gridManagerName).get(0);
-    const theadHeight = getThead(gridManagerName).height();
+    const theadHeight = getThead(gridManagerName).height() + 1; // 1为边框，该边框并不真实存在于thead内: 这样做有利于固定列的展示
 
     // 包含calc的样式，无法通过jTool对像进行赋值，所以需要通过.style的方式赋值
     tableWrap.style.width = `calc(${width})`;

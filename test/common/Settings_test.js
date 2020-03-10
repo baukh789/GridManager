@@ -13,14 +13,6 @@ describe('Settings', () => {
 		settings = null;
 	});
 
-	it('验证属性[compileVue]初始值', () => {
-		expect(settings.compileVue).toBe(null);
-	});
-
-    it('验证属性[compileAngularjs]初始值', () => {
-        expect(settings.compileAngularjs).toBe(null);
-    });
-
     it('验证属性[supportDrag]初始值', () => {
 		expect(settings.supportDrag).toBe(true);
 	});

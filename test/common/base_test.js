@@ -1007,7 +1007,7 @@ describe('calcLayout(gridManagerName, width, height, supportAjaxPage)', () => {
         expect($wrap.width()).toBe(1000);
         expect($wrap.height()).toBe(500);
         expect($div.height()).toBe(500 - ajaxPageHeight);
-        expect($tableHeader.height()).toBe(theadHeight);
+        expect($tableHeader.height()).toBe(theadHeight + 1);
     });
 
     it('无分页的验证', () => {
@@ -1015,7 +1015,7 @@ describe('calcLayout(gridManagerName, width, height, supportAjaxPage)', () => {
         expect($wrap.width()).toBe(1000);
         expect($wrap.height()).toBe(500);
         expect($div.height()).toBe(500);
-        expect($tableHeader.height()).toBe(theadHeight);
+        expect($tableHeader.height()).toBe(theadHeight + 1);
     });
 });
 

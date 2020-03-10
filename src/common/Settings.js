@@ -9,14 +9,14 @@ import { noop, extend } from '@jTool/utils';
 const frameworks = {
     // @2.6.0
     // vue框架解析器，在gridmanager-vue项目中使用
-    compileVue: null,
+    // compileVue: null,
 
     // @2.6.13
     // angularjs框架解析器，在gridmanager-angularjs项目中使用
-    compileAngularjs: null,
+    // compileAngularjs: null,
 
     // react框架解析器
-    compileReact: null
+    // compileReact: null
 };
 
 /**
@@ -220,7 +220,13 @@ const ajaxPage = {
  */
 const autoOrder = {
     // 是否支持自动序号
-    supportAutoOrder: true
+    supportAutoOrder: true,
+
+    // 自动序号配置
+    autoOrderConfig: {
+        // 固定列, 默认为undefined
+        // fixed: undefined
+    }
 };
 
 /**
@@ -240,6 +246,9 @@ const checkbox = {
 
         // 复选时最大可选数，生效条件: supportCheckbox === true && useRadio === false
         max: null // @2.9.8 新增
+
+        // 是否使用固定列, 默认为undefined
+        // fixed: undefined // @2.11.0
     },
 
     // 选择事件执行前事件

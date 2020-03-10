@@ -125,7 +125,7 @@ export default class GridManager {
 
         // 校验: ajaxData
         if (!arg.ajaxData) {
-            outError('columnData undefined');
+            outError('ajaxData undefined');
             return;
         }
 
@@ -371,7 +371,7 @@ export default class GridManager {
         const gridManagerName = getKey(table);
 
         if (!getSettings(gridManagerName).supportConfig) {
-            outError('supportConfig not open, please set supportConfig into true');
+            outError('supportConfig!==true');
             return;
         }
 
@@ -518,9 +518,11 @@ export default class GridManager {
             return;
         }
 		const settings = getSettings(getKey(table));
+        const gridManagerName = settings.gridManagerName;
 		extend(settings, { ajaxData });
+		setTableData(gridManagerName, []);
 		setSettings(settings);
-		core.refresh(settings.gridManagerName, callback);
+		core.refresh(gridManagerName, callback);
 	}
 
 	/**
@@ -698,7 +700,9 @@ export default class GridManager {
         if (!isRendered(table, 'cleanData')) {
             return;
         }
-		return core.cleanData(getKey(table));
+        const gridManagerName = getKey(table);
+        setTableData(gridManagerName, []);
+        this.renderGrid(gridManagerName);
 	}
 
     /**
