@@ -14,7 +14,7 @@ import { coreDOM } from '../core';
 
 /**
  * 更新移动
- * @param gridManagerName
+ * @param _
  * @param key
  * @param $tbody
  * @param $dreamlandDIV
@@ -23,7 +23,7 @@ import { coreDOM } from '../core';
  * @param $tr
  * @param tableData
  */
-const update = (gridManagerName, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData) => {
+const update = (_, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData) => {
     const oldCacheKey = $tr.attr(TR_CACHE_KEY);
     let $target = null;
     // 处理向上移动
@@ -76,18 +76,18 @@ const update = (gridManagerName, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $
 
 /**
  * 将移动后的字段更新合并至已选中存储
- * @param gridManagerName
+ * @param _
  * @param supportCheckbox
  * @param key
  * @param columnMap
  * @param changeList
  */
-const mergeToCheckedData = (gridManagerName, supportCheckbox, key, columnMap, changeList) => {
+const mergeToCheckedData = (_, supportCheckbox, key, columnMap, changeList) => {
     if (!supportCheckbox || !isString(key)) {
         return;
     }
 
-    const checkedData = getCheckedData(gridManagerName);
+    const checkedData = getCheckedData(_);
 
     if (checkedData.length === 0) {
         return;
@@ -101,24 +101,24 @@ const mergeToCheckedData = (gridManagerName, supportCheckbox, key, columnMap, ch
         });
     });
 
-    setCheckedData(gridManagerName, checkedData, true);
+    setCheckedData(_, checkedData, true);
 };
 
 class MoveRow {
-    init(gridManagerName) {
+    init(_) {
         const _this = this;
-        const { supportAutoOrder, supportCheckbox, moveRowConfig, animateTime, columnMap } = getSettings(gridManagerName);
+        const { supportAutoOrder, supportCheckbox, moveRowConfig, animateTime, columnMap } = getSettings(_);
         const { key, handler } = moveRowConfig;
 
         const $body = jTool('body');
-        const table = getTable(gridManagerName).get(0);
-        eventMap[gridManagerName] = getEvent(`${getQuerySelector(gridManagerName)} tbody`);
-        const { dragStart, dragging, dragAbort } = eventMap[gridManagerName];
+        const table = getTable(_).get(0);
+        eventMap[_] = getEvent(`${getQuerySelector(_)} tbody`);
+        const { dragStart, dragging, dragAbort } = eventMap[_];
 
-        const $tbody = getTbody(gridManagerName);
+        const $tbody = getTbody(_);
 
-        const $tableWrap = getWrap(gridManagerName);
-        const tableDiv = getDiv(gridManagerName).get(0);
+        const $tableWrap = getWrap(_);
+        const tableDiv = getDiv(_).get(0);
 
         $tbody.addClass('move-row');
 
@@ -148,7 +148,7 @@ class MoveRow {
             // 增加移动中样式
             $tr.addClass(CLASS_DRAG_ING);
 
-            const tableData = getTableData(gridManagerName);
+            const tableData = getTableData(_);
             oldData = [...tableData];
 
             let $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
@@ -161,11 +161,11 @@ class MoveRow {
             $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
 
             // 先清除再添加合并列，是为了达到mousedown时可以获取到一个完整的且列可对齐的行
-            clearMergeRow(gridManagerName);
-            $dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({ table, tr });
+            clearMergeRow(_);
+            $dreamlandDIV.get(0).innerHTML = _this.createHtml({ table, tr });
 
-            mergeRow(gridManagerName, columnMap);
-            clearMergeRow(gridManagerName, $dreamlandDIV);
+            mergeRow(_, columnMap);
+            clearMergeRow(_, $dreamlandDIV);
 
             let trIndex = 0;
             // 事件: 行移动进行中
@@ -196,10 +196,10 @@ class MoveRow {
                     left: 0 - tableDiv.scrollLeft
                 });
 
-                $allTr = update(gridManagerName, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData);
+                $allTr = update(_, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData);
 
                 // 合并行数据相同的单元格
-                mergeRow(gridManagerName, columnMap);
+                mergeRow(_, columnMap);
             });
 
             // 事件: 行移动结束
@@ -216,7 +216,7 @@ class MoveRow {
                 });
 
                 // 存储表格数据
-                setTableData(gridManagerName, tableData);
+                setTableData(_, tableData);
 
                 // 更新序号
                 if (supportAutoOrder) {
@@ -232,7 +232,7 @@ class MoveRow {
                 }
 
                 // 合并行数据相同的单元格
-                mergeRow(gridManagerName, columnMap);
+                mergeRow(_, columnMap);
 
                 // 遍历被修改的项
                 const changeList = tableData.filter((item, index) => {
@@ -241,10 +241,10 @@ class MoveRow {
                 isFunction(handler) && handler(changeList, tableData);
 
                 // 更新变更项DOM
-                coreDOM.updateTrDOM(getSettings(gridManagerName), changeList);
+                coreDOM.updateTrDOM(getSettings(_), changeList);
 
                 // 将更新后的数据合并至已选中存储器
-                mergeToCheckedData(gridManagerName, supportCheckbox, key, columnMap, changeList);
+                mergeToCheckedData(_, supportCheckbox, key, columnMap, changeList);
 
                 // 开启文字选中效果
                 $body.removeClass(NO_SELECT_CLASS_NAME);
@@ -270,7 +270,7 @@ class MoveRow {
      * @returns {parseData}
      */
     @parseTpl(dreamlandTpl)
-    createDreamlandHtml(params) {
+    createHtml(params) {
         const { table, tr } = params;
         const cloneTr = tr.cloneNode(true);
 
@@ -280,17 +280,17 @@ class MoveRow {
         });
 
         return {
-            tableClassName: table.className,
-            tbodyHtml: cloneTr.outerHTML
+            class: table.className,
+            tbody: cloneTr.outerHTML
         };
     }
 
     /**
      * 消毁
-     * @param gridManagerName
+     * @param _
      */
-    destroy(gridManagerName) {
-        clearTargetEvent(eventMap[gridManagerName]);
+    destroy(_) {
+        clearTargetEvent(eventMap[_]);
     }
 }
 

@@ -22,17 +22,17 @@ import { sendCompile, compileEmptyTemplate, clearCompileList } from '@common/fra
 class Core {
     /**
      * 刷新表格 使用现有参数重新获取数据，对表格数据区域进行渲染
-     * @param gridManagerName
+     * @param _
      * @param callback
      * @private
      */
-    refresh(gridManagerName, callback) {
-        const settings = getSettings(gridManagerName);
+    refresh(_, callback) {
+        const settings = getSettings(_);
         const { loadingTemplate, ajaxBeforeSend, ajaxSuccess, ajaxError, ajaxComplete } = settings;
         // 更新刷新图标状态
-        ajaxPage.updateRefreshIconState(gridManagerName, true);
+        ajaxPage.updateRefreshIconState(_, true);
 
-        showLoading(gridManagerName, loadingTemplate);
+        showLoading(_, loadingTemplate);
 
         let ajaxPromise = transformToPromise(settings);
 
@@ -40,14 +40,14 @@ class Core {
         ajaxPromise.then(response => {
             // 异步重新获取settings
             try {
-                const settings = getSettings(gridManagerName);
+                const settings = getSettings(_);
                 // setTimeout的作用: 当数据量过大时，用于保证表头提前显示
                 setTimeout(() => {
                     this.driveDomForSuccessAfter(settings, response, callback);
                     ajaxSuccess(response);
                     ajaxComplete(response);
-                    hideLoading(gridManagerName);
-                    ajaxPage.updateRefreshIconState(gridManagerName, false);
+                    hideLoading(_);
+                    ajaxPage.updateRefreshIconState(_, false);
                 });
             } catch (e) {
                 console.error(e);
@@ -56,8 +56,8 @@ class Core {
         .catch(error => {
             ajaxError(error);
             ajaxComplete(error);
-            hideLoading(gridManagerName);
-            ajaxPage.updateRefreshIconState(gridManagerName, false);
+            hideLoading(_);
+            ajaxPage.updateRefreshIconState(_, false);
         });
     }
 
@@ -68,7 +68,7 @@ class Core {
      * @param callback
      */
     driveDomForSuccessAfter(settings, response, callback) {
-        const { gridManagerName, rendered, responseHandler, supportCheckbox, supportAjaxPage, checkboxConfig, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
+        const { _, rendered, responseHandler, supportCheckbox, supportAjaxPage, checkboxConfig, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
 
         // 用于防止在填tbody时，实例已经被消毁的情况。
         if (!rendered) {
@@ -105,7 +105,7 @@ class Core {
             this.insertEmptyTemplate(settings);
             parseRes[totalsKey] = 0;
         } else {
-            const $div = getDiv(gridManagerName);
+            const $div = getDiv(_);
             $div.removeClass(EMPTY_DATA_CLASS_NAME);
             $div.scrollTop(0);
             coreDOM.renderTableBody(settings, _data);
@@ -113,7 +113,7 @@ class Core {
 
         // 渲染选择框
         if (supportCheckbox) {
-            checkbox.resetDOM(gridManagerName, _data, checkboxConfig.useRadio, checkboxConfig.max);
+            checkbox.resetDOM(_, _data, checkboxConfig.useRadio, checkboxConfig.max);
         }
 
         // 渲染分页
@@ -131,18 +131,18 @@ class Core {
      * @param isInit: 是否为初始化时调用
      */
     insertEmptyTemplate(settings, isInit) {
-        const { gridManagerName, emptyTemplate } = settings;
+        const { _, emptyTemplate } = settings;
         // 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
         // 用于解决容器为不可见时，触发了setQuery的情况
-        if (isInit && getTableData(gridManagerName).length !== 0) {
+        if (isInit && getTableData(_).length !== 0) {
             return;
         }
 
-        const $tbody = getTbody(gridManagerName);
-        const $tableDiv = getDiv(gridManagerName);
+        const $tbody = getTbody(_);
+        const $tableDiv = getDiv(_);
         $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
-        $tbody.html(`<tr ${EMPTY_TPL_KEY}="${gridManagerName}" style="height: ${$tableDiv.height() - 1}px"><td colspan="${getVisibleTh(gridManagerName).length}"></td></tr>`);
-        const emptyTd = getEmpty(gridManagerName).get(0).querySelector('td');
+        $tbody.html(`<tr ${EMPTY_TPL_KEY}="${_}" style="height: ${$tableDiv.height() - 1}px"><td colspan="${getVisibleTh(_).length}"></td></tr>`);
+        const emptyTd = getEmpty(_).get(0).querySelector('td');
 
         emptyTd.innerHTML = compileEmptyTemplate(settings, emptyTd, emptyTemplate);
 
@@ -157,50 +157,50 @@ class Core {
      * @returns {Promise<any>}
      */
     async createDOM($table, settings) {
-        const gridManagerName = settings.gridManagerName;
+        const { _ } = settings;
 
         // 创建DOM前 先清空框架解析列表
-        clearCompileList(gridManagerName);
+        clearCompileList(_);
 
         coreDOM.init($table, settings);
 
         setSettings(settings);
 
         // 等待容器可用
-        await this.waitContainerAvailable(gridManagerName);
+        await this.waitContainerAvailable(_);
 
         // 重绘thead
         coreDOM.redrawThead(settings);
 
         // 初始化滚轴
-        scroll.init(gridManagerName);
+        scroll.init(_);
 
         // 解析框架: thead区域
         await sendCompile(settings);
 
         // thead 下的 th 到这一步只存在控制列宽的作用，所以在这里将内容清除
-        each(getAllTh(gridManagerName), (i, item) => {
+        each(getAllTh(_), (i, item) => {
             item.innerHTML = '';
         });
 
         // 配置固定列功能
-        if (settings.__supportFixed) {
-            fixed.init(gridManagerName);
+        if (settings._fixed) {
+            fixed.init(_);
         }
     }
 
     /**
      * 等待容器可用: 防止因容器的宽度不可用，而导致的列宽出错
-     * @param gridManagerName
+     * @param _
      */
-    waitContainerAvailable(gridManagerName) {
-        const tableWarp = document.querySelector(`[${WRAP_KEY}="${gridManagerName}"]`);
+    waitContainerAvailable(_) {
+        const tableWarp = document.querySelector(`[${WRAP_KEY}="${_}"]`);
         return new Promise(resolve => {
-            SIV_waitContainerAvailable[gridManagerName] = setInterval(() => {
+            SIV_waitContainerAvailable[_] = setInterval(() => {
                 let tableWarpWidth = getComputedStyle(tableWarp).width;
                 if (tableWarpWidth !== '100%') {
-                    clearInterval(SIV_waitContainerAvailable[gridManagerName]);
-                    SIV_waitContainerAvailable[gridManagerName] = null;
+                    clearInterval(SIV_waitContainerAvailable[_]);
+                    SIV_waitContainerAvailable[_] = null;
                     resolve();
                 }
             }, 50);

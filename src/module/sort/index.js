@@ -7,7 +7,7 @@ import { extend, isUndefined, isFunction, isObject, each, isEmptyObject } from '
 import { outWarn } from '@common/utils';
 import { getQuerySelector, getThName, clearTargetEvent } from '@common/base';
 import { getSettings, setSettings } from '@common/cache';
-import { TH_NAME } from '@common/constants';
+import { TH_NAME, SORT_CLASS } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import core from '../core';
 import sortTpl from './sort.tpl.html';
@@ -15,18 +15,18 @@ import { getEvent, eventMap } from './event';
 class Sort {
     /**
      * 初始化排序
-     * @param gridManagerName
+     * @param _
      */
-    init(gridManagerName) {
-        eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName));
-        const { target, events, selector } = eventMap[gridManagerName].sortAction;
+    init(_) {
+        eventMap[_] = getEvent(_, getQuerySelector(_));
+        const { target, events, selector } = eventMap[_].sortAction;
         const _this = this;
 
         // 绑定排序事件
         jTool(target).on(events, selector, function (e) {
             // th对应的名称
             const thName = getThName(jTool(this).closest('th'));
-            const { sortData, sortMode, sortUpText, sortDownText } = getSettings(gridManagerName);
+            const { sortData, sortMode, sortUpText, sortDownText } = getSettings(_);
 
             const oldSort = sortData[thName];
 
@@ -53,7 +53,7 @@ class Sort {
                 [thName]: newSort
             };
 
-            _this.__setSort(gridManagerName, sortJson);
+            _this.__setSort(_, sortJson);
         });
     }
 
@@ -68,20 +68,20 @@ class Sort {
 
 	/*
 	 * 手动设置排序
-	 * @param gridManagerName
+	 * @param _
 	 * @param sortJson: 排序信息
 	 * 格式: {key: value} key 需要与参数 columnData 中的 key匹配, value  为参数 sortUpText 或 sortDownText 的值
 	 * 示例: sortJson => {name: 'ASC}
 	 * @param callback: 回调函数[function]
 	 * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
 	 * */
-	__setSort(gridManagerName, sortJson, callback, refresh) {
+	__setSort(_, sortJson, callback, refresh) {
 		if (!sortJson || !isObject(sortJson) || isEmptyObject(sortJson)) {
 			outWarn('sortJson unavailable');
 			return false;
 		}
 
-        const settings = getSettings(gridManagerName);
+        const settings = getSettings(_);
 
 		// 单例排序: 清空原有排序数据
         if (!settings.isCombSorting) {
@@ -109,9 +109,9 @@ class Sort {
 
 		// 执行更新
 		if (refresh) {
-			core.refresh(gridManagerName, response => {
+			core.refresh(_, response => {
 				// 更新排序样式
-				this.updateSortStyle(gridManagerName);
+				this.updateSortStyle(_);
 
 				// 执行回调函数
 				callback(response);
@@ -130,16 +130,16 @@ class Sort {
 
 	/**
 	 * 更新排序样式
-	 * @param gridManagerName
+	 * @param _
      */
-	updateSortStyle(gridManagerName) {
-		const { sortData, sortUpText, sortDownText } = getSettings(gridManagerName);
+	updateSortStyle(_) {
+		const { sortData, sortUpText, sortDownText } = getSettings(_);
 		const upClass = 'sorting-up';
 		const downClass = 'sorting-down';
 		const thAttr = 'sorting';
 
 		// 重置排序样式
-        each(jTool(`${getQuerySelector(gridManagerName)} .gm-sorting-action`), (i, v) => {
+        each(jTool(`${getQuerySelector(_)} .${SORT_CLASS}`), (i, v) => {
             jTool(v).removeClass(`${upClass} ${downClass}`);
             jTool(v).closest('th').attr(thAttr, '');
 		});
@@ -147,8 +147,8 @@ class Sort {
 		// 根据排序数据更新排序
         each(sortData, (key, value) => {
             // 这里未用getTh的原因: getTh方法只能获取th, 这里需要同时对th和 fake-th进行操作
-            const $th = jTool(`${getQuerySelector(gridManagerName)} th[${TH_NAME}="${key}"]`);
-            const $sortAction = jTool('.gm-sorting-action', $th);
+            const $th = jTool(`${getQuerySelector(_)} th[${TH_NAME}="${key}"]`);
+            const $sortAction = jTool(`.${SORT_CLASS}`, $th);
 
 			// 排序操作：升序
 			if (value === sortUpText) {
@@ -168,10 +168,10 @@ class Sort {
 
 	/**
 	 * 消毁
-	 * @param gridManagerName
+	 * @param _
 	 */
-	destroy(gridManagerName) {
-	    clearTargetEvent(eventMap[gridManagerName]);
+	destroy(_) {
+	    clearTargetEvent(eventMap[_]);
 	}
 }
 export default new Sort();

@@ -18,19 +18,19 @@ import { CLASS_DRAG_ACTION, CLASS_DRAG_ING, CLASS_DREAMLAND } from './constants'
 class Drag {
     /**
 	 * 初始化拖拽
-	 * @param gridManagerName
+	 * @param _
      */
-	init(gridManagerName) {
+	init(_) {
         const _this = this;
-        const table = getTable(gridManagerName).get(0);
+        const table = getTable(_).get(0);
         const $body = jTool('body');
-        eventMap[gridManagerName] = getEvent(gridManagerName, `${getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
-        const { dragStart, dragging, dragAbort } = eventMap[gridManagerName];
+        eventMap[_] = getEvent(_, `${getQuerySelector(_)} [${FAKE_TABLE_HEAD_KEY}]`);
+        const { dragStart, dragging, dragAbort } = eventMap[_];
 
         // 拖拽事件仅绑在fake head th
         jTool(dragStart.target).on(dragStart.events, dragStart.selector, function (event) {
             // 获取设置项
-            let settings = getSettings(gridManagerName);
+            let settings = getSettings(_);
 
             const { columnMap, dragBefore, animateTime, dragAfter, supportConfig } = settings;
 
@@ -39,10 +39,10 @@ class Drag {
             const th = $th.get(0);
 
             // fake thead 下所有的 th
-            let $allFakeVisibleTh = getFakeVisibleTh(gridManagerName);
+            let $allFakeVisibleTh = getFakeVisibleTh(_);
 
             // 事件源所在的容器
-            const $tableWrap = getWrap(gridManagerName);
+            const $tableWrap = getWrap(_);
 
             // 与事件源同列的所有td
             const $colTd = getColTd($th);
@@ -66,7 +66,7 @@ class Drag {
             $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
 
             // #001
-            $dreamlandDIV.get(0).innerHTML = _this.createDreamlandHtml({ table,  $th, $colTd });
+            $dreamlandDIV.get(0).innerHTML = _this.createHtml({ table,  $th, $colTd });
 
             // 存储移动时的th所处的位置
             let _thIndex = 0;
@@ -111,7 +111,7 @@ class Drag {
                     top: e2.clientY - $tableWrap.offset().top + pageYOffset - th.offsetHeight / 2
                 });
 
-                $allFakeVisibleTh = _this.updateDrag(gridManagerName, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh);
+                $allFakeVisibleTh = _this.updateDrag(_, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh);
             });
 
             // 绑定拖拽停止事件
@@ -123,7 +123,7 @@ class Drag {
                 // 清除镜像
                 $dreamlandDIV.animate({
                     top: `${table.offsetTop}px`,
-                    left: `${th.offsetLeft - getDiv(gridManagerName).get(0).scrollLeft}px`
+                    left: `${th.offsetLeft - getDiv(_).get(0).scrollLeft}px`
                 }, animateTime, () => {
                     $th.removeClass(CLASS_DRAG_ING);
                     $colTd.removeClass(CLASS_DRAG_ING);
@@ -135,15 +135,15 @@ class Drag {
                 });
 
                 // 更新存储信息
-                updateCache(gridManagerName);
+                updateCache(_);
 
                 // 重置配置区域
                 if (supportConfig) {
-                    config.updateConfigList(gridManagerName);
+                    config.updateConfigList(_);
                 }
 
                 // 更新滚动轴状态
-                updateScrollStatus(gridManagerName);
+                updateScrollStatus(_);
 
                 // 开启文字选中效果
                 $body.removeClass(NO_SELECT_CLASS_NAME);
@@ -157,7 +157,7 @@ class Drag {
      * @returns {parseData}
      */
 	@parseTpl(dreamlandTpl)
-	createDreamlandHtml(params) {
+    createHtml(params) {
 	    const { table, $th, $colTd } = params;
 
         // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
@@ -179,7 +179,7 @@ class Drag {
 
 	/**
 	 * 拖拽触发后更新DOM
-	 * @param gridManagerName
+	 * @param _
 	 * @param $prevTh
 	 * @param $nextTh
 	 * @param $th
@@ -187,7 +187,7 @@ class Drag {
 	 * @param $dreamlandDIV
 	 * @param $allFakeVisibleTh
 	 */
-	updateDrag(gridManagerName, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh) {
+	updateDrag(_, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh) {
 		// 处理向左拖拽
 		if ($prevTh && $dreamlandDIV.offset().left < $prevTh.offset().left) {
             // 事件源对应的上一组td
@@ -198,11 +198,11 @@ class Drag {
 			});
 
 			// 同步 head
-            getTh(gridManagerName, $prevTh).before(getTh(gridManagerName, $th));
+            getTh(_, $prevTh).before(getTh(_, $th));
 
             // 更新最后一项可视列的标识
-            updateVisibleLast(gridManagerName);
-            $allFakeVisibleTh = getFakeVisibleTh(gridManagerName);
+            updateVisibleLast(_);
+            $allFakeVisibleTh = getFakeVisibleTh(_);
 		}
 
 		// 处理向右拖拽
@@ -215,11 +215,11 @@ class Drag {
 			});
 
             // 同步 head
-            getTh(gridManagerName, $nextTh).after(getTh(gridManagerName, $th));
+            getTh(_, $nextTh).after(getTh(_, $th));
 
             // 更新最后一项可视列的标识
-            updateVisibleLast(gridManagerName);
-            $allFakeVisibleTh = getFakeVisibleTh(gridManagerName);
+            updateVisibleLast(_);
+            $allFakeVisibleTh = getFakeVisibleTh(_);
 		}
 
 		// 返回新的可视fake th列
@@ -228,10 +228,10 @@ class Drag {
 
 	/**
 	 * 消毁
-	 * @param gridManagerName
+	 * @param _
 	 */
-	destroy(gridManagerName) {
-        clearTargetEvent(eventMap[gridManagerName]);
+	destroy(_) {
+        clearTargetEvent(eventMap[_]);
 	}
 }
 export default new Drag();

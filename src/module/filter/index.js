@@ -19,15 +19,15 @@ import { CLASS_FILTER, CLASS_FILTER_SELECTED, CLASS_FILTER_CONTENT } from './con
 class Filter {
     /**
      * 初始化
-     * @param gridManagerName
+     * @param _
      */
-    init(gridManagerName) {
+    init(_) {
         const _this = this;
         const $body = jTool('body');
-        const tableSelector = getQuerySelector(gridManagerName);
+        const tableSelector = getQuerySelector(_);
 
-        eventMap[gridManagerName] = getEvent(gridManagerName, tableSelector);
-        const { toggle, close, submit, reset, checkboxAction, radioAction } = eventMap[gridManagerName];
+        eventMap[_] = getEvent(_, tableSelector);
+        const { toggle, close, submit, reset, checkboxAction, radioAction } = eventMap[_];
 
         // 事件: 切换可视状态
         jTool(toggle.target).on(toggle.events, toggle.selector, function (e) {
@@ -46,14 +46,14 @@ class Filter {
             });
 
             // 更新当前表格下所有表过滤体的状态
-            const settings = getSettings(gridManagerName);
+            const settings = getSettings(_);
             _this.update($th, settings.columnMap[thName].filter);
 
             const isShow = $filterCon.css('display') !== 'none';
             isShow ? $filterCon.hide() : $filterCon.show();
             const leftClass = 'direction-left';
             const rigthClass = 'direction-right';
-            if ($filterCon.offset().left + $filterCon.width() > getDiv(gridManagerName).width()) {
+            if ($filterCon.offset().left + $filterCon.width() > getDiv(_).width()) {
                 $filterCon.addClass(rigthClass);
                 $filterCon.removeClass(leftClass);
             } else {
@@ -85,7 +85,7 @@ class Filter {
                 item.checked && checkedList.push(item.value);
             });
 
-            const settings = getSettings(gridManagerName);
+            const settings = getSettings(_);
             const checkedStr = checkedList.join(',');
             settings.columnMap[thName].filter.selected = checkedStr;
             settings.pageData[settings.currentPageKey] = 1;
@@ -93,7 +93,7 @@ class Filter {
             setSettings(settings);
 
             _this.update($th, settings.columnMap[thName].filter);
-            core.refresh(gridManagerName);
+            core.refresh(_);
             $filterCon.hide();
             jTool(close.target).off(close.events);
         });
@@ -105,14 +105,14 @@ class Filter {
             const $th = jTool(this).closest(`th[${TH_NAME}]`);
             const thName = getThName($th);
 
-            const settings = getSettings(gridManagerName);
+            const settings = getSettings(_);
             delete settings.query[thName];
             settings.columnMap[thName].filter.selected = '';
             settings.pageData[settings.currentPageKey] = 1;
             setSettings(settings);
 
             _this.update($th, settings.columnMap[thName].filter);
-            core.refresh(gridManagerName);
+            core.refresh(_);
             $filterCon.hide();
             jTool(close.target).off(close.events);
         });
@@ -140,7 +140,7 @@ class Filter {
     @parseTpl(filterTpl)
     createHtml(params) {
         const { settings, columnFilter } = params;
-        const tableWarpHeight = getWrap(settings.gridManagerName).height();
+        const tableWarpHeight = getWrap(settings._).height();
         let listHtml = '';
         columnFilter.selected = columnFilter.selected || '';
         columnFilter.option.forEach(item => {
@@ -165,11 +165,11 @@ class Filter {
             }
         });
         return {
-            iconClass: columnFilter.selected ? ` ${CLASS_FILTER_SELECTED}` : '',
-            listStyle: `max-height: ${tableWarpHeight - 100 + 'px'}`,
-            okText: i18n(settings, 'ok'),
-            resetText: i18n(settings, 'reset'),
-            listHtml: listHtml
+            icon: columnFilter.selected ? ` ${CLASS_FILTER_SELECTED}` : '',
+            style: `style="max-height: ${tableWarpHeight - 100 + 'px'}"`,
+            ok: i18n(settings, 'ok'),
+            reset: i18n(settings, 'reset'),
+            list: listHtml
         };
     }
 
@@ -195,10 +195,10 @@ class Filter {
 
     /**
      * 消毁
-     * @param gridManagerName
+     * @param _
      */
-    destroy(gridManagerName) {
-        clearTargetEvent(eventMap[gridManagerName]);
+    destroy(_) {
+        clearTargetEvent(eventMap[_]);
     }
 }
 export default new Filter();

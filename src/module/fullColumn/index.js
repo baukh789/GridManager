@@ -6,6 +6,7 @@ export const getTopFull = (settings, row, index, callback) => {
     const { columnData, topFullColumn } = settings;
 
     const template = topFullColumn.template;
+    const columnDataLen = columnData.length;
 
     // 未存在有效的通栏模板
     if (isUndefined(template)) {
@@ -16,7 +17,7 @@ export const getTopFull = (settings, row, index, callback) => {
     const intervalTrObject = {
         className: [],
         attribute: ['top-full-column-interval="true"'],
-        tdList: [`<td colspan="${columnData.length}"><div></div></td>`]
+        tdList: [`<td colspan="${columnDataLen}"><div></div></td>`]
     };
 
     // 通栏tr
@@ -25,7 +26,7 @@ export const getTopFull = (settings, row, index, callback) => {
     const topTrObject = {
         className: [],
         attribute: ['top-full-column="true"'],
-        tdList: [`<td colspan="${columnData.length}"><div class="full-column-td" ${compileAttr}>${text}</div></td>`]
+        tdList: [`<td colspan="${columnDataLen}"><div class="full-column-td" ${compileAttr}>${text}</div></td>`]
     };
     callback();
     return [intervalTrObject, topTrObject];

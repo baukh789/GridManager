@@ -22,6 +22,18 @@ import {
     CELL_HIDDEN
 } from './constants';
 
+const getStorage = key => {
+    return localStorage.getItem(key);
+};
+
+const setStorage = (key, memory) => {
+    localStorage.setItem(key, memory);
+};
+
+const removeStorage = key => {
+    localStorage.removeItem(key);
+};
+
 /**
  * 等待table-warp可用, 不可用时不进行表头重绘
  */
@@ -42,15 +54,15 @@ export const getVersion = () => {
 
 /**
  * 获取当前行使用的数据
- * @param gridManagerName
+ * @param _
  * @param target: 将要获取数据所对应的tr[Element or NodeList]
  * @param useSourceData: 使用原数据 或 克隆数据
  * @returns {*}
  */
-export const getRowData = (gridManagerName, target, useSourceData) => {
-    const columnMap = getSettings(gridManagerName).columnMap;
-    const tableData = getTableData(gridManagerName);
-    const settings = getSettings(gridManagerName);
+export const getRowData = (_, target, useSourceData) => {
+    const columnMap = getSettings(_).columnMap;
+    const tableData = getTableData(_);
+    const settings = getSettings(_);
     const supportTreeData = settings.supportTreeData;
     const getTrData = tr => {
         const cacheKey = tr.getAttribute(TR_CACHE_KEY);
@@ -91,14 +103,14 @@ export const getRowData = (gridManagerName, target, useSourceData) => {
 
 /**
  * 更新行数据
- * @param gridManagerName
+ * @param _
  * @param key: 列数据的主键
  * @param rowDataList: 需要更新的数据列表
  * @returns tableData: 更新后的表格数据
  */
-export const updateRowData = (gridManagerName, key, rowDataList) => {
-    const tableData = getTableData(gridManagerName);
-    const settings = getSettings(gridManagerName);
+export const updateRowData = (_, key, rowDataList) => {
+    const tableData = getTableData(_);
+    const settings = getSettings(_);
     const supportTreeData = settings.supportTreeData;
     const treeKey = settings.treeConfig.treeKey;
 
@@ -126,7 +138,7 @@ export const updateRowData = (gridManagerName, key, rowDataList) => {
         updateData(tableData, newItem);
     });
 
-    setTableData(gridManagerName, tableData);
+    setTableData(_, tableData);
     return {
         tableData,
         updateCacheList
@@ -135,28 +147,28 @@ export const updateRowData = (gridManagerName, key, rowDataList) => {
 
 /**
  * 获取表格数据
- * @param gridManagerName
+ * @param _
  */
-export const getTableData = gridManagerName => {
-    return cloneObject(store.responseData[gridManagerName] || []);
+export const getTableData = _ => {
+    return cloneObject(store.responseData[_] || []);
 };
 
 /**
  * 存储表格数据
- * @param gridManagerName
+ * @param _
  * @param data
  */
-export const setTableData = (gridManagerName, data) => {
-    store.responseData[gridManagerName] = data;
+export const setTableData = (_, data) => {
+    store.responseData[_] = data;
 };
 
 /**
  * 重置 table data 格式
- * @param gridManagerName
+ * @param _
  * @param data
  * @returns {*}
  */
-export const resetTableData = (gridManagerName, data) => {
+export const resetTableData = (_, data) => {
 
     const {
         columnMap,
@@ -168,7 +180,7 @@ export const resetTableData = (gridManagerName, data) => {
         currentPageKey,
         supportTreeData,
         treeConfig
-    } = getSettings(gridManagerName);
+    } = getSettings(_);
 
     // 为每一行数据增加唯一标识
     const addCacheKey = (row, level, index, pIndex) => {
@@ -211,7 +223,7 @@ export const resetTableData = (gridManagerName, data) => {
 
         // add checkbox
         if (supportCheckbox) {
-            row[CHECKBOX_KEY] = getCheckedData(gridManagerName).some(item => {
+            row[CHECKBOX_KEY] = getCheckedData(_).some(item => {
                 return equal(getCloneRowData(columnMap, item), getCloneRowData(columnMap, row));
             });
             row[CHECKBOX_DISABLED_KEY] = false;
@@ -225,18 +237,18 @@ export const resetTableData = (gridManagerName, data) => {
     });
 
     // 存储表格数据
-    setTableData(gridManagerName, newData);
-    setCheckedData(gridManagerName, newData);
+    setTableData(_, newData);
+    setCheckedData(_, newData);
     return newData;
 };
 
 /**
  * 获取选中的数据
- * @param gridManagerName
+ * @param _
  * @returns {*|Array}
  */
-export const getCheckedData = gridManagerName => {
-    const checkedList = store.checkedData[gridManagerName] || [];
+export const getCheckedData = _ => {
+    const checkedList = store.checkedData[_] || [];
 
     // 返回clone后的数组，以防止在外部操作导致数据错误。
     return checkedList.map(item => extend(true, {}, item));
@@ -244,23 +256,23 @@ export const getCheckedData = gridManagerName => {
 
 /**
  * 设置选中的数据: 覆盖操作，会将原有的选中值清除
- * @param gridManagerName
+ * @param _
  * @param dataList: 数据列表， isClear===true时该项只能为选中的数据
  * @param isClear: 是否清空原有的选中项 (该参数不公开)
  */
-export const setCheckedData = (gridManagerName, dataList, isClear) => {
-    const { columnMap } = getSettings(gridManagerName);
+export const setCheckedData = (_, dataList, isClear) => {
+    const { columnMap } = getSettings(_);
     // 覆盖操作，清空原有的选中数据。 并且 dataList 将会按选中状态进行处理
     if (isClear) {
-        store.checkedData[gridManagerName] = dataList.map(item => getCloneRowData(columnMap, item));
+        store.checkedData[_] = dataList.map(item => getCloneRowData(columnMap, item));
         return;
     }
 
     // 合并操作，不清空原有的选中数据
-    if (!store.checkedData[gridManagerName]) {
-        store.checkedData[gridManagerName] = [];
+    if (!store.checkedData[_]) {
+        store.checkedData[_] = [];
     }
-    const tableCheckedList = store.checkedData[gridManagerName];
+    const tableCheckedList = store.checkedData[_];
 
     dataList.forEach(item => {
         let cloneObj = getCloneRowData(columnMap, item);
@@ -282,16 +294,16 @@ export const setCheckedData = (gridManagerName, dataList, isClear) => {
 
 /**
  * 更新选中的数据
- * @param gridManagerName
+ * @param _
  * @param columnMap
  * @param key
  * @param rowDataList
  */
-export const updateCheckedData = (gridManagerName, columnMap, key, rowDataList) => {
-    if (!store.checkedData[gridManagerName]) {
+export const updateCheckedData = (_, columnMap, key, rowDataList) => {
+    if (!store.checkedData[_]) {
         return;
     }
-    store.checkedData[gridManagerName] = store.checkedData[gridManagerName].map(item => {
+    store.checkedData[_] = store.checkedData[_].map(item => {
         rowDataList.forEach(newItem => {
             if (item[key] === newItem[key]) {
                 extend(item, getCloneRowData(columnMap, newItem));
@@ -303,25 +315,25 @@ export const updateCheckedData = (gridManagerName, columnMap, key, rowDataList) 
 
 /**
  * 获取表格的用户记忆标识码
- * @param gridManagerName
+ * @param _
  * @returns {*}
  */
-export const getMemoryKey = gridManagerName => {
-    return location.pathname + location.hash + '-' + gridManagerName;
+export const getMemoryKey = _ => {
+    return location.pathname + location.hash + '-' + _;
 };
 
 /**
  * 获取用户记忆
- * @param gridManagerName
+ * @param _
  * @returns {*} 成功则返回本地存储数据,失败则返回空对象
  */
-export const getUserMemory = gridManagerName => {
-    const memoryKey = getMemoryKey(gridManagerName);
+export const getUserMemory = _ => {
+    const memoryKey = getMemoryKey(_);
 
-    let memory = localStorage.getItem(MEMORY_KEY);
+    let memory = getStorage(MEMORY_KEY);
     // 如无数据，增加缓存错误标识
     if (!memory || memory === '{}') {
-        getTable(gridManagerName).attr(CACHE_ERROR_KEY, 'error');
+        getTable(_).attr(CACHE_ERROR_KEY, 'error');
         return {};
     }
     memory = JSON.parse(memory);
@@ -334,7 +346,7 @@ export const getUserMemory = gridManagerName => {
  * @returns {boolean}
  */
 export const saveUserMemory = settings => {
-    const { disableCache, gridManagerName, columnMap, supportAjaxPage, pageData, pageSizeKey } = settings;
+    const { disableCache, _, columnMap, supportAjaxPage, pageData, pageSizeKey } = settings;
     // 当前为禁用缓存模式，直接跳出
     if (disableCache) {
         return;
@@ -379,42 +391,42 @@ export const saveUserMemory = settings => {
     }
 
     const cacheString = JSON.stringify(_cache);
-    let memory = localStorage.getItem(MEMORY_KEY);
+    let memory = getStorage(MEMORY_KEY);
     if (!memory) {
         memory = {};
     } else {
         memory = JSON.parse(memory);
     }
-    memory[getMemoryKey(gridManagerName)] = cacheString;
-    localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
+    memory[getMemoryKey(_)] = cacheString;
+    setStorage(MEMORY_KEY, JSON.stringify(memory));
 };
 
 /**
  * 删除用户记忆
- * @param gridManagerName
+ * @param _
  * @returns {boolean}
  */
-export const delUserMemory = gridManagerName => {
+export const delUserMemory = _ => {
     // 如果未指定删除的table, 则全部清除
-    if (!gridManagerName) {
-        localStorage.removeItem(MEMORY_KEY);
+    if (!_) {
+        removeStorage(MEMORY_KEY);
         outInfo('delete user memory of all');
         return true;
     }
 
-    let memory = localStorage.getItem(MEMORY_KEY);
+    let memory = getStorage(MEMORY_KEY);
     if (!memory) {
         return false;
     }
     memory = JSON.parse(memory);
 
     // 指定删除的table, 则定点清除
-    const _key = getMemoryKey(gridManagerName);
+    const _key = getMemoryKey(_);
     delete memory[_key];
 
     // 清除后, 重新存储
-    localStorage.setItem(MEMORY_KEY, JSON.stringify(memory));
-    outInfo(`delete user memory of ${gridManagerName}`);
+    setStorage(MEMORY_KEY, JSON.stringify(memory));
+    outInfo(`delete user memory of ${_}`);
     return true;
 };
 
@@ -459,12 +471,16 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
     // 合并参数
     let settings = new Settings();
     settings.textConfig = textConfig;
+
     extend(true, settings, arg);
+
+    // 将_配置简写方式, 方便内部使用
+    settings._ = settings.gridManagerName;
 
     // 存储初始配置项
     // setSettings(settings);
 
-    const { gridManagerName, columnData, supportAutoOrder, supportCheckbox, checkboxConfig } = settings;
+    const { _, columnData, supportAutoOrder, supportCheckbox, checkboxConfig } = settings;
 
     const list = [];
     // 自动增加: 选择列
@@ -498,22 +514,22 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
 
         // 属性: 表头提醒
         if (col.remind) {
-            settings.__supportRemind = true;
+            settings._remind = true;
         }
 
         // 属性: 排序
         if (isString(col.sorting)) {
-            settings.__supportSort = true;
+            settings._sort = true;
         }
 
         // 属性: 过滤
         if (isObject(col.filter)) {
-            settings.__supportFilter = true;
+            settings._filter = true;
         }
 
         // 属性: 固定列
         if (supportFixed && isString(col.fixed)) {
-            settings.__supportFixed = true;
+            settings._fixed = true;
 
             // 使用后 disableCustomize 将强制变更为true
             col.disableCustomize = true;
@@ -554,7 +570,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
         }
 
         const columnMap = settings.columnMap;
-        const userMemory = getUserMemory(gridManagerName);
+        const userMemory = getUserMemory(_);
         const columnCache = userMemory.column || {};
         const columnCacheKeys = Object.keys(columnCache);
         const columnMapKeys = Object.keys(columnMap);
@@ -614,7 +630,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
             extend(true, columnMap, columnCache);
         } else {
             // 清除用户记忆
-            delUserMemory(gridManagerName);
+            delUserMemory(_);
         }
     };
 
@@ -628,27 +644,27 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
 
 /**
  * 获取配置项
- * @param gridManagerName
+ * @param _
  * @returns {*}
  */
-export const getSettings = gridManagerName => {
+export const getSettings = _ => {
     // 返回的是 clone 对象 而非对象本身
-    return extend(true, {}, store.settings[gridManagerName] || {});
+    return extend(true, {}, store.settings[_] || {});
 };
 /**
  * 设置配置项
  * @param settings
  */
 export const setSettings = settings => {
-    store.settings[settings.gridManagerName] = extend(true, {}, settings);
+    store.settings[settings._] = extend(true, {}, settings);
 };
 
 /**
  * 更新Cache, 包含[更新表格列Map, 重置settings, 存储用户记忆]
- * @param gridManagerName
+ * @param _
  */
-export const updateCache = gridManagerName => {
-    const settings = getSettings(gridManagerName);
+export const updateCache = _ => {
+    const settings = getSettings(_);
     const columnMap = settings.columnMap;
 
     // 更新 columnMap , 适用操作[宽度调整, 位置调整, 可视状态调整]
@@ -658,7 +674,7 @@ export const updateCache = gridManagerName => {
             return;
         }
 
-        let th = getTh(gridManagerName, col.key);
+        let th = getTh(_, col.key);
         // 宽度
         col.width = th.width() + 'px';
 
@@ -682,30 +698,31 @@ export const updateCache = gridManagerName => {
  * 验证版本号,如果版本号变更清除用户记忆
  */
 export const verifyVersion = () => {
-    const cacheVersion = localStorage.getItem(VERSION_KEY);
+    const cacheVersion = getStorage(VERSION_KEY);
+    const storeVersion = store.version;
     // 当前为第一次渲染, 存储版本号
     if (!cacheVersion) {
-        localStorage.setItem(VERSION_KEY, store.version);
+        setStorage(VERSION_KEY, storeVersion);
     }
     // 版本变更, 清除所有的用户记忆
-    if (cacheVersion && cacheVersion !== store.version) {
+    if (cacheVersion && cacheVersion !== storeVersion) {
         delUserMemory();
-        localStorage.setItem(VERSION_KEY, store.version);
+        setStorage(VERSION_KEY, storeVersion);
     }
 };
 
 /**
  * 清空缓存
- * @param gridManagerName
+ * @param _
  */
-export const clearCache = gridManagerName => {
-    delete store.responseData[gridManagerName];
-    delete store.checkedData[gridManagerName];
-    delete store.settings[gridManagerName];
+export const clearCache = _ => {
+    delete store.responseData[_];
+    delete store.checkedData[_];
+    delete store.settings[_];
 
     // 清除setInterval
-    clearInterval(SIV_waitTableAvailable[gridManagerName]);
-    clearInterval(SIV_waitContainerAvailable[gridManagerName]);
-    delete SIV_waitTableAvailable[gridManagerName];
-    delete SIV_waitContainerAvailable[gridManagerName];
+    clearInterval(SIV_waitTableAvailable[_]);
+    clearInterval(SIV_waitContainerAvailable[_]);
+    delete SIV_waitTableAvailable[_];
+    delete SIV_waitContainerAvailable[_];
 };

@@ -33,40 +33,39 @@ const isDisabled = (dom, events) => {
     }
 };
 
+/**
+ * 获取指定key的menu选择器
+ * @param _
+ * @returns {string}
+ */
+const getQuerySelector = _ => {
+    return `[${MENU_KEY}="${_}"]`;
+};
 class Menu {
     /**
      * 初始化
-     * @param gridManagerName
+     * @param _
      */
-    init(gridManagerName) {
-        const settings = getSettings(gridManagerName);
-        eventMap[gridManagerName] = getEvent(gridManagerName, this.getQuerySelector(gridManagerName));
+    init(_) {
+        const settings = getSettings(_);
+        eventMap[_] = getEvent(_, getQuerySelector(_));
 
         // 创建menu DOM
-        const $menu = jTool(this.getQuerySelector(gridManagerName));
+        const $menu = jTool(getQuerySelector(_));
         if($menu.length === 0) {
             jTool('body').append(this.createMenuHtml({settings}));
         }
 
         // 绑定右键菜单事件
-        this.bindRightMenuEvent(gridManagerName, settings.supportExport, settings.supportConfig);
-    }
-
-    /**
-     * 获取指定key的menu选择器
-     * @param gridManagerName
-     * @returns {string}
-     */
-	getQuerySelector(gridManagerName) {
-	    return `[${MENU_KEY}="${gridManagerName}"]`;
+        this.bindRightMenuEvent(_, settings.supportExport, settings.supportConfig);
     }
 
     /**
      * 获取menu 的 jtool对像
-     * @param gridManagerName
+     * @param _
      */
-    getMenuByJtool(gridManagerName) {
-	    return jTool(this.getQuerySelector(gridManagerName));
+    getMenuByJtool(_) {
+	    return jTool(getQuerySelector(_));
     }
 
     /**
@@ -76,15 +75,14 @@ class Menu {
     @parseTpl(menuTpl)
     createMenuHtml(params) {
         const settings = params.settings;
-        const { gridManagerName, supportAjaxPage, supportExport, supportConfig, supportPrint } = settings;
+        const { _, supportAjaxPage, supportExport, supportConfig, supportPrint } = settings;
         return {
-            gridManagerName: gridManagerName,
-            keyName: MENU_KEY,
+            key: `${MENU_KEY}="${_}"`,
             refresh: i18n(settings, 'refresh'),
-            printHtml: supportPrint ? this.createPrintHtml({settings}) : '',
-            ajaxPageHtml: supportAjaxPage ? this.createAjaxPageHtml({settings}) : '',
-            exportHtml: supportExport ? this.createExportHtml({settings}) : '',
-            configHtml: supportConfig ? this.createConfigHtml({settings}) : ''
+            print: supportPrint ? this.createPrintHtml({settings}) : '',
+            page: supportAjaxPage ? this.createAjaxPageHtml({settings}) : '',
+            export: supportExport ? this.createExportHtml({settings}) : '',
+            config: supportConfig ? this.createConfigHtml({settings}) : ''
         };
     }
 
@@ -140,14 +138,14 @@ class Menu {
 
 	/**
 	 * 绑定右键菜单事件
-	 * @param gridManagerName
+	 * @param _
 	 * @param supportExport
 	 * @param supportConfig
      */
-	bindRightMenuEvent(gridManagerName, supportExport, supportConfig) {
-		const $menu = this.getMenuByJtool(gridManagerName);
+	bindRightMenuEvent(_, supportExport, supportConfig) {
+		const $menu = this.getMenuByJtool(_);
 
-		const { openMenu, closeMenu, refresh, exportPage, openConfig, printPage } = eventMap[gridManagerName];
+		const { openMenu, closeMenu, refresh, exportPage, openConfig, printPage } = eventMap[_];
         const $closeTarget = jTool(closeMenu.target);
         const closeEvents =  closeMenu.events;
 
@@ -169,7 +167,7 @@ class Menu {
 
 			// 验证：当前是否存在已选中的项
 			const exportPageOfChecked = jTool(`${exportPage.selector}[only-checked="true"]`, $menu);
-			if (jTool('tr[checked="true"]', getTbody(gridManagerName)).length === 0) {
+			if (jTool('tr[checked="true"]', getTbody(_)).length === 0) {
                 exportPageOfChecked.addClass(DISABLED_CLASS_NAME);
 			} else {
                 exportPageOfChecked.removeClass(DISABLED_CLASS_NAME);
@@ -209,7 +207,7 @@ class Menu {
 				return false;
 			}
 			const refreshType = this.getAttribute('refresh-type');
-            const settings = getSettings(gridManagerName);
+            const settings = getSettings(_);
 			const { currentPageKey, pageData } = settings;
 			let cPage = pageData[currentPageKey];
 
@@ -242,7 +240,7 @@ class Menu {
 				if (this.getAttribute('only-checked') === 'true') {
 					onlyChecked = true;
 				}
-                exportFile.exportGrid(gridManagerName, undefined, onlyChecked);
+                exportFile.exportGrid(_, undefined, onlyChecked);
                 $closeTarget.off(closeEvents);
                 $menu.hide();
 			});
@@ -253,7 +251,7 @@ class Menu {
             if (isDisabled(this, e)) {
                 return false;
             }
-            print(gridManagerName);
+            print(_);
             $closeTarget.off(closeEvents);
             $menu.hide();
         });
@@ -264,7 +262,7 @@ class Menu {
 				if (isDisabled(this, e)) {
 					return false;
 				}
-				config.toggle(gridManagerName);
+				config.toggle(_);
                 $closeTarget.off(closeEvents);
 				$menu.hide();
 			});
@@ -276,9 +274,9 @@ class Menu {
 	 * @param settings
 	 */
 	updateMenuPageStatus(settings) {
-	    const { gridManagerName, pageData, currentPageKey } = settings;
+	    const { _, pageData, currentPageKey } = settings;
 		// 右键菜单区上下页限制
-		const gridMenu = jTool(`[${MENU_KEY}="${gridManagerName}"]`);
+		const gridMenu = jTool(getQuerySelector(_));
 		if (!gridMenu || gridMenu.length === 0) {
 			return;
 		}
@@ -300,14 +298,14 @@ class Menu {
 
 	/**
 	 * 消毁
-	 * @param gridManagerName
+	 * @param _
 	 */
-	destroy(gridManagerName) {
+	destroy(_) {
 	    // 清除事件
-        clearTargetEvent(eventMap[gridManagerName]);
+        clearTargetEvent(eventMap[_]);
 
         // 删除DOM节点
-        jTool(`[${MENU_KEY}="${gridManagerName}"]`).remove();
+        jTool(getQuerySelector(_)).remove();
 	}
 }
 export default new Menu();

@@ -18,47 +18,47 @@ import './style.less';
 class Scroll {
     /**
      * 初始化
-     * @param gridManagerName
+     * @param _
      */
-	init(gridManagerName) {
-        this.render(gridManagerName);
-        this.bindResizeToTable(gridManagerName);
-        this.bindScrollToTableDiv(gridManagerName);
+	init(_) {
+        this.render(_);
+        this.bindResizeToTable(_);
+        this.bindScrollToTableDiv(_);
 	}
 
     /**
      * 生成表头置顶DOM
-     * @param gridManagerName
+     * @param _
      */
-    render(gridManagerName) {
-        let $setTopHead = getFakeThead(gridManagerName);
+    render(_) {
+        let $setTopHead = getFakeThead(_);
         $setTopHead.length && $setTopHead.remove();
-        const $thead = getThead(gridManagerName);
+        const $thead = getThead(_);
 
-        getTable(gridManagerName).append($thead.clone(true).attr(FAKE_TABLE_HEAD_KEY, gridManagerName));
+        getTable(_).append($thead.clone(true).attr(FAKE_TABLE_HEAD_KEY, _));
 
-        $setTopHead = getFakeThead(gridManagerName);
+        $setTopHead = getFakeThead(_);
         $setTopHead.removeAttr(TABLE_HEAD_KEY);
 
-        const settings = getSettings(gridManagerName);
+        const settings = getSettings(_);
         compileFakeThead(settings, $setTopHead.get(0).querySelector('tr'));
     }
 
     /**
      * 更新表头置顶
-     * @param gridManagerName
+     * @param _
      * @returns {boolean}
      */
-    update(gridManagerName) {
-        const $tableDiv = getDiv(gridManagerName);
+    update(_) {
+        const $tableDiv = getDiv(_);
         if (!$tableDiv.length) {
             return;
         }
-        const $thead = getThead(gridManagerName);
+        const $thead = getThead(_);
         const theadWidth = $thead.width();
 
         // 吸顶元素
-        const $setTopHead = getFakeThead(gridManagerName);
+        const $setTopHead = getFakeThead(_);
 
         // 重置thead的宽度和位置
         $setTopHead.css({
@@ -71,21 +71,21 @@ class Scroll {
             jTool('th', $setTopHead).eq(i).width(jTool(th).width());
         });
 
-        fixed.updateFakeThead(gridManagerName);
+        fixed.updateFakeThead(_);
     }
 
 	/**
 	 * 为单个table绑定resize事件
-	 * @param gridManagerName
+	 * @param _
      * 存在多次渲染时, 将会存在多个resize事件. 每个事件对应处理一个table. 这样做的好处是, 多个表之间无关联. 保持了相对独立性
      */
-	bindResizeToTable(gridManagerName) {
-		const $tableDiv = getDiv(gridManagerName);
+	bindResizeToTable(_) {
+		const $tableDiv = getDiv(_);
 		let oldBodyWidth = document.querySelector('body').offsetWidth;
 
 		// 绑定resize事件: 对表头吸顶的列宽度进行修正
-		jTool(window).bind(`resize.${gridManagerName}`, () => {
-            const settings = getSettings(gridManagerName);
+		jTool(window).bind(`resize.${_}`, () => {
+            const settings = getSettings(_);
             if ($tableDiv.length !== 1) {
                 return;
             }
@@ -95,39 +95,39 @@ class Scroll {
             if (bodyWidth !== oldBodyWidth) {
                 updateThWidth(settings);
                 oldBodyWidth = bodyWidth;
-                updateCache(gridManagerName);
+                updateCache(_);
             }
-            updateScrollStatus(gridManagerName);
+            updateScrollStatus(_);
 
-            this.update(gridManagerName);
+            this.update(_);
 
-            settings.supportConfig && config.updateConfigListHeight(gridManagerName);
+            settings.supportConfig && config.updateConfigListHeight(_);
 		});
 	}
 
 	/**
 	 * 绑定表格滚动轴功能
-	 * @param gridManagerName
+	 * @param _
      */
-	bindScrollToTableDiv(gridManagerName) {
-		const tableDIV = getDiv(gridManagerName);
+	bindScrollToTableDiv(_) {
+		const tableDIV = getDiv(_);
 		// 绑定滚动条事件 #001
 		tableDIV.unbind('scroll');
 		tableDIV.bind('scroll', () => {
-            this.update(gridManagerName);
+            this.update(_);
 		});
 	}
 
 	/**
 	 * 消毁
-	 * @param gridManagerName
+	 * @param _
 	 */
-	destroy(gridManagerName) {
+	destroy(_) {
 		// 清理: resize事件. 该事件并不干扰其它resize事件
-		jTool(window).unbind(`resize.${gridManagerName}`);
+		jTool(window).unbind(`resize.${_}`);
 
 		// 清理: 表格滚动轴功能
-        getDiv(gridManagerName).unbind('scroll');
+        getDiv(_).unbind('scroll');
 	}
 }
 export default new Scroll();

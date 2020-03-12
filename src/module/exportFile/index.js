@@ -10,21 +10,21 @@ import { GM_CREATE, CELL_HIDDEN } from '@common/constants';
 class ExportFile {
 	/**
 	 * 获取文件名称
-	 * @param gridManagerName
+	 * @param _
 	 * @param fileName: 文件名
 	 * @param query: 查询参数
 	 * @param exportConfig: 配置信息
      */
-    getFileName(gridManagerName, fileName, query, exportConfig) {
+    getFileName(_, fileName, query, exportConfig) {
         // 未存在指定下载名称时, 使用exportConfig.fileName
 		if (!fileName) {
 		    const confName = exportConfig.fileName;
 		    fileName = isFunction(confName) ? confName(query) : confName;
 		}
 
-		// 未存在指定下载名称 且 未指定exportConfig.fileName时, 使用 gridManagerName
+		// 未存在指定下载名称 且 未指定exportConfig.fileName时, 使用 _
 		if (!fileName) {
-            fileName = gridManagerName;
+            fileName = _;
         }
 
 		return `${fileName}.${exportConfig.suffix}`;
@@ -48,35 +48,35 @@ class ExportFile {
 
 	/**
 	 * 导出表格 .xls
-	 * @param gridManagerName
+	 * @param _
 	 * @param fileName: 导出后的文件名, 该文件名不包含后缀名
 	 * @param onlyChecked: 是否只导出已选中的表格
 	 * @returns {boolean}
      * @private
      */
-	async exportGrid(gridManagerName, fileName, onlyChecked) {
-	    const settings = getSettings(gridManagerName);
+	async exportGrid(_, fileName, onlyChecked) {
+	    const settings = getSettings(_);
 	    const { query, loadingTemplate, exportConfig, pageData, sortData } = settings;
 
-        fileName = this.getFileName(gridManagerName, fileName, query, exportConfig);
+        fileName = this.getFileName(_, fileName, query, exportConfig);
 
-        const selectedList = onlyChecked ? getCheckedData(gridManagerName) : [];
-        const tableData = getTableData(gridManagerName);
+        const selectedList = onlyChecked ? getCheckedData(_) : [];
+        const tableData = getTableData(_);
 
         const handler = exportConfig.handler;
 
 	    switch (exportConfig.mode) {
             case 'static': {
-                this.downStatic(gridManagerName, loadingTemplate, fileName, onlyChecked, exportConfig.suffix, handler, query, pageData, sortData, selectedList, tableData);
+                this.downStatic(_, loadingTemplate, fileName, onlyChecked, exportConfig.suffix, handler, query, pageData, sortData, selectedList, tableData);
                 break;
             }
             case 'blob': {
-                await this.downBlob(gridManagerName, loadingTemplate, fileName, handler, query, pageData, sortData, selectedList, tableData);
+                await this.downBlob(_, loadingTemplate, fileName, handler, query, pageData, sortData, selectedList, tableData);
                 break;
             }
 
             case 'url': {
-                await this.downFilePath(gridManagerName, loadingTemplate, fileName, handler, pageData, sortData, selectedList);
+                await this.downFilePath(_, loadingTemplate, fileName, handler, pageData, sortData, selectedList);
                 break;
             }
         }
@@ -84,21 +84,21 @@ class ExportFile {
 
     /**
      * 下载方式: 静态下载
-     * @param gridManagerName
+     * @param _
      * @param loadingTemplate
      * @param fileName
      * @param onlyChecked
      * @returns {boolean}
      */
-	downStatic(gridManagerName, loadingTemplate, fileName, onlyChecked, suffix, exportHandler, query, pageData, sortData, selectedList, tableData) {
-        showLoading(gridManagerName, loadingTemplate);
+	downStatic(_, loadingTemplate, fileName, onlyChecked, suffix, exportHandler, query, pageData, sortData, selectedList, tableData) {
+        showLoading(_, loadingTemplate);
 
         let tableList = exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
 
         // exportHandler 未返回数组表示当前exportHandler未被配置
         if (!isArray(tableList)) {
-            const thDOM = getFakeVisibleTh(gridManagerName, true);
-            const $tbody = getTbody(gridManagerName);
+            const thDOM = getFakeVisibleTh(_, true);
+            const $tbody = getTbody(_);
             let	trDOM = null;
             // 验证：是否只导出已选中的表格
             if (onlyChecked) {
@@ -139,12 +139,12 @@ class ExportFile {
         };
         this.dispatchDownload(fileName, `data:${dataType[suffix]};charset=utf-8,\ufeff${encodeURIComponent(exportHTML)}`);
 
-        hideLoading(gridManagerName, loadingTemplate);
+        hideLoading(_, loadingTemplate);
     }
 
     /**
      * 下载方式: 文件路径
-     * @param gridManagerName
+     * @param _
      * @param loadingTemplate: loading模板
      * @param fileName
      * @param exportHandler
@@ -153,21 +153,21 @@ class ExportFile {
      * @param selectedList
      * @returns {Promise<void>}
      */
-    async downFilePath(gridManagerName, loadingTemplate, fileName, exportHandler, pageData, sortData, selectedList) {
+    async downFilePath(_, loadingTemplate, fileName, exportHandler, pageData, sortData, selectedList) {
         try {
-            showLoading(gridManagerName, loadingTemplate);
+            showLoading(_, loadingTemplate);
             const res = await exportHandler(fileName, pageData, sortData, selectedList);
             this.dispatchDownload(fileName, res);
         } catch (e) {
             outError(e);
         } finally {
-            hideLoading(gridManagerName);
+            hideLoading(_);
         }
     }
 
     /**
      * 下载方式: Blob格式
-     * @param gridManagerName
+     * @param _
      * @param loadingTemplate: loading模板
      * @param fileName: 导出的文件名，不包含后缀名
      * @param exportHandler: 执行函数
@@ -176,9 +176,9 @@ class ExportFile {
      * @param sortData: 排序信息
      * @param selectedList: 当前选中的列表
      */
-    async downBlob(gridManagerName, loadingTemplate, fileName, exportHandler, query, pageData, sortData, selectedList, tableData) {
+    async downBlob(_, loadingTemplate, fileName, exportHandler, query, pageData, sortData, selectedList, tableData) {
         try {
-            showLoading(gridManagerName, loadingTemplate);
+            showLoading(_, loadingTemplate);
 
             const res = await exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
             const blobPrototype = Blob.prototype;
@@ -204,7 +204,7 @@ class ExportFile {
         } catch (e) {
             outError(e);
         } finally {
-            hideLoading(gridManagerName);
+            hideLoading(_);
         }
     }
 }

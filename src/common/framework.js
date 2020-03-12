@@ -7,22 +7,22 @@ const compileMap = {};
 
 /**
  * 获取当前表格解析列表
- * @param gridManagerName
+ * @param _
  * @returns {*}
  */
-export const getCompileList = gridManagerName => {
-    if (!compileMap[gridManagerName]) {
-        compileMap[gridManagerName] = [];
+export const getCompileList = _ => {
+    if (!compileMap[_]) {
+        compileMap[_] = [];
     }
-    return compileMap[gridManagerName];
+    return compileMap[_];
 };
 
 /**
  * 清空当前表格解析列表
- * @param gridManagerName
+ * @param _
  */
-export const clearCompileList = gridManagerName => {
-    compileMap[gridManagerName] = [];
+export const clearCompileList = _ => {
+    compileMap[_] = [];
 };
 
 /**
@@ -31,9 +31,9 @@ export const clearCompileList = gridManagerName => {
  * @param el
  */
 export const compileFakeThead = (settings, el) => {
-    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
+    const { _, compileAngularjs, compileVue, compileReact } = settings;
     if (compileAngularjs || compileVue || compileReact) {
-        const compileList = getCompileList(gridManagerName);
+        const compileList = getCompileList(_);
         const thList = el.querySelectorAll(`[${FRAMEWORK_KEY}]`);
         [].forEach.call(thList, (item, index) => {
             const obj = compileList[index];
@@ -50,8 +50,8 @@ export const compileFakeThead = (settings, el) => {
  * @returns {string}
  */
 export const compileTh = (settings, key, template) => {
-    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-    const compileList = getCompileList(gridManagerName);
+    const { _, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(_);
     let text = '';
     let compileAttr = '';
     if (template) {
@@ -82,8 +82,8 @@ export const compileTh = (settings, key, template) => {
  * @returns {*}
  */
 export const compileTd = (settings, template, row, index, key) => {
-    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-    const compileList = getCompileList(gridManagerName);
+    const { _, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(_);
 
     let text = '';
     let compileAttr = '';
@@ -124,8 +124,8 @@ export const compileTd = (settings, template, row, index, key) => {
  * @returns {string}
  */
 export const compileEmptyTemplate = (settings, el, template) => {
-    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-    const compileList = getCompileList(gridManagerName);
+    const { _, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(_);
 
     // React
     if (compileReact) {
@@ -155,8 +155,8 @@ export const compileEmptyTemplate = (settings, el, template) => {
  * @returns {*}
  */
 export const compileFullColumn = (settings, row, index, template) => {
-    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-    const compileList = getCompileList(gridManagerName);
+    const { _, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(_);
 
     let text = '';
     let compileAttr = '';
@@ -192,9 +192,9 @@ export const compileFullColumn = (settings, row, index, template) => {
  * @returns {Promise<void>}
  */
 export async function sendCompile(settings) {
-    const { gridManagerName, compileAngularjs, compileVue, compileReact } = settings;
-    const compileList = getCompileList(gridManagerName);
-    let domList = document.querySelectorAll(`${getQuerySelector(gridManagerName)} [${FRAMEWORK_KEY}]`);
+    const { _, compileAngularjs, compileVue, compileReact } = settings;
+    const compileList = getCompileList(_);
+    let domList = document.querySelectorAll(`${getQuerySelector(_)} [${FRAMEWORK_KEY}]`);
     if (compileList.length === 0) {
         return;
     }
@@ -211,7 +211,7 @@ export async function sendCompile(settings) {
         await compileVue(compileList);
 
         // vue会改变domList 中的数据，导致在清除解析标识无法正常运行，所以需要再次更新domList
-        domList = document.querySelectorAll(`${getQuerySelector(gridManagerName)} [${FRAMEWORK_KEY}]`);
+        domList = document.querySelectorAll(`${getQuerySelector(_)} [${FRAMEWORK_KEY}]`);
     }
 
     // 解析框架: Angular 1.x
@@ -230,5 +230,5 @@ export async function sendCompile(settings) {
     });
 
     // 清除
-    clearCompileList(gridManagerName);
+    clearCompileList(_);
 }

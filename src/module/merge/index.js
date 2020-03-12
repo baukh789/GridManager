@@ -6,17 +6,17 @@ import './style.less';
 import { ROW_SPAN, MERGE_TD } from './constants';
 /**
  * 根据配置项[merge]合并行数据相同的单元格
- * @param gridManagerName
+ * @param _
  * @param columnMap
  */
-export const mergeRow = (gridManagerName, columnMap) => {
+export const mergeRow = (_, columnMap) => {
     each(columnMap, (key, col) => {
         let merge = col.merge;
         if (!merge || (merge !== 'text' &&  merge !== 'html')) {
             return true;
         }
 
-        const $tdList = getColTd(getTh(gridManagerName, key));
+        const $tdList = getColTd(getTh(_, key));
 
         let len = $tdList.length;
         let mergeSum = 1;
@@ -51,11 +51,11 @@ export const mergeRow = (gridManagerName, columnMap) => {
 
 /**
  * 清除合并行数据相同的单元格
- * @param gridManagerName
+ * @param _
  * @param $context
  */
-export const clearMergeRow = (gridManagerName, $context) => {
-    $context = $context || getTable(gridManagerName);
+export const clearMergeRow = (_, $context) => {
+    $context = $context || getTable(_);
     jTool(`[${ROW_SPAN}]`, $context).removeAttr(ROW_SPAN);
     jTool(`[${MERGE_TD}]`, $context).removeAttr(MERGE_TD);
 };

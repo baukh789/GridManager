@@ -20,7 +20,7 @@ import { sendCompile, compileTd } from '@common/framework';
  */
 class Dom {
     init($table, settings) {
-        const { gridManagerName, width, height, supportAjaxPage } = settings;
+        const { _, width, height, supportAjaxPage } = settings;
         // add wrap div
         $table.wrap(render.createWrapTpl({ settings }), '.table-div');
 
@@ -28,13 +28,13 @@ class Dom {
         $table.append(render.createTheadTpl({settings}));
 
         // 计算布局
-        calcLayout(gridManagerName, width, height, supportAjaxPage);
+        calcLayout(_, width, height, supportAjaxPage);
 
         // append tbody
         $table.append(document.createElement('tbody'));
 
         // 绑定事件
-        this.bindEvent(gridManagerName);
+        this.bindEvent(_);
     }
 
     /**
@@ -42,9 +42,9 @@ class Dom {
      * @param settings
      */
     redrawThead(settings) {
-        const { gridManagerName, columnMap, sortUpText, sortDownText, supportAdjust } = settings;
+        const { _, columnMap, sortUpText, sortDownText, supportAdjust } = settings;
         // 单个table下的TH
-        const $thList = getAllTh(gridManagerName);
+        const $thList = getAllTh(_);
 
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
@@ -103,7 +103,7 @@ class Dom {
      */
     renderTableBody(settings, data) {
         const {
-            gridManagerName,
+            _,
             columnMap,
             supportTreeData,
             supportMoveRow,
@@ -112,10 +112,10 @@ class Dom {
 
         const { treeKey, openState } = treeConfig;
 
-        data = resetTableData(gridManagerName, data);
+        data = resetTableData(_, data);
 
         // tbody dom
-        const tbody = getTbody(gridManagerName).get(0);
+        const tbody = getTbody(_).get(0);
 
         // 清空 tbody
         tbody.innerHTML = '';
@@ -199,7 +199,7 @@ class Dom {
                         const hasChildren = children && children.length;
 
                         // 添加tree map
-                        tree.add(gridManagerName, cacheKey, level, hasChildren);
+                        tree.add(_, cacheKey, level, hasChildren);
 
                         // 递归处理层极结构
                         if (hasChildren) {
@@ -228,15 +228,15 @@ class Dom {
             console.error(e);
         }
 
-        this.initVisible(gridManagerName, columnMap);
+        this.initVisible(_, columnMap);
 
         // 解析框架
         sendCompile(settings).then(() => {
             // 插入tree dom
-            supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
+            supportTreeData && tree.insertDOM(_, treeConfig);
 
             // 合并单元格
-            mergeRow(gridManagerName, columnMap);
+            mergeRow(_, columnMap);
         });
     }
 
@@ -246,14 +246,14 @@ class Dom {
      * @param updateCacheList
      */
     updateTrDOM(settings, updateCacheList) {
-        const { gridManagerName, columnMap, supportTreeData, treeConfig } = settings;
+        const { _, columnMap, supportTreeData, treeConfig } = settings;
         const { treeKey } = treeConfig;
         updateCacheList.forEach(row => {
             const cacheKey = row[TR_CACHE_KEY];
             const level = row[TR_LEVEL_KEY];
             let index = parseInt(cacheKey.split('-').pop(), 10);
 
-            const trNode = getTbody(gridManagerName).find(`[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
+            const trNode = getTbody(_).find(`[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
 
             if (!trNode) {
                 return;
@@ -262,7 +262,7 @@ class Dom {
             // 添加tree map
             const children = row[treeKey];
             const hasChildren = children && children.length;
-            tree.add(gridManagerName, cacheKey, level, hasChildren);
+            tree.add(_, cacheKey, level, hasChildren);
 
             each(columnMap, (key, col) => {
                 // 不处理项: 自动添加列
@@ -271,7 +271,7 @@ class Dom {
                 }
 
                 let tdTemplate = col.template;
-                const tdNode = getColTd(getTh(gridManagerName, key), trNode).get(0);
+                const tdNode = getColTd(getTh(_, key), trNode).get(0);
 
                 // 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
                 const tdCloneNode = tdNode.cloneNode(true);
@@ -290,39 +290,39 @@ class Dom {
         // 解析框架
         sendCompile(settings).then(() => {
             // 插入tree dom
-            supportTreeData && tree.insertDOM(gridManagerName, treeConfig);
+            supportTreeData && tree.insertDOM(_, treeConfig);
 
             // 合并单元格
-            mergeRow(gridManagerName, columnMap);
+            mergeRow(_, columnMap);
         });
     }
 
     /**
      * 根据配置项初始化列显示|隐藏 (th 和 td)
-     * @param gridManagerName
+     * @param _
      * @param columnMap
      */
-    initVisible(gridManagerName, columnMap) {
+    initVisible(_, columnMap) {
         each(columnMap, (index, col) => {
-            setAreVisible(gridManagerName, [col.key], col.isShow);
+            setAreVisible(_, [col.key], col.isShow);
         });
     }
 
     /**
      * 为新生成的table下属元素绑定事件
-     * @param gridManagerName
+     * @param _
      */
-    bindEvent(gridManagerName) {
-        const { rowHover, rowClick, cellHover, cellClick } = getSettings(gridManagerName);
+    bindEvent(_) {
+        const { rowHover, rowClick, cellHover, cellClick } = getSettings(_);
 
-        eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName));
-        const event = eventMap[gridManagerName];
+        eventMap[_] = getEvent(getQuerySelector(_));
+        const event = eventMap[_];
 
         // 行事件透出参数
         const getRowParams = tr => {
             return [
                 // row
-                getRowData(gridManagerName, tr),
+                getRowData(_, tr),
 
                 // rowIndex
                 parseInt(tr.getAttribute(TR_CACHE_KEY), 10)
@@ -356,7 +356,7 @@ class Dom {
             const tr = td.parentNode;
             return [
                 // row
-                getRowData(gridManagerName, tr),
+                getRowData(_, tr),
 
                 // rowIndex
                 parseInt(tr.getAttribute(TR_CACHE_KEY), 10),
@@ -391,14 +391,14 @@ class Dom {
 
     /**
      * 消毁
-     * @param gridManagerName
+     * @param _
      */
-    destroy(gridManagerName) {
-        clearTargetEvent(eventMap[gridManagerName]);
+    destroy(_) {
+        clearTargetEvent(eventMap[_]);
 
         try {
-            const $table = getTable(gridManagerName);
-            const $tableWrap = getWrap(gridManagerName);
+            const $table = getTable(_);
+            const $tableWrap = getWrap(_);
             // DOM有可能在执行到这里时, 已经被框架中的消毁机制清除
             if (!$table.length || !$tableWrap.length) {
                 return;

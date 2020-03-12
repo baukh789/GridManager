@@ -1,9 +1,8 @@
 /**
  * dropdown events
- * @param gridManagerName
  * @param scope: querySelector 域
  */
-export const getEvent = (gridManagerName, scope) => {
+export const getEvent = scope => {
     return {
         // 切换展示状态
         open: {events: 'click', target: scope, selector: '.gm-dropdown .gm-dropdown-text'},

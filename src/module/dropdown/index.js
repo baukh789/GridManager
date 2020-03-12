@@ -8,13 +8,13 @@ import { getEvent, eventMap } from './event';
 class Dropdown {
     /**
      * 初始化下拉框
-     * @param gridManagerName
+     * @param _
      */
-    init({ gridManagerName, defaultValue = '', onChange }) {
-        eventMap[gridManagerName] = getEvent(gridManagerName, `[${TOOLBAR_KEY}="${gridManagerName}"]`);
-        const { open, close, selected } = eventMap[gridManagerName];
+    init({ _, defaultValue = '', onChange }) {
+        eventMap[_] = getEvent(`[${TOOLBAR_KEY}="${_}"]`);
+        const { open, close, selected } = eventMap[_];
 
-        const $wrap = getWrap(gridManagerName);
+        const $wrap = getWrap(_);
         const $text = $wrap.find('.gm-dropdown .gm-dropdown-text');
         const $ul = $wrap.find('.gm-dropdown .gm-dropdown-list');
 
@@ -73,10 +73,10 @@ class Dropdown {
 
     /**
      * 消毁
-     * @param gridManagerName
+     * @param _
      */
-    destroy(gridManagerName) {
-        clearTargetEvent(eventMap[gridManagerName]);
+    destroy(_) {
+        clearTargetEvent(eventMap[_]);
     }
 }
 

@@ -1,12 +1,12 @@
 /**
  * 过滤功能所需的事件项
- * @param gridManagerName
+ * @param _
  * @param scope: querySelector 域
  */
 import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { CLASS_FILTER } from './constants';
-export const getEvent = (gridManagerName, scope) => {
-    const filterSign = `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .${CLASS_FILTER}`;
+export const getEvent = (_, scope) => {
+    const filterSign = `[${FAKE_TABLE_HEAD_KEY}="${_}"] .${CLASS_FILTER}`;
     return {
         // 切换可视状态
         toggle: {events: 'mousedown', target: scope, selector: `${filterSign} .fa-icon`},

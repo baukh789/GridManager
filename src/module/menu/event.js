@@ -1,14 +1,14 @@
 /**
  * 菜单功能所需的事件项
- * @param gridManagerName
+ * @param _
  */
 import { WRAP_KEY, MENU_KEY } from '@common/constants';
-export const getEvent = gridManagerName => {
-    const menuTarget = `[${MENU_KEY}="${gridManagerName}"]`;
+export const getEvent = _ => {
+    const menuTarget = `[${MENU_KEY}="${_}"]`;
     const menuSelector = type => `[menu-action="${type}"]`;
     return {
         // 打开菜单
-        openMenu: {events: 'contextmenu', target: `[${WRAP_KEY}="${gridManagerName}"]`},
+        openMenu: {events: 'contextmenu', target: `[${WRAP_KEY}="${_}"]`},
 
         // 关闭菜单
         closeMenu: {events: 'mousedown.closeMenu', target: 'body'},

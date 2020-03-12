@@ -1,9 +1,9 @@
-<div class="gm-menu" {{vm.keyName}}="{{vm.gridManagerName}}">
+<div class="gm-menu" {{vm.key}}>
     <!--分页类操作-->
-    {{vm.ajaxPageHtml}}
+    {{vm.page}}
 
     <!--导出类操作-->
-    {{vm.exportHtml}}
+    {{vm.export}}
 
     <!--重新加载当前页-->
     <span menu-action="refresh" refresh-type="refresh">
@@ -12,8 +12,8 @@
     </span>
 
     <!--打印当前页-->
-    {{vm.printHtml}}
+    {{vm.print}}
 
     <!--配置类操作-->
-    {{vm.configHtml}}
+    {{vm.config}}
 </div>

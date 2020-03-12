@@ -1,12 +1,12 @@
 <div class="gm-filter-area">
-    <i class="fa-icon gm-icon gm-icon-filter{{vm.iconClass}}"></i>
+    <i class="fa-icon gm-icon gm-icon-filter{{vm.icon}}"></i>
     <div class="fa-con">
-        <ul class="filter-list" style="{{vm.listStyle}}">
-            {{vm.listHtml}}
+        <ul class="filter-list" {{vm.style}}>
+            {{vm.list}}
         </ul>
         <div class="filter-bottom">
-            <span class="filter-button filter-submit">{{vm.okText}}</span>
-            <span class="filter-button filter-reset">{{vm.resetText}}</span>
+            <span class="filter-button filter-submit">{{vm.ok}}</span>
+            <span class="filter-button filter-reset">{{vm.reset}}</span>
         </div>
     </div>
 </div>

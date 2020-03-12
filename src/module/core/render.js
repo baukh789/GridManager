@@ -23,7 +23,7 @@ class Render {
     @parseTpl(wrapTpl)
     createWrapTpl(params) {
         const settings = params.settings;
-        const { gridManagerName, skinClassName, isIconFollowText, disableBorder, disableLine, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
+        const { _, skinClassName, isIconFollowText, disableBorder, disableLine, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
         const wrapClassList = [];
         // 根据参数增加皮肤标识
         if (skinClassName && isString(skinClassName) && skinClassName.trim()) {
@@ -44,11 +44,10 @@ class Render {
             wrapClassList.push('disable-line');
         }
         return {
-            wrapKey: WRAP_KEY,
-            divKey: DIV_KEY,
-            gridManagerName: gridManagerName,
+            wrapKey: `${WRAP_KEY}="${_}"`,
+            divKey: `${DIV_KEY}="${_}"`,
             classNames: wrapClassList.join(' '),
-            configTpl: supportConfig ? config.createHtml({gridManagerName, configInfo}) : '',
+            configTpl: supportConfig ? config.createHtml({_, configInfo}) : '',
             ajaxPageTpl: supportAjaxPage ? ajaxPage.createHtml({settings, tpl: ajaxPageTemplate}) : ''
         };
     }
@@ -61,7 +60,7 @@ class Render {
     @parseTpl(theadTpl)
     createTheadTpl(params) {
         const settings = params.settings;
-        const { columnMap, gridManagerName } = settings;
+        const { columnMap, _ } = settings;
 
         const columnList = [];
 
@@ -76,8 +75,7 @@ class Render {
         });
 
         return {
-            tableHeadKey: TABLE_HEAD_KEY,
-            gridManagerName,
+            key: `${TABLE_HEAD_KEY}="${_}"`,
             thListTpl
         };
     }

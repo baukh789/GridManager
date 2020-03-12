@@ -12,51 +12,43 @@ import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } fro
 class Tree {
     /**
      * add map
-     * @param gridManagerName
+     * @param _
      * @param cacheKey
      * @param level
      * @param hasChildren
      */
-    add(gridManagerName, cacheKey, level, hasChildren) {
-        addTreeCache(gridManagerName, {
+    add(_, cacheKey, level, hasChildren) {
+        addTreeCache(_, {
             cacheKey,
             level,
             hasChildren
         });
     }
 
-    /**
-     * clear map
-     * @param gridManagerName
-     */
-    clear(gridManagerName) {
-        clearTreeCache(gridManagerName);
-    }
-
-    init(gridManagerName) {
+    init(_) {
         const _this = this;
         // 绑定事件
-        eventMap[gridManagerName] = getEvent(gridManagerName, getQuerySelector(gridManagerName), treeKey);
-        const { target, events, selector } = eventMap[gridManagerName].toggleState;
+        eventMap[_] = getEvent(getQuerySelector(_), treeKey);
+        const { target, events, selector } = eventMap[_].toggleState;
 
         jTool(target).on(events, selector, function () {
             const $tr = jTool(this).closest('tr');
-            _this.updateDOM(gridManagerName, undefined, $tr);
+            _this.updateDOM(_, undefined, $tr);
         });
     }
 
     /**
      * 更新树DOM
-     * @param gridManagerName
+     * @param _
      * @param state: 打开状态
      * @param $tr: 更新的tr节点，未指定时将对tbody下所有节点进行更新(对外公开方法中，不包含开参数)
      */
-    updateDOM(gridManagerName, state, $tr) {
-        const $tbody = getTbody(gridManagerName);
+    updateDOM(_, state, $tr) {
+        const $tbody = getTbody(_);
 
         const updateState = ($tr, openState) => {
             const $treeEle = jTool(`[${treeKey}]`, $tr);
-            const $action = jTool('.tree-action', $treeEle);
+            const $action = jTool('i', $treeEle);
             const cacheKey = $tr.attr(TR_CACHE_KEY);
             if (isUndefined(openState)) {
                 openState = !($treeEle.attr(treeKey) === 'true');
@@ -82,7 +74,7 @@ class Tree {
 
         const updateAllState = openState => {
             const $treeEle = jTool(`[${treeKey}]`, $tbody);
-            const $action = jTool('.tree-action', $treeEle);
+            const $action = jTool('i', $treeEle);
             $action.removeClass(getIconClass(!openState));
             $action.addClass(getIconClass(openState));
             $treeEle.attr(treeKey, openState);
@@ -95,18 +87,18 @@ class Tree {
 
     /**
      * 插入树事件DOM
-     * @param gridManagerName
+     * @param _
      * @param config
      */
-    insertDOM(gridManagerName, config) {
+    insertDOM(_, config) {
         const { openState, insertTo } = config;
-        const $table = getTable(gridManagerName);
+        const $table = getTable(_);
         let parentKeyList = [];
         each(jTool(`tr[${TR_PARENT_KEY}]`, $table), (index, item) => {
             parentKeyList.push(item.getAttribute(TR_PARENT_KEY));
         });
 
-        const insetList = getTreeCache(gridManagerName);
+        const insetList = getTreeCache(_);
         if (!insetList || insetList.length === 0) {
             return;
         }
@@ -119,7 +111,7 @@ class Tree {
             // 第一个非自动创建 且 可视的td
             let $insertTd = null;
             if (isString(insertTo)) {
-                $insertTd = getColTd(getTh(gridManagerName, insertTo), $trNode);
+                $insertTd = getColTd(getTh(_, insertTo), $trNode);
             }
 
             // 未设置 insertTo 或 通过 insertTo 未找到dom时: 使用第一个非自动创建的TD
@@ -131,21 +123,21 @@ class Tree {
             treeDOM.style.width = (level + 1) * 14 + 'px';
 
             if (hasChildren) {
-                treeDOM.innerHTML = `<i class="tree-action gm-icon ${getIconClass(openState)}"></i>`;
+                treeDOM.innerHTML = `<i class="gm-icon ${getIconClass(openState)}"></i>`;
             }
             $insertTd.prepend(treeDOM);
         });
 
-        this.clear(gridManagerName);
+        clearTreeCache(_);
     }
 
     /**
      * 消毁
-     * @param gridManagerName
+     * @param _
      */
-    destroy(gridManagerName) {
-        clearTargetEvent(eventMap[gridManagerName]);
-        this.clear(gridManagerName);
+    destroy(_) {
+        clearTargetEvent(eventMap[_]);
+        clearTreeCache(_);
     }
 }
 

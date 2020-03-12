@@ -43,7 +43,7 @@ const moveRow = {
     // 行移动配置项
     moveRowConfig: {
         // 指定移动后需要更新的字段, 该字段未配置时将只对DOM进行更新
-        key: null,
+        // key: undefined,
 
         // 移动后执行的程序，可在该程序中完成与后端的交互
         handler: noop
@@ -183,12 +183,25 @@ const ajaxPage = {
     // 是否使用无总条数模式
     useNoTotalsMode: false,
 
-    // 异步分页模式, 当useNoTotalsMode:true 时，该配置失效
-    // asyncTotals: {text: String, handler: Function(settings, params)}
-    asyncTotals: null,
+    // 异步分页模式, 默认值undefined。注意: 当useNoTotalsMode:true 时，该配置失效
+    // asyncTotals: {
+    //     text: '<span style="color: #999">加载中...</span>',
+    //     handler: (settings, params) => {
+    //         console.log(params);
+    //         return new Promise(resolve => {
+    //             jTool.ajax({
+    //                 url: 'https://www.lovejavascript.com/blogManager/getBlogList',
+    //                 type: 'POST',
+    //                 success: res => {
+    //                     resolve(JSON.parse(res).totals);
+    //                 }
+    //             });
+    //         })
+    //     }
+    // },
 
     // 分页区域自定义模板
-    ajaxPageTemplate: '',
+    // ajaxPageTemplate: undefined,
 
     // 用于配置列表每页展示条数选择框
     sizeData: [10, 20, 30, 50, 100],
@@ -242,10 +255,10 @@ const checkbox = {
         useRowCheck: false,
 
         // 当前选中操作是否使用单选
-        useRadio: false,
+        useRadio: false
 
         // 复选时最大可选数，生效条件: supportCheckbox === true && useRadio === false
-        max: null // @2.9.8 新增
+        // max: undefined // @2.9.8 新增
 
         // 是否使用固定列, 默认为undefined
         // fixed: undefined // @2.11.0
@@ -278,7 +291,7 @@ const treeData = {
 
     treeConfig: {
         // 树展开操作按键所属容器，此处配置columnData的key值。未配置时，将默认选择columnData的第一项
-        insertTo: null,
+        // insertTo: undefined,
 
         // 层级关键字段
         treeKey: 'children',
@@ -293,10 +306,10 @@ const treeData = {
  */
 const gridData = {
     // 表格grid-manager所对应的值[可在html中配置]
-    gridManagerName: '',
+    // gridManagerName: '',
 
     // 列配置
-    columnData: [],
+    // columnData: [],
     /* columnData示例
     columnData: [{
 
@@ -379,7 +392,7 @@ const gridData = {
     // ajax_url: '',
 
     // 后端API调用, [string url | function {retrun string url | promise | data}] @v2.6.0
-    ajaxData: undefined,
+    // ajaxData: undefined,
 
     // ajax请求类型['GET', 'POST']默认GET
     ajaxType: 'GET',
@@ -439,8 +452,8 @@ const gridExport = {
         // 3.url: 通过配置或由后端返回下载地址
         mode: 'static',
 
-        // 导出文件的名称, 字符串或函数类型，为函数时需返回一个字符串。该字符串不包含后缀名，该值不设置将默认使用gridManagerName
-        fileName: null,
+        // 导出文件的名称, 字符串或函数类型，为函数时需返回一个字符串。该字符串不包含后缀名，该值不设置将默认使用_
+        // fileName: undefined,
 
         // 导出的后缀名, 默认为`xls`。静态导出仅支持xls,cvs两种格式
         suffix: 'xls',

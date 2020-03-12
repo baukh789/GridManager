@@ -17,27 +17,27 @@ import { CLASS_CONFIG, CLASS_CONFIG_ING, CLASS_NO_CLICK } from './constants';
 
 /**
  * 获取config 的 jtool对像
- * @param gridManagerName
+ * @param _
  */
-const getDOM = gridManagerName => {
-    return jTool(`[${CONFIG_KEY}="${gridManagerName}"]`);
+const getDOM = _ => {
+    return jTool(`[${CONFIG_KEY}="${_}"]`);
 };
 
 class Config {
 
     /**
      * 初始化配置列[隐藏展示列]
-     * @param gridManagerName
+     * @param _
      */
-    init(gridManagerName) {
+    init(_) {
         const _this = this;
-        eventMap[gridManagerName] = getEvent(gridManagerName);
-        const { closeConfig, liChange } = eventMap[gridManagerName];
+        eventMap[_] = getEvent(_);
+        const { closeConfig, liChange } = eventMap[_];
 
         // 事件: 关闭
         jTool(closeConfig.target).on(closeConfig.events, closeConfig.selector, function () {
             // 展示事件源
-            _this.hide(gridManagerName);
+            _this.hide(_);
         });
 
         // 事件: 设置
@@ -58,10 +58,10 @@ class Config {
             const _thName = _only.attr(TH_NAME);
 
             // 配置区域
-            const $configArea = getDOM(gridManagerName);
+            const $configArea = getDOM(_);
 
             // 所在的table-div
-            const $tableDiv	= getDiv(gridManagerName);
+            const $tableDiv	= getDiv(_);
 
             jTool(`.config-list .${CLASS_NO_CLICK}`, $configArea).removeClass(CLASS_NO_CLICK);
 
@@ -72,7 +72,7 @@ class Config {
 
             // 设置与当前th同列的td可视状态
             $tableDiv.addClass(CLASS_CONFIG_ING);
-            setAreVisible(gridManagerName, [_thName], isVisible);
+            setAreVisible(_, [_thName], isVisible);
             $tableDiv.removeClass(CLASS_CONFIG_ING);
 
             // 当前处于选中状态的展示项
@@ -84,32 +84,32 @@ class Config {
             }
 
             // 通知相关组件进行更新
-            _this.noticeUpdate(gridManagerName);
+            _this.noticeUpdate(_);
         });
     }
 
     /**
      * 对项配置成功后，通知相关组件进行更新
-     * @param $table
+     * @param _
      */
-    noticeUpdate(gridManagerName) {
+    noticeUpdate(_) {
         // 执行前，先对当前的columnMap进行更新
-        const settings = updateCache(gridManagerName);
+        const settings = updateCache(_);
 
         // 重置当前可视th的宽度
         updateThWidth(settings);
 
         // 更新存储信息
-        updateCache(gridManagerName);
+        updateCache(_);
 
         // 处理置顶表头
-        scroll.update(gridManagerName);
+        scroll.update(_);
 
         // 更新最后一项可视列的标识
-        updateVisibleLast(gridManagerName);
+        updateVisibleLast(_);
 
         // 更新滚动轴显示状态
-        updateScrollStatus(gridManagerName);
+        updateScrollStatus(_);
     }
 
 	/**
@@ -120,9 +120,8 @@ class Config {
 	@parseTpl(configTpl)
 	createHtml(params) {
 	    return {
-	        configKey: CONFIG_KEY,
-            gridManagerName: params.gridManagerName,
-            configInfo: params.configInfo
+	        key: `${CONFIG_KEY}="${params._}"`,
+            info: params.configInfo
 	    };
 	}
 
@@ -133,10 +132,10 @@ class Config {
      */
     @parseTpl(configColumnTpl)
     createColumn(params) {
-        const { gridManagerName, key, isShow } = params;
+        const { _, key, isShow } = params;
 
         // 注意: 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
-        const label = getFakeTh(gridManagerName, key).find('.th-text').text();
+        const label = getFakeTh(_, key).find('.th-text').text();
         const checkboxTpl = checkbox.getCheckboxTpl({checked: isShow, label});
 	    return {
             key,
@@ -148,25 +147,25 @@ class Config {
 
 	/**
 	 * 切换配置区域可视状态
-	 * @param gridManagerName
+	 * @param _
 	 * @returns {boolean}
 	 */
-	toggle(gridManagerName) {
-        getDOM(gridManagerName).css('display') === 'block' ?  this.hide(gridManagerName) : this.show(gridManagerName);
+	toggle(_) {
+        getDOM(_).css('display') === 'block' ?  this.hide(_) : this.show(_);
 	}
 
     /**
      * 显示配置区域
-     * @param gridManagerName
+     * @param _
      */
-	show(gridManagerName) {
-        const $configArea = getDOM(gridManagerName);
+	show(_) {
+        const $configArea = getDOM(_);
 
-        this.updateConfigList(gridManagerName);
+        this.updateConfigList(_);
         $configArea.show();
-        this.updateConfigListHeight(gridManagerName);
+        this.updateConfigListHeight(_);
 
-        const { target, events } = eventMap[gridManagerName].closeConfigByBody;
+        const { target, events } = eventMap[_].closeConfigByBody;
         // 点击空处关闭
         const $target = jTool(target);
         $target.off(events);
@@ -182,24 +181,24 @@ class Config {
 
     /**
      * 隐藏配置区域
-     * @param gridManagerName
+     * @param _
      */
-    hide(gridManagerName) {
-        getDOM(gridManagerName).hide();
+    hide(_) {
+        getDOM(_).hide();
     }
 
     /**
      * 更新配置区域列表
-     * @param gridManagerName
+     * @param _
      */
-    updateConfigList(gridManagerName) {
-        const $configArea = getDOM(gridManagerName);
+    updateConfigList(_) {
+        const $configArea = getDOM(_);
         const $configList = jTool('.config-list', $configArea);
 
         // 可视列计数
         let showNum = 0;
 
-        const settings = getSettings(gridManagerName);
+        const settings = getSettings(_);
         const columnList = [];
         each(settings.columnMap, (key, col) => {
             columnList[col.index] = col;
@@ -212,7 +211,7 @@ class Config {
             if (disableCustomize) {
                 return;
             }
-            $configList.append(this.createColumn({ gridManagerName, key, isShow }));
+            $configList.append(this.createColumn({ _, key, isShow }));
             if (isShow) {
                 showNum++;
             }
@@ -225,11 +224,11 @@ class Config {
 
     /**
      * 更新配置列表区的高度: 用于解决 config-list 无法继承 gm-config-area 设置的 max-height问题
-     * @param gridManagerName
+     * @param _
      */
-    updateConfigListHeight(gridManagerName) {
-        const $tableWrap = getWrap(gridManagerName);
-        const $configArea = getDOM(gridManagerName);
+    updateConfigListHeight(_) {
+        const $tableWrap = getWrap(_);
+        const $configArea = getDOM(_);
         const configList = $configArea.find('.config-list').get(0);
         const $configInfo = $configArea.find('.config-info');
         $configArea.css('visibility', 'hidden');
@@ -241,11 +240,11 @@ class Config {
 
     /**
 	 * 消毁
-	 * @param gridManagerName
+	 * @param _
 	 */
-	destroy(gridManagerName) {
+	destroy(_) {
         // 清除事件
-        clearTargetEvent(eventMap[gridManagerName]);
+        clearTargetEvent(eventMap[_]);
 	}
 }
 export default new Config();

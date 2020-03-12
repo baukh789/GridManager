@@ -138,18 +138,18 @@ class AjaxPage {
 
     /**
 	 * 初始化分页
-	 * @param gridManagerName
+	 * @param _
      */
-	init(gridManagerName) {
-        const settings = getSettings(gridManagerName);
+	init(_) {
+        const settings = getSettings(_);
         const { disableCache, pageSizeKey, pageSize, currentPageKey, useNoTotalsMode } = settings;
-        eventMap[gridManagerName] = getEvent(gridManagerName);
+        eventMap[_] = getEvent(_);
 
         // 每页显示条数
         let	pSize = pageSize || 10;
         // 根据本地缓存配置每页显示条数
 		if (!disableCache) {
-            const userMemory = getUserMemory(gridManagerName);
+            const userMemory = getUserMemory(_);
 
             // 验证是否存在每页显示条数缓存数据
             if (userMemory && userMemory.page && userMemory.page[pageSizeKey]) {
@@ -172,11 +172,11 @@ class AjaxPage {
 
         // 初始化dropdown
         const dropwownArg = {
-            gridManagerName,
+            _,
             defaultValue: settings.pageData[pageSizeKey],
             onChange: value => {
                 // 事件中的settings需要重新获取最新数据
-                const settings = getSettings(gridManagerName);
+                const settings = getSettings(_);
                 settings.pageData = {
                     [currentPageKey]: 1,
                     [pageSizeKey]: value
@@ -190,7 +190,7 @@ class AjaxPage {
                 // 调用事件、渲染tbody
                 const query = extend({}, settings.query, settings.sortData, settings.pageData);
                 settings.pagingBefore(query);
-                core.refresh(gridManagerName, () => {
+                core.refresh(_, () => {
                     settings.pagingAfter(query);
                 });
             }
@@ -198,25 +198,24 @@ class AjaxPage {
         dropdown.init(dropwownArg);
 
 		// 绑定事件
-        this.initEvent(gridManagerName);
-
+        this.initEvent(_);
 	}
 
     /**
      * 绑定分页事件
-     * @param gridManagerName
+     * @param _
      */
-	initEvent(gridManagerName) {
+	initEvent(_) {
 	    const _this = this;
 	    // 事件: 首页
-        const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage } = eventMap[gridManagerName];
+        const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage } = eventMap[_];
         jTool(firstPage.target).on(firstPage.events, firstPage.selector, function () {
-            _this.gotoPage(getSettings(gridManagerName), 1);
+            _this.gotoPage(getSettings(_), 1);
         });
 
         // 事件: 上一页
         jTool(previousPage.target).on(previousPage.events, previousPage.selector, function () {
-            const settings = getSettings(gridManagerName);
+            const settings = getSettings(_);
             const cPage = settings.pageData[settings.currentPageKey];
             const toPage = cPage - 1;
             _this.gotoPage(settings, toPage < 1 ? 1 : toPage);
@@ -224,7 +223,7 @@ class AjaxPage {
 
         // 事件: 下一页
         jTool(nextPage.target).on(nextPage.events, nextPage.selector, function () {
-            const settings = getSettings(gridManagerName);
+            const settings = getSettings(_);
             const cPage = settings.pageData[settings.currentPageKey];
             const tPage = settings.pageData.tPage;
             const toPage = cPage + 1;
@@ -233,13 +232,13 @@ class AjaxPage {
 
         // 事件: 尾页
         jTool(lastPage.target).on(lastPage.events, lastPage.selector, function () {
-            const settings = getSettings(gridManagerName);
+            const settings = getSettings(_);
             _this.gotoPage(settings, settings.pageData.tPage);
         });
 
         // 事件: 页码
         jTool(numberPage.target).on(numberPage.events, numberPage.selector, function () {
-            const settings = getSettings(gridManagerName);
+            const settings = getSettings(_);
             const pageAction = jTool(this);
 
             // 分页页码
@@ -252,7 +251,7 @@ class AjaxPage {
 
         // 事件: 刷新
         jTool(refresh.target).on(refresh.events, refresh.selector, function () {
-            const settings = getSettings(gridManagerName);
+            const settings = getSettings(_);
             _this.gotoPage(settings, settings.pageData[settings.currentPageKey]);
         });
 
@@ -261,7 +260,7 @@ class AjaxPage {
             if (event.which !== 13) {
                 return;
             }
-            _this.gotoPage(getSettings(gridManagerName), parseInt(this.value, 10));
+            _this.gotoPage(getSettings(_), parseInt(this.value, 10));
         });
     }
 
@@ -274,7 +273,7 @@ class AjaxPage {
     createHtml(params) {
         const { settings } = params;
         return {
-            gridManagerName: settings.gridManagerName,
+            gridManagerName: settings._,
             keyName: TOOLBAR_KEY,
             gotoFirstText: i18n(settings, 'goto-first-text'),
             gotoLastText: i18n(settings, 'goto-last-text'),
@@ -293,8 +292,8 @@ class AjaxPage {
 	 * @param len 本次请求返回的总条数，该参数仅在totals为空时使用
 	 */
 	resetPageData(settings, totals, len) {
-	    const { gridManagerName, useNoTotalsMode, currentPageKey, pageData, asyncTotals, pageSizeKey, pageSize } = settings;
-        const $footerToolbar = jTool(getQuerySelector(gridManagerName));
+	    const { _, useNoTotalsMode, currentPageKey, pageData, asyncTotals, pageSizeKey, pageSize } = settings;
+        const $footerToolbar = jTool(getQuerySelector(_));
         const cPage = pageData[currentPageKey] || 1;
         const pSize = pageData[pageSizeKey] || pageSize;
 
@@ -341,12 +340,12 @@ class AjaxPage {
 
     /**
      * 更新刷新图标状态
-     * @param gridManagerName
+     * @param _
      * @param isRefresh: 是否刷新
      */
-    updateRefreshIconState(gridManagerName, isRefresh) {
+    updateRefreshIconState(_, isRefresh) {
         // 刷新按纽
-        const refreshAction = jTool(`${getQuerySelector(gridManagerName)} .refresh-action`);
+        const refreshAction = jTool(`${getQuerySelector(_)} .refresh-action`);
 
         // 当前刷新图标不存在
         if (refreshAction.length === 0) {
@@ -370,12 +369,12 @@ class AjaxPage {
      * 更新选中信息
      * @param settings
      */
-    updateCheckedInfo(gridManagerName) {
-        const checkedInfo = jTool(`${getQuerySelector(gridManagerName)} .toolbar-info.checked-info`);
+    updateCheckedInfo(_) {
+        const checkedInfo = jTool(`${getQuerySelector(_)} .toolbar-info.checked-info`);
         if (checkedInfo.length === 0) {
             return;
         }
-        checkedInfo.html(i18n(getSettings(gridManagerName), 'checked-info', getCheckedData(gridManagerName).length));
+        checkedInfo.html(i18n(getSettings(_), 'checked-info', getCheckedData(_).length));
     }
 
 	/**
@@ -388,7 +387,7 @@ class AjaxPage {
 			toPage = 1;
 		}
 
-		const { gridManagerName, useNoTotalsMode, currentPageKey, pageData, pageSize, pageSizeKey, sortData, query, pagingBefore, pagingAfter } = settings;
+		const { _, useNoTotalsMode, currentPageKey, pageData, pageSize, pageSizeKey, sortData, query, pagingBefore, pagingAfter } = settings;
 		const { tPage } = pageData;
 		// 未使用使用无总条数模式 且 跳转的指定页大于总页数时，强制跳转至最后一页
 		if (!useNoTotalsMode && toPage > tPage) {
@@ -405,17 +404,17 @@ class AjaxPage {
 		// 调用事件、渲染DOM
 		const newQuery = extend({}, query, sortData, pageData);
 		pagingBefore(newQuery);
-		core.refresh(gridManagerName, () => {
+		core.refresh(_, () => {
 			pagingAfter(newQuery);
 		});
 	}
 
 	/**
 	 * 消毁
-	 * @param gridManagerName
+	 * @param _
 	 */
-	destroy(gridManagerName) {
-        clearTargetEvent(eventMap[gridManagerName]);
+	destroy(_) {
+        clearTargetEvent(eventMap[_]);
 	}
 }
 export default new AjaxPage();

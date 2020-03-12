@@ -35,19 +35,19 @@ const getText = (settings, key, language) => {
 /* eslint-disable */
 export default function(settings, key, v1, v2, v3) {
     let intrusion = [];
-
+    const len = arguments.length;
     // 处理参数，实现多态化
-    if (arguments.length === 3 && isArray(arguments[2])) {
+    if (len === 3 && isArray(arguments[2])) {
         intrusion = arguments[2];
-    } else if (arguments.length > 2) {
-        for (let i = 2; i < arguments.length; i++) {
+    } else if (len > 2) {
+        for (let i = 2; i < len; i++) {
             intrusion.push(arguments[i]);
         }
     }
 
     try {
         let _text = getText(settings, key);
-        if (!intrusion || intrusion.length === 0) {
+        if (!intrusion || !intrusion.length) {
             return _text;
         }
 

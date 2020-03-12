@@ -12,13 +12,13 @@ import { getEvent, eventMap } from './event';
 class Remind {
     /**
      * 初始化表头提醒
-     * @param gridManagerName
+     * @param _
      */
-    init(gridManagerName) {
-        eventMap[gridManagerName] = getEvent(gridManagerName, `${getQuerySelector(gridManagerName)} [${FAKE_TABLE_HEAD_KEY}]`);
-        const { target, events, selector } = eventMap[gridManagerName].remindStart;
+    init(_) {
+        eventMap[_] = getEvent(_, `${getQuerySelector(_)} [${FAKE_TABLE_HEAD_KEY}]`);
+        const { target, events, selector } = eventMap[_].remindStart;
 
-        const $tableDiv = getDiv(gridManagerName);
+        const $tableDiv = getDiv(_);
         jTool(target).on(events, selector, function () {
             const $onlyRemind = jTool(this);
             const $raArea = $onlyRemind.find('.ra-area');
@@ -52,16 +52,16 @@ class Remind {
         }
 	    return {
             text,
-            styleStr
+            style: styleStr
         };
 	}
 
 	/**
 	 * 消毁
-	 * @param gridManagerName
+	 * @param _
 	 */
-	destroy(gridManagerName) {
-	    clearTargetEvent(eventMap[gridManagerName]);
+	destroy(_) {
+	    clearTargetEvent(eventMap[_]);
 	}
 }
 export default new Remind();

@@ -1,13 +1,13 @@
 /**
  * 打印功能
- * @param gridManagerName
+ * @param _
  */
 import { getTable } from '@common/base';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, GM_CREATE, CELL_HIDDEN } from '@common/constants';
 import { MERGE_TD } from '@module/merge/constants';
 import { each } from '@jTool/utils';
-export default function print(gridManagerName) {
-    const $table = getTable(gridManagerName).clone(true);
+export default function print(_) {
+    const $table = getTable(_).clone(true);
     const style = `
         <style>
             table{width: 100%;border-collapse: collapse;border-spacing: 0;}
