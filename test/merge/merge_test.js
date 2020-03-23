@@ -1,7 +1,7 @@
 import { mergeRow, clearMergeRow } from '@module/merge';
 import { TABLE_HEAD_KEY } from '@common/constants';
 import jTool from '@jTool';
-describe('mergeRow(gridManagerName, columnMap)', () => {
+describe('mergeRow(_, columnMap)', () => {
     let columnMap = null;
     beforeEach(() => {
         document.body.innerHTML = `
@@ -110,7 +110,7 @@ describe('mergeRow(gridManagerName, columnMap)', () => {
 });
 
 
-describe('clearMergeRow(gridManagerName, $context)', () => {
+describe('clearMergeRow(_, $context)', () => {
     beforeEach(() => {
         document.body.innerHTML = `
             <table grid-manager="test">

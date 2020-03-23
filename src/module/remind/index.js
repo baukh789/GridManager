@@ -9,6 +9,8 @@ import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import remindTpl from './remind.tpl.html';
 import { getEvent, eventMap } from './event';
+import { TARGET, EVENTS, SELECTOR } from '@common/events';
+
 class Remind {
     /**
      * 初始化表头提醒
@@ -16,10 +18,10 @@ class Remind {
      */
     init(_) {
         eventMap[_] = getEvent(_, `${getQuerySelector(_)} [${FAKE_TABLE_HEAD_KEY}]`);
-        const { target, events, selector } = eventMap[_].remindStart;
+        const { start } = eventMap[_];
 
         const $tableDiv = getDiv(_);
-        jTool(target).on(events, selector, function () {
+        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function () {
             const $onlyRemind = jTool(this);
             const $raArea = $onlyRemind.find('.ra-area');
             const theLeft = ($tableDiv.get(0).offsetWidth - ($onlyRemind.offset().left - $tableDiv.offset().left)) > $raArea.get(0).offsetWidth + 20;

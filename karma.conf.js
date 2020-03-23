@@ -53,7 +53,7 @@ module.exports = function (config) {
 		// 预处理
 		preprocessors: {
 			// src/module/**/*.js 在由 test/*_test.js 中调用时就会使用webpack打包, 所以 src/**/*.js 不需要通过 webpack 进行打包.
-			// 'src/module/**/*.js': ['sourcemap', 'coverage'],
+			'src/common/*.js': ['coverage', 'webpack', 'sourcemap'],
 			'test/**/*_test.js': ['webpack']
 		},
 		// optionally, configure the reporter

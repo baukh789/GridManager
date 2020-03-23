@@ -5,26 +5,28 @@
  */
 import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { CLASS_FILTER } from './constants';
+import { MOUSE_DOWN, MOUSE_UP, MOUSE_CLICK, createEventsObj } from '@common/events';
+
 export const getEvent = (_, scope) => {
     const filterSign = `[${FAKE_TABLE_HEAD_KEY}="${_}"] .${CLASS_FILTER}`;
     return {
         // 切换可视状态
-        toggle: {events: 'mousedown', target: scope, selector: `${filterSign} .fa-icon`},
+        toggle: createEventsObj(MOUSE_DOWN, scope, `${filterSign} .fa-icon`),
 
         // 关闭
-        close: {events: 'mousedown.closeFitler', target: 'body'},
+        close: createEventsObj(`${MOUSE_DOWN}.closeFitler`, 'body'),
 
         // 提交
-        submit: {events: 'mouseup', target: scope, selector: `${filterSign} .filter-submit`},
+        submit: createEventsObj(MOUSE_UP, scope, `${filterSign} .filter-submit`),
 
         // 重置
-        reset: {events: 'mouseup', target: scope, selector: `${filterSign} .filter-reset`},
+        reset: createEventsObj(MOUSE_UP, scope, `${filterSign} .filter-reset`),
 
         // 复选框点选
-        checkboxAction: {events: 'click', target: scope, selector: `${filterSign} .gm-checkbox-input`},
+        checkboxAction: createEventsObj(MOUSE_CLICK, scope, `${filterSign} .gm-checkbox-input`),
 
         // 单选框点选
-        radioAction: {events: 'click', target: scope, selector: `${filterSign} .gm-radio-input`}
+        radioAction: createEventsObj(MOUSE_CLICK, scope, `${filterSign} .gm-radio-input`)
     };
 };
 

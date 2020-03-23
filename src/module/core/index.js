@@ -12,7 +12,7 @@ import { getTableData, getSettings, setSettings, SIV_waitContainerAvailable } fr
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, EMPTY_TPL_KEY } from '@common/constants';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';
-import checkbox from '../checkbox';
+import { resetCheckboxDOM } from '../checkbox';
 import scroll from '../scroll';
 import fixed from '../fixed';
 import coreDOM from './coreDOM';
@@ -113,7 +113,7 @@ class Core {
 
         // 渲染选择框
         if (supportCheckbox) {
-            checkbox.resetDOM(_, _data, checkboxConfig.useRadio, checkboxConfig.max);
+            resetCheckboxDOM(_, _data, checkboxConfig.useRadio, checkboxConfig.max);
         }
 
         // 渲染分页

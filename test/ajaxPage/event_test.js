@@ -17,29 +17,29 @@ describe('ajaxPage event', () => {
 
         it('执行验证', () => {
             events = getEvent('test');
-            expect(events.gotoPage.events).toBe('keyup');
-            expect(events.gotoPage.target).toBe(`[${TOOLBAR_KEY}="test"]`);
-            expect(events.gotoPage.selector).toBe('.gp-input');
+            expect(events.input.events).toBe('keyup');
+            expect(events.input.target).toBe(`[${TOOLBAR_KEY}="test"]`);
+            expect(events.input.selector).toBe('.gp-input');
 
-            expect(events.firstPage.events).toBe('click');
-            expect(events.firstPage.target).toBe(`[${TOOLBAR_KEY}="test"]`);
-            expect(events.firstPage.selector).toBe('[pagination-before] .first-page');
+            expect(events.first.events).toBe('click');
+            expect(events.first.target).toBe(`[${TOOLBAR_KEY}="test"]`);
+            expect(events.first.selector).toBe('[pagination-before] .first-page');
 
-            expect(events.previousPage.events).toBe('click');
-            expect(events.previousPage.target).toBe(`[${TOOLBAR_KEY}="test"]`);
-            expect(events.previousPage.selector).toBe('[pagination-before] .previous-page');
+            expect(events.previous.events).toBe('click');
+            expect(events.previous.target).toBe(`[${TOOLBAR_KEY}="test"]`);
+            expect(events.previous.selector).toBe('[pagination-before] .previous-page');
 
-            expect(events.nextPage.events).toBe('click');
-            expect(events.nextPage.target).toBe(`[${TOOLBAR_KEY}="test"]`);
-            expect(events.nextPage.selector).toBe('[pagination-after] .next-page');
+            expect(events.next.events).toBe('click');
+            expect(events.next.target).toBe(`[${TOOLBAR_KEY}="test"]`);
+            expect(events.next.selector).toBe('[pagination-after] .next-page');
 
-            expect(events.lastPage.events).toBe('click');
-            expect(events.lastPage.target).toBe(`[${TOOLBAR_KEY}="test"]`);
-            expect(events.lastPage.selector).toBe('[pagination-after] .last-page');
+            expect(events.last.events).toBe('click');
+            expect(events.last.target).toBe(`[${TOOLBAR_KEY}="test"]`);
+            expect(events.last.selector).toBe('[pagination-after] .last-page');
 
-            expect(events.numberPage.events).toBe('click');
-            expect(events.numberPage.target).toBe(`[${TOOLBAR_KEY}="test"]`);
-            expect(events.numberPage.selector).toBe('[pagination-number] li');
+            expect(events.num.events).toBe('click');
+            expect(events.num.target).toBe(`[${TOOLBAR_KEY}="test"]`);
+            expect(events.num.selector).toBe('[pagination-number] li');
 
             expect(events.refresh.events).toBe('click');
             expect(events.refresh.target).toBe(`[${TOOLBAR_KEY}="test"]`);

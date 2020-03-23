@@ -8,12 +8,12 @@ describe('tree tool', () => {
     });
 
     describe('treeCache', () => {
-        let gridManagerName = null;
+        let _ = null;
         beforeEach(() => {
-            gridManagerName = 'test';
+            _ = 'test';
         });
         afterEach(() => {
-            gridManagerName = null;
+            _ = null;
         });
 
         it('基础验证', () => {
@@ -28,16 +28,16 @@ describe('tree tool', () => {
         });
 
         it('执行验证', () => {
-            expect(getTreeCache(gridManagerName)).toBeUndefined();
+            expect(getTreeCache(_)).toBeUndefined();
 
-            addTreeCache(gridManagerName, { trNode: 1, level: 2, hasChildren: 3 });
-            expect(getTreeCache(gridManagerName)).toEqual([{ trNode: 1, level: 2, hasChildren: 3 }]);
+            addTreeCache(_, { trNode: 1, level: 2, hasChildren: 3 });
+            expect(getTreeCache(_)).toEqual([{ trNode: 1, level: 2, hasChildren: 3 }]);
 
-            addTreeCache(gridManagerName, { trNode: 1, level: 2, hasChildren: 3 });
-            expect(getTreeCache(gridManagerName)).toEqual([{ trNode: 1, level: 2, hasChildren: 3 }, { trNode: 1, level: 2, hasChildren: 3 }]);
+            addTreeCache(_, { trNode: 1, level: 2, hasChildren: 3 });
+            expect(getTreeCache(_)).toEqual([{ trNode: 1, level: 2, hasChildren: 3 }, { trNode: 1, level: 2, hasChildren: 3 }]);
 
-            clearTreeCache(gridManagerName);
-            expect(getTreeCache(gridManagerName)).toBeUndefined();
+            clearTreeCache(_);
+            expect(getTreeCache(_)).toBeUndefined();
         });
     });
 

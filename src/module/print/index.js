@@ -8,15 +8,13 @@ import { MERGE_TD } from '@module/merge/constants';
 import { each } from '@jTool/utils';
 export default function print(_) {
     const $table = getTable(_).clone(true);
-    const style = `
-        <style>
-            table{width: 100%;border-collapse: collapse;border-spacing: 0;}
-            th,td{height: 18px;padding:11px;border: 1px solid #999;font-size: 12px;color: #666;}
-            th{color: #333}
-            a{color: #666; text-decoration:none;}
-            tr[empty-template] td{text-align: center}
-        </style>
-    `;
+    const style = '<style>\n'
+            + 'table{width: 100%;border-collapse: collapse;border-spacing: 0;}\n'
+            + 'th,td{height: 18px;padding:11px;border: 1px solid #999;font-size: 12px;color: #666;}\n'
+            + 'th{color: #333}\n'
+            + 'a{color: #666; text-decoration:none;}\n'
+            + 'tr[empty-template] td{text-align: center}\n'
+        + '</style>';
     const printWindow = open();
     // 清除隐藏项
     $table.find(`[${CELL_HIDDEN}]`).remove();

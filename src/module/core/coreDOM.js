@@ -14,6 +14,7 @@ import render from './render';
 import moveRow from '../moveRow';
 import { getTopFull } from '../fullColumn';
 import { getEvent, eventMap } from './event';
+import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import { sendCompile, compileTd } from '@common/framework';
 /**
  * core dom
@@ -332,8 +333,8 @@ class Dom {
         // 行事件: hover
         rowHover && (() => {
             let hoverTr = null;
-            const { target, events, selector } = event.rowHover;
-            jTool(target).on(events, selector, function () {
+            const rowHoverEvent = event.rowHover;
+            jTool(rowHoverEvent[TARGET]).on(rowHoverEvent[EVENTS], rowHoverEvent[SELECTOR], function () {
                 // 防止hover在同一个行内多次触发
                 if (hoverTr === this) {
                     return;
@@ -345,8 +346,8 @@ class Dom {
 
         // 行事件: click
         rowClick && (() => {
-            const { target, events, selector } = event.rowClick;
-            jTool(target).on(events, selector, function () {
+            const rowClickEvent = event.rowClick;
+            jTool(rowClickEvent[TARGET]).on(rowClickEvent[EVENTS], rowClickEvent[SELECTOR], function () {
                 rowClick(...getRowParams(this));
             });
         })();
@@ -369,8 +370,8 @@ class Dom {
         // 单元格事件: hover
         cellHover && (() => {
             let hoverTd = null;
-            const { target, events, selector } = event.cellHover;
-            jTool(target).on(events, selector, function () {
+            const cellHoverEvent = event.cellHover;
+            jTool(cellHoverEvent[TARGET]).on(cellHoverEvent[EVENTS], cellHoverEvent[SELECTOR], function () {
                 // 防止hover在同一个单元格内多次触发
                 if (hoverTd === this) {
                     return;
@@ -382,8 +383,8 @@ class Dom {
 
         // 单元格事件: click
         cellClick && (() => {
-            const { target, events, selector } = event.cellClick;
-            jTool(target).on(events, selector, function () {
+            const cellClickEvent = event.cellClick;
+            jTool(cellClickEvent[TARGET]).on(cellClickEvent[EVENTS], cellClickEvent[SELECTOR], function () {
                 cellClick(...getCellParams(this));
             });
         })();

@@ -10,11 +10,12 @@ import { getQuerySelector, getWrap, getDiv, getThName, clearTargetEvent } from '
 import { CHECKED, UNCHECKED, TH_NAME } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import core from '../core';
-import checkbox from '../checkbox';
+import checkbox, { updateRadioState, updateCheckboxState } from '../checkbox';
 import i18n from '../i18n';
 import filterTpl from './filter.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_FILTER, CLASS_FILTER_SELECTED, CLASS_FILTER_CONTENT } from './constants';
+import { TARGET, EVENTS, SELECTOR } from '@common/events';
 
 class Filter {
     /**
@@ -30,7 +31,7 @@ class Filter {
         const { toggle, close, submit, reset, checkboxAction, radioAction } = eventMap[_];
 
         // 事件: 切换可视状态
-        jTool(toggle.target).on(toggle.events, toggle.selector, function (e) {
+        jTool(toggle[TARGET]).on(toggle[EVENTS], toggle[SELECTOR], function (e) {
             e.stopPropagation();
             e.preventDefault();
             const $allFilterCon = jTool(`${tableSelector} .${CLASS_FILTER_CONTENT}`);
@@ -62,19 +63,19 @@ class Filter {
             }
 
             // 点击空处关闭
-            jTool(close.target).on(close.events, function (e) {
+            jTool(close[TARGET]).on(close[EVENTS], function (e) {
                 const eventSource = jTool(e.target);
-                if (eventSource.hasClass(CLASS_FILTER_CONTENT) || jTool(e.target).closest(`.${CLASS_FILTER_CONTENT}`).length === 1) {
+                if (eventSource.hasClass(CLASS_FILTER_CONTENT) || eventSource.closest(`.${CLASS_FILTER_CONTENT}`).length === 1) {
                     return false;
                 }
                 const $filterCon = $body.find(`.${CLASS_FILTER_CONTENT}`);
                 $filterCon.hide();
-                jTool(close.target).off(close.events);
+                jTool(close[TARGET]).off(close[EVENTS]);
             });
         });
 
         // 事件: 提交选中结果
-        jTool(submit.target).on(submit.events, submit.selector, function () {
+        jTool(submit[TARGET]).on(submit[EVENTS], submit[SELECTOR], function () {
             const $action = jTool(this);
             const $filterCon = $action.closest(`.${CLASS_FILTER_CONTENT}`);
             const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
@@ -95,11 +96,11 @@ class Filter {
             _this.update($th, settings.columnMap[thName].filter);
             core.refresh(_);
             $filterCon.hide();
-            jTool(close.target).off(close.events);
+            jTool(close[TARGET]).off(close[EVENTS]);
         });
 
         // 事件: 清空选中结果
-        jTool(reset.target).on(reset.events, reset.selector, function () {
+        jTool(reset[TARGET]).on(reset[EVENTS], reset[SELECTOR], function () {
             const $action = jTool(this);
             const $filterCon = $action.closest(`.${CLASS_FILTER_CONTENT}`);
             const $th = jTool(this).closest(`th[${TH_NAME}]`);
@@ -114,20 +115,20 @@ class Filter {
             _this.update($th, settings.columnMap[thName].filter);
             core.refresh(_);
             $filterCon.hide();
-            jTool(close.target).off(close.events);
+            jTool(close[TARGET]).off(close[EVENTS]);
         });
 
         // 事件: 复选框事件
-        jTool(checkboxAction.target).on(checkboxAction.events, checkboxAction.selector, function () {
+        jTool(checkboxAction[TARGET]).on(checkboxAction[EVENTS], checkboxAction[SELECTOR], function () {
             const $checkbox = jTool(this).closest('.filter-checkbox').find('.gm-checkbox');
-            checkbox.updateCheckboxState($checkbox, this.checked ? CHECKED : UNCHECKED);
+            updateCheckboxState($checkbox, this.checked ? CHECKED : UNCHECKED);
         });
 
         // 事件: 单选框事件
-        jTool(radioAction.target).on(radioAction.events, radioAction.selector, function () {
+        jTool(radioAction[TARGET]).on(radioAction[EVENTS], radioAction[SELECTOR], function () {
             const $filterRadio = jTool(this).closest('.filter-list').find('.filter-radio');
             each($filterRadio, (index, item) => {
-                checkbox.updateRadioState(jTool(item).find('.gm-radio'), this === item.querySelector('.gm-radio-input'));
+                updateRadioState(jTool(item).find('.gm-radio'), this === item.querySelector('.gm-radio-input'));
             });
         });
     }
@@ -184,9 +185,9 @@ class Filter {
         each($filters, (index, item) => {
             let $radioOrCheckbox = jTool(item).closest('.gm-radio-checkbox');
             if (filter.isMultiple) {
-                checkbox.updateCheckboxState($radioOrCheckbox, filter.selected.indexOf(item.value)  >= 0 ? CHECKED : UNCHECKED);
+                updateCheckboxState($radioOrCheckbox, filter.selected.indexOf(item.value)  >= 0 ? CHECKED : UNCHECKED);
             } else {
-                checkbox.updateRadioState($radioOrCheckbox, item.value === filter.selected);
+                updateRadioState($radioOrCheckbox, item.value === filter.selected);
             }
         });
 

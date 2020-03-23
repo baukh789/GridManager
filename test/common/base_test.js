@@ -94,14 +94,14 @@ describe('getCloneRowData(columnMap, obj, cleanKeyList)', () => {
     });
 });
 
-describe('showLoading(gridManagerName, loadingTemplate)', () => {
-    let gridManagerName = null;
+describe('showLoading(_, loadingTemplate)', () => {
+    let _ = null;
     beforeEach(() => {
-        gridManagerName = 'test';
+        _ = 'test';
         document.body.innerHTML = tableTestTpl;
     });
     afterEach(() => {
-        gridManagerName = null;
+        _ = null;
         document.body.innerHTML = '';
     });
     it('基础验证', () => {
@@ -111,27 +111,27 @@ describe('showLoading(gridManagerName, loadingTemplate)', () => {
 
     it('当前未存在loading dom', () => {
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(0);
-        showLoading(gridManagerName, '<div></div>');
+        showLoading(_, '<div></div>');
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
     });
 
     it('第二次执行(上一次执行未进行销毁)', () => {
         jTool('.table-wrap').append(`<div class="${LOADING_CLASS_NAME}"></div>`);
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
-        showLoading(gridManagerName, '<div></div>');
+        showLoading(_, '<div></div>');
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
     });
 });
 
-describe('hideLoading(gridManagerName)', () => {
-    let gridManagerName = null;
+describe('hideLoading(_)', () => {
+    let _ = null;
     beforeEach(() => {
-        gridManagerName = 'test';
+        _ = 'test';
         document.body.innerHTML = tableTestTpl;
         jTool('.table-wrap').append(`<div class="${LOADING_CLASS_NAME}"></div>`);
     });
     afterEach(() => {
-        gridManagerName = null;
+        _ = null;
         document.body.innerHTML = '';
     });
     it('基础验证', () => {
@@ -142,7 +142,7 @@ describe('hideLoading(gridManagerName)', () => {
     it('执行验证', () => {
         jasmine.clock().install();
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
-        hideLoading(gridManagerName);
+        hideLoading(_);
         jasmine.clock().tick(500);
         expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(0);
         jasmine.clock().uninstall();
@@ -171,7 +171,7 @@ describe('getKey($table)', () => {
 
 });
 
-describe('getQuerySelector(gridManagerName)', () => {
+describe('getQuerySelector(_)', () => {
     it('基础验证', () => {
         expect(getQuerySelector).toBeDefined();
         expect(getQuerySelector.length).toBe(1);
@@ -218,12 +218,12 @@ describe('getTable($dom, isSelectUp)', () => {
         expect(getTable($thead, true).get(0)).toBe(table);
     });
 
-    it('getTable(gridManagerName)', () => {
+    it('getTable(_)', () => {
         expect(getTable('test').get(0)).toBe(table);
     });
 });
 
-describe('getWrap(gridManagerName)', () => {
+describe('getWrap(_)', () => {
     let tableWrap = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -245,7 +245,7 @@ describe('getWrap(gridManagerName)', () => {
     });
 });
 
-describe('getDiv(gridManagerName)', () => {
+describe('getDiv(_)', () => {
     let tableDiv = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -267,7 +267,7 @@ describe('getDiv(gridManagerName)', () => {
     });
 });
 
-describe('getThead(gridManagerName)', () => {
+describe('getThead(_)', () => {
     let thead = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -289,7 +289,7 @@ describe('getThead(gridManagerName)', () => {
     });
 });
 
-describe('getFakeThead(gridManagerName)', () => {
+describe('getFakeThead(_)', () => {
     let fakeHead = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -311,7 +311,7 @@ describe('getFakeThead(gridManagerName)', () => {
     });
 });
 
-describe('getTbody(gridManagerName)', () => {
+describe('getTbody(_)', () => {
     let tbody = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -333,7 +333,7 @@ describe('getTbody(gridManagerName)', () => {
     });
 });
 
-describe('getTh(gridManagerName, thName)', () => {
+describe('getTh(_, thName)', () => {
     let th = null;
     let $fakeTh = null;
     beforeEach(() => {
@@ -362,7 +362,7 @@ describe('getTh(gridManagerName, thName)', () => {
     });
 });
 
-describe('getAllTh(gridManagerName)', () => {
+describe('getAllTh(_)', () => {
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
     });
@@ -381,16 +381,16 @@ describe('getAllTh(gridManagerName)', () => {
     });
 });
 
-describe('getVisibleTh(gridManagerName)', () => {
-    let gridManagerName = null;
+describe('getVisibleTh(_)', () => {
+    let _ = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        gridManagerName = 'test';
+        _ = 'test';
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
-        gridManagerName = null;
+        _ = null;
     });
 
     it('基础验证', () => {
@@ -398,23 +398,23 @@ describe('getVisibleTh(gridManagerName)', () => {
         expect(getVisibleTh.length).toBe(1);
     });
 
-    it('getVisibleTh(gridManagerName)', () => {
-        expect(getVisibleTh(gridManagerName).length).toBe(10);
+    it('getVisibleTh(_)', () => {
+        expect(getVisibleTh(_).length).toBe(10);
     });
 });
 
-describe('getFakeTh(gridManagerName, thName)', () => {
-    let gridManagerName = null;
+describe('getFakeTh(_, thName)', () => {
+    let _ = null;
     let fakeTh = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        gridManagerName = 'test';
+        _ = 'test';
         fakeTh = document.querySelector('table[grid-manager="test"] thead[grid-manager-mock-thead] tr th[th-name="createDate"]');
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
-        gridManagerName = null;
+        _ = null;
         fakeTh = null;
     });
 
@@ -423,21 +423,21 @@ describe('getFakeTh(gridManagerName, thName)', () => {
         expect(getFakeTh.length).toBe(2);
     });
 
-    it('getFakeTh(gridManagerName, thName)', () => {
-        expect(getFakeTh(gridManagerName, 'createDate').get(0)).toBe(fakeTh);
+    it('getFakeTh(_, thName)', () => {
+        expect(getFakeTh(_, 'createDate').get(0)).toBe(fakeTh);
     });
 });
 
-describe('getFakeVisibleTh(gridManagerName, isExcludeGmCreate)', () => {
-    let gridManagerName = null;
+describe('getFakeVisibleTh(_, isExcludeGmCreate)', () => {
+    let _ = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        gridManagerName = 'test';
+        _ = 'test';
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
-        gridManagerName = null;
+        _ = null;
     });
 
     it('基础验证', () => {
@@ -446,11 +446,11 @@ describe('getFakeVisibleTh(gridManagerName, isExcludeGmCreate)', () => {
     });
 
     it('返回值验证', () => {
-        expect(getFakeVisibleTh(gridManagerName).length).toBe(10);
+        expect(getFakeVisibleTh(_).length).toBe(10);
     });
 
-    it('getFakeVisibleTh(gridManagerName, true)', () => {
-        expect(getFakeVisibleTh(gridManagerName, true).length).toBe(8);
+    it('getFakeVisibleTh(_, true)', () => {
+        expect(getFakeVisibleTh(_, true).length).toBe(8);
     });
 });
 
@@ -478,7 +478,7 @@ describe('getThName($dom)', () => {
     });
 });
 
-describe('getEmpty(gridManagerName)', () => {
+describe('getEmpty(_)', () => {
     let tpl = null;
     beforeEach(() => {
         document.body.innerHTML = `<table grid-manager="test-empty">
@@ -513,16 +513,16 @@ describe('getEmpty(gridManagerName)', () => {
     });
 });
 
-describe('updateEmptyCol(gridManagerName)', () => {
-    let gridManagerName = null;
+describe('updateEmptyCol(_)', () => {
+    let _ = null;
     let $table = null;
     beforeEach(() => {
-        gridManagerName = 'test-empty';
+        _ = 'test-empty';
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
-        gridManagerName = null;
+        _ = null;
         $table = null;
     });
 
@@ -545,7 +545,7 @@ describe('updateEmptyCol(gridManagerName)', () => {
                                         </tbody>
                                     </table>`;
         $table = jTool('[grid-manager="test-empty"]');
-        updateEmptyCol(gridManagerName);
+        updateEmptyCol(_);
         expect($table.find('td').attr('colspan')).toBeUndefined();
     });
 
@@ -563,7 +563,7 @@ describe('updateEmptyCol(gridManagerName)', () => {
                                         </tbody>
                                     </table>`;
         $table = jTool('table[grid-manager="test-empty"]');
-        updateEmptyCol(gridManagerName);
+        updateEmptyCol(_);
         expect($table.find('td').attr('colspan')).toBe('2');
     });
 });
@@ -609,16 +609,16 @@ describe('getColTd($dom, $context)', () => {
     });
 });
 
-describe('setAreVisible(gridManagerName, thNameList, isVisible, cb)', () => {
-    let gridManagerName = null;
+describe('setAreVisible(_, thNameList, isVisible, cb)', () => {
+    let _ = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        gridManagerName = 'test';
+        _ = 'test';
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
-        gridManagerName = null;
+        _ = null;
     });
 
     it('基础验证', () => {
@@ -632,32 +632,32 @@ describe('setAreVisible(gridManagerName, thNameList, isVisible, cb)', () => {
         expect(getTh('test', 'pic').attr(CELL_HIDDEN)).toBeUndefined();
 
         // 设置gm_checkbox, pic不可见
-        setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], false);
+        setAreVisible(_, ['gm_checkbox', 'pic'], false);
 
         expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBe('');
         expect(getTh('test', 'title').attr(CELL_HIDDEN)).toBeUndefined();
         expect(getTh('test', 'pic').attr(CELL_HIDDEN)).toBe('');
 
         // 设置gm_checkbox, pic可见
-        setAreVisible(gridManagerName, ['gm_checkbox', 'pic'], true);
+        setAreVisible(_, ['gm_checkbox', 'pic'], true);
         expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBeUndefined();
         expect(getTh('test', 'title').attr(CELL_HIDDEN)).toBeUndefined();
         expect(getTh('test', 'pic').attr(CELL_HIDDEN)).toBeUndefined();
     });
 });
 
-describe('updateVisibleLast(gridManagerName)', () => {
+describe('updateVisibleLast(_)', () => {
     let $table = null;
-    let gridManagerName = null;
+    let _ = null;
     let $lastTh = null;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
-        gridManagerName = 'test';
+        _ = 'test';
         $table = jTool('table[grid-manager="test"]');
     });
 
     afterEach(() => {
-        gridManagerName = null;
+        _ = null;
         $table = null;
         $lastTh = null;
         document.body.innerHTML = '';
@@ -672,16 +672,16 @@ describe('updateVisibleLast(gridManagerName)', () => {
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible]');
         expect(getThName($lastTh)).toBe('action');
 
-        updateVisibleLast(gridManagerName);
+        updateVisibleLast(_);
 
         // // 在未变更列的情况下，执行结果不会变化
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible]');
         expect(getThName($lastTh)).toBe('action');
 
         // 隐藏最后一列
-        setAreVisible(gridManagerName, [getThName($lastTh)], false);
+        setAreVisible(_, [getThName($lastTh)], false);
 
-        updateVisibleLast(gridManagerName);
+        updateVisibleLast(_);
         $lastTh = $table.find('thead[grid-manager-thead] th[last-visible]');
         expect(getThName($lastTh)).toBe('info');
     });
@@ -699,7 +699,7 @@ describe('updateThWidth(settings, isInit)', () => {
         document.querySelector('.text-dreamland').style.visibility = 'hidden';
         document.querySelector('.text-dreamland').style.zIndex = -10;
         settings = {
-            gridManagerName: 'test',
+            _: 'test',
             columnMap: getColumnMap(),
             isIconFollowText: false
         };
@@ -880,7 +880,7 @@ describe('updateThWidth(settings, isInit)', () => {
 });
 
 
-describe('getThTextWidth(gridManagerName, $th, isIconFollowText)', () => {
+describe('getThTextWidth(_, $th, isIconFollowText)', () => {
     let $th;
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
@@ -911,7 +911,7 @@ describe('getThTextWidth(gridManagerName, $th, isIconFollowText)', () => {
     });
 });
 
-describe('getTextWidth(gridManagerName, content, cssObj)', () => {
+describe('getTextWidth(_, content, cssObj)', () => {
     beforeEach(() => {
         document.body.innerHTML = tableTestTpl;
         document.querySelector('.text-dreamland').style.position = 'absolute';
@@ -940,7 +940,7 @@ describe('getTextWidth(gridManagerName, content, cssObj)', () => {
     });
 });
 
-describe('updateScrollStatus(gridManagerName)', () => {
+describe('updateScrollStatus(_)', () => {
     let $table = null;
     let $tableDiv = null;
     beforeEach(() => {
@@ -973,7 +973,7 @@ describe('updateScrollStatus(gridManagerName)', () => {
     });
 });
 
-describe('calcLayout(gridManagerName, width, height, supportAjaxPage)', () => {
+describe('calcLayout(_, width, height, supportAjaxPage)', () => {
     let $wrap = null;
     let $div = null;
     let theadHeight = null;

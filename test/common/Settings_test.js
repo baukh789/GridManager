@@ -30,7 +30,7 @@ describe('Settings', () => {
     });
 
     it('验证属性[moveRowConfig]初始值', () => {
-        expect(settings.moveRowConfig.key).toBe(null);
+        expect(settings.moveRowConfig.key).toBeUndefined();
         expect(typeof settings.moveRowConfig.handler).toBe('function');
     });
 
@@ -155,9 +155,12 @@ describe('Settings', () => {
     });
 
     it('验证属性[asyncTotals]初始值', () => {
-        expect(settings.asyncTotals).toBe(null);
+        expect(settings.asyncTotals).toBeUndefined();
     });
 
+    it('验证属性[ajaxPageTemplate]初始值', () => {
+        expect(settings.ajaxPageTemplate).toBeUndefined();
+    });
 
     it('验证属性[sizeData]初始值', () => {
 		expect(settings.sizeData).toEqual([10, 20, 30, 50, 100]);
@@ -194,7 +197,7 @@ describe('Settings', () => {
     it('验证属性[checkboxConfig]初始值', () => {
         expect(settings.checkboxConfig.useRadio).toBe(false);
         expect(settings.checkboxConfig.useRowCheck).toBe(false);
-        expect(settings.checkboxConfig.max).toBeNull(null);
+        expect(settings.checkboxConfig.max).toBeUndefined(null);
     });
 
     it('验证属性[checkedBefore]初始值', () => {
@@ -226,7 +229,7 @@ describe('Settings', () => {
     });
 
     it('验证属性[treeConfig]初始值', () => {
-        expect(settings.treeConfig.insertTo).toBe(null);
+        expect(settings.treeConfig.insertTo).toBeUndefined();
         expect(settings.treeConfig.treeKey).toBe('children');
         expect(settings.treeConfig.openState).toBe(false);
     });
@@ -236,11 +239,11 @@ describe('Settings', () => {
     });
 
 	it('验证属性[columnData]初始值', () => {
-		expect(settings.columnData).toEqual([]);
+		expect(settings.columnData).toBeUndefined();
 	});
 
 	it('验证属性[gridManagerName]初始值', () => {
-		expect(settings.gridManagerName).toBe('');
+		expect(settings.gridManagerName).toBeUndefined();
 	});
 
 	it('验证属性[firstLoading]初始值', () => {
@@ -330,7 +333,7 @@ describe('Settings', () => {
     it('验证属性[exportConfig]初始值', () => {
         expect(typeof settings.exportConfig).toBe('object');
         expect(settings.exportConfig.mode).toBe('static');
-        expect(settings.exportConfig.fileName).toBe(null);
+        expect(settings.exportConfig.fileName).toBeUndefined();
         expect(settings.exportConfig.suffix).toBe('xls');
         expect(typeof settings.exportConfig.handler).toBe('function');
     });

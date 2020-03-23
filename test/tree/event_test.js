@@ -10,14 +10,14 @@ describe('tree event', () => {
 
         it('基础验证', () => {
             expect(getEvent).toBeDefined();
-            expect(getEvent.length).toBe(3);
+            expect(getEvent.length).toBe(2);
         });
 
         it('执行验证', () => {
-            events = getEvent('test', '#baukh', 'tree-element');
-            expect(events.toggleState.events).toBe('click');
-            expect(events.toggleState.target).toBe('#baukh');
-            expect(events.toggleState.selector).toBe('[tree-element] .tree-action');
+            events = getEvent('.test', 'tree-element');
+            expect(events.toggle.events).toBe('click');
+            expect(events.toggle.target).toBe('.test');
+            expect(events.toggle.selector).toBe('[tree-element] i');
         });
     });
 

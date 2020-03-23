@@ -8,16 +8,17 @@
  */
 import { DIV_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { CLASS_ADJUST_ACTION } from './constants';
-export function getEvent(gridManagerName, scope) {
+import { MOUSE_DOWN, MOUSE_MOVE, MOUSE_UP, MOUSE_LEAVE, createEventsObj } from '@common/events';
+export function getEvent(_, scope) {
     return {
         // 宽度调整触发
-        adjustStart: {events: 'mousedown', target: scope, selector: `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .${CLASS_ADJUST_ACTION}`},
+        start: createEventsObj(MOUSE_DOWN, scope, `[${FAKE_TABLE_HEAD_KEY}="${_}"] .${CLASS_ADJUST_ACTION}`),
 
         // 宽度调整中
-        adjusting: {events: 'mousemove', target: `[${DIV_KEY}="${gridManagerName}"]`, selector: scope},
+        doing: createEventsObj(MOUSE_MOVE, `[${DIV_KEY}="${_}"]`, scope),
 
         // 宽度调整停止 #001
-        adjustAbort: {events: 'mouseup mouseleave', target: scope}
+        abort: createEventsObj(`${MOUSE_UP} ${MOUSE_LEAVE}`, scope)
     };
 }
 

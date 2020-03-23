@@ -1,7 +1,7 @@
 import { getParams, transformToPromise } from '@module/core/tool';
 import getTableTestData from '@test/table-test.data.js';
 
-const gridManagerName = 'test';
+const _ = 'test';
 describe('core tool', () => {
     describe('getParams', () => {
         let settings = null;
@@ -20,7 +20,7 @@ describe('core tool', () => {
 
         it('执行验证: 未启用分页，未存在排序数据', () => {
             settings = {
-                gridManagerName,
+                _,
                 supportAjaxPage: false,
                 query: {
                     customer: 'kouzi'
@@ -45,7 +45,7 @@ describe('core tool', () => {
 
         it('执行验证: 仅启用分页，未存在排序数据', () => {
             settings = {
-                gridManagerName,
+                _,
                 supportAjaxPage: true,
                 query: {
                     customer: 'kouzi'
@@ -71,7 +71,7 @@ describe('core tool', () => {
 
         it('执行验证: 未启用分页，存在排序数据(未启用合并排序)', () => {
             settings = {
-                gridManagerName,
+                _,
                 supportAjaxPage: false,
                 query: {
                     customer: 'kouzi'
@@ -100,7 +100,7 @@ describe('core tool', () => {
 
         it('执行验证: 未启用分页，存在排序数据(启用合并排序)', () => {
             settings = {
-                gridManagerName,
+                _,
                 supportAjaxPage: false,
                 query: {
                     customer: 'kouzi'
@@ -128,7 +128,7 @@ describe('core tool', () => {
 
         it('执行验证: 启用分页，存在排序数据', () => {
             settings = {
-                gridManagerName,
+                _,
                 supportAjaxPage: true,
                 query: {
                     customer: 'kouzi'
@@ -159,7 +159,7 @@ describe('core tool', () => {
 
         it('执行验证: 自定义requestHandler', () => {
             settings = {
-                gridManagerName,
+                _,
                 supportAjaxPage: true,
                 query: {
                     customer: 'kouzi'

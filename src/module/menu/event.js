@@ -3,27 +3,29 @@
  * @param _
  */
 import { WRAP_KEY, MENU_KEY } from '@common/constants';
+import { MOUSE_CLICK, MOUSE_DOWN, CONTEXT_MENU, createEventsObj } from '@common/events';
+
 export const getEvent = _ => {
     const menuTarget = `[${MENU_KEY}="${_}"]`;
     const menuSelector = type => `[menu-action="${type}"]`;
     return {
         // 打开菜单
-        openMenu: {events: 'contextmenu', target: `[${WRAP_KEY}="${_}"]`},
+        openMenu: createEventsObj(CONTEXT_MENU, `[${WRAP_KEY}="${_}"]`),
 
         // 关闭菜单
-        closeMenu: {events: 'mousedown.closeMenu', target: 'body'},
+        closeMenu: createEventsObj(`${MOUSE_DOWN}.closeMenu`, 'body'),
 
         // 上一页、下一页、重新加载
-        refresh: {events: 'click', target: menuTarget, selector: menuSelector('refresh')},
+        refresh: createEventsObj(MOUSE_CLICK, menuTarget, menuSelector('refresh')),
 
         // 导出、导出已选中
-        exportPage: {events: 'click', target: menuTarget, selector: menuSelector('export')},
+        exportPage: createEventsObj(MOUSE_CLICK, menuTarget, menuSelector('export')),
 
         // 打印
-        printPage: {events: 'click', target: menuTarget, selector: menuSelector('print')},
+        printPage: createEventsObj(MOUSE_CLICK, menuTarget, menuSelector('print')),
 
         // 打开配置区域
-        openConfig: {events: 'click', target: menuTarget, selector: menuSelector('config')}
+        openConfig: createEventsObj(MOUSE_CLICK, menuTarget, menuSelector('config'))
     };
 };
 

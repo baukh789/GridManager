@@ -8,6 +8,7 @@ import { getQuerySelector, getTable, getTbody, getTh, getColTd, clearTargetEvent
 import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE, GM_CREATE } from '@common/constants';
 import { getEvent, eventMap } from './event';
 import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from './tool';
+import { TARGET, EVENTS, SELECTOR } from '@common/events';
 
 class Tree {
     /**
@@ -29,9 +30,9 @@ class Tree {
         const _this = this;
         // 绑定事件
         eventMap[_] = getEvent(getQuerySelector(_), treeKey);
-        const { target, events, selector } = eventMap[_].toggleState;
+        const { toggle } = eventMap[_];
 
-        jTool(target).on(events, selector, function () {
+        jTool(toggle[TARGET]).on(toggle[EVENTS], toggle[SELECTOR], function () {
             const $tr = jTool(this).closest('tr');
             _this.updateDOM(_, undefined, $tr);
         });
@@ -93,7 +94,7 @@ class Tree {
     insertDOM(_, config) {
         const { openState, insertTo } = config;
         const $table = getTable(_);
-        let parentKeyList = [];
+        const parentKeyList = [];
         each(jTool(`tr[${TR_PARENT_KEY}]`, $table), (index, item) => {
             parentKeyList.push(item.getAttribute(TR_PARENT_KEY));
         });

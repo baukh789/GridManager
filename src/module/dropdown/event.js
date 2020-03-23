@@ -2,16 +2,18 @@
  * dropdown events
  * @param scope: querySelector 域
  */
+import { MOUSE_CLICK, createEventsObj } from '@common/events';
+
 export const getEvent = scope => {
     return {
         // 切换展示状态
-        open: {events: 'click', target: scope, selector: '.gm-dropdown .gm-dropdown-text'},
+        open: createEventsObj(MOUSE_CLICK, scope, '.gm-dropdown .gm-dropdown-text'),
 
         // body关闭事件
-        close: {events: 'click', target: 'body'},
+        close: createEventsObj(MOUSE_CLICK, 'body'),
 
         // 点选事件
-        selected: {events: 'click', target: scope, selector: '.gm-dropdown .gm-dropdown-list >li'}
+        selected: createEventsObj(MOUSE_CLICK, scope, '.gm-dropdown .gm-dropdown-list >li')
     };
 };
 

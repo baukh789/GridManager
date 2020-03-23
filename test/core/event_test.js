@@ -11,34 +11,34 @@ describe('core event', () => {
 
         it('基础验证', () => {
             expect(getEvent).toBeDefined();
-            expect(getEvent.length).toBe(2);
+            expect(getEvent.length).toBe(1);
         });
 
         it('rowHover', () => {
-            events = getEvent('test', '#baukh');
+            events = getEvent('.test');
             expect(events.rowHover.events).toBe('mousemove');
-            expect(events.rowHover.target).toBe('#baukh');
+            expect(events.rowHover.target).toBe('.test');
             expect(events.rowHover.selector).toBe('tbody tr');
         });
 
         it('rowClick', () => {
-            events = getEvent('test', '#baukh');
+            events = getEvent('.test');
             expect(events.rowClick.events).toBe('click');
-            expect(events.rowClick.target).toBe('#baukh');
+            expect(events.rowClick.target).toBe('.test');
             expect(events.rowClick.selector).toBe('tbody tr');
         });
 
         it('cellHover', () => {
-            events = getEvent('test', '#baukh');
+            events = getEvent('.test');
             expect(events.cellHover.events).toBe('mousemove');
-            expect(events.cellHover.target).toBe('#baukh');
+            expect(events.cellHover.target).toBe('.test');
             expect(events.cellHover.selector).toBe('tbody td');
         });
 
         it('cellClick', () => {
-            events = getEvent('test', '#baukh');
+            events = getEvent('.test');
             expect(events.cellClick.events).toBe('click');
-            expect(events.cellClick.target).toBe('#baukh');
+            expect(events.cellClick.target).toBe('.test');
             expect(events.cellClick.selector).toBe('tbody td');
         });
     });

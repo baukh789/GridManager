@@ -23,7 +23,7 @@ class Order {
 	getColumn(settings) {
 		return {
 			key: ORDER_KEY,
-			text: i18n(settings, 'order-text'),
+			text: this.getThContent(settings),
 			isAutoCreate: true,
 			isShow: true,
             disableCustomize: true,

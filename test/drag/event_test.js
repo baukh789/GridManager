@@ -18,17 +18,17 @@ describe('drag', () => {
 
         it('执行验证', () => {
             events = getEvent('test', '#baukh');
-            expect(events.dragStart.events).toBe('mousedown');
-            expect(events.dragStart.target).toBe('#baukh');
-            expect(events.dragStart.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${CLASS_DRAG_ACTION}`);
+            expect(events.start.events).toBe('mousedown');
+            expect(events.start.target).toBe('#baukh');
+            expect(events.start.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${CLASS_DRAG_ACTION}`);
 
-            expect(events.dragging.events).toBe('mousemove.gmDrag');
-            expect(events.dragging.target).toBe('body');
-            expect(events.dragging.selector).toBeUndefined();
+            expect(events.doing.events).toBe('mousemove.gmDrag');
+            expect(events.doing.target).toBe('body');
+            expect(events.doing.selector).toBeUndefined();
 
-            expect(events.dragAbort.events).toBe('mouseup.gmDrag');
-            expect(events.dragAbort.target).toBe('body');
-            expect(events.dragAbort.selector).toBeUndefined();
+            expect(events.abort.events).toBe('mouseup.gmDrag');
+            expect(events.abort.target).toBe('body');
+            expect(events.abort.selector).toBeUndefined();
         });
     });
 

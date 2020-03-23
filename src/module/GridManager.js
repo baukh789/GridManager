@@ -12,7 +12,7 @@ import adjust from './adjust';
 import ajaxPage from './ajaxPage';
 import dropdown from './dropdown';
 import order from './order';
-import checkbox from './checkbox';
+import checkbox, { resetCheckboxDOM } from './checkbox';
 import tree from './tree';
 import config from './config';
 import core, { coreDOM } from './core';
@@ -22,7 +22,7 @@ import exportFile from './exportFile';
 import menu from './menu';
 import remind from './remind';
 import scroll from './scroll';
-import sort from './sort';
+import sort, { updateSort } from './sort';
 import filter from './filter';
 import print from './print';
 
@@ -355,7 +355,7 @@ export default class GridManager {
 	    if (!isRendered(table, 'setSort')) {
 	        return;
         }
-		sort.__setSort(getKey(table), sortJson, callback, refresh);
+        updateSort(getKey(table), sortJson, callback, refresh);
 	}
 
     /**
@@ -408,7 +408,7 @@ export default class GridManager {
         }
         const _ = getKey(table);
 		setAreVisible(_, isArray(thName) ? thName : [thName], true);
-        config.noticeUpdate(_);
+        config.update(_);
 	}
 
 	/**
@@ -424,7 +424,7 @@ export default class GridManager {
         }
         const _ = getKey(table);
         setAreVisible(_, isArray(thName) ? thName : [thName], false);
-        config.noticeUpdate(_);
+        config.update(_);
 	}
 
 	/**
@@ -645,7 +645,7 @@ export default class GridManager {
 
         setTableData(_, tableData);
         setCheckedData(_, checkedList, true);
-        return checkbox.resetDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
+        return resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
     };
 
     /**

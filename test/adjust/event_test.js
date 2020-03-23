@@ -17,17 +17,17 @@ describe('adjust', () => {
 
         it('执行验证', () => {
             events = getEvent('test', '#baukh');
-            expect(events.adjustStart.events).toBe('mousedown');
-            expect(events.adjustStart.target).toBe('#baukh');
-            expect(events.adjustStart.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${CLASS_ADJUST_ACTION}`);
+            expect(events.start.events).toBe('mousedown');
+            expect(events.start.target).toBe('#baukh');
+            expect(events.start.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${CLASS_ADJUST_ACTION}`);
 
-            expect(events.adjusting.events).toBe('mousemove');
-            expect(events.adjusting.target).toBe(`[${DIV_KEY}="test"]`);
-            expect(events.adjusting.selector).toBe('#baukh');
+            expect(events.doing.events).toBe('mousemove');
+            expect(events.doing.target).toBe(`[${DIV_KEY}="test"]`);
+            expect(events.doing.selector).toBe('#baukh');
 
-            expect(events.adjustAbort.events).toBe('mouseup mouseleave');
-            expect(events.adjustAbort.target).toBe('#baukh');
-            expect(events.adjustAbort.selector).toBeUndefined();
+            expect(events.abort.events).toBe('mouseup mouseleave');
+            expect(events.abort.target).toBe('#baukh');
+            expect(events.abort.selector).toBeUndefined();
         });
     });
     describe('eventMap', () => {

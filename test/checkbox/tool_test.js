@@ -3,21 +3,21 @@ import store from '@common/Store';
 import getTableTestData from '@test/table-test.data.js';
 import { getColumnMap } from '@test/table-config';
 
-const gridManagerName = 'test';
+const _ = 'test';
 describe('checkbox tool', () => {
     describe('resetData', () => {
         let tableData = null;
         beforeEach(() => {
             tableData = getTableTestData();
             store.checkedData = {
-                [gridManagerName]: []
+                [_]: []
             };
             store.responseData = {
-                [gridManagerName]: tableData.data
+                [_]: tableData.data
             };
             store.settings = {
-                [gridManagerName]: {
-                    gridManagerName,
+                [_]: {
+                    _,
                     columnMap: getColumnMap()
                 }
             };
@@ -38,11 +38,11 @@ describe('checkbox tool', () => {
             expect(store.checkedData.test.length).toBe(0);
 
             // 全选
-            resetData(gridManagerName, true, true);
+            resetData(_, true, true);
             expect(store.checkedData.test.length).toBe(10);
 
             // 取消全选
-            resetData(gridManagerName, false, true);
+            resetData(_, false, true);
             expect(store.checkedData.test.length).toBe(0);
         });
 
@@ -50,19 +50,19 @@ describe('checkbox tool', () => {
             expect(store.checkedData.test.length).toBe(0);
 
             // 选中一项
-            resetData(gridManagerName, true, false, 3);
+            resetData(_, true, false, 3);
             expect(store.checkedData.test.length).toBe(1);
 
             // 再选中一项
-            resetData(gridManagerName, true, false, 4);
+            resetData(_, true, false, 4);
             expect(store.checkedData.test.length).toBe(2);
 
             // 再选中一项
-            resetData(gridManagerName, true, false, 5);
+            resetData(_, true, false, 5);
             expect(store.checkedData.test.length).toBe(3);
 
             // 取消一项
-            resetData(gridManagerName, false, false, 5);
+            resetData(_, false, false, 5);
             expect(store.checkedData.test.length).toBe(2);
         });
 
@@ -70,11 +70,11 @@ describe('checkbox tool', () => {
             expect(store.checkedData.test.length).toBe(0);
 
             // 选中一项
-            resetData(gridManagerName, undefined, true, 3, true);
+            resetData(_, undefined, true, 3, true);
             expect(store.checkedData.test.length).toBe(1);
 
             // 再选中一项
-            resetData(gridManagerName, undefined, true, 4, true);
+            resetData(_, undefined, true, 4, true);
             expect(store.checkedData.test.length).toBe(1);
         });
     });

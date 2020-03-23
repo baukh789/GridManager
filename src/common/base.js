@@ -25,6 +25,7 @@ import {
     SORT_CLASS
 } from './constants';
 import { CLASS_FILTER } from '@module/filter/constants';
+import { TARGET, EVENTS, SELECTOR } from '@common/events';
 
 /**
  * 获取clone行数据匹配，修改它并不会污染原数据。
@@ -196,6 +197,14 @@ export const getFakeTh = (_, thName) => {
  */
 export const getAllTh = _ => {
     return jTool(`[${TABLE_HEAD_KEY}="${_}"] th`);
+};
+/**
+ * get all fake th
+ * @param _
+ * @returns {*}
+ */
+export const getAllFakeTh = _ => {
+    return jTool(`[${FAKE_TABLE_HEAD_KEY}="${_}"] th`);
 };
 
 /**
@@ -503,7 +512,7 @@ export const calcLayout = (_, width, height, supportAjaxPage) => {
 export const clearTargetEvent = eventMap => {
     for (let key in eventMap) {
         const eve = eventMap[key];
-        const $target = jTool(eve.target);
-        $target.length && $target.off(eve.events, eve.selector);
+        const $target = jTool(eve[TARGET]);
+        $target.length && $target.off(eve[EVENTS], eve[SELECTOR]);
     }
 };

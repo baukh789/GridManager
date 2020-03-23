@@ -8,12 +8,13 @@
  * */
 import jTool from '@jTool';
 import { each } from '@jTool/utils';
-import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus } from '@common/base';
+import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus, getAllTh, getAllFakeTh } from '@common/base';
 import { getSettings, updateCache } from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { compileFakeThead } from '@common/framework';
-import config from '../config';
+import { updateConfigListHeight } from '../config';
 import fixed from '../fixed';
+import { RESIZE, SCROLL } from '@common/events';
 import './style.less';
 class Scroll {
     /**
@@ -33,9 +34,8 @@ class Scroll {
     render(_) {
         let $setTopHead = getFakeThead(_);
         $setTopHead.length && $setTopHead.remove();
-        const $thead = getThead(_);
 
-        getTable(_).append($thead.clone(true).attr(FAKE_TABLE_HEAD_KEY, _));
+        getTable(_).append(getThead(_).clone(true).attr(FAKE_TABLE_HEAD_KEY, _));
 
         $setTopHead = getFakeThead(_);
         $setTopHead.removeAttr(TABLE_HEAD_KEY);
@@ -54,21 +54,16 @@ class Scroll {
         if (!$tableDiv.length) {
             return;
         }
-        const $thead = getThead(_);
-        const theadWidth = $thead.width();
-
-        // 吸顶元素
-        const $setTopHead = getFakeThead(_);
 
         // 重置thead的宽度和位置
-        $setTopHead.css({
-            width: theadWidth,
+        getFakeThead(_).css({
+            width: getThead(_).width(),
             left: -$tableDiv.scrollLeft() + 'px'
         });
 
         // 重置th的宽度
-        each(jTool('th', $thead), (i, th) => {
-            jTool('th', $setTopHead).eq(i).width(jTool(th).width());
+        each(getAllTh(_), (i, th) => {
+            getAllFakeTh(_).eq(i).width(jTool(th).width());
         });
 
         fixed.updateFakeThead(_);
@@ -81,17 +76,18 @@ class Scroll {
      */
 	bindResizeToTable(_) {
 		const $tableDiv = getDiv(_);
-		let oldBodyWidth = document.querySelector('body').offsetWidth;
+		const $body = jTool('body');
+		let oldBodyWidth = $body.width();
 
 		// 绑定resize事件: 对表头吸顶的列宽度进行修正
-		jTool(window).bind(`resize.${_}`, () => {
+		jTool(window).bind(`${RESIZE}.${_}`, () => {
             const settings = getSettings(_);
             if ($tableDiv.length !== 1) {
                 return;
             }
 
             // 当可视宽度变化时，更新表头宽度
-            const bodyWidth = document.querySelector('body').offsetWidth;
+            const bodyWidth = $body.width();
             if (bodyWidth !== oldBodyWidth) {
                 updateThWidth(settings);
                 oldBodyWidth = bodyWidth;
@@ -101,7 +97,7 @@ class Scroll {
 
             this.update(_);
 
-            settings.supportConfig && config.updateConfigListHeight(_);
+            settings.supportConfig && updateConfigListHeight(_);
 		});
 	}
 
@@ -112,8 +108,8 @@ class Scroll {
 	bindScrollToTableDiv(_) {
 		const tableDIV = getDiv(_);
 		// 绑定滚动条事件 #001
-		tableDIV.unbind('scroll');
-		tableDIV.bind('scroll', () => {
+		tableDIV.unbind(SCROLL);
+		tableDIV.bind(SCROLL, () => {
             this.update(_);
 		});
 	}
@@ -124,10 +120,10 @@ class Scroll {
 	 */
 	destroy(_) {
 		// 清理: resize事件. 该事件并不干扰其它resize事件
-		jTool(window).unbind(`resize.${_}`);
+		jTool(window).unbind(`${RESIZE}.${_}`);
 
 		// 清理: 表格滚动轴功能
-        getDiv(_).unbind('scroll');
+        getDiv(_).unbind(SCROLL);
 	}
 }
 export default new Scroll();

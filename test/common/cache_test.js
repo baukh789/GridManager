@@ -50,7 +50,7 @@ describe('getRowData', () => {
         tr = document.querySelectorAll('tbody tr');
         store.settings = {
             test: {
-                gridManagerName: 'test',
+                _: 'test',
                 columnMap: getColumnMap()
             }
         };
@@ -102,12 +102,12 @@ describe('getRowData', () => {
     });
 });
 
-describe('updateRowData(gridManagerName, key, rowDataList)', () => {
+describe('updateRowData(_, key, rowDataList)', () => {
     beforeEach(() => {
         store.responseData['test'] = getTableTestData().data;
         store.settings = {
             test: {
-                gridManagerName: 'test',
+                _: 'test',
                 supportTreeData: false,
                 treeConfig: {
                     treeKey: 'children'
@@ -200,7 +200,7 @@ describe('resetTableData', () => {
     it('执行验证: 无重置项', () => {
         store.settings = {
             test: {
-                gridManagerName: 'test',
+                _: 'test',
                 columnMap: getColumnMap(),
                 rowRenderHandler: row => row,
                 pageData: {},
@@ -217,7 +217,7 @@ describe('resetTableData', () => {
     it('执行验证: supportAutoOrder=true', () => {
         store.settings = {
             test: {
-                gridManagerName: 'test',
+                _: 'test',
                 columnMap: getColumnMap(),
                 rowRenderHandler: row => row,
                 pageData: {
@@ -239,7 +239,7 @@ describe('resetTableData', () => {
     it('执行验证: supportCheckbox=true', () => {
         store.settings = {
             test: {
-                gridManagerName: 'test',
+                _: 'test',
                 columnMap: getColumnMap(),
                 rowRenderHandler: row => row,
                 supportAutoOrder: false,
@@ -279,7 +279,7 @@ describe('resetTableData', () => {
     it('执行验证: supportTreeData=true', () => {
         store.settings = {
             test: {
-                gridManagerName: 'test',
+                _: 'test',
                 columnMap: getColumnMap(),
                 rowRenderHandler: row => row,
                 supportAutoOrder: false,
@@ -338,7 +338,7 @@ describe('getCheckedData and setCheckedData', () => {
         store.checkedData = {};
         store.settings = {
             test: {
-                gridManagerName: 'test',
+                _: 'test',
                 columnMap: getColumnMap()
             }
         };
@@ -504,7 +504,7 @@ describe('saveUserMemory', () => {
         document.body.innerHTML = tableTestTpl;
         settings = {
             disableCache: false,
-            gridManagerName: 'test',
+            _: 'test',
             columnMap: getColumnMap(),
             supportAjaxPage: true,
             pageData: {
@@ -578,7 +578,7 @@ describe('delUserMemory', () => {
         document.body.innerHTML = tableTestTpl;
         settings = {
             disableCache: false,
-            gridManagerName: 'test',
+            _: 'test',
             columnMap: getColumnMap(),
             supportAjaxPage: true,
             pageData: {
@@ -777,6 +777,7 @@ describe('initSettings', () => {
         // settings 中对默认值都已经测试过了，这里只挑部分项进行测试
         settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
         expect(settings.gridManagerName).toBe('test');
+        expect(settings._).toBe(settings.gridManagerName);
         expect(settings.supportAdjust).toBe(true);
         expect(settings.supportAjaxPage).toBe(false);
 
@@ -849,7 +850,7 @@ describe('getSettings or setSettings', () => {
         document.body.innerHTML = tableTestTpl;
         settings = {
             disableCache: false,
-            gridManagerName: 'test',
+            _: 'test',
             columnMap: getColumnMap(),
             supportAjaxPage: true,
             pageData: {
@@ -893,7 +894,7 @@ describe('update', () => {
         document.body.innerHTML = tableTestTpl;
         settings = {
             disableCache: false,
-            gridManagerName: 'test',
+            _: 'test',
             columnMap: getColumnMap(),
             supportAjaxPage: true,
             pageData: {
@@ -920,7 +921,7 @@ describe('update', () => {
 
     it('执行验证', () => {
         _settings = updateCache('test');
-        expect(_settings.gridManagerName).toBe(settings.gridManagerName);
+        expect(_settings._).toBe(settings._);
         expect(_settings.supportAjaxPage).toBe(settings.supportAjaxPage);
         expect(_settings.pageSizeKey).toBe(settings.pageSizeKey);
         expect(_settings.pageData).toEqual(settings.pageData);

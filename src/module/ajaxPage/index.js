@@ -15,6 +15,7 @@ import dropdown from '../dropdown';
 import ajaxPageTpl from './ajax-page.tpl.html';
 import { getQuerySelector, getPageData, joinPaginationNumber } from './tool';
 import { getEvent, eventMap } from './event';
+import { EVENTS, TARGET, SELECTOR } from '@common/events';
 
 /**
  * 修改分页描述信息
@@ -107,7 +108,7 @@ const updateFooterDOM = ($footerToolbar, settings, pageData) => {
     $paginationNumber.html(joinPaginationNumber(currentPageKey, pageData));
 
     // 更新分页禁用状态
-    const toPage = pageData[currentPageKey];
+    const now = pageData[currentPageKey];
     const $firstPage = jTool('[pagination-before] .first-page', $footerToolbar);
     const $previousPage = jTool('[pagination-before] .previous-page', $footerToolbar);
     const $nextPage = jTool('[pagination-after] .next-page', $footerToolbar);
@@ -117,7 +118,7 @@ const updateFooterDOM = ($footerToolbar, settings, pageData) => {
     const previousUsable = Boolean($previousPage.length);
     const nextUsable = Boolean($nextPage.length);
     const lastUsable = Boolean($lastPage.length);
-    if (toPage === 1) {
+    if (now === 1) {
         firstUsable && $firstPage.addClass(DISABLED_CLASS_NAME);
         previousUsable && $previousPage.addClass(DISABLED_CLASS_NAME);
     } else {
@@ -125,13 +126,46 @@ const updateFooterDOM = ($footerToolbar, settings, pageData) => {
         previousUsable && $previousPage.removeClass(DISABLED_CLASS_NAME);
     }
 
-    if (toPage >= pageData.tPage) {
+    if (now >= pageData.tPage) {
         nextUsable && $nextPage.addClass(DISABLED_CLASS_NAME);
         lastUsable && $lastPage.addClass(DISABLED_CLASS_NAME);
     } else {
         nextUsable && $nextPage.removeClass(DISABLED_CLASS_NAME);
         lastUsable && $lastPage.removeClass(DISABLED_CLASS_NAME);
     }
+};
+
+
+/**
+ * 跳转至指定页
+ * @param settings
+ * @param now 跳转页
+ */
+export const toPage = (settings, now) => {
+    if (!now || now < 1) {
+        now = 1;
+    }
+
+    const { _, useNoTotalsMode, currentPageKey, pageData, pageSize, pageSizeKey, sortData, query, pagingBefore, pagingAfter } = settings;
+    const { tPage } = pageData;
+    // 未使用使用无总条数模式 且 跳转的指定页大于总页数时，强制跳转至最后一页
+    if (!useNoTotalsMode && now > tPage) {
+        now = tPage;
+    }
+
+    // 替换被更改的值
+    pageData[currentPageKey] = now;
+    pageData[pageSizeKey] = pageData[pageSizeKey] || pageSize;
+
+    // 更新缓存
+    setSettings(settings);
+
+    // 调用事件、渲染DOM
+    const newQuery = extend({}, query, sortData, pageData);
+    pagingBefore(newQuery);
+    core.refresh(_, () => {
+        pagingAfter(newQuery);
+    });
 };
 
 class AjaxPage {
@@ -206,61 +240,60 @@ class AjaxPage {
      * @param _
      */
 	initEvent(_) {
-	    const _this = this;
 	    // 事件: 首页
-        const { firstPage, previousPage, nextPage, lastPage, numberPage, refresh, gotoPage } = eventMap[_];
-        jTool(firstPage.target).on(firstPage.events, firstPage.selector, function () {
-            _this.gotoPage(getSettings(_), 1);
+        const { first, previous, next, last, num, refresh, input } = eventMap[_];
+        jTool(first[TARGET]).on(first[EVENTS], first[SELECTOR], function () {
+            toPage(getSettings(_), 1);
         });
 
         // 事件: 上一页
-        jTool(previousPage.target).on(previousPage.events, previousPage.selector, function () {
+        jTool(previous[TARGET]).on(previous[EVENTS], previous[SELECTOR], function () {
             const settings = getSettings(_);
             const cPage = settings.pageData[settings.currentPageKey];
-            const toPage = cPage - 1;
-            _this.gotoPage(settings, toPage < 1 ? 1 : toPage);
+            const now = cPage - 1;
+            toPage(settings, now < 1 ? 1 : now);
         });
 
         // 事件: 下一页
-        jTool(nextPage.target).on(nextPage.events, nextPage.selector, function () {
+        jTool(next[TARGET]).on(next[EVENTS], next[SELECTOR], function () {
             const settings = getSettings(_);
             const cPage = settings.pageData[settings.currentPageKey];
             const tPage = settings.pageData.tPage;
-            const toPage = cPage + 1;
-            _this.gotoPage(settings, toPage > tPage ? tPage : toPage);
+            const now = cPage + 1;
+            toPage(settings, now > tPage ? tPage : now);
         });
 
         // 事件: 尾页
-        jTool(lastPage.target).on(lastPage.events, lastPage.selector, function () {
+        jTool(last[TARGET]).on(last[EVENTS], last[SELECTOR], function () {
             const settings = getSettings(_);
-            _this.gotoPage(settings, settings.pageData.tPage);
+            toPage(settings, settings.pageData.tPage);
         });
 
         // 事件: 页码
-        jTool(numberPage.target).on(numberPage.events, numberPage.selector, function () {
+        jTool(num[TARGET]).on(num[EVENTS], num[SELECTOR], function () {
             const settings = getSettings(_);
             const pageAction = jTool(this);
 
             // 分页页码
-            let toPage = pageAction.attr('to-page');
-            if (!toPage || !Number(toPage) || pageAction.hasClass(DISABLED_CLASS_NAME)) {
+            const now = pageAction.attr('to-page');
+            if (!now || !Number(now) || pageAction.hasClass(DISABLED_CLASS_NAME)) {
                 return false;
             }
-            _this.gotoPage(settings, parseInt(toPage, 10));
+            toPage(settings, parseInt(now, 10));
         });
 
         // 事件: 刷新
-        jTool(refresh.target).on(refresh.events, refresh.selector, function () {
+        jTool(refresh[TARGET]).on(refresh[EVENTS], refresh[SELECTOR], function () {
             const settings = getSettings(_);
-            _this.gotoPage(settings, settings.pageData[settings.currentPageKey]);
+            toPage(settings, settings.pageData[settings.currentPageKey]);
         });
 
         // 事件: 快捷跳转
-        jTool(gotoPage.target).on(gotoPage.events, gotoPage.selector, function (event) {
+        jTool(input[TARGET]).on(input[EVENTS], input[SELECTOR], function (event) {
             if (event.which !== 13) {
                 return;
             }
-            _this.gotoPage(getSettings(_), parseInt(this.value, 10));
+            toPage(getSettings(_), parseInt(this.value, 10));
         });
     }
 
@@ -348,7 +381,7 @@ class AjaxPage {
         const refreshAction = jTool(`${getQuerySelector(_)} .refresh-action`);
 
         // 当前刷新图标不存在
-        if (refreshAction.length === 0) {
+        if (!refreshAction.length) {
             return;
         }
 
@@ -380,22 +413,22 @@ class AjaxPage {
 	/**
 	 * 跳转至指定页
 	 * @param settings
-	 * @param toPage 跳转页
+	 * @param now 跳转页
 	 */
-	gotoPage(settings, toPage) {
-		if (!toPage || toPage < 1) {
-			toPage = 1;
+	gotoPage(settings, now) {
+		if (!now || now < 1) {
+            now = 1;
 		}
 
 		const { _, useNoTotalsMode, currentPageKey, pageData, pageSize, pageSizeKey, sortData, query, pagingBefore, pagingAfter } = settings;
 		const { tPage } = pageData;
 		// 未使用使用无总条数模式 且 跳转的指定页大于总页数时，强制跳转至最后一页
-		if (!useNoTotalsMode && toPage > tPage) {
-			toPage = tPage;
+		if (!useNoTotalsMode && now > tPage) {
+            now = tPage;
 		}
 
 		// 替换被更改的值
-		pageData[currentPageKey] = toPage;
+		pageData[currentPageKey] = now;
 		pageData[pageSizeKey] = pageData[pageSizeKey] || pageSize;
 
 		// 更新缓存

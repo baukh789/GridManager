@@ -17,9 +17,9 @@ describe('remind', () => {
 
         it('执行验证', () => {
             events = getEvent('test', '#baukh');
-            expect(events.remindStart.events).toBe('mouseover');
-            expect(events.remindStart.target).toBe('#baukh');
-            expect(events.remindStart.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${REMIND_CLASS}`);
+            expect(events.start.events).toBe('mouseover');
+            expect(events.start.target).toBe('#baukh');
+            expect(events.start.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${REMIND_CLASS}`);
         });
     });
 

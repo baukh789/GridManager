@@ -5,6 +5,8 @@ import { TOOLBAR_KEY } from '@common/constants';
 import dropdownTpl from './dropdown.tpl.html';
 import './style.less';
 import { getEvent, eventMap } from './event';
+import { EVENTS, TARGET, SELECTOR } from '@common/events';
+
 class Dropdown {
     /**
      * 初始化下拉框
@@ -14,35 +16,36 @@ class Dropdown {
         eventMap[_] = getEvent(`[${TOOLBAR_KEY}="${_}"]`);
         const { open, close, selected } = eventMap[_];
 
-        const $wrap = getWrap(_);
-        const $text = $wrap.find('.gm-dropdown .gm-dropdown-text');
-        const $ul = $wrap.find('.gm-dropdown .gm-dropdown-list');
+        const $dropdown = getWrap(_).find('.gm-dropdown');
+        const $text = $dropdown.find('.gm-dropdown-text');
+        const $ul = $dropdown.find('.gm-dropdown-list');
 
         $text.text(defaultValue);
 
         // 事件: 展示状态
-        jTool(open.target).on(open.events, open.selector, function (e) {
+        jTool(open[TARGET]).on(open[EVENTS], open[SELECTOR], function (e) {
             e.stopPropagation();
             // 事件: 关闭
-            const $body = jTool(close.target);
+            const $close = jTool(close[TARGET]);
             if ($ul.css('display') === 'block') {
                 $ul.hide();
-                $body.unbind(close.events);
+                $close.unbind(close[EVENTS]);
                 return;
             }
 
             // 事件: 打开
             $ul.show();
 
-            $body.unbind(close.events);
-            $body.bind(close.events, function () {
-                $body.unbind(close.events);
+            const closeEvents = close[EVENTS];
+            $close.unbind(closeEvents);
+            $close.bind(closeEvents, function () {
+                $close.unbind(closeEvents);
                 $ul.hide();
             });
         });
 
         // 事件: 选中
-        jTool(selected.target).on(selected.events, selected.selector, function () {
+        jTool(selected[TARGET]).on(selected[EVENTS], selected[SELECTOR], function () {
             const oldValue = parseInt($text.text(), 10);
             const newValue = this.value;
             if (oldValue === newValue) {
@@ -67,7 +70,7 @@ class Dropdown {
         });
 
         return {
-            liStr
+            li: liStr
         };
     }
 

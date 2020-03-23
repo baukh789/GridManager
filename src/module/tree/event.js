@@ -1,10 +1,12 @@
 /**
  * 树折叠功能所需的事件项
  */
+import { MOUSE_CLICK, createEventsObj } from '@common/events';
+
 export const getEvent = (scope, key) => {
     return {
         // 折叠事件
-        toggleState: {events: 'click', target: scope, selector: `[${key}] i`}
+        toggle: createEventsObj(MOUSE_CLICK, scope, `[${key}] i`)
     };
 };
 

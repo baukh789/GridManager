@@ -13,11 +13,11 @@ import { TOOLBAR_KEY } from '@common/constants';
 
 /**
  * 获取选择器
- * @param gridManagerName
+ * @param _
  * @returns {string}
  */
-export const getQuerySelector = gridManagerName => {
-    return `[${TOOLBAR_KEY}="${gridManagerName}"]`;
+export const getQuerySelector = _ => {
+    return `[${TOOLBAR_KEY}="${_}"]`;
 };
 
 /**

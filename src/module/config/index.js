@@ -7,13 +7,14 @@ import { each } from '@jTool/utils';
 import { getDiv, updateThWidth, setAreVisible, updateVisibleLast, updateScrollStatus, getFakeTh, getWrap, clearTargetEvent } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { CONFIG_KEY, CHECKED_CLASS, TH_NAME } from '@common/constants';
+import { CONFIG_KEY, CHECKED_CLASS, TH_NAME, CHECKED } from '@common/constants';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
 import configTpl from './config.tpl.html';
 import configColumnTpl from './config-column.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_CONFIG, CLASS_CONFIG_ING, CLASS_NO_CLICK } from './constants';
+import { EVENTS, TARGET, SELECTOR } from '@common/events';
 
 /**
  * 获取config 的 jtool对像
@@ -22,6 +23,23 @@ import { CLASS_CONFIG, CLASS_CONFIG_ING, CLASS_NO_CLICK } from './constants';
 const getDOM = _ => {
     return jTool(`[${CONFIG_KEY}="${_}"]`);
 };
+
+/**
+ * 更新配置列表区的高度: 用于解决 config-list 无法继承 gm-config-area 设置的 max-height问题
+ * @param _
+ */
+export const updateConfigListHeight = _ => {
+    const $tableWrap = getWrap(_);
+    const $configArea = getDOM(_);
+    const configList = $configArea.find('.config-list').get(0);
+    const $configInfo = $configArea.find('.config-info');
+    $configArea.css('visibility', 'hidden');
+    setTimeout(() => {
+        configList.style.maxHeight = (($tableWrap.height() - 90 - 20 - $configInfo.height()) || 0) + 'px';
+        $configArea.css('visibility', 'inherit');
+    });
+};
+
 
 class Config {
 
@@ -35,13 +53,13 @@ class Config {
         const { closeConfig, liChange } = eventMap[_];
 
         // 事件: 关闭
-        jTool(closeConfig.target).on(closeConfig.events, closeConfig.selector, function () {
+        jTool(closeConfig[TARGET]).on(closeConfig[EVENTS], closeConfig[SELECTOR], function () {
             // 展示事件源
             _this.hide(_);
         });
 
         // 事件: 设置
-        jTool(liChange.target).on(liChange.events, liChange.selector, function (e) {
+        jTool(liChange[TARGET]).on(liChange[EVENTS], liChange[SELECTOR], function (e) {
             e.preventDefault();
 
             // 单个的设置项
@@ -66,7 +84,7 @@ class Config {
             jTool(`.config-list .${CLASS_NO_CLICK}`, $configArea).removeClass(CLASS_NO_CLICK);
 
             // 取反事件下的checkbox的checked
-            let isVisible = !_only.find('input[type="checkbox"]').prop('checked');
+            let isVisible = !_only.find('input[type="checkbox"]').prop(CHECKED);
 
             isVisible ? $checkbox.addClass(CHECKED_CLASS) : $checkbox.removeClass(CHECKED_CLASS);
 
@@ -84,15 +102,49 @@ class Config {
             }
 
             // 通知相关组件进行更新
-            _this.noticeUpdate(_);
+            _this.update(_);
         });
+    }
+
+    /**
+     * 更新配置区域列表
+     * @param _
+     */
+    updateConfigList(_) {
+        const $configArea = getDOM(_);
+        const $configList = jTool('.config-list', $configArea);
+
+        // 可视列计数
+        let showNum = 0;
+
+        const columnList = [];
+        each(getSettings(_).columnMap, (key, col) => {
+            columnList[col.index] = col;
+        });
+
+        // 重置列的可视操作
+        $configList.html('');
+        each(columnList, (index, col) => {
+            const { key, isShow, disableCustomize } = col;
+            if (disableCustomize) {
+                return;
+            }
+            $configList.append(this.createColumn({ _, key, isShow }));
+            if (isShow) {
+                showNum++;
+            }
+        });
+
+        // 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示
+        const checkedLi = jTool('.checked-li', $configArea);
+        showNum === 1 ? checkedLi.addClass(CLASS_NO_CLICK) : checkedLi.removeClass(CLASS_NO_CLICK);
     }
 
     /**
      * 对项配置成功后，通知相关组件进行更新
      * @param _
      */
-    noticeUpdate(_) {
+    update(_) {
         // 执行前，先对当前的columnMap进行更新
         const settings = updateCache(_);
 
@@ -163,11 +215,12 @@ class Config {
 
         this.updateConfigList(_);
         $configArea.show();
-        this.updateConfigListHeight(_);
+        updateConfigListHeight(_);
 
-        const { target, events } = eventMap[_].closeConfigByBody;
+        const { closeConfigByBody } = eventMap[_];
+        const events = closeConfigByBody[EVENTS];
         // 点击空处关闭
-        const $target = jTool(target);
+        const $target = jTool(closeConfigByBody[TARGET]);
         $target.off(events);
         $target.on(events, function (e) {
             const eventSource = jTool(e.target);
@@ -185,57 +238,6 @@ class Config {
      */
     hide(_) {
         getDOM(_).hide();
-    }
-
-    /**
-     * 更新配置区域列表
-     * @param _
-     */
-    updateConfigList(_) {
-        const $configArea = getDOM(_);
-        const $configList = jTool('.config-list', $configArea);
-
-        // 可视列计数
-        let showNum = 0;
-
-        const settings = getSettings(_);
-        const columnList = [];
-        each(settings.columnMap, (key, col) => {
-            columnList[col.index] = col;
-        });
-
-        // 重置列的可视操作
-        $configList.html('');
-        each(columnList, (index, col) => {
-            let { key, isShow, disableCustomize } = col;
-            if (disableCustomize) {
-                return;
-            }
-            $configList.append(this.createColumn({ _, key, isShow }));
-            if (isShow) {
-                showNum++;
-            }
-        });
-
-        // 验证当前是否只有一列处于显示状态, 如果是则禁止取消显示
-        const checkedLi = jTool('.checked-li', $configArea);
-        showNum === 1 ? checkedLi.addClass(CLASS_NO_CLICK) : checkedLi.removeClass(CLASS_NO_CLICK);
-    }
-
-    /**
-     * 更新配置列表区的高度: 用于解决 config-list 无法继承 gm-config-area 设置的 max-height问题
-     * @param _
-     */
-    updateConfigListHeight(_) {
-        const $tableWrap = getWrap(_);
-        const $configArea = getDOM(_);
-        const configList = $configArea.find('.config-list').get(0);
-        const $configInfo = $configArea.find('.config-info');
-        $configArea.css('visibility', 'hidden');
-        setTimeout(() => {
-            configList.style.maxHeight = (($tableWrap.height() - 90 - 20 - $configInfo.height()) || 0) + 'px';
-            $configArea.css('visibility', 'inherit');
-        });
     }
 
     /**

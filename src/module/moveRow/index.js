@@ -11,6 +11,7 @@ import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from './constants';
 import { coreDOM } from '../core';
+import { TARGET, EVENTS, SELECTOR } from '@common/events';
 
 /**
  * 更新移动
@@ -113,7 +114,7 @@ class MoveRow {
         const $body = jTool('body');
         const table = getTable(_).get(0);
         eventMap[_] = getEvent(`${getQuerySelector(_)} tbody`);
-        const { dragStart, dragging, dragAbort } = eventMap[_];
+        const { start, doing, abort } = eventMap[_];
 
         const $tbody = getTbody(_);
 
@@ -124,7 +125,7 @@ class MoveRow {
 
         let oldData = null;
         // 事件: 行移动触发
-        jTool(dragStart.target).on(dragStart.events, dragStart.selector, function (e) {
+        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (e) {
             // 不用e.button的原因: 1.兼容问题, 2.buttons可以在同时按下左键与其它键时依旧跳出
             if (e.buttons !== 1) {
                 return;
@@ -169,8 +170,10 @@ class MoveRow {
 
             let trIndex = 0;
             // 事件: 行移动进行中
-            jTool(dragging.target).off(dragging.events);
-            jTool(dragging.target).on(dragging.events, function (e2) {
+            const $doing = jTool(doing[TARGET]);
+            const doingEvents = doing[EVENTS];
+            $doing.off(doingEvents);
+            $doing.on(doingEvents, function (e2) {
                 trIndex = $tr.index();
 
                 // 事件源的上一个tr
@@ -203,10 +206,12 @@ class MoveRow {
             });
 
             // 事件: 行移动结束
-            jTool(dragAbort.target).off(dragAbort.events);
-            jTool(dragAbort.target).on(dragAbort.events, function () {
-                jTool(dragging.target).off(dragging.events);
-                jTool(dragAbort.target).off(dragAbort.events);
+            const $abort = jTool(abort[TARGET]);
+            const abortEvents = abort[EVENTS];
+            $abort.off(abortEvents);
+            $abort.on(abortEvents, function () {
+                $doing.off(doingEvents);
+                $abort.off(abortEvents);
 
                 $dreamlandDIV.animate({
                     top: `${tr.offsetTop - tableDiv.scrollTop}px`

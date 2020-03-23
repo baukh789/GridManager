@@ -10,6 +10,7 @@ import { getTable, getQuerySelector, getFakeVisibleTh, getWrap, getColTd, getThN
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
+import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import config from '@module/config';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
@@ -22,13 +23,13 @@ class Drag {
      */
 	init(_) {
         const _this = this;
-        const table = getTable(_).get(0);
+        const $table = getTable(_);
         const $body = jTool('body');
         eventMap[_] = getEvent(_, `${getQuerySelector(_)} [${FAKE_TABLE_HEAD_KEY}]`);
-        const { dragStart, dragging, dragAbort } = eventMap[_];
+        const { start, doing, abort } = eventMap[_];
 
         // 拖拽事件仅绑在fake head th
-        jTool(dragStart.target).on(dragStart.events, dragStart.selector, function (event) {
+        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (event) {
             // 获取设置项
             let settings = getSettings(_);
 
@@ -66,16 +67,32 @@ class Drag {
             $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
 
             // #001
-            $dreamlandDIV.get(0).innerHTML = _this.createHtml({ table,  $th, $colTd });
+            $dreamlandDIV.get(0).innerHTML = _this.createHtml({ $table,  $th, $colTd });
 
             // 存储移动时的th所处的位置
             let _thIndex = 0;
 
+            // 境像所需要的样式: 这些样式不会随移动而改变
+            const thWidth = $th.width();
+            const thHeight = $th.height();
+            const tableHeight = $table.height();
+            const WrapOffset = $tableWrap.offset();
+
+            const baseLeft =  pageXOffset - WrapOffset.left - thWidth / 2;
+            const baseTop = pageYOffset - WrapOffset.top - thHeight / 2;
+
+            // 提前设置width, height: 可以不用在移动中每次进行设置
+            $dreamlandDIV.css({
+                width: thWidth,
+                height: tableHeight
+            });
             $dreamlandDIV.show();
 
+
             // 绑定拖拽滑动事件
-            jTool(dragging.target).off(dragging.events);
-            jTool(dragging.target).on(dragging.events, function (e2) {
+            const $doing = jTool(doing[TARGET]);
+            $doing.off(doing[EVENTS]);
+            $doing.on(doing[EVENTS], function (e2) {
                 _thIndex = $th.index($allFakeVisibleTh);
                 // 事件源的上一个th
                 let $prevTh = null;
@@ -98,31 +115,31 @@ class Drag {
                 }
 
                 // 禁用配置的列,不允许移动
-                if ($prevTh && $prevTh.length !== 0 && columnMap[prevThName].disableCustomize) {
+                if ($prevTh && $prevTh.length && columnMap[prevThName].disableCustomize) {
                     $prevTh = undefined;
-                } else if ($nextTh && $nextTh.length !== 0 && columnMap[nextThName].disableCustomize) {
+                } else if ($nextTh && $nextTh.length && columnMap[nextThName].disableCustomize) {
                     $nextTh = undefined;
                 }
 
                 $dreamlandDIV.css({
-                    width: th.offsetWidth,
-                    height: table.offsetHeight,
-                    left: e2.clientX - $tableWrap.offset().left + pageXOffset - th.offsetWidth / 2,
-                    top: e2.clientY - $tableWrap.offset().top + pageYOffset - th.offsetHeight / 2
+                    left: e2.clientX + baseLeft,
+                    top: e2.clientY + baseTop
                 });
 
                 $allFakeVisibleTh = _this.updateDrag(_, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh);
             });
 
             // 绑定拖拽停止事件
-            jTool(dragAbort.target).off(dragAbort.events);
-            jTool(dragAbort.target).on(dragAbort.events, function (event) {
-                jTool(dragging.target).off(dragging.events);
-                jTool(dragAbort.target).off(dragAbort.events);
+            const abortEvents = abort[EVENTS];
+            const $abort = jTool(abort[TARGET]);
+            $abort.off(abortEvents);
+            $abort.on(abortEvents, function (event) {
+                jTool(doing[TARGET]).off(doing[EVENTS]);
+                $abort.off(abortEvents);
 
                 // 清除镜像
                 $dreamlandDIV.animate({
-                    top: `${table.offsetTop}px`,
+                    top: `${$table.get(0).offsetTop}px`,
                     left: `${th.offsetLeft - getDiv(_).get(0).scrollLeft}px`
                 }, animateTime, () => {
                     $th.removeClass(CLASS_DRAG_ING);
@@ -158,7 +175,7 @@ class Drag {
      */
 	@parseTpl(dreamlandTpl)
     createHtml(params) {
-	    const { table, $th, $colTd } = params;
+	    const { $table, $th, $colTd } = params;
 
         // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
         let tbodyHtml = '';
@@ -170,10 +187,10 @@ class Drag {
         });
 
         return {
-            tableClassName: table.className,
-            thOuterHtml: jTool(`.${CLASS_DRAG_ACTION}`, $th).get(0).outerHTML,
+            class: $table.get(0).className,
+            th: jTool(`.${CLASS_DRAG_ACTION}`, $th).get(0).outerHTML,
             thStyle: `style="height:${$th.height()}px"`,
-            tbodyHtml: tbodyHtml
+            tbody: tbodyHtml
         };
     }
 

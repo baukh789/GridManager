@@ -17,17 +17,17 @@ describe('drag', () => {
 
         it('执行验证', () => {
             events = getEvent('test');
-            expect(events.dragStart.events).toBe('mousedown.gmLineDrag');
-            expect(events.dragStart.target).toBe('test');
-            expect(events.dragStart.selector).toBe(`tr:not([${EMPTY_TPL_KEY}])`);
+            expect(events.start.events).toBe('mousedown.gmLineDrag');
+            expect(events.start.target).toBe('test');
+            expect(events.start.selector).toBe(`tr:not([${EMPTY_TPL_KEY}])`);
 
-            expect(events.dragging.events).toBe('mousemove.gmLineDrag');
-            expect(events.dragging.target).toBe('body');
-            expect(events.dragging.selector).toBeUndefined();
+            expect(events.doing.events).toBe('mousemove.gmLineDrag');
+            expect(events.doing.target).toBe('body');
+            expect(events.doing.selector).toBeUndefined();
 
-            expect(events.dragAbort.events).toBe('mouseup.gmLineDrag');
-            expect(events.dragAbort.target).toBe('body');
-            expect(events.dragAbort.selector).toBeUndefined();
+            expect(events.abort.events).toBe('mouseup.gmLineDrag');
+            expect(events.abort.target).toBe('body');
+            expect(events.abort.selector).toBeUndefined();
         });
     });
 

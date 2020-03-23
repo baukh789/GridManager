@@ -452,6 +452,9 @@ const demo1 = {
             // rowHover: (row, rowIndex, colIndex) => {
             //     console.log(row, rowIndex, colIndex);
             // },
+            rowClick: (a, b, c) => {
+              console.log(a, b, c);
+            },
             columnData: [
                 {
                     key: 'pic',

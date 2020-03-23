@@ -4,17 +4,18 @@
  * @param scope: querySelector 域
  */
 import { CONFIG_KEY } from '@common/constants';
+import { MOUSE_CLICK, MOUSE_DOWN, createEventsObj } from '@common/events';
 export const getEvent = gridManagerName => {
     const target = `[${CONFIG_KEY}="${gridManagerName}"]`;
     return {
         // 关闭
-        closeConfig: {events: 'click', target, selector: '.config-action'},
+        closeConfig: createEventsObj(MOUSE_CLICK, target, '.config-action'),
 
         // 设置
-        liChange: {events: 'click', target, selector: '.config-list li'},
+        liChange: createEventsObj(MOUSE_CLICK, target, '.config-list li'),
 
         // 菜单
-        closeConfigByBody: {events: 'mousedown.closeConfig', target: 'body'}
+        closeConfigByBody: createEventsObj(`${MOUSE_DOWN}.closeConfig`, 'body')
     };
 };
 

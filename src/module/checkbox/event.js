@@ -3,19 +3,20 @@
  * @param gridManagerName
  * @param scope: querySelector 域
  */
+import { MOUSE_CLICK, createEventsObj } from '@common/events';
 export const getEvent = (gridManagerName, scope) => {
     return {
         // 全选框点击
-        allChange: {events: 'click', target: scope, selector: 'th[gm-checkbox] .gm-checkbox-wrapper'},
+        allChange: createEventsObj(MOUSE_CLICK, scope, 'th[gm-checkbox] .gm-checkbox-wrapper'),
 
         // 复选框点击
-        checkboxChange: {events: 'click', target: scope, selector: 'td[gm-checkbox] .gm-checkbox-wrapper'},
+        checkboxChange: createEventsObj(MOUSE_CLICK, scope, 'td[gm-checkbox] .gm-checkbox-wrapper'),
 
         // 单选框点击
-        radioChange: {events: 'click', target: scope, selector: 'td[gm-checkbox] .gm-radio-wrapper'},
+        radioChange: createEventsObj(MOUSE_CLICK, scope, 'td[gm-checkbox] .gm-radio-wrapper'),
 
         // tr 点击选中
-        trChange: {events: 'click', target: scope, selector: 'tbody > tr'}
+        trChange: createEventsObj(MOUSE_CLICK, scope, 'tbody > tr')
     };
 };
 

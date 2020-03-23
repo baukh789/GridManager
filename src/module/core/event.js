@@ -2,19 +2,23 @@
  * 核心功能所需的事件项
  * @param scope: querySelector 域
  */
+import { MOUSE_MOVE, MOUSE_CLICK, createEventsObj } from '@common/events';
+
 export const getEvent = scope => {
+    const tr = 'tbody tr';
+    const td = 'tbody td';
     return {
         // 行 hover
-        rowHover: {events: 'mousemove', target: scope, selector: 'tbody tr'},
+        rowHover: createEventsObj(MOUSE_MOVE, scope, tr),
 
         // 行 click
-        rowClick: {events: 'click', target: scope, selector: 'tbody tr'},
+        rowClick: createEventsObj(MOUSE_CLICK, scope, tr),
 
         // 单元格 hover
-        cellHover: {events: 'mousemove', target: scope, selector: 'tbody td'},
+        cellHover: createEventsObj(MOUSE_MOVE, scope, td),
 
         // 单元格 click
-        cellClick: {events: 'click', target: scope, selector: 'tbody td'}
+        cellClick: createEventsObj(MOUSE_CLICK, scope, td)
     };
 };
 

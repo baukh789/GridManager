@@ -6,10 +6,12 @@
  * #001: 这里不使用onmouseenter的原因： onmouseenter不支持事件冒泡，无法进行事件委托
  */
 import { REMIND_CLASS, FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { MOUSE_OVER, createEventsObj } from '@common/events';
+
 export const getEvent = (gridManagerName, scope) => {
     return {
         // 触发 #001
-        remindStart: {events: 'mouseover', target: scope, selector: `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .${REMIND_CLASS}`}
+        start: createEventsObj(MOUSE_OVER, scope, `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .${REMIND_CLASS}`)
     };
 };
 
