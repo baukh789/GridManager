@@ -60,16 +60,14 @@ export const getVersion = () => {
  * @returns {*}
  */
 export const getRowData = (_, target, useSourceData) => {
-    const columnMap = getSettings(_).columnMap;
-    const tableData = getTableData(_);
     const settings = getSettings(_);
-    const supportTreeData = settings.supportTreeData;
+    const tableData = getTableData(_);
     const getTrData = tr => {
         const cacheKey = tr.getAttribute(TR_CACHE_KEY);
         let rowData = tableData[cacheKey] || {};
 
         // 树型结构的数据
-        if (supportTreeData && cacheKey.indexOf('-') !== -1) {
+        if (settings.supportTreeData && cacheKey.indexOf('-') !== -1) {
             const treeKey = settings.treeConfig.treeKey;
             cacheKey.split('-').forEach((key, index) => {
                 if (index === 0) {
@@ -80,7 +78,7 @@ export const getRowData = (_, target, useSourceData) => {
             });
         }
 
-        return useSourceData ? rowData : getCloneRowData(columnMap, rowData);
+        return useSourceData ? rowData : getCloneRowData(settings.columnMap, rowData);
     };
 
     // target type = Element 元素时, 返回单条数据对象;

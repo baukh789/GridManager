@@ -13,6 +13,7 @@ import {
     getTbody,
     getTh,
     getAllTh,
+    getAllFakeTh,
     getVisibleTh,
     getFakeTh,
     getFakeVisibleTh,
@@ -378,6 +379,25 @@ describe('getAllTh(_)', () => {
 
     it('测试返回长度', () => {
         expect(getAllTh('test').length).toBe(10);
+    });
+});
+
+describe('getAllFakeTh(_)', () => {
+    beforeEach(() => {
+        document.body.innerHTML = tableTestTpl;
+    });
+
+    afterEach(() => {
+        document.body.innerHTML = '';
+    });
+
+    it('基础验证', () => {
+        expect(getAllFakeTh).toBeDefined();
+        expect(getAllFakeTh.length).toBe(1);
+    });
+
+    it('测试返回长度', () => {
+        expect(getAllFakeTh('test').length).toBe(10);
     });
 });
 

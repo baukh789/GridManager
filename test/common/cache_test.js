@@ -787,6 +787,18 @@ describe('initSettings', () => {
         expect(Object.keys(settings.columnMap)).toEqual(Object.keys(columnMap));
     });
 
+    it('存在fixed', () => {
+        let key = arg.columnData[0].key;
+        arg.columnData[0].fixed = 'left';
+        settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
+
+        expect(settings.columnMap[key].fixed).toBe('left');
+        expect(settings.columnMap[key].disableCustomize).toBe(true);
+        expect(settings._fixed).toBe(true);
+
+        key = null;
+    });
+
     it('异常配置: 丢失key', () => {
         arg.supportAutoOrder = false;
         arg.supportCheckbox = false;
