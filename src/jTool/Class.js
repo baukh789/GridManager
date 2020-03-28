@@ -1,4 +1,5 @@
 import { each } from './utils';
+import { DOM_LIST } from './constants';
 
 /**
  * 解析className 将以空格间格的字符串分割为数组
@@ -6,6 +7,7 @@ import { each } from './utils';
  * @returns {*}
  */
 function parseClassName(className) {
+    // 第一个空格不处理，所以indexOf的值为0也算做一个className
     return className.indexOf(' ') ?  className.split(' ') : [className];
 }
 
@@ -23,24 +25,26 @@ function changeClass(DOMList, className, exeName) {
             dom.classList[exeName](name);
         });
     });
-    return this;
 }
 export default {
     addClass: function (className) {
-        return changeClass(this.DOMList, className, 'add');
+        changeClass(this[DOM_LIST], className, 'add');
+        return this;
     },
 
     removeClass: function (className) {
-        return changeClass(this.DOMList, className, 'remove');
+        changeClass(this[DOM_LIST], className, 'remove');
+        return this;
     },
 
-    toggleClass: function (className) {
-        return changeClass(this.DOMList, className, 'toggle');
-    },
+    // todo baukh@20200326: 该功能在表格中未使用到
+    // toggleClass: function (className) {
+    //     changeClass(this[DOM_LIST], className, 'toggle');
+    // },
 
     // 不支持多 className
     hasClass: function (className) {
-        return [].some.call(this.DOMList, function (dom) {
+        return [].some.call(this[DOM_LIST], function (dom) {
             return dom.classList.contains(className);
         });
     }

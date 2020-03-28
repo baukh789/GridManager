@@ -1,6 +1,6 @@
 import Sizzle from '@jTool/Sizzle';
 
-describe('Sizzle', function() {
+describe('Sizzle', () => {
 
     let divEle = null;
     let divNodeList = null;

@@ -1,4 +1,5 @@
 import { isUndefined, isNull, each } from './utils';
+import { DOM_LIST } from './constants';
 
 /**
  * 转换值: 当前为null时转换为undefined
@@ -11,57 +12,72 @@ const transformVal = value => {
 };
 
 export default {
-    // 普通属性
+    /**
+     * 普通属性
+     * @param key
+     * @param value
+     * @returns {*}
+     */
     attr: function (key, value) {
-        // 未指定参数,返回空字符
-        if (isUndefined(key) && isUndefined(value)) {
-            return '';
-        }
+        const DOMList = this[DOM_LIST];
         // setter
         if (!isUndefined(value)) {
-            each(this.DOMList, (i, v) => {
+            each(DOMList, (i, v) => {
                 v.setAttribute(key, value);
             });
             return this;
-        } else{ // getter
-            return transformVal(this.DOMList[0].getAttribute(key));
         }
+
+        // getter
+        return transformVal(DOMList[0].getAttribute(key));
     },
-    // 删除普通属性
+
+    /**
+     * 删除普通属性
+     * @param key
+     */
     removeAttr: function (key) {
-        if (isUndefined(key)) {
-            return;
-        }
-        each(this.DOMList, (i, v) => {
+        each(this[DOM_LIST], (i, v) => {
             v.removeAttribute(key);
         });
     },
-    // 配置固有属性
+
+    /**
+     * 配置固有属性
+     * @param key
+     * @param value
+     * @returns {*}
+     */
     prop: function (key, value) {
-        // 未指定参数,返回空字符
-        if (isUndefined(key) && isUndefined(value)) {
-            return '';
-        }
+        const DOMList = this[DOM_LIST];
         // setter
         if (!isUndefined(value)) {
-            each(this.DOMList, (i, v) => {
+            each(DOMList, (i, v) => {
                 v[key] = value;
             });
             return this;
-        } else{ // getter
-            return transformVal(this.DOMList[0][key]);
         }
+
+        // getter
+        return transformVal(DOMList[0][key]);
     },
-    // 删除固有属性
-    removeProp: function (key) {
-        if (isUndefined(key)) {
-            return;
-        }
-        each(this.DOMList, (i, v) => {
-            delete v[key];
-        });
-    },
-    // attr -> value
+
+    /**
+     * 删除固有属性
+     * @param key
+     */
+    // todo baukh@20200326: 该功能在表格中未使用到
+    // removeProp: function (key) {
+    //     each(this[DOM_LIST], (i, v) => {
+    //         delete v[key];
+    //     });
+    // },
+
+    /**
+     * value
+     * @param value
+     * @returns {*|string}
+     */
     val: function (value) {
         return this.prop('value', value) || '';
     }

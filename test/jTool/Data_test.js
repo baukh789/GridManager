@@ -29,17 +29,23 @@ describe('Data', () => {
 	});
 
 	it('attr', () => {
-		jTool('#div1').attr('jtool', 'baukh');
+        expect(jTool('#div1').attr()).toBeUndefined();
+
+        expect(jTool('#div1').attr('jtool')).toBeUndefined();
+
+        jTool('#div1').attr('jtool', 'baukh');
 		expect(jTool('#div1').attr('jtool')).toBe('baukh');
+
 		jTool('#div1').removeAttr('jtool');
-		expect(jTool('#div1').attr('jtool')).toBe(undefined);
+		expect(jTool('#div1').attr('jtool')).toBeUndefined();
 	});
 
 	it('prop', () => {
+        expect(jTool('#div1').prop('class')).toBeUndefined();
 		jTool('#div1').prop('class', 'baukh');
 		expect(jTool('#div1').prop('class')).toBe('baukh');
-		jTool('#div1').removeProp('class');
-		expect(jTool('#div1').prop('class')).toBe(undefined);
+		// jTool('#div1').removeProp('class');
+		// expect(jTool('#div1').prop('class')).toBe(undefined);
 	});
 
 	it('val', () => {

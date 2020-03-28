@@ -72,11 +72,12 @@ export const transformToPromise = settings =>  {
 
     // ajaxData === string url
     if (isString(data)) {
+        // todo baukh@20200326: 这块在ajax中已经存在同样的逻辑，验证后需要将这块及#002的注释清除
         // #002
         // 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
-        if (ajaxType.toUpperCase() === 'POST' && !ajaxHeaders['Content-Type']) {
-            ajaxHeaders['Content-Type'] = 'application/x-www-form-urlencoded';
-        }
+        // if (ajaxType.toUpperCase() === 'POST' && !ajaxHeaders[CONTENT_TYPE]) {
+        //     ajaxHeaders[CONTENT_TYPE] = 'application/x-www-form-urlencoded';
+        // }
 
         return new Promise((resolve, reject) => {
             ajax({

@@ -149,19 +149,16 @@ class Filter {
             selectedList = selectedList.map(item => {
                 return item.trim();
             });
+
+            const parseData = {
+                checked: selectedList.indexOf(item.value) !== -1,
+                label: item.text,
+                value: item.value
+            };
+
             if (columnFilter.isMultiple) {
-                const parseData = {
-                    checked: selectedList.indexOf(item.value) !== -1,
-                    label: item.text,
-                    value: item.value
-                };
                 listHtml += `<li class="filter-checkbox">${checkbox.getCheckboxTpl(parseData)}</li>`;
             } else {
-                const parseData = {
-                    checked: selectedList.indexOf(item.value) !== -1,
-                    label: item.text,
-                    value: item.value
-                };
                 listHtml += `<li class="filter-radio">${checkbox.getRadioTpl(parseData)}</li>`;
             }
         });

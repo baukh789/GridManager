@@ -1,3 +1,4 @@
+import { DOM_LIST, JTOOL_KEY } from './constants';
 const typeMap = {
     '[object String]': 'string',
     '[object Boolean]': 'boolean',
@@ -28,8 +29,8 @@ export const noop = () => {};
 
 export const each = (object, callback) => {
     // 当前为jTool对象,循环目标更换为jTool.DOMList
-    if (object && object.jTool) {
-        object = object.DOMList;
+    if (object && object[JTOOL_KEY]) {
+        object = object[DOM_LIST];
     }
 
     const objType = type(object);
@@ -39,7 +40,7 @@ export const each = (object, callback) => {
         // 由于存在类数组 NodeList, 所以不能直接调用 every 方法
         [].every.call(object, (v, i) => {
             // 处理jTool 对象
-            if (!isWindow(v) && v.jTool) {
+            if (!isWindow(v) && v[JTOOL_KEY]) {
                 console.log(v);
                 v = v.get(0);
             }
@@ -201,6 +202,7 @@ export const isNodeList = o => {
     return type(o) === 'nodeList';
 };
 
+// export const isInclude = (list, target)
 /**
  * 合并
  * 未对数组进行递归的原因: 框架中会为列配置项添加字段，这会导致出现内存溢出问题

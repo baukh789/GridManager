@@ -77,37 +77,37 @@ describe('Document', () => {
 		jTool('#div2').before(divEle3);
 		expect(divEle2.previousElementSibling.id).toBe(divEle3.id);
 		jTool('#div3').remove();
+
+        jTool('#div2').before(jTool(divEle3));
+        expect(divEle2.previousElementSibling.id).toBe(divEle3.id);
+        jTool('#div3').remove();
 	});
 
 	it('after', () => {
 		jTool('#div2').after(divEle3);
 		expect(divEle2.nextElementSibling.id).toBe(divEle3.id);
-		jTool('#div3').remove();
+
+		jTool('#div2').after(jTool(divEle4));
+        expect(divEle2.nextElementSibling.id).toBe(divEle4.id);
+        jTool('#div3').remove();
+        jTool('#div4').remove();
 	});
 
 	it('text', () => {
 		jTool('#div2').after(divEle4);
 		expect(jTool(divEle4).text()).toBe(divEle4.textContent);
-		jTool(divEle4).remove();
 
-		// TODO 注释掉这里是因为 Document.js 中的 v.remove()替换成了v.parentNode.removeChild(v)
-		// TODO 初始确认 使用 v.remove() 不会报错， 但是remove之后该节点应该为null
-		// jTool('#div2').after(divEle4);
-		// jTool(divEle4).append(divEle3);
-		// expect(jTool(divEle4).text()).toBe(divEle4.textContent);
-		// jTool(divEle4).remove();
-		// jTool(divEle3).remove();
-        //
-		// jTool(divEle4).text('哈哈');
-		// expect(jTool(divEle4).text()).toBe('哈哈');
-		// jTool(divEle4).remove();
-        //
-		// jTool('#div2').after(divEle4);
-		// jTool(divEle4).append(divEle3);
-		// jTool(divEle4).text('哈哈');
-		// expect(jTool(divEle4).text()).toBe('哈哈');
-		// jTool(divEle4).remove();
-		// jTool(divEle3).remove();
+		jTool(divEle4).append(divEle3);
+		expect(jTool(divEle4).text()).toBe(divEle4.textContent);
+
+		jTool(divEle4).text('哈哈');
+		expect(jTool(divEle4).text()).toBe('哈哈');
+
+		jTool(divEle4).append(divEle3);
+		jTool(divEle4).text('哈哈');
+		expect(jTool(divEle4).text()).toBe('哈哈');
+        jTool(divEle3).remove();
+        jTool(divEle4).remove();
 	});
 
 	it('html', () => {
@@ -115,33 +115,34 @@ describe('Document', () => {
 		expect(jTool(divEle4).html()).toBe(divEle4.innerHTML);
 		jTool(divEle4).remove();
 
-		// jTool('#div2').after(divEle4);
-		// jTool(divEle4).append(divEle3);
-		// expect(jTool(divEle4).html()).toBe(divEle4.innerHTML);
-		// jTool(divEle4).remove();
-		// jTool(divEle3).remove();
-        //
-		// jTool(divEle4).html('<div>哈哈</div>');
-		// expect(jTool(divEle4).html()).toBe('<div>哈哈</div>');
-		// jTool(divEle4).remove();
-        //
-		// jTool('#div2').after(divEle4);
-		// jTool(divEle4).append(divEle3);
-		// jTool(divEle4).html('<div>哈哈</div>');
-		// expect(jTool(divEle4).html()).toBe('<div>哈哈</div>');
-		// jTool(divEle4).remove();
-		// jTool(divEle3).remove();
+		jTool('#div2').after(divEle4);
+		jTool(divEle4).append(divEle3);
+		expect(jTool(divEle4).html()).toBe(divEle4.innerHTML);
+		jTool(divEle4).remove();
+		jTool(divEle3).remove();
+
+		jTool(divEle4).html('<div>哈哈</div>');
+		expect(jTool(divEle4).html()).toBe('<div>哈哈</div>');
+		jTool(divEle4).remove();
+
+		jTool('#div2').after(divEle4);
+		jTool(divEle4).append(divEle3);
+		jTool(divEle4).html('<div>哈哈</div>');
+		expect(jTool(divEle4).html()).toBe('<div>哈哈</div>');
+		jTool(divEle4).remove();
+		jTool(divEle3).remove();
 	});
 
 	it('wrap', () => {
-		// jTool('#div2').append(divEle4);
-		// jTool(divEle4).wrap('div');
-		// expect(jTool('#div2').html()).toBe(divEle4.innerHTML);
-		// jTool(divEle4).remove();
+		jTool('#div2').append(divEle4);
+		jTool('#div4').wrap('<div><div></div><div class="target"></div></div>', '.target');
+		expect(jTool('#div2').html()).toBe(`<div><div></div><div class="target">${divEle4.outerHTML}</div></div>`);
+		jTool(divEle4).remove();
 	});
 
 	it('closest', () => {
 		expect(jTool('#div2').closest('body').DOMList[0].tagName).toBe(divEle2.parentNode.tagName);
+		expect(jTool(document).closest('body').DOMList).toBeUndefined();
 	});
 
 	it('parent', () => {

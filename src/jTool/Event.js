@@ -22,6 +22,7 @@
  * 在选择元素上为当前并不存在的子元素绑定事件处理函数: .on('click mousedown', '.test', function(){})
  * */
 import { isElement, isFunction, each, noop } from './utils';
+import { DOM_LIST } from './constants';
 
 const EVENT_KEY = 'jToolEvent';
 
@@ -94,11 +95,11 @@ const getEventObject = (DOMList, event, querySelector, callback, useCapture) => 
 export default {
 	on: function (event, querySelector, callback, useCapture) {
 		// 将事件触发执行的函数存储于DOM上, 在清除事件时使用
-		return this.addEvent(getEventObject(this.DOMList, event, querySelector, callback, useCapture));
+		return this.addEvent(getEventObject(this[DOM_LIST], event, querySelector, callback, useCapture));
 	},
 
 	off: function (event, querySelector) {
-		return this.removeEvent(getEventObject(this.DOMList, event, querySelector));
+		return this.removeEvent(getEventObject(this[DOM_LIST], event, querySelector));
 	},
 
 	bind: function (event, callback, useCapture) {
@@ -106,18 +107,18 @@ export default {
 	},
 
 	unbind: function (event) {
-		return this.removeEvent(getEventObject(this.DOMList, event));
+		return this.removeEvent(getEventObject(this[DOM_LIST], event));
 	},
 
 	trigger: function (eventName) {
-		each(this.DOMList, (index, element) => {
+		each(this[DOM_LIST], (index, element) => {
 			try {
 				// #Event001: trigger的事件是直接绑定在当前DOM上的
                 const eve = getEvents(element)[eventName];
 				if (eve && eve.length > 0) {
 					const myEvent = new Event(eventName); // #Event002: 创建一个事件对象，用于模拟trigger效果
 					element.dispatchEvent(myEvent);
-				} else if (eventName !== 'click') { // 当前为预绑定: 非click
+				// } else if (eventName !== 'click') { // 当前为预绑定: 非click
 					// 预绑定的事件只有click事件可以通过trigger进行调用
 				} else if (eventName === 'click') { // 当前为预绑定: click事件, 该事件为浏览器特性
 					element[eventName]();
@@ -136,7 +137,7 @@ export default {
      */
 	addEvent: function (eventList) {
 		each(eventList, (index, eventObj) => {
-			each(this.DOMList, (i, v) => {
+			each(this[DOM_LIST], (i, v) => {
 			    const events = getEvents(v);
 			    const { eventName, type, callback, useCapture } = eventObj;
                 events[eventName] = events[eventName] || [];
@@ -155,7 +156,7 @@ export default {
      */
 	removeEvent: function (eventList) {
 		each(eventList, (index, eventObj) => {
-			each(this.DOMList, (i, v) => {
+			each(this[DOM_LIST], (i, v) => {
 			    const events = getEvents(v);
 				const eventName = eventObj.eventName;
 				const eventFnList = events[eventName];

@@ -5,7 +5,10 @@
  * 与 jquery 不同的是,[success, error, complete]返回的第二个参数, 并不是返回错误信息, 而是错误码
  * */
 import { noop, each, isObject, extend } from './utils';
+
+// 内容类型
 const CONTENT_TYPE = 'Content-Type';
+const FORM_URL_ENCODED = 'application/x-www-form-urlencoded';
 
 /**
  * 获取表单数据: GET 与 POST(Content-Type !== appliaction/json)时使用
@@ -26,7 +29,7 @@ function getFormData(data) {
     return str;
 }
 export default function ajax(options) {
-    const defaults = {
+    let { url, type, data, headers, async, xhrFields, beforeSend, complete, success, error } = extend({
         url: null,		// 请求地址
         type: 'GET',	// 请求类型
         data: null,		// 传递数据
@@ -37,35 +40,29 @@ export default function ajax(options) {
         complete: noop,	// 请求发送后执行事件
         success: noop,	// 请求成功后执行事件
         error: noop		// 请求失败后执行事件
-    };
-    let { url, type, data, headers, async, xhrFields, beforeSend, complete, success, error } = extend(defaults, options);
+    }, options);
 
     type = type.toUpperCase();
-    if (!url) {
-        return;
-    }
 
     const xhr = new XMLHttpRequest();
-    let formData = '';
+    let formData = null;
 
     // GET
     if (type === 'GET') {
-        formData = getFormData(data);
-        if (formData) {
-            url = url + (url.indexOf('?') === -1 ?  '?' : '&') + formData;
+        if (data) {
+            url = url + (url.indexOf('?') === -1 ?  '?' : '&') + getFormData(data);
         }
-        formData = null;
     }
 
     // POST
     if (type === 'POST') {
         // 配置默认消息主体编码方式
         if(!headers[CONTENT_TYPE]) {
-            headers[CONTENT_TYPE] = 'application/x-www-form-urlencoded';
+            headers[CONTENT_TYPE] = FORM_URL_ENCODED;
         }
 
         // Content-Type: application/x-www-form-urlencoded || application/x-www-form-urlencoded;charset=utf-8
-        if (headers[CONTENT_TYPE].indexOf('application/x-www-form-urlencoded') === 0) {
+        if (headers[CONTENT_TYPE].indexOf(FORM_URL_ENCODED) === 0) {
             formData = getFormData(data);
         }
 
@@ -104,12 +101,13 @@ export default function ajax(options) {
             return;
         }
 
-        if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+        const status = xhr.status;
+        if (status >= 200 && status < 300 || status === 304) {
             // jquery success(XHR, TS)
-            success(xhr.response, xhr.status);
+            success(xhr.response, status);
         } else {
             // jquery error(XHR, TS, statusText)
-            error(xhr, xhr.status, xhr.statusText);
+            error(xhr, status, xhr.statusText);
         }
     };
     xhr.send(formData);

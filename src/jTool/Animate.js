@@ -12,6 +12,7 @@
  * show与hide方法只是一个简单的实现,不支持参数及动画效果
  * */
 import { each, getStyle, noop } from './utils';
+import { DOM_LIST } from './constants';
 import _Css from './Css';
 const INLINE_BLOCK = 'inline-block';
 const TABLE_CELL = 'table-cell';
@@ -25,6 +26,7 @@ const DISPLAY_MAP = {
     SPAN: INLINE_BLOCK,
     A: INLINE_BLOCK,
     FONT: INLINE_BLOCK,
+    BUTTON: INLINE_BLOCK,
     I: INLINE_BLOCK
 };
 
@@ -38,7 +40,7 @@ export default {
     animate: function (styleObj, time = 0, callback = noop) {
         let animateFromText = '';   // 动画执行前样式文本
         let animateToText = '';     // 动画执行后样式文本
-        let node = this.DOMList[0];
+        let node = this[DOM_LIST][0];
 
         // 组装动画 keyframes
         each(styleObj, (key, v) => {
@@ -50,7 +52,7 @@ export default {
 
         // 引入动画样式至页面
         const jToolAnimate = document.createElement('style');
-        jToolAnimate.className = 'jTool-animate-style';
+        // jToolAnimate.className = 'jTool-animate-style';  // todo baukh@20200326: 标识这么一个className并没有什么作用
         jToolAnimate.type = 'text/css';
         document.head.appendChild(jToolAnimate);
         jToolAnimate.textContent = jToolAnimate.textContent + animateText;
@@ -67,13 +69,13 @@ export default {
         }, time);
     },
     show: function () {
-        each(this.DOMList,  (i, v) => {
+        each(this[DOM_LIST],  (i, v) => {
             v.style.display = DISPLAY_MAP[v.nodeName] || 'block';
         });
         return this;
     },
     hide: function () {
-        each(this.DOMList, function (i, v) {
+        each(this[DOM_LIST], function (i, v) {
             v.style.display = 'none';
         });
         return this;

@@ -10,6 +10,7 @@
  * 				这种方法正常情况下没什么问题, 但是当body的position !== static时, 所计算的offset值将不包含scroll卷去的值
  * */
 import { getStyle, isNumber } from './utils';
+import { DOM_LIST } from './constants';
 
 /**
  * 根据参数对位置操作进行get,set分类操作
@@ -48,7 +49,7 @@ export default {
 			top: 0,
 			left: 0
 		};
-		const node = this.DOMList[0];
+		const node = this[DOM_LIST][0];
 
 		// #Offset001
 		// 当前为IE11以下, 直接返回{top: 0, left: 0}
@@ -72,10 +73,10 @@ export default {
 	},
 	// 获取|设置 匹配元素相对滚动条顶部的偏移 value is number
 	scrollTop: function (value) {
-		return scrollFN(this.DOMList[0], value, 'top');
+		return scrollFN(this[DOM_LIST][0], value, 'top');
 	},
 	// 获取|设置 匹配元素相对滚动条左部的偏移 value is number
 	scrollLeft: function (value) {
-		return scrollFN(this.DOMList[0], value, 'left');
+		return scrollFN(this[DOM_LIST][0], value, 'left');
 	}
 };

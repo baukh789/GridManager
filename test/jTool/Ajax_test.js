@@ -133,15 +133,60 @@ describe('ajax', () => {
 
 	it('测试请求 header', () => {
 
+	    // get
 		ajax({
 			url: '/some/url',
-			headers: {'Content-Type': 'application/json; charset=UTF-8'}
+			headers: {'Content-Type': 'application/json; charset=UTF-8'},
+            success: success
 		});
 
 		expect(jasmine.Ajax.requests.mostRecent().url).toBe('/some/url');
 		expect(jasmine.Ajax.requests.mostRecent().requestHeaders).toEqual({'Content-Type': 'application/json; charset=UTF-8'});
+
+		// post: 无Content-Type
+        ajax({
+            url: '/some/url',
+            type: 'POST',
+            success: success
+        });
+
+        expect(jasmine.Ajax.requests.mostRecent().url).toBe('/some/url');
+        expect(jasmine.Ajax.requests.mostRecent().requestHeaders).toEqual({'Content-Type': 'application/x-www-form-urlencoded'});
+
+        // post: Content-Type === application/x-www-form-urlencoded
+        ajax({
+            url: '/some/url',
+            type: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            success: success
+        });
+
+        expect(jasmine.Ajax.requests.mostRecent().url).toBe('/some/url');
+        expect(jasmine.Ajax.requests.mostRecent().requestHeaders).toEqual({'Content-Type': 'application/x-www-form-urlencoded'});
+
+        // post: Content-Type === application/json; charset=UTF-8
+        ajax({
+            url: '/some/url',
+            type: 'POST',
+            headers: {'Content-Type': 'application/json; charset=UTF-8'},
+            success: success
+        });
+
+        expect(jasmine.Ajax.requests.mostRecent().url).toBe('/some/url');
+        expect(jasmine.Ajax.requests.mostRecent().requestHeaders).toEqual({'Content-Type': 'application/json; charset=UTF-8'});
 	});
 
+    it('测试请求 xhrFields', () => {
+        ajax({
+            url: '/some/url',
+            xhrFields: {
+                withCredentials: true
+            },
+            success: success
+        });
+
+        expect(jasmine.Ajax.requests.mostRecent().withCredentials).toBe(true);
+    });
 
 	it('测试请求返回', () => {
 		ajax({

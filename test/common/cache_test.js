@@ -87,14 +87,15 @@ describe('getRowData', () => {
     });
 
     it('使用树型数据', () => {
-        store.settings.supportTreeData = true;
-        store.settings.treeConfig = {
+        store.responseData['test'] = tableData;
+        store.settings.test.supportTreeData = true;
+        store.settings.test.treeConfig = {
             insertTo: null,
             treeKey: 'children',
             openState: false
         };
-        store.responseData['test'] = tableData;
-        expect(getRowData('test', tr[8], true)).toEqual(tableData[8]);
+        tr[0].setAttribute('gm-cache-key', '0-0');
+        expect(getRowData('test', tr[0], true).id).toBe(921);
     });
 
     it('参数异常', () => {
