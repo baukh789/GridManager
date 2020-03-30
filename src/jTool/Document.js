@@ -85,19 +85,17 @@ export default {
             return DOMList[0].innerHTML;
         }
 
-        // setter
+        // setter: jtool
         if (childList[JTOOL_KEY]) {
             childList = childList[DOM_LIST];
         }
 
-        if (isString(childList)) {
-            childList = createDOM(childList || '');
+        // setter: string || number
+        if (isString(childList) || isNumber(childList)) {
+            childList = createDOM(childList);
         }
 
-        if (isNumber(childList)) {
-            childList = createDOM(childList.toString() || '');
-        }
-
+        // setter: element
         if (isElement(childList)) {
             childList = [childList];
         }
@@ -116,15 +114,17 @@ export default {
 
             each(childList, function (c, child) {
                 child = child.cloneNode(true);
-                // text node
-                if(!child.nodeType) {
-                    child = document.createTextNode(child);
-                }
+                // text node todo @baukh20200330: 当前为文本节点时， nodeType是3而不是空。这块的逻辑可能已经无用了
+                // if(!child.nodeType) {
+                //     child = document.createTextNode(child);
+                // }
                 if(firstChild) {
                     element.insertBefore(child, firstChild);
                 } else {
                     element.appendChild(child);
                 }
+
+                // 将当前节点和它的后代节点”规范化“, 相关链接: https://developer.mozilla.org/zh-CN/docs/Web/API/Node/normalize
                 element.normalize();
             });
         });

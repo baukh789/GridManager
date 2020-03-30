@@ -28,27 +28,33 @@ export const type = object => {
 export const noop = () => {};
 
 export const each = (object, callback) => {
+    // 当前参数不可用，直接跳出
+    if (isUndefined(object) || isNull(object)) { // TODO !object 可以考虑用这种方式
+        return;
+    }
+
     // 当前为jTool对象,循环目标更换为jTool.DOMList
-    if (object && object[JTOOL_KEY]) {
+    if (object[JTOOL_KEY]) {
         object = object[DOM_LIST];
     }
 
-    const objType = type(object);
-
-    // 为类数组时, 返回: index, value
-    if (objType === 'array' || objType === 'nodeList' || objType === 'arguments') {
+    // 数组或类数组: callback(index, value)
+    if (!isUndefined(object.length)) {
         // 由于存在类数组 NodeList, 所以不能直接调用 every 方法
         [].every.call(object, (v, i) => {
             // 处理jTool 对象
             if (!isWindow(v) && v[JTOOL_KEY]) {
-                console.log(v);
                 v = v.get(0);
             }
             return callback.call(v, i, v) !== false;
         });
-    } else if (objType === 'object') {
-        for(const i in object) {
-            if(callback.call(object[i], i, object[i]) === false) {
+    }
+
+    // object: callback(key, ele)
+    if (isObject(object)) {
+        for(const k in object) {
+            const o = object[k];
+            if(callback.call(o, k, o) === false) {
                 break;
             }
         }

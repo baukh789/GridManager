@@ -123,6 +123,10 @@ describe('Document', () => {
 
 		jTool(divEle4).html('<div>哈哈</div>');
 		expect(jTool(divEle4).html()).toBe('<div>哈哈</div>');
+        jTool(divEle4).html(123);
+        expect(jTool(divEle4).html()).toBe('123');
+        jTool(divEle4).html('cc');
+        expect(jTool(divEle4).html()).toBe('cc');
 		jTool(divEle4).remove();
 
 		jTool('#div2').after(divEle4);
@@ -131,6 +135,12 @@ describe('Document', () => {
 		expect(jTool(divEle4).html()).toBe('<div>哈哈</div>');
 		jTool(divEle4).remove();
 		jTool(divEle3).remove();
+
+
+        jTool(divEle4).html('');
+        divEle3.innerHTML = '<span>1</span>2<span>3</span>';
+        jTool(divEle4).append(divEle3.childNodes);
+        expect(jTool(divEle4).html()).toBe('<span>1</span>2<span>3</span>');
 	});
 
 	it('wrap', () => {
