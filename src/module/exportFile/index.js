@@ -99,7 +99,7 @@ class ExportFile {
         if (!isArray(tableList)) {
             const thDOM = getFakeVisibleTh(_, true);
             const $tbody = getTbody(_);
-            let	trDOM = null;
+            let	trDOM;
             // 验证：是否只导出已选中的表格
             if (onlyChecked) {
                 trDOM = jTool('tr[checked="true"]', $tbody);
@@ -109,16 +109,16 @@ class ExportFile {
             tableList = [];
             // 存储导出的thead
             const thList = [];
-            each(thDOM, (i, v) => {
+            each(thDOM, v => {
                 thList.push(`"${v.querySelector('.th-text').textContent || ''}"`);
             });
             tableList.push(thList);
 
             // 存储导出的tbody
-            each(trDOM, (i, v) => {
+            each(trDOM, v => {
                 let tdList = [];
                 const tdDOM = jTool(`td:not([${GM_CREATE}]):not([${CELL_HIDDEN}])`, v);
-                each(tdDOM, (i2, v2) => {
+                each(tdDOM, v2 => {
                     tdList.push(`"${v2.textContent || ''}"`); // 添加""的原因: 规避内容中英文逗号被识别为分割单元格的标识
                 });
                 tableList.push(tdList);
@@ -126,7 +126,7 @@ class ExportFile {
         }
 
         let exportHTML = '';
-        each(tableList, (i, v) => {
+        each(tableList, (v, i) => {
             if (i !== 0) {
                 exportHTML += '\r\n';
             }
@@ -182,7 +182,7 @@ class ExportFile {
 
             const res = await exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
             const blobPrototype = Blob.prototype;
-            let blob = null;
+            let blob;
 
             // res === blob
             if (Object.getPrototypeOf(res) === blobPrototype) {

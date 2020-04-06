@@ -19,16 +19,16 @@ import GridManager from './GridManager';
 		}
 
 		// 方法名
-		let name = null;
+		let name,
 
 		// 参数
-		let	arg = null;
+		arg,
 
 		// 回调函数
-		let	callback = null;
+		callback,
 
 		// 条件
-		let	condition = null;
+		condition;
 
 		const _ = arguments;
 		// 格式化参数

@@ -69,10 +69,9 @@ const getEventObject = (DOMList, event, querySelector, callback, useCapture) => 
     }
     const eventSplit = event.split(' ');
     const eventList = [];
-    let	eventScopeSplit = null;
-    let	eventObj = null;
+    let	eventScopeSplit, eventObj;
 
-    each(eventSplit, function (i, eventName) {
+    each(eventSplit, eventName => {
         if (eventName.trim() === '') {
             return true;
         }
@@ -111,7 +110,7 @@ export default {
 	},
 
 	trigger: function (eventName) {
-		each(this[DOM_LIST], (index, element) => {
+		each(this[DOM_LIST], element => {
 			try {
 				// #Event001: trigger的事件是直接绑定在当前DOM上的
                 const eve = getEvents(element)[eventName];
@@ -136,8 +135,8 @@ export default {
      * @returns {default}
      */
 	addEvent: function (eventList) {
-		each(eventList, (index, eventObj) => {
-			each(this[DOM_LIST], (i, v) => {
+		each(eventList, eventObj => {
+			each(this[DOM_LIST], v => {
 			    const events = getEvents(v);
 			    const { eventName, type, callback, useCapture } = eventObj;
                 events[eventName] = events[eventName] || [];
@@ -155,14 +154,14 @@ export default {
      * @returns {default}
      */
 	removeEvent: function (eventList) {
-		each(eventList, (index, eventObj) => {
-			each(this[DOM_LIST], (i, v) => {
-			    const events = getEvents(v);
+		each(eventList, eventObj => {
+			each(this[DOM_LIST], ele => {
+			    const events = getEvents(ele);
 				const eventName = eventObj.eventName;
 				const eventFnList = events[eventName];
 				if (eventFnList) {
-					each(eventFnList, (i2, v2) => {
-						v.removeEventListener(v2.type, v2.callback);
+					each(eventFnList, fn => {
+						ele.removeEventListener(fn.type, fn.callback);
 					});
 					delete events[eventName];
 				}

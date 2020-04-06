@@ -20,8 +20,8 @@ function parseClassName(className) {
  */
 function changeClass(DOMList, className, exeName) {
     const classNameList = parseClassName(className);
-    each(DOMList, (i, dom) => {
-        each(classNameList, (index, name) => {
+    each(DOMList, dom => {
+        each(classNameList, name => {
             dom.classList[exeName](name);
         });
     });

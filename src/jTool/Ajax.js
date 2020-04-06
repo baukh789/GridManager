@@ -45,7 +45,7 @@ export default function ajax(options) {
     type = type.toUpperCase();
 
     const xhr = new XMLHttpRequest();
-    let formData = null;
+    let formData;
 
     // GET
     if (type === 'GET') {

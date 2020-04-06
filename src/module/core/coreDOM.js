@@ -2,7 +2,7 @@ import jTool from '@jTool';
 import { isUndefined, isString, isObject, isElement, each } from '@jTool/utils';
 import { calcLayout, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
 import { outError } from '@common/utils';
-import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD } from '@common/constants';
+import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD, DISABLE_CUSTOMIZE } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
 import { mergeRow } from '../merge';
 import filter from '../filter';
@@ -49,7 +49,7 @@ class Dom {
 
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
-        each($thList, (index, item) => {
+        each($thList, item => {
             const onlyTH = jTool(item);
             const onlyThWarp = jTool('.th-wrap', onlyTH);
             const thName = onlyTH.attr(TH_NAME);
@@ -75,8 +75,6 @@ class Dom {
                     case sortDownText:
                         sortingDom.addClass('sorting-down');
                         break;
-                    default :
-                        break;
                 }
                 onlyThWarp.append(sortingDom);
             }
@@ -91,7 +89,7 @@ class Dom {
             // 嵌入宽度调整事件源,以下情况除外
             // 1.插件自动生成的选择列不做事件绑定
             // 2.禁止使用个性配置功能的列
-            if (supportAdjust && !isAutoCol && !column.disableCustomize) {
+            if (supportAdjust && !isAutoCol && !column[DISABLE_CUSTOMIZE]) {
                 onlyThWarp.append(jTool(adjust.html));
             }
         });
@@ -135,7 +133,7 @@ class Dom {
             // 与当前位置信息匹配的td列表
 
             const tdList = trObject.tdList;
-            each(columnList, (i, col) => {
+            each(columnList, col => {
                 const tdTemplate = col.template;
 
                 if (col.isAutoCreate) {
@@ -154,7 +152,7 @@ class Dom {
         try {
             const installTr = (list, level, pIndex) => {
                 const isTop = isUndefined(pIndex);
-                each(list, (index, row) => {
+                each(list, (row, index) => {
                     const trObject = {
                         className: [],
                         attribute: [],
@@ -304,8 +302,8 @@ class Dom {
      * @param columnMap
      */
     initVisible(_, columnMap) {
-        each(columnMap, (index, col) => {
-            setAreVisible(_, [col.key], col.isShow);
+        each(columnMap, (key, col) => {
+            setAreVisible(_, key, col.isShow);
         });
     }
 
@@ -332,7 +330,7 @@ class Dom {
 
         // 行事件: hover
         rowHover && (() => {
-            let hoverTr = null;
+            let hoverTr;
             const rowHoverEvent = event.rowHover;
             jTool(rowHoverEvent[TARGET]).on(rowHoverEvent[EVENTS], rowHoverEvent[SELECTOR], function () {
                 // 防止hover在同一个行内多次触发
@@ -369,7 +367,7 @@ class Dom {
 
         // 单元格事件: hover
         cellHover && (() => {
-            let hoverTd = null;
+            let hoverTd;
             const cellHoverEvent = event.cellHover;
             jTool(cellHoverEvent[TARGET]).on(cellHoverEvent[EVENTS], cellHoverEvent[SELECTOR], function () {
                 // 防止hover在同一个单元格内多次触发

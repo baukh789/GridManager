@@ -1,4 +1,4 @@
-import { getStyle, isObject, isNumber, isString, each } from './utils';
+import { getStyle, isObject, isNumber, isString, each, isUndefined } from './utils';
 import { DOM_LIST } from './constants';
 
 /**
@@ -17,13 +17,14 @@ const isPxAttr = name => {
  * @param val
  */
 function setStyle(DOMList, name, val) {
+    const PX = 'px';
     if (isNumber(val)) {
         val = val.toString();
     }
-    if (val.indexOf('px') === -1 && isPxAttr(name)) {
-        val = val + 'px';
+    if (val.indexOf(PX) === -1 && isPxAttr(name)) {
+        val = val + PX;
     }
-    each(DOMList, (i, v) => {
+    each(DOMList, v => {
         v.style[name] = val;
     });
 }
@@ -34,7 +35,7 @@ export default {
     css: function (key, value) {
         const DOMList = this[DOM_LIST];
         // getter
-        if (isString(key) && (!value && value !== 0)) {
+        if (isString(key) && isUndefined(value)) {
             if (isPxAttr(key)) {
                 return parseInt(getStyle(DOMList[0], key), 10);
             } else {

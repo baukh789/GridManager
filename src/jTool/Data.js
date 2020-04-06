@@ -22,7 +22,7 @@ export default {
         const DOMList = this[DOM_LIST];
         // setter
         if (!isUndefined(value)) {
-            each(DOMList, (i, v) => {
+            each(DOMList, v => {
                 v.setAttribute(key, value);
             });
             return this;
@@ -37,7 +37,7 @@ export default {
      * @param key
      */
     removeAttr: function (key) {
-        each(this[DOM_LIST], (i, v) => {
+        each(this[DOM_LIST], v => {
             v.removeAttribute(key);
         });
     },
@@ -52,7 +52,7 @@ export default {
         const DOMList = this[DOM_LIST];
         // setter
         if (!isUndefined(value)) {
-            each(DOMList, (i, v) => {
+            each(DOMList, v => {
                 v[key] = value;
             });
             return this;
@@ -68,7 +68,7 @@ export default {
      */
     // todo baukh@20200326: 该功能在表格中未使用到
     // removeProp: function (key) {
-    //     each(this[DOM_LIST], (i, v) => {
+    //     each(this[DOM_LIST], v => {
     //         delete v[key];
     //     });
     // },

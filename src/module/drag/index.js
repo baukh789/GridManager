@@ -9,7 +9,7 @@ import { each } from '@jTool/utils';
 import { getTable, getQuerySelector, getFakeVisibleTh, getWrap, getColTd, getThName, getDiv, getTh, updateVisibleLast, updateScrollStatus, clearTargetEvent } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
+import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, DISABLE_CUSTOMIZE, PX } from '@common/constants';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import config from '@module/config';
 import dreamlandTpl from './dreamland.tpl.html';
@@ -95,8 +95,8 @@ class Drag {
             $doing.on(doing[EVENTS], function (e2) {
                 _thIndex = $th.index($allFakeVisibleTh);
                 // 事件源的上一个th
-                let $prevTh = null;
-                let prevThName = null;
+                let $prevTh,
+                    prevThName;
 
                 // 当前移动的非第一列
                 if (_thIndex > 0) {
@@ -105,8 +105,8 @@ class Drag {
                 }
 
                 // 事件源的下一个th
-                let $nextTh = null;
-                let nextThName = null;
+                let $nextTh,
+                    nextThName;
 
                 // 当前移动的非最后一列
                 if (_thIndex < $allFakeVisibleTh.length - 1) {
@@ -115,9 +115,9 @@ class Drag {
                 }
 
                 // 禁用配置的列,不允许移动
-                if ($prevTh && $prevTh.length && columnMap[prevThName].disableCustomize) {
+                if ($prevTh && $prevTh.length && columnMap[prevThName][DISABLE_CUSTOMIZE]) {
                     $prevTh = undefined;
-                } else if ($nextTh && $nextTh.length && columnMap[nextThName].disableCustomize) {
+                } else if ($nextTh && $nextTh.length && columnMap[nextThName][DISABLE_CUSTOMIZE]) {
                     $nextTh = undefined;
                 }
 
@@ -139,8 +139,8 @@ class Drag {
 
                 // 清除镜像
                 $dreamlandDIV.animate({
-                    top: `${$table.get(0).offsetTop}px`,
-                    left: `${th.offsetLeft - getDiv(_).get(0).scrollLeft}px`
+                    top: $table.get(0).offsetTop + PX,
+                    left: `${th.offsetLeft - getDiv(_).get(0).scrollLeft + PX}`
                 }, animateTime, () => {
                     $th.removeClass(CLASS_DRAG_ING);
                     $colTd.removeClass(CLASS_DRAG_ING);
@@ -179,9 +179,9 @@ class Drag {
 
         // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
         let tbodyHtml = '';
-        each($colTd, (i, v) => {
+        each($colTd, v => {
             const cloneTd = v.cloneNode(true);
-            cloneTd.style.height = v.offsetHeight + 'px';
+            cloneTd.style.height = v.offsetHeight + PX;
             const cloneTr = jTool(v).closest('tr').clone();
             tbodyHtml += cloneTr.html(cloneTd.outerHTML).get(0).outerHTML;
         });
@@ -189,7 +189,7 @@ class Drag {
         return {
             class: $table.get(0).className,
             th: jTool(`.${CLASS_DRAG_ACTION}`, $th).get(0).outerHTML,
-            thStyle: `style="height:${$th.height()}px"`,
+            thStyle: `style="height:${$th.height() + PX}"`,
             tbody: tbodyHtml
         };
     }
@@ -210,7 +210,7 @@ class Drag {
             // 事件源对应的上一组td
 		    let prevTd = getColTd($prevTh);
             $prevTh.before($th);
-			each($colTd, (i, v) => {
+			each($colTd, (v, i) => {
 				prevTd.eq(i).before(v);
 			});
 
@@ -227,7 +227,7 @@ class Drag {
             // 事件源对应的下一组td
 		    let nextTd = getColTd($nextTh);
 			$nextTh.after($th);
-			each($colTd, (i, v) => {
+			each($colTd, (v, i) => {
 				nextTd.eq(i).after(v);
 			});
 

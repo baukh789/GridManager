@@ -62,7 +62,7 @@ export default {
         const DOMList = this[DOM_LIST];
         // setter
         if (!isUndefined(text)) {
-            each(DOMList, function (i, v) {
+            each(DOMList, v => {
                 v.textContent = text;
             });
             return this;
@@ -100,8 +100,8 @@ export default {
             childList = [childList];
         }
 
-        let firstChild = null;
-        each(DOMList, function (e, element) {
+        let firstChild;
+        each(DOMList, element => {
             // html
             if(!insertType) {
                 element.innerHTML = '';
@@ -112,7 +112,7 @@ export default {
                 firstChild = element.firstChild;
             }
 
-            each(childList, function (c, child) {
+            each(childList, child => {
                 child = child.cloneNode(true);
                 // text node todo @baukh20200330: 当前为文本节点时， nodeType是3而不是空。这块的逻辑可能已经无用了
                 // if(!child.nodeType) {
@@ -197,7 +197,7 @@ export default {
      * 批量删除节点
      */
     remove: function () {
-        each(this[DOM_LIST], function (i, v) {
+        each(this[DOM_LIST], v => {
             v.remove(); // v.parentNode.removeChild(v);
         });
     }

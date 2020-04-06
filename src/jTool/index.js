@@ -23,7 +23,7 @@ jTool.extend(utils);
 jTool.ajax = ajax;
 
 // 捆绑jTool 方法
-each([_Event, _Css, _Class, _Document, _Offset, _Element, _Animate, _Data], (i, v) => {
+each([_Event, _Css, _Class, _Document, _Offset, _Element, _Animate, _Data], v => {
     jTool.prototype.extend(v);
 });
 

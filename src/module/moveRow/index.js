@@ -6,7 +6,7 @@ import { getTable, getTbody, getQuerySelector, getWrap, getDiv, clearTargetEvent
 import { getTableData, setTableData, getSettings, getCheckedData, setCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { mergeRow, clearMergeRow } from '../merge';
-import { TR_CACHE_KEY, NO_SELECT_CLASS_NAME, ODD } from '@common/constants';
+import { TR_CACHE_KEY, NO_SELECT_CLASS_NAME, ODD, PX } from '@common/constants';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from './constants';
@@ -26,7 +26,7 @@ import { TARGET, EVENTS, SELECTOR } from '@common/events';
  */
 const update = (_, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData) => {
     const oldCacheKey = $tr.attr(TR_CACHE_KEY);
-    let $target = null;
+    let $target;
     // 处理向上移动
     if ($prevTr && $dreamlandDIV.offset().top < $prevTr.offset().top) {
         $prevTr.before($tr);
@@ -123,7 +123,7 @@ class MoveRow {
 
         $tbody.addClass('move-row');
 
-        let oldData = null;
+        let oldData;
         // 事件: 行移动触发
         jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (e) {
             // 不用e.button的原因: 1.兼容问题, 2.buttons可以在同时按下左键与其它键时依旧跳出
@@ -177,7 +177,7 @@ class MoveRow {
                 trIndex = $tr.index();
 
                 // 事件源的上一个tr
-                let $prevTr = null;
+                let $prevTr;
 
                 // 当前移动的非第一列
                 if (trIndex > 0) {
@@ -185,7 +185,7 @@ class MoveRow {
                 }
 
                 // 事件源的下一个th
-                let $nextTr = null;
+                let $nextTr;
 
                 // 当前移动的非最后一列
                 if (trIndex < $allTr.length - 1) {
@@ -214,7 +214,7 @@ class MoveRow {
                 $abort.off(abortEvents);
 
                 $dreamlandDIV.animate({
-                    top: `${tr.offsetTop - tableDiv.scrollTop}px`
+                    top: `${tr.offsetTop - tableDiv.scrollTop + PX}`
                 }, animateTime, () => {
                     $tr.removeClass(CLASS_DRAG_ING);
                     $dreamlandDIV.remove();
@@ -227,11 +227,11 @@ class MoveRow {
                 if (supportAutoOrder) {
                     const $orderDOM = jTool('[gm-order]', $allTr);
                     const orderList = [];
-                    each($orderDOM, (index, order) => {
+                    each($orderDOM, order => {
                         orderList.push(parseInt(order.innerText, 10));
                     });
                     orderList.sort((a, b) => a - b);
-                    each($orderDOM, (index, order) => {
+                    each($orderDOM, (order, index) => {
                         order.innerText = orderList[index];
                     });
                 }
@@ -280,7 +280,7 @@ class MoveRow {
         const cloneTr = tr.cloneNode(true);
 
         const cloneTd = cloneTr.querySelectorAll('td');
-        each(jTool('td', tr), (index, td) => {
+        each(jTool('td', tr), (td, index) => {
             cloneTd[index].width = jTool(td).width() || 0;
         });
 

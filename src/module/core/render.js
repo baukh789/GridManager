@@ -1,7 +1,7 @@
 import order from '../order';
 import ajaxPage from '../ajaxPage';
 import { CLASS_DRAG_ACTION } from '../drag/constants';
-import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, CELL_HIDDEN } from '@common/constants';
+import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, CELL_HIDDEN, DISABLE_CUSTOMIZE } from '@common/constants';
 import { isUndefined, isString, isObject, each } from '@jTool/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
@@ -70,7 +70,7 @@ class Render {
 
         let thListTpl = '';
         // columnList 生成thead
-        each(columnList, (index, col) => {
+        each(columnList, col => {
             thListTpl += this.createThTpl({settings, col});
         });
 
@@ -163,7 +163,7 @@ class Render {
         // 1.插件自动生成列
         // 2.禁止使用个性配置功能的列
         let dragClassName = '';
-        if (supportDrag && !col.isAutoCreate && !col.disableCustomize) {
+        if (supportDrag && !col.isAutoCreate && !col[DISABLE_CUSTOMIZE]) {
             dragClassName = CLASS_DRAG_ACTION;
         }
 

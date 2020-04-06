@@ -26,7 +26,7 @@ const updateSortStyle = _ => {
     const thAttr = 'sorting';
 
     // 重置排序样式
-    each(jTool(`${getQuerySelector(_)} .${SORT_CLASS}`), (i, v) => {
+    each(jTool(`${getQuerySelector(_)} .${SORT_CLASS}`), v => {
         jTool(v).removeClass(`${upClass} ${downClass}`);
         jTool(v).closest('th').attr(thAttr, '');
     });

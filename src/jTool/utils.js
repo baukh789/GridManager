@@ -1,4 +1,4 @@
-import { DOM_LIST, JTOOL_KEY } from './constants';
+import { DOM_LIST, JTOOL_KEY, JTOOL_DOM_ID } from './constants';
 const typeMap = {
     '[object String]': 'string',
     '[object Boolean]': 'boolean',
@@ -18,18 +18,18 @@ const typeMap = {
 };
 
 export const isWindow = object => {
-    return object !== null && object === object.window;
+    return object && object === object.window;
 };
 
 export const type = object => {
-    return typeMap[Object.prototype.toString.call(object)] || (object instanceof Element ? 'element' : '');
+    return object instanceof Element ? 'element' : typeMap[Object.prototype.toString.call(object)];
 };
 
 export const noop = () => {};
 
 export const each = (object, callback) => {
     // 当前参数不可用，直接跳出
-    if (isUndefined(object) || isNull(object)) { // TODO !object 可以考虑用这种方式
+    if (!object) {
         return;
     }
 
@@ -38,23 +38,23 @@ export const each = (object, callback) => {
         object = object[DOM_LIST];
     }
 
-    // 数组或类数组: callback(index, value)
+    // 数组或类数组: callback(value, index)
     if (!isUndefined(object.length)) {
         // 由于存在类数组 NodeList, 所以不能直接调用 every 方法
-        [].every.call(object, (v, i) => {
+        [].every.call(object, (ele, index) => {
             // 处理jTool 对象
-            if (!isWindow(v) && v[JTOOL_KEY]) {
-                v = v.get(0);
+            if (!isWindow(ele) && ele[JTOOL_KEY]) {
+                ele = ele.get(0);
             }
-            return callback.call(v, i, v) !== false;
+            return callback.call(ele, ele, index) !== false;
         });
     }
 
     // object: callback(key, ele)
     if (isObject(object)) {
-        for(const k in object) {
-            const o = object[k];
-            if(callback.call(o, k, o) === false) {
+        for(const key in object) {
+            const ele = object[key];
+            if(callback.call(ele, key, ele) === false) {
                 break;
             }
         }
@@ -69,37 +69,35 @@ export const getStyle = (dom, key) => {
 // 通过html字符串, 生成DOM.  返回生成后的子节点
 // 该方法无处处理包含table标签的字符串,但是可以处理table下属的标签
 export const createDOM = htmlString => {
-    let jToolDOM = document.querySelector('#jTool-create-dom');
-    if (!jToolDOM || jToolDOM.length === 0) {
+    let jToolDOM = document.querySelector(`#${JTOOL_DOM_ID}`);
+    if (!jToolDOM) {
         // table标签 可以在新建element时可以更好的容错.
         // div标签, 添加thead,tbody等表格标签时,只会对中间的文本进行创建
         // table标签,在添加任务标签时,都会成功生成.且会对table类标签进行自动补全
         const el = document.createElement('table');
-        el.id = 'jTool-create-dom';
+        el.id = JTOOL_DOM_ID;
         el.style.display = 'none';
         document.body.appendChild(el);
-        jToolDOM = document.querySelector('#jTool-create-dom');
+        jToolDOM = document.querySelector(`#${JTOOL_DOM_ID}`);
     }
 
     jToolDOM.innerHTML = htmlString || '';
     let childNodes = jToolDOM.childNodes;
 
     // 进行table类标签清理, 原因是在增加如th,td等table类标签时,浏览器会自动补全节点.
-    if (childNodes.length === 1 && !/<tbody|<TBODY/.test(htmlString) && childNodes[0].nodeName === 'TBODY') {
-        childNodes = childNodes[0].childNodes;
+    if (childNodes.length === 1) {
+        const firstNode = childNodes[0];
+        const firstNodeName = firstNode.nodeName;
+        const firstChildNodes = firstNode.childNodes;
+        if ((!/<tbody|<TBODY/.test(htmlString) && firstNodeName === 'TBODY')
+        || (!/<thead|<THEAD/.test(htmlString) && firstNodeName === 'THEAD')
+        || (!/<tr|<TR/.test(htmlString) &&  firstNodeName === 'TR')
+        || (!/<td|<TD/.test(htmlString) && firstNodeName === 'TD')
+        || (!/<th|<TH/.test(htmlString) && firstNodeName === 'TH')) {
+            childNodes = firstChildNodes;
+        }
     }
-    if (childNodes.length === 1 && !/<thead|<THEAD/.test(htmlString) && childNodes[0].nodeName === 'THEAD') {
-        childNodes = childNodes[0].childNodes;
-    }
-    if (childNodes.length === 1 && !/<tr|<TR/.test(htmlString) &&  childNodes[0].nodeName === 'TR') {
-        childNodes = childNodes[0].childNodes;
-    }
-    if (childNodes.length === 1 && !/<td|<TD/.test(htmlString) && childNodes[0].nodeName === 'TD') {
-        childNodes = childNodes[0].childNodes;
-    }
-    if (childNodes.length === 1 && !/<th|<TH/.test(htmlString) && childNodes[0].nodeName === 'TH') {
-        childNodes = childNodes[0].childNodes;
-    }
+
     document.body.removeChild(jToolDOM);
     return childNodes;
 };
@@ -223,7 +221,7 @@ export function extend() {
     let deep = false; // 是否递归
     let	i = 1;
     let	target = arguments[0];
-    let	options = null;
+    let	options;
 
     // 参数只有一个且为对象类形 -> 对jTool进行扩展
     if (arguments.length === 1 && isObject(arguments[0])) {

@@ -663,6 +663,13 @@ describe('setAreVisible(_, thNameList, isVisible, cb)', () => {
         expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBeUndefined();
         expect(getTh('test', 'title').attr(CELL_HIDDEN)).toBeUndefined();
         expect(getTh('test', 'pic').attr(CELL_HIDDEN)).toBeUndefined();
+
+
+        // 传入非数组
+        setAreVisible(_, 'gm_checkbox', false);
+        expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBe('');
+        setAreVisible(_, 'gm_checkbox', true);
+        expect(getTh('test', 'gm_checkbox').attr(CELL_HIDDEN)).toBeUndefined();
     });
 });
 

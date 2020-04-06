@@ -10,7 +10,7 @@ import jTool from '@jTool';
 import { each } from '@jTool/utils';
 import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus, getAllTh, getAllFakeTh } from '@common/base';
 import { getSettings, updateCache } from '@common/cache';
-import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, PX } from '@common/constants';
 import { compileFakeThead } from '@common/framework';
 import { updateConfigListHeight } from '../config';
 import fixed from '../fixed';
@@ -58,11 +58,11 @@ class Scroll {
         // 重置thead的宽度和位置
         getFakeThead(_).css({
             width: getThead(_).width(),
-            left: -$tableDiv.scrollLeft() + 'px'
+            left: -$tableDiv.scrollLeft() + PX
         });
 
         // 重置th的宽度
-        each(getAllTh(_), (i, th) => {
+        each(getAllTh(_), (th, i) => {
             getAllFakeTh(_).eq(i).width(jTool(th).width());
         });
 

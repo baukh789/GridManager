@@ -109,7 +109,7 @@ export const resetCheckboxDOM = (_, tableData, useRadio, max) => {
 
     if (!useRadio && isNumber(max)) {
         const $tbodyCheckWrap = jTool('tbody .gm-checkbox-wrapper ', $table);
-        each($tbodyCheckWrap, (index, wrap) => {
+        each($tbodyCheckWrap, wrap => {
             const $wrap = jTool(wrap);
             const checkbox = jTool('.gm-checkbox', $wrap);
             if (!checkbox.hasClass('gm-checkbox-checked')) {

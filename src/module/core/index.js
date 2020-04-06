@@ -179,7 +179,7 @@ class Core {
         await sendCompile(settings);
 
         // thead 下的 th 到这一步只存在控制列宽的作用，所以在这里将内容清除
-        each(getAllTh(_), (i, item) => {
+        each(getAllTh(_), item => {
             item.innerHTML = '';
         });
 

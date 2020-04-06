@@ -7,6 +7,7 @@
 import { getCloneRowData, getTable, getTh } from '@common/base';
 import { isUndefined, isFunction, isObject, isString, isElement, each, isNodeList, extend } from '@jTool/utils';
 import { outInfo, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
+import { DISABLE_CUSTOMIZE, PX } from '@common/constants';
 import { Settings } from '@common/Settings';
 import textConfig from '@module/i18n/config';
 import store from '@common/Store';
@@ -89,7 +90,7 @@ export const getRowData = (_, target, useSourceData) => {
     // target type =  NodeList 类型时, 返回数组
     if (isNodeList(target)) {
         let rodData = [];
-        each(target, (i, tr) => {
+        each(target, tr => {
             rodData.push(getTrData(tr));
         });
         return rodData;
@@ -530,11 +531,11 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
             settings._fixed = true;
 
             // 使用后 disableCustomize 将强制变更为true
-            col.disableCustomize = true;
+            col[DISABLE_CUSTOMIZE] = true;
         }
 
         // 存在disableCustomize时，必须设置width
-        if (col.disableCustomize && !col.width) {
+        if (col[DISABLE_CUSTOMIZE] && !col.width) {
             outError(`column ${key}: width must be set`);
             isError = true;
             return;
@@ -602,7 +603,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
                 || columnCache[key].sorting !== col.sorting
 
                 // 禁止使用个性配置功能
-                || columnCache[key].disableCustomize !== col.disableCustomize
+                || columnCache[key][DISABLE_CUSTOMIZE] !== col[DISABLE_CUSTOMIZE]
 
                 // 禁止使用行移动
                 || columnCache[key].disableMoveRow !== col.disableMoveRow
@@ -668,13 +669,13 @@ export const updateCache = _ => {
     // 更新 columnMap , 适用操作[宽度调整, 位置调整, 可视状态调整]
     each(columnMap, (key, col) => {
         // 禁用定制列: 不处理
-        if (col.disableCustomize) {
+        if (col[DISABLE_CUSTOMIZE]) {
             return;
         }
 
         let th = getTh(_, col.key);
         // 宽度
-        col.width = th.width() + 'px';
+        col.width = th.width() + PX;
 
         // 位置索引
         col.index = th.index();

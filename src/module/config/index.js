@@ -7,7 +7,7 @@ import { each } from '@jTool/utils';
 import { getDiv, updateThWidth, setAreVisible, updateVisibleLast, updateScrollStatus, getFakeTh, getWrap, clearTargetEvent } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { CONFIG_KEY, CHECKED_CLASS, TH_NAME, CHECKED } from '@common/constants';
+import { CONFIG_KEY, CHECKED_CLASS, TH_NAME, CHECKED, DISABLE_CUSTOMIZE, PX } from '@common/constants';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
 import configTpl from './config.tpl.html';
@@ -35,7 +35,7 @@ export const updateConfigListHeight = _ => {
     const $configInfo = $configArea.find('.config-info');
     $configArea.css('visibility', 'hidden');
     setTimeout(() => {
-        configList.style.maxHeight = (($tableWrap.height() - 90 - 20 - $configInfo.height()) || 0) + 'px';
+        configList.style.maxHeight = (($tableWrap.height() - 90 - 20 - $configInfo.height()) || 0) + PX;
         $configArea.css('visibility', 'inherit');
     });
 };
@@ -90,7 +90,7 @@ class Config {
 
             // 设置与当前th同列的td可视状态
             $tableDiv.addClass(CLASS_CONFIG_ING);
-            setAreVisible(_, [_thName], isVisible);
+            setAreVisible(_, _thName, isVisible);
             $tableDiv.removeClass(CLASS_CONFIG_ING);
 
             // 当前处于选中状态的展示项
@@ -124,9 +124,9 @@ class Config {
 
         // 重置列的可视操作
         $configList.html('');
-        each(columnList, (index, col) => {
-            const { key, isShow, disableCustomize } = col;
-            if (disableCustomize) {
+        each(columnList, col => {
+            const { key, isShow } = col;
+            if (col[DISABLE_CUSTOMIZE]) {
                 return;
             }
             $configList.append(this.createColumn({ _, key, isShow }));

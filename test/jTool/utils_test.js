@@ -1,5 +1,7 @@
 import { isWindow, type, noop, each, getStyle, createDOM, extend, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isEmptyObject, isArray, isElement, isNodeList } from '@jTool/utils';
+import { JTOOL_DOM_ID } from '@jTool/constants';
 import tableTpl from '@test/table-test.tpl.html';
+import jTool from '@jTool';
 
 describe('isWindow(o)', () => {
     it('基础验证', () => {
@@ -86,14 +88,39 @@ describe('each', () => {
         expect(each.length).toBe(2);
     });
 
+    it('遍历数字', () => {
+        const num = 123;
+        each(num, callback);
+        expect(callback.calls.count()).toBe(0);
+    });
+
+    it('遍历null undefined', () => {
+        each(null, callback);
+        expect(callback.calls.count()).toBe(0);
+
+        each(undefined, callback);
+        expect(callback.calls.count()).toBe(0);
+    });
+
+    it('遍历字符串', () => {
+        const str = 'abc';
+        each(str, callback);
+        expect(callback.calls.count()).toBe(3);
+        expect(callback.calls.argsFor(0)).toEqual(['a', 0]);
+        expect(callback.calls.argsFor(1)).toEqual(['b', 1]);
+        expect(callback.calls.argsFor(2)).toEqual(['c', 2]);
+    });
+
     it('遍历数组', () => {
         const arr = [1, 2, 3];
         each(arr, callback);
         expect(callback.calls.count()).toBe(3);
-        expect(callback.calls.argsFor(0)).toEqual([0, 1]);
+        expect(callback.calls.argsFor(0)).toEqual([1, 0]);
+        expect(callback.calls.argsFor(1)).toEqual([2, 1]);
+        expect(callback.calls.argsFor(2)).toEqual([3, 2]);
 
         let sum = 0;
-        each(arr, (i, v) => {
+        each(arr, v => {
             sum += v;
         });
         expect(sum).toBe(6);
@@ -122,18 +149,17 @@ describe('each', () => {
         each(obj, callback);
         expect(callback.calls.count()).toBe(3);
         expect(callback.calls.argsFor(0)).toEqual(['a', 1]);
+        expect(callback.calls.argsFor(1)).toEqual(['b', 2]);
+        expect(callback.calls.argsFor(2)).toEqual(['c', 3]);
     });
 
     it('遍历 JTool 对象', () => {
-        const obj = {
-            'a': 1,
-            'b': 2,
-            'c': 3
-        };
+        each(jTool(nodeList), callback);
+        expect(callback.calls.count()).toBe(nodeList.length);
+    });
 
-        obj.jTool = 'jTool';
-        obj.DOMList = nodeList;
-        each(obj, callback);
+    it('遍历包含jTool对像的数组', () => {
+        each([jTool(nodeList)], callback);
         expect(callback.calls.count()).toBe(1);
     });
 });
@@ -183,7 +209,7 @@ describe('createDOM(htmlString)', () => {
 
     it('执行结果', () => {
         expect(createDOM('<div id="haha">hahaha</div>')[0].id).toBe('haha');
-        expect(document.getElementById('jTool-create-dom')).toBe(null);
+        expect(document.getElementById(JTOOL_DOM_ID)).toBe(null);
     });
 });
 

@@ -2,7 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from '@jTool';
-import { isString, each, extend } from '@jTool/utils';
+import { isString, isArray, each, extend } from '@jTool/utils';
 import {
     FAKE_TABLE_HEAD_KEY,
     TABLE_HEAD_KEY,
@@ -22,6 +22,8 @@ import {
     TH_NAME,
     REMIND_CLASS,
     ROW_CLASS_NAME,
+    DISABLE_CUSTOMIZE,
+    PX,
     SORT_CLASS
 } from './constants';
 import { CLASS_FILTER } from '@module/filter/constants';
@@ -279,7 +281,8 @@ export const getColTd = ($dom, $context) => {
  * @param isVisible: 是否可见
  */
 export const setAreVisible = (_, thNameList, isVisible) => {
-    each(thNameList, (i, thName) => {
+    // 在 showTh | hideTh方法中允许传入数组
+    each(isArray(thNameList) ? thNameList : [thNameList], thName => {
         const $th = getTh(_, thName);
         const $fakeTh = getFakeTh(_, thName);
         const $td = getColTd($th);
@@ -341,9 +344,9 @@ export const updateThWidth = (settings, isInit) => {
     const autoList = [];
 
     // 存储首列
-    let firstCol = null;
+    let firstCol;
     each(columnMap, (key, col) => {
-        const { __width, width, isShow, disableCustomize } = col;
+        const { __width, width, isShow } = col;
 
         // 不可见列: 不处理
         if (!isShow) {
@@ -351,7 +354,7 @@ export const updateThWidth = (settings, isInit) => {
         }
 
         // 禁用定制列: 仅统计总宽，不进行宽度处理
-        if (disableCustomize) {
+        if (col[DISABLE_CUSTOMIZE]) {
             totalWidth -= parseInt(width, 10);
             return;
         }
@@ -388,19 +391,19 @@ export const updateThWidth = (settings, isInit) => {
 
     // 未存在自动列 且 存在剩余的值: 将第一个可定制列宽度强制与剩余宽度相加
     if (autoLen === 0 && overage > 0) {
-        firstCol.width = `${parseInt(firstCol.width, 10) + overage}px`;
+        firstCol.width = `${parseInt(firstCol.width, 10) + overage + PX}`;
     }
 
     // 存在自动列 且 存在剩余宽度: 平分剩余的宽度
     if (autoLen && overage > 0) {
         const splitVal = Math.floor(overage / autoLen);
-        each(autoList, (index, col) => {
+        each(autoList, (col, index) => {
             // 最后一项自动列: 将余值全部赋予
             if (index === autoLen - 1) {
-                col.width = `${parseInt(col.width, 10) + overage}px`;
+                col.width = parseInt(col.width, 10) + overage + PX;
                 return;
             }
-            col.width = `${parseInt(col.width, 10) + splitVal}px`;
+            col.width = parseInt(col.width, 10) + splitVal + PX;
             overage = overage - splitVal;
         });
     }
@@ -408,7 +411,7 @@ export const updateThWidth = (settings, isInit) => {
     // 绘制th宽度
     each(columnMap, (key, col) => {
         // 可见 且 禁用定制列 不处理
-        if (col.isShow && col.disableCustomize) {
+        if (col.isShow && col[DISABLE_CUSTOMIZE]) {
             return;
         }
         getTh(_, key).width(col.width);
@@ -498,9 +501,9 @@ export const calcLayout = (_, width, height, supportAjaxPage) => {
     // 包含calc的样式，无法通过jTool对像进行赋值，所以需要通过.style的方式赋值
     tableWrap.style.width = `calc(${width})`;
     tableWrap.style.height = `calc(${height})`;
-    tableWrap.style.paddingTop = theadHeight + 'px';
+    tableWrap.style.paddingTop = theadHeight + PX;
 
-    getDiv(_).get(0).style.height = supportAjaxPage ? `calc(100% - ${jTool(`[${TOOLBAR_KEY}="${_}"]`).height()}px)` : '100%';
+    getDiv(_).get(0).style.height = supportAjaxPage ? `calc(100% - ${jTool(`[${TOOLBAR_KEY}="${_}"]`).height() + PX})` : '100%';
     jTool('.table-header', tableWrap).height(theadHeight);
     getTable(_).css('margin-top',  -theadHeight);
 };

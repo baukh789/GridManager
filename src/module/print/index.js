@@ -27,7 +27,7 @@ export default function print(_) {
     // 清除表格样式
     const $th = $table.find(`[${TABLE_HEAD_KEY}] th`);
     $th.removeAttr('style');
-    each($th, (i, th) => {
+    each($th, (th, i) => {
         th.innerHTML = fakeTh.eq(i).find('.th-text').html();
     });
     $table.removeAttr('style');

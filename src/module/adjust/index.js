@@ -20,8 +20,7 @@ import { EVENTS, TARGET, SELECTOR } from '@common/events';
  * @private
  */
 const runMoveEvent = (_, $th, $nextTh, isIconFollowText) => {
-    let _thWidth = null;
-    let	_NextWidth = null;
+    let _thWidth, _NextWidth;
     let _thMinWidth = getThTextWidth(_, $th, isIconFollowText);
     let	_NextThMinWidth = getThTextWidth(_, $nextTh, isIconFollowText);
     const { doing } = eventMap[_];

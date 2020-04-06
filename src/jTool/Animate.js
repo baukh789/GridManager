@@ -69,13 +69,13 @@ export default {
         }, time);
     },
     show: function () {
-        each(this[DOM_LIST],  (i, v) => {
+        each(this[DOM_LIST],  v => {
             v.style.display = DISPLAY_MAP[v.nodeName] || 'block';
         });
         return this;
     },
     hide: function () {
-        each(this[DOM_LIST], function (i, v) {
+        each(this[DOM_LIST], v => {
             v.style.display = 'none';
         });
         return this;

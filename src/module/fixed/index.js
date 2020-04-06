@@ -1,6 +1,6 @@
 import jTool from '@jTool';
 import { getWrap, getDiv, getTh, getFakeThead, getThead } from '@common/base';
-import { TABLE_KEY, EMPTY_TPL_KEY, TH_NAME } from '@common/constants';
+import { TABLE_KEY, EMPTY_TPL_KEY, TH_NAME, PX } from '@common/constants';
 import { each } from '@jTool/utils';
 import './style.less';
 
@@ -17,7 +17,7 @@ const getStyle = (_, item, direction, shadowValue, theadWidth) => {
     }
     return `[gm-overflow-x="true"] [${TABLE_KEY}="${_}"] tr:not([${EMPTY_TPL_KEY}]) td:nth-of-type(${jTool(item).index() + 1}){`
            + 'position: sticky;\n'
-           + `${direction}: ${directionValue}px;\n`
+           + `${direction}: ${directionValue + PX};\n`
            + 'border-right: none;\n'
            + 'z-index: 3;\n'
            + `box-shadow: ${shadowValue};`
@@ -50,7 +50,7 @@ class Fixed {
         let styleStr = '';
         const $fixedLeft = $thead.find(getFixedQuerySelector(LEFT));
         let shadowValue = disableLine ? '' : `inset -1px 0 ${SHADOW_COLOR}`;
-        each($fixedLeft, (index, item) => {
+        each($fixedLeft, (item, index) => {
             if (index === $fixedLeft.length - 1) {
                 shadowValue = `2px 1px 3px ${SHADOW_COLOR}`;
             }
@@ -59,7 +59,7 @@ class Fixed {
         });
         const theadWidth = $thead.width();
         shadowValue = `-2px 1px 3px ${SHADOW_COLOR}`;
-        each($thead.find(getFixedQuerySelector(RIGHT)), (index, item) => {
+        each($thead.find(getFixedQuerySelector(RIGHT)), (item, index) => {
             if (index !== 0) {
                 shadowValue = disableLine ? '' : `-1px 1px 0 ${SHADOW_COLOR}`;
             }
@@ -84,17 +84,17 @@ class Fixed {
         const scrollLeft = $tableDiv.scrollLeft();
         const $fixedList = $fakeThead.find(getFixedQuerySelector(LEFT));
 
-        each($fixedList, (index, item) => {
-            item.style.left = -(scrollLeft - getTh(_, item.getAttribute(TH_NAME)).get(0).offsetLeft) + 'px';
+        each($fixedList, (item, index) => {
+            item.style.left = -(scrollLeft - getTh(_, item.getAttribute(TH_NAME)).get(0).offsetLeft) + PX;
             index === $fixedList.length - 1 && item.setAttribute(fixedBorderAttr, '');
         });
 
         const $rightList = $fakeThead.find(getFixedQuerySelector(RIGHT));
         const theadWidth = $fakeThead.width();
 
-        each($rightList, (index, item) => {
+        each($rightList, (item, index) => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
-            item.style.right = (theadWidth - $th.get(0).offsetLeft + scrollLeft - $th.width())  + 'px';
+            item.style.right = (theadWidth - $th.get(0).offsetLeft + scrollLeft - $th.width())  + PX;
             index === 0 && item.setAttribute(fixedBorderAttr, '');
         });
     }

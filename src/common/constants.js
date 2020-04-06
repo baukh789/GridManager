@@ -131,6 +131,11 @@ export const SORT_CLASS = 'gm-sorting-action';
 // 偶数行标识，不直接使用css odd是由于存在层级数据时无法排除折叠元素
 export const ODD = 'odd';
 
+// 该列是否禁止使用个性配置功能
+export const DISABLE_CUSTOMIZE = 'disableCustomize';
+
+// 像素
+export const PX = 'px';
 // 公开方法列表
 // export const GM_PUBLISH_METHOD_LIST = [
 // 	'init',

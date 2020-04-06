@@ -52,9 +52,9 @@ export default function Sizzle(selector, context) {
         }
 
         const list = [];
-        each(context, function (i, v) {
+        each(context, v => {
             // NodeList 只是类数组, 直接使用 concat 并不会将两个数组中的参数边接, 而是会直接将 NodeList 做为一个参数合并成为二维数组
-            each(v.querySelectorAll(selector), function (i2, v2) {
+            each(v.querySelectorAll(selector), v2 => {
                 v2 && list.push(v2);
             });
         });

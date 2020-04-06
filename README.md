@@ -193,7 +193,7 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
     <td>
         <a href="https://github.com/heriky">
             <img alt="" width="100" height="100" class="avatar width-full rounded-2" src="https://avatars1.githubusercontent.com/u/12195736?s=460&v=4">
-            <div style="text-align:center">silence717</div>
+            <div style="text-align:center">heriky</div>
         </a>
     </td>
 </tr>
