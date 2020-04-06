@@ -9,7 +9,7 @@ import { isString, isFunction, isArray, each } from '@jTool/utils';
 import { showLoading, hideLoading, getDiv, getTbody, getAllTh, getVisibleTh, getEmpty } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
 import { getTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
-import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, EMPTY_TPL_KEY } from '@common/constants';
+import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, EMPTY_TPL_KEY, PX } from '@common/constants';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';
 import { resetCheckboxDOM } from '../checkbox';
@@ -141,7 +141,7 @@ class Core {
         const $tbody = getTbody(_);
         const $tableDiv = getDiv(_);
         $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
-        $tbody.html(`<tr ${EMPTY_TPL_KEY}="${_}" style="height: ${$tableDiv.height() - 1}px"><td colspan="${getVisibleTh(_).length}"></td></tr>`);
+        $tbody.html(`<tr ${EMPTY_TPL_KEY}="${_}" style="height: ${$tableDiv.height() - 1 + PX}"><td colspan="${getVisibleTh(_).length}"></td></tr>`);
         const emptyTd = getEmpty(_).get(0).querySelector('td');
 
         emptyTd.innerHTML = compileEmptyTemplate(settings, emptyTd, emptyTemplate);
