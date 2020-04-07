@@ -36,6 +36,11 @@ export const each = (object, callback) => {
     // 当前为jTool对象,循环目标更换为jTool.DOMList
     if (object[JTOOL_KEY]) {
         object = object[DOM_LIST];
+
+        // DOM_LIST可能为空，若为空直接跳出
+        if (isUndefined(object)) {
+            return;
+        }
     }
 
     // 数组或类数组: callback(value, index)
