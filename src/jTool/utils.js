@@ -86,7 +86,7 @@ export const createDOM = htmlString => {
         jToolDOM = document.querySelector(`#${JTOOL_DOM_ID}`);
     }
 
-    jToolDOM.innerHTML = htmlString || '';
+    jToolDOM.innerHTML = isUndefined(htmlString) ? '' : htmlString;
     let childNodes = jToolDOM.childNodes;
 
     // 进行table类标签清理, 原因是在增加如th,td等table类标签时,浏览器会自动补全节点.
