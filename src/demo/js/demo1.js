@@ -490,7 +490,6 @@ const demo1 = {
                 }, {
                     key: 'title',
                     remind: 'the title',
-                    align: 'left',
                     text: '标题',
                     sorting: '',
                     disableMoveRow: true,
@@ -580,6 +579,7 @@ const demo1 = {
                     key: 'priority',
                     text: '优先级',
                     fixed: 'right',
+                    align: 'right',
                     width: '100px'
                 },
                 {
