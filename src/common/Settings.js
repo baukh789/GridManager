@@ -327,6 +327,13 @@ const gridData = {
         // 该列是否禁止使用个性配置功能(宽度调整、位置更换、列的显示隐藏)
         disableCustomize: false
 
+        // 指定当前列禁止触发行移动事件，默认为:false
+        disableMoveRow: false,
+
+        // @2.11.5
+        // 指定当前列禁止触发行选中事件，默认为:false
+        disableRowCheck: false,
+
         // @2.8.12
         // 是否将相同数据列合并，在配置template的情况下会以template的执行结果进行比对
         merge: false,

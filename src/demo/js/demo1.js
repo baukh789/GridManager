@@ -287,7 +287,7 @@ const demo1 = {
                 // useRadio: true,
 
                 // 使用行选中
-                // useRowCheck: true,
+                useRowCheck: true,
 
                 // 复选时最大可选数
                 // max: 2,
@@ -589,6 +589,7 @@ const demo1 = {
                     align: 'center',
                     fixed: 'right',
                     disableMoveRow: true,
+                    disableRowCheck: true,
                     text: '<span style="color: red">操作</span>',
                     // 直接返回 通过函数返回
                     template: (action, row) => {

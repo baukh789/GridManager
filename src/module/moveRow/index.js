@@ -262,11 +262,7 @@ class MoveRow {
      * @param col
      */
     addSign(col) {
-        if (!col.disableMoveRow) {
-            return '';
-        }
-        return DISABLE_MOVE;
-        // col.disableMoveRow && td.setAttribute(DISABLE_MOVE, '');
+        return col.disableMoveRow ? DISABLE_MOVE : '';
     }
 
     /**

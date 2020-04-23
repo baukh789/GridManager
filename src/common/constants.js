@@ -131,7 +131,7 @@ export const SORT_CLASS = 'gm-sorting-action';
 // 偶数行标识，不直接使用css odd是由于存在层级数据时无法排除折叠元素
 export const ODD = 'odd';
 
-// 该列是否禁止使用个性配置功能
+// 该列是否禁止使用个性配置功能(宽度调整、位置更换、列的显示隐藏)
 export const DISABLE_CUSTOMIZE = 'disableCustomize';
 
 // 像素

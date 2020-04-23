@@ -9,6 +9,7 @@ import filter from '../filter';
 import sort from '../sort';
 import adjust from '../adjust';
 import tree from '../tree';
+import checkbox from '../checkbox';
 import remind from '../remind';
 import render from './render';
 import moveRow from '../moveRow';
@@ -105,6 +106,7 @@ class Dom {
             _,
             columnMap,
             supportTreeData,
+            supportCheckbox,
             supportMoveRow,
             treeConfig
         } = settings;
@@ -144,8 +146,9 @@ class Dom {
                 let { text, compileAttr } = compileTd(settings, tdTemplate, row, rowIndex, col.key);
                 const alignAttr = col.align ? `align=${col.align}` : '';
                 const moveRowAttr = supportMoveRow ? moveRow.addSign(col) : '';
+                const useRowCheckAttr = supportCheckbox ? checkbox.addSign(col) : '';
                 text = isElement(text) ? text.outerHTML : text;
-                tdList.push(`<td ${compileAttr} ${alignAttr} ${moveRowAttr}>${text}</td>`);
+                tdList.push(`<td ${compileAttr} ${alignAttr} ${moveRowAttr} ${useRowCheckAttr}>${text}</td>`);
             });
         };
 

@@ -12,7 +12,7 @@ import { CHECKBOX_WIDTH,
     CHECKED_CLASS,
     INDETERMINATE_CLASS } from '@common/constants';
 import jTool from '@jTool';
-import { each, isNumber } from '@jTool/utils';
+import { each, isNumber, isString } from '@jTool/utils';
 import { getQuerySelector, getTable, clearTargetEvent } from '@common/base';
 import { getSettings, getCheckedData, getRowData } from '@common/cache';
 import { parseTpl } from '@common/parse';
@@ -25,9 +25,8 @@ import { EVENTS, TARGET, SELECTOR } from '@common/events';
 import { resetData } from './tool';
 import './style.less';
 
-// 禁止选择class
-const disabledClass = 'disabled-selected';
-
+// 禁止选择标识
+const DISABLED_SELECTED = 'disabled-selected';
 
 /**
  * 更新单选框状态
@@ -113,12 +112,12 @@ export const resetCheckboxDOM = (_, tableData, useRadio, max) => {
             const $wrap = jTool(wrap);
             const checkbox = jTool('.gm-checkbox', $wrap);
             if (!checkbox.hasClass('gm-checkbox-checked')) {
-                getCheckedData(_).length >= max  ? $wrap.addClass(disabledClass) : $wrap.removeClass(disabledClass);
+                getCheckedData(_).length >= max  ? $wrap.addClass(DISABLED_SELECTED) : $wrap.removeClass(DISABLED_SELECTED);
             }
         });
 
         // 设置全选禁用状态
-        $tbodyCheckWrap.length > max ? $allCheck.addClass(disabledClass) : $allCheck.removeClass(disabledClass);
+        $tbodyCheckWrap.length > max ? $allCheck.addClass(DISABLED_SELECTED) : $allCheck.removeClass(DISABLED_SELECTED);
     }
 };
 
@@ -191,13 +190,18 @@ class Checkbox {
             jTool(trChange[TARGET]).on(trChange[EVENTS], trChange[SELECTOR], function (e) {
                 const rowData = getRowData(_, this, true);
                 const $checkboxWrap = jTool('td[gm-checkbox] label', this);
-
+                let $td = jTool(e.target);
+                if (e.target.nodeName !== 'TD') {
+                    $td = $td.closest('td');
+                }
                 if (
                     // 当前行数据未指定禁止选中
                     !rowData[ROW_DISABLED_CHECKBOX] &&
 
+                    !isString($td.attr(DISABLED_SELECTED)) &&
+
                     // 当前选择框DOM上未被指定禁止选中
-                    !$checkboxWrap.hasClass(disabledClass) &&
+                    !$checkboxWrap.hasClass(DISABLED_SELECTED) &&
 
                     // 当前事件源非单选框或多选框(防止多次触发);
                     [].indexOf.call(e[TARGET].classList, 'gm-radio-checkbox-input') === -1) {
@@ -207,7 +211,15 @@ class Checkbox {
         }
     }
 
-	/**
+    /**
+     * 增加行行选中标识
+     * @param col
+     */
+    addSign(col) {
+        return col.disableRowCheck ? DISABLED_SELECTED : '';
+    }
+
+    /**
 	 * 获取当前页选中的行
 	 * @param _
 	 * @returns {NodeListOf<Element>}
