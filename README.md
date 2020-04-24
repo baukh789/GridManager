@@ -154,8 +154,8 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
 ## 皮肤
 > 以下皮肤为第三方提供，如果你也有过好的实现，请提交至 [issues](https://github.com/baukh789/GridManager/issues)
 
-- [ccms-skin](https://github.com/BoWang816/GridManager-ccms-skin)
-- [element-skin](https://github.com/xtfan21/GridManager-element-skin)
+- [element-ui](https://github.com/xtfan21/GridManager-element-skin)
+- [ant-design](https://github.com/BoWang816/GridManager-antDesign-skin)
 
 ## 贡献者
 <table>
