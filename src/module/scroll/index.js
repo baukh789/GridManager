@@ -12,8 +12,8 @@ import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollSt
 import { getSettings, updateCache } from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, PX } from '@common/constants';
 import { compileFakeThead } from '@common/framework';
-import { updateConfigListHeight } from '../config';
-import fixed from '../fixed';
+import { updateConfigListHeight } from '@module/config';
+import fixed from '@module/fixed';
 import { RESIZE, SCROLL } from '@common/events';
 import './style.less';
 class Scroll {

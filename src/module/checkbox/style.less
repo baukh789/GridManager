@@ -8,8 +8,8 @@
 
 // 复选、单选 共用样式
 [gm-checkbox] {
-    padding: 0;
-    .th-wrap{
+    // 清除th容器的padding
+    &[th-name] .th-wrap{
         padding: 0;
     }
     input[type=checkbox] {

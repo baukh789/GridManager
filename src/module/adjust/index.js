@@ -10,6 +10,7 @@ import { CLASS_ADJUST_ACTION, CLASS_ADJUST_SELECT } from './constants';
 import { getSettings, updateCache } from '@common/cache';
 import { getEvent, eventMap } from './event';
 import { EVENTS, TARGET, SELECTOR } from '@common/events';
+import fixed from '@module/fixed';
 
 /**
  * 执行移动事件
@@ -56,6 +57,12 @@ const runMoveEvent = (_, $th, $nextTh, isIconFollowText) => {
             getTh(_, $nextTh).width(_NextWidth);
             getFakeThead(_).width(getThead(_).width());
         }
+
+        // 更新滚动轴状态
+        updateScrollStatus(_);
+
+        // 更新固定列
+        fixed.updateFakeThead(_);
     });
 };
 
@@ -81,9 +88,6 @@ const runStopEvent = (_, $table, $th, $td, adjustAfter) => {
         $th.removeClass(CLASS_ADJUST_SELECT);
         $td.removeClass(CLASS_ADJUST_SELECT);
         $table.removeClass(NO_SELECT_CLASS_NAME);
-
-        // 更新滚动轴状态
-        updateScrollStatus(_);
 
         // 更新存储信息
         updateCache(_);
