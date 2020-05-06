@@ -183,7 +183,6 @@ describe('getStyle(dom, key)', () => {
     });
 
     it('执行结果', () => {
-        expect(getStyle(divEle)).toEqual(jasmine.any(Object));
         divEle.style.fontSize = '12px';
         expect(getStyle(divEle, 'font-size')).toBe('12px');
     });

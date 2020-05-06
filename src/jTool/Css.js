@@ -36,11 +36,11 @@ export default {
         const DOMList = this[DOM_LIST];
         // getter
         if (isString(key) && isUndefined(value)) {
+            let style = getStyle(DOMList[0], key);
             if (isPxAttr(key)) {
-                return parseInt(getStyle(DOMList[0], key), 10);
-            } else {
-                return getStyle(DOMList[0], key);
+                style = parseInt(style, 10);
             }
+            return style;
         }
 
         // setter

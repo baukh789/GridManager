@@ -2,16 +2,12 @@
 
 @shadow-color: #e8e8e8;
 // th样式, 在JS中会动态的变更left | right值
-//.table-div:not([gm-overflow-x="true"]){
-//    [grid-manager-mock-thead]{
-//        padding: 0!important;
-//    }
-//}
 [gm-overflow-x="false"] [grid-manager-mock-thead]{
     padding: 0!important;
     [fixed]{
         height: auto!important;
         position: static;
+        box-shadow: none!important;
     }
 }
 [gm-overflow-x="true"] [grid-manager-mock-thead]{
@@ -27,18 +23,7 @@
                 height: auto;
             }
         }
-    }
-    //[fixed="left"]{
-    //    box-shadow: inset -1px 0 @shadow-color;
-    //    &[fixed-border]{
-    //        box-shadow: 2px -2px 3px @shadow-color;
-    //    }
-    //}
-    [fixed="right"]{
-        //box-shadow: -1px 0 0@shadow-color;
-        //&[fixed-border]{
-        //    box-shadow: -2px -2px 3px @shadow-color;
-        //}
+
         &:last-child:after{
             display: block;
             width: 10px;

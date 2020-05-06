@@ -68,7 +68,7 @@ export const each = (object, callback) => {
 
 // 获取节点样式: key为空时则返回全部
 export const getStyle = (dom, key) => {
-    return key ? getComputedStyle(dom)[key] : getComputedStyle(dom);
+    return getComputedStyle(dom)[key];
 };
 
 // 通过html字符串, 生成DOM.  返回生成后的子节点

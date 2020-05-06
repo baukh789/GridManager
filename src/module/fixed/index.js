@@ -66,7 +66,6 @@ class Fixed {
             const $th = getTh(_, item.getAttribute(TH_NAME));
             if (index === $leftList.length - 1) {
                 shadowValue = `2px 1px 3px ${SHADOW_COLOR}`;
-                // item.setAttribute(fixedBorderAttr, '');
             }
             pl += $th.width();
             item.style.height = fakeTheadHeight;
@@ -126,21 +125,11 @@ class Fixed {
 
         // 将数组进行倒序操作
         let pr = 0;
-        rightMap[_].forEach((item, index) => {
-            const $th = getTh(_, item.getAttribute(TH_NAME));
+        rightMap[_].forEach(item => {
             item.style.right = pr + scrollRight  + PX;
-            pr += $th.width();
+            pr += getTh(_, item.getAttribute(TH_NAME)).width();
         });
     }
-
-    /**
-     * 消毁 todo 需要确认是否需要
-     * @param _
-     */
-    // destroy(_) {
-    //     delete leftMap[_];
-    //     delete rightMap[_];
-    // }
 }
 
 export default new Fixed();
