@@ -1,21 +1,15 @@
-import { getWrap, getDiv, getTh, getFakeThead, getThead } from '@common/base';
+import { getWrap, getDiv, getTh, getFakeThead, getThead, getTbody } from '@common/base';
 import { TABLE_KEY, EMPTY_TPL_KEY, TH_NAME, PX } from '@common/constants';
 import { each } from '@jTool/utils';
+import scroll from '@module/scroll';
 import './style.less';
 
 const LEFT = 'left';
 const RIGHT = 'right';
 const SHADOW_COLOR = '#e8e8e8';
-const getStyle = (_, fakeTh, direction, shadowValue, theadWidth) => {
+const getStyle = (_, fakeTh, direction, shadowValue, directionValue) => {
     const $th = getTh(_, fakeTh.getAttribute(TH_NAME));
-    const th = $th.get(0);
-    let directionValue = '';
-    if (direction === LEFT) {
-        directionValue = th.offsetLeft;
-    }
-    if (direction === RIGHT) {
-        directionValue = theadWidth - th.offsetLeft - th.offsetWidth;
-    }
+
     return `[gm-overflow-x="true"] [${TABLE_KEY}="${_}"] tr:not([${EMPTY_TPL_KEY}]) td:nth-of-type(${$th.index() + 1}){`
            + 'position: sticky;\n'
            + `${direction}: ${directionValue + PX};\n`
@@ -61,35 +55,41 @@ class Fixed {
         let pl = 0;
         let pr = 0;
         const $leftList = $fakeThead.find(getFixedQuerySelector(LEFT));
+        const leftLen = $leftList.length;
         let shadowValue = disableLine ? '' : `inset -1px 0 ${SHADOW_COLOR}`;
         each($leftList, (item, index) => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
-            if (index === $leftList.length - 1) {
+            if (index === leftLen - 1) {
                 shadowValue = `2px 1px 3px ${SHADOW_COLOR}`;
             }
+            styleStr += getStyle(_, item, LEFT, shadowValue, pl);
             pl += $th.width();
             item.style.height = fakeTheadHeight;
             item.style.boxShadow = shadowValue;
-            styleStr += getStyle(_, item, LEFT, shadowValue);
         });
         $fakeThead.css('padding-left', pl);
         leftMap[_] = $leftList;
 
-        const theadWidth = $thead.width();
-        shadowValue = `-2px 1px 3px ${SHADOW_COLOR}`;
+        // const theadWidth = $thead.width();
+        setTimeout(() => {
+            console.log($thead.width());
+        });
+        shadowValue = disableLine ? '' : `-1px 1px 0 ${SHADOW_COLOR}`;
         const $rightList = $fakeThead.find(getFixedQuerySelector(RIGHT));
-        each($rightList, (item, index) => {
+        const rightLen = $rightList.length;
+        rightMap[_] = ($rightList.DOMList || []).reverse();
+        rightMap[_].forEach((item, index) => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
-            if (index !== 0) {
-                shadowValue = disableLine ? '' : `-1px 1px 0 ${SHADOW_COLOR}`;
+            if (index === rightLen - 1) {
+                shadowValue = `-2px 1px 3px ${SHADOW_COLOR}`;
             }
             item.style.height = fakeTheadHeight;
             item.style.boxShadow = shadowValue;
+            styleStr += getStyle(_, item, RIGHT, shadowValue, pr);
+            // styleStr += getStyle(_, item, RIGHT, shadowValue, index === 0 ? pr : pr + 1);
             pr += $th.width();
-            styleStr += getStyle(_, item, RIGHT, shadowValue, theadWidth);
         });
         $fakeThead.css('padding-right', pr - 1); // todo -1是容错处理: 由于Table元素的特性需要放宽一个像素
-        rightMap[_] = ($rightList.DOMList || []).reverse();
 
         styleLink.innerHTML = styleStr;
         $tableDiv.append(styleLink);
@@ -111,22 +111,22 @@ class Fixed {
 
         // todo 这里的性能需要进行优化
         const scrollLeft = $tableDiv.scrollLeft();
-        each(leftMap[_], (item, index) => {
+        each(leftMap[_], item => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
             item.style.left = scrollLeft + $th.get(0).offsetLeft + PX;
         });
 
         let scrollRight = theadWidth - divWidth - scrollLeft;
 
-        // Chrome 的滚动轴通过样式控制了宽度，所以需要增加10个像素 todo 如果后贯还有类似的操作，需要将这个判断抽取为工具函数
-        if (navigator.userAgent.indexOf('Chrome') > -1) {
-            scrollRight += 10;
+        // 存在Y轴滚动轴
+        if (getTbody(_).height() > $tableDiv.get(0).clientHeight) {
+            scrollRight += scroll.width;
         }
 
         // 将数组进行倒序操作
         let pr = 0;
         rightMap[_].forEach(item => {
-            item.style.right = pr + scrollRight  + PX;
+            item.style.right = pr + scrollRight + PX;
             pr += getTh(_, item.getAttribute(TH_NAME)).width();
         });
     }

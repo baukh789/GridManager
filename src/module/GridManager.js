@@ -3,7 +3,7 @@
  * 构造类
  */
 import jTool from '@jTool';
-import { extend, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, each, isEmptyObject } from '@jTool/utils';
+import { extend, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, each, isEmptyObject, getStyle } from '@jTool/utils';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME, PX } from '@common/constants';
 import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
@@ -202,19 +202,24 @@ export default class GridManager {
             })();
         };
 
+        function isAvailable() {
+            return getStyle(table, 'width').indexOf(PX) !== -1;
+        }
         // 初始化表格
-        // 表格不可用时进行等待
-        SIV_waitTableAvailable[gridManagerName] = setInterval(() => {
-            if (getComputedStyle(table).width.indexOf(PX) === -1) {
-                return;
-            }
-
-            clearInterval(SIV_waitTableAvailable[gridManagerName]);
-            SIV_waitTableAvailable[gridManagerName] = null;
-
-            // 初始化表格, setInterval未停止前 initTable并不会执行
+        if (isAvailable()) {
             this.initTable($table, settings).then(initTableAfter);
-        }, 50);
+        } else {
+            // 表格不可用时进行等待
+            SIV_waitTableAvailable[gridManagerName] = setInterval(() => {
+                if (isAvailable()) {
+                    clearInterval(SIV_waitTableAvailable[gridManagerName]);
+                    SIV_waitTableAvailable[gridManagerName] = null;
+
+                    // 初始化表格, setInterval未停止前 initTable并不会执行
+                    this.initTable($table, settings).then(initTableAfter);
+                }
+            }, 50);
+        }
     }
 
     /**

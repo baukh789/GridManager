@@ -5,7 +5,7 @@
  * 3.重置tbody
  */
 import './style.less';
-import { isString, isFunction, isArray, each } from '@jTool/utils';
+import { isString, isFunction, isArray, each, getStyle } from '@jTool/utils';
 import { showLoading, hideLoading, getDiv, getTbody, getAllTh, getVisibleTh, getEmpty } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
 import { getTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
@@ -195,10 +195,15 @@ class Core {
      */
     waitContainerAvailable(_) {
         const tableWarp = document.querySelector(`[${WRAP_KEY}="${_}"]`);
+        function isAvailable() {
+            return getStyle(tableWarp, 'width') !== '100%';
+        }
+        if (isAvailable()) {
+            return;
+        }
         return new Promise(resolve => {
             SIV_waitContainerAvailable[_] = setInterval(() => {
-                let tableWarpWidth = getComputedStyle(tableWarp).width;
-                if (tableWarpWidth !== '100%') {
+                if (isAvailable()) {
                     clearInterval(SIV_waitContainerAvailable[_]);
                     SIV_waitContainerAvailable[_] = null;
                     resolve();

@@ -8,7 +8,7 @@
  * */
 import jTool from '@jTool';
 import { each } from '@jTool/utils';
-import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus, getAllTh, getAllFakeTh } from '@common/base';
+import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus, getAllTh, getAllFakeTh, getScrollBarWidth } from '@common/base';
 import { getSettings, updateCache } from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, PX } from '@common/constants';
 import { compileFakeThead } from '@common/framework';
@@ -16,7 +16,11 @@ import { updateConfigListHeight } from '@module/config';
 import fixed from '@module/fixed';
 import { RESIZE, SCROLL } from '@common/events';
 import './style.less';
+
 class Scroll {
+    // 当前Y滚动轴的宽度
+    width = 0;
+
     /**
      * 初始化
      * @param _
@@ -25,6 +29,7 @@ class Scroll {
         this.render(_);
         this.bindResizeToTable(_);
         this.bindScrollToTableDiv(_);
+        this.width = getScrollBarWidth(_);
 	}
 
     /**

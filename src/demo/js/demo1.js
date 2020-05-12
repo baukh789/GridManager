@@ -287,7 +287,7 @@ const demo1 = {
                 // useRadio: true,
 
                 // 使用行选中
-                useRowCheck: true,
+                // useRowCheck: true,
 
                 // 复选时最大可选数
                 // max: 2,

@@ -469,7 +469,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
 
     // 合并参数
     let settings = new Settings();
-    settings.textConfig = textConfig;
+    settings.textConfig = new textConfig();
 
     extend(true, settings, arg);
 

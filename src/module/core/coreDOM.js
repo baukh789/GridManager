@@ -12,6 +12,7 @@ import tree from '../tree';
 import checkbox from '../checkbox';
 import remind from '../remind';
 import render from './render';
+import fixed from '@module/fixed';
 import moveRow from '../moveRow';
 import { getTopFull } from '../fullColumn';
 import { getEvent, eventMap } from './event';
@@ -239,6 +240,8 @@ class Dom {
 
             // 合并单元格
             mergeRow(_, columnMap);
+
+            fixed.updateFakeThead(_);
         });
     }
 

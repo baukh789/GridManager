@@ -519,3 +519,24 @@ export const clearTargetEvent = eventMap => {
         $target.length && $target.off(eve[EVENTS], eve[SELECTOR]);
     }
 };
+
+/**
+ * 获取滚动轴宽度
+ * @returns {number}
+ */
+export const getScrollBarWidth = _ => {
+    const el = document.createElement('div');
+
+    el.style.width = '100px';
+    el.style.height = '100px';
+    el.style.overflow = 'scroll';
+
+    // getDiv(_).append(el);  // todo .html中的clone清除后，可以不再需要get(0)
+    getDiv(_).get(0).appendChild(el);
+
+    const width = el.offsetWidth - el.clientWidth;
+
+    // 将添加的元素删除
+    el.remove();
+    return width;
+};

@@ -213,8 +213,8 @@
 		    return data;
         };
 		var ajaxData2 = {
-			"data": getData(20),
-			"totals": 20
+			"data": getData(4),
+			"totals": 2
 		};
 	</script>
 	<script type="text/javascript">
@@ -243,7 +243,7 @@
                     openState: false,
                     treeKey: 'children'
                 },
-				ajaxData: ajaxData1,
+				ajaxData: ajaxData2,
                 // useRadio: true,
 				pageSize: 20,
 				query: {ex: '用户自定义的查询参数,格式:{key:value}'},
@@ -260,23 +260,25 @@
 					width: '200px',
 					text: 'age'
 				},{
-					key: 'createDate',
-					remind: 'the createDate',
-					sorting: 'down',
-					width: '200px',
-					text: 'createDate'
-				},{
 					key: 'info',
 					remind: 'the info',
 					sorting: '',
 					text: 'info'
 				},{
+                    key: 'createDate',
+                    text: '创建时间',
+                    remind: 'the createDate',
+                    sorting: 'down',
+                    width: '200px',
+                    fixed: 'right'
+                },{
 					key: 'operation',
 					remind: '修改创建时间',
 					sorting: '',
 					width: '130px',
 					text: '修改创建时间',
                     align: 'center',
+                    fixed: 'right',
 					template: function(operation, rowObject){
 						return `<span class="plugin-action">修改</span>`;
 					}

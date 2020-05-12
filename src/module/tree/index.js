@@ -9,6 +9,7 @@ import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE, GM_CREATE, PX } from '@
 import { getEvent, eventMap } from './event';
 import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from './tool';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
+import fixed from '@module/fixed';
 
 class Tree {
     /**
@@ -84,6 +85,8 @@ class Tree {
         };
 
         $tr ? updateState($tr, state) : updateAllState(state);
+
+        fixed.updateFakeThead(_);
     }
 
     /**
