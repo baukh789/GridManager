@@ -1,4 +1,4 @@
-import { getWrap, getDiv, getTh, getFakeThead, getTbody } from '@common/base';
+import { getWrap, getDiv, getTh, getThead, getFakeThead, getTbody } from '@common/base';
 import { TABLE_KEY, EMPTY_TPL_KEY, TH_NAME, PX } from '@common/constants';
 import { each } from '@jTool/utils';
 import scroll from '@module/scroll';
@@ -48,7 +48,9 @@ class Fixed {
         }
 
         const $fakeThead = getFakeThead(_);
-        const fakeTheadHeight = $fakeThead.height() + PX;
+
+        // theadHeight: 这里使用thead 而不是 fakeThead的原因是因为这样可以获取更准确的值，不至于在框架中出现错误
+        const theadHeight = getThead(_).height() + PX;
         let styleStr = '';
 
         let pl = 0;
@@ -63,7 +65,7 @@ class Fixed {
             }
             styleStr += getStyle(_, item, LEFT, shadowValue, pl);
             pl += $th.width();
-            item.style.height = fakeTheadHeight;
+            item.style.height = theadHeight;
             item.style.boxShadow = shadowValue;
         });
         $fakeThead.css('padding-left', pl);
@@ -78,7 +80,7 @@ class Fixed {
             if (index === rightLen - 1) {
                 shadowValue = `-2px 1px 3px ${SHADOW_COLOR}`;
             }
-            item.style.height = fakeTheadHeight;
+            item.style.height = theadHeight;
             item.style.boxShadow = shadowValue;
             styleStr += getStyle(_, item, RIGHT, shadowValue, pr);
             // styleStr += getStyle(_, item, RIGHT, shadowValue, index === 0 ? pr : pr + 1);

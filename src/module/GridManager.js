@@ -202,24 +202,20 @@ export default class GridManager {
             })();
         };
 
-        function isAvailable() {
-            return getStyle(table, 'width').indexOf(PX) !== -1;
-        }
+        // todo 应该在渲染前检查下是否存在渲染中的表格，如果存在应该停止
         // 初始化表格
-        if (isAvailable()) {
-            this.initTable($table, settings).then(initTableAfter);
-        } else {
-            // 表格不可用时进行等待
-            SIV_waitTableAvailable[gridManagerName] = setInterval(() => {
-                if (isAvailable()) {
-                    clearInterval(SIV_waitTableAvailable[gridManagerName]);
-                    SIV_waitTableAvailable[gridManagerName] = null;
+        // 表格不可用时进行等待, 并且对相同gridManagerName的表格进行覆盖以保证只渲染一次
+        SIV_waitTableAvailable[gridManagerName] = setInterval(() => {
+            if (getStyle(table, 'width').indexOf(PX) === -1) {
+                return;
+            }
 
-                    // 初始化表格, setInterval未停止前 initTable并不会执行
-                    this.initTable($table, settings).then(initTableAfter);
-                }
-            }, 50);
-        }
+            clearInterval(SIV_waitTableAvailable[gridManagerName]);
+            SIV_waitTableAvailable[gridManagerName] = null;
+
+            // 初始化表格, setInterval未停止前 initTable并不会执行
+            this.initTable($table, settings).then(initTableAfter);
+        }, 50);
     }
 
     /**
