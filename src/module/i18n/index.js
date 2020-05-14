@@ -3,24 +3,15 @@
  * */
 import { isUndefined, isArray } from '@jTool/utils';
 import { outWarn } from '@common/utils';
-/**
- * 获取所用语种，暂时支持[zh-cn:简体中文，en-us:美式英语] 默认zh-cn
- * @param settings
- * @returns {string|string}
- */
-const getLanguage = settings => {
-    return settings.i18n;
-};
 
 /**
  * 指定[表格 键值 语种]获取对应文本
  * @param settings
  * @param key 键值
- * @param language 语种: 非必须, 不指定则会使用当前的配置 settings.i18n
  * @returns {*|string}
  */
-const getText = (settings, key, language) => {
-    return settings.textConfig[key][language || getLanguage(settings)] || '';
+const getText = (settings, key) => {
+    return settings.textConfig[key][settings.i18n];
 };
 
 /**
@@ -52,11 +43,10 @@ export default function(settings, key, v1, v2, v3) {
         }
 
         // 更换包含{}的文本
-        _text = _text.replace(/{\d+}/g, word => {
+        return _text.replace(/{\d+}/g, word => {
             const _v = intrusion[word.match(/\d+/)];
             return isUndefined(_v) ? '' : _v;
         });
-        return _text;
     } catch (e) {
         outWarn(`not find language matched to ${key}`);
         return '';

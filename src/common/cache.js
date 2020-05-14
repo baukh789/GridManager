@@ -9,7 +9,7 @@ import { isUndefined, isFunction, isObject, isString, isElement, each, isNodeLis
 import { outInfo, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
 import { DISABLE_CUSTOMIZE, PX } from '@common/constants';
 import { Settings } from '@common/Settings';
-import textConfig from '@module/i18n/config';
+import TextConfig from '@module/i18n/config';
 import store from '@common/Store';
 import {
     CACHE_ERROR_KEY,
@@ -469,7 +469,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
 
     // 合并参数
     let settings = new Settings();
-    settings.textConfig = new textConfig();
+    settings.textConfig = new TextConfig();
 
     extend(true, settings, arg);
 

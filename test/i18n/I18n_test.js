@@ -4,7 +4,7 @@
 'use strict';
 import i18n from '@module/i18n';
 import { Settings } from '@common/Settings';
-import textConfig from '@module/i18n/config';
+import TextConfig from '@module/i18n/config';
 import { CONSOLE_STYLE, CONSOLE_WARN } from '@common/constants';
 
 /**
@@ -14,7 +14,7 @@ describe('i18n(settings, key, v1, v2, v3)', () => {
 	let settings = null;
 	beforeEach(() => {
 		settings = new Settings();
-		settings.textConfig = textConfig;
+		settings.textConfig = new TextConfig();
 
 		// 存储console, 用于在测方式完成后原还console对象
 		console._log = console.log;

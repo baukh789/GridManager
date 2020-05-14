@@ -1,18 +1,15 @@
 
-import textConfig from '@module/i18n/config';
+import TextConfig from '@module/i18n/config';
 describe('textConfig', () => {
-    let count = null;
+    let textConfig = null;
     beforeEach(() => {
+        textConfig = new TextConfig();
     });
     afterEach(() => {
-        count = null;
+        textConfig = null;
     });
     it('验证国际化文本总数', () => {
-        count = 0;
-        for(let key in textConfig) {
-            count++;
-        }
-        expect(count).toBe(16);
+        expect(Object.keys(textConfig).length).toBe(16);
     });
     it('验证国际化文本[order-text]初始值', () => {
         expect(textConfig['order-text']['zh-cn']).toBe('序号');

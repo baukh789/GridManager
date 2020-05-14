@@ -2,7 +2,6 @@
 [grid-manager] tr{
     /*顶部通栏*/
     &[top-full-column="true"]{
-        border-bottom: none;
         td:nth-child(1){
             border-left: @table-border;
             border-right: @table-border;
@@ -14,17 +13,16 @@
         }
     }
     &[top-full-column-interval="true"]{
-        border: none;
         td{
+            border: none;
             background-color: #fff;
             padding: 0;
             >div{
-                height: 10px;
+                height: 6px;
             }
         }
     }
     &[top-full-column="false"]{
-        border-bottom: @table-border;
         td{
             &:first-child{
                 border-left: @table-border;

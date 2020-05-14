@@ -1,4 +1,4 @@
-import { getWrap, getDiv, getTh, getFakeThead, getThead, getTbody } from '@common/base';
+import { getWrap, getDiv, getTh, getFakeThead, getTbody } from '@common/base';
 import { TABLE_KEY, EMPTY_TPL_KEY, TH_NAME, PX } from '@common/constants';
 import { each } from '@jTool/utils';
 import scroll from '@module/scroll';
@@ -37,7 +37,6 @@ class Fixed {
     init(_) {
         this.enable[_] = true;
 
-        const $thead = getThead(_);
         const $tableDiv = getDiv(_);
         const disableLine = getWrap(_).hasClass('disable-line');
         const styleId = `fixed-style-${_}`;
@@ -70,10 +69,6 @@ class Fixed {
         $fakeThead.css('padding-left', pl);
         leftMap[_] = $leftList;
 
-        // const theadWidth = $thead.width();
-        setTimeout(() => {
-            console.log($thead.width());
-        });
         shadowValue = disableLine ? '' : `-1px 1px 0 ${SHADOW_COLOR}`;
         const $rightList = $fakeThead.find(getFixedQuerySelector(RIGHT));
         const rightLen = $rightList.length;
