@@ -289,6 +289,7 @@ const demo1 = {
                 // 使用行选中
                 // useRowCheck: true,
 
+                key: 'id',
                 // 复选时最大可选数
                 // max: 2,
 

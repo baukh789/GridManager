@@ -175,12 +175,14 @@ export const resetTableData = (_, data) => {
         pageData,
         supportAutoOrder,
         supportCheckbox,
+        checkboxConfig,
         pageSizeKey,
         currentPageKey,
         supportTreeData,
         treeConfig
     } = getSettings(_);
 
+    const checkboxKey = checkboxConfig.key;
     // 为每一行数据增加唯一标识
     const addCacheKey = (row, level, index, pIndex) => {
         let cacheKey = index.toString();
@@ -223,7 +225,7 @@ export const resetTableData = (_, data) => {
         // add checkbox
         if (supportCheckbox) {
             row[CHECKBOX_KEY] = getCheckedData(_).some(item => {
-                return equal(getCloneRowData(columnMap, item), getCloneRowData(columnMap, row));
+                return equal(getCloneRowData(columnMap, item), getCloneRowData(columnMap, row), checkboxKey);
             });
             row[CHECKBOX_DISABLED_KEY] = false;
         }
