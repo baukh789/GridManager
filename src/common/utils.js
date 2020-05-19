@@ -1,4 +1,5 @@
 import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_STYLE, CONSOLE_WARN } from '@common/constants';
+import { isString } from '@jTool/utils';
 /**
  * 工具函数
  */
@@ -44,11 +45,19 @@ export const outError = s => {
  * 验证两个Object是否相同
  * @param o1
  * @param o2
+ * @param key: 指定精准匹配字段，只要当前字段相同则判定相同
  * @returns {boolean}
  */
-export const equal = (o1, o2) => {
+export const equal = (o1, o2, key) => {
     const k1 = Object.keys(o1);
     const k2 = Object.keys(o2);
+
+    // 当前指定了精准匹配字段
+    if (isString(key)) {
+        return o1[key] === o2[key];
+    }
+
+    // 全额匹配
     if (k1.length !== k2.length)  {
         return false;
     }
@@ -62,17 +71,18 @@ export const equal = (o1, o2) => {
  * 获取Array中Object的索引
  * @param arr
  * @param obj
+ * @param key: 指定精准匹配字段
  * @returns {number}
  */
-export const getObjectIndexToArray = (arr, obj) => {
+export const getObjectIndexToArray = (arr, obj, key) => {
     let index = -1;
     let isInclude = false;
     arr.some((item, i) => {
-        isInclude = equal(item, obj);
+        isInclude = equal(item, obj, key);
         if (isInclude) {
             index = i;
         }
-        return equal(item, obj);
+        return isInclude;
     });
     return index;
 };

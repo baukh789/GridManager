@@ -260,7 +260,7 @@ export const getCheckedData = _ => {
  * @param isClear: 是否清空原有的选中项 (该参数不公开)
  */
 export const setCheckedData = (_, dataList, isClear) => {
-    const { columnMap } = getSettings(_);
+    const { columnMap, checkboxConfig } = getSettings(_);
     // 覆盖操作，清空原有的选中数据。 并且 dataList 将会按选中状态进行处理
     if (isClear) {
         store.checkedData[_] = dataList.map(item => getCloneRowData(columnMap, item));
@@ -272,11 +272,12 @@ export const setCheckedData = (_, dataList, isClear) => {
         store.checkedData[_] = [];
     }
     const tableCheckedList = store.checkedData[_];
+    const key = checkboxConfig.key;
 
     dataList.forEach(item => {
-        let cloneObj = getCloneRowData(columnMap, item);
-        let checked = item[CHECKBOX_KEY];
-        let index = getObjectIndexToArray(tableCheckedList, cloneObj);
+        const cloneObj = getCloneRowData(columnMap, item);
+        const checked = item[CHECKBOX_KEY];
+        const index = getObjectIndexToArray(tableCheckedList, cloneObj, key);
 
         // 新增: 已选中 且 未存储
         if (checked && index === -1) {

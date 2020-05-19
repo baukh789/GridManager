@@ -202,6 +202,10 @@ describe('resetTableData', () => {
         store.settings = {
             test: {
                 _: 'test',
+                checkboxConfig: {
+                    useRowCheck: false,
+                    useRadio: false
+                },
                 columnMap: getColumnMap(),
                 rowRenderHandler: row => row,
                 pageData: {},
@@ -219,6 +223,10 @@ describe('resetTableData', () => {
         store.settings = {
             test: {
                 _: 'test',
+                checkboxConfig: {
+                    useRowCheck: false,
+                    useRadio: false
+                },
                 columnMap: getColumnMap(),
                 rowRenderHandler: row => row,
                 pageData: {
@@ -241,6 +249,10 @@ describe('resetTableData', () => {
         store.settings = {
             test: {
                 _: 'test',
+                checkboxConfig: {
+                    useRowCheck: false,
+                    useRadio: false
+                },
                 columnMap: getColumnMap(),
                 rowRenderHandler: row => row,
                 supportAutoOrder: false,
@@ -281,6 +293,10 @@ describe('resetTableData', () => {
         store.settings = {
             test: {
                 _: 'test',
+                checkboxConfig: {
+                    useRowCheck: false,
+                    useRadio: false
+                },
                 columnMap: getColumnMap(),
                 rowRenderHandler: row => row,
                 supportAutoOrder: false,
@@ -340,6 +356,10 @@ describe('getCheckedData and setCheckedData', () => {
         store.settings = {
             test: {
                 _: 'test',
+                checkboxConfig: {
+                    useRowCheck: false,
+                    useRadio: false
+                },
                 columnMap: getColumnMap()
             }
         };

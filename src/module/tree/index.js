@@ -11,6 +11,11 @@ import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } fro
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import fixed from '@module/fixed';
 
+/**
+ * 树功能
+ * 当树功能开启后，行移动功能将失效
+ * 当通栏功能开启后，树功能将失效
+ */
 class Tree {
     /**
      * add map
@@ -32,6 +37,8 @@ class Tree {
         // 绑定事件
         eventMap[_] = getEvent(getQuerySelector(_), treeKey);
         const { toggle } = eventMap[_];
+
+        getTbody(_).addClass('tree-tbody');
 
         jTool(toggle[TARGET]).on(toggle[EVENTS], toggle[SELECTOR], function () {
             const $tr = jTool(this).closest('tr');

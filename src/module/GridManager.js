@@ -74,7 +74,7 @@ export default class GridManager {
         }
 
         // 校验: gridManagerName
-        if (gridManagerName.trim() === '') {
+        if (!isString(gridManagerName)) {
             outError('gridManagerName undefined');
             return;
         }
@@ -96,7 +96,7 @@ export default class GridManager {
         }
 
         // 校验: columnData
-        if (!isArray(arg.columnData) || arg.columnData.length === 0) {
+        if (!isArray(arg.columnData) || !arg.columnData.length) {
             outError('columnData invalid');
             return;
         }
@@ -613,15 +613,16 @@ export default class GridManager {
             const { columnMap, checkboxConfig, treeConfig } = settings;
             const treeKey = treeConfig.treeKey;
             const tableData = getTableData(_);
+            const { key, useRadio, max } = checkboxConfig;
             tableData.forEach(rowData => {
                 // 获取比对数据时，需要清除子数据
                 let cloneRow = getCloneRowData(columnMap, rowData, [treeKey]);
-                rowData[CHECKBOX_KEY] = checkedList.some(item => equal(cloneRow, getCloneRowData(columnMap, item, [treeKey])));
+                rowData[CHECKBOX_KEY] = checkedList.some(item => equal(cloneRow, getCloneRowData(columnMap, item, [treeKey]), key));
             });
 
             setTableData(_, tableData);
             setCheckedData(_, checkedList, true);
-            return resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
+            return resetCheckboxDOM(_, tableData, useRadio, max);
         }
     };
 

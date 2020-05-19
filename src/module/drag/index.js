@@ -9,12 +9,12 @@ import { each } from '@jTool/utils';
 import { getTable, getQuerySelector, getFakeVisibleTh, getWrap, getColTd, getThName, getDiv, getTh, updateVisibleLast, updateScrollStatus, clearTargetEvent } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, DISABLE_CUSTOMIZE, PX } from '@common/constants';
+import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, DISABLE_CUSTOMIZE, PX, TR_CHILDREN_STATE } from '@common/constants';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import config from '@module/config';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
-import { CLASS_DRAG_ACTION, CLASS_DRAG_ING, CLASS_DREAMLAND } from './constants';
+import { CLASS_DRAG_ING, CLASS_DREAMLAND } from './constants';
 
 class Drag {
     /**
@@ -67,7 +67,7 @@ class Drag {
             $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
 
             // #001
-            $dreamlandDIV.get(0).innerHTML = _this.createHtml({ $table,  $th, $colTd });
+            $dreamlandDIV.get(0).innerHTML = _this.createHtml({ $table,  $th });
 
             // 存储移动时的th所处的位置
             let _thIndex = 0;
@@ -175,9 +175,12 @@ class Drag {
      */
 	@parseTpl(dreamlandTpl)
     createHtml(params) {
-	    const { $table, $th, $colTd } = params;
+	    const { $table, $th } = params;
 
-        // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
+	    // 这里获取的tdList排除了tree children
+	    const $colTd = getColTd($th, $table.find(`tbody tr:not([${TR_CHILDREN_STATE}])`));
+
+	    // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
         let tbodyHtml = '';
         each($colTd, v => {
             const cloneTd = v.cloneNode(true);
@@ -188,8 +191,7 @@ class Drag {
 
         return {
             class: $table.get(0).className,
-            th: jTool(`.${CLASS_DRAG_ACTION}`, $th).get(0).outerHTML,
-            thStyle: `style="height:${$th.height() + PX}"`,
+            th: $th.get(0).outerHTML,
             tbody: tbodyHtml
         };
     }

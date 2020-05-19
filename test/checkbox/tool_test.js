@@ -18,6 +18,10 @@ describe('checkbox tool', () => {
             store.settings = {
                 [_]: {
                     _,
+                    checkboxConfig: {
+                        useRowCheck: false,
+                        useRadio: false
+                    },
                     columnMap: getColumnMap()
                 }
             };

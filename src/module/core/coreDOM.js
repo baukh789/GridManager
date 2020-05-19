@@ -157,40 +157,43 @@ class Dom {
             const installTr = (list, level, pIndex) => {
                 const isTop = isUndefined(pIndex);
                 each(list, (row, index) => {
-                    const trObject = {
-                        className: [],
-                        attribute: [],
-                        tdList: []
-                    };
+                    const className = [];
+                    const attribute = [];
+                    const tdList = [];
                     const cacheKey = row[TR_CACHE_KEY];
 
                     // 增加行 class name
                     if (row[ROW_CLASS_NAME]) {
-                        trObject.className.push(row[ROW_CLASS_NAME]);
+                        className.push(row[ROW_CLASS_NAME]);
                     }
 
                     // 非顶层
                     if (!isTop) {
-                        trObject.attribute.push(`${TR_PARENT_KEY}="${pIndex}"`);
-                        trObject.attribute.push(`${TR_CHILDREN_STATE}="${openState}"`);
+                        attribute.push(`${TR_PARENT_KEY}="${pIndex}"`);
+                        attribute.push(`${TR_CHILDREN_STATE}="${openState}"`);
                     }
 
-                    // 顶层
-                    if (isTop) {
-                        index % 2 === 0 && trObject.attribute.push(`${ODD}=""`); // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
+                    // 顶层 且当前为树形结构
+                    if (isTop && supportTreeData) {
+                        // 不直接使用css odd是由于存在层级数据时无法排除折叠元素
+                        index % 2 === 0 && attribute.push(ODD);
                     }
 
-                    trObject.attribute.push(`${TR_CACHE_KEY}="${cacheKey}"`);
+                    attribute.push(`${TR_CACHE_KEY}="${cacheKey}"`);
 
                     // 插入通栏: top-full-column
                     if (isTop) {
                         trObjectList = trObjectList.concat(getTopFull(settings, row, index, () => {
                             // 添加成功后: 为非通栏tr的添加标识
-                            // trNode.setAttribute('top-full-column', 'false');
-                            trObject.attribute.push('top-full-column="false"');
+                            attribute.push('top-full-column="false"');
                         }));
 
                     }
+                    const trObject = {
+                        className,
+                        attribute,
+                        tdList
+                    };
 
                     // 插入正常的TR
                     installNormal(trObject, row, index, isTop);

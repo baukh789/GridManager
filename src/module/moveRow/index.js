@@ -1,12 +1,12 @@
 import './style.less';
 import jTool from '@jTool';
-import { each, isUndefined, isFunction, isString } from '@jTool/utils';
+import { each, isFunction, isString } from '@jTool/utils';
 import { equal } from '@common/utils';
 import { getTable, getTbody, getQuerySelector, getWrap, getDiv, clearTargetEvent, getCloneRowData } from '@common/base';
 import { getTableData, setTableData, getSettings, getCheckedData, setCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { mergeRow, clearMergeRow } from '../merge';
-import { TR_CACHE_KEY, NO_SELECT_CLASS_NAME, ODD, PX } from '@common/constants';
+import { TR_CACHE_KEY, NO_SELECT_CLASS_NAME, PX } from '@common/constants';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from './constants';
@@ -63,13 +63,6 @@ const update = (_, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData)
         }
         tableData[oldCacheKey] = targetCache;
         tableData[targetCacheKey] = oldCache;
-
-
-        // 替换odd, todo 这里使用odd是对树级的兼容，具体代码在coreDOM.js内。 行移动功能与树功能是冲突的，后续需要调整odd
-        const targetOdd = $target.attr(ODD);
-        const trOdd = $tr.attr(ODD);
-        isUndefined(targetOdd) ? $tr.removeAttr(ODD) : $tr.attr(ODD, '');
-        isUndefined(trOdd) ? $target.removeAttr(ODD) : $target.attr(ODD, '');
     }
     // 返回更新后的tr列表
     return jTool('tr', $tbody);
@@ -78,25 +71,25 @@ const update = (_, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData)
 /**
  * 将移动后的字段更新合并至已选中存储
  * @param _
- * @param supportCheckbox
+ * @param checkboxKey
  * @param key
  * @param columnMap
  * @param changeList
  */
-const mergeToCheckedData = (_, supportCheckbox, key, columnMap, changeList) => {
-    if (!supportCheckbox || !isString(key)) {
+const mergeToCheckedData = (_, checkboxKey, key, columnMap, changeList) => {
+    if (!isString(key)) {
         return;
     }
 
     const checkedData = getCheckedData(_);
 
-    if (checkedData.length === 0) {
+    if (!checkedData.length) {
         return;
     }
 
     checkedData.forEach(checked => {
         changeList.forEach(change => {
-            if (equal(getCloneRowData(columnMap, checked, [key]), getCloneRowData(columnMap, change, [key]))) {
+            if (equal(getCloneRowData(columnMap, checked, [key]), getCloneRowData(columnMap, change, [key]), checkboxKey)) {
                 checked[key] = change[key];
             }
         });
@@ -108,7 +101,7 @@ const mergeToCheckedData = (_, supportCheckbox, key, columnMap, changeList) => {
 class MoveRow {
     init(_) {
         const _this = this;
-        const { supportAutoOrder, supportCheckbox, moveRowConfig, animateTime, columnMap } = getSettings(_);
+        const { supportAutoOrder, supportCheckbox, checkboxConfig, moveRowConfig, animateTime, columnMap } = getSettings(_);
         const { key, handler } = moveRowConfig;
 
         const $body = jTool('body');
@@ -249,7 +242,7 @@ class MoveRow {
                 coreDOM.updateTrDOM(getSettings(_), changeList);
 
                 // 将更新后的数据合并至已选中存储器
-                mergeToCheckedData(_, supportCheckbox, key, columnMap, changeList);
+                supportCheckbox && mergeToCheckedData(_, checkboxConfig.key, key, columnMap, changeList);
 
                 // 开启文字选中效果
                 $body.removeClass(NO_SELECT_CLASS_NAME);

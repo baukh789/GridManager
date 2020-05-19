@@ -47,10 +47,10 @@ describe('outInfo, outWarn, outError', () => {
     });
 });
 
-describe('equal(o1, o2)', () => {
+describe('equal(o1, o2, key)', () => {
     it('基础验证', () => {
         expect(equal).toBeDefined();
-        expect(equal.length).toBe(2);
+        expect(equal.length).toBe(3);
     });
 
     it('返回值验证', () => {
@@ -66,6 +66,9 @@ describe('equal(o1, o2)', () => {
         expect(equal(obj1, obj5)).toBe(true);
         expect(equal(obj1, obj6)).toBe(false);
 
+        expect(equal(obj3, obj6)).toBe(false);
+        expect(equal(obj3, obj6, 'a')).toBe(true);
+
         obj1 = null;
         obj2 = null;
         obj3 = null;
@@ -75,16 +78,22 @@ describe('equal(o1, o2)', () => {
     });
 });
 
-describe('getObjectIndexToArray(arr, obj)', () => {
+describe('getObjectIndexToArray(arr, obj, key)', () => {
     it('基础验证', () => {
         expect(getObjectIndexToArray).toBeDefined();
-        expect(getObjectIndexToArray.length).toBe(2);
+        expect(getObjectIndexToArray.length).toBe(3);
     });
 
-    it('返回值验证', () => {
+    it('返回值验证: 未指定key', () => {
         let arr = [{a: 1, b: 2}, {name: 'baukh', age: 31}, {name: 'kouzi', age: 28}];
         let obj = {name: 'baukh', age: 31};
         expect(getObjectIndexToArray(arr, obj)).toBe(1);
+    });
+
+    it('返回值验证: 指定key', () => {
+        let arr = [{a: 1, b: 2}, {name: 'baukh', age: 31}, {name: 'kouzi', age: 28}];
+        let obj = {name: 'baukh', age: 31};
+        expect(getObjectIndexToArray(arr, obj, 'age')).toBe(1);
     });
 });
 
