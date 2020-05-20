@@ -769,7 +769,11 @@ export default class GridManager {
         updateScrollStatus(_);
 
         // thead 下的 th 到这一步只存在控制列宽的作用，所以在这里将内容清除。并在清除前锁死高度值
-        getFakeThead(_).find('tr').height(getThead(_).find('tr').height());
+        const $theadTr = getThead(_).find('tr');
+        const trHeight = $theadTr.height();
+        $theadTr.height(trHeight);
+        getFakeThead(_).find('tr').height(trHeight);
+
         each(getAllTh(_), item => {
             item.innerHTML = '';
         });
