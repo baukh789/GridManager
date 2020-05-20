@@ -52,24 +52,26 @@ class Scroll {
     /**
      * 更新表头置顶
      * @param _
+     * @param isResetWidth: 是否重置宽度
      * @returns {boolean}
      */
-    update(_) {
+    update(_, isResetWidth) {
         const $tableDiv = getDiv(_);
         if (!$tableDiv.length) {
             return;
         }
 
-        // 重置thead的宽度和位置
-        getFakeThead(_).css({
-            width: getThead(_).width(),
-            left: -$tableDiv.scrollLeft() + PX
-        });
+        // 重置位置
+        const $fakeThead = getFakeThead(_);
+        $fakeThead.css('left', -$tableDiv.scrollLeft() + PX);
 
-        // 重置th的宽度
-        each(getAllTh(_), (th, i) => {
-            getAllFakeTh(_).eq(i).width(jTool(th).width());
-        });
+        // 重置宽度
+        if (isResetWidth) {
+            $fakeThead.width(getThead(_).width());
+            each(getAllTh(_), (th, i) => {
+                getAllFakeTh(_).eq(i).width(jTool(th).width());
+            });
+        }
 
         fixed.updateFakeThead(_);
     }
@@ -100,7 +102,7 @@ class Scroll {
             }
             updateScrollStatus(_);
 
-            this.update(_);
+            this.update(_, true);
 
             settings.supportConfig && updateConfigListHeight(_);
 		});

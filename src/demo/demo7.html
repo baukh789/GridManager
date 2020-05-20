@@ -78,8 +78,6 @@
 			margin-right: 10px;
 		}
 		.void-template{
-			height:300px;
-			line-height: 300px;
 			text-align: center;
 			font-size: 24px;
 			color: #ccc;
@@ -143,6 +141,9 @@
 				height: '100%',
 				supportAjaxPage:true,
 				isCombSorting: true,
+                checkboxConfig: {
+				    fixed: 'left'
+                },
 				ajaxData: function () {
 					return 'https://www.lovejavascript.com/blogManager/getBlogList';
 				},
@@ -225,27 +226,28 @@
 					},{
 						key: 'info',
 						remind: 'the info',
-                        width: '500px',
 						text: '简介'
 					},{
-						key: 'username',
-						align: 'center',
-						width: '100px',
-						text: '作者',
-						template: function(username){
-							return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
-						}
-					},{
-						key: 'createDate',
-						text: '<p>操作时间</p><span class="gm-child">创建时间</span><span class="gm-child">修改时间</span>',
-						sorting: 'DESC',
+                        key: 'username',
+                        align: 'center',
+                        width: '100px',
+                        text: '作者',
+                        template: function(username){
+                            return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
+                        }
+                    },{
+                        key: 'createDate',
+                        text: '<p>操作时间</p><span class="gm-child">创建时间</span><span class="gm-child">修改时间</span>',
+                        sorting: 'DESC',
                         remind: '排序时，使用创建时间进行排序',
                         align: "center",
-						// 使用函数返回 htmlString
-						template: function(createDate, rowObject){
-							return `<span class="gm-child">${new Date(createDate).toLocaleDateString()} </span><span class="gm-child">${new Date(rowObject.lastDate).toLocaleDateString()}</span>`;
-						}
-					}
+                        width: '200px',
+                        fixed: 'right',
+                        // 使用函数返回 htmlString
+                        template: function(createDate, rowObject){
+                            return `<span class="gm-child">${new Date(createDate).toLocaleDateString()} </span><span class="gm-child">${new Date(rowObject.lastDate).toLocaleDateString()}</span>`;
+                        }
+                    }
 				]
 			});
 		}
@@ -267,7 +269,6 @@
 			document.querySelector('.search-action').addEventListener('click', function () {
 				var _query = {
 					title: document.querySelector('[name="title"]').value,
-					type: document.querySelector('[name="type"]').value,
 					content: document.querySelector('[name="content"]').value,
 					cPage: 1
 				};

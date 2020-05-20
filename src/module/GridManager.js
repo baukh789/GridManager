@@ -5,7 +5,7 @@
 import jTool from '@jTool';
 import { extend, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, each, isEmptyObject, getStyle } from '@jTool/utils';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME, PX } from '@common/constants';
-import { getCloneRowData, getKey, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
+import { getCloneRowData, getKey, getThead, getFakeThead, getAllTh, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
 import adjust from './adjust';
@@ -293,7 +293,7 @@ export default class GridManager {
             calcLayout(_, width, height, settings.supportAjaxPage);
             updateThWidth(settings);
             updateScrollStatus(_);
-            scroll.update(_);
+            scroll.update(_, true);
         }
     }
 
@@ -760,14 +760,20 @@ export default class GridManager {
         updateThWidth(settings, true);
 
         // 更新fake header
-        scroll.update(_);
+        scroll.update(_, true);
 
         // 更新最后一项可视列的标识
         updateVisibleLast(_);
 
         // 更新滚动轴显示状态
         updateScrollStatus(_);
-	}
+
+        // thead 下的 th 到这一步只存在控制列宽的作用，所以在这里将内容清除。并在清除前锁死高度值
+        getFakeThead(_).find('tr').height(getThead(_).find('tr').height());
+        each(getAllTh(_), item => {
+            item.innerHTML = '';
+        });
+    }
 
     /**
      * @静态方法

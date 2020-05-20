@@ -21,6 +21,8 @@ class Remind {
         const { start } = eventMap[_];
 
         const $tableDiv = getDiv(_);
+
+        // 这里的事件仅对位置进行处理，hover状态通过css实现
         jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function () {
             const $onlyRemind = jTool(this);
             const $raArea = $onlyRemind.find('.ra-area');

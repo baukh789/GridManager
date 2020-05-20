@@ -155,7 +155,7 @@ class Config {
         updateCache(_);
 
         // 处理置顶表头
-        scroll.update(_);
+        scroll.update(_, true);
 
         // 更新最后一项可视列的标识
         updateVisibleLast(_);

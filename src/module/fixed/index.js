@@ -83,7 +83,6 @@ class Fixed {
             item.style.height = theadHeight;
             item.style.boxShadow = shadowValue;
             styleStr += getStyle(_, item, RIGHT, shadowValue, pr);
-            // styleStr += getStyle(_, item, RIGHT, shadowValue, index === 0 ? pr : pr + 1);
             pr += $th.width();
         });
         $fakeThead.css('padding-right', pr - 1); // todo -1是容错处理: 由于Table元素的特性需要放宽一个像素
