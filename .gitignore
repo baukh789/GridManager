@@ -1,7 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 node_modules/
 npm-debug.log
-build
+zip
+tempzip
 dist
 .idea
 .DS_Store

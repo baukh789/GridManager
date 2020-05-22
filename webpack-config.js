@@ -2,13 +2,13 @@ const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const getRules = require('./webpack-common.loader');
-const buildPath = path.join(__dirname, './dist');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
-
-const { version } = require('./package.json');
+const FileManagerPlugin = require('filemanager-webpack-plugin');
+const { name, version } = require('./package.json');
+const buildPath = path.join(__dirname, './dist');
 
 const srcDir = path.join(__dirname, './src');
 // API: https://www.css88.com/doc/webpack2/configuration/devtool/
@@ -93,6 +93,28 @@ const config = {
         new webpack.DefinePlugin({
             'process.env': {
                 VERSION: JSON.stringify(version)
+            }
+        }),
+
+        // 构建带版本号的zip包
+        new FileManagerPlugin({
+            onStart: {
+                delete: [
+                    './zip'
+                ]
+            },
+            onEnd: {
+                mkdir: ['./zip', './tempzip'],
+                copy: [{
+                    source: './dist/**/*.{html,css,js}',
+                    destination: `./tempzip/${name}-${version}/`
+                }],
+                archive: [
+                    {source: `./tempzip/${name}-${version}`, destination: `./zip/${name}-${version}.zip`}
+                ],
+                delete: [
+                    './tempzip'
+                ]
             }
         })
 	],
