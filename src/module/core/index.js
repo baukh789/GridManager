@@ -8,7 +8,7 @@ import './style.less';
 import { isString, isFunction, isArray, getStyle } from '@jTool/utils';
 import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmpty } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
-import { getTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
+import { getTableData, setTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, EMPTY_TPL_KEY, PX } from '@common/constants';
 import menu from '../menu';
 import ajaxPage from '../ajaxPage';
@@ -104,6 +104,7 @@ class Core {
         if (_data.length === 0) {
             this.insertEmptyTemplate(settings);
             parseRes[totalsKey] = 0;
+            setTableData(_, []);
         } else {
             const $div = getDiv(_);
             $div.removeClass(EMPTY_DATA_CLASS_NAME);

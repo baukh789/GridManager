@@ -162,7 +162,7 @@ export const setTableData = (_, data) => {
 };
 
 /**
- * 重置 table data 格式
+ * 重置 table data 格式化
  * @param _
  * @param data
  * @returns {*}
