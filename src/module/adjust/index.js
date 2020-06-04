@@ -4,13 +4,14 @@
  */
 import './style.less';
 import jTool from '@jTool';
-import { getQuerySelector, getTable, getTh, getFakeThead, getThead, getFakeVisibleTh, getColTd, getThTextWidth, updateScrollStatus, clearTargetEvent } from '@common/base';
-import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME } from '@common/constants';
+import { getQuerySelector, getDiv, getTable, getTh, getFakeThead, getThead, getFakeVisibleTh, getColTd, getThTextWidth, updateScrollStatus, clearTargetEvent } from '@common/base';
+import { NO_SELECT_CLASS_NAME } from '@common/constants';
 import { CLASS_ADJUST_ACTION, CLASS_ADJUST_SELECT } from './constants';
 import { getSettings, updateCache } from '@common/cache';
 import { getEvent, eventMap } from './event';
 import { EVENTS, TARGET, SELECTOR } from '@common/events';
 import fixed from '@module/fixed';
+import {getStyle} from '../../jTool/utils';
 
 /**
  * 执行移动事件
@@ -20,43 +21,52 @@ import fixed from '@module/fixed';
  * @param isIconFollowText: 表头的icon图标是否跟随文本
  * @private
  */
-const runMoveEvent = (_, $th, $nextTh, isIconFollowText) => {
-    let _thWidth, _NextWidth;
+const runMoveEvent = (_, $allTh, $th, $nextTh, isIconFollowText) => {
+    let _thWidth;
+    let _nextWidth = $nextTh.width();
     let _thMinWidth = getThTextWidth(_, $th, isIconFollowText);
-    let	_NextThMinWidth = getThTextWidth(_, $nextTh, isIconFollowText);
+    // let	_NextThMinWidth = getThTextWidth(_, $nextTh, isIconFollowText);
+    const minWidth = getDiv(_).width();
     const { doing } = eventMap[_];
-    jTool(doing[TARGET]).on(doing[EVENTS], doing[SELECTOR], function (event) {
-        _thWidth = event.clientX - $th.offset().left;
-        _thWidth = Math.ceil(_thWidth);
-        _NextWidth = $nextTh.width() + $th.width() - _thWidth;
-        _NextWidth = Math.ceil(_NextWidth);
-        // 达到最小值后不再执行后续操作
-        if (_thWidth < _thMinWidth) {
-            return;
-        }
-        if (_NextWidth < _NextThMinWidth) {
-            _NextWidth = _NextThMinWidth;
-        }
+    const initWidth = Math.ceil(event.clientX - $th.offset().left);
 
+    jTool(doing[TARGET]).on(doing[EVENTS], doing[SELECTOR], function (event) {
+        _thWidth = Math.ceil(event.clientX - $th.offset().left);
+        // _nextWidth = Math.ceil($nextTh.width() + $th.width() - _thWidth);
         // 验证是否更改
         if (_thWidth === $th.width()) {
             return;
         }
 
-        // 验证宽度是否匹配
-        if (_thWidth + _NextWidth < $th.width() + $nextTh.width()) {
-            _NextWidth = $th.width() + $nextTh.width() - _thWidth;
-        }
-        $th.width(_thWidth);
-        $nextTh.width(_NextWidth);
+        // 当前th缩小
+        if (initWidth > _thWidth) {
+            // 缩小: th达到渲染所需的最小宽度
+            if (_thWidth < _thMinWidth) {
+                return;
+            }
 
-        // 当前宽度调整的事件原为表头置顶的thead th
-        // 修改与置顶thead 对应的 thead
-        if ($th.closest(`[${FAKE_TABLE_HEAD_KEY}]`).length === 1) {
-            getTh(_, $th).width(_thWidth);
-            getTh(_, $nextTh).width(_NextWidth);
-            getFakeThead(_).width(getThead(_).width());
+            // 缩小: 表格宽度达到容器的最小宽度
+            const allWidth = [].reduce.call($allTh.DOMList, (acont, item) => {
+                return acont + parseInt(getStyle(item, 'width'), 10);
+            }, 0);
+            if (allWidth <= minWidth) {
+                const nowThWidth = $th.width();
+                const nowNextWidth = $nextTh.width();
+                _nextWidth = Math.ceil(nowNextWidth + nowThWidth - _thWidth) + (minWidth - allWidth);
+                // 验证宽度是否匹配
+                if (_thWidth + _nextWidth < nowThWidth + nowNextWidth) {
+                    _nextWidth = nowThWidth + nowNextWidth - _thWidth;
+                }
+                $nextTh.width(_nextWidth);
+            }
         }
+
+        $th.width(_thWidth);
+
+        // 修改与置顶thead 对应的 thead
+        getTh(_, $th).width(_thWidth);
+        getTh(_, $nextTh).width(_nextWidth);
+        getFakeThead(_).width(getThead(_).width());
 
         // 更新滚动轴状态
         updateScrollStatus(_);
@@ -142,7 +152,7 @@ class Adjust {
             $table.addClass(NO_SELECT_CLASS_NAME);
 
             // 执行移动事件
-            runMoveEvent(_, $th, $nextTh, isIconFollowText);
+            runMoveEvent(_, $allTh, $th, $nextTh, isIconFollowText);
 
             // 绑定停止事件
             runStopEvent(_, $table, $th, $td, adjustAfter);
