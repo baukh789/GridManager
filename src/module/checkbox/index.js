@@ -1,6 +1,51 @@
-/*
- * checkbox: 数据选择/全选/返选
- * */
+/**
+ * checkbox[数据选择/全选/返选]
+ * 参数说明:
+ *  - supportCheckbox: 配置是否支持选择与反选
+ *      - type: Boolean
+ *      - default: true
+ *  - checkboxConfig: 选择功能配置
+ *      - type: Object
+ *      - default: {
+ *          // 是否通过点击行来进行选中
+ *          useRowCheck: false,
+ *
+ *          // 当前选中操作是否使用单选
+ *          useRadio: false,
+ *
+ *          // 指定选中操作精准匹配字段，该值需保证每条数据的唯一性。默认不指定，对整条数据进行匹配。
+ *          key: undefined, // 配置此项可提升选中操作性能, 数据量越大越明显。
+ *
+ *          // 复选时最大可选数，生效条件: supportCheckbox === true && useRadio === false
+ *          max:undefined,
+ *
+ *          // 是否使用固定列, 默认为undefined
+ *          // 接收两种值: 'left', 'right'
+ *          fixed: undefined
+ *       }
+ *
+ * 事件说明:
+ *  - checkedBefore: 选中/取消选中行, 执行前事件。
+ *      - note: 该事件会接收返回值，当返回false时将中止选中事件，该返回值对全选事件无效。
+ *      - arguments:
+ *          - checkedList: 已选中行数据,数组类型
+ *          - isChecked: 当前的选中状态
+ *          - rowData: 当前行数据
+ *  - checkedAfter: 选中/取消选中行, 执行后事件
+ *      - arguments:
+ *          - checkedList: 已选中行数据,数组类型
+ *          - isChecked: 当前的选中状态
+ *          - rowData: 当前行数据
+ *  - checkedAllBefore: 全选/反选, 执行前事件。
+ *      - note: 该事件会接收返回值，当返回false时将中止全选事件。
+ *      - arguments:
+ *          - checkedList: 已选中行数据,数组类型
+ *          - isChecked: 当前的选中状态
+ *  - checkedAllAfter: 全选/反选, 执行后事件
+ *      - arguments:
+ *          - checkedList: 已选中行数据,数组类型
+ *          - isChecked: 当前的选中状态
+ */
 import { CHECKBOX_WIDTH,
     TR_CACHE_KEY,
     CHECKBOX_KEY,
