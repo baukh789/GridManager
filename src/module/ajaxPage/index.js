@@ -1,6 +1,55 @@
-/*
- * ajaxPage: 分页
-**/
+/**
+ * ajaxPage[分页]
+ * 参数说明:
+ *  - supportAjaxPage: 指定列表是否支持分页
+ *      - type: Boolean
+ *      - default: false
+ *  - asyncTotals: 异步分页模式,当useNoTotalsMode:true 时，该配置失效
+ *      - type: Object
+ *      - default: undefined
+ *  - useNoTotalsMode: 是否使用无总条数模式
+ *      - note: 开启后将不再使用后端返回的总条数, 分页区域页码功能不再显示, 下一页可用的条件: 当前页的数据长度 >= 每页的显示条数
+ *      - type: Boolean
+ *      - default: false
+ *  - ajaxPageTemplate: 分页区域自定义模板
+ *      - note: 通过该参数可以对分页所需html模板(ajax-page.tpl.html)进行重置，从而达到分页区域布局及样式的调整
+ *      - type: String
+ *      - default: undefined
+ *  - sizeData: 配置每页显示条数的下拉项，数组元素仅允许为正整数
+ *      - type: Array
+ *      - default: [10, 20, 30, 50, 100]
+ *  - pageSize: 配置初次进入时每页的显示条数，需要与sizeData中的值匹配
+ *      - note: 在启用本地缓存的情况下，每页的显示数为上次用户调整后的数值
+ *      - type: Number
+ *      - default: 20
+ *  - totalsKey: 指定返回数据总条数的key键值
+ *      - note: 在接口返回数据格式不匹配时，可以通过该配置项进行修改
+ *      - type: String
+ *      - default: 'totals'
+ *  - currentPageKey: 请求参数中当前页key键值
+ *      - type: String
+ *      - default: 'cPage'
+ *  - pageSizeKey: 请求参数中每页显示条数key健值
+ *      - type: String
+ *      - default: 'pSize'
+ *
+ * 事件说明:
+ *  - pagingBefore: 分页执行前事件，在ajax请求发送前触发
+ *      - arguments:
+ *          - query: AJAX请求服务器所协带参数
+ *  - pagingAfter: 分页执行后事件，在ajax请求成功后触发
+ *      - arguments:
+ *          - query: AJAX请求服务器所协带参数
+ *
+ * ajax-page.tpl.html 中的实时更新说明:
+ *  - 有效区域: <div class="gm-toolbar">标签内
+ *  - 触发条件: 以下属性的标签将会触发实时更新:
+ *      - begin-number-info: 当前页从多少条开始显示
+ *      - end-number-info: 当前页到多少条结束显示
+ *      - current-page-info: 当前页
+ *      - totals-number-info: 总条数
+ *      - totals-page-info: 总页数
+ */
 import './style.less';
 import jTool from '@jTool';
 import { extend } from '@jTool/utils';
@@ -53,7 +102,6 @@ const resetPageInfo = ($footerToolbar, settings, pageData, asyncTotalText) => {
         $pageInfo.html(info);
     }
 
-    // #001
     // 更新实时更新数据: 当前页从多少条开始显示
     const $beginNumber = jTool('[begin-number-info]', $footerToolbar);
     if ($beginNumber.length) {

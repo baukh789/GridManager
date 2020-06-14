@@ -258,7 +258,7 @@ const checkbox = {
         useRadio: false
 
         // 指定选中操作精准匹配字段，该值需保证每条数据的唯一性。默认不指定，对整条数据进行匹配。配置此项可提升选中操作性能, 数据量越大越明显。
-        // key: null, // @2.11.9新增
+        // key: undefined, // @2.11.9新增
 
         // 复选时最大可选数，生效条件: supportCheckbox === true && useRadio === false
         // max: undefined // @2.9.8 新增

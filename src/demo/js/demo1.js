@@ -307,6 +307,9 @@ const demo1 = {
             // 是否开启配置功能
             // supportConfig: false,
 
+            // 设置表头的icon图标是否跟随文本
+            // isIconFollowText: true,
+
             // 是否开启导出
             // supportExport: false,
 

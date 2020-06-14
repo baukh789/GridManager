@@ -11,6 +11,8 @@ const { name, version } = require('./package.json');
 const buildPath = path.join(__dirname, './dist');
 
 const srcDir = path.join(__dirname, './src');
+const resolve = dir => path.resolve(__dirname, dir);
+
 // API: https://www.css88.com/doc/webpack2/configuration/devtool/
 const config = {
     mode: 'production',
@@ -27,9 +29,9 @@ const config = {
 	resolve: {
 		extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
         alias: {
-            '@common': path.join(__dirname, './src/common'),
-            '@jTool': path.join(__dirname, './src/jTool'),
-            '@module': path.join(__dirname, './src/module')
+            '@common': resolve('src/common'),
+            '@jTool': resolve('src/jTool'),
+            '@module': resolve('src/module')
         }
 	},
 

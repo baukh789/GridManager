@@ -1,9 +1,9 @@
-import { CLASS_ADJUST_ACTION, CLASS_ADJUST_SELECT } from '@module/adjust/constants';
+import { CLASS_ADJUST_ACTION, CLASS_ADJUST_ING } from '@module/adjust/constants';
 describe('constants', () => {
     it('CLASS_ADJUST_ACTION', () => {
         expect(CLASS_ADJUST_ACTION).toBe('gm-adjust-action');
     });
-    it('CLASS_ADJUST_SELECT', () => {
-        expect(CLASS_ADJUST_SELECT).toBe('gm-adjust-selected');
+    it('CLASS_ADJUST_ING', () => {
+        expect(CLASS_ADJUST_ING).toBe('gm-adjust-ing');
     });
 });

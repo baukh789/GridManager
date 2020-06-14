@@ -10,6 +10,7 @@ import { parseTpl } from '@common/parse';
 import { CONFIG_KEY, CHECKED_CLASS, TH_NAME, CHECKED, DISABLE_CUSTOMIZE, PX } from '@common/constants';
 import checkbox from '../checkbox';
 import scroll from '../scroll';
+import fixed from '../fixed';
 import configTpl from './config.tpl.html';
 import configColumnTpl from './config-column.tpl.html';
 import { getEvent, eventMap } from './event';
@@ -162,6 +163,8 @@ class Config {
 
         // 更新滚动轴显示状态
         updateScrollStatus(_);
+
+        fixed.updateBeforeTh(_);
     }
 
 	/**

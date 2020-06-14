@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"allowSyntheticDefaultImports": true,
+		"experimentalDecorators": true,
+		"moduleResolution": "node",
+		"checkJs": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"noImplicitAny": false,
+		"resolveJsonModule": true,
+		"baseUrl": ".",
+		"paths": {
+            "@common/*": ["./src/common/*"],
+            "@jTool/*": ["./src/jTool/*"],
+            "@module/*": ["./src/module/*"]
+		}
+	},
+	"include": ["./src/**/*"],
+	"exclude": ["./node_modules", "./dist"]
+}

@@ -5,6 +5,7 @@ const getRules = require('./webpack-common.loader');
 const { version } = require('./package.json');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const resolve = dir => path.resolve(__dirname, dir);
 // API: http://www.css88.com/doc/webpack2/guides/development/
 const config = {
     mode: 'development',
@@ -24,9 +25,9 @@ const config = {
 	resolve: {
 		extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
         alias: {
-            '@common': path.join(__dirname, './src/common'),
-            '@jTool': path.join(__dirname, './src/jTool'),
-            '@module': path.join(__dirname, './src/module')
+            '@common': resolve('src/common'),
+            '@jTool': resolve('src/jTool'),
+            '@module': resolve('src/module')
         }
 	},
 

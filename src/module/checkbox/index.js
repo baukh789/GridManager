@@ -1,5 +1,8 @@
 /**
  * checkbox[数据选择/全选/返选]
+ * 支持单选与复选，其中复选支持三种选中状态: 选中、未选中、半选中。
+ * /src/module/config中使用到的部分复选功能也来自于这里。
+ *
  * 参数说明:
  *  - supportCheckbox: 配置是否支持选择与反选
  *      - type: Boolean

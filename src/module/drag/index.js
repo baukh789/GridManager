@@ -1,7 +1,20 @@
-/*
- * drag: 拖拽
+/**
+ * drag[拖拽]
+ * 参数说明:
+ *  - supportDrag: 指定列表是否开启拖拽
+ *      - type: Boolean
+ *      - default: true
  *
- * #001: 这里使用get(0).innerHTML 而不直接使用.html()的原因是: jTool中的html直接添加table标签存在BUG
+ * 以下情况拖拽功能将失效:
+ *  - 配置项中存在topFullColumn
+ *
+ * 以下情况单一列的拖拽功能将被禁用:
+ *  - 自动生成的选择列、序号列
+ *  - columnData[disableCustomize] === true的列
+ *
+ * 交互规则:
+ *  - 与左侧互换位置: 向左移动至前一列的最左处
+ *  - 与右侧互换位置: 向右移动至后一列所在区域的任一位置
  */
 import './style.less';
 import jTool from '@jTool';
@@ -12,6 +25,7 @@ import { parseTpl } from '@common/parse';
 import { FAKE_TABLE_HEAD_KEY, NO_SELECT_CLASS_NAME, DISABLE_CUSTOMIZE, PX, TR_CHILDREN_STATE } from '@common/constants';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import config from '@module/config';
+import fixed from '@module/fixed';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ING, CLASS_DREAMLAND } from './constants';
@@ -66,7 +80,7 @@ class Drag {
             $tableWrap.append(`<div class="${CLASS_DREAMLAND}"></div>`);
             $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
 
-            // #001
+            // 这里使用get(0).innerHTML 而不直接使用.html()的原因是: jTool中的html直接添加table标签存在BUG
             $dreamlandDIV.get(0).innerHTML = _this.createHtml({ $table,  $th });
 
             // 存储移动时的th所处的位置
@@ -161,6 +175,8 @@ class Drag {
 
                 // 更新滚动轴状态
                 updateScrollStatus(_);
+
+                fixed.updateBeforeTh(_);
 
                 // 开启文字选中效果
                 $body.removeClass(NO_SELECT_CLASS_NAME);

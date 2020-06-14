@@ -1,14 +1,3 @@
-/**
- * #001:
- * 关于ajax-page.tpl.html 文件中的实时更新
- * 有效区域: <div class="gm-toolbar">标签内
- * 触发条件: 以下属性的标签将会触发实时更新，共有以下属性:
- * 1. begin-number-info: 当前页从多少条开始显示
- * 2. end-number-info: 当前页到多少条结束显示
- * 3. current-page-info: 当前页
- * 4. totals-number-info: 总条数
- * 5. totals-page-info: 总页数
- */
 import { TOOLBAR_KEY } from '@common/constants';
 
 /**

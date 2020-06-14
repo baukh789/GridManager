@@ -24,6 +24,7 @@ import remind from './remind';
 import scroll from './scroll';
 import sort, { updateSort } from './sort';
 import filter from './filter';
+import fixed from './fixed';
 import print from './print';
 
 const isRendered = (_, settings) => {
@@ -804,6 +805,7 @@ export default class GridManager {
             scroll.destroy(_);
             sort.destroy(_);
             tree.destroy(_);
+            fixed.destroy(_);
         } catch (e) {
             console.error(e);
         }

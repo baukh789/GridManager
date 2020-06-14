@@ -1,6 +1,19 @@
-import { getWrap, getDiv, getTh, getThead, getFakeThead, getTbody } from '@common/base';
+/**
+ * fixed[固定列]
+ * 参数说明:
+ *  - columnData[fixed]: 配置后同列的disableCustomize属性将强制变更为true;
+ *      - type: String
+ *      - value: ['left', 'right']
+ *      - default: undefined
+ *
+ * 实现原理:
+ * thead区域的固定th使用 absolute 定位，不使用sticky的原因是Firefox在设置了position: absolute的父容器内定位异常;
+ * tbody区域的固定td使用 sticky 定位，通过脚本动态生成style标签;
+ */
+import { getWrap, getDiv, getTh, getThead, getFakeThead, getTbody, getFakeVisibleTh } from '@common/base';
 import { TABLE_KEY, EMPTY_TPL_KEY, TH_NAME, PX } from '@common/constants';
 import { each } from '@jTool/utils';
+import jTool from '@jTool';
 import scroll from '@module/scroll';
 import './style.less';
 
@@ -24,8 +37,8 @@ const getFixedQuerySelector = type => {
 };
 
 // 存储DOM节点，用于节省DOM查询操作(在scroll和adjust中操作会很频繁)
-const leftMap = {};
-const rightMap = {};
+const FIXED_LEFT_MAP = {};
+const FIXED_RIGHT_MAP = {};
 
 class Fixed {
     enable = {};
@@ -69,13 +82,13 @@ class Fixed {
             item.style.boxShadow = shadowValue;
         });
         $fakeThead.css('padding-left', pl);
-        leftMap[_] = $leftList;
+        FIXED_LEFT_MAP[_] = $leftList;
 
         shadowValue = disableLine ? '' : `-1px 1px 0 ${SHADOW_COLOR}`;
         const $rightList = $fakeThead.find(getFixedQuerySelector(RIGHT));
         const rightLen = $rightList.length;
-        rightMap[_] = ($rightList.DOMList || []).reverse();
-        rightMap[_].forEach((item, index) => {
+        FIXED_RIGHT_MAP[_] = ($rightList.DOMList || []).reverse();
+        FIXED_RIGHT_MAP[_].forEach((item, index) => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
             if (index === rightLen - 1) {
                 shadowValue = `-2px 1px 3px ${SHADOW_COLOR}`;
@@ -89,6 +102,8 @@ class Fixed {
 
         styleLink.innerHTML = styleStr;
         $tableDiv.append(styleLink);
+
+        this.updateBeforeTh(_);
     }
 
     /**
@@ -105,9 +120,9 @@ class Fixed {
         const divWidth = $tableDiv.width();
         const theadWidth = $fakeThead.width();
 
-        // todo 这里的性能需要进行优化
+        // left fixed
         const scrollLeft = $tableDiv.scrollLeft();
-        each(leftMap[_], item => {
+        each(FIXED_LEFT_MAP[_], item => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
             item.style.left = scrollLeft + $th.get(0).offsetLeft + PX;
         });
@@ -119,12 +134,42 @@ class Fixed {
             scrollRight += scroll.width;
         }
 
-        // 将数组进行倒序操作
+        // right fixed
         let pr = 0;
-        rightMap[_].forEach(item => {
+        FIXED_RIGHT_MAP[_].forEach(item => {
             item.style.right = pr + scrollRight + PX;
             pr += getTh(_, item.getAttribute(TH_NAME)).width();
         });
+    }
+
+    /**
+     * 更新right fixed previous标识
+     * @param _
+     */
+    updateBeforeTh(_) {
+        // 当前不存在 right fixed
+        if (!this.enable[_] || !FIXED_RIGHT_MAP[_]) {
+            return;
+        }
+
+        const fixedPrevious = 'fixed-previous';
+        const len = FIXED_RIGHT_MAP[_].length;
+        const $th = jTool(FIXED_RIGHT_MAP[_].slice(len - 1, len));
+        const $allVisibleTh = getFakeVisibleTh(_);
+        const index = $th.index($allVisibleTh);
+
+        $allVisibleTh.removeAttr(fixedPrevious);
+        $allVisibleTh.eq(index - 1).attr(fixedPrevious, '');
+    }
+
+    /**
+     * 消毁
+     * @param _
+     */
+    destroy(_) {
+        // 清除事件
+        delete FIXED_LEFT_MAP[_];
+        delete FIXED_RIGHT_MAP[_];
     }
 }
 

@@ -1,5 +1,5 @@
 // 事件源class name
 export const CLASS_ADJUST_ACTION = 'gm-adjust-action';
 
-// 选中class name
-export const CLASS_ADJUST_SELECT = 'gm-adjust-selected';
+// 正在移动中 class name
+export const CLASS_ADJUST_ING = 'gm-adjust-ing';

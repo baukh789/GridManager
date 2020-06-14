@@ -89,7 +89,7 @@ class Dom {
             }
 
             // 嵌入宽度调整事件源,以下情况除外
-            // 1.插件自动生成的选择列不做事件绑定
+            // 1.插件自动生成的选择列和序号列不做事件绑定
             // 2.禁止使用个性配置功能的列
             if (supportAdjust && !isAutoCol && !column[DISABLE_CUSTOMIZE]) {
                 onlyThWarp.append(jTool(adjust.html));

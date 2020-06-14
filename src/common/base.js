@@ -391,7 +391,7 @@ export const updateThWidth = (settings, isInit) => {
 
     // 未存在自动列 且 存在剩余的值: 将第一个可定制列宽度强制与剩余宽度相加
     if (autoLen === 0 && overage > 0) {
-        firstCol.width = `${parseInt(firstCol.width, 10) + overage + PX}`;
+        firstCol.width = parseInt(firstCol.width, 10) + overage + PX;
     }
 
     // 存在自动列 且 存在剩余宽度: 平分剩余的宽度

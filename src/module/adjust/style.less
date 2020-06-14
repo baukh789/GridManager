@@ -16,14 +16,16 @@
     cursor: col-resize;
     z-index: 2;
 }
+
+.gm-adjust-ing{
+    display: block;
+    width: 0;
+    height: 100%;
+    position: absolute;
+    top: 100%;
+    border-right: 1px dashed #ccc;
+}
 // 当处于最后一列时隐藏事件源
 th[last-visible] .gm-adjust-action {
     display: none;
-}
-
-// 宽度调整选中
-.gm-adjust-selected {
-    border-right-width: 2px;
-    border-right-style: dashed;
-    border-right-color: #ccc;
 }

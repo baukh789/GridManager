@@ -160,7 +160,7 @@ class Render {
         }
 
         // 嵌入拖拽事件标识, 以下情况除外
-        // 1.插件自动生成列
+        // 1.组件自动生成列
         // 2.禁止使用个性配置功能的列
         let dragClassName = '';
         if (supportDrag && !col.isAutoCreate && !col[DISABLE_CUSTOMIZE]) {
