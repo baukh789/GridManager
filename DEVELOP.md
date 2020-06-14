@@ -1,12 +1,12 @@
 # GridManager 开发文档
 
 ## 测试脚本
-```javascript
+```
 npm run test
 ```
 
 ## 发布脚本
-```javascript
+```
 npm version <version_category: major | minor | patch>
 ```
 
