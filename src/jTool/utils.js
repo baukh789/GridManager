@@ -211,7 +211,6 @@ export const isNodeList = o => {
     return type(o) === 'nodeList';
 };
 
-// export const isInclude = (list, target)
 /**
  * 合并
  * 未对数组进行递归的原因: 框架中会为列配置项添加字段，这会导致出现内存溢出问题

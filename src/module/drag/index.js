@@ -60,7 +60,7 @@ class Drag {
             const $tableWrap = getWrap(_);
 
             // 与事件源同列的所有td
-            const $colTd = getColTd($th);
+            const $colTd = getColTd($th, _);
 
             // 列拖拽触发回调事件
             dragBefore(event);
@@ -226,7 +226,7 @@ class Drag {
 		// 处理向左拖拽
 		if ($prevTh && $dreamlandDIV.offset().left < $prevTh.offset().left) {
             // 事件源对应的上一组td
-		    let prevTd = getColTd($prevTh);
+		    let prevTd = getColTd($prevTh, _);
             $prevTh.before($th);
 			each($colTd, (v, i) => {
 				prevTd.eq(i).before(v);
@@ -243,7 +243,7 @@ class Drag {
 		// 处理向右拖拽
 		if ($nextTh && $dreamlandDIV.offset().left + $dreamlandDIV.width() > $nextTh.offset().left) {
             // 事件源对应的下一组td
-		    let nextTd = getColTd($nextTh);
+		    let nextTd = getColTd($nextTh, _);
 			$nextTh.after($th);
 			each($colTd, (v, i) => {
 				nextTd.eq(i).after(v);

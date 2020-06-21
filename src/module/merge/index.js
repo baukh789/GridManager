@@ -16,7 +16,7 @@ export const mergeRow = (_, columnMap) => {
             return true;
         }
 
-        const $tdList = getColTd(getTh(_, key));
+        const $tdList = getColTd(getTh(_, key), _);
 
         let len = $tdList.length;
         let mergeSum = 1;

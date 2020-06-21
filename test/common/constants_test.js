@@ -8,6 +8,7 @@ import {
     TOOLBAR_KEY,
     TABLE_HEAD_KEY,
     FAKE_TABLE_HEAD_KEY,
+    TABLE_BODY_KEY,
     ORDER_WIDTH,
     ORDER_KEY,
     CHECKBOX_WIDTH,
@@ -73,6 +74,10 @@ describe('常量验证', () => {
 
     it('FAKE_TABLE_HEAD_KEY', () => {
         expect(FAKE_TABLE_HEAD_KEY).toBe('grid-manager-mock-thead');
+    });
+
+    it('TABLE_BODY_KEY', () => {
+        expect(TABLE_BODY_KEY).toBe('grid-manager-tbody');
     });
 
     it('TR_CACHE_KEY', () => {

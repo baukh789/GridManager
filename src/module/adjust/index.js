@@ -188,7 +188,7 @@ class Adjust {
             const $nextTh = $allTh.eq($th.index($allTh) + 1);
 
             // 存储与事件源同列的所有td
-            const $td = getColTd($th);
+            const $td = getColTd($th, _);
 
             // 宽度调整触发回调事件
             adjustBefore(event);

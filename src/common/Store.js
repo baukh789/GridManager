@@ -14,7 +14,7 @@ const Store = {
 
 	// 表配置信息存储器
 	settings: {
-		// columnData: 表配置项, 在宽度\位置等信息变化后 会 即时更新
+		// columnData: 表配置项, 在宽度、位置等信息变化后 会 即时更新
 		// columnMap: 是在GridManager.js中通过columnData生成的, 在宽度\位置等信息变化后 会 即时更新
 		// 其它配置项...
 	}

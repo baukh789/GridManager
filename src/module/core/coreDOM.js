@@ -2,7 +2,7 @@ import jTool from '@jTool';
 import { isUndefined, isString, isObject, isElement, each } from '@jTool/utils';
 import { calcLayout, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
 import { outError } from '@common/utils';
-import { TABLE_PURE_LIST, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD, DISABLE_CUSTOMIZE } from '@common/constants';
+import { TABLE_PURE_LIST, TABLE_BODY_KEY, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD, DISABLE_CUSTOMIZE } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
 import { mergeRow } from '../merge';
 import filter from '../filter';
@@ -34,7 +34,9 @@ class Dom {
         calcLayout(_, width, height, supportAjaxPage);
 
         // append tbody
-        $table.append(document.createElement('tbody'));
+        const tbody = document.createElement('tbody');
+        tbody.setAttribute(TABLE_BODY_KEY, _);
+        $table.append(tbody);
 
         // 绑定事件
         this.bindEvent(_);

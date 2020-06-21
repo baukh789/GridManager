@@ -37,12 +37,13 @@ class Scroll {
      * @param _
      */
     render(_) {
-        let $setTopHead = getFakeThead(_);
-        $setTopHead.length && $setTopHead.remove();
+        // let $setTopHead = getFakeThead(_);
+        // console.log('$setTopHead.length', $setTopHead.length);
+        // $setTopHead.length && $setTopHead.remove();
 
         getTable(_).append(getThead(_).clone(true).attr(FAKE_TABLE_HEAD_KEY, _));
 
-        $setTopHead = getFakeThead(_);
+        const $setTopHead = getFakeThead(_);
         $setTopHead.removeAttr(TABLE_HEAD_KEY);
 
         const settings = getSettings(_);

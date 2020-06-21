@@ -32,6 +32,9 @@ export const TABLE_HEAD_KEY = 'grid-manager-thead';
 // 吸顶head所使用的key
 export const FAKE_TABLE_HEAD_KEY = 'grid-manager-mock-thead';
 
+// table body key
+export const TABLE_BODY_KEY = 'grid-manager-tbody';
+
 // th唯一名称
 export const TH_NAME = 'th-name';
 

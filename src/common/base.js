@@ -6,6 +6,7 @@ import { isString, isArray, each, extend } from '@jTool/utils';
 import {
     FAKE_TABLE_HEAD_KEY,
     TABLE_HEAD_KEY,
+    TABLE_BODY_KEY,
     TABLE_KEY,
     WRAP_KEY,
     DIV_KEY,
@@ -26,6 +27,7 @@ import {
     PX,
     SORT_CLASS
 } from './constants';
+import { getCacheDOM } from '@common/domCache';
 import { CLASS_FILTER } from '@module/filter/constants';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 
@@ -113,60 +115,43 @@ export const getQuerySelector = _ => {
 
 /**
  * get table
- * @param $dom: 父级或子级jTool对象，或者是_。如果是_，则第二个参数无效。
- * @param isSelectUp: 是否为向上查找模式
+ * @param _
  * @returns {*}
  */
-export const getTable = ($dom, isSelectUp) => {
-    if (isString($dom)) {
-        return jTool(`[${TABLE_KEY}="${$dom}"]`);
-    }
-    return isSelectUp ? $dom.closest(`[${TABLE_KEY}]`) : jTool(`[${TABLE_KEY}]`, $dom);
-};
+export const getTable = _ => getCacheDOM(_, TABLE_KEY);
 
 /**
  * get table div
  * @param _
  * @returns {*}
  */
-export const getDiv = _ => {
-    return jTool(`[${DIV_KEY}="${_}"]`);
-};
+export const getDiv = _ => getCacheDOM(_, DIV_KEY);
 
 /**
  * get table wrap
  * @param _
  * @returns {*}
  */
-export const getWrap = _ => {
-    return jTool(`[${WRAP_KEY}="${_}"]`);
-};
+export const getWrap = _ => getCacheDOM(_, WRAP_KEY);
 
 /**
  * get table head
  * @param _
  * @returns {*}
  */
-export const getThead = _ => {
-    return jTool(`[${TABLE_HEAD_KEY}="${_}"]`);
-};
+export const getThead = _ => getCacheDOM(_, TABLE_HEAD_KEY);
 
 /**
  * get fake head
  * @param _
  * @returns {*}
  */
-export const getFakeThead = _ => {
-    return jTool(`[${FAKE_TABLE_HEAD_KEY}="${_}"]`);
-};
-
+export const getFakeThead = _ => getCacheDOM(_, FAKE_TABLE_HEAD_KEY);
 /**
  * get tbody
  * @param _
  */
-export const getTbody = _ => {
-    return jTool(`[${TABLE_KEY}="${_}"] tbody`);
-};
+export const getTbody = _ => getCacheDOM(_, TABLE_BODY_KEY);
 
 /**
  * get head th
@@ -197,17 +182,13 @@ export const getFakeTh = (_, thName) => {
  * @param _
  * @returns {*}
  */
-export const getAllTh = _ => {
-    return jTool(`[${TABLE_HEAD_KEY}="${_}"] th`);
-};
+export const getAllTh = _ => getCacheDOM(_, 'allTh', `[${TABLE_HEAD_KEY}="${_}"] th`);
 /**
  * get all fake th
  * @param _
  * @returns {*}
  */
-export const getAllFakeTh = _ => {
-    return jTool(`[${FAKE_TABLE_HEAD_KEY}="${_}"] th`);
-};
+export const getAllFakeTh = _ => getCacheDOM(_, 'allFakeTh', `[${FAKE_TABLE_HEAD_KEY}="${_}"] th`);
 
 /**
  * get visible th
@@ -261,13 +242,13 @@ export const updateEmptyCol = _ => {
 /**
  * 获取同列的 td jTool 对象
  * @param $dom: $th || $td
- * @param $context: $tr || tr
+ * @param $context: $tr || tr || _
  * @returns {jTool}
  */
 export const getColTd = ($dom, $context) => {
     // 获取tbody下全部匹配的td
-    if (!$context) {
-        return jTool(`tbody tr td:nth-child(${$dom.index() + 1})`, getTable($dom, true));
+    if (isString($context)) {
+        return jTool(`tbody tr td:nth-child(${$dom.index() + 1})`, getTable($context));
     }
 
     // 获取指定$context下匹配的td
@@ -285,7 +266,7 @@ export const setAreVisible = (_, thNameList, isVisible) => {
     each(isArray(thNameList) ? thNameList : [thNameList], thName => {
         const $th = getTh(_, thName);
         const $fakeTh = getFakeTh(_, thName);
-        const $td = getColTd($th);
+        const $td = getColTd($th, _);
 
         // 可视状态值
         const fn = isVisible ? 'removeAttr' : 'attr';
@@ -328,7 +309,7 @@ export const updateVisibleLast = _ => {
     getVisibleTh(_).eq(index).attr(LAST_VISIBLE, '');
 
     // td 最后一项增加标识
-    getColTd($lastFakeTh).attr(LAST_VISIBLE, '');
+    getColTd($lastFakeTh, _).attr(LAST_VISIBLE, '');
 };
 
 /**

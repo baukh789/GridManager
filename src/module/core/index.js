@@ -139,10 +139,9 @@ class Core {
             return;
         }
 
-        const $tbody = getTbody(_);
         const $tableDiv = getDiv(_);
         $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
-        $tbody.html(`<tr ${EMPTY_TPL_KEY}="${_}" style="height: ${$tableDiv.height() - 1 + PX}"><td colspan="${getVisibleTh(_).length}"></td></tr>`);
+        getTbody(_).html(`<tr ${EMPTY_TPL_KEY}="${_}" style="height: ${$tableDiv.height() - 1 + PX}"><td colspan="${getVisibleTh(_).length}"></td></tr>`);
         const emptyTd = getEmpty(_).get(0).querySelector('td');
 
         emptyTd.innerHTML = compileEmptyTemplate(settings, emptyTd, emptyTemplate);
