@@ -97,10 +97,9 @@ class Drag {
 
             // 提前设置width, height: 可以不用在移动中每次进行设置
             $dreamlandDIV.css({
-                width: thWidth,
-                height: tableHeight
+                width: thWidth + 2, // 2为边框
+                height: tableHeight + 2
             });
-
 
             // 绑定拖拽滑动事件
             const $doing = jTool(doing[TARGET]);
@@ -199,10 +198,7 @@ class Drag {
 	    // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
         let tbodyHtml = '';
         each($colTd, v => {
-            const cloneTd = v.cloneNode(true);
-            cloneTd.style.height = v.offsetHeight + PX;
-            const cloneTr = jTool(v).closest('tr').clone();
-            tbodyHtml += cloneTr.html(cloneTd.outerHTML).get(0).outerHTML;
+            tbodyHtml += `<tr style="height: ${v.offsetHeight + PX}">${v.outerHTML}</tr>`;
         });
 
         return {

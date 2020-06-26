@@ -26,6 +26,7 @@
     cursor: all-scroll;
     z-index: 9999;
     border: 1px solid #e8e8e8;
+    overflow: hidden; // safari 中获取的宽度比其它浏览器小1，所以需要overflow进行容错
     .dreamland-table {
         table-layout: fixed;
         width: 100%;
@@ -39,6 +40,9 @@
             .table-bg();
         }
         tr {
+            th, td{
+                border-right: none;
+            }
             td {
                 background-color: #fff;
                 padding: 11px;

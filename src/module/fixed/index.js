@@ -25,6 +25,7 @@ const getStyle = (_, fakeTh, direction, shadowValue, directionValue) => {
 
     return `[gm-overflow-x="true"] [${TABLE_KEY}="${_}"] tr:not([${EMPTY_TPL_KEY}]) td:nth-of-type(${$th.index() + 1}){`
            + 'position: sticky;\n'
+           + 'position: -webkit-sticky;\n' // 解决safari兼容问题
            + `${direction}: ${directionValue + PX};\n`
            + 'border-right: none;\n'
            + 'z-index: 3;\n'
