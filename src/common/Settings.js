@@ -68,7 +68,8 @@ const adjust = {
  * 右键菜单
  */
 const menu = {
-    supportMenu: true
+    supportMenu: true,
+    menuHandler: list => list
 };
 
 /**

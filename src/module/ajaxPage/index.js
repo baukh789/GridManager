@@ -42,8 +42,10 @@
  *          - query: AJAX请求服务器所协带参数
  *
  * ajax-page.tpl.html 中的实时更新说明:
+ *  - 说明: 实时更新用于分页区域的跨框架可扩展性, 通过配置参ajaxPageTemplate对分页模块进行使用。
+ *         当分页数据发生变更时，会对包含特定attribute的标签html和value进行更新
  *  - 有效区域: <div class="gm-toolbar">标签内
- *  - 触发条件: 以下属性的标签将会触发实时更新:
+ *  - attribute与触发时机:
  *      - begin-number-info: 当前页从多少条开始显示
  *      - end-number-info: 当前页到多少条结束显示
  *      - current-page-info: 当前页
@@ -376,7 +378,7 @@ class AjaxPage {
 	    const { _, useNoTotalsMode, currentPageKey, pageData, asyncTotals, pageSizeKey, pageSize } = settings;
         const $footerToolbar = jTool(getQuerySelector(_));
         const cPage = pageData[currentPageKey] || 1;
-        const pSize = pageData[pageSizeKey] || pageSize;
+        const pSize = pageData[pageSizeKey] || pageSize; // 验证下是否还需要pageSize做为替补
 
         const update = (totals, asyncTotalsText) => {
             const pageData = getPageData(settings, totals, len);
@@ -388,7 +390,7 @@ class AjaxPage {
             resetPageInfo($footerToolbar, settings, pageData, asyncTotalsText);
 
             // 更新Cache
-            setSettings(extend(true, settings, {pageData}));
+            setSettings(extend(true, settings, { pageData }));
 
             // 显示底部工具条
             $footerToolbar.css('visibility', 'visible');

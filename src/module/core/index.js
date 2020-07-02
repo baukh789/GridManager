@@ -10,7 +10,7 @@ import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmpty } fr
 import { cloneObject, outError } from '@common/utils';
 import { getTableData, setTableData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, EMPTY_TPL_KEY, PX } from '@common/constants';
-import menu from '../menu';
+import { clearMenuDOM } from '../menu/tool';
 import ajaxPage from '../ajaxPage';
 import { resetCheckboxDOM } from '../checkbox';
 import scroll from '../scroll';
@@ -68,7 +68,7 @@ class Core {
      * @param callback
      */
     driveDomForSuccessAfter(settings, response, callback) {
-        const { _, rendered, responseHandler, supportCheckbox, supportAjaxPage, checkboxConfig, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
+        const { _, rendered, responseHandler, supportCheckbox, supportAjaxPage, supportMenu, checkboxConfig, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
 
         // 用于防止在填tbody时，实例已经被消毁的情况。
         if (!rendered) {
@@ -120,7 +120,11 @@ class Core {
         // 渲染分页
         if (supportAjaxPage) {
             ajaxPage.resetPageData(settings, parseRes[totalsKey], _data.length);
-            menu.updateMenuPageStatus(settings);
+        }
+
+        // 右键菜单
+        if (supportMenu) {
+            clearMenuDOM(_);
         }
 
         isFunction(callback) ? callback(parseRes) : '';

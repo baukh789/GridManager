@@ -270,7 +270,17 @@ const demo1 = {
             gridManagerName: 'test',
             width: '100%',
             height: '100%',
-
+            menuHandler: list => {
+                list[0].content = 'hahaha';
+                list[0].after = true;
+                list[0].run = () => {};
+                list[0].onClick = settings => {
+                    alert(settings._);
+                };
+                list[1].after = false;
+                console.log('list', list);
+                return list;
+            },
             // 初始渲染时是否加载数据
             // firstLoading: false,
 

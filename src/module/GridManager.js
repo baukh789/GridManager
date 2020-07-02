@@ -21,6 +21,7 @@ import drag from './drag';
 import moveRow from './moveRow';
 import exportFile from './exportFile';
 import menu from './menu';
+import { clearMenuDOM } from './menu/tool';
 import remind from './remind';
 import scroll from './scroll';
 import sort, { updateSort } from './sort';
@@ -624,6 +625,7 @@ export default class GridManager {
 
             setTableData(_, tableData);
             setCheckedData(_, checkedList, true);
+            clearMenuDOM(_);
             return resetCheckboxDOM(_, tableData, useRadio, max);
         }
     };

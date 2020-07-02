@@ -201,7 +201,6 @@ class Adjust {
 
             // 绑定停止事件
             runStopEvent(_, $table, $th, $td, adjustAfter);
-            return false;
         });
     }
 
