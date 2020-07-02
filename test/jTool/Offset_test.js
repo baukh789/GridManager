@@ -12,6 +12,7 @@ describe('Offset', () => {
     let jTool = null;
 
     beforeEach(() => {
+        document.body.innerHTML = '';
         jTool = function (selector, context) {
             return new Sizzle(selector, context);
         };
@@ -56,11 +57,7 @@ describe('Offset', () => {
     });
 
     afterEach(() => {
-        document.body.removeChild(divEle);
-        divEle2.removeChild(divEle3);
-        divEle2.removeChild(divEle4);
-        divEle2.removeChild(divEle5);
-        document.body.removeChild(divEle2);
+        document.body.innerHTML = '';
         divEle = null;
         divEle2 = null;
         divEle3 = null;

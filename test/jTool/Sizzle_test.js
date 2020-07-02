@@ -12,6 +12,7 @@ describe('Sizzle', () => {
     let s = null;
 
     beforeEach(() => {
+        document.body.innerHTML = '';
         divEle = document.createElement('div');
         divEle.id = 'div1';
         document.body.appendChild(divEle);
@@ -33,11 +34,7 @@ describe('Sizzle', () => {
     });
 
     afterEach(() => {
-        document.body.removeChild(divEle);
-        document.body.removeChild(spanEle);
-
-        pEle.removeChild(spanEle2);
-        document.body.removeChild(pEle);
+        document.body.innerHTML = '';
 
         divEle = null;
         spanEle = null;

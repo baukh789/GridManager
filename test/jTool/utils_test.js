@@ -20,13 +20,14 @@ describe('type(o)', () => {
     let divEle = null;
 
     beforeEach(function () {
+        document.body.innerHTML = '';
         divEle = document.createElement('div');
         document.body.appendChild(divEle);
         nodeList = document.querySelectorAll('div');
     });
 
     afterEach(function () {
-        document.body.removeChild(divEle);
+        document.body.innerHTML = '';
         nodeList = null;
         divEle = null;
     });
@@ -78,9 +79,9 @@ describe('each', () => {
 
     afterEach(() => {
         callback = null;
-        document.body.removeChild(divEle);
         nodeList = null;
         divEle = null;
+        document.body.innerHTML = '';
     });
 
     it('基础验证', () => {
@@ -89,8 +90,7 @@ describe('each', () => {
     });
 
     it('遍历数字', () => {
-        const num = 123;
-        each(num, callback);
+        each(123, callback);
         expect(callback.calls.count()).toBe(0);
     });
 
@@ -173,7 +173,7 @@ describe('getStyle(dom, key)', () => {
     });
 
     afterEach(() => {
-        document.body.removeChild(divEle);
+        document.body.innerHTML = '';
         divEle = null;
     });
 
@@ -197,7 +197,7 @@ describe('createDOM(htmlString)', () => {
     });
 
     afterEach(() => {
-        document.body.removeChild(divEle);
+        document.body.innerHTML = '';
         divEle = null;
     });
 

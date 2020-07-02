@@ -5,6 +5,7 @@ describe('Animate', () => {
 
     let jTool = null;
 	beforeEach(() => {
+        document.body.innerHTML = '';
 		jTool = function (selector, context) {
 			return new Sizzle(selector, context);
 		};

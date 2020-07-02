@@ -10,6 +10,7 @@ describe('Event', () => {
     let mousedownHandler = null;
 
 	beforeEach(() => {
+        document.body.innerHTML = '';
 		jTool = function (selector, context) {
             return new Sizzle(selector, context);
 		};
@@ -40,8 +41,7 @@ describe('Event', () => {
 
 	afterEach(() => {
 		jTool = null;
-		document.body.removeChild(pEle);
-		document.body.removeChild(pEle2);
+        document.body.innerHTML = '';
 		pEle = null;
 		pEle2 = null;
         clickHandler = null;

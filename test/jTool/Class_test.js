@@ -8,6 +8,7 @@ describe('Class', () => {
 	var jTool = null;
 
 	beforeEach(() => {
+        document.body.innerHTML = '';
 		jTool = function (selector, context) {
 			return new Sizzle(selector, context);
 		};
@@ -31,8 +32,7 @@ describe('Class', () => {
 	});
 
 	afterEach(() => {
-		document.body.removeChild(divEle);
-		document.body.removeChild(divEle2);
+        document.body.innerHTML = '';
 		divEle = null;
 		divEle2 = null;
 		jTool = null;

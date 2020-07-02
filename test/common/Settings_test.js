@@ -50,6 +50,10 @@ describe('Settings', () => {
 		expect(settings.supportMenu).toBe(true);
 	});
 
+    it('验证属性[supportMenu]初始值', () => {
+        expect(typeof settings.menuHandler).toBe('function');
+    });
+
 	it('验证属性[supportConfig]初始值', () => {
 		expect(settings.supportConfig).toBe(true);
 	});

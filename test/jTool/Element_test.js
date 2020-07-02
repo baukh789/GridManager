@@ -10,6 +10,7 @@ describe('Element', () => {
     let jTool = null;
 
 	beforeEach(() => {
+        document.body.innerHTML = '';
 		jTool = function (selector, context) {
 			return new Sizzle(selector, context);
 		};
@@ -40,10 +41,7 @@ describe('Element', () => {
 	});
 
 	afterEach(() => {
-		document.body.removeChild(divEle);
-		document.body.removeChild(divEle2);
-		document.body.removeChild(divEle3);
-		document.body.removeChild(pEle1);
+		document.body.innerHTML = '';
 		divEle = null;
 		divEle2 = null;
 		divEle3 = null;

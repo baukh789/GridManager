@@ -8,6 +8,7 @@ describe('Css', () => {
     let jTool = null;
 
 	beforeEach(() => {
+        document.body.innerHTML = '';
 		jTool = function (selector, context) {
 			return new Sizzle(selector, context);
 		};
@@ -37,9 +38,7 @@ describe('Css', () => {
 	});
 
 	afterEach(() => {
-		document.body.removeChild(divEle);
-		divEle2.removeChild(divEle3);
-		document.body.removeChild(divEle2);
+        document.body.innerHTML = '';
 		divEle = null;
 		divEle2 = null;
 		divEle3 = null;
