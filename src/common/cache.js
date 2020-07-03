@@ -5,7 +5,7 @@
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { isUndefined, isFunction, isObject, isString, isElement, each, isNodeList, extend } from '@jTool/utils';
+import { isUndefined, isFunction, isObject, isString, isNumber, isElement, each, isNodeList, extend } from '@jTool/utils';
 import { outInfo, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
 import { DISABLE_CUSTOMIZE, PX } from '@common/constants';
 import { Settings } from '@common/Settings';
@@ -512,6 +512,11 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
             outError(`columnData[${index}].key undefined`);
             isError = true;
             return;
+        }
+
+        // 宽度转换: 100 => 100px
+        if (isNumber(col.width)) {
+            col.width = `${col.width}px`;
         }
 
         // 属性: 表头提醒

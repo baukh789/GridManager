@@ -1,5 +1,27 @@
-/*
- * GridManager: 右键菜单
+/**
+ * Menu[右键菜单]
+ * 参数说明:
+ *  - supportMenu: 是否开启右键菜单
+ *  - menuHandler: 菜单处理程序
+ *      - type: Function
+ *      - default: list => list
+ *      - arguments
+ *          - list: 菜单在实例化时生成的菜单list, 在menuHandler内将修改后的list返回可自定义菜单项。
+ *
+ * GridManager自带以下菜单项:
+ * - 上一页
+ * - 下一页
+ * - 导出
+ * - 导出选中项
+ * - 重新加载
+ * - 打印
+ * - 配置表
+ *
+ * 每个菜单项都有以下属性:
+ * - content: String 显示文本
+ * - line: Boolean 是否显示分割线
+ * - run(gridManagerName, $dom): 每次打开菜单前的执行函数
+ * - onClick(gridManagerName): 菜单项点击事件
  */
 import jTool from '@jTool';
 import { clearTargetEvent } from '@common/base';

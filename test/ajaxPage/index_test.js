@@ -127,7 +127,7 @@ describe('ajaxPage', () => {
             expect(ajaxPage.resetPageData.length).toBe(3);
         });
 
-        it('执行验证', () => {
+        it('常规操作', () => {
             settings = {
                 _: 'test',
                 i18n: 'zh-cn',
@@ -167,7 +167,7 @@ describe('ajaxPage', () => {
 
         });
 
-        it('验证实时更新', () => {
+        it('实时更新DOM', () => {
             $beginNumber = jTool('[begin-number-info]', $footerToolbar);
             $endNumber = jTool('[end-number-info]', $footerToolbar);
             $currentPage = jTool('[current-page-info]', $footerToolbar);
@@ -241,12 +241,25 @@ describe('ajaxPage', () => {
                 sizeData: [10, 20, 50],
                 pageData: {
                     pSize: 20,
-                    cPage: 2
+                    cPage: 1
                 },
                 pageSizeKey: 'pSize',
                 pageSize: 20,
                 currentPageKey: 'cPage'
             };
+            ajaxPage.resetPageData(settings, 50);
+            expect($beginNumber.html()).toBe('');
+            expect($beginNumber.val()).toBe('1');
+            expect($endNumber.html()).toBe('');
+            expect($endNumber.val()).toBe('20');
+            expect($currentPage.html()).toBe('');
+            expect($currentPage.val()).toBe('1');
+            expect($totalsNumber.html()).toBe('');
+            expect($totalsNumber.val()).toBe('50');
+            expect($totalsPage.html()).toBe('');
+            expect($totalsPage.val()).toBe('3');
+
+            settings.pageData.cPage = 2;
             ajaxPage.resetPageData(settings, 50);
             expect($beginNumber.html()).toBe('');
             expect($beginNumber.val()).toBe('21');
@@ -258,6 +271,23 @@ describe('ajaxPage', () => {
             expect($totalsNumber.val()).toBe('50');
             expect($totalsPage.html()).toBe('');
             expect($totalsPage.val()).toBe('3');
+        });
+
+        it('无总条数', () => {
+            settings = {
+                _: 'test',
+                i18n: 'zh-cn',
+                textConfig: new TextConfig(),
+                sizeData: [10, 20, 50],
+                pageData: {
+                    pSize: 20,
+                    cPage: 3
+                },
+                pageSizeKey: 'pSize',
+                pageSize: 20,
+                currentPageKey: 'cPage'
+            };
+            ajaxPage.resetPageData(settings);
         });
     });
 });

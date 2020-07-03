@@ -149,7 +149,7 @@ class Fixed {
      */
     updateBeforeTh(_) {
         // 当前不存在 right fixed
-        if (!this.enable[_] || !FIXED_RIGHT_MAP[_]) {
+        if (!this.enable[_] || !FIXED_RIGHT_MAP[_] || !FIXED_RIGHT_MAP[_].length) {
             return;
         }
 

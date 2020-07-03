@@ -203,5 +203,5 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
 - [License](/LICENSE)
 
 ## 浏览器兼容
-- Firefox, Chrome，Edge
+- Firefox, Chrome，Edge, Safari
 - 这里提一下为什么不支持IE: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
