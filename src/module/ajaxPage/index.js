@@ -100,7 +100,7 @@ const resetPageInfo = ($footerToolbar, settings, pageData, asyncTotalText) => {
 
     const $pageInfo = jTool('.page-info', $footerToolbar);
     if ($pageInfo.length) {
-        const info = i18n(settings, 'page-info', [fromNum, toNum, totalNum, cPage, tPage]);
+        const info = i18n(settings, 'page-info', [fromNum, toNum, totalNum]);
         $pageInfo.html(info);
     }
 
@@ -398,6 +398,7 @@ class AjaxPage {
 
         // 异步总条数
         if (asyncTotals) {
+            // 返回条数小于每页显示条数: 直接通过JS计算总条数
             if (len < pSize) {
                 update((cPage - 1) * pSize + len);
                 return;
