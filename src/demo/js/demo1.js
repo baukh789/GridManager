@@ -272,7 +272,7 @@ const demo1 = {
             height: '100%',
             menuHandler: list => {
                 list.unshift({
-                    content: '调试下',
+                    content: '自定义菜单',
                     line: true,
                     onClick: _ => {
                         alert(_);
