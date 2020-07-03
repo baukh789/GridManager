@@ -93,6 +93,7 @@ describe('ajaxPage', () => {
         let $pageInfo;
         let $beginNumber;
         let $endNumber;
+        let $paginationNumber;
         let $currentPage;
         let $totalsNumber;
         let $totalsPage;
@@ -104,6 +105,7 @@ describe('ajaxPage', () => {
             $nextPage = jTool('[pagination-after] .next-page', $footerToolbar);
             $lastPage = jTool('[pagination-after] .last-page', $footerToolbar);
             $pageInfo = jTool('.page-info', $footerToolbar);
+            $paginationNumber = jTool('[pagination-number]', $footerToolbar);
 
         });
         afterEach(() => {
@@ -116,6 +118,7 @@ describe('ajaxPage', () => {
             $pageInfo = null;
             $beginNumber = null;
             $endNumber = null;
+            $paginationNumber = null;
             $currentPage = null;
             $totalsNumber = null;
             $totalsPage = null;
@@ -277,6 +280,7 @@ describe('ajaxPage', () => {
             settings = {
                 _: 'test',
                 i18n: 'zh-cn',
+                useNoTotalsMode: true,
                 textConfig: new TextConfig(),
                 sizeData: [10, 20, 50],
                 pageData: {
@@ -287,7 +291,96 @@ describe('ajaxPage', () => {
                 pageSize: 20,
                 currentPageKey: 'cPage'
             };
+            expect($paginationNumber.find('li').length).toBe(5);
+
             ajaxPage.resetPageData(settings);
+            expect($firstPage.length).toBe(1);
+            expect($previousPage.length).toBe(1);
+            expect($nextPage.length).toBe(1);
+            expect($lastPage.length).toBe(1);
+            expect($paginationNumber.find('li').length).toBe(0);
+        });
+
+        it('异步总条数: 返回条数 < 每页显示条数', () => {
+            settings = {
+                _: 'test',
+                i18n: 'zh-cn',
+                asyncTotals: {
+                    // 加载时的占位文本，可使用html标签
+                    text: '<span>加载中...</span>',
+                    // 处理函数，需要返回Promise对像
+                    // 参数settings: 当前实例化对像
+                    // 参数params: 当前使用的请求参
+                    handler: () => {
+                        return new Promise(resolve => {
+                            setTimeout(() => {
+                                resolve(100);  // 模拟返回100总条数
+                            }, 300);
+                        });
+                    }
+                },
+                textConfig: new TextConfig(),
+                sizeData: [10, 20, 50],
+                pageData: {
+                    pSize: 20,
+                    cPage: 1
+                },
+                pageSizeKey: 'pSize',
+                pageSize: 20,
+                currentPageKey: 'cPage'
+            };
+
+            // 返回条数 < 每页显示条数
+            expect($paginationNumber.find('li').length).toBe(5);
+
+            ajaxPage.resetPageData(settings, undefined, 15);
+            expect($paginationNumber.find('li').length).toBe(1);
+        });
+
+        it('异步总条数: 返回条数 >= 每页显示条数', done => {
+            settings = {
+                _: 'test',
+                i18n: 'zh-cn',
+                supportAjaxPage: false,
+                query: {
+                    customer: 'kouzi'
+                },
+                sortKey: 'sort_',
+                sortData: {},
+                mergeSort: false,
+                requestHandler: request => request,
+                asyncTotals: {
+                    // 加载时的占位文本，可使用html标签
+                    text: '<span>加载中...</span>',
+                    // 处理函数，需要返回Promise对像
+                    // 参数settings: 当前实例化对像
+                    // 参数params: 当前使用的请求参
+                    handler: () => {
+                        return new Promise(resolve => {
+                            setTimeout(() => {
+                                resolve(100);  // 模拟返回100总条数
+                            }, 100);
+                        });
+                    }
+                },
+                textConfig: new TextConfig(),
+                sizeData: [10, 20, 50],
+                pageData: {
+                    pSize: 20,
+                    cPage: 1
+                },
+                pageSizeKey: 'pSize',
+                pageSize: 20,
+                currentPageKey: 'cPage'
+            };
+
+            ajaxPage.resetPageData(settings, undefined, 20);
+            expect($paginationNumber.find('li').length).toBe(0);
+
+            setTimeout(() => {
+                expect($paginationNumber.find('li').length).toBe(5);
+                done();
+            }, 200);
         });
     });
 });
