@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - 7.6.0
+  - 14.0.0
 services:
   - xvfb
 cache:
