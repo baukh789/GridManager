@@ -17,7 +17,7 @@
  * - 打印
  * - 配置表
  *
- * 每个菜单项都有以下属性:
+ * 每个菜单对像都有以下属性:
  * - content: String 显示文本
  * - line: Boolean 是否显示分割线
  * - run(gridManagerName, $dom): 每次打开菜单前的执行函数
