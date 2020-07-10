@@ -170,6 +170,9 @@ export default class GridManager {
         // 初始化设置相关: 合并, 存储
         settings = initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order));
 
+        // 清除DOM缓存，用于防止上一次清除失败
+        clearCacheDOM(settings._);
+
         const initTableAfter = () => {
             // 如果初始获取缓存失败，在渲染完成后首先存储一次数据
             if (!isUndefined($table.attr(CACHE_ERROR_KEY))) {

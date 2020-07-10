@@ -18,7 +18,7 @@ class Render {
     /**
      * 生成table wrap 模板
      * @param params
-     * @returns {parseData}
+     * @returns {}
      */
     @parseTpl(wrapTpl)
     createWrapTpl(params) {
@@ -55,7 +55,7 @@ class Render {
     /**
      * 生成table head 模板
      * @param params
-     * @returns {parseData}
+     * @returns {}
      */
     @parseTpl(theadTpl)
     createTheadTpl(params) {
@@ -72,6 +72,8 @@ class Render {
         // columnList 生成thead
         each(columnList, col => {
             thListTpl += this.createThTpl({settings, col});
+
+            // todo 复杂表头可以通过在这里处理， createThTpl中处理colspan。 这里递归处理children所处的tr
         });
 
         return {
@@ -83,7 +85,7 @@ class Render {
     /**
      * 生成table th 模板
      * @param params
-     * @returns {parseData}
+     * @returns {}
      */
     @parseTpl(thTpl)
     createThTpl(params) {
@@ -168,18 +170,10 @@ class Render {
         }
 
         return {
-            thName,
+            thAttr: `th-name="${thName}" style="width:${col.width || 'auto'}" ${cellHiddenAttr} ${alignAttr} ${sortingAttr} ${filterAttr} ${fixedAttr} ${remindAttr} ${gmCreateAttr}`,
             thText,
             compileAttr,
-            sortingAttr,
-            alignAttr,
-            filterAttr,
-            fixedAttr,
-            remindAttr,
-            dragClassName,
-            cellHiddenAttr,
-            gmCreateAttr,
-            thStyle: `style="width:${col.width || 'auto'}"`
+            dragClassName
         };
     }
 }
