@@ -270,16 +270,6 @@ const demo1 = {
             gridManagerName: 'test',
             width: '100%',
             height: '100%',
-            menuHandler: list => {
-                list.unshift({
-                    content: '自定义菜单',
-                    line: true,
-                    onClick: _ => {
-                        alert(_);
-                    }
-                });
-                return list;
-            },
             // 初始渲染时是否加载数据
             // firstLoading: false,
 
@@ -326,7 +316,17 @@ const demo1 = {
             // supportPrint: false,
 
             // 右键菜单
-            // supportMenu: false,
+            supportMenu: true,
+            menuHandler: list => {
+                list.unshift({
+                    content: '自定义菜单',
+                    line: true,
+                    onClick: _ => {
+                        alert(_);
+                    }
+                });
+                return list;
+            },
 
             // 禁用分割线
             // disableLine: true,

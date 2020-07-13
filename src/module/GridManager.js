@@ -616,7 +616,7 @@ export default class GridManager {
         const settings = getSettings(_);
         if (isRendered(_, settings)) {
             const checkedList = isArray(checkedData) ? checkedData : [checkedData];
-            const { columnMap, checkboxConfig, treeConfig } = settings;
+            const { columnMap, checkboxConfig, treeConfig, supportMenu } = settings;
             const treeKey = treeConfig.treeKey;
             const tableData = getTableData(_);
             const { key, useRadio, max } = checkboxConfig;
@@ -628,7 +628,11 @@ export default class GridManager {
 
             setTableData(_, tableData);
             setCheckedData(_, checkedList, true);
-            clearMenuDOM(_);
+
+            // 右键菜单
+            if (supportMenu) {
+                clearMenuDOM(_);
+            }
             return resetCheckboxDOM(_, tableData, useRadio, max);
         }
     };
