@@ -4,6 +4,7 @@
  * @param scope: querySelector 域
  */
 import { MOUSE_CLICK, createEventsObj } from '@common/events';
+import { TR_CACHE_KEY } from '@common/constants';
 export const getEvent = (gridManagerName, scope) => {
     return {
         // 全选框点击
@@ -16,7 +17,7 @@ export const getEvent = (gridManagerName, scope) => {
         radioChange: createEventsObj(MOUSE_CLICK, scope, 'td[gm-checkbox] .gm-radio-wrapper'),
 
         // tr 点击选中
-        trChange: createEventsObj(MOUSE_CLICK, scope, 'tbody > tr')
+        trChange: createEventsObj(MOUSE_CLICK, scope, `tbody > tr[${TR_CACHE_KEY}]`)
     };
 };
 

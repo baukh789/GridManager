@@ -272,7 +272,6 @@
         document.querySelector('.search-action').addEventListener('click', function () {
             var _query = {
                 title: document.querySelector('[name="title"]').value,
-                type: document.querySelector('[name="type"]').value,
                 content: document.querySelector('[name="content"]').value,
                 cPage: 1
             };
@@ -284,7 +283,6 @@
         // 绑定重置
         document.querySelector('.reset-action').addEventListener('click', function () {
             document.querySelector('[name="title"]').value = '';
-            document.querySelector('[name="type"]').value = '-1';
             document.querySelector('[name="content"]').value = '';
         });
     })();
