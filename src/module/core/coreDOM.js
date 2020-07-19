@@ -1,5 +1,5 @@
 import jTool from '@jTool';
-import { isUndefined, isString, isObject, isElement, each } from '@jTool/utils';
+import { isUndefined, isString, isObject, isElement, isArray, each } from '@jTool/utils';
 import { calcLayout, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
 import { outError } from '@common/utils';
 import { TABLE_PURE_LIST, TABLE_BODY_KEY, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD, DISABLE_CUSTOMIZE } from '@common/constants';
@@ -111,7 +111,8 @@ class Dom {
             supportTreeData,
             supportCheckbox,
             supportMoveRow,
-            treeConfig
+            treeConfig,
+            __isNested
         } = settings;
 
         const { treeKey, openState } = treeConfig;
@@ -128,10 +129,24 @@ class Dom {
         let trObjectList = [];
 
         // 通过index对columnMap进行排序
+        const topList = [];
         const columnList = [];
         each(columnMap, (key, col) => {
-            columnList[col.index] = col;
+            if (!col.pk) {
+                topList[col.index] = col;
+            }
         });
+
+        const pushList = list => {
+            each(list, col => {
+                if (!isArray(col.children)) {
+                    columnList.push(col);
+                    return;
+                }
+                pushList(col.children);
+            });
+        };
+        pushList(topList);
 
         // 插入常规的TR
         const installNormal = (trObject, row, rowIndex, isTop) => {
@@ -236,7 +251,8 @@ class Dom {
             console.error(e);
         }
 
-        this.initVisible(_, columnMap);
+        // 非多层嵌套初始化显示状态: 多层嵌套不支持显示、隐藏操作
+        !__isNested && this.initVisible(_, columnMap);
 
         // 解析框架
         sendCompile(settings).then(() => {

@@ -2,7 +2,7 @@ import order from '../order';
 import ajaxPage from '../ajaxPage';
 import { CLASS_DRAG_ACTION } from '../drag/constants';
 import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, CELL_HIDDEN, DISABLE_CUSTOMIZE } from '@common/constants';
-import { isUndefined, isString, isObject, each } from '@jTool/utils';
+import { isUndefined, isString, isObject, isArray, each } from '@jTool/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
 import config from '../config';
@@ -60,20 +60,79 @@ class Render {
     @parseTpl(theadTpl)
     createTheadTpl(params) {
         const settings = params.settings;
-        const { columnMap, _ } = settings;
+        const { columnMap, _, __isNested } = settings;
 
-        const columnList = [];
+        const columnList = [[]];
+        const topList = columnList[0];
 
-        each(columnMap, (key, col) => {
-            columnList[col.index] = col;
-        });
+        // 更新父级
+        const updateParent = col => {
+            const parentCol = columnMap[col.pk];
+            if (parentCol) {
+                if (!parentCol.colspan || parentCol.colspan === 1) {
+                    parentCol.colspan = col.colspan;
+                } else {
+                    parentCol.colspan = parentCol.children.length + col.colspan - 1;
+                }
+                if (parentCol.pk) {
+                    updateParent(parentCol);
+                }
+            }
+        };
+        const pushList = (list, rowspan) => {
+            each(list, item => {
+                // 这里不直接使用item而用columnMap的原因: item的children中存储的是初始时的数据，缺失level字段
+                const col = columnMap[item.key];
+                const { level } = col;
+                if (!columnList[level]) {
+                    columnList[level] = [];
+                }
+                if (isArray(col.children) && col.children.length) {
+                    col.rowspan = 1;
+                    col.colspan = col.children.length;
+                    updateParent(col);
+                    pushList(col.children, rowspan - 1);
+                } else {
+                    col.rowspan = rowspan;
+                    col.colspan = 1;
+                }
+
+                if (level > 0) {
+                    columnList[level].push(col);
+                }
+            });
+        };
+
+        // 多层嵌套，进行递归处理
+        if (__isNested) {
+            let maxLevel = 0;
+            each(columnMap, (key, col) => {
+                const { level, index } = col;
+                // 生成最上层数组
+                if (level === 0) {
+                    topList[index] = col;
+                }
+
+                // 最大层层级值
+                if (maxLevel < level) {
+                    maxLevel = level;
+                }
+            });
+            pushList(topList, maxLevel + 1);
+        } else {
+            each(columnMap, (key, col) => {
+                topList[col.index] = col;
+            });
+        }
 
         let thListTpl = '';
         // columnList 生成thead
-        each(columnList, col => {
-            thListTpl += this.createThTpl({settings, col});
-
-            // todo 复杂表头可以通过在这里处理， createThTpl中处理colspan。 这里递归处理children所处的tr
+        each(columnList, list => {
+            thListTpl += '<tr>';
+            each(list, col => {
+                thListTpl += this.createThTpl({settings, col});
+            });
+            thListTpl += '</tr>';
         });
 
         return {
@@ -170,7 +229,7 @@ class Render {
         }
 
         return {
-            thAttr: `th-name="${thName}" style="width:${col.width || 'auto'}" ${cellHiddenAttr} ${alignAttr} ${sortingAttr} ${filterAttr} ${fixedAttr} ${remindAttr} ${gmCreateAttr}`,
+            thAttr: `th-name="${thName}" colspan="${col.colspan}" rowspan="${col.rowspan}" style="width:${col.width || 'auto'}" ${cellHiddenAttr} ${alignAttr} ${sortingAttr} ${filterAttr} ${fixedAttr} ${remindAttr} ${gmCreateAttr}`,
             thText,
             compileAttr,
             dragClassName

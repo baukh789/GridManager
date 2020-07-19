@@ -133,7 +133,12 @@
         }
         tr {
             height: 39px;
-            border-bottom: none;
+            th{
+                border-top: @table-border;
+            }
+            tr:first-child th{
+                border-top: none;
+            }
         }
     }
     tbody {

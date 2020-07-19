@@ -30,7 +30,7 @@ describe('checkbox event', () => {
 
             expect(events.trChange.events).toBe('click');
             expect(events.trChange.target).toBe('#baukh');
-            expect(events.trChange.selector).toBe('tbody > tr');
+            expect(events.trChange.selector).toBe('tbody > tr[gm-cache-key]');
         });
     });
 

@@ -141,9 +141,9 @@
 				height: '100%',
 				supportAjaxPage:true,
 				isCombSorting: true,
-                checkboxConfig: {
-				    fixed: 'left'
-                },
+                // checkboxConfig: {
+				//     fixed: 'left'
+                // },
 				ajaxData: function () {
 					return 'https://www.lovejavascript.com/blogManager/getBlogList';
 				},
@@ -215,38 +215,111 @@
 							return titleNode;
 						}
 					},{
-						key: 'type',
-						text: '博文分类',
-						align: 'left',
-                        width: '150px',
-                        sorting: '',
-						template: function(type, rowObject){
-							return TYPE_MAP[type];
-						}
-					},{
-						key: 'info',
-						remind: 'the info',
-						text: '简介'
-					},{
-                        key: 'username',
-                        align: 'center',
-                        width: '100px',
-                        text: '作者',
-                        template: function(username){
-                            return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
-                        }
+                        key: 'info',
+                        remind: 'the info',
+                        text: '简介'
                     },{
-                        key: 'createDate',
-                        text: '<p>操作时间</p><span class="gm-child">创建时间</span><span class="gm-child">修改时间</span>',
+						key: 'blogData',
+						text: '博文数据',
+						align: 'left',
+                        width: '400px',
+                        children: [
+                            {
+                                key: 'type',
+                                text: '博文分类',
+                                align: 'left',
+                                width: '150px',
+                                template: function(type, rowObject){
+                                    return TYPE_MAP[type];
+                                }
+                            },
+                            {
+                                key: 'blogInteractive',
+                                text: '博文互动',
+                                align: 'left',
+                                width: '150px',
+                                children: [
+                                    {
+                                        key: 'commentSum',
+                                        text: '评论',
+                                        align: 'left',
+                                        width: '150px',
+                                    },
+                                    {
+                                        key: 'praiseNumber',
+                                        text: '点赞',
+                                        align: 'left',
+                                        width: '150px',
+                                    },
+                                    {
+                                        key: 'readNumber',
+                                        text: '阅读',
+                                        align: 'left',
+                                        width: '150px',
+                                    }
+                                ]
+                            }
+                        ]
+					},{
+                        key: 'author',
+                        align: 'center',
+                        width: '390px',
+                        text: '作者',
+                        children: [
+                            {
+                                key: 'photo',
+                                align: 'center',
+                                // width: '130px',
+                                text: '作者',
+                                template: photo => {
+                                    return `<img width="50" src="https://www.lovejavascript.com/${photo}"/>`;
+                                }
+                            },
+                            {
+                                key: 'username',
+                                align: 'center',
+                                // width: '130px',
+                                text: '昵称'
+                            },
+                            {
+                                key: 'github',
+                                align: 'center',
+                                width: 110,
+                                text: 'github',
+                                template: () => {
+                                    return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank">github</a>`
+                                }
+                            }
+                        ]
+                    },{
+                        key: 'actionDate',
+                        text: '操作时间',
                         sorting: 'DESC',
-                        remind: '排序时，使用创建时间进行排序',
                         align: "center",
-                        width: '200px',
-                        fixed: 'right',
-                        // 使用函数返回 htmlString
-                        template: function(createDate, rowObject){
-                            return `<span class="gm-child">${new Date(createDate).toLocaleDateString()} </span><span class="gm-child">${new Date(rowObject.lastDate).toLocaleDateString()}</span>`;
-                        }
+                        width: '280px',
+                        // fixed: 'right',
+                        children: [
+                            {
+                                key: 'createDate',
+                                text: '创建时间',
+                                sorting: 'DESC',
+                                align: "center",
+                                width: '140px',
+                                template: function(createDate){
+                                    return new Date(createDate).toLocaleDateString();
+                                }
+                            },
+                            {
+                                key: 'lastDate',
+                                text: '修改时间',
+                                sorting: 'DESC',
+                                align: "center",
+                                width: '140px',
+                                template: function(lastDate){
+                                    return new Date(lastDate).toLocaleDateString();
+                                }
+                            }
+                        ]
                     }
 				]
 			});

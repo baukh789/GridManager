@@ -164,6 +164,21 @@ export default class GridManager {
             arg.supportMoveRow = false;
         }
 
+        // 相互冲突的参数项处理: 多层嵌套表头
+        if (arg.columnData.some(item => item.children && item.children.length)) {
+            // 不使用配置功能
+            arg.supportConfig = false;
+
+            // 不使用拖拽功能
+            arg.supportDrag = false;
+
+            // 不使用宽度调整功能
+            arg.supportAdjust = false;
+
+            // 增加多层嵌套标识
+            arg.__isNested = true;
+        }
+
         // 通过版本较验 清理缓存
         verifyVersion();
 

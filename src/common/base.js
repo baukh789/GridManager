@@ -291,10 +291,20 @@ export const setAreVisible = (_, thNameList, isVisible) => {
 };
 
 /**
- * 更新最后一项可视列的标识
+ * 更新最后一项可视列的标识, 不用css的原因: css无法区分是否显示
  * @param _
  */
 export const updateVisibleLast = _ => {
+    // let offsetRight = null;
+    // 这块的代码是调试的，还是需要考虑下用其它方式，因为这种方式存在问题: 最后一列居中的分割线没办法直接顶到最右侧
+    // each(getFakeThead(_).find('tr th:last-child'), (item, index) => {
+    //     if (index === 0) {
+    //         offsetRight = item.offsetLeft + item.offsetWidth;
+    //     }
+    //     if (item.offsetLeft + item.offsetWidth === offsetRight) {
+    //         item.setAttribute(LAST_VISIBLE, '');
+    //     }
+    // });
     const $fakeVisibleThList = getFakeVisibleTh(_);
     const index = $fakeVisibleThList.length - 1;
     const $lastFakeTh = $fakeVisibleThList.eq(index);
@@ -327,10 +337,15 @@ export const updateThWidth = (settings, isInit) => {
     // 存储首列
     let firstCol;
     each(columnMap, (key, col) => {
-        const { __width, width, isShow } = col;
+        const { __width, width, isShow, pk } = col;
 
         // 不可见列: 不处理
         if (!isShow) {
+            return;
+        }
+
+        // 当前非顶级列: 只对顶级列进行处理
+        if (pk) {
             return;
         }
 

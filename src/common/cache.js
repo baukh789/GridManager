@@ -5,7 +5,7 @@
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { isUndefined, isFunction, isObject, isString, isNumber, isElement, each, isNodeList, extend } from '@jTool/utils';
+import { isUndefined, isFunction, isObject, isString, isNumber, isArray, isElement, each, isNodeList, extend } from '@jTool/utils';
 import { outInfo, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
 import { DISABLE_CUSTOMIZE, PX } from '@common/constants';
 import { Settings } from '@common/Settings';
@@ -444,19 +444,25 @@ export const updateTemplate = arg => {
     if (emptyTemplate && !isFunction(emptyTemplate)) {
         arg.emptyTemplate = () => emptyTemplate;
     }
-    columnData.forEach(col => {
-        // 强制转换模板为函数: text
-        const text = col.text;
-        if (text && !isFunction(text)) {
-            col.text = () => text;
-        }
+    const resetTemplate = list => {
+        list.forEach(col => {
+            // 强制转换模板为函数: text
+            const text = col.text;
+            if (text && !isFunction(text)) {
+                col.text = () => text;
+            }
 
-        // 强制转换模板为函数: template
-        const template = col.template;
-        if (template && !isFunction(template)) {
-            col.template = () => template;
-        }
-    });
+            // 强制转换模板为函数: template
+            const template = col.template;
+            if (template && !isFunction(template)) {
+                col.template = () => template;
+            }
+            if (isArray(col.children)) {
+                resetTemplate(col.children);
+            }
+        });
+    };
+    resetTemplate(columnData);
     return arg;
 };
 
@@ -482,7 +488,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
     // 存储初始配置项
     // setSettings(settings);
 
-    const { _, columnData, supportAutoOrder, supportCheckbox, checkboxConfig } = settings;
+    const { _, columnData, supportAutoOrder, __isNested, supportCheckbox, checkboxConfig } = settings;
 
     const list = [];
     // 自动增加: 选择列
@@ -504,65 +510,79 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
 
     // 如果仅有一列数据，则禁用固定列
     const supportFixed = columnData.length > 1;
-    list.concat(columnData).forEach((col, index) => {
-        col = extend(true, {}, col);
-        const key = col.key;
-        // key字段不允许为空
-        if (!key) {
-            outError(`columnData[${index}].key undefined`);
-            isError = true;
-            return;
-        }
 
-        // 宽度转换: 100 => 100px
-        if (isNumber(col.width)) {
-            col.width = `${col.width}px`;
-        }
+    const resetData = (data, level, parentKey) => {
+        data.forEach((col, index) => {
+            col = extend(true, {}, col);
+            const key = col.key;
+            // key字段不允许为空
+            if (!key) {
+                outError(`columnData[${index}].key undefined`);
+                isError = true;
+                return;
+            }
 
-        // 属性: 表头提醒
-        if (col.remind) {
-            settings._remind = true;
-        }
+            // 宽度转换: 100 => 100px
+            if (isNumber(col.width)) {
+                col.width = `${col.width}px`;
+            }
 
-        // 属性: 排序
-        if (isString(col.sorting)) {
-            settings._sort = true;
-        }
+            // 属性: 表头提醒
+            if (col.remind) {
+                settings._remind = true;
+            }
 
-        // 属性: 过滤
-        if (isObject(col.filter)) {
-            settings._filter = true;
-        }
+            // 属性: 排序
+            if (isString(col.sorting)) {
+                settings._sort = true;
+            }
 
-        // 属性: 固定列
-        if (supportFixed && isString(col.fixed)) {
-            settings._fixed = true;
+            // 属性: 过滤
+            if (isObject(col.filter)) {
+                settings._filter = true;
+            }
 
-            // 使用后 disableCustomize 将强制变更为true
-            col[DISABLE_CUSTOMIZE] = true;
-        }
+            // 属性: 固定列
+            if (supportFixed && isString(col.fixed)) {
+                settings._fixed = true;
 
-        // 存在disableCustomize时，必须设置width
-        if (col[DISABLE_CUSTOMIZE] && !col.width) {
-            outError(`column ${key}: width must be set`);
-            isError = true;
-            return;
-        }
-        columnMap[key] = col;
+                // 使用后 disableCustomize 将强制变更为true
+                col[DISABLE_CUSTOMIZE] = true;
+            }
 
-        // 如果未设定, 设置默认值为true
-        columnMap[key].isShow = col.isShow || isUndefined(col.isShow);
+            // 存在disableCustomize时，必须设置width
+            if (col[DISABLE_CUSTOMIZE] && !col.width) {
+                outError(`column ${key}: width must be set`);
+                isError = true;
+                return;
+            }
+            columnMap[key] = col;
 
-        // 为列Map 增加索引
-        columnMap[key].index = index;
+            // 如果未设定, 设置默认值为true
+            columnMap[key].isShow = col.isShow || isUndefined(col.isShow);
 
-        // 存储由用户配置的列宽度值, 该值不随着之后的操作变更
-        columnMap[key].__width = col.width;
+            // 为列Map 增加索引
+            columnMap[key].index = index;
 
-        // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
-        columnMap[key].__isShow = col.isShow;
+            // 存储由用户配置的列宽度值, 该值不随着之后的操作变更
+            columnMap[key].__width = col.width;
 
-    });
+            // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
+            columnMap[key].__isShow = col.isShow;
+
+            // 存在多层嵌套时，递归增加标识
+            if (__isNested) {
+                if (isArray(col.children)) {
+                    // delete columnMap[key].width;
+                    // delete columnMap[key].__width;
+                    resetData(col.children, level + 1, col.key);
+                }
+                columnMap[key].pk = parentKey;
+                columnMap[key].level = level;
+            }
+        });
+    };
+    resetData(list.concat(columnData), 0);
 
     if (isError) {
         return false;
