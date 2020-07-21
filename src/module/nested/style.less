@@ -1,0 +1,15 @@
+@import "../../css/mixins";
+[gm-nested]{
+    thead:after{
+        content: " ";
+        width: 1px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        .table-bg();
+        height: 100%;
+    }
+    td:last-child{
+        border-right: none;
+    }
+}

@@ -1,6 +1,17 @@
 import jTool from '@jTool';
 import { isUndefined, isString, isObject, isElement, isArray, each } from '@jTool/utils';
-import { calcLayout, getTable, getWrap, getTbody, getTh, getAllTh, getColTd, setAreVisible, getQuerySelector, clearTargetEvent } from '@common/base';
+import {
+    calcLayout,
+    getTable,
+    getWrap,
+    getTbody,
+    getTh,
+    getAllTh,
+    getColTd,
+    setAreVisible,
+    getQuerySelector,
+    clearTargetEvent
+} from '@common/base';
 import { outError } from '@common/utils';
 import { TABLE_PURE_LIST, TABLE_BODY_KEY, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD, DISABLE_CUSTOMIZE } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
@@ -10,7 +21,7 @@ import sort from '../sort';
 import adjust from '../adjust';
 import tree from '../tree';
 import checkbox from '../checkbox';
-import remind from '../remind';
+import remind, { tooltip } from '../remind';
 import render from './render';
 import fixed from '@module/fixed';
 import moveRow from '../moveRow';
@@ -365,7 +376,7 @@ class Dom {
                     return;
                 }
                 hoverTr = this;
-                rowHover(...getRowParams(this));
+                tooltip(_, this, rowHover(...getRowParams(this)));
             });
         })();
 
@@ -373,7 +384,7 @@ class Dom {
         rowClick && (() => {
             const rowClickEvent = event.rowClick;
             jTool(rowClickEvent[TARGET]).on(rowClickEvent[EVENTS], rowClickEvent[SELECTOR], function () {
-                rowClick(...getRowParams(this));
+                tooltip(_, this, rowClick(...getRowParams(this)));
             });
         })();
 
@@ -402,7 +413,7 @@ class Dom {
                     return;
                 }
                 hoverTd = this;
-                cellHover(...getCellParams(hoverTd));
+                tooltip(_, this, cellHover(...getCellParams(hoverTd)), true);
             });
         })();
 
@@ -410,7 +421,7 @@ class Dom {
         cellClick && (() => {
             const cellClickEvent = event.cellClick;
             jTool(cellClickEvent[TARGET]).on(cellClickEvent[EVENTS], cellClickEvent[SELECTOR], function () {
-                cellClick(...getCellParams(this));
+                tooltip(_, this, cellClick(...getCellParams(this)), true);
             });
         })();
     }

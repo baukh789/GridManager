@@ -14,6 +14,7 @@ import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, PX } from '@common/constants';
 import { compileFakeThead } from '@common/framework';
 import { updateConfigListHeight } from '@module/config';
 import fixed from '@module/fixed';
+import { removeTooltip } from '@module/remind';
 import { RESIZE, SCROLL } from '@common/events';
 import './style.less';
 
@@ -105,6 +106,8 @@ class Scroll {
 
             this.update(_, true);
 
+            removeTooltip(_);
+
             settings.supportConfig && updateConfigListHeight(_);
 		});
 	}
@@ -119,6 +122,7 @@ class Scroll {
 		tableDIV.unbind(SCROLL);
 		tableDIV.bind(SCROLL, () => {
             this.update(_);
+            removeTooltip(_);
 		});
 	}
 

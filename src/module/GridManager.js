@@ -23,6 +23,7 @@ import exportFile from './exportFile';
 import menu from './menu';
 import { clearMenuDOM } from './menu/tool';
 import remind from './remind';
+import nested from './nested';
 import scroll from './scroll';
 import sort, { updateSort } from './sort';
 import filter from './filter';
@@ -413,7 +414,7 @@ export default class GridManager {
 	static
 	showTh(table, thName) {
         const _ = getKey(table);
-        if (isRendered(_)) {
+        if (isRendered(_) && getSettings(_).supportConfig) {
             setAreVisible(_, thName, true);
             config.update(_);
         }
@@ -428,7 +429,7 @@ export default class GridManager {
 	static
 	hideTh(table, thName) {
         const _ = getKey(table);
-        if (isRendered(_)) {
+        if (isRendered(_) && getSettings(_).supportConfig) {
             setAreVisible(_, thName, false);
             config.update(_);
         }
@@ -788,8 +789,12 @@ export default class GridManager {
         // 更新fake header
         scroll.update(_, true);
 
-        // 更新最后一项可视列的标识
-        updateVisibleLast(_);
+        // 更新最后一项可视列的标识: 嵌套模式不需要处理
+        if (settings.__isNested) {
+            nested.addSign(_);
+        } else {
+            updateVisibleLast(_);
+        }
 
         // 更新滚动轴显示状态
         updateScrollStatus(_);

@@ -462,12 +462,19 @@ const demo1 = {
                 return `<div style="text-align: center;">${settings.query.title ? '搜索为空' : '暂无数据'}</div>`;
             },
             // 单个td的hover事件
-            // rowHover: (row, rowIndex, colIndex) => {
-            //     console.log(row, rowIndex, colIndex);
-            // },
-            rowClick: (a, b, c) => {
-              console.log(a, b, c);
+            rowHover: (row, rowIndex, colIndex) => {
+                // console.log(row, rowIndex, colIndex);
+                return {
+                    text: '这里有个提示',
+                    position: 'left'
+                };
             },
+            // cellHover: (a, b, c) => {
+            //   console.log(a, b, c);
+            //     return {
+            //         text: '这里有个提示',
+            //     };
+            // },
             columnData: [
                 {
                     key: 'pic',
@@ -591,7 +598,7 @@ const demo1 = {
                 {
                     key: 'priority',
                     text: '优先级',
-                    fixed: 'right',
+                    // fixed: 'right',
                     align: 'right',
                     width: '100px'
                 },
@@ -600,9 +607,9 @@ const demo1 = {
                     remind: 'the action',
                     width: '100px',
                     align: 'center',
-                    fixed: 'right',
-                    disableMoveRow: true,
-                    disableRowCheck: true,
+                    // fixed: 'right',
+                    // disableMoveRow: true,
+                    // disableRowCheck: true,
                     text: '<span style="color: red">操作</span>',
                     // 直接返回 通过函数返回
                     template: (action, row) => {

@@ -22,39 +22,6 @@
     top: calc(50% - 9px);
     left: 4px;
     font-size: 12px;
-    .ra-area {
-        display: none;
-        width: 150px;
-        position: absolute;
-        top: 24px;
-        left: 0;
-        padding: 4px 8px;
-        z-index: 9999;
-        border-radius: 2px;
-        background-color: @remind-bg-color;
-        line-height: 18px;
-        color: @remind-font-color;
-        text-align: center;
-        &:after {
-            content: "";
-            position: absolute;
-            border: solid transparent;
-            top: 0;
-            left: 4px;
-            margin-top: -3px;
-            border-width: 0 3px 3px;
-            border-bottom-color: @remind-bg-color;
-        }
-        &.right-model {
-            left: auto;
-            right: 0;
-            &:after {
-                top: 0;
-                left: auto;
-                right: 4px;
-            }
-        }
-    }
     .ra-icon {
         width: 16px;
         height: 16px;
@@ -71,6 +38,49 @@
         }
         .ra-area {
             display: block;
+        }
+    }
+}
+// 这个样式在thead, tbody中通用
+.ra-area {
+    display: none;
+    width: 150px;
+    position: absolute;
+    top: 24px;
+    left: 0;
+    padding: 4px 8px;
+    z-index: 9999;
+    border-radius: 2px;
+    background-color: @remind-bg-color;
+    line-height: 18px;
+    color: @remind-font-color;
+    text-align: center;
+    &:after {
+        content: "";
+        position: absolute;
+        border: solid transparent;
+        top: 0;
+        left: 4px;
+        margin-top: -3px;
+        border-width: 0 3px 3px;
+        border-bottom-color: @remind-bg-color;
+    }
+    &.right-model {
+        left: auto;
+        right: 0;
+        &:after {
+            top: 0;
+            left: auto;
+            right: 4px;
+        }
+    }
+    &.tr-remind{
+        width: auto;
+        &:after{
+            top: calc(100% + 3px);
+            transform-origin: center;
+            transform: rotate(-180deg);
+            transition: transform .3s;
         }
     }
 }
