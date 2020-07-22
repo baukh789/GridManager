@@ -238,8 +238,8 @@ describe('Settings', () => {
         expect(settings.treeConfig.openState).toBe(false);
     });
 
-    it('验证属性[topFullColumn]初始值', () => {
-        expect(settings.topFullColumn).toEqual({});
+    it('验证属性[fullColumn]初始值', () => {
+        expect(settings.fullColumn).toBeUndefined();
     });
 
 	it('验证属性[columnData]初始值', () => {

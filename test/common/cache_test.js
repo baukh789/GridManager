@@ -795,7 +795,7 @@ describe('cache', () => {
 
         it('基础验证', () => {
             expect(initSettings).toBeDefined();
-            expect(initSettings.length).toBe(3);
+            expect(initSettings.length).toBe(4);
         });
 
         it('默认配置', () => {

@@ -3,13 +3,58 @@
  */
 import './style.less';
 import jTool from '@jTool';
-import { isObject } from '@jTool/utils';
+import {isFunction, isObject} from '@jTool/utils';
 import { getQuerySelector, getDiv, clearTargetEvent, getTable } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY, PX } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import remindTpl from './remind.tpl.html';
 import { getEvent, eventMap } from './event';
-import { TARGET, EVENTS, SELECTOR } from '@common/events';
+import { TARGET, EVENTS, SELECTOR, MOUSE_LEAVE } from '@common/events';
+
+/**
+ * 删除tr上的Remind
+ * @param _
+ */
+export const removeTooltip = _ => {
+    const $trRemind = getDiv(_).find('.tr-remind');
+    if ($trRemind.length) {
+        $trRemind.remove();
+    }
+};
+/**
+ * 为tr 上的tooltip
+ * @param _
+ * @param dom: tr 或 td
+ * @param conf: 配置信息
+ */
+export const tooltip = (_, dom, conf, callback) => {
+    if (!isObject(conf)) {
+        return;
+    }
+    const { text, position, height = 30 } = conf;
+    let rightModel = position === 'right' ? ' right-model' : '';
+    const $div = getDiv(_);
+    const $dom = jTool(dom);
+    const $body = getTable(_);
+    const top = $dom.offset().top - $body.offset().top - $div.scrollTop() - height;
+
+    // td上的tooltip: rightModel将被清空（td上右模式没有必要存在）
+    let leftStyle = '';
+    if (dom.nodeName === 'TD') {
+        rightModel = '';
+        leftStyle = `left:${$dom.offset().left - $body.offset().left - $div.scrollLeft() + PX};`;
+    }
+    removeTooltip(_);
+    const str = `<span class="ra-area tr-remind${rightModel}" style="height: ${height + PX}, position: absolute; display: block;top:${top + PX};${leftStyle}">${text}</span>`;
+    $div.append(str);
+
+    // 绑定清除事件: 即时绑定即时销毁，不需要在destroy中处理
+    $dom.bind(MOUSE_LEAVE, () => {
+        $dom.unbind(MOUSE_LEAVE);
+        removeTooltip(_);
+        isFunction(callback) && callback();
+    });
+};
 
 class Remind {
     /**
@@ -65,45 +110,8 @@ class Remind {
 	 */
 	destroy(_) {
 	    clearTargetEvent(eventMap[_]);
-	    this.removeForTr(_);
+        removeTooltip(_);
 	}
 }
 
-/**
- * 删除tr上的Remind
- * @param _
- */
-export const removeTooltip = _ => {
-    const $trRemind = getDiv(_).find('.tr-remind');
-    if ($trRemind.length) {
-        $trRemind.remove();
-    }
-};
-/**
- * 为tr 上的tooltip
- * @param _
- * @param dom: tr 或 td
- * @param conf: 配置信息
- */
-export const tooltip = (_, dom, conf, isTd) => {
-    if (!isObject(conf)) {
-        return;
-    }
-    const { text, position, height = 30 } = conf;
-    let rightModel = position === 'right' ? ' right-model' : '';
-    const $div = getDiv(_);
-    const $dom = jTool(dom);
-    const $body = getTable(_);
-    const top = $dom.offset().top - $body.offset().top - $div.scrollTop() - height;
-
-    // td上的tooltip: rightModel将被清空（td上右模式没有必要存在）
-    let leftStyle = '';
-    if (isTd) {
-        rightModel = '';
-        leftStyle = `left:${$dom.offset().left - $body.offset().left - $div.scrollLeft() + PX};`;
-    }
-    removeTooltip(_);
-    const str = `<span class="ra-area tr-remind${rightModel}" style="height: ${height + PX}, position: absolute; display: block;top:${top + PX};${leftStyle}">${text}</span>`;
-    $div.append(str);
-};
 export default new Remind();

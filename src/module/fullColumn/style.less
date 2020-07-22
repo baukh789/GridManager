@@ -1,29 +1,60 @@
 @import "../../css/mixins";
-[grid-manager] tr{
-    /*顶部通栏*/
-    &[top-full-column="true"]{
-        td:nth-child(1){
+.table-div[gm-full-column]{
+    [grid-manager] tr{
+        &[full-column]{
+            td{
+                background: #fafafa;
+                padding: 0;
+                border: 0;
+            }
+            &[full-column-state="false"]{
+                display: none;
+            }
+        }
+
+        &[full-column-interval]{
+            td{
+                background: #fff;
+                padding: 0;
+                border-top: @table-border;
+                border-bottom: @table-border;
+            }
+            &[full-column-interval="0px"] td{
+                border-bottom: none;
+            }
+        }
+
+        // 清除最后一列(full-column-interval)的边框
+        &:last-child{
+            &[full-column-interval] td{
+                border-bottom: none;
+            }
+            &[full-column-interval="0px"] td{
+                border-top: none;
+            }
+        }
+
+        // 常规tr
+        &[gm-cache-key]{
+            td {
+                background: #fff;
+                border-bottom: none;
+                [full-column-fold]{
+                    display: block;
+                    text-align: center;
+                    color: #00aaf1;
+                }
+            }
+        }
+    }
+}
+.disable-border {
+    .table-div[gm-full-column]{
+        tr[full-column] td .full-column-div{
             border-left: @table-border;
             border-right: @table-border;
-            padding: 0;
-            .full-column-td{
-                border-top: @table-border;
-                .table-bg();
-            }
         }
-    }
-    &[top-full-column-interval="true"]{
-        td{
-            border: none;
-            background-color: #fff;
-            padding: 0;
-            >div{
-                height: 6px;
-            }
-        }
-    }
-    &[top-full-column="false"]{
-        td{
+        tr:not([full-column]):not([full-column-interval]) td{
             &:first-child{
                 border-left: @table-border;
             }

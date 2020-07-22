@@ -154,7 +154,7 @@ export const compileEmptyTemplate = (settings, el, template) => {
  * @param template
  * @returns {*}
  */
-export const compileFullColumn = (settings, row, index, template) => {
+export const compileFullColumn = (settings, row, index, template, model) => {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
 
@@ -165,7 +165,7 @@ export const compileFullColumn = (settings, row, index, template) => {
     // react 返回空字符串，将单元格内容交由react控制
     if (compileReact) {
         compileAttr = FRAMEWORK_KEY;
-        compileList.push({template, row, index, type: 'full', fnArg: [row, index]});
+        compileList.push({template, row, index, type: 'full-' + model, fnArg: [row, index]});
     }
 
     // 解析框架: Angular 1.x || Vue

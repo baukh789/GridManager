@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="../css/gm.css">
     <script type="text/javascript" src="../js/gm.js"></script>
-    <title>GridManager:顶部通栏</title>
+    <title>GridManager:数据折叠</title>
     <style>
         html, body{
             overflow-x:hidden;
@@ -76,15 +76,25 @@
             font-size: 12px;
             margin-right: 10px;
         }
-        .void-template{
-            height:300px;
-            line-height: 300px;
-            text-align: center;
-            font-size: 24px;
-            color: #ccc;
-        }
         .grid-main {
             height: calc(100vh - 64px - 57px);
+        }
+
+        .table-form{
+            display: flex;
+            padding: 14px 100px;
+        }
+        .tf-left{
+            width: 100px;
+        }
+        .tf-left img{
+            width: 100px;;
+        }
+        .tf-right{
+            padding-left: 10px
+        }
+        .tf-right label{
+            color: steelblue;
         }
     </style>
     <script>
@@ -147,21 +157,25 @@
             },
             fullColumn: {
                 useFold: true,
-                interval: 6,
-                topTemplate: function(row, index){
-                    return `<div style="padding: 12px; text-align: center;">
-                                快速、灵活的对Table标签进行实例化，让Table标签充满活力。该项目已开源,
-                                <a target="_blank" href="https://github.com/baukh789/GridManager">点击进入</a>
-                                github
-                           </div>`;
-                },
-                // bottomTemplate: function(row, index){
+                // interval: 6,
+                // topTemplate: function(row, index){
                 //     return `<div style="padding: 12px; text-align: center;">
-                //                 如果觉着还不错，就
-                //                 <a target="_blank" href="https://github.com/baukh789/GridManager">点个star</a>
-                //                 吧
+                //                 快速、灵活的对Table标签进行实例化，让Table标签充满活力。该项目已开源,
+                //                 <a target="_blank" href="https://github.com/baukh789/GridManager">点击进入</a>
+                //                 github
                 //            </div>`;
-                // }
+                // },
+                bottomTemplate: function(row, index){
+                    return `<div class="table-form">
+                                <div class="tf-left">
+                                    <img src="https://www.lovejavascript.com/${row.pic}"/>
+                                </div>
+                                <div class="tf-right">
+                                    <div class="tf-sub-title"><label>二级标题: </label>${row.subtitle}</div>
+                                    <div class="tf-title"><label>简介: </label>${row.info}</div>
+                                </div>
+                           </div>`;
+                }
             },
             // supportAutoOrder: false,
             // supportCheckbox: false,
@@ -174,31 +188,6 @@
             supportMenu: true,
             columnData: [
                 {
-                    key: 'pic',
-                    remind: 'the pic',
-                    width: '110px',
-                    align: 'center',
-                    text: '缩略图',
-                    // 使用函数返回 dom node
-                    template: function(pic, rowObject) {
-                        var picNode = document.createElement('a');
-                        picNode.setAttribute('href', `https://www.lovejavascript.com/#!zone/blog/content.html?id=${rowObject.id}`);
-                        picNode.setAttribute('title', rowObject.title);
-                        picNode.setAttribute('target', '_blank');
-                        picNode.title = `点击阅读[${rowObject.title}]`;
-                        picNode.style.display = 'block';
-                        picNode.style.height = '58.5px';
-
-                        var imgNode = document.createElement('img');
-                        imgNode.style.width = '90px';
-                        imgNode.style.margin = '0 auto';
-                        imgNode.alt = rowObject.title;
-                        imgNode.src = `https://www.lovejavascript.com/${pic}`;
-
-                        picNode.appendChild(imgNode);
-                        return picNode;
-                    }
-                },{
                     key: 'title',
                     remind: 'the title',
                     align: 'left',

@@ -25,6 +25,7 @@ import { clearMenuDOM } from './menu/tool';
 import remind from './remind';
 import nested from './nested';
 import scroll from './scroll';
+import fullColumn from './fullColumn';
 import sort, { updateSort } from './sort';
 import filter from './filter';
 import fixed from './fixed';
@@ -135,27 +136,33 @@ export default class GridManager {
         }
 
         // 相互冲突的参数项处理: 通栏
-        if (arg.topFullColumn && arg.topFullColumn.template) {
+        if (isObject(arg.fullColumn) && (isFunction(arg.fullColumn.topTemplate) || isFunction(arg.fullColumn.bottomTemplate))) {
             // 不使用配置功能
             arg.supportConfig = false;
 
             // 不使用自动序号
-            arg.supportAutoOrder = false;
+            // arg.supportAutoOrder = false;
 
             // 不使用全选功能
-            arg.supportCheckbox = false;
+            // arg.supportCheckbox = false;
 
             // 不使用拖拽功能
             arg.supportDrag = false;
 
             // 不使用宽度调整功能
-            arg.supportAdjust = false;
+            // arg.supportAdjust = false;
 
             // 不使用行移动功能
             arg.supportMoveRow = false;
 
             // 不使用树型数据
             arg.supportTreeData = false;
+
+            // 禁用分割线
+            arg.disableLine = true;
+
+            // 增加通栏标识
+            arg.__isFullColumn = true;
         }
 
         // 相互冲突的参数项处理: 树型
@@ -163,6 +170,9 @@ export default class GridManager {
 
             // 不使用行移动功能
             arg.supportMoveRow = false;
+
+            // 不使用通栏
+            arg.__isFullColumn = false;
         }
 
         // 相互冲突的参数项处理: 多层嵌套表头
@@ -184,7 +194,7 @@ export default class GridManager {
         verifyVersion();
 
         // 初始化设置相关: 合并, 存储
-        settings = initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order));
+        settings = initSettings(arg, checkbox.getColumn.bind(checkbox), order.getColumn.bind(order), fullColumn.getColumn.bind(fullColumn));
 
         // 清除DOM缓存，用于防止上一次清除失败
         clearCacheDOM(settings._);
@@ -783,6 +793,9 @@ export default class GridManager {
         if (settings.supportTreeData) {
             tree.init(_);
         }
+        if (settings.__isFullColumn) {
+            fullColumn.init(_);
+        }
 
         updateThWidth(settings, true);
 
@@ -836,6 +849,7 @@ export default class GridManager {
             sort.destroy(_);
             tree.destroy(_);
             fixed.destroy(_);
+            fullColumn.destroy(_);
         } catch (e) {
             console.error(e);
         }

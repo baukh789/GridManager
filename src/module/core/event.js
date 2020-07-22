@@ -3,10 +3,11 @@
  * @param scope: querySelector 域
  */
 import { MOUSE_MOVE, MOUSE_CLICK, createEventsObj } from '@common/events';
+import { TR_CACHE_KEY } from '@common/constants';
 
 export const getEvent = scope => {
-    const tr = 'tbody tr';
-    const td = 'tbody td';
+    const tr = `tr[${TR_CACHE_KEY}]`;
+    const td = `tr[${TR_CACHE_KEY}] td`;
     return {
         // 行 hover
         rowHover: createEventsObj(MOUSE_MOVE, scope, tr),

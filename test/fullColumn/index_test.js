@@ -1,69 +1,59 @@
-import { getTopFull } from '@module/fullColumn';
-import { getColumnData } from '@test/table-config';
+import fullColumn from '@module/fullColumn';
+import { getColumnMap } from '@test/table-config';
 
 describe('fullColumn', () => {
-    describe('getTopFull', () => {
+    describe('add', () => {
         let settings = null;
-        let callback = null;
-        let list = null;
+        let trObjectList = null;
         let intervalTrObject = null;
         let topTrObject = null;
 
         beforeEach(() => {
             document.body.innerHTML = '<table><tbody></tbody></table>';
-            callback = jasmine.createSpy('callback');
+            trObjectList = [];
         });
 
         afterEach(() => {
             document.body.innerHTML = '';
             settings = null;
-            callback = null;
-            list = null;
+            trObjectList = null;
             intervalTrObject = null;
             topTrObject = null;
         });
         it('基础验证', () => {
-            expect(getTopFull.length).toBe(4);
+            expect(fullColumn.add.length).toBe(5);
         });
 
         it('执行验证: 未存在有效的通栏模板', () => {
             settings = {
                 gridManagerName: 'test-fullColumn',
-                columnData: getColumnData(),
-                topFullColumn: {}
+                columnMap: getColumnMap(),
+                fullColumn: {}
             };
-            expect(getTopFull(settings, {id: 1}, 1, callback)).toEqual([]);
-            expect(callback).toHaveBeenCalledTimes(0);
+            fullColumn.add(settings, {id: 1}, 1, trObjectList, 'top');
+            expect(trObjectList).toEqual([]);
         });
 
-        it('执行验证: 存在通栏模板', () => {
+        it('执行验证: 存在顶部通栏模板', () => {
             settings = {
                 gridManagerName: 'test-fullColumn',
-                columnData: getColumnData(),
-                topFullColumn: {
-                    template: (row, index) => {
+                columnMap: getColumnMap(),
+                fullColumn: {
+                    topTemplate: (row, index) => {
                         return '<div>我是通栏，哈哈</div>';
                     }
                 }
             };
 
-            list = getTopFull(settings, {id: 1}, 1, callback);
-            expect(list.length).toBe(2);
-            expect(callback).toHaveBeenCalled();
+            fullColumn.add(settings, {id: 1}, 1, trObjectList, 'top');
+            expect(trObjectList.length).toBe(1);
 
-            intervalTrObject = list[0];
-            expect(intervalTrObject.className.length).toBe(0);
-            expect(intervalTrObject.attribute.length).toBe(1);
-            expect(intervalTrObject.attribute[0]).toBe('top-full-column-interval="true"');
-            expect(intervalTrObject.tdList.length).toBe(1);
-            expect(intervalTrObject.tdList[0]).toBe(`<td colspan="${settings.columnData.length}"><div></div></td>`);
-
-            topTrObject = list[1];
+            topTrObject = trObjectList[0];
             expect(topTrObject.className.length).toBe(0);
             expect(topTrObject.attribute.length).toBe(1);
-            expect(topTrObject.attribute[0]).toBe('top-full-column="true"');
+            expect(topTrObject.attribute[0]).toBe('full-column="top"');
             expect(topTrObject.tdList.length).toBe(1);
-            expect(topTrObject.tdList[0]).toBe(`<td colspan="${settings.columnData.length}"><div class="full-column-td" ><div>我是通栏，哈哈</div></div></td>`);
+            expect(topTrObject.tdList[0]).toBe(`<td colspan="${Object.keys(settings.columnMap).length}"><div class="full-column-div" ><div>我是通栏，哈哈</div></div></td>`);
         });
     });
 });

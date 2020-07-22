@@ -25,7 +25,7 @@ import remind, { tooltip } from '../remind';
 import render from './render';
 import fixed from '@module/fixed';
 import moveRow from '../moveRow';
-import { getTopFull } from '../fullColumn';
+import fullColumn from '../fullColumn';
 import { getEvent, eventMap } from './event';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import { sendCompile, compileTd } from '@common/framework';
@@ -123,7 +123,8 @@ class Dom {
             supportCheckbox,
             supportMoveRow,
             treeConfig,
-            __isNested
+            __isNested,
+            __isFullColumn
         } = settings;
 
         const { treeKey, openState } = treeConfig;
@@ -209,24 +210,27 @@ class Dom {
 
                     attribute.push(`${TR_CACHE_KEY}="${cacheKey}"`);
 
-                    // 插入通栏: top-full-column
-                    if (isTop) {
-                        trObjectList = trObjectList.concat(getTopFull(settings, row, index, () => {
-                            // 添加成功后: 为非通栏tr的添加标识
-                            attribute.push('top-full-column="false"');
-                        }));
-
-                    }
                     const trObject = {
                         className,
                         attribute,
                         tdList
                     };
 
+                    // 顶层结构: 通栏-top
+                    if (isTop && __isFullColumn) {
+                        fullColumn.addTop(settings, row, index, trObjectList);
+                    }
+
                     // 插入正常的TR
                     installNormal(trObject, row, index, isTop);
 
                     trObjectList.push(trObject);
+
+                    // 顶层结构: 通栏-bottom
+                    if (isTop && __isFullColumn) {
+                        fullColumn.addBottom(settings, row, index, trObjectList);
+                    }
+
                     // 处理层级结构
                     if (supportTreeData) {
                         const children = row[treeKey];
@@ -376,8 +380,11 @@ class Dom {
                     return;
                 }
                 hoverTr = this;
-                tooltip(_, this, rowHover(...getRowParams(this)));
+                tooltip(_, this, rowHover(...getRowParams(this)), () => {
+                    hoverTr = null;
+                });
             });
+
         })();
 
         // 行事件: click
@@ -413,7 +420,9 @@ class Dom {
                     return;
                 }
                 hoverTd = this;
-                tooltip(_, this, cellHover(...getCellParams(hoverTd)), true);
+                tooltip(_, this, cellHover(...getCellParams(hoverTd)), () => {
+                    hoverTd = null;
+                });
             });
         })();
 
@@ -421,7 +430,7 @@ class Dom {
         cellClick && (() => {
             const cellClickEvent = event.cellClick;
             jTool(cellClickEvent[TARGET]).on(cellClickEvent[EVENTS], cellClickEvent[SELECTOR], function () {
-                tooltip(_, this, cellClick(...getCellParams(this)), true);
+                tooltip(_, this, cellClick(...getCellParams(this)));
             });
         })();
     }

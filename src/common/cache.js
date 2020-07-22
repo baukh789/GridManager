@@ -472,7 +472,7 @@ export const updateTemplate = arg => {
  * @param checkboxColumnFn
  * @param orderColumnFn
  */
-export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
+export const initSettings = (arg, checkboxColumnFn, orderColumnFn, fullColumnFn) => {
     // 更新模板，将非函数类型的模板转换为函数类型
     arg = updateTemplate(arg);
 
@@ -488,7 +488,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
     // 存储初始配置项
     // setSettings(settings);
 
-    const { _, columnData, supportAutoOrder, __isNested, supportCheckbox, checkboxConfig } = settings;
+    const { _, columnData, supportAutoOrder, __isNested, __isFullColumn, fullColumn, supportCheckbox, checkboxConfig } = settings;
 
     const list = [];
     // 自动增加: 选择列
@@ -499,6 +499,11 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn) => {
     // 自动增加: 序号列
     if (supportAutoOrder) {
         list.push(orderColumnFn(settings));
+    }
+
+    // 自动增加: 序号列
+    if (__isFullColumn && fullColumn.useFold) {
+        list.push(fullColumnFn(settings));
     }
 
     // 为 columnData 提供锚 => columnMap

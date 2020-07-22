@@ -392,7 +392,7 @@ const gridData = {
     */
 
     // tr区域顶部通栏
-    topFullColumn: {},
+    // fullColumn: {},
 
     // @2.5.8
     // 初次渲染时是否加载数据

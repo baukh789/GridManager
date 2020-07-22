@@ -411,7 +411,7 @@ describe('Framework', () => {
         });
         it('基础验证', () => {
             expect(compileFullColumn).toBeDefined();
-            expect(compileFullColumn.length).toBe(4);
+            expect(compileFullColumn.length).toBe(5);
         });
 
         it('无框架', () => {
@@ -424,7 +424,7 @@ describe('Framework', () => {
             };
             expect(getCompileList(_).length).toBe(0);
 
-            data = compileFullColumn(settings, row, 1, template);
+            data = compileFullColumn(settings, row, 1, template, 'top');
             expect(data.text).toBe('<div>这个是通栏</div>');
             expect(data.compileAttr).toBe('');
             expect(getCompileList(_).length).toBe(0);
@@ -441,7 +441,7 @@ describe('Framework', () => {
             };
             expect(getCompileList(_).length).toBe(0);
 
-            data = compileFullColumn(settings, row, 1, template);
+            data = compileFullColumn(settings, row, 1, template, 'top');
             expect(data.text).toBe('<div>这个是通栏</div>');
             expect(data.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(_).length).toBe(1);
@@ -458,7 +458,7 @@ describe('Framework', () => {
             };
             expect(getCompileList(_).length).toBe(0);
 
-            data = compileFullColumn(settings, row, 1, template);
+            data = compileFullColumn(settings, row, 1, template, 'top');
             expect(data.text).toBe('<div>这个是通栏</div>');
             expect(data.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(_).length).toBe(1);
@@ -475,7 +475,7 @@ describe('Framework', () => {
             };
             expect(getCompileList(_).length).toBe(0);
 
-            data = compileFullColumn(settings, row, 1, template);
+            data = compileFullColumn(settings, row, 1, template, 'top');
             expect(data.text).toBe('');
             expect(data.compileAttr).toBe(FRAMEWORK_KEY);
             expect(getCompileList(_).length).toBe(1);

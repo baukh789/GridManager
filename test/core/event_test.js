@@ -18,28 +18,28 @@ describe('core event', () => {
             events = getEvent('.test');
             expect(events.rowHover.events).toBe('mousemove');
             expect(events.rowHover.target).toBe('.test');
-            expect(events.rowHover.selector).toBe('tbody tr');
+            expect(events.rowHover.selector).toBe('tr[gm-cache-key]');
         });
 
         it('rowClick', () => {
             events = getEvent('.test');
             expect(events.rowClick.events).toBe('click');
             expect(events.rowClick.target).toBe('.test');
-            expect(events.rowClick.selector).toBe('tbody tr');
+            expect(events.rowClick.selector).toBe('tr[gm-cache-key]');
         });
 
         it('cellHover', () => {
             events = getEvent('.test');
             expect(events.cellHover.events).toBe('mousemove');
             expect(events.cellHover.target).toBe('.test');
-            expect(events.cellHover.selector).toBe('tbody td');
+            expect(events.cellHover.selector).toBe('tr[gm-cache-key] td');
         });
 
         it('cellClick', () => {
             events = getEvent('.test');
             expect(events.cellClick.events).toBe('click');
             expect(events.cellClick.target).toBe('.test');
-            expect(events.cellClick.selector).toBe('tbody td');
+            expect(events.cellClick.selector).toBe('tr[gm-cache-key] td');
         });
     });
 

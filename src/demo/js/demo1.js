@@ -462,19 +462,19 @@ const demo1 = {
                 return `<div style="text-align: center;">${settings.query.title ? '搜索为空' : '暂无数据'}</div>`;
             },
             // 单个td的hover事件
-            rowHover: (row, rowIndex, colIndex) => {
-                // console.log(row, rowIndex, colIndex);
-                return {
-                    text: '这里有个提示',
-                    position: 'left'
-                };
-            },
-            // cellHover: (a, b, c) => {
-            //   console.log(a, b, c);
+            // cellClick: (row, rowIndex, colIndex) => {
+            //     // console.log(row, rowIndex, colIndex);
             //     return {
             //         text: '这里有个提示',
+            //         position: 'left'
             //     };
             // },
+            rowHover: (a, b, c) => {
+              console.log(a, b, c);
+                return {
+                    text: '这里有个提示',
+                };
+            },
             columnData: [
                 {
                     key: 'pic',
