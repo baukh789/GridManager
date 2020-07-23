@@ -84,17 +84,30 @@
             display: flex;
             padding: 14px 100px;
         }
-        .tf-left{
-            width: 100px;
+        .tf-photo{
+            width: 60px;
+            height: 60px;
+            border: 1px solid #eee;
+            border-radius: 50%;
+            overflow: hidden;
         }
-        .tf-left img{
-            width: 100px;;
+        .tf-photo img{
+            width: 60px;;
         }
-        .tf-right{
+        .tf-text{
+            width: 240px;
             padding-left: 10px
         }
-        .tf-right label{
-            color: steelblue;
+        .tf-el{
+            line-height: 30px;
+        }
+        .tf-el label{
+            display: inline-block;
+            width: 50px;
+            color: #666;
+            margin-right: 10px;
+            text-align: right;
+            font-weight: 600;
         }
     </style>
     <script>
@@ -148,42 +161,33 @@
             supportAjaxPage:true,
             isCombSorting: true,
             disableLine:true,
-            disableHover:true,
             disableBorder: true,
-            supportMoveRow: true,
-            checkboxConfig: {
-                // useRowCheck: true,
-                // useRadio: true
-            },
             fullColumn: {
                 useFold: true,
-                // interval: 6,
-                // topTemplate: function(row, index){
-                //     return `<div style="padding: 12px; text-align: center;">
-                //                 快速、灵活的对Table标签进行实例化，让Table标签充满活力。该项目已开源,
-                //                 <a target="_blank" href="https://github.com/baukh789/GridManager">点击进入</a>
-                //                 github
-                //            </div>`;
-                // },
                 bottomTemplate: function(row, index){
                     return `<div class="table-form">
-                                <div class="tf-left">
-                                    <img src="https://www.lovejavascript.com/${row.pic}"/>
+                                <div class="tf-photo">
+                                    <img src="https://www.lovejavascript.com/${row.photo}"/>
                                 </div>
-                                <div class="tf-right">
-                                    <div class="tf-sub-title"><label>二级标题: </label>${row.subtitle}</div>
-                                    <div class="tf-title"><label>简介: </label>${row.info}</div>
+                                <div class="tf-text">
+                                    <div class="tf-el"><label>作者:</label>${row.username}</div>
+                                    <div class="tf-el"><label>github:</label>https://github.com/baukh789</div>
+                                </div>
+                                <div class="tf-text">
+                                    <div class="tf-el"><label>阅读量:</label>${row.readNumber}</div>
+                                    <div class="tf-el"><label>点赞量:</label>${row.praiseNumber}</div>
+                                    <div class="tf-el"><label>评论量:</label>${row.commentSum}</div>
+                                </div>
+                                <div class="tf-text">
+                                    <div class="tf-el"><label>创建时间:</label>${new Date(row.createDate).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                                    <div class="tf-el"><label>修改时间:</label>${new Date(row.lastDate).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
                                 </div>
                            </div>`;
                 }
             },
-            // supportAutoOrder: false,
-            // supportCheckbox: false,
-            // disableCache: true,
             ajaxData: function () {
                 return 'https://www.lovejavascript.com/blogManager/getBlogList';
             },
-            // ,firstLoading: false // 初始渲染时是否加载数据
             ajaxType: 'POST',
             supportMenu: true,
             columnData: [

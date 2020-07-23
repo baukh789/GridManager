@@ -344,7 +344,7 @@ export const updateThWidth = (settings, isInit) => {
             return;
         }
 
-        // 当前非顶级列: 只对顶级列进行处理
+        // 当前非顶级列: 只对顶级列进行处理, 不处理嵌套层 todo 后续版本要开启子项的宽度配置时这里将要做调整
         if (pk) {
             return;
         }

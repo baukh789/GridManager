@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<link rel="stylesheet" type="text/css" href="../css/gm.css">
 	<script type="text/javascript" src="../js/gm.js"></script>
-    <title>GridManager: 延迟总页模式</title>
+    <title>GridManager: 复杂表头</title>
     <style>
 		html, body{
 			width: 100%;
@@ -12,6 +12,9 @@
 			margin: 0;
 			padding: 0;
 		}
+        p{
+            margin: 0;
+        }
 		.plugin-action{
 			display: inline-block;
 			color: steelblue;
@@ -75,14 +78,16 @@
 			margin-right: 10px;
 		}
 		.void-template{
-			height:300px;
-			line-height: 300px;
 			text-align: center;
 			font-size: 24px;
 			color: #ccc;
 		}
         .grid-main {
             height: calc(100vh - 64px - 57px);
+        }
+        .gm-child{
+            display:inline-block;
+            width: 50%;
         }
     </style>
 	<script>
@@ -128,55 +133,44 @@
 
 	<script type="text/javascript">
 		// GridManager 渲染
-        var table = document.querySelector('table');
+		var table = document.querySelector('table');
 		function init() {
 			table.GM({
-				gridManagerName: 'test',
+				gridManagerName: 'test7',
                 width: '100%',
 				height: '100%',
 				supportAjaxPage:true,
 				isCombSorting: true,
+                // checkboxConfig: {
+				//     fixed: 'left'
+                // },
 				ajaxData: function () {
 					return 'https://www.lovejavascript.com/blogManager/getBlogList';
 				},
 				ajaxType: 'POST',
 
-                // useNoTotalsMode: true,
+                disableCache: true,
 
-                // 异步总页
-                asyncTotals: {
-				    text: '<span style="color: #999">加载中...</span>',
-                    handler: (settings, params) => {
-				        console.log(params);
-                        return new Promise(resolve => {
-                            jTool.ajax({
-                                url: 'https://www.lovejavascript.com/blogManager/getBlogList',
-                                type: 'POST',
-                                success: res => {
-                                    resolve(JSON.parse(res).totals);
-                                }
-                            });
-                        })
+                exportConfig: {
+				    mode: 'static',
+                    handler: (fileName, query, pageData, sortData, selectedList, tableData) => {
+				        const array = [];
+                        array.push(['标题', '博文分类', '简介', '作者', '创建时间', '修改时间']);
+                        tableData.forEach(item => {
+                            array.push([
+                                `"${item.title}"`,
+                                `"${TYPE_MAP[item.type]}"`,
+                                `"${item.info}"`,
+                                `"${item.username}"`,
+                                `"${new Date(item.createDate).toLocaleDateString()}"`,
+                                `"${new Date(item.lastDate).toLocaleDateString()}"`
+                            ]);
+                        });
+				        return array;
                     }
                 },
+				emptyTemplate: '<div class="void-template">通过 emptyTemplate 配置的空数据提示</div>',
 
-				dataKey: 'list',  // 注意: 这里是用来测试responseHandler 是否生效; 数据本身返回为data, 而在这里我把数据名模拟为list, 再通过responseHandler去更改
-
-				// 通过该方法修改全部的请求参数
-				requestHandler: function(request){
-					request.newParams = '这个参数是通过 requestHandler 函数新增的';
-					// 更改这个参数后, 将会强制createDate字段使用 降序排序.
-					// 'sort_' 通过 配置项 sortKey 进行配置
-					// 'DESC' 通过 配置项 sortDownText 进行配置
-					//			request.sort_createDate = 'DESC';
-					return request;
-				},
-				// 可以通过该方法修改返回的数据
-				responseHandler: function(response){
-					// 数据本身返回为data, 通过responseHandler更改为与dataKey匹配的值
-					response.list = response.data;
-					return response;
-				},
 				columnData: [
 					{
 						key: 'pic',
@@ -205,8 +199,8 @@
 						}
 					},{
 						key: 'title',
-						remind: 'the title',
 						align: 'left',
+                        width: '300px',
 						text: '标题',
 						sorting: '',
 						// 使用函数返回 dom node
@@ -221,62 +215,122 @@
 							return titleNode;
 						}
 					},{
-						key: 'type',
-						remind: 'the type',
-						text: '博文分类',
-						align: 'center',
-                        width: '150px',
-                        sorting: '',
-						template: function(type, rowObject){
-							return TYPE_MAP[type];
-						}
+                        key: 'info',
+                        remind: 'the info',
+                        text: '简介'
+                    },{
+						key: 'blogData',
+						text: '博文数据',
+						align: 'left',
+                        width: '400px',
+                        children: [
+                            {
+                                key: 'type',
+                                text: '博文分类',
+                                align: 'left',
+                                width: '150px',
+                                template: function(type, rowObject){
+                                    return TYPE_MAP[type];
+                                }
+                            },
+                            {
+                                key: 'blogInteractive',
+                                text: '博文互动',
+                                align: 'left',
+                                width: '150px',
+                                children: [
+                                    {
+                                        key: 'commentSum',
+                                        text: '评论',
+                                        align: 'left',
+                                        width: '150px',
+                                    },
+                                    {
+                                        key: 'praiseNumber',
+                                        text: '点赞',
+                                        align: 'left',
+                                        width: '150px',
+                                    },
+                                    {
+                                        key: 'readNumber',
+                                        text: '阅读',
+                                        align: 'left',
+                                        width: '150px',
+                                    }
+                                ]
+                            }
+                        ]
 					},{
-						key: 'info',
-						remind: 'the info',
-                        width: '100px',
-						text: '简介'
-					},{
-						key: 'username',
-						remind: 'the username',
-						align: 'center',
-						width: '100px',
-						text: '作者',
-						template: function(username){
-							return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank" title="去看看${username}的github">${username}</a>`;
-						}
-					},{
-						key: 'createDate',
-						width: '130px',
-						text: '创建时间',
-						sorting: 'DESC',
-						// 使用函数返回 htmlString
-						template: function(createDate, rowObject){
-							return new Date(createDate).toLocaleDateString();
-						}
-					},{
-						key: 'lastDate',
-						width: '130px',
-						text: '最后修改时间',
-						sorting: '',
-						// 使用函数返回 htmlString
-						template: function(lastDate, rowObject){
-							return new Date(lastDate).toLocaleDateString();
-						}
-					}
-				],
-				// 排序后事件
-				sortingAfter: function (data) {
-					console.log('sortAfter', data);
-				},
-
-                // 单个td的hover事件
-                // cellHover: function(row, rowIndex, colIndex){
-				 //    console.log(row, rowIndex, colIndex);
-                // }
-			}, function(query){
-				// 渲染完成后的回调函数
-				console.log('渲染完成后的回调函数:', query);
+                        key: 'author',
+                        align: 'center',
+                        width: '390px',
+                        text: '作者',
+                        children: [
+                            {
+                                key: 'photo',
+                                align: 'center',
+                                // width: '130px',
+                                text: '头像',
+                                template: photo => {
+                                    return `<img width="50" src="https://www.lovejavascript.com/${photo}"/>`;
+                                }
+                            },
+                            {
+                                key: 'username',
+                                align: 'center',
+                                // width: '130px',
+                                text: '昵称'
+                            },
+                            {
+                                key: 'github',
+                                align: 'center',
+                                width: 110,
+                                text: 'github',
+                                template: () => {
+                                    return `<a class="plugin-action" href="https://github.com/baukh789" target="_blank">github</a>`
+                                }
+                            }
+                        ]
+                    },{
+                        key: 'actionDate',
+                        text: '操作时间',
+                        sorting: 'DESC',
+                        align: "center",
+                        width: '280px',
+                        // fixed: 'right',
+                        children: [
+                            {
+                                key: 'createDate',
+                                text: '创建时间',
+                                sorting: 'DESC',
+                                align: "center",
+                                width: '140px',
+                                template: function(createDate){
+                                    return new Date(createDate).toLocaleDateString();
+                                }
+                            },
+                            {
+                                key: 'lastDate',
+                                text: '修改时间',
+                                sorting: 'DESC',
+                                align: "center",
+                                width: '140px',
+                                template: function(lastDate){
+                                    return new Date(lastDate).toLocaleDateString();
+                                }
+                            }
+                        ]
+                    }
+				]
 			});
+		}
+
+		// 删除功能
+		function delectRowData(rowData){
+			// 执行删除操作
+			if(window.confirm('确认要删除['+rowData.title+']?')){
+				window.alert('当然这只是个示例,并不会真实删除,要不然每天我每天就光填demo数据了.');
+			}
 		}
 
 		 /**
@@ -288,7 +342,6 @@
 			document.querySelector('.search-action').addEventListener('click', function () {
 				var _query = {
 					title: document.querySelector('[name="title"]').value,
-					type: document.querySelector('[name="type"]').value,
 					content: document.querySelector('[name="content"]').value,
 					cPage: 1
 				};

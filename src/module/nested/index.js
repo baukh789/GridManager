@@ -1,3 +1,8 @@
+/**
+ * 嵌套表头
+ * - 触发条件: columnData中存在有效的children字段
+ * - DOM标识: 存在嵌套表头的表格将在 table-div 上增加 gm-nested 属性
+ */
 import { each, isArray } from '@jTool/utils';
 import { getDiv } from '@common/base';
 import './style.less';

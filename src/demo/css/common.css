@@ -21,7 +21,7 @@ html, body{
     padding: 10px 20px;
     border: 1px solid #ccc;
     background: #efefef;
-    margin: 0 10px 15px 10px;
+    margin-bottom: 15px;
 }
 .search-area .sa-ele{
     display: inline-block;
@@ -103,7 +103,6 @@ html, body{
     color: #ccc;
 }
 .grid-main {
-    margin: 10px;
     height: calc(100vh - 64px - 60px);
     overflow: auto;
 }
