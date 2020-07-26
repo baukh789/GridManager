@@ -1,5 +1,5 @@
-import { getCompileList, clearCompileList, compileFakeThead, compileTh, compileTd, compileEmptyTemplate, compileFullColumn, sendCompile } from '@common/framework';
-import tableTpl from '@test/table-test.tpl.html';
+import { getCompileList, clearCompileList, compileFakeThead, compileTh, compileTd, compileEmptyTemplate, compileFullColumn, sendCompile } from '../../src/common/framework';
+import tableTpl from '../table-test.tpl.html';
 const FRAMEWORK_KEY = 'data-compile-node';
 // 清除空格
 const tableTestTpl = tableTpl;
@@ -176,7 +176,8 @@ describe('Framework', () => {
                 'praiseNumber': '0',
                 'commentSum': 0,
                 'username': '拭目以待',
-                'photo': '/upload/user/photo/8495_1.jpg'
+                'photo': '/upload/user/photo/8495_1.jpg',
+                'cus': null
             };
         });
 
@@ -213,6 +214,17 @@ describe('Framework', () => {
 
             data = compileTd(settings, tdTemplate, row, 1, 'pic');
             expect(data.text).toBe('/upload/blog/pic/9081_type.jpg');
+            expect(data.compileAttr).toBe('');
+            expect(getCompileList(_).length).toBe(0);
+
+
+            data = compileTd(settings, tdTemplate, row, 1, 'cos');
+            expect(data.text).toBe('');
+            expect(data.compileAttr).toBe('');
+            expect(getCompileList(_).length).toBe(0);
+
+            data = compileTd(settings, tdTemplate, row, 1, 'cccc');
+            expect(data.text).toBe('');
             expect(data.compileAttr).toBe('');
             expect(getCompileList(_).length).toBe(0);
         });

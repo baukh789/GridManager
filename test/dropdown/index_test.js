@@ -1,4 +1,4 @@
-import dropdown from '@module/dropdown';
+import dropdown from '../../src/module/dropdown';
 
 describe('dropdown', () => {
     describe('createHtml', () => {

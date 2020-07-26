@@ -11,9 +11,6 @@
             margin: 0;
             padding: 0;
         }
-        body{
-            padding: 40px;
-        }
         .plugin-action{
             display: inline-block;
             color: steelblue;
@@ -161,9 +158,15 @@
             supportAjaxPage:true,
             isCombSorting: true,
             disableLine:true,
-            disableBorder: true,
+            autoOrderConfig: {
+                fixed: 'left'
+            },
+            checkboxConfig: {
+                fixed: 'left'
+            },
             fullColumn: {
                 useFold: true,
+                fixed: 'left', // 折叠事件列固定方向
                 bottomTemplate: function(row, index){
                     return `<div class="table-form">
                                 <div class="tf-photo">

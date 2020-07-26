@@ -3,7 +3,7 @@
  * - 触发条件: columnData中存在有效的children字段
  * - DOM标识: 存在嵌套表头的表格将在 table-div 上增加 gm-nested 属性
  */
-import { each, isArray } from '@jTool/utils';
+import { each, isValidArray } from '@jTool/utils';
 import { getDiv } from '@common/base';
 import './style.less';
 
@@ -12,6 +12,7 @@ const updateParent = (columnMap, col) => {
     const parentCol = columnMap[col.pk];
     if (parentCol) {
         if (!parentCol.colspan || parentCol.colspan === 1) {
+            // 存在四级及以上时才会调用
             parentCol.colspan = col.colspan;
         } else {
             parentCol.colspan = parentCol.children.length + col.colspan - 1;
@@ -29,7 +30,7 @@ const pushList = (columnMap, columnList, list, rowspan) => {
         if (!columnList[level]) {
             columnList[level] = [];
         }
-        if (isArray(col.children) && col.children.length) {
+        if (isValidArray(col.children)) {
             col.rowspan = 1;
             col.colspan = col.children.length;
             updateParent(columnMap, col);
@@ -46,17 +47,26 @@ const pushList = (columnMap, columnList, list, rowspan) => {
 };
 class Nested {
     /**
+     * 增加嵌套表头标识: 用于样式文件
+     * @param _
+     */
+    addSign(_) {
+        getDiv(_).attr('gm-nested', '');
+    }
+
+    /**
      * 生成嵌套数据
      * @param columnMap
      * @param columnList
      */
     push(columnMap, columnList) {
         let maxLevel = 0;
+        const topList = columnList[0];
         each(columnMap, (key, col) => {
             const { level, index } = col;
             // 生成最上层数组
             if (level === 0) {
-                columnList[0][index] = col;
+                topList[index] = col;
             }
 
             // 最大层层级值
@@ -64,15 +74,7 @@ class Nested {
                 maxLevel = level;
             }
         });
-        pushList(columnMap, columnList, columnList[0], maxLevel + 1);
-    }
-
-    /**
-     * 增加嵌套表头标识: 用于样式文件
-     * @param _
-     */
-    addSign(_) {
-        getDiv(_).attr('gm-nested', '');
+        pushList(columnMap, columnList, topList, maxLevel + 1);
     }
 }
 export default new Nested();

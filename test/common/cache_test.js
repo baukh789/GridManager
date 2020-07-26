@@ -1,15 +1,15 @@
 'use strict';
-import jTool from '@jTool';
-import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '@common/constants';
-import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, resetTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, updateCache } from '@common/cache';
-import store from '@common/Store';
-import { version } from '@package.json';
-import tableTpl from '@test/table-test.tpl.html';
-import getTableTestData from '@test/table-test.data.js';
-import { getColumnMap, getColumnData } from '@test/table-config';
-import i18n from '@module/i18n';
-import {CHECKBOX_KEY, ORDER_KEY, TR_CACHE_KEY, TR_LEVEL_KEY} from '@common/constants';
-import { clearCacheDOM } from '@common/domCache';
+import jTool from '../../src/jTool';
+import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '../../src/common/constants';
+import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, resetTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, updateCache } from '../../src/common/cache';
+import store from '../../src/common/Store';
+import { version } from '../../package.json';
+import tableTpl from '../table-test.tpl.html';
+import getTableTestData from '../table-test.data.js';
+import { getColumnMap, getColumnData } from '../table-config';
+import i18n from '../../src/module/i18n';
+import {CHECKBOX_KEY, ORDER_KEY, TR_CACHE_KEY, TR_LEVEL_KEY} from '../../src/common/constants';
+import { clearCacheDOM } from '../../src/common/domCache';
 
 // 清除空格
 const tableTestTpl = tableTpl;
@@ -692,6 +692,24 @@ describe('cache', () => {
                             return 'four';
                         },
                         template: 'four'
+                    },
+                    {
+                        key: 'five',
+                        text: 'five',
+                        children: [
+                            {
+                                key: 'five-1',
+                                text: 'five-1',
+                                template: 'five-1'
+                            },
+                            {
+                                key: 'five-2',
+                                text: 'five-2',
+                                template: () => {
+                                    return 'five-2';
+                                }
+                            }
+                        ]
                     }
                 ]
             };
@@ -708,19 +726,28 @@ describe('cache', () => {
         it('执行验证', () => {
             arg =  updateTemplate(arg);
             expect(arg.disableCache).toBe(false);
-            expect(arg.emptyTemplate()).toEqual('test');
+            expect(arg.emptyTemplate()).toBe('test');
 
-            expect(arg.columnData[0].text()).toEqual('one');
+            expect(arg.columnData[0].text()).toBe('one');
             expect(arg.columnData[0].template).toBeUndefined();
 
-            expect(arg.columnData[1].text()).toEqual('two');
-            expect(arg.columnData[1].template()).toEqual('two');
+            expect(arg.columnData[1].text()).toBe('two');
+            expect(arg.columnData[1].template()).toBe('two');
 
-            expect(arg.columnData[2].text()).toEqual('three');
-            expect(arg.columnData[2].template()).toEqual('three');
+            expect(arg.columnData[2].text()).toBe('three');
+            expect(arg.columnData[2].template()).toBe('three');
 
-            expect(arg.columnData[3].text()).toEqual('four');
-            expect(arg.columnData[3].template()).toEqual('four');
+            expect(arg.columnData[3].text()).toBe('four');
+            expect(arg.columnData[3].template()).toBe('four');
+
+            expect(arg.columnData[4].text()).toBe('five');
+            expect(arg.columnData[4].template).toBeUndefined();
+
+            expect(arg.columnData[4].children[0].text()).toBe('five-1');
+            expect(arg.columnData[4].children[0].template()).toBe('five-1');
+
+            expect(arg.columnData[4].children[1].text()).toBe('five-2');
+            expect(arg.columnData[4].children[1].template()).toBe('five-2');
         });
 
     });
@@ -732,6 +759,7 @@ describe('cache', () => {
         let columnMap = null;
         let checkboxColumnFn = null;
         let orderColumnFn = null;
+        let fullColumnFn = null;
         beforeEach(() => {
             // 在测试中不能对pathname进行修改，该值默认为/context.html， 如果修改的话将会报出如下错误: Some of your tests did a full page reload!
             // window.location.pathname = '/context.html';
@@ -777,6 +805,19 @@ describe('cache', () => {
                     }
                 };
             };
+            fullColumnFn = settings => {
+                return {
+                    key: 'gm-full-column',
+                    text: '',
+                    isAutoCreate: true,
+                    isShow: true,
+                    disableCustomize: true,
+                    width: '40px',
+                    template: () => {
+                        return '<td gm-create gm-fold><span full-column-fold><i class="gm-icon gm-icon-add"></i></span></td>';
+                    }
+                };
+            };
         });
         afterEach(() => {
             window.location.hash = null;
@@ -791,6 +832,7 @@ describe('cache', () => {
             console.log = console._log;
             checkboxColumnFn = null;
             orderColumnFn = null;
+            fullColumnFn = null;
         });
 
         it('基础验证', () => {
@@ -800,7 +842,7 @@ describe('cache', () => {
 
         it('默认配置', () => {
             // settings 中对默认值都已经测试过了，这里只挑部分项进行测试
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
+            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(settings.gridManagerName).toBe('test');
             expect(settings._).toBe(settings.gridManagerName);
             expect(settings.supportAdjust).toBe(true);
@@ -812,10 +854,55 @@ describe('cache', () => {
             expect(Object.keys(settings.columnMap)).toEqual(Object.keys(columnMap));
         });
 
+        it('存在折叠操作', () => {
+            arg.__isFullColumn = true; // 正常逻辑下是在constructor中定义
+            arg.fullColumn = {
+                useFold: true,
+                bottomTemplate: () => {
+                    return '<div>aaaa</div>';
+                }
+            };
+            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+
+            expect(settings.columnMap['gm-full-column'].width).toBe('40px');
+        });
+
+        it('存在width为number类型', () => {
+            let key = arg.columnData[0].key;
+            arg.columnData[0].width = 200;
+            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+
+            expect(settings.columnMap[key].width).toBe('200px');
+
+            key = null;
+        });
+
+        it('存在多层嵌套', () => {
+            arg.__isNested = true; // 正常逻辑下是在constructor中定义
+            let key = arg.columnData[0].key;
+            arg.columnData[0].children = [{
+                key: 'c1',
+                text: 'c1'
+            }, {
+                key: 'c2',
+                text: 'c2'
+            }];
+            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+
+            expect(settings.columnMap[key].pk).toBeUndefined();
+            expect(settings.columnMap[key].level).toBe(0);
+            expect(settings.columnMap['c1'].pk).toBe(key);
+            expect(settings.columnMap['c1'].level).toBe(1);
+            expect(settings.columnMap['c2'].pk).toBe(key);
+            expect(settings.columnMap['c2'].level).toBe(1);
+
+            key = null;
+        });
+
         it('存在fixed', () => {
             let key = arg.columnData[0].key;
             arg.columnData[0].fixed = 'left';
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
+            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
 
             expect(settings.columnMap[key].fixed).toBe('left');
             expect(settings.columnMap[key].disableCustomize).toBe(true);
@@ -828,7 +915,7 @@ describe('cache', () => {
             arg.supportAutoOrder = false;
             arg.supportCheckbox = false;
             delete arg.columnData[0].key;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
+            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(settings).toBe(false);
             expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c columnData[0].key undefined ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
         });
@@ -836,14 +923,14 @@ describe('cache', () => {
         it('异常配置: 存在disableCustomize但无width', () => {
             // 第8行数据存在disableCustomize配置
             delete arg.columnData[7].width;
-            expect(initSettings(arg, checkboxColumnFn, orderColumnFn)).toBe(false);
+            expect(initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn)).toBe(false);
             expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c column action: width must be set ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
         });
 
         it('开启缓存:当前无用户记忆', () => {
             // 当前无用户记忆
             arg.disableCache = false;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
+            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(settings.columnMap.pic.width).toBe('110px');
         });
 
@@ -854,7 +941,7 @@ describe('cache', () => {
             }));
 
             arg.disableCache = false;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
+            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(settings.columnMap.pic.width).toBe('120px');
         });
 
@@ -865,7 +952,7 @@ describe('cache', () => {
             }));
 
             arg.disableCache = false;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
+            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of test ', ...CONSOLE_STYLE[CONSOLE_INFO]);
         });
 
@@ -876,7 +963,7 @@ describe('cache', () => {
             }));
 
             arg.disableCache = false;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn);
+            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of test ', ...CONSOLE_STYLE[CONSOLE_INFO]);
         });
     });

@@ -3,7 +3,20 @@
  * 构造类
  */
 import jTool from '@jTool';
-import { extend, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isArray, each, isEmptyObject, getStyle } from '@jTool/utils';
+import {
+    extend,
+    isUndefined,
+    isString,
+    isFunction,
+    isNumber,
+    isBoolean,
+    isObject,
+    isArray,
+    each,
+    isEmptyObject,
+    getStyle,
+    isValidArray
+} from '@jTool/utils';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME, PX } from '@common/constants';
 import { getCloneRowData, getKey, getThead, getFakeThead, getAllTh, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
@@ -87,7 +100,7 @@ export default class GridManager {
         let settings = GridManager.get(gridManagerName);
 
         // init: 当前已经实例化
-        if (settings && settings.rendered) {
+        if (settings.rendered) {
             outWarn(`${gridManagerName} had been used`);
 
             // 如果已经存在，则清除之前的数据。#001
@@ -101,7 +114,7 @@ export default class GridManager {
         }
 
         // 校验: columnData
-        if (!isArray(arg.columnData) || !arg.columnData.length) {
+        if (!isValidArray(arg.columnData)) {
             outError('columnData invalid');
             return;
         }
@@ -159,7 +172,7 @@ export default class GridManager {
             arg.supportTreeData = false;
 
             // 禁用分割线
-            arg.disableLine = true;
+            // arg.disableLine = true;
 
             // 增加通栏标识
             arg.__isFullColumn = true;
@@ -176,7 +189,7 @@ export default class GridManager {
         }
 
         // 相互冲突的参数项处理: 多层嵌套表头
-        if (arg.columnData.some(item => item.children && item.children.length)) {
+        if (arg.columnData.some(item => isValidArray(item.children))) {
             // 不使用配置功能
             arg.supportConfig = false;
 
@@ -234,7 +247,6 @@ export default class GridManager {
             })();
         };
 
-        // todo 应该在渲染前检查下是否存在渲染中的表格，如果存在应该停止
         // 初始化表格
         // 表格不可用时进行等待, 并且对相同gridManagerName的表格进行覆盖以保证只渲染一次
         SIV_waitTableAvailable[gridManagerName] = setInterval(() => {

@@ -2,10 +2,10 @@
  * Created by baukh on 17/3/5.
  */
 'use strict';
-import i18n from '@module/i18n';
-import { Settings } from '@common/Settings';
-import TextConfig from '@module/i18n/config';
-import { CONSOLE_STYLE, CONSOLE_WARN } from '@common/constants';
+import i18n from '../../src/module/i18n';
+import { Settings } from '../../src/common/Settings';
+import TextConfig from '../../src/module/i18n/config';
+import { CONSOLE_STYLE, CONSOLE_WARN } from '../../src/common/constants';
 
 /**
  * 实例化方法验证

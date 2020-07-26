@@ -286,9 +286,9 @@ class Checkbox {
 	}
 
 	/**
-	 * 获取TD: 选择列对象
+	 * 获取col对象
 	 * @param conf
-	 * @returns {parseData}
+	 * @returns {}
 	 */
 	getColumn(conf) {
 		return {
@@ -309,7 +309,8 @@ class Checkbox {
     /**
      * 获取模板
      * @param params
-     * @returns {parseData}
+     * params.isTop: 树型结构时该值将为false
+     * @returns {}
      */
     @parseTpl(columnTpl)
 	getColumnTemplate(params) {
@@ -323,10 +324,11 @@ class Checkbox {
     /**
      * 获取checkbox模板
      * @param params
-     * @returns {parseData}
+     * @returns {}
      */
     @parseTpl(checkboxTpl)
     getCheckboxTpl(params) {
+        // 在th渲染时，params为空对像，选中状态由updateCheckboxState方法修改
         const { checked, disabled, label, value } = params;
         return {
             checked: checked ? CHECKED : UNCHECKED,
@@ -339,7 +341,7 @@ class Checkbox {
     /**
      * 获取radio模板
      * @param params
-     * @returns {parseData}
+     * @returns {}
      */
     @parseTpl(radioTpl)
     getRadioTpl(params) {

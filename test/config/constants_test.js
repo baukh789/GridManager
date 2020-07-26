@@ -1,4 +1,4 @@
-import { CLASS_NO_CLICK, CLASS_CONFIG_ING, CLASS_CONFIG } from '@module/config/constants';
+import { CLASS_NO_CLICK, CLASS_CONFIG_ING, CLASS_CONFIG } from '../../src/module/config/constants';
 describe('constants', () => {
     it('CLASS_NO_CLICK', () => {
         expect(CLASS_NO_CLICK).toBe('no-click');

@@ -37,7 +37,7 @@ import {
     REMIND_CLASS,
     SORT_CLASS,
     ODD
-} from '@common/constants';
+} from '../../src/common/constants';
 
 describe('常量验证', () => {
     it('GM_VERSION', () => {

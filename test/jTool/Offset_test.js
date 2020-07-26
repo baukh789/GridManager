@@ -1,6 +1,6 @@
-import Sizzle from '@jTool/Sizzle';
-import _Offset from '@jTool/Offset';
-import { extend } from '@jTool/utils';
+import Sizzle from '../../src/jTool/Sizzle';
+import _Offset from '../../src/jTool/Offset';
+import { extend } from '../../src/jTool/utils';
 
 describe('Offset', () => {
 

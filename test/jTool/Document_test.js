@@ -1,6 +1,6 @@
-import _Document from '@jTool/Document';
-import Sizzle from '@jTool/Sizzle';
-import { extend } from '@jTool/utils';
+import _Document from '../../src/jTool/Document';
+import Sizzle from '../../src/jTool/Sizzle';
+import { extend } from '../../src/jTool/utils';
 
 describe('Document', () => {
 

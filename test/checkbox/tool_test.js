@@ -1,7 +1,7 @@
-import { resetData } from '@module/checkbox/tool';
-import store from '@common/Store';
-import getTableTestData from '@test/table-test.data.js';
-import { getColumnMap } from '@test/table-config';
+import { resetData } from '../../src/module/checkbox/tool';
+import store from '../../src/common/Store';
+import getTableTestData from '../table-test.data.js';
+import { getColumnMap } from '../table-config';
 
 const _ = 'test';
 describe('checkbox tool', () => {

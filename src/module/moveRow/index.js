@@ -261,7 +261,7 @@ class MoveRow {
     /**
      * 生成拖拽区域html片段
      * @param params
-     * @returns {parseData}
+     * @returns htmlStr
      */
     @parseTpl(dreamlandTpl)
     createHtml(params) {

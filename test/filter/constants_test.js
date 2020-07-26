@@ -1,4 +1,4 @@
-import { CLASS_FILTER, CLASS_FILTER_SELECTED, CLASS_FILTER_CONTENT } from '@module/filter/constants';
+import { CLASS_FILTER, CLASS_FILTER_SELECTED, CLASS_FILTER_CONTENT } from '../../src/module/filter/constants';
 describe('CLASS_FILTER', () => {
     it('CLASS_FILTER', () => {
         expect(CLASS_FILTER).toBe('gm-filter-area');

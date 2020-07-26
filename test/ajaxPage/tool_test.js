@@ -1,5 +1,5 @@
-import { getQuerySelector, joinPaginationNumber, getPageData } from '@module/ajaxPage/tool';
-import { TOOLBAR_KEY } from '@common/constants';
+import { getQuerySelector, joinPaginationNumber, getPageData } from '../../src/module/ajaxPage/tool';
+import { TOOLBAR_KEY } from '../../src/common/constants';
 
 describe('ajaxPage tool', () => {
     describe('getQuerySelector', () => {

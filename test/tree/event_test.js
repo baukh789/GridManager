@@ -1,4 +1,4 @@
-import { getEvent, eventMap } from '@module/tree/event';
+import { getEvent, eventMap } from '../../src/module/tree/event';
 describe('tree event', () => {
     describe('getEvent', () => {
         let events = null;

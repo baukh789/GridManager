@@ -168,7 +168,6 @@ class Fixed {
      * @param _
      */
     destroy(_) {
-        // 清除事件
         delete FIXED_LEFT_MAP[_];
         delete FIXED_RIGHT_MAP[_];
     }

@@ -1,4 +1,4 @@
-import jTool from '@jTool';
+import jTool from '../../src/jTool';
 import {
     getCloneRowData,
     showLoading,
@@ -30,11 +30,11 @@ import {
     calcLayout,
     clearTargetEvent,
     getScrollBarWidth
-} from '@common/base';
-import tableTpl from '@test/table-test.tpl.html';
-import { getColumnMap } from '@test/table-config';
-import { TOOLBAR_KEY, LOADING_CLASS_NAME, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY, TR_LEVEL_KEY, CELL_HIDDEN } from '@common/constants';
-import { clearCacheDOM } from '@common/domCache';
+} from '../../src/common/base';
+import tableTpl from '../table-test.tpl.html';
+import { getColumnMap } from '../table-config';
+import { TOOLBAR_KEY, LOADING_CLASS_NAME, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY, TR_LEVEL_KEY, CELL_HIDDEN } from '../../src/common/constants';
+import { clearCacheDOM } from '../../src/common/domCache';
 const tableTestTpl = tableTpl;
 
 describe('base', () => {

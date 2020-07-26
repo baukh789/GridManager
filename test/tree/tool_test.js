@@ -1,4 +1,4 @@
-import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from '@module/tree/tool';
+import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from '../../src/module/tree/tool';
 
 describe('tree tool', () => {
     describe('treeKey', () => {

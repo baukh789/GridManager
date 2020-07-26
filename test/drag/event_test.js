@@ -1,6 +1,6 @@
-import { getEvent, eventMap } from '@module/drag/event';
-import { CLASS_DRAG_ACTION } from '@module/drag/constants';
-import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { getEvent, eventMap } from '../../src/module/drag/event';
+import { CLASS_DRAG_ACTION } from '../../src/module/drag/constants';
+import { FAKE_TABLE_HEAD_KEY } from '../../src/common/constants';
 
 describe('drag', () => {
     describe('getEvent', () => {

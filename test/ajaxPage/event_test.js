@@ -1,5 +1,5 @@
-import { getEvent, eventMap } from '@module/ajaxPage/event';
-import { TOOLBAR_KEY } from '@common/constants';
+import { getEvent, eventMap } from '../../src/module/ajaxPage/event';
+import { TOOLBAR_KEY } from '../../src/common/constants';
 
 describe('ajaxPage event', () => {
     describe('getEvent', () => {

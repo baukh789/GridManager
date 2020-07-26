@@ -1,5 +1,5 @@
-import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_STYLE, CONSOLE_WARN } from '@common/constants';
-import { outInfo, outWarn, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
+import { CONSOLE_ERROR, CONSOLE_INFO, CONSOLE_STYLE, CONSOLE_WARN } from '../../src/common/constants';
+import { outInfo, outWarn, outError, equal, getObjectIndexToArray, cloneObject } from '../../src/common/utils';
 
 describe('outInfo, outWarn, outError', () => {
     let table = null;

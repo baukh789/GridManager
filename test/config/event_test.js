@@ -1,5 +1,5 @@
-import { getEvent, eventMap } from '@module/config/event';
-import { CONFIG_KEY } from '@common/constants';
+import { getEvent, eventMap } from '../../src/module/config/event';
+import { CONFIG_KEY } from '../../src/common/constants';
 
 describe('config', () => {
     describe('getEvent', () => {

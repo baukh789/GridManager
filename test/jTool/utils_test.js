@@ -1,7 +1,7 @@
-import { isWindow, type, noop, each, getStyle, createDOM, extend, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isEmptyObject, isArray, isElement, isNodeList } from '@jTool/utils';
-import { JTOOL_DOM_ID } from '@jTool/constants';
-import tableTpl from '@test/table-test.tpl.html';
-import jTool from '@jTool';
+import { isWindow, type, noop, each, getStyle, createDOM, extend, isUndefined, isString, isFunction, isNumber, isBoolean, isObject, isEmptyObject, isArray, isValidArray, isElement, isNodeList } from '../../src/jTool/utils';
+import { JTOOL_DOM_ID } from '../../src/jTool/constants';
+import tableTpl from '../table-test.tpl.html';
+import jTool from '../../src/jTool';
 
 describe('isWindow(o)', () => {
     it('基础验证', () => {
@@ -305,6 +305,19 @@ describe('isArray(o)', () => {
     it('执行结果', () => {
         expect(isArray([])).toBe(true);
         expect(isArray({name: 'baukh'})).toBe(false);
+    });
+});
+
+describe('isValidArray(o)', () => {
+    it('基础验证', () => {
+        expect(isArray).toBeDefined();
+        expect(isArray.length).toBe(1);
+    });
+
+    it('执行结果', () => {
+        expect(isValidArray([])).toBe(false);
+        expect(isValidArray({name: 'baukh'})).toBe(false);
+        expect(isValidArray([1, 2])).toBe(true);
     });
 });
 

@@ -1,5 +1,5 @@
-import { getEvent, eventMap } from '@module/sort/event';
-import { SORT_CLASS, FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { getEvent, eventMap } from '../../src/module/sort/event';
+import { SORT_CLASS, FAKE_TABLE_HEAD_KEY } from '../../src/common/constants';
 
 describe('sort', () => {
     describe('getEvent', () => {

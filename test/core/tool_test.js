@@ -1,5 +1,5 @@
-import { getParams, transformToPromise } from '@module/core/tool';
-import getTableTestData from '@test/table-test.data.js';
+import { getParams, transformToPromise } from '../../src/module/core/tool';
+import getTableTestData from '../table-test.data.js';
 
 const _ = 'test';
 describe('core tool', () => {

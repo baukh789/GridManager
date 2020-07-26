@@ -1,5 +1,5 @@
 
-import TextConfig from '@module/i18n/config';
+import TextConfig from '../../src/module/i18n/config';
 describe('textConfig', () => {
     let textConfig = null;
     beforeEach(() => {

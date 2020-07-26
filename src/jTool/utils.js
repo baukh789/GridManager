@@ -194,6 +194,14 @@ export const isArray = o => {
 };
 
 /**
+ * 是否为可用的数组
+ * @param a
+ */
+export const isValidArray = o => {
+    return isArray(o) && o.length > 0;
+};
+
+/**
  * 是否为 element
  * @param o
  * @returns {boolean}

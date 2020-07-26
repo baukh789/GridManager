@@ -1,4 +1,4 @@
-import { getEvent, eventMap } from '@module/checkbox/event';
+import { getEvent, eventMap } from '../../src/module/checkbox/event';
 
 describe('checkbox event', () => {
     describe('getEvent', () => {

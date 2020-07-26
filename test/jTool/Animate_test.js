@@ -1,6 +1,6 @@
-import _Animate from '@jTool/Animate';
-import Sizzle from '@jTool/Sizzle';
-import { extend } from '@jTool/utils';
+import _Animate from '../../src/jTool/Animate';
+import Sizzle from '../../src/jTool/Sizzle';
+import { extend } from '../../src/jTool/utils';
 describe('Animate', () => {
 
     let jTool = null;

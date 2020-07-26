@@ -1,6 +1,6 @@
-import tableTpl from '@test/table-test.tpl.html';
-import { getCacheDOM, clearCacheDOM } from '@common/domCache';
-import { TABLE_KEY } from '@common/constants';
+import tableTpl from '../table-test.tpl.html';
+import { getCacheDOM, clearCacheDOM } from '../../src/common/domCache';
+import { TABLE_KEY } from '../../src/common/constants';
 describe('domCache', () => {
     beforeEach(() => {
         clearCacheDOM('test');

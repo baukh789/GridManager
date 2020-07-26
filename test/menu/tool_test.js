@@ -1,9 +1,9 @@
-import jTool from '@jTool';
-import { getMenuQuerySelector, createMenuDom, clearMenuDOM, getMenuPosition } from '@module/menu/tool';
-import { eventMap, getEvent } from '@module/menu/event';
-import { MENU_KEY } from '@common/constants';
-import Store from '@common/Store';
-import TextConfig from '@module/i18n/config';
+import jTool from '../../src/jTool';
+import { getMenuQuerySelector, createMenuDom, clearMenuDOM, getMenuPosition } from '../../src/module/menu/tool';
+import { eventMap, getEvent } from '../../src/module/menu/event';
+import { MENU_KEY } from '../../src/common/constants';
+import Store from '../../src/common/Store';
+import TextConfig from '../../src/module/i18n/config';
 
 describe('menu tool', () => {
     describe('getMenuQuerySelector', () => {

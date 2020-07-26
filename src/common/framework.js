@@ -1,4 +1,5 @@
 import { getQuerySelector } from '@common/base';
+import { isNull, isUndefined } from '@jTool/utils';
 // 框架解析唯一值
 const FRAMEWORK_KEY = 'data-compile-node';
 
@@ -107,7 +108,12 @@ export const compileTd = (settings, template, row, index, key) => {
             text = template(row[key], row, index, key);
         }
     } else {
-        text = row[key] || '';
+        text = row[key];
+
+        // null 或 undefined 转换显示为 ''
+        if (isNull(text) || isUndefined(text)) {
+            text = '';
+        }
     }
 
     return {

@@ -1,6 +1,6 @@
-import _Element from '@jTool/Element';
-import Sizzle from '@jTool/Sizzle';
-import { extend } from '@jTool/utils';
+import _Element from '../../src/jTool/Element';
+import Sizzle from '../../src/jTool/Sizzle';
+import { extend } from '../../src/jTool/utils';
 
 describe('Element', () => {
 	let divEle = null;

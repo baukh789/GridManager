@@ -1,4 +1,4 @@
-import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from '@module/moveRow/constants';
+import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from '../../src/module/moveRow/constants';
 describe('constants', () => {
     it('CLASS_DRAG_ING', () => {
         expect(CLASS_DRAG_ING).toBe('gm-move-row-ongoing');

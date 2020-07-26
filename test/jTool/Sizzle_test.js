@@ -1,4 +1,4 @@
-import Sizzle from '@jTool/Sizzle';
+import Sizzle from '../../src/jTool/Sizzle';
 
 describe('Sizzle', () => {
 

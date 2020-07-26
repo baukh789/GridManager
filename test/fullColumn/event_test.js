@@ -1,7 +1,5 @@
-import { getEvent, eventMap } from '../../src/module/remind/event';
-import { REMIND_CLASS, FAKE_TABLE_HEAD_KEY } from '../../src/common/constants';
-
-describe('remind', () => {
+import { getEvent, eventMap } from '../../src/module/fullColumn/event';
+describe('fullColumn event', () => {
     describe('getEvent', () => {
         let events = null;
         beforeEach(() => {
@@ -16,10 +14,10 @@ describe('remind', () => {
         });
 
         it('执行验证', () => {
-            events = getEvent('test', '#baukh');
-            expect(events.start.events).toBe('mouseover');
-            expect(events.start.target).toBe('#baukh');
-            expect(events.start.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${REMIND_CLASS}`);
+            events = getEvent('.test', 'full-column-fold');
+            expect(events.fold.events).toBe('click');
+            expect(events.fold.target).toBe('.test');
+            expect(events.fold.selector).toBe('[full-column-fold] i');
         });
     });
 

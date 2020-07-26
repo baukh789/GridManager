@@ -16,7 +16,7 @@ import { TARGET, EVENTS, SELECTOR, MOUSE_LEAVE } from '@common/events';
  * @param _
  */
 export const removeTooltip = _ => {
-    const $trRemind = getDiv(_).find('.tr-remind');
+    const $trRemind = getDiv(_).find('.gm-tooltip');
     if ($trRemind.length) {
         $trRemind.remove();
     }
@@ -31,8 +31,11 @@ export const tooltip = (_, dom, conf, callback) => {
     if (!isObject(conf)) {
         return;
     }
-    const { text, position, height = 30 } = conf;
+    const { text, position } = conf;
     let rightModel = position === 'right' ? ' right-model' : '';
+
+    // tooltip显示高度
+    const height = 30;
     const $div = getDiv(_);
     const $dom = jTool(dom);
     const $body = getTable(_);
@@ -45,7 +48,7 @@ export const tooltip = (_, dom, conf, callback) => {
         leftStyle = `left:${$dom.offset().left - $body.offset().left - $div.scrollLeft() + PX};`;
     }
     removeTooltip(_);
-    const str = `<span class="ra-area tr-remind${rightModel}" style="height: ${height + PX}, position: absolute; display: block;top:${top + PX};${leftStyle}">${text}</span>`;
+    const str = `<span class="ra-area gm-tooltip${rightModel}" style="height:${height + PX};top:${top + PX};${leftStyle}">${text}</span>`;
     $div.append(str);
 
     // 绑定清除事件: 即时绑定即时销毁，不需要在destroy中处理
@@ -94,10 +97,11 @@ class Remind {
 
         const style = remind.style;
         if (isObject(style)) {
-            styleStr = 'style=';
+            styleStr = 'style="';
             Object.keys(style).forEach(key => {
                 styleStr = `${styleStr}${key}:${style[key]};`;
             });
+            styleStr += '"';
         }
 	    return {
             text,

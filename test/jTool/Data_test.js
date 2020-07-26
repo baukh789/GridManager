@@ -1,6 +1,6 @@
-import _Data from '@jTool/Data';
-import Sizzle from '@jTool/Sizzle';
-import { extend } from '@jTool/utils';
+import _Data from '../../src/jTool/Data';
+import Sizzle from '../../src/jTool/Sizzle';
+import { extend } from '../../src/jTool/utils';
 
 describe('Data', () => {
 

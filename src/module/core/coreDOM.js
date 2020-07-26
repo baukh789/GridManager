@@ -1,5 +1,5 @@
 import jTool from '@jTool';
-import { isUndefined, isString, isObject, isElement, isArray, each } from '@jTool/utils';
+import { isUndefined, isString, isObject, isElement, isValidArray, each } from '@jTool/utils';
 import {
     calcLayout,
     getTable,
@@ -151,7 +151,7 @@ class Dom {
 
         const pushList = list => {
             each(list, col => {
-                if (!isArray(col.children)) {
+                if (!isValidArray(col.children)) {
                     columnList.push(col);
                     return;
                 }

@@ -1,6 +1,6 @@
-import _Css from '@jTool/Css';
-import Sizzle from '@jTool/Sizzle';
-import { extend } from '@jTool/utils';
+import _Css from '../../src/jTool/Css';
+import Sizzle from '../../src/jTool/Sizzle';
+import { extend } from '../../src/jTool/utils';
 describe('Css', () => {
 	let divEle = null;
     let divEle2 = null;

@@ -1,8 +1,8 @@
 /**
  * Created by baukh on 17/10/24.
  */
-import Store from '@common/Store';
-import { version } from '@package.json';
+import Store from '../../src/common/Store';
+import { version } from '../../package.json';
 
 describe('Store.js', () => {
 	it('Store.version', () => {

@@ -1,10 +1,10 @@
-import jTool from '@jTool';
-import ajaxPage from '@module/ajaxPage';
-import i18n from '@module/i18n';
-import TextConfig from '@module/i18n/config';
-import {DISABLED_CLASS_NAME, TOOLBAR_KEY} from '@common/constants';
-import tableTestTpl from '@test/table-test.tpl.html';
-import {getQuerySelector} from '@module/ajaxPage/tool';
+import jTool from '../../src/jTool';
+import ajaxPage from '../../src/module/ajaxPage';
+import i18n from '../../src/module/i18n';
+import TextConfig from '../../src/module/i18n/config';
+import {DISABLED_CLASS_NAME, TOOLBAR_KEY} from '../../src/common/constants';
+import tableTestTpl from '../table-test.tpl.html';
+import {getQuerySelector} from '../../src/module/ajaxPage/tool';
 
 describe('ajaxPage', () => {
     describe('createHtml', () => {

@@ -1,4 +1,4 @@
-import ajax from '@jTool/Ajax';
+import ajax from '../../src/jTool/Ajax';
 describe('ajax', () => {
 	let success = null;
     let error = null;

@@ -1,5 +1,5 @@
-import { getEvent, eventMap } from '@module/moveRow/event';
-import { EMPTY_TPL_KEY } from '@common/constants';
+import { getEvent, eventMap } from '../../src/module/moveRow/event';
+import { EMPTY_TPL_KEY } from '../../src/common/constants';
 
 describe('drag', () => {
     describe('getEvent', () => {

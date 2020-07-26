@@ -5,7 +5,7 @@
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { isUndefined, isFunction, isObject, isString, isNumber, isArray, isElement, each, isNodeList, extend } from '@jTool/utils';
+import { isUndefined, isFunction, isObject, isString, isNumber, isValidArray, isElement, each, isNodeList, extend } from '@jTool/utils';
 import { outInfo, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
 import { DISABLE_CUSTOMIZE, PX } from '@common/constants';
 import { Settings } from '@common/Settings';
@@ -452,13 +452,17 @@ export const updateTemplate = arg => {
                 col.text = () => text;
             }
 
+            // 当前存列存在嵌套子项: 进行递归转换， 并清除当前列模板
+            if (isValidArray(col.children)) {
+                resetTemplate(col.children);
+                delete col.template;
+                return;
+            }
+
             // 强制转换模板为函数: template
             const template = col.template;
             if (template && !isFunction(template)) {
                 col.template = () => template;
-            }
-            if (isArray(col.children)) {
-                resetTemplate(col.children);
             }
         });
     };
@@ -493,7 +497,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn, fullColumnFn)
     const list = [];
     // 自动增加: 选择列
     if (supportCheckbox) {
-        list.unshift(checkboxColumnFn(checkboxConfig));
+        list.push(checkboxColumnFn(checkboxConfig));
     }
 
     // 自动增加: 序号列
@@ -501,7 +505,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn, fullColumnFn)
         list.push(orderColumnFn(settings));
     }
 
-    // 自动增加: 序号列
+    // 自动增加: 折叠操作列
     if (__isFullColumn && fullColumn.useFold) {
         list.push(fullColumnFn(settings));
     }
@@ -577,7 +581,7 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn, fullColumnFn)
 
             // 存在多层嵌套时，递归增加标识
             if (__isNested) {
-                if (isArray(col.children)) {
+                if (isValidArray(col.children)) {
                     // delete columnMap[key].width;
                     // delete columnMap[key].__width;
                     resetData(col.children, level + 1, col.key);

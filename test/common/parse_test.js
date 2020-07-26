@@ -1,4 +1,4 @@
-import { parseTpl } from '@common/parse';
+import { parseTpl } from '../../src/common/parse';
 
 describe('parseTpl', () => {
     it('基础验证', () => {

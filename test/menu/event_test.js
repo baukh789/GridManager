@@ -1,5 +1,5 @@
-import { getEvent, eventMap } from '@module/menu/event';
-import { WRAP_KEY } from '@common/constants';
+import { getEvent, eventMap } from '../../src/module/menu/event';
+import { WRAP_KEY } from '../../src/common/constants';
 
 describe('menu event', () => {
     describe('getEvent', () => {

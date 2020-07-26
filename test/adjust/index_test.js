@@ -1,6 +1,6 @@
-import adjust from '@module/adjust';
-import { eventMap } from '@module/adjust/event';
-import { CLASS_ADJUST_ACTION } from '@module/adjust/constants';
+import adjust from '../../src/module/adjust';
+import { eventMap } from '../../src/module/adjust/event';
+import { CLASS_ADJUST_ACTION } from '../../src/module/adjust/constants';
 describe('adjust', () => {
     describe('html', () => {
         it('基础验证', () => {

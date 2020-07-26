@@ -1,6 +1,6 @@
-import { getEvent, eventMap } from '@module/adjust/event';
-import { CLASS_ADJUST_ACTION } from '@module/adjust/constants';
-import { DIV_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { getEvent, eventMap } from '../../src/module/adjust/event';
+import { CLASS_ADJUST_ACTION } from '../../src/module/adjust/constants';
+import { DIV_KEY, FAKE_TABLE_HEAD_KEY } from '../../src/common/constants';
 describe('adjust', () => {
     describe('getEvent', () => {
         let events = null;

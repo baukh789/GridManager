@@ -2,7 +2,7 @@
  * Created by baukh on 17/3/12.
  */
 'use strict';
-import { Settings } from '@common/Settings';
+import { Settings } from '../../src/common/Settings';
 
 describe('Settings', () => {
 	let settings = null;
@@ -52,6 +52,7 @@ describe('Settings', () => {
 
     it('验证属性[supportMenu]初始值', () => {
         expect(typeof settings.menuHandler).toBe('function');
+        expect(settings.menuHandler(1)).toBe(1);
     });
 
 	it('验证属性[supportConfig]初始值', () => {

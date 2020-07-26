@@ -1,4 +1,4 @@
-import { getEvent, eventMap } from '@module/dropdown/event';
+import { getEvent, eventMap } from '../../src/module/dropdown/event';
 
 describe('dropdown', () => {
     describe('getEvent', () => {

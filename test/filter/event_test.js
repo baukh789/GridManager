@@ -1,6 +1,6 @@
-import { getEvent, eventMap } from '@module/filter/event';
-import { CLASS_FILTER } from '@module/filter/constants';
-import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
+import { getEvent, eventMap } from '../../src/module/filter/event';
+import { CLASS_FILTER } from '../../src/module/filter/constants';
+import { FAKE_TABLE_HEAD_KEY } from '../../src/common/constants';
 
 describe('filter', () => {
     describe('getEvent', () => {

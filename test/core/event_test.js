@@ -1,4 +1,4 @@
-import { getEvent, eventMap } from '@module/core/event';
+import { getEvent, eventMap } from '../../src/module/core/event';
 
 describe('core event', () => {
     describe('getEvent', () => {

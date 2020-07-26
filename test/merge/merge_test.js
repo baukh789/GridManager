@@ -1,7 +1,7 @@
-import { mergeRow, clearMergeRow } from '@module/merge';
-import { TABLE_HEAD_KEY } from '@common/constants';
-import jTool from '@jTool';
-import { clearCacheDOM } from '@common/domCache';
+import { mergeRow, clearMergeRow } from '../../src/module/merge';
+import { TABLE_HEAD_KEY } from '../../src/common/constants';
+import jTool from '../../src/jTool';
+import { clearCacheDOM } from '../../src/common/domCache';
 describe('merge', () => {
     beforeEach(() => {
         clearCacheDOM('test');

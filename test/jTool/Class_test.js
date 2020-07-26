@@ -1,6 +1,6 @@
-import _Class from '@jTool/Class';
-import Sizzle from '@jTool/Sizzle';
-import { extend } from '@jTool/utils';
+import _Class from '../../src/jTool/Class';
+import Sizzle from '../../src/jTool/Sizzle';
+import { extend } from '../../src/jTool/utils';
 describe('Class', () => {
 
 	var divEle = null;

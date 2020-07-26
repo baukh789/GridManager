@@ -473,6 +473,7 @@ const demo1 = {
               console.log(a, b, c);
                 return {
                     text: '这里有个提示',
+                    position: 'right'
                 };
             },
             columnData: [

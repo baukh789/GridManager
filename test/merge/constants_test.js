@@ -1,4 +1,4 @@
-import { ROW_SPAN, MERGE_TD } from '@module/merge/constants';
+import { ROW_SPAN, MERGE_TD } from '../../src/module/merge/constants';
 describe('constants', () => {
     it('ROW_SPAN', () => {
         expect(ROW_SPAN).toBe('rowspan');

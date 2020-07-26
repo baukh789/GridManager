@@ -1,6 +1,6 @@
-import _Event from '@jTool/Event';
-import Sizzle from '@jTool/Sizzle';
-import { extend } from '@jTool/utils';
+import _Event from '../../src/jTool/Event';
+import Sizzle from '../../src/jTool/Sizzle';
+import { extend } from '../../src/jTool/utils';
 
 describe('Event', () => {
 	let jTool = null;
