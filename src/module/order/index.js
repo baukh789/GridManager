@@ -6,15 +6,6 @@ import i18n from '../i18n';
 import './style.less';
 class Order {
 	/**
-	 * 获取TH内容
-	 * @param settings
-	 * @returns {string}
-	 */
-    getThContent(settings) {
-		return i18n(settings, 'order-text');
-	}
-
-	/**
 	 * 获取序号列对象
 	 * @param $table
 	 * @param language
@@ -23,7 +14,7 @@ class Order {
 	getColumn(settings) {
 		return {
 			key: ORDER_KEY,
-			text: this.getThContent(settings),
+			text: i18n(settings, 'order-text'),
 			isAutoCreate: true,
 			isShow: true,
             disableCustomize: true,

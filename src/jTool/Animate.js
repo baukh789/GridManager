@@ -11,8 +11,7 @@
  * --注意事项--
  * show与hide方法只是一个简单的实现,不支持参数及动画效果
  * */
-import { each, getStyle, noop } from './utils';
-import { DOM_LIST } from './constants';
+import { each, getStyle, noop, getDomList } from './utils';
 import _Css from './Css';
 const INLINE_BLOCK = 'inline-block';
 const TABLE_CELL = 'table-cell';
@@ -40,7 +39,7 @@ export default {
     animate: function (styleObj, time = 0, callback = noop) {
         let animateFromText = '';   // 动画执行前样式文本
         let animateToText = '';     // 动画执行后样式文本
-        let node = this[DOM_LIST][0];
+        let node = getDomList(this, 0);
 
         // 组装动画 keyframes
         each(styleObj, (key, v) => {
@@ -69,13 +68,13 @@ export default {
         }, time);
     },
     show: function () {
-        each(this[DOM_LIST],  v => {
+        each(this,  v => {
             v.style.display = DISPLAY_MAP[v.nodeName] || 'block';
         });
         return this;
     },
     hide: function () {
-        each(this[DOM_LIST], v => {
+        each(this, v => {
             v.style.display = 'none';
         });
         return this;

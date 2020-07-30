@@ -71,6 +71,9 @@ export const EMPTY_TPL_KEY = 'empty-template';
 // order width
 export const ORDER_WIDTH = '50px';
 
+// fold: key
+export const FOLD_KEY = 'gm_fold';
+
 // order: key
 export const ORDER_KEY = 'gm_order';
 

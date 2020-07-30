@@ -1,5 +1,4 @@
-import { isUndefined, isNull, each } from './utils';
-import { DOM_LIST } from './constants';
+import { isUndefined, isNull, each, getDomList } from './utils';
 
 /**
  * 转换值: 当前为null时转换为undefined
@@ -19,17 +18,16 @@ export default {
      * @returns {*}
      */
     attr: function (key, value) {
-        const DOMList = this[DOM_LIST];
         // setter
         if (!isUndefined(value)) {
-            each(DOMList, v => {
+            each(this, v => {
                 v.setAttribute(key, value);
             });
             return this;
         }
 
         // getter
-        return transformVal(DOMList[0].getAttribute(key));
+        return transformVal(getDomList(this, 0).getAttribute(key));
     },
 
     /**
@@ -37,7 +35,7 @@ export default {
      * @param key
      */
     removeAttr: function (key) {
-        each(this[DOM_LIST], v => {
+        each(this, v => {
             v.removeAttribute(key);
         });
     },
@@ -49,17 +47,16 @@ export default {
      * @returns {*}
      */
     prop: function (key, value) {
-        const DOMList = this[DOM_LIST];
         // setter
         if (!isUndefined(value)) {
-            each(DOMList, v => {
+            each(this, v => {
                 v[key] = value;
             });
             return this;
         }
 
         // getter
-        return transformVal(DOMList[0][key]);
+        return transformVal(getDomList(this, 0)[key]);
     },
 
     /**
@@ -68,7 +65,7 @@ export default {
      */
     // todo baukh@20200326: 该功能在表格中未使用到
     // removeProp: function (key) {
-    //     each(this[DOM_LIST], v => {
+    //     each(this, v => {
     //         delete v[key];
     //     });
     // },

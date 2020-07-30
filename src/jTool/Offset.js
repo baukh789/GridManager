@@ -9,8 +9,7 @@
  * #Offset003:	原先offset()方法使用的是递归形式: 递增寻找position !== static的父级节点offsetTop或offsetLeft的值, 直到node.nodeType !== 1的时候停止
  * 				这种方法正常情况下没什么问题, 但是当body的position !== static时, 所计算的offset值将不包含scroll卷去的值
  * */
-import { getStyle, isNumber } from './utils';
-import { DOM_LIST } from './constants';
+import { getDomList, getStyle, isNumber } from './utils';
 
 /**
  * 根据参数对位置操作进行get,set分类操作
@@ -49,7 +48,7 @@ export default {
 			top: 0,
 			left: 0
 		};
-		const node = this[DOM_LIST][0];
+		const node = getDomList(this, 0);
 
 		// #Offset001
 		// 当前为IE11以下, 直接返回{top: 0, left: 0}
@@ -73,10 +72,10 @@ export default {
 	},
 	// 获取|设置 匹配元素相对滚动条顶部的偏移 value is number
 	scrollTop: function (value) {
-		return scrollFN(this[DOM_LIST][0], value, 'top');
+		return scrollFN(getDomList(this, 0), value, 'top');
 	},
 	// 获取|设置 匹配元素相对滚动条左部的偏移 value is number
 	scrollLeft: function (value) {
-		return scrollFN(this[DOM_LIST][0], value, 'left');
+		return scrollFN(getDomList(this, 0), value, 'left');
 	}
 };

@@ -2,8 +2,12 @@
     "presets": [
         [
             "@babel/preset-env",
+
             {
-                "targets": "chrome>38, firefox>56",
+                "targets": {
+                    "chrome": "55",
+                    "firefox": "53"
+                },
                 "useBuiltIns": "entry",
                 "corejs": 3
             }

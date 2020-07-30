@@ -118,14 +118,26 @@ describe('menu tool', () => {
     describe('getMenuPosition', () => {
         let position = null;
         beforeEach(() => {
+
+            document.head.innerHTML = `
+                <style type="text/css">
+                    html, body{
+                        width: 600px;
+                        height: 400px;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    body{
+                        width: 100%;
+                        height: 100%;
+                    }
+                </style>
+            `;
             document.body.innerHTML = '';
-            document.documentElement.style.width = 'auto';
-            document.documentElement.style.height = 'auto';
         });
         afterEach(() => {
+            document.head.innerHTML = '';
             document.body.innerHTML = '';
-            document.documentElement.style.width = 'auto';
-            document.documentElement.style.height = 'auto';
             position = null;
         });
         it('基础验证', () => {
@@ -134,17 +146,12 @@ describe('menu tool', () => {
         });
 
         it('执行验证: 右下侧宽高允许', () => {
-            document.documentElement.style.width = '600px';
-            document.documentElement.style.height = '400px';
             position = getMenuPosition(100, 100, 200, 200);
             expect(position.left).toBe(200);
             expect(position.top).toBe(200);
         });
 
         it('执行验证: 右下侧宽高不足', () => {
-            document.documentElement.style.width = '600px';
-            document.documentElement.style.height = '400px';
-
             // 高度不足
             position = getMenuPosition(100, 100, 200, 400);
             expect(position.left).toBe(200);
@@ -162,15 +169,15 @@ describe('menu tool', () => {
             document.body.innerHTML = '<div style="width: 800px;height: 800px"></div>';
 
             // 当前滚轴为0
-            document.documentElement.scrollTop = 0;
-            document.documentElement.scrollLeft = 0;
+            document.body.scrollTop = 0;
+            document.body.scrollLeft = 0;
             position = getMenuPosition(100, 100, 200, 200);
             expect(position.left).toBe(200);
             expect(position.top).toBe(200);
 
             // 当前滚动不为0但可以容纳下dom
-            document.documentElement.scrollTop = 400;
-            document.documentElement.scrollLeft = 200;
+            document.body.scrollTop = 300;
+            document.body.scrollLeft = 200;
             position = getMenuPosition(100, 100, 200, 200);
             expect(position.left).toBe(200);
             expect(position.top).toBe(200);
@@ -180,8 +187,8 @@ describe('menu tool', () => {
             expect(position.left).toBe(450);
             expect(position.top).toBe(250);
 
-            document.documentElement.scrollTop = 0;
-            document.documentElement.scrollLeft = 0;
+            document.body.scrollTop = 0;
+            document.body.scrollLeft = 0;
         });
     });
 });

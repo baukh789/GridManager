@@ -6,10 +6,10 @@ import { getSettings } from '@common/cache';
 import { getEvent, eventMap } from './event';
 import './style.less';
 import {EVENTS, SELECTOR, TARGET} from '@common/events';
-import { TR_CACHE_KEY, PX } from '@common/constants';
+import { TR_CACHE_KEY, PX, FOLD_KEY } from '@common/constants';
 
 // 折叠事件区域
-const FOLD_KEY = 'full-column-fold';
+const FOLD_ACTION = 'full-column-fold';
 
 // 获取通栏
 const getFullObject = (settings, colspan, template, useFold, openState, row, index, model) => {
@@ -91,15 +91,15 @@ class FullColumn {
         getDiv(_).attr('gm-full-column', '');
 
         if (useFold) {
-            eventMap[_] = getEvent(`${getQuerySelector(_)} tbody`, FOLD_KEY);
+            eventMap[_] = getEvent(`${getQuerySelector(_)} tbody`, FOLD_ACTION);
             const fold = eventMap[_].fold;
             jTool(fold[TARGET]).on(fold[EVENTS], fold[SELECTOR], function () {
                 const $onlyFold = jTool(this);
                 const $tr = $onlyFold.closest('tr');
                 const cacheKey = $tr.attr(TR_CACHE_KEY);
                 const $fullColumn = jTool(`${getQuerySelector(_)} tbody [full-column-key="${cacheKey}"]`);
-                const openState = !($onlyFold.attr(FOLD_KEY) === 'true');
-                $onlyFold.attr(FOLD_KEY, openState);
+                const openState = !($onlyFold.attr(FOLD_ACTION) === 'true');
+                $onlyFold.attr(FOLD_ACTION, openState);
                 $fullColumn.attr('full-column-state', openState);
                 $tr.attr('full-column-state', openState);
 
@@ -138,7 +138,7 @@ class FullColumn {
      */
     getColumn(settings) {
         return {
-            key: 'gm-full-column',
+            key: FOLD_KEY,
             text: '',
             isAutoCreate: true,
             isShow: true,
@@ -146,7 +146,7 @@ class FullColumn {
             width: '40px',
             fixed: settings.fullColumn.fixed,
             template: () => {
-                return `<td gm-create gm-fold><span ${FOLD_KEY}><i class="gm-icon gm-icon-add"></i></span></td>`;
+                return `<td gm-create gm-fold><span ${FOLD_ACTION}><i class="gm-icon gm-icon-add"></i></span></td>`;
             }
         };
     }

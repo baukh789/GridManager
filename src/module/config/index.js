@@ -12,7 +12,6 @@ import checkbox from '../checkbox';
 import scroll from '../scroll';
 import fixed from '../fixed';
 import configTpl from './config.tpl.html';
-import configColumnTpl from './config-column.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_CONFIG, CLASS_CONFIG_ING, CLASS_NO_CLICK } from './constants';
 import { EVENTS, TARGET, SELECTOR } from '@common/events';
@@ -130,7 +129,9 @@ class Config {
             if (col[DISABLE_CUSTOMIZE]) {
                 return;
             }
-            $configList.append(this.createColumn({ _, key, isShow }));
+            // 注意: 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
+            const label = getFakeTh(_, key).find('.th-text').text();
+            $configList.append(this.createColumn({ key, isShow, label }));
             if (isShow) {
                 showNum++;
             }
@@ -185,19 +186,11 @@ class Config {
      * @param params{key, key, isShow}
      * @returns {string}
      */
-    @parseTpl(configColumnTpl)
     createColumn(params) {
-        const { _, key, isShow } = params;
+        const { key, isShow, label } = params;
 
-        // 注意: 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
-        const label = getFakeTh(_, key).find('.th-text').text();
         const checkboxTpl = checkbox.getCheckboxTpl({checked: isShow, label});
-	    return {
-            key,
-            label,
-            isShow,
-            checkboxTpl
-        };
+        return `<li th-name="${key}"${isShow ? ' class="checked-li"' : ''}>${checkboxTpl}</li>`;
     }
 
 	/**
@@ -221,6 +214,7 @@ class Config {
         updateConfigListHeight(_);
 
         const { closeConfigByBody } = eventMap[_];
+        console.log('closeConfigByBody', closeConfigByBody);
         const events = closeConfigByBody[EVENTS];
         // 点击空处关闭
         const $target = jTool(closeConfigByBody[TARGET]);

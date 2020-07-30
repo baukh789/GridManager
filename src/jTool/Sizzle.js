@@ -1,4 +1,4 @@
-import { isWindow, createDOM, each, isString, isNodeList, isElement, isArray } from './utils';
+import { isWindow, createDOM, each, isString, isNodeList, isElement, isArray, isJTool } from './utils';
 import { DOM_LIST, JTOOL_KEY } from './constants';
 
 export default function Sizzle(selector, context) {
@@ -20,7 +20,7 @@ export default function Sizzle(selector, context) {
         }
 
         // selector: jTool Object
-        if (selector[JTOOL_KEY]) {
+        if (isJTool(selector)) {
             return selector[DOM_LIST];
         }
 
@@ -47,7 +47,7 @@ export default function Sizzle(selector, context) {
         }
 
         // context: jTool Object
-        if (context[JTOOL_KEY]) {
+        if (isJTool(context)) {
             context = context[DOM_LIST];
         }
 

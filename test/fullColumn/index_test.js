@@ -162,7 +162,7 @@ describe('fullColumn', () => {
                 }
             };
             column = fullColumn.getColumn(settings);
-            expect(column.key).toBe('gm-full-column');
+            expect(column.key).toBe('gm_fold');
             expect(column.text).toBe('');
             expect(column.isAutoCreate).toBe(true);
             expect(column.isShow).toBe(true);

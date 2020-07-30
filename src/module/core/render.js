@@ -1,13 +1,11 @@
-import order from '../order';
 import ajaxPage from '../ajaxPage';
 import { CLASS_DRAG_ACTION } from '../drag/constants';
-import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, GM_CREATE, CELL_HIDDEN, DISABLE_CUSTOMIZE } from '@common/constants';
+import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, FOLD_KEY, GM_CREATE, CELL_HIDDEN, DISABLE_CUSTOMIZE } from '@common/constants';
 import { isUndefined, isString, isObject, each } from '@jTool/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
 import config from '../config';
 import nested from '../nested';
-import checkbox from '../checkbox';
 import wrapTpl from './wrap.tpl.html';
 import theadTpl from './thead.tpl.html';
 import thTpl from './th.tpl.html';
@@ -25,7 +23,8 @@ class Render {
     createWrapTpl(params) {
         const settings = params.settings;
         const { _, skinClassName, isIconFollowText, disableBorder, disableLine, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
-        const wrapClassList = [];
+        const wrapClassList = ['table-wrap'];
+
         // 根据参数增加皮肤标识
         if (skinClassName && isString(skinClassName) && skinClassName.trim()) {
             wrapClassList.push(skinClassName);
@@ -36,7 +35,7 @@ class Render {
             wrapClassList.push('gm-icon-follow-text');
         }
 
-        // 根据参数增加禁用禁用边框线标识
+        // 根据参数增加禁用边框线标识
         if (disableBorder) {
             wrapClassList.push('disable-border');
         }
@@ -99,7 +98,7 @@ class Render {
     @parseTpl(thTpl)
     createThTpl(params) {
         const { settings, col } = params;
-        const { query, supportDrag, sortData, sortUpText, sortDownText, checkboxConfig } = settings;
+        const { query, supportDrag, sortData, sortUpText, sortDownText } = settings;
 
         // 表头提醒
         let remindAttr = '';
@@ -144,26 +143,24 @@ class Render {
         const cellHiddenAttr = col.isShow ? '' : CELL_HIDDEN;
 
         let gmCreateAttr = '';
-        let thName = '';
-        let thText = '';
+        let thName = col.key;
+        let thText = col.text;
         let compileAttr = '';
         switch (col.key) {
             // 插件自动生成序号列
             case ORDER_KEY:
                 gmCreateAttr = `${GM_CREATE} gm-order`;
-                thName = ORDER_KEY;
-                thText = order.getThContent(settings);
                 break;
             // 插件自动生成选择列
             case CHECKBOX_KEY:
                 gmCreateAttr = `${GM_CREATE} gm-checkbox`;
-                thName = CHECKBOX_KEY;
-                thText = checkbox.getThContent(checkboxConfig.useRadio);
+                break;
+            // 插件自动生成折叠列
+            case FOLD_KEY:
+                gmCreateAttr = GM_CREATE;
                 break;
             // 普通列
             default:
-                gmCreateAttr = '';
-                thName = col.key;
                 const obj = compileTh(settings, thName, col.text);
                 thText = obj.text;
                 compileAttr = obj.compileAttr;
@@ -173,18 +170,19 @@ class Render {
         // 嵌入拖拽事件标识, 以下情况除外
         // 1.组件自动生成列
         // 2.禁止使用个性配置功能的列
-        let dragClassName = '';
+        let thTextClassName = 'th-text';
         if (supportDrag && !col.isAutoCreate && !col[DISABLE_CUSTOMIZE]) {
-            dragClassName = CLASS_DRAG_ACTION;
+            thTextClassName = `${thTextClassName} ${CLASS_DRAG_ACTION}`;
         }
 
+        // 嵌入colspan rowspan
         const colspanAttr = isUndefined(col.colspan) ? '' : `colspan="${col.colspan}"`;
         const rowspanAttr = isUndefined(col.rowspan) ? '' : `rowspan="${col.rowspan}"`;
         return {
             thAttr: `th-name="${thName}" ${colspanAttr} ${rowspanAttr} style="width:${col.width || 'auto'}" ${cellHiddenAttr} ${alignAttr} ${sortingAttr} ${filterAttr} ${fixedAttr} ${remindAttr} ${gmCreateAttr}`,
+            thTextClassName,
             thText,
-            compileAttr,
-            dragClassName
+            compileAttr
         };
     }
 }

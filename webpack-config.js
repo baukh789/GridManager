@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const getRules = require('./webpack-common.loader');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
@@ -50,14 +50,19 @@ const config = {
 
     // 优化代码
     optimization: {
+        minimize: true,
         minimizer: [
             // 压缩js
-            new UglifyJsPlugin({
-                uglifyOptions: {
-                    cache: true,
-                    parallel: true,
-                    sourceMap: true,
-                    warnings: false
+            new TerserPlugin({
+                cache: true,
+                parallel: true,
+                sourceMap: false,
+                terserOptions: {
+                    warnings: false,
+                    ie8: false,
+                    output: {
+                        comments: false
+                    }
                 }
             }),
 

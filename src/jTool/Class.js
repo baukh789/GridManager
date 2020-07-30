@@ -1,5 +1,4 @@
-import { each } from './utils';
-import { DOM_LIST } from './constants';
+import { each, getDomList } from './utils';
 
 /**
  * 解析className 将以空格间格的字符串分割为数组
@@ -28,23 +27,23 @@ function changeClass(DOMList, className, exeName) {
 }
 export default {
     addClass: function (className) {
-        changeClass(this[DOM_LIST], className, 'add');
+        changeClass(getDomList(this), className, 'add');
         return this;
     },
 
     removeClass: function (className) {
-        changeClass(this[DOM_LIST], className, 'remove');
+        changeClass(getDomList(this), className, 'remove');
         return this;
     },
 
     // todo baukh@20200326: 该功能在表格中未使用到
     // toggleClass: function (className) {
-    //     changeClass(this[DOM_LIST], className, 'toggle');
+    //     changeClass(getDomList(this), className, 'toggle');
     // },
 
     // 不支持多 className
     hasClass: function (className) {
-        return [].some.call(this[DOM_LIST], function (dom) {
+        return [].some.call(getDomList(this), function (dom) {
             return dom.classList.contains(className);
         });
     }

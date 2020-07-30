@@ -21,8 +21,7 @@
  * 在选择元素上绑定一个或多个事件的事件处理函数: .bind('click mousedown', function(){}) 或.on('click mousedown', function(){})
  * 在选择元素上为当前并不存在的子元素绑定事件处理函数: .on('click mousedown', '.test', function(){})
  * */
-import { isElement, isFunction, each, noop } from './utils';
-import { DOM_LIST } from './constants';
+import {isElement, isFunction, each, noop, getDomList} from './utils';
 
 const EVENT_KEY = 'jToolEvent';
 
@@ -94,11 +93,11 @@ const getEventObject = (DOMList, event, querySelector, callback, useCapture) => 
 export default {
 	on: function (event, querySelector, callback, useCapture) {
 		// 将事件触发执行的函数存储于DOM上, 在清除事件时使用
-		return this.addEvent(getEventObject(this[DOM_LIST], event, querySelector, callback, useCapture));
+		return this.addEvent(getEventObject(getDomList(this), event, querySelector, callback, useCapture));
 	},
 
 	off: function (event, querySelector) {
-		return this.removeEvent(getEventObject(this[DOM_LIST], event, querySelector));
+		return this.removeEvent(getEventObject(getDomList(this), event, querySelector));
 	},
 
 	bind: function (event, callback, useCapture) {
@@ -106,11 +105,11 @@ export default {
 	},
 
 	unbind: function (event) {
-		return this.removeEvent(getEventObject(this[DOM_LIST], event));
+		return this.removeEvent(getEventObject(getDomList(this), event));
 	},
 
 	trigger: function (eventName) {
-		each(this[DOM_LIST], element => {
+		each(this, element => {
 			try {
 				// #Event001: trigger的事件是直接绑定在当前DOM上的
                 const eve = getEvents(element)[eventName];
@@ -136,7 +135,7 @@ export default {
      */
 	addEvent: function (eventList) {
 		each(eventList, eventObj => {
-			each(this[DOM_LIST], v => {
+			each(this, v => {
 			    const events = getEvents(v);
 			    const { eventName, type, callback, useCapture } = eventObj;
                 events[eventName] = events[eventName] || [];
@@ -155,7 +154,7 @@ export default {
      */
 	removeEvent: function (eventList) {
 		each(eventList, eventObj => {
-			each(this[DOM_LIST], ele => {
+			each(this, ele => {
 			    const events = getEvents(ele);
 				const eventName = eventObj.eventName;
 				const eventFnList = events[eventName];

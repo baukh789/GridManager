@@ -31,7 +31,8 @@ import {
     getThTextWidth,
     updateScrollStatus,
     clearTargetEvent,
-    getAllTh, getAllFakeTh
+    getAllTh,
+    getAllFakeTh
 } from '@common/base';
 import { NO_SELECT_CLASS_NAME } from '@common/constants';
 import { getSettings, updateCache } from '@common/cache';
@@ -40,7 +41,6 @@ import fixed from '@module/fixed';
 import { getEvent, eventMap } from './event';
 import { CLASS_ADJUST_ACTION, CLASS_ADJUST_ING } from './constants';
 import { getStyle, each } from '@jTool/utils';
-import { DOM_LIST } from '@jTool/constants';
 
 /**
  * 执行移动事件
@@ -197,7 +197,7 @@ class Adjust {
             $table.addClass(NO_SELECT_CLASS_NAME);
 
             // 执行移动事件
-            runMoveEvent(_, $allTh[DOM_LIST], $th, $nextTh, getThTextWidth(_, $th, isIconFollowText), Math.ceil(event.clientX - $th.offset().left));
+            runMoveEvent(_, $allTh.get(), $th, $nextTh, getThTextWidth(_, $th, isIconFollowText), Math.ceil(event.clientX - $th.offset().left));
 
             // 绑定停止事件
             runStopEvent(_, $table, $th, $td, adjustAfter);

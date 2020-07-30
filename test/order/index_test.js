@@ -13,23 +13,6 @@ describe('order', () => {
     afterEach(() => {
         settings = null;
     });
-    describe('getThContent', () => {
-        it('默认配置', () => {
-            expect(order.getThContent(settings)).toBe('序号');
-        });
-        it('zh-cn', () => {
-            settings.i18n = 'zh-cn';
-            expect(order.getThContent(settings)).toBe('序号');
-        });
-        it('zh-tw', () => {
-            settings.i18n = 'zh-tw';
-            expect(order.getThContent(settings)).toBe('序號');
-        });
-        it('en-us', () => {
-            settings.i18n = 'en-us';
-            expect(order.getThContent(settings)).toBe('order');
-        });
-    });
     describe('getColumn', () => {
         it('执行验证', () => {
             let column = order.getColumn(settings);
@@ -43,6 +26,14 @@ describe('order', () => {
             expect(column.template()).toBe(`<td ${GM_CREATE} gm-order></td>`);
             expect(column.template(1, {}, 1, true)).toBe(`<td ${GM_CREATE} gm-order>1</td>`);
             column = null;
+
+            // 验证不同的语言
+            settings.i18n = 'zh-cn';
+            expect(order.getColumn(settings).text).toBe('序号');
+            settings.i18n = 'zh-tw';
+            expect(order.getColumn(settings).text).toBe('序號');
+            settings.i18n = 'en-us';
+            expect(order.getColumn(settings).text).toBe('order');
         });
     });
 

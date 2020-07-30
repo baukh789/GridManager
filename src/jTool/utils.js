@@ -1,4 +1,4 @@
-import { DOM_LIST, JTOOL_KEY, JTOOL_DOM_ID } from './constants';
+import {JTOOL_KEY, JTOOL_DOM_ID, DOM_LIST} from './constants';
 const typeMap = {
     '[object String]': 'string',
     '[object Boolean]': 'boolean',
@@ -27,6 +27,20 @@ export const type = object => {
 
 export const noop = () => {};
 
+export const isJTool = obj => {
+    return obj[JTOOL_KEY];
+};
+
+export const getDomList = (obj, index) => {
+    const list = obj[DOM_LIST];
+    if (isUndefined(list)) {
+        return;
+    }
+    if (!isNumber(index)) {
+        return list;
+    }
+    return list[index];
+};
 export const each = (object, callback) => {
     // 当前参数不可用，直接跳出
     if (!object) {
@@ -34,8 +48,8 @@ export const each = (object, callback) => {
     }
 
     // 当前为jTool对象,循环目标更换为jTool.DOMList
-    if (object[JTOOL_KEY]) {
-        object = object[DOM_LIST];
+    if (isJTool(object)) {
+        object = getDomList(object);
 
         // DOM_LIST可能为空，若为空直接跳出
         if (isUndefined(object)) {
@@ -48,7 +62,7 @@ export const each = (object, callback) => {
         // 由于存在类数组 NodeList, 所以不能直接调用 every 方法
         [].every.call(object, (ele, index) => {
             // 处理jTool 对象
-            if (!isWindow(ele) && ele[JTOOL_KEY]) {
+            if (!isWindow(ele) && isJTool(ele)) {
                 ele = ele.get(0);
             }
             return callback.call(ele, ele, index) !== false;

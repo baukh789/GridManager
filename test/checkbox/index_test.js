@@ -44,29 +44,6 @@ describe('checkbox', () => {
         });
     });
 
-    describe('getThContent', () => {
-        let htmlStr;
-        beforeEach(() => {
-        });
-        afterEach(() => {
-            htmlStr = null;
-        });
-        it('单选', () => {
-            expect(checkbox.getThContent(true)).toBe('');
-        });
-        it('多选', () => {
-            htmlStr = `
-            <label class="gm-checkbox-wrapper">
-                <span class="gm-radio-checkbox gm-checkbox">
-                    <input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"/>
-                    <span class="gm-radio-checkbox-inner gm-checkbox-inner"></span>
-                </span>
-            </label>
-            `.replace(/\s/g, '');
-            expect(checkbox.getThContent(false).replace(/\s/g, '')).toBe(htmlStr);
-        });
-    });
-
     describe('getColumn', () => {
         let htmlStr;
         let column;
@@ -112,7 +89,7 @@ describe('checkbox', () => {
             };
             column = checkbox.getColumn(conf);
             expect(column.key).toBe(CHECKBOX_KEY);
-            expect(column.text).toBe('');
+            expect(column.text).toBe('<label class="gm-checkbox-wrapper"><span class="gm-radio-checkbox gm-checkbox"><input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input"/><span class="gm-radio-checkbox-inner gm-checkbox-inner"></span></span></label>');
             expect(column.isAutoCreate).toBe(true);
             expect(column.isShow).toBe(true);
             expect(column.disableCustomize).toBe(true);

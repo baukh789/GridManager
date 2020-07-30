@@ -277,15 +277,6 @@ class Checkbox {
 	}
 
 	/**
-	 * 获取Th内容
-	 * @param useRadio: 是否使用单选
-	 * @returns {string}
-     */
-    getThContent(useRadio) {
-        return useRadio ? '' : this.getCheckboxTpl({});
-	}
-
-	/**
 	 * 获取col对象
 	 * @param conf
 	 * @returns {}
@@ -293,7 +284,7 @@ class Checkbox {
 	getColumn(conf) {
 		return {
 			key: CHECKBOX_KEY,
-			text: '',
+			text: conf.useRadio ? '' : this.getCheckboxTpl({}),
 			isAutoCreate: true,
 			isShow: true,
             disableCustomize: true,

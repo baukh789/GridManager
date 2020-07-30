@@ -8,6 +8,7 @@ describe('Framework', () => {
     let _ = null;
     beforeEach(() => {
         _ = 'test';
+        clearCompileList(_);
     });
 
     afterEach(() => {
@@ -511,11 +512,14 @@ describe('Framework', () => {
             expect(sendCompile.length).toBe(1);
         });
 
-        it('没有要发送的数据', () => {
+        it('没有要发送的数据', done => {
             settings = {
                 _
             };
-            expect(sendCompile(settings) instanceof Promise).toBe(true);
+            sendCompile(settings).then(data => {
+                expect(data).toBeUndefined();
+                done();
+            });
             expect(getCompileList(_).length).toBe(0);
         });
 
@@ -531,7 +535,7 @@ describe('Framework', () => {
             expect(getCompileList(_).length).toBe(0);
         });
 
-        it('Angular-1.x', () => {
+        it('Angular-1.x', done => {
             compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
             compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
             settings = {
@@ -544,10 +548,11 @@ describe('Framework', () => {
                 expect(settings.compileAngularjs).toHaveBeenCalled();
                 expect(document.querySelectorAll(`[grid-manager="${_}"] [${FRAMEWORK_KEY}]`).length).toBe(0);
                 expect(getCompileList(_).length).toBe(0);
+                done();
             });
         });
 
-        it('Vue', () => {
+        it('Vue', done => {
             compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
             compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
             settings = {
@@ -560,10 +565,11 @@ describe('Framework', () => {
                 expect(settings.compileVue).toHaveBeenCalled();
                 expect(document.querySelectorAll(`[grid-manager="${_}"] [${FRAMEWORK_KEY}]`).length).toBe(0);
                 expect(getCompileList(_).length).toBe(0);
+                done();
             });
         });
 
-        it('React', () => {
+        it('React', done => {
             compileList.push({template: '测试一下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
             compileList.push({template: '测试二下', el: document.querySelector(`td[${FRAMEWORK_KEY}]`)});
             settings = {
@@ -576,6 +582,7 @@ describe('Framework', () => {
                 expect(settings.compileReact).toHaveBeenCalled();
                 expect(document.querySelectorAll(`[grid-manager="${_}"] [${FRAMEWORK_KEY}]`).length).toBe(0);
                 expect(getCompileList(_).length).toBe(0);
+                done();
             });
         });
     });

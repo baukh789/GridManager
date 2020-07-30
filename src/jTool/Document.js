@@ -1,6 +1,5 @@
 import Sizzle from './Sizzle';
-import { each, createDOM, isUndefined, isString, isElement, isNumber } from './utils';
-import { DOM_LIST, JTOOL_KEY } from './constants';
+import { each, createDOM, isUndefined, isString, isElement, isNumber, isJTool, getDomList } from './utils';
 
 export default {
     /**
@@ -27,10 +26,10 @@ export default {
      * @returns {default}
      */
     before: function (node) {
-        if(node[JTOOL_KEY]) {
-            node = node[DOM_LIST][0];
+        if(isJTool(node)) {
+            node = getDomList(node, 0);
         }
-        const thisNode = this[DOM_LIST][0];
+        const thisNode = getDomList(this, 0);
         const parentEl = thisNode.parentNode;
         parentEl.insertBefore(node, thisNode);
         return this;
@@ -41,10 +40,10 @@ export default {
      * @param node
      */
     after: function (node) {
-        if(node[JTOOL_KEY]) {
-            node = node[DOM_LIST][0];
+        if(isJTool(node)) {
+            node = getDomList(node, 0);
         }
-        const thisNode = this[DOM_LIST][0];
+        const thisNode = getDomList(this, 0);
         const parentEl = thisNode.parentNode;
         if (parentEl.lastChild === thisNode) {
             parentEl.appendChild(node);
@@ -59,17 +58,16 @@ export default {
      * @returns {string|default}
      */
     text: function (text) {
-        const DOMList = this[DOM_LIST];
         // setter
         if (!isUndefined(text)) {
-            each(DOMList, v => {
+            each(this, v => {
                 v.textContent = text;
             });
             return this;
         }
 
         // getter
-        return DOMList[0].textContent;
+        return getDomList(this, 0).textContent;
     },
 
     /**
@@ -79,15 +77,15 @@ export default {
      * @returns {default|*}
      */
     html: function (childList, insertType) {
-        const DOMList = this[DOM_LIST];
+        const DOMList = getDomList(this);
         // getter
         if (isUndefined(childList) && isUndefined(insertType)) {
             return DOMList[0].innerHTML;
         }
 
         // setter: jtool
-        if (childList[JTOOL_KEY]) {
-            childList = childList[DOM_LIST];
+        if (isJTool(childList)) {
+            childList = getDomList(childList);
         }
 
         // setter: string || number
@@ -141,7 +139,7 @@ export default {
     wrap: function (elementText, content) {
         // 简化了wrap功能，仅满足gm自身
         const wrap = createDOM(elementText)[0];
-        const dom = this[DOM_LIST][0];
+        const dom = getDomList(this, 0);
 
         dom.parentNode.insertBefore(wrap, dom);
         wrap.querySelector(content).appendChild(dom);
@@ -151,7 +149,7 @@ export default {
      * @param selectorText
      */
     closest: function (selectorText) {
-        let parentDOM = this[DOM_LIST][0].parentNode;
+        let parentDOM = getDomList(this, 0).parentNode;
         if (isUndefined(selectorText)) {
             return new Sizzle(parentDOM);
         }
@@ -191,14 +189,14 @@ export default {
      * @param deep
      */
     clone: function (deep) {
-        return new Sizzle(this[DOM_LIST][0].cloneNode(deep || false));
+        return new Sizzle(getDomList(this, 0).cloneNode(deep || false));
     },
 
     /**
      * 批量删除节点
      */
     remove: function () {
-        each(this[DOM_LIST], v => {
+        each(this, v => {
             v.remove(); // v.parentNode.removeChild(v);
         });
     }

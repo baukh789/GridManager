@@ -608,9 +608,9 @@ const demo1 = {
                     remind: 'the action',
                     width: '100px',
                     align: 'center',
-                    // fixed: 'right',
-                    // disableMoveRow: true,
-                    // disableRowCheck: true,
+                    fixed: 'right',
+                    disableMoveRow: true,
+                    disableRowCheck: true,
                     text: '<span style="color: red">操作</span>',
                     // 直接返回 通过函数返回
                     template: (action, row) => {

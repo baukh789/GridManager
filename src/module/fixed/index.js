@@ -88,7 +88,7 @@ class Fixed {
         shadowValue = disableLine ? '' : `-1px 1px 0 ${SHADOW_COLOR}`;
         const $rightList = $fakeThead.find(getFixedQuerySelector(RIGHT));
         const rightLen = $rightList.length;
-        FIXED_RIGHT_MAP[_] = ($rightList.DOMList || []).reverse();
+        FIXED_RIGHT_MAP[_] = ($rightList.get() || []).reverse();
         FIXED_RIGHT_MAP[_].forEach((item, index) => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
             if (index === rightLen - 1) {
@@ -99,7 +99,7 @@ class Fixed {
             styleStr += getStyle(_, item, RIGHT, shadowValue, pr);
             pr += $th.width();
         });
-        $fakeThead.css('padding-right', pr - 1); // todo -1是容错处理: 由于Table元素的特性需要放宽一个像素
+        $fakeThead.css('padding-right', pr - 1); // -1是容错处理: 由于Table元素的特性需要放宽一个像素(todo 需要验证现在是否还需要)
 
         styleLink.innerHTML = styleStr;
         $tableDiv.append(styleLink);
