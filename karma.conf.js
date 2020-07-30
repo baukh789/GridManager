@@ -21,7 +21,7 @@ module.exports = function (config) {
 
 		// 需要测试的文件列表
 		files: [
-            'test/common/*_test.js'
+            'test/**/*_test.js'
 		],
 
 		// 使用端口
