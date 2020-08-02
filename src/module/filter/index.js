@@ -54,7 +54,7 @@ class Filter {
             isShow ? $filterCon.hide() : $filterCon.show();
             const leftClass = 'direction-left';
             const rigthClass = 'direction-right';
-            if ($filterCon.offset().left + $filterCon.width() > getDiv(_).width()) {
+            if ($filterAction.offset().left + $filterCon.width() > getDiv(_).width()) {
                 $filterCon.addClass(rigthClass);
                 $filterCon.removeClass(leftClass);
             } else {
