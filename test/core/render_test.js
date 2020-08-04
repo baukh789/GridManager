@@ -327,7 +327,6 @@ describe('core render', () => {
                 _: 'test'
             };
 
-            // fixed: ''
             htmlStr = `
                 <th th-name="title" style="width:auto" align="left">
                     <div class="th-wrap">
@@ -349,7 +348,6 @@ describe('core render', () => {
                 _: 'test'
             };
 
-            // fixed: ''
             htmlStr = `
                 <th th-name="title" style="width:auto" cell-hidden>
                     <div class="th-wrap">
@@ -371,7 +369,6 @@ describe('core render', () => {
                 supportDrag: true
             };
 
-            // fixed: ''
             htmlStr = `
                 <th th-name="title" style="width:auto">
                     <div class="th-wrap">
@@ -392,7 +389,6 @@ describe('core render', () => {
                 _: 'test'
             };
 
-            // fixed: ''
             htmlStr = `
                 <th th-name="title" colspan="3" rowspan="2" style="width:auto">
                     <div class="th-wrap">
@@ -415,7 +411,6 @@ describe('core render', () => {
                 _: 'test'
             };
 
-            // fixed: ''
             htmlStr = `
                 <th th-name="title" style="width:120px">
                     <div class="th-wrap">
@@ -430,6 +425,207 @@ describe('core render', () => {
                 width: '120px'
             };
             expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+        });
+
+        it('执行验证: 序号列', () => {
+            settings = {
+                _: 'test'
+            };
+
+            htmlStr = `
+                <th th-name="gm_order" style="width:40px" gm-create gm-order>
+                    <div class="th-wrap">
+                        <span class="th-text" >序号</span>
+                    </div>
+                </th>
+            `.replace(/\s/g, '');
+            col = {
+                key: 'gm_order',
+                text: '序号',  // 自动创建的列不会转换为function
+                isShow: true,
+                width: '40px'
+            };
+            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+        });
+
+        it('执行验证: 选择列', () => {
+            settings = {
+                _: 'test'
+            };
+
+            htmlStr = `
+                <th th-name="gm_checkbox" style="width:50px" gm-create gm-checkbox>
+                    <div class="th-wrap">
+                        <span class="th-text" ></span>
+                    </div>
+                </th>
+            `.replace(/\s/g, '');
+            col = {
+                key: 'gm_checkbox',
+                text: '',  // 自动创建的列不会转换为function
+                isShow: true,
+                width: '50px'
+            };
+            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+        });
+
+        it('执行验证: 序号列', () => {
+            settings = {
+                _: 'test'
+            };
+
+            htmlStr = `
+                <th th-name="gm_fold" style="width:40px" gm-create>
+                    <div class="th-wrap">
+                        <span class="th-text" ></span>
+                    </div>
+                </th>
+            `.replace(/\s/g, '');
+            col = {
+                key: 'gm_fold',
+                text: '',  // 自动创建的列不会转换为function
+                isShow: true,
+                width: '40px'
+            };
+            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+        });
+    });
+    describe('createTheadTpl', () => {
+        let settings;
+        let htmlStr;
+        beforeEach(() => {
+
+        });
+        afterEach(() => {
+            settings = null;
+            htmlStr = null;
+        });
+        it('执行验证: 非嵌套表头', () => {
+            settings = {
+                _: 'test',
+                columnMap: {
+                    gm_order: {
+                        key: 'gm_order',
+                        text: '序号',  // 自动创建的列不会转换为function
+                        isShow: true,
+                        width: '40px',
+                        index: 0
+                    },
+                    title: {
+                        key: 'title',
+                        text: () => '标题',
+                        isShow: true,
+                        index: 1
+                    }
+                },
+                __isNested: false
+            };
+
+            htmlStr = `
+                <thead grid-manager-thead="test">
+                    <tr>
+                        <th th-name="gm_order" style="width:40px" gm-create gm-order>
+                            <div class="th-wrap">
+                                <span class="th-text" >序号</span>
+                            </div>
+                        </th>
+                        <th th-name="title" style="width:auto">
+                            <div class="th-wrap">
+                                <span class="th-text" >标题</span>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+            `.replace(/\s/g, '');
+            expect(render.createTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
+        });
+
+        it('执行验证: 嵌套表头', () => {
+            settings = {
+                _: 'test',
+                columnMap: {
+                    gm_order: {
+                        key: 'gm_order',
+                        text: '序号',  // 自动创建的列不会转换为function
+                        isShow: true,
+                        width: '40px',
+                        level: 0,
+                        index: 0
+                    },
+                    title: {
+                        key: 'title',
+                        text: () => '标题',
+                        isShow: true,
+                        level: 0,
+                        index: 1,
+                        children: [
+                            {
+                                key: 'subtitle',
+                                text: () => '子标题',
+                                isShow: true,
+                                level: 1,
+                                pk: 'title',
+                                index: 0
+                            },
+                            {
+                                key: 'pic',
+                                text: () => '标题图片',
+                                isShow: true,
+                                level: 1,
+                                pk: 'title',
+                                index: 1
+                            }
+                        ]
+                    },
+                    subtitle: {
+                        key: 'subtitle',
+                        text: () => '子标题',
+                        isShow: true,
+                        level: 1,
+                        pk: 'title',
+                        index: 0
+                    },
+                    pic: {
+                        key: 'pic',
+                        text: () => '标题图片',
+                        isShow: true,
+                        level: 1,
+                        pk: 'title',
+                        index: 1
+                    }
+                },
+                __isNested: true
+            };
+
+            htmlStr = `
+                <thead grid-manager-thead="test">
+                    <tr>
+                        <th th-name="gm_order" colspan="1" rowspan="2" style="width:40px" gm-create gm-order>
+                            <div class="th-wrap">
+                                <span class="th-text" >序号</span>
+                            </div>
+                        </th>
+                        <th th-name="title" colspan="2" rowspan="1" style="width:auto">
+                            <div class="th-wrap">
+                                <span class="th-text" >标题</span>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th th-name="subtitle" colspan="1" rowspan="1" style="width:auto">
+                            <div class="th-wrap">
+                                <span class="th-text" >子标题</span>
+                            </div>
+                        </th>
+                        <th th-name="pic" colspan="1" rowspan="1" style="width:auto">
+                            <div class="th-wrap">
+                                <span class="th-text" >标题图片</span>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+            `.replace(/\s/g, '');
+            expect(render.createTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
         });
     });
 });
