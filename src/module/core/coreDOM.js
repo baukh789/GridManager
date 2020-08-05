@@ -34,7 +34,7 @@ import { sendCompile, compileTd } from '@common/framework';
  */
 class Dom {
     init($table, settings) {
-        const { _, width, height, supportAjaxPage, tdWordBreak } = settings;
+        const { _, width, height, supportAjaxPage, useWordBreak } = settings;
         // add wrap div
         $table.wrap(render.createWrapTpl({ settings }), '.table-div');
 
@@ -48,7 +48,7 @@ class Dom {
         const tbody = document.createElement('tbody');
         tbody.setAttribute(TABLE_BODY_KEY, _);
         // 根据参数增加td断字标识
-        if (tdWordBreak) {
+        if (useWordBreak) {
             tbody.setAttribute('word-break', '');
         }
         $table.append(tbody);

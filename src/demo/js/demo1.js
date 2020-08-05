@@ -476,7 +476,7 @@ const demo1 = {
                     position: 'right'
                 };
             },
-            // tdWordBreak: true,
+            // useWordBreak: true,
             columnData: [
                 {
                     key: 'pic',

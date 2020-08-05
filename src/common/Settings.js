@@ -108,6 +108,9 @@ const gridStyle = {
     //  皮肤样式所使用的className
     skinClassName: '', // v2.7.0 新增
 
+    // td内的文本是否进行断字
+    useWordBreak: false, // v2.13.2 新增
+
     // 表头的icon图标是否跟随文本
     isIconFollowText: false // v2.7.0 新增
 };
