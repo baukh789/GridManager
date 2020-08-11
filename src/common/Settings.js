@@ -444,6 +444,9 @@ const gridData = {
     // 单行数据渲染时执行程序
     rowRenderHandler: row => row,
 
+    // 汇总处理函数
+    summaryHandler: data => { return {}; },
+
     // 返回数据中列表数据的key键值,默认为data
     dataKey: 'data',
 

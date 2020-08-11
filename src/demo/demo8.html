@@ -140,6 +140,8 @@
                 width: '100%',
 				height: '100%',
 				supportAjaxPage:true,
+                supportCheckbox: false,
+                supportAutoOrder: false,
 				isCombSorting: true,
                 // checkboxConfig: {
 				//     fixed: 'left'
@@ -151,6 +153,22 @@
 
                 disableCache: true,
 
+                summaryHandler: data => {
+				    let praiseNumber = 0;
+				    let readNumber = 0;
+				    let commentSum = 0;
+				    data.forEach(item => {
+                        praiseNumber += parseInt(item.praiseNumber, 10);
+                        readNumber += item.readNumber;
+                        commentSum += item.commentSum;
+                    });
+				    return {
+				        pic: '共计',
+                        praiseNumber,
+                        readNumber,
+                        commentSum
+                    };
+                },
                 exportConfig: {
 				    mode: 'static',
                     handler: (fileName, query, pageData, sortData, selectedList, tableData) => {

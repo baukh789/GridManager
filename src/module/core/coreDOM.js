@@ -26,6 +26,7 @@ import render from './render';
 import fixed from '@module/fixed';
 import moveRow from '../moveRow';
 import fullColumn from '../fullColumn';
+import { installSummary } from '../summary';
 import { getEvent, eventMap } from './event';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import { sendCompile, compileTd } from '@common/framework';
@@ -252,6 +253,10 @@ class Dom {
             };
 
             installTr(data, 0);
+
+            // 插入汇总行
+            installSummary(settings, columnList, data, trObjectList);
+
             let tbodyStr = '';
             trObjectList.forEach(item => {
                 const { className, attribute, tdList } = item;

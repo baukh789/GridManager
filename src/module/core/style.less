@@ -41,8 +41,17 @@
     // 禁用分割线模式
     &.disable-line {
         tr{
-            th, td{
-                border-right: none;
+            th {
+                border-right-color: #f2f2f2;
+            }
+            td{
+                border-right-color: #fff;
+            }
+            &:nth-child(odd) td{
+                border-right-color: #fafafa;
+            }
+            &:hover td{
+                border-right-color: #F1F8FB;
             }
         }
     }
@@ -93,6 +102,9 @@
         padding: 0;
         line-height: 18px;
         font-weight: 400;
+        &:hover{
+            background: #e8e8e8;
+        }
         .th-wrap {
             /*减去的1px 为border-right. 原因是table元素存在特殊性, thead浮动后border的宽度不会计算到th内,而是会在原基础上将th的宽加1. */
             width: calc(100% - 1px);
@@ -145,6 +157,9 @@
         tr {
             &:nth-child(odd) td{
                 background-color: #fafafa;
+            }
+            &:last-child td{
+                border-bottom: none;
             }
             &:hover td{
                 background-color: #F1F8FB;

@@ -93,7 +93,8 @@ export const compileTd = (settings, template, row, index, key) => {
         // react 返回空字符串，将单元格内容交由react控制
         if (compileReact) {
             compileAttr = FRAMEWORK_KEY;
-            compileList.push({template, row, index, key, type: 'template', fnArg: [row[key], row, index, key]});
+            // 不存在index时，为汇总行
+            compileList.push({template, row, index, key, type: index ? 'template' : undefined, fnArg: [row[key], row, index, key]});
         }
 
         // 解析框架: Angular 1.x || Vue

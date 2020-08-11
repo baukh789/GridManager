@@ -303,6 +303,7 @@ const demo1 = {
             // 排序模式，single(升降序单一触发) overall(升降序整体触发)
             sortMode: 'single',
 
+            // supportAdjust: false,
             // 是否开启配置功能
             // supportConfig: false,
 
