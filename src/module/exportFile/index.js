@@ -7,45 +7,45 @@ import { showLoading, hideLoading, getFakeVisibleTh, getTbody } from '@common/ba
 import { outError } from '@common/utils';
 import { getSettings, getCheckedData, getTableData } from '@common/cache';
 import { GM_CREATE, CELL_HIDDEN } from '@common/constants';
-class ExportFile {
-	/**
-	 * 获取文件名称
-	 * @param _
-	 * @param fileName: 文件名
-	 * @param query: 查询参数
-	 * @param exportConfig: 配置信息
-     */
-    getFileName(_, fileName, query, exportConfig) {
-        // 未存在指定下载名称时, 使用exportConfig.fileName
-		if (!fileName) {
-		    const confName = exportConfig.fileName;
-		    fileName = isFunction(confName) ? confName(query) : confName;
-		}
 
-		// 未存在指定下载名称 且 未指定exportConfig.fileName时, 使用 _
-		if (!fileName) {
-            fileName = _;
-        }
-
-		return `${fileName}.${exportConfig.suffix}`;
-	}
-
-    /**
-     * 执行下载
-     * @param fileName
-     * @param href
-     */
-    dispatchDownload(fileName, href) {
-        const a = document.createElement('a');
-        a.addEventListener('click', () => {
-            a.download = fileName;
-            a.href = href;
-        });
-        const e = document.createEvent('MouseEvents');
-        e.initEvent('click', false, false);
-        a.dispatchEvent(e);
+/**
+ * 获取文件名称
+ * @param _
+ * @param fileName: 文件名
+ * @param query: 查询参数
+ * @param exportConfig: 配置信息
+ */
+const getFileName = (_, fileName, query, exportConfig) => {
+    // 未存在指定下载名称时, 使用exportConfig.fileName
+    if (!fileName) {
+        const confName = exportConfig.fileName;
+        fileName = isFunction(confName) ? confName(query) : confName;
     }
 
+    // 未存在指定下载名称 且 未指定exportConfig.fileName时, 使用 _
+    if (!fileName) {
+        fileName = _;
+    }
+
+    return `${fileName}.${exportConfig.suffix}`;
+};
+
+/**
+ * 执行下载
+ * @param fileName
+ * @param href
+ */
+const dispatchDownload = (fileName, href) => {
+    const a = document.createElement('a');
+    a.addEventListener('click', () => {
+        a.download = fileName;
+        a.href = href;
+    });
+    const e = document.createEvent('MouseEvents');
+    e.initEvent('click', false, false);
+    a.dispatchEvent(e);
+};
+class ExportFile {
 	/**
 	 * 导出表格 .xls
 	 * @param _
@@ -58,7 +58,7 @@ class ExportFile {
 	    const settings = getSettings(_);
 	    const { query, loadingTemplate, exportConfig, pageData, sortData } = settings;
 
-        fileName = this.getFileName(_, fileName, query, exportConfig);
+        fileName = getFileName(_, fileName, query, exportConfig);
 
         const selectedList = onlyChecked ? getCheckedData(_) : [];
         const tableData = getTableData(_);
@@ -137,7 +137,7 @@ class ExportFile {
             csv: 'text/csv',
             xls: 'application/vnd.ms-excel'
         };
-        this.dispatchDownload(fileName, `data:${dataType[suffix]};charset=utf-8,\ufeff${encodeURIComponent(exportHTML)}`);
+        dispatchDownload(fileName, `data:${dataType[suffix]};charset=utf-8,\ufeff${encodeURIComponent(exportHTML)}`);
 
         hideLoading(_, loadingTemplate);
     }
@@ -157,7 +157,7 @@ class ExportFile {
         try {
             showLoading(_, loadingTemplate);
             const res = await exportHandler(fileName, pageData, sortData, selectedList);
-            this.dispatchDownload(fileName, res);
+            dispatchDownload(fileName, res);
         } catch (e) {
             outError(e);
         } finally {
@@ -200,7 +200,7 @@ class ExportFile {
                 return;
             }
 
-            this.dispatchDownload(fileName, URL.createObjectURL(blob));
+            dispatchDownload(fileName, URL.createObjectURL(blob));
         } catch (e) {
             outError(e);
         } finally {
