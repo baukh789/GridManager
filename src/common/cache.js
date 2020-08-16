@@ -5,7 +5,7 @@
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
 import { getCloneRowData, getTable, getTh } from '@common/base';
-import { isUndefined, isFunction, isObject, isString, isNumber, isValidArray, isElement, each, isNodeList, extend } from '@jTool/utils';
+import { isUndefined, isFunction, isObject, isString, isNumber, isValidArray, isElement, each, isNodeList, extend, getBrowser } from '@jTool/utils';
 import { outInfo, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
 import { DISABLE_CUSTOMIZE, PX } from '@common/constants';
 import { Settings } from '@common/Settings';
@@ -489,6 +489,9 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn, fullColumnFn)
     // 将_配置简写方式, 方便内部使用
     settings._ = settings.gridManagerName;
 
+    // 存储当前使用的浏览器
+    settings.browser = getBrowser();
+
     // 存储初始配置项
     // setSettings(settings);
 
@@ -517,8 +520,8 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn, fullColumnFn)
 
     let isError = false;
 
-    // 如果仅有一列数据，则禁用固定列
-    const supportFixed = columnData.length > 1;
+    // 固定列规则: 当前为嵌套表头 并且 列数大于1
+    const supportFixed = !__isNested && columnData.length > 1;
 
     const resetData = (data, level, parentKey) => {
         data.forEach((col, index) => {
@@ -557,6 +560,8 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn, fullColumnFn)
 
                 // 使用后 disableCustomize 将强制变更为true
                 col[DISABLE_CUSTOMIZE] = true;
+            } else {
+                delete col.fixed;
             }
 
             // 存在disableCustomize时，必须设置width

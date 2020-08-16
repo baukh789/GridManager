@@ -809,6 +809,11 @@ export default class GridManager {
             fullColumn.init(_);
         }
 
+        // 配置固定列功能
+        if (settings._fixed) {
+            fixed.init(settings);
+        }
+
         updateThWidth(settings, true);
 
         // 更新fake header

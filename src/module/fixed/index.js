@@ -48,7 +48,8 @@ class Fixed {
      * 生成td固定列样式: 通过添加style的方式比修改td的dom性能会高
      * @param _
      */
-    init(_) {
+    init(settings) {
+        const { _, browser } = settings;
         this.enable[_] = true;
 
         const $tableDiv = getDiv(_);
@@ -82,6 +83,11 @@ class Fixed {
             item.style.height = theadHeight;
             item.style.boxShadow = shadowValue;
         });
+
+        // 兼容性处理: safari 需要-1
+        if (browser === 'safari') {
+            pl--;
+        }
         $fakeThead.css('padding-left', pl);
         FIXED_LEFT_MAP[_] = $leftList;
 

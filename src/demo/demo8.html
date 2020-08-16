@@ -140,12 +140,15 @@
                 width: '100%',
 				height: '100%',
 				supportAjaxPage:true,
-                supportCheckbox: false,
-                supportAutoOrder: false,
+                // supportCheckbox: false,
+                // supportAutoOrder: false,
 				isCombSorting: true,
-                // checkboxConfig: {
-				//     fixed: 'left'
-                // },
+                checkboxConfig: {
+				    fixed: 'left'
+                },
+                autoOrderConfig: {
+                    fixed: 'left'
+                },
 				ajaxData: function () {
 					return 'https://www.lovejavascript.com/blogManager/getBlogList';
 				},

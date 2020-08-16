@@ -283,6 +283,16 @@ export function extend() {
     }
     return target;
 }
+
+/**
+ * 获取浏览器名称
+ * @returns {string}
+ */
+export const getBrowser = () => {
+    const list = navigator.userAgent.toLowerCase().match(/(msie|firefox|chrome|opera|version).*?([\d.]+)/);
+    return list[1].replace(/version/, 'safari');
+};
+
 export default {
     isWindow,
     noop,
