@@ -94,7 +94,7 @@ export const compileTd = (settings, template, row, index, key) => {
         if (compileReact) {
             compileAttr = FRAMEWORK_KEY;
             // 不存在index时，为汇总行
-            compileList.push({template, row, index, key, type: index ? 'template' : undefined, fnArg: [row[key], row, index, key]});
+            compileList.push({template, row, index, key, type: isUndefined(index) ? undefined : 'template', fnArg: [row[key], row, index, key]});
         }
 
         // 解析框架: Angular 1.x || Vue
