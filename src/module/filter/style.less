@@ -20,18 +20,17 @@
     right: 5px;
     cursor: pointer;
     color: #444;
-    font-size: 12px;
     .fa-icon {
         display: block;
         position: absolute;
-        font-size: @font-normal-size;
+        font-size: var(--gm-font-size);
         line-height: 18px;
         opacity: .7;
         &:hover{
             opacity: 1;
         }
         &.filter-selected{
-            color: @font-active-color;
+            color: var(--gm-color-active);
         }
     }
     .fa-con{
@@ -39,8 +38,8 @@
         min-width: 100px;
         position: absolute;
         top: 100%;
-        background: #fff;
-        border: 1px solid #ccc;
+        background: var(--gm-bg);
+        border: var(--gm-border-high);
         z-index: 4;
         &.direction-left{
             left: 0;
@@ -63,7 +62,7 @@
             }
         }
         .filter-bottom{
-            border-top: @table-border;
+            border-top: var(--gm-border);
             padding: 7px 8px;
             text-align: center;
             .filter-button{

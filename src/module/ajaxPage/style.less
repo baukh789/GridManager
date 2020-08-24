@@ -8,8 +8,8 @@
     position: relative;
     padding: 5px 0;
     color: #666;
-    .table-bg();
-    border-top: @table-border;
+    background: var(--gm-bg-high);
+    border-top: var(--gm-border);
     .refresh-action {
         display: inline-block;
         height: 30px;
@@ -18,7 +18,7 @@
         cursor: pointer;
         text-align: center;
         opacity: .7;
-        color: @font-active-color;
+        color: var(--gm-color-active);
         > i.gm-icon-refresh {
             display: inline-block;
             font-weight: bold;
@@ -88,10 +88,10 @@
                 line-height: 18px;
                 float: left;
                 padding: 5px 10px;
-                background-color: #fff;
+                background: var(--gm-bg);
                 border: 1px solid #ddd;
                 border-left: none;
-                color: @font-normal-color;
+                color: var(--gm-color-high);
                 position: relative;
                 text-align: center;
                 cursor: pointer;
@@ -101,26 +101,24 @@
                     border-left: 1px solid #ddd;
                 }
                 &.disabled{
-                    background-color: #fff;
                     border-color: #ddd;
                     color: #999;
                     cursor: not-allowed;
                     pointer-events: none;
                     &:focus, &:hover{
-                        background-color: #fff;
                         border-color: #ddd;
                         color: #999;
                     }
                 }
                 &.active, &.active:focus, &.active:hover {
-                    background-color: @font-active-color;
+                    background-color: var(--gm-color-active);
                     color: #fff;
                     //z-index: 2;
                 }
                 &:focus, &:hover {
                     background-color: #eee;
                     border-color: #ddd;
-                    color: @font-active-color;
+                    color: var(--gm-color-active);
                 }
             }
         }

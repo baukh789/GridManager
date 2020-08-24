@@ -10,7 +10,8 @@ import {
     getColTd,
     setAreVisible,
     getQuerySelector,
-    clearTargetEvent
+    clearTargetEvent,
+    getDiv
 } from '@common/base';
 import { outError } from '@common/utils';
 import { TABLE_PURE_LIST, TABLE_BODY_KEY, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD, DISABLE_CUSTOMIZE } from '@common/constants';
@@ -137,7 +138,8 @@ class Dom {
         data = resetTableData(_, data);
 
         // tbody dom
-        const tbody = getTbody(_).get(0);
+        const $tbody = getTbody(_);
+        const tbody = $tbody.get(0);
 
         // 清空 tbody
         tbody.innerHTML = '';
@@ -287,6 +289,13 @@ class Dom {
             mergeRow(_, columnMap);
 
             fixed.updateFakeThead(_);
+
+            // 增加tbody是否填充满标识
+            if ($tbody.height() >= getDiv(_).height()) {
+                $tbody.attr('filled', '');
+            } else {
+                $tbody.removeAttr('filled');
+            }
         });
     }
 

@@ -26,14 +26,11 @@ tbody.move-row tr:not([empty-template]) td:not([disable-move]){
         background-color: #d8d8d8;
         border-collapse: separate;
         border-spacing: 0;
-        font-size: @font-normal-size;
+        font-size: var(--gm-font-size);
         td {
-            background-color: #fff;
+            background: var(--gm-bg);
             padding: 11px;
-            border-right: 1px solid #e8e8e8;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            border-right: var(--gm-border);
             vertical-align: middle;
             .text-overflow();
             &[cell-hidden]{

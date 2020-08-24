@@ -1,9 +1,17 @@
 @import "../../css/mixins";
 .table-div[gm-full-column]{
+    [grid-manager] tbody{
+        // 当前数据充满了tbody
+        &[filled] tr:last-child{
+            &[full-column-interval="0px"] td{
+                border-top: none;
+            }
+        }
+    }
     [grid-manager] tr{
         &[full-column]{
             td{
-                background: #fafafa;
+                background: var(--gm-bg-odd);
                 padding: 0;
                 border: 0;
             }
@@ -14,63 +22,52 @@
 
         &[full-column-interval]{
             td{
-                background: #fff;
+                background: var(--gm-bg);
                 padding: 0;
-                border-top: @table-border;
-                border-bottom: @table-border;
+                border-top: var(--gm-border);
+                border-bottom: var(--gm-border);
             }
             &[full-column-interval="0px"] td{
                 border-bottom: none;
             }
         }
 
-        // 清除最后一列(full-column-interval)的边框
+        // 清除最后一列(full-column-interval)的底部边框
         &:last-child{
             &[full-column-interval] td{
                 border-bottom: none;
-            }
-            &[full-column-interval="0px"] td{
-                border-top: none;
             }
         }
 
         // 常规tr
         &[gm-cache-key]{
             td {
-                background: #fff;
+                background: var(--gm-bg);
                 border-bottom: none;
                 &[gm-fold] {
                     text-align: center;
                 }
                 [full-column-fold]{
                     color: #00aaf1;
+                    cursor: pointer;
                 }
             }
         }
     }
 }
-.disable-line{
-    .table-div[gm-full-column]{
-        tr:nth-child(odd) td{
-            border-right-color: #fff;
-        }
-        tr:hover td{
-            border-right-color: #fff;
-        }
-    }
-}
+
 .disable-border {
     .table-div[gm-full-column]{
         tr[full-column] td .full-column-div{
-            border-left: @table-border;
-            border-right: @table-border;
+            border-left: var(--gm-border);
+            border-right: var(--gm-border);
         }
         tr:not([full-column]):not([full-column-interval]) td{
             &:first-child{
-                border-left: @table-border;
+                border-left: var(--gm-border);
             }
             &:last-child{
-                border-right: @table-border;
+                border-right: var(--gm-border);
             }
         }
     }

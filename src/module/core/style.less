@@ -11,15 +11,15 @@
 .table-wrap {
     position: relative;
     overflow: hidden;
-    border: @table-border;
-    background-color: #fff;
+    border: var(--gm-border);
+    background: var(--gm-bg);
     .table-header {
         width: 100%;
         position: absolute;
         top: 0;
         left: 0;
-        .table-bg();
-        border-bottom: @table-border;
+        background: var(--gm-bg-high);
+        border-bottom: var(--gm-border);
     }
     .table-div {
         overflow-x: hidden;
@@ -41,17 +41,8 @@
     // 禁用分割线模式
     &.disable-line {
         tr{
-            th {
-                border-right-color: #f2f2f2;
-            }
-            td{
-                border-right-color: #fff;
-            }
-            &:nth-child(odd) td{
-                border-right-color: #fafafa;
-            }
-            &:hover td{
-                border-right-color: #F1F8FB;
+            th, td {
+                border-right-color: transparent;
             }
         }
     }
@@ -73,12 +64,12 @@
             border-right: none;
         }
         td {
-            border-bottom: @table-border;
+            border-bottom: var(--gm-border);
         }
     }
 
     th, td {
-        border-right: @table-border;
+        border-right: var(--gm-border);
         // 文本对齐
         &[align] {
             &[align="left"] {
@@ -121,7 +112,7 @@
     }
     td {
         .text-overflow();
-        background-color: #fff;
+        background: var(--gm-bg);
         color: #3d3d3d;
         padding: 11px;
         vertical-align: middle;
@@ -146,7 +137,7 @@
         tr {
             height: 39px;
             th{
-                border-top: @table-border;
+                border-top: var(--gm-border);
             }
             &:first-child th{
                 border-top: none;
@@ -156,10 +147,7 @@
     tbody {
         tr {
             &:nth-child(odd) td{
-                background-color: #fafafa;
-            }
-            &:last-child td{
-                border-bottom: none;
+                background: var(--gm-bg-odd);
             }
             &:hover td{
                 background-color: #F1F8FB;
@@ -167,10 +155,15 @@
             &[empty-template]{
                 td{
                     border-bottom: none;
-                    background-color: #FFF;
+                    background: var(--gm-bg);
                     padding: 0;
                 }
             }
+        }
+
+        // 当前数据充满了tbody
+        &[filled] tr:last-child td{
+            border-bottom: none;
         }
         &[word-break] tr td{
             white-space: normal;
@@ -191,7 +184,6 @@
             display: inline-block!important;
             width: auto!important;
             vertical-align: middle;
-            font-size: 12px;
         }
     }
 }

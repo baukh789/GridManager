@@ -6,6 +6,7 @@ import jTool from '@jTool';
 import { isString } from '@jTool/utils';
 import { outError } from '@common/utils';
 import GridManager from './GridManager';
+import '../css/var.less';
 
 /*
 *  捆绑至选择器对象

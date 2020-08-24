@@ -22,10 +22,10 @@
     display: none;
     position: absolute;
     padding: 0;
-    background: #fff;
+    background: var(--gm-bg);
     cursor: all-scroll;
     z-index: 9999;
-    border: 1px solid #e8e8e8;
+    border: var(--gm-border);
     overflow: hidden; // safari 中获取的宽度比其它浏览器小1，所以需要overflow进行容错
     .dreamland-table {
         table-layout: fixed;
@@ -35,21 +35,21 @@
         background-color: #d8d8d8;
         border-collapse: separate;
         border-spacing: 0;
-        font-size: @font-normal-size;
+        font-size: var(--gm-font-size);
         thead{
-            .table-bg();
+            background: var(--gm-bg-high);
         }
         tr {
             th, td{
                 border-right: none;
             }
             td {
-                background-color: #fff;
+                background: var(--gm-bg);
                 padding: 11px;
                 .text-overflow();
             }
             &:nth-child(odd) td{
-                background-color: #fafafa;
+                background: var(--gm-bg-odd);
             }
             &:hover td{
                 background-color: #F1F8FB;
