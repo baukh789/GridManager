@@ -21,4 +21,7 @@
     --gm-remind-bg: #666;
     --gm-remind-color: #f8f8f8;
     --gm-remind-icon-color: #B9DAF8;
+
+    // cssnano 会删除最后一个分号，在部分webpack的css处理中会报错。所以在这里用一个无用的属性来规避
+    gm: 1;
 }
