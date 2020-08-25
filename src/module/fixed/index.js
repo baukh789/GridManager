@@ -76,7 +76,7 @@ class Fixed {
         each($leftList, (item, index) => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
             if (index === leftLen - 1) {
-                shadowValue = `2px -1px 3px ${SHADOW_COLOR}`;
+                shadowValue = `2px 0 3px ${SHADOW_COLOR}`;
             }
             styleStr += getStyle(_, item, LEFT, shadowValue, pl);
             pl += $th.width();
@@ -98,7 +98,7 @@ class Fixed {
         FIXED_RIGHT_MAP[_].forEach((item, index) => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
             if (index === rightLen - 1) {
-                shadowValue = `-2px -1px 3px ${SHADOW_COLOR}`;
+                shadowValue = `-2px 0 3px ${SHADOW_COLOR}`;
             }
             item.style.height = theadHeight;
             item.style.boxShadow = shadowValue;
