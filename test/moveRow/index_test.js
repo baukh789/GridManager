@@ -42,7 +42,7 @@ describe('moveRow', () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr style="height: 80px">
                                 <td>1</td>
                                 <td>2</td>
                                 <td>3</td>
@@ -69,7 +69,7 @@ describe('moveRow', () => {
             expectStr = `
                 <table class="dreamland-row testMove">
                     <tbody>
-                        <tr><td width="100">1</td><td width="200">2</td><td width="130">3</td><td width="70">4</td></tr>
+                        <tr style="height: 80px"><td width="100">1</td><td width="200">2</td><td width="130">3</td><td width="70">4</td></tr>
                     </tbody>
                 </table>`
                 .replace(/\s/g, '');

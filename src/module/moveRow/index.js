@@ -1,6 +1,6 @@
 import './style.less';
 import jTool from '@jTool';
-import { each, isFunction, isString } from '@jTool/utils';
+import { each, isFunction, isString, getStyle } from '@jTool/utils';
 import { equal } from '@common/utils';
 import { getTable, getTbody, getQuerySelector, getWrap, getDiv, clearTargetEvent, getCloneRowData } from '@common/base';
 import { getTableData, setTableData, getSettings, getCheckedData, setCheckedData } from '@common/cache';
@@ -186,8 +186,8 @@ class MoveRow {
                 }
 
                 $dreamlandDIV.show().css({
-                    width: tr.offsetWidth,
-                    height: tr.offsetHeight + 2, // 2为$dreamlandDIV的边框宽度
+                    // width: tr.offsetWidth,
+                    // height: tr.offsetHeight + 2, // 2为$dreamlandDIV的边框宽度
                     top: e2.clientY - $tableWrap.offset().top + pageYOffset - $dreamlandDIV.height() / 2,
                     left: 0 - tableDiv.scrollLeft
                 });
@@ -267,12 +267,12 @@ class MoveRow {
     createHtml(params) {
         const { table, tr } = params;
         const cloneTr = tr.cloneNode(true);
+        cloneTr.style.height = getStyle(tr, 'height');
 
         const cloneTd = cloneTr.querySelectorAll('td');
         each(jTool('td', tr), (td, index) => {
             cloneTd[index].width = jTool(td).width() || 0;
         });
-
         return {
             class: table.className,
             tbody: cloneTr.outerHTML

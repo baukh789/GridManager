@@ -18,8 +18,9 @@ tbody.move-row tr:not([empty-template]) td:not([disable-move]){
     position: absolute;
     cursor: all-scroll;
     z-index: 4;
-    border: 1px solid;
-    border-color: #e8e8e8 transparent;
+    border-top: var(--gm-border);
+    border-bottom: var(--gm-border);
+    box-shadow:0 0 4px 0 rgba(0,0,0,0.13);
     .dreamland-row {
         table-layout: fixed;
         width: 100%;
@@ -31,6 +32,7 @@ tbody.move-row tr:not([empty-template]) td:not([disable-move]){
             background: var(--gm-bg);
             padding: 11px;
             border-right: var(--gm-border);
+            border-bottom: none;
             vertical-align: middle;
             .text-overflow();
             &[cell-hidden]{
