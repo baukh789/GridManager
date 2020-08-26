@@ -35,7 +35,7 @@ export default function ajax(options) {
         data: null,		// 传递数据
         headers: {},	// 请求头信息
         async: true,	// 是否异步执行
-        xhrFields: {},  // 设置XHR对象, ajax_xhrFields 中的属性将追加至实例化后的XHR对象上
+        xhrFields: {},  // 设置XHR对象, ajaxXhrFields 中的属性将追加至实例化后的XHR对象上
         beforeSend: noop,	// 请求发送前执行事件
         complete: noop,	// 请求发送后执行事件
         success: noop,	// 请求成功后执行事件
@@ -74,7 +74,7 @@ export default function ajax(options) {
 
     xhr.open(type, url, async);
 
-    // 设置XHR对象, ajax_xhrFields 中的属性将追加至实例化后的XHR对象上
+    // 设置XHR对象, ajaxXhrFields 中的属性将追加至实例化后的XHR对象上
     // 比如xhrFields = {withCredentials: true}, 那么将会配置跨域访问时协带cookies, authorization headers(头部授权)
     for (const field in xhrFields) {
         xhr[field] = xhrFields[field];

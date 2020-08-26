@@ -17,7 +17,7 @@ import {
     getStyle,
     isValidArray
 } from '@jTool/utils';
-import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, RENDERING_KEY, READY_CLASS_NAME, PX } from '@common/constants';
+import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, READY_CLASS_NAME, PX } from '@common/constants';
 import { getCloneRowData, getKey, getThead, getFakeThead, getAllTh, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
@@ -58,6 +58,9 @@ const isRendered = (_, settings) => {
 
 // 存储默认配置
 let defaultOption = {};
+
+// 渲染队列存储器
+const RENDER_QUEUE = {};
 export default class GridManager {
     /**
      * [对外公开方法]
@@ -67,12 +70,6 @@ export default class GridManager {
      * @returns {*}
      */
     constructor(table, arg, callback) {
-        // 验证并设置正在渲染中标识，防止同时触发多次。渲染完成后将移除该标识
-        if (table[RENDERING_KEY]) {
-            return;
-        }
-        table[RENDERING_KEY] = true;
-
         // 存储class style， 在消毁实例时使用
         TABLE_PURE_LIST.forEach(item => {
             table['__' + item] = table.getAttribute(item);
@@ -107,6 +104,13 @@ export default class GridManager {
             GridManager.destroy(gridManagerName);
         }
 
+        // 渲染队列: 验证是否已经存在
+        if (RENDER_QUEUE[gridManagerName]) {
+            return;
+        }
+        // 渲染队列: 新增(暂时不需要存储有用的数据，使用)
+        RENDER_QUEUE[gridManagerName] = true;
+
         // 校验: 初始参
         if (!arg || isEmptyObject(arg)) {
             outError('init method params error');
@@ -117,29 +121,6 @@ export default class GridManager {
         if (!isValidArray(arg.columnData)) {
             outError('columnData invalid');
             return;
-        }
-
-        // 向下兼容: ajax类的参数向下兼容下划线形式
-        Object.keys(arg).forEach(key => {
-            if (/ajax_/g.test(key)) {
-                arg[key.replace(/_\w/g, str => str.split('_')[1].toUpperCase())] = arg[key];
-                delete arg[key];
-            }
-        });
-
-        // 向下兼容: useRowCheck, useRadio
-        if (!arg.checkboxConfig && (arg.useRowCheck || arg.useRadio)) {
-            outWarn('useRowCheck and useRadio will be deprecated later, please use checkboxConfig instead');
-            arg.checkboxConfig = {
-                useRowCheck: arg.useRowCheck || false,
-                useRadio: arg.useRadio || false
-            };
-        }
-
-        // 参数变更提醒
-        if (arg.ajaxUrl) {
-            outWarn('ajax_url will be deprecated later, please use ajaxData instead');
-            arg.ajaxData = arg.ajaxUrl;
         }
 
         // 校验: ajaxData
@@ -223,8 +204,8 @@ export default class GridManager {
 
             settings = getSettings(gridManagerName);
 
-            // 删除dom渲染中标识
-            delete table[RENDERING_KEY];
+            // 渲染队列: 清除已完成项
+            delete RENDER_QUEUE[gridManagerName];
 
             // 增加渲染完成 class name
             $table.addClass(READY_CLASS_NAME);
@@ -870,6 +851,8 @@ export default class GridManager {
         } catch (e) {
             console.error(e);
         }
+        // 渲染队列: 无论完成与否都清除
+        delete RENDER_QUEUE[_];
 
         // 清除实例及数据
         clearCache(_);

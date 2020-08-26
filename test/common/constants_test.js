@@ -48,10 +48,6 @@ describe('常量验证', () => {
         expect(TABLE_KEY).toBe('grid-manager');
     });
 
-    it('RENDERING_KEY', () => {
-        expect(RENDERING_KEY).toBe('gm-rendering');
-    });
-
     it('WRAP_KEY', () => {
         expect(WRAP_KEY).toBe('grid-manager-wrap');
     });
