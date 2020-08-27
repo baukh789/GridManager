@@ -10,8 +10,8 @@
  * thead区域的固定th使用 absolute 定位，不使用sticky的原因是Firefox在设置了position: absolute的父容器内定位异常;
  * tbody区域的固定td使用 sticky 定位，通过脚本动态生成style标签;
  */
-import { getWrap, getDiv, getTh, getThead, getFakeThead, getTbody, getFakeVisibleTh } from '@common/base';
-import { TABLE_KEY, EMPTY_TPL_KEY, TH_NAME, PX } from '@common/constants';
+import { getDiv, getTh, getThead, getFakeThead, getTbody, getFakeVisibleTh } from '@common/base';
+import { DIV_KEY, EMPTY_TPL_KEY, TH_NAME, PX } from '@common/constants';
 import { each } from '@jTool/utils';
 import jTool from '@jTool';
 import scroll from '@module/scroll';
@@ -23,11 +23,10 @@ const SHADOW_COLOR = '#e8e8e8';
 const getStyle = (_, fakeTh, direction, shadowValue, directionValue) => {
     const $th = getTh(_, fakeTh.getAttribute(TH_NAME));
 
-    return `[gm-overflow-x="true"] [${TABLE_KEY}="${_}"] tr:not([${EMPTY_TPL_KEY}]) td:nth-of-type(${$th.index() + 1}){`
+    return `[${DIV_KEY}="${_}"][gm-overflow-x="true"] tr:not([${EMPTY_TPL_KEY}]) td:nth-of-type(${$th.index() + 1}){`
            + 'position: sticky;\n'
            + 'position: -webkit-sticky;\n' // 解决safari兼容问题
            + `${direction}: ${directionValue + PX};\n`
-           + 'border-right: none;\n'
            + 'z-index: 3;\n'
            + `box-shadow: ${shadowValue};`
         + '}';
@@ -42,6 +41,7 @@ const FIXED_LEFT_MAP = {};
 const FIXED_RIGHT_MAP = {};
 
 class Fixed {
+    // todo 已经存在 settings._fixed, 需要验证enable还有作用
     enable = {};
 
     /**
@@ -53,7 +53,6 @@ class Fixed {
         this.enable[_] = true;
 
         const $tableDiv = getDiv(_);
-        const disableLine = getWrap(_).hasClass('disable-line');
         const styleId = `fixed-style-${_}`;
         let styleLink = document.getElementById(styleId);
 
@@ -72,15 +71,16 @@ class Fixed {
         let pr = 0;
         const $leftList = $fakeThead.find(getFixedQuerySelector(LEFT));
         const leftLen = $leftList.length;
-        let shadowValue = disableLine ? '' : `inset -1px 0 ${SHADOW_COLOR}`;
+        let shadowValue = 'none';
         each($leftList, (item, index) => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
             if (index === leftLen - 1) {
-                shadowValue = `2px 0 3px ${SHADOW_COLOR}`;
+                shadowValue = `2px 0 4px ${SHADOW_COLOR}`;
             }
             styleStr += getStyle(_, item, LEFT, shadowValue, pl);
             pl += $th.width();
             item.style.height = theadHeight;
+            item.style.lineHeight = theadHeight;
             item.style.boxShadow = shadowValue;
         });
 
@@ -91,16 +91,17 @@ class Fixed {
         $fakeThead.css('padding-left', pl);
         FIXED_LEFT_MAP[_] = $leftList;
 
-        shadowValue = disableLine ? '' : `-1px 1px 0 ${SHADOW_COLOR}`;
+        shadowValue = 'none';
         const $rightList = $fakeThead.find(getFixedQuerySelector(RIGHT));
         const rightLen = $rightList.length;
         FIXED_RIGHT_MAP[_] = ($rightList.get() || []).reverse();
         FIXED_RIGHT_MAP[_].forEach((item, index) => {
             const $th = getTh(_, item.getAttribute(TH_NAME));
             if (index === rightLen - 1) {
-                shadowValue = `-2px 0 3px ${SHADOW_COLOR}`;
+                shadowValue = `-2px 0 4px ${SHADOW_COLOR}`;
             }
             item.style.height = theadHeight;
+            item.style.lineHeight = theadHeight;
             item.style.boxShadow = shadowValue;
             styleStr += getStyle(_, item, RIGHT, shadowValue, pr);
             pr += $th.width();

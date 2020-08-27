@@ -45,6 +45,12 @@ const moveRow = {
         // 指定移动后需要更新的字段, 该字段未配置时将只对DOM进行更新
         // key: undefined,
 
+        // 单列移动模式: 为true时将生成单独的一列
+        // useSingleMode: false,
+
+        // 列固定: 仅在单列移动模式下生效, 如果右侧存在固定列则该列必须配置为left
+        // fixed: undefined,
+
         // 移动后执行的程序，可在该程序中完成与后端的交互
         handler: noop
     }

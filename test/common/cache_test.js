@@ -757,6 +757,7 @@ describe('cache', () => {
         let settings = null;
         let columnData = null;
         let columnMap = null;
+        let moveColumnRowFn = null;
         let checkboxColumnFn = null;
         let orderColumnFn = null;
         let fullColumnFn = null;
@@ -776,7 +777,21 @@ describe('cache', () => {
             };
             console._log = console.log;
             console.log = jasmine.createSpy('log');
-
+            moveColumnRowFn = moveRowConfig => {
+                const { fixed } = moveRowConfig;
+                return {
+                    key: 'gm_moverow',
+                    text: '',
+                    isAutoCreate: true,
+                    isShow: true,
+                    disableCustomize: true,
+                    width: '30px',
+                    fixed,
+                    template: () => {
+                        return '<td gm-create gm-moverow><i class="gm-icon gm-icon-move"></i></td>';
+                    }
+                };
+            };
             checkboxColumnFn = settings => {
                 return {
                     key: 'gm_checkbox',
@@ -807,7 +822,7 @@ describe('cache', () => {
             };
             fullColumnFn = settings => {
                 return {
-                    key: 'gm-full-column',
+                    key: 'gm_fold',
                     text: '',
                     isAutoCreate: true,
                     isShow: true,
@@ -830,19 +845,15 @@ describe('cache', () => {
             columnMap = null;
             // 还原console
             console.log = console._log;
+            moveColumnRowFn = null;
             checkboxColumnFn = null;
             orderColumnFn = null;
             fullColumnFn = null;
         });
 
-        it('基础验证', () => {
-            expect(initSettings).toBeDefined();
-            expect(initSettings.length).toBe(4);
-        });
-
         it('默认配置', () => {
             // settings 中对默认值都已经测试过了，这里只挑部分项进行测试
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(settings.gridManagerName).toBe('test');
             expect(settings._).toBe(settings.gridManagerName);
             expect(settings.supportAdjust).toBe(true);
@@ -854,6 +865,17 @@ describe('cache', () => {
             expect(Object.keys(settings.columnMap)).toEqual(Object.keys(columnMap));
         });
 
+        it('存在单列移动模式', () => {
+            arg.supportMoveRow = true;
+            arg.moveRowConfig = {
+                useSingleMode: true
+            };
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
+
+            expect(settings.columnMap['gm_moverow'].width).toBe('30px');
+        });
+
+
         it('存在折叠操作', () => {
             arg.__isFullColumn = true; // 正常逻辑下是在constructor中定义
             arg.fullColumn = {
@@ -862,15 +884,15 @@ describe('cache', () => {
                     return '<div>aaaa</div>';
                 }
             };
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
 
-            expect(settings.columnMap['gm-full-column'].width).toBe('40px');
+            expect(settings.columnMap['gm_fold'].width).toBe('40px');
         });
 
         it('存在width为number类型', () => {
             let key = arg.columnData[0].key;
             arg.columnData[0].width = 200;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
 
             expect(settings.columnMap[key].width).toBe('200px');
 
@@ -887,7 +909,7 @@ describe('cache', () => {
                 key: 'c2',
                 text: 'c2'
             }];
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
 
             expect(settings.columnMap[key].pk).toBeUndefined();
             expect(settings.columnMap[key].level).toBe(0);
@@ -902,7 +924,7 @@ describe('cache', () => {
         it('存在fixed', () => {
             let key = arg.columnData[0].key;
             arg.columnData[0].fixed = 'left';
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
 
             expect(settings.columnMap[key].fixed).toBe('left');
             expect(settings.columnMap[key].disableCustomize).toBe(true);
@@ -915,7 +937,7 @@ describe('cache', () => {
             arg.supportAutoOrder = false;
             arg.supportCheckbox = false;
             delete arg.columnData[0].key;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(settings).toBe(false);
             expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c columnData[0].key undefined ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
         });
@@ -923,14 +945,14 @@ describe('cache', () => {
         it('异常配置: 存在disableCustomize但无width', () => {
             // 第8行数据存在disableCustomize配置
             delete arg.columnData[7].width;
-            expect(initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn)).toBe(false);
+            expect(initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn)).toBe(false);
             expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c column action: width must be set ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
         });
 
         it('开启缓存:当前无用户记忆', () => {
             // 当前无用户记忆
             arg.disableCache = false;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(settings.columnMap.pic.width).toBe('110px');
         });
 
@@ -941,7 +963,7 @@ describe('cache', () => {
             }));
 
             arg.disableCache = false;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(settings.columnMap.pic.width).toBe('120px');
         });
 
@@ -952,7 +974,7 @@ describe('cache', () => {
             }));
 
             arg.disableCache = false;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of test ', ...CONSOLE_STYLE[CONSOLE_INFO]);
         });
 
@@ -963,7 +985,7 @@ describe('cache', () => {
             }));
 
             arg.disableCache = false;
-            settings = initSettings(arg, checkboxColumnFn, orderColumnFn, fullColumnFn);
+            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of test ', ...CONSOLE_STYLE[CONSOLE_INFO]);
         });
     });

@@ -1,5 +1,6 @@
 import moveRow from '../../src/module/moveRow';
 import { DISABLE_MOVE } from '../../src/module/moveRow/constants';
+import jTool from '@jTool';
 
 describe('moveRow', () => {
     describe('addSign', () => {
@@ -35,10 +36,10 @@ describe('moveRow', () => {
                     <table class="testMove">
                         <thead>
                             <tr>
-                                <th style="width:100px">1</th>
+                                <th style="width:100px;left: 0px">1</th>
                                 <th style="width:200px">2</th>
                                 <th style="width:130px">3</th>
-                                <th>4</th>
+                                <th style="right: 0px">4</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,12 +65,18 @@ describe('moveRow', () => {
         it('执行验证', () => {
             params = {
                 table,
-                tr
+                tr,
+                overFlow: false,
+                $thList: jTool('.testMove th')
             };
             expectStr = `
                 <table class="dreamland-row testMove">
                     <tbody>
-                        <tr style="height: 80px"><td width="100">1</td><td width="200">2</td><td width="130">3</td><td width="70">4</td></tr>
+                        <tr style="height: 80px">
+                        <td style="width:100px;left: 0px;right: auto;">1</td>
+                        <td style="width:200px;left:auto;right: auto;">2</td>
+                        <td style="width:130px;left:auto;right: auto;">3</td>
+                        <td style="width:70px;left:auto;right: 0px;">4</td></tr>
                     </tbody>
                 </table>`
                 .replace(/\s/g, '');

@@ -8,8 +8,24 @@
 }
 
 // 拖拽标识
-tbody.move-row tr:not([empty-template]) td:not([disable-move]){
+.table-div[move-row="all"] tr:not([empty-template]) td:not([disable-move]){
     cursor: all-scroll;
+}
+
+// 单列移动模式: 开启后才会存在 th[th-name="gm_moverow"] 和 td[gm-moverow] 节点
+.table-div[move-row="single"] {
+    //th[th-name="gm_moverow"]{
+    //    border-right-color: transparent;
+    //}
+    td[gm-moverow]{
+        cursor: all-scroll;
+        text-align: center;
+        padding: 0;
+        i{
+            pointer-events: none;
+            color: #7E7E7E;
+        }
+    }
 }
 
 // 拖拽镜像
@@ -21,6 +37,7 @@ tbody.move-row tr:not([empty-template]) td:not([disable-move]){
     border-top: var(--gm-border);
     border-bottom: var(--gm-border);
     box-shadow:0 0 4px 0 rgba(0,0,0,0.13);
+    overflow: hidden; // 固定列需要使用到
     .dreamland-row {
         table-layout: fixed;
         width: 100%;

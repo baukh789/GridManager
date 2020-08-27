@@ -345,6 +345,8 @@ const demo1 = {
             supportMoveRow: true,
             moveRowConfig: {
                 key: 'priority',
+                useSingleMode: true,
+                fixed: 'left',
                 handler: (list, tableData) => {
                     console.log(list, tableData);
                 }

@@ -2,7 +2,15 @@ import './style.less';
 import jTool from '@jTool';
 import { each, isFunction, isString, getStyle } from '@jTool/utils';
 import { equal } from '@common/utils';
-import { getTable, getTbody, getQuerySelector, getWrap, getDiv, clearTargetEvent, getCloneRowData } from '@common/base';
+import {
+    getTable,
+    getTbody,
+    getQuerySelector,
+    getDiv,
+    clearTargetEvent,
+    getCloneRowData,
+    getFakeVisibleTh
+} from '@common/base';
 import { getTableData, setTableData, getSettings, getCheckedData, setCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { mergeRow, clearMergeRow } from '../merge';
@@ -102,7 +110,7 @@ class MoveRow {
     init(_) {
         const _this = this;
         const { supportAutoOrder, supportCheckbox, checkboxConfig, moveRowConfig, animateTime, columnMap } = getSettings(_);
-        const { key, handler } = moveRowConfig;
+        const { key, useSingleMode, handler } = moveRowConfig;
 
         const $body = jTool('body');
         const table = getTable(_).get(0);
@@ -111,10 +119,10 @@ class MoveRow {
 
         const $tbody = getTbody(_);
 
-        const $tableWrap = getWrap(_);
-        const tableDiv = getDiv(_).get(0);
+        const $tableDiv = getDiv(_);
+        const tableDiv = $tableDiv.get(0);
 
-        $tbody.addClass('move-row');
+        $tableDiv.attr('move-row', useSingleMode ? 'single' : 'all');
 
         let oldData;
         // 事件: 行移动触发
@@ -128,8 +136,12 @@ class MoveRow {
                 return;
             }
 
-            // 当前事件源所在的列为禁止触发移动的列
-            if (isString(e.target.getAttribute(DISABLE_MOVE))) {
+            // 单独列模式: 非移动列的td不请触发事件
+            if (useSingleMode && !isString(e.target.getAttribute('gm-moverow'))) {
+                return;
+            }
+            // 非单独列模式: 事件源所在的列为禁止触发移动的列
+            if (!useSingleMode && isString(e.target.getAttribute(DISABLE_MOVE))) {
                 return;
             }
             const tr = this;
@@ -139,24 +151,26 @@ class MoveRow {
             // 禁用文字选中效果
             $body.addClass(NO_SELECT_CLASS_NAME);
 
-            // 增加移动中样式
-            $tr.addClass(CLASS_DRAG_ING);
 
             const tableData = getTableData(_);
             oldData = [...tableData];
 
-            let $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
+            let $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableDiv);
 
             // 防止频繁触发事件
             if ($dreamlandDIV.length) {
                 return;
             }
-            $tableWrap.append(`<div class="${CLASS_DREAMLAND}"></div>`);
-            $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableWrap);
+            $tableDiv.append(`<div class="${CLASS_DREAMLAND}"></div>`);
+            $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableDiv);
 
             // 先清除再添加合并列，是为了达到mousedown时可以获取到一个完整的且列可对齐的行
             clearMergeRow(_);
-            $dreamlandDIV.get(0).innerHTML = _this.createHtml({ table, tr });
+            const overFlow = getDiv(_).attr('gm-overflow-x') === 'true';
+            $dreamlandDIV.get(0).innerHTML = _this.createHtml({ table, tr, $thList: getFakeVisibleTh(_), overFlow });
+
+            // 增加移动中样式
+            $tr.addClass(CLASS_DRAG_ING);
 
             mergeRow(_, columnMap);
             clearMergeRow(_, $dreamlandDIV);
@@ -186,9 +200,9 @@ class MoveRow {
                 }
 
                 $dreamlandDIV.show().css({
-                    // width: tr.offsetWidth,
+                    width: tr.offsetWidth,
                     // height: tr.offsetHeight + 2, // 2为$dreamlandDIV的边框宽度
-                    top: e2.clientY - $tableWrap.offset().top + pageYOffset - $dreamlandDIV.height() / 2,
+                    top: e2.clientY - $tableDiv.offset().top + pageYOffset,
                     left: 0 - tableDiv.scrollLeft
                 });
 
@@ -261,21 +275,52 @@ class MoveRow {
     /**
      * 生成拖拽区域html片段
      * @param params
-     * @returns htmlStr
+     * @returns {}
      */
     @parseTpl(dreamlandTpl)
     createHtml(params) {
-        const { table, tr } = params;
+        const { table, tr, overFlow, $thList } = params;
         const cloneTr = tr.cloneNode(true);
         cloneTr.style.height = getStyle(tr, 'height');
 
         const cloneTd = cloneTr.querySelectorAll('td');
-        each(jTool('td', tr), (td, index) => {
-            cloneTd[index].width = jTool(td).width() || 0;
+
+        // 当前存在固定列
+        each($thList, (th, index) => {
+            cloneTd[index].style.width = getStyle(th, 'width');
+
+            // fixed: 因为当前容器为绝对定位，所以需要动态更新left
+            cloneTd[index].style.left = getStyle(th, 'left');
+            cloneTd[index].style.right = getStyle(th, 'right');
+            // fixed: 只有存在x滚动轴时，fixed阴影才生效
+            if (overFlow) {
+                cloneTd[index].style.boxShadow = getStyle(th, 'box-shadow');
+            }
         });
         return {
             class: table.className,
             tbody: cloneTr.outerHTML
+        };
+    }
+
+    /**
+     * 获取TD: 选择列对象
+     * @param moveRowConfig
+     * @returns {}
+     */
+    getColumn(moveRowConfig) {
+        const { fixed } = moveRowConfig;
+        return {
+            key: 'gm_moverow',
+            text: '',
+            isAutoCreate: true,
+            isShow: true,
+            disableCustomize: true,
+            width: '30px',
+            fixed,
+            template: () => {
+                return '<td gm-create gm-moverow><i class="gm-icon gm-icon-move"></i></td>';
+            }
         };
     }
 

@@ -80,7 +80,7 @@ export const each = (object, callback) => {
     }
 };
 
-// 获取节点样式: key为空时则返回全部
+// 获取节点样式
 export const getStyle = (dom, key) => {
     return getComputedStyle(dom)[key];
 };

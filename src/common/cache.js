@@ -473,10 +473,12 @@ export const updateTemplate = arg => {
 /**
  * 初始化设置相关: 合并, 存储
  * @param arg
+ * @param moveColumnRowFn
  * @param checkboxColumnFn
  * @param orderColumnFn
+ * @param fullColumnFn
  */
-export const initSettings = (arg, checkboxColumnFn, orderColumnFn, fullColumnFn) => {
+export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn) => {
     // 更新模板，将非函数类型的模板转换为函数类型
     arg = updateTemplate(arg);
 
@@ -495,9 +497,14 @@ export const initSettings = (arg, checkboxColumnFn, orderColumnFn, fullColumnFn)
     // 存储初始配置项
     // setSettings(settings);
 
-    const { _, columnData, supportAutoOrder, __isNested, __isFullColumn, fullColumn, supportCheckbox, checkboxConfig } = settings;
+    const { _, columnData, supportMoveRow, moveRowConfig, supportAutoOrder, __isNested, __isFullColumn, fullColumn, supportCheckbox, checkboxConfig } = settings;
 
     const list = [];
+    // 自动增加: 行移动列
+    if (supportMoveRow && moveRowConfig.useSingleMode) {
+        list.push(moveColumnRowFn(moveRowConfig));
+    }
+
     // 自动增加: 选择列
     if (supportCheckbox) {
         list.push(checkboxColumnFn(checkboxConfig));

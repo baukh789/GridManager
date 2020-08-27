@@ -7,6 +7,13 @@
 [![npm downloads](https://img.shields.io/npm/dt/gridmanager.svg?style=flat-square)](https://www.npmjs.com/package/gridmanager)
 [![coverage](https://img.shields.io/codecov/c/github/baukh789/GridManager.svg?style=flat-square)](https://codecov.io/gh/baukh789/GridManager)
 
+## 优势
+在支持常见功能的前提下，提供了如: 导出、打印、列配置、右键菜单、行列移动、用户偏好记忆等提升用户体验的功能。
+
+内置基础类库jTool, 对原生DOM提供了缓存机制。
+
+支持在原生JS、jQuery、Angular 1.x、Vue、React环境下使用，一套代码多框架运行。在框架满天飞的时代，助力前端开发人员用更少的API做更多的事情。
+
 ## 实现功能
 | 功能 | 描述 |
 | -: | :- |

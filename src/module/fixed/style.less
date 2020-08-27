@@ -6,6 +6,7 @@
     padding: 0!important;
     [fixed]{
         height: auto!important;
+        line-height: inherit!important;
         position: static;
         box-shadow: none!important;
     }
@@ -15,7 +16,7 @@
         position: absolute;
         z-index: 3;
         background: var(--gm-bg-high);
-        border-right: none;
+        //border-right: none;
         .th-wrap{
             display: flex;
             align-items: center;
@@ -35,9 +36,6 @@
             background: var(--gm-bg-high);
         }
     }
-}
-.disable-line [fixed]:not([fixed-border]){
-    box-shadow: none !important;
 }
 
 // fixed right
