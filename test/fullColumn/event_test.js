@@ -17,7 +17,7 @@ describe('fullColumn event', () => {
             events = getEvent('.test', 'full-column-fold');
             expect(events.fold.events).toBe('click');
             expect(events.fold.target).toBe('.test');
-            expect(events.fold.selector).toBe('[full-column-fold] i');
+            expect(events.fold.selector).toBe('i[full-column-fold]');
         });
     });
 

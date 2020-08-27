@@ -53,14 +53,7 @@ const getIntervalObject = (colspan, interval = 0) => {
  */
 const addObject = (settings, row, index, trObjectList, model) => {
     const { columnMap, fullColumn } = settings;
-    let { topTemplate, bottomTemplate, useFold, interval } = fullColumn;
-
-    let openState = true;
-
-    // 未使用折叠功能时，状态强制更新为关闭
-    if (useFold) {
-        openState = false;
-    }
+    const { topTemplate, bottomTemplate, useFold, interval, openState = false } = fullColumn;
     const colspan = Object.keys(columnMap).length;
     if (model === 'top' && isFunction(topTemplate)) {
         const topFull = getFullObject(settings, colspan, topTemplate, useFold, openState, row, index, model);
@@ -134,9 +127,10 @@ class FullColumn {
     /**
      * 获取TD: 选择列对象
      * @param settings
-     * @returns {parseData}
+     * @returns {}
      */
     getColumn(settings) {
+        const { openState = false, fixed } = settings.fullColumn;
         return {
             key: FOLD_KEY,
             text: '',
@@ -144,9 +138,9 @@ class FullColumn {
             isShow: true,
             disableCustomize: true,
             width: '40px',
-            fixed: settings.fullColumn.fixed,
+            fixed,
             template: () => {
-                return `<td gm-create gm-fold><span ${FOLD_ACTION}><i class="gm-icon gm-icon-add"></i></span></td>`;
+                return `<td gm-create gm-fold><i class="gm-icon ${getIconClass(openState)}" ${FOLD_ACTION}="${openState}"></i></td>`;
             }
         };
     }

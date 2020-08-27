@@ -395,7 +395,14 @@ const gridData = {
     */
 
     // tr区域顶部通栏
-    // fullColumn: {},
+    // fullColumn: {
+    //  topTemplate: () => {}, // 上通栏
+    //  bottomTemplate: () => {}, // 下通栏
+    //  useFold: false, // 是否使用折叠
+    //  interval: 0, // 间距
+    //  fixed: false, // 折叠操作列是否固定: 仅在useFold===true时生效
+    //  openState: false // 是否默认展开: 仅在useFold===true时生效
+    // },
 
     // @2.5.8
     // 初次渲染时是否加载数据

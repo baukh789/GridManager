@@ -169,7 +169,7 @@ describe('fullColumn', () => {
             expect(column.disableCustomize).toBe(true);
             expect(column.width).toBe('40px');
             expect(column.fixed).toBe('left');
-            expect(column.template()).toBe('<td gm-create gm-fold><span full-column-fold><i class="gm-icon gm-icon-add"></i></span></td>');
+            expect(column.template()).toBe('<td gm-create gm-fold><i class="gm-icon gm-icon-add" full-column-fold="false"></i></td>');
         });
     });
 });
