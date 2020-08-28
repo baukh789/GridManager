@@ -11,7 +11,8 @@ import {
     setAreVisible,
     getQuerySelector,
     clearTargetEvent,
-    getDiv
+    getDiv,
+    updateVisibleLast
 } from '@common/base';
 import { outError } from '@common/utils';
 import { TABLE_PURE_LIST, TABLE_BODY_KEY, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD, DISABLE_CUSTOMIZE } from '@common/constants';
@@ -296,6 +297,9 @@ class Dom {
             } else {
                 $tbody.removeAttr('filled');
             }
+
+            // 为最后一列的th, td增加标识
+            updateVisibleLast(_);
         });
     }
 
