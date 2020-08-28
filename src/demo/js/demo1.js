@@ -307,9 +307,6 @@ const demo1 = {
             // 是否开启配置功能
             // supportConfig: false,
 
-            // 设置表头的icon图标是否跟随文本
-            // isIconFollowText: true,
-
             // 是否开启导出
             // supportExport: false,
 
@@ -331,6 +328,9 @@ const demo1 = {
 
             // 禁用分割线
             // disableLine: true,
+
+            // 设置表头的icon图标是否跟随文本
+            // isIconFollowText: true,
 
             // 组合排序
             // isCombSorting: true,

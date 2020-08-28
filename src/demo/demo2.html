@@ -219,6 +219,7 @@
 	</script>
 	<script type="text/javascript">
 		// 实例化
+        const now = Date.now();
 		var table = document.querySelector('table[grid-manager]');
 		function init(){
 			table.GM({
@@ -305,6 +306,7 @@
 			}, function(query){
 				// 渲染完成后的回调函数
 				console.log(query);
+				console.log(Date.now() - now);
 				// GM.setCheckedData('test', ajaxData1.data[2]);
 			});
 		}
