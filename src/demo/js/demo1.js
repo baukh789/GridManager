@@ -473,7 +473,6 @@ const demo1 = {
             //     };
             // },
             rowHover: (a, b, c) => {
-              console.log(a, b, c);
                 return {
                     text: '这里有个提示',
                     position: 'right'
