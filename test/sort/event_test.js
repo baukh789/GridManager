@@ -17,7 +17,7 @@ describe('sort', () => {
 
         it('执行验证', () => {
             events = getEvent('test', '#baukh');
-            expect(events.start.events).toBe('mouseup');
+            expect(events.start.events).toBe('click');
             expect(events.start.target).toBe('#baukh');
             expect(events.start.selector).toBe(`[${FAKE_TABLE_HEAD_KEY}="test"] .${SORT_CLASS}`);
         });

@@ -4,12 +4,12 @@
  * @param scope: querySelector 域
  */
 import { SORT_CLASS, FAKE_TABLE_HEAD_KEY } from '@common/constants';
-import { MOUSE_UP, createEventsObj } from '@common/events';
+import { createEventsObj, MOUSE_CLICK } from '@common/events';
 
 export const getEvent = (_, scope) => {
     return {
         // 触发 #001
-        start: createEventsObj(MOUSE_UP, scope, `[${FAKE_TABLE_HEAD_KEY}="${_}"] .${SORT_CLASS}`)
+        start: createEventsObj(MOUSE_CLICK, scope, `[${FAKE_TABLE_HEAD_KEY}="${_}"] .${SORT_CLASS}`)
     };
 };
 
