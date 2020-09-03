@@ -40,7 +40,7 @@ import { EVENTS, TARGET, SELECTOR } from '@common/events';
 import fixed from '@module/fixed';
 import { getEvent, eventMap } from './event';
 import { CLASS_ADJUST_ACTION, CLASS_ADJUST_ING } from './constants';
-import { getStyle, each } from '@jTool/utils';
+import { each } from '@jTool/utils';
 
 /**
  * 执行移动事件
@@ -49,53 +49,49 @@ import { getStyle, each } from '@jTool/utils';
  * @param $th: fake th
  * @param $nextTh: fake th
  * @param thMinWidth: 当前th所允许的最小宽度
- * @param beforeThWidth: 当前th在移动前的宽度
+ * @param thBeforeWidth: 当前th在移动前的宽度
  * @private
  */
-const runMoveEvent = (_, allTh, $th, $nextTh, thMinWidth, beforeThWidth) => {
-    let afterThWidth; // 变更后的宽度, 宽度调整中每一次调整都会更新一次这个值
+const runMoveEvent = (_, allTh, $th, $nextTh, thMinWidth, thBeforeWidth) => {
+    let thAfterWidth; // 变更后的宽度, 宽度调整中每一次调整都会更新一次这个值
     let nextThWidth = $nextTh.width(); // 位于触发宽度调整th下一个th
     const $div = getDiv(_);
     const divWidth = $div.width(); // 容器宽度
     const { doing } = eventMap[_];
     const $fakeThead = getFakeThead(_);
-    let fakeTheadWidth = $fakeThead.width();
-    fakeTheadWidth = fakeTheadWidth - nextThWidth - $th.width();
+    const offsetLeft = $th.offset().left;
+
+    // 排除当前操作列与下一列的宽度
+    const surplusWidth = $fakeThead.width() - nextThWidth - $th.width();
     jTool(doing[TARGET]).on(doing[EVENTS], doing[SELECTOR], function (event) {
-        afterThWidth = Math.ceil(event.clientX - $th.offset().left);
+        thAfterWidth = Math.ceil(event.clientX - offsetLeft);
         // 验证是否更改
         const nowThWidth = $th.width();
-        if (afterThWidth === nowThWidth) {
+        if (thAfterWidth === nowThWidth) {
             return;
         }
 
         // 当前th缩小
-        if (beforeThWidth > afterThWidth) {
+        if (thBeforeWidth > thAfterWidth) {
             // 缩小: th达到渲染所需的最小宽度
-            if (afterThWidth < thMinWidth) {
+            if (thAfterWidth <= thMinWidth) {
                 return;
             }
 
-            // 缩小: 表格宽度达到容器的最小宽度
-            const allWidth = [].reduce.call(allTh, (sum, item) => {
-                return sum + parseInt(getStyle(item, 'width'), 10);
-            }, 0);
-
-            // 当前总宽度小于等于容器宽度: 将th减去的宽移至nextTh
-            if (allWidth <= divWidth) {
-                const nowNextWidth = $nextTh.width();
-                nextThWidth = Math.ceil(nowNextWidth + nowThWidth - afterThWidth) + (divWidth - allWidth);
-                // 验证宽度是否匹配
-                if (afterThWidth + nextThWidth < nowThWidth + nowNextWidth) {
-                    nextThWidth = nowThWidth + nowNextWidth - afterThWidth;
-                }
+            // 当前总宽度小于等于容器宽度
+            const allWidth = surplusWidth + thAfterWidth + nextThWidth;
+            if (allWidth < divWidth) {
+                nextThWidth = nextThWidth + divWidth - allWidth;
             }
-        } else {
+        }
+
+        // 当前th放大
+        if (thBeforeWidth < thAfterWidth) {
             nextThWidth = $nextTh.width();
         }
 
-        $fakeThead.width(fakeTheadWidth + afterThWidth + nextThWidth);
-        $th.width(afterThWidth);
+        $fakeThead.width(surplusWidth + thAfterWidth + nextThWidth);
+        $th.width(thAfterWidth);
         $nextTh.width(nextThWidth);
 
         // 更新固定列
@@ -118,9 +114,10 @@ const runStopEvent = (_, $table, $th, $td, adjustAfter) => {
         jTool(abort[TARGET]).off(abort[EVENTS]);
         jTool(doing[TARGET]).off(doing[EVENTS], doing[SELECTOR]);
 
+        const $allTh = getAllTh(_);
         // 修改与置顶thead 对应的 thead
         each(getAllFakeTh(_), (th, i) => {
-            getAllTh(_).eq(i).width(jTool(th).width());
+            $allTh.eq(i).width(jTool(th).width());
         });
 
         // 更新滚动轴状态
