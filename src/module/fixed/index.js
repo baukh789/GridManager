@@ -10,30 +10,23 @@
  * thead区域的固定th使用 absolute 定位，不使用sticky的原因是Firefox在设置了position: absolute的父容器内定位异常;
  * tbody区域的固定td使用 sticky 定位，通过脚本动态生成style标签;
  */
-import { getDiv, getTh, getThead, getFakeThead, getTbody, getFakeVisibleTh } from '@common/base';
-import { DIV_KEY, EMPTY_TPL_KEY, TH_NAME, PX } from '@common/constants';
+import { getFakeTh, getDiv, getThead, getFakeThead, getTbody, getFakeVisibleTh } from '@common/base';
+import { DIV_KEY, EMPTY_TPL_KEY, PX } from '@common/constants';
 import { each } from '@jTool/utils';
-import jTool from '@jTool';
 import scroll from '@module/scroll';
 import './style.less';
 
 const LEFT = 'left';
 const RIGHT = 'right';
 const SHADOW_COLOR = '#e8e8e8';
-const getStyle = (_, fakeTh, direction, shadowValue, directionValue) => {
-    const $th = getTh(_, fakeTh.getAttribute(TH_NAME));
-
-    return `[${DIV_KEY}="${_}"][gm-overflow-x="true"] tr:not([${EMPTY_TPL_KEY}]) td:nth-of-type(${$th.index() + 1}){`
+const getStickyCss = (_, index, direction, shadowValue, directionValue) => {
+    return `[${DIV_KEY}="${_}"][gm-overflow-x="true"] tr:not([${EMPTY_TPL_KEY}]) td:nth-of-type(${index + 1}){`
            + 'position: sticky;\n'
            + 'position: -webkit-sticky;\n' // 解决safari兼容问题
            + `${direction}: ${directionValue + PX};\n`
            + 'z-index: 3;\n'
            + `box-shadow: ${shadowValue};`
         + '}';
-};
-
-const getFixedQuerySelector = type => {
-    return `th[fixed="${type}"]`;
 };
 
 // 存储DOM节点，用于节省DOM查询操作(在scroll和adjust中操作会很频繁)
@@ -49,7 +42,7 @@ class Fixed {
      * @param _
      */
     init(settings) {
-        const { _, browser } = settings;
+        const { _, browser, columnMap } = settings;
         this.enable[_] = true;
 
         const $tableDiv = getDiv(_);
@@ -69,19 +62,32 @@ class Fixed {
 
         let pl = 0;
         let pr = 0;
-        const $leftList = $fakeThead.find(getFixedQuerySelector(LEFT));
-        const leftLen = $leftList.length;
+        const leftList = [];
+        const rightList = [];
+        each(columnMap, (key, col) => {
+            if (col.fixed === 'left') {
+               leftList.push(col);
+           }
+            if (col.fixed === 'right') {
+                rightList.push(col);
+            }
+        });
+        const leftLen = leftList.length;
         let shadowValue = 'none';
-        each($leftList, (item, index) => {
-            const $th = getTh(_, item.getAttribute(TH_NAME));
+        FIXED_LEFT_MAP[_] = leftList.sort((a, b) => a.index - b.index);
+        each(FIXED_LEFT_MAP[_], (col, index) => {
+            const $fakeTh = getFakeTh(_, col.key);
             if (index === leftLen - 1) {
                 shadowValue = `2px 0 4px ${SHADOW_COLOR}`;
             }
-            styleStr += getStyle(_, item, LEFT, shadowValue, pl);
-            pl += $th.width();
-            item.style.height = theadHeight;
-            item.style.lineHeight = theadHeight;
-            item.style.boxShadow = shadowValue;
+            styleStr += getStickyCss(_, col.index, LEFT, shadowValue, pl);
+            col.pl = pl;
+            pl += parseInt(col.width, 10);
+            $fakeTh.css({
+                height: theadHeight,
+                lineHeight: theadHeight,
+                boxShadow: shadowValue
+            });
         });
 
         // 兼容性处理: safari 需要-1
@@ -89,22 +95,23 @@ class Fixed {
             pl--;
         }
         $fakeThead.css('padding-left', pl);
-        FIXED_LEFT_MAP[_] = $leftList;
 
         shadowValue = 'none';
-        const $rightList = $fakeThead.find(getFixedQuerySelector(RIGHT));
-        const rightLen = $rightList.length;
-        FIXED_RIGHT_MAP[_] = ($rightList.get() || []).reverse();
-        FIXED_RIGHT_MAP[_].forEach((item, index) => {
-            const $th = getTh(_, item.getAttribute(TH_NAME));
+        const rightLen = rightList.length;
+        FIXED_RIGHT_MAP[_] = rightList.sort((a, b) => b.index - a.index);
+        FIXED_RIGHT_MAP[_].forEach((col, index) => {
+            const $fakeTh = getFakeTh(_, col.key);
             if (index === rightLen - 1) {
                 shadowValue = `-2px 0 4px ${SHADOW_COLOR}`;
             }
-            item.style.height = theadHeight;
-            item.style.lineHeight = theadHeight;
-            item.style.boxShadow = shadowValue;
-            styleStr += getStyle(_, item, RIGHT, shadowValue, pr);
-            pr += $th.width();
+            $fakeTh.css({
+                height: theadHeight,
+                lineHeight: theadHeight,
+                boxShadow: shadowValue
+            });
+            styleStr += getStickyCss(_, col.index, RIGHT, shadowValue, pr);
+            col.pr = pr;
+            pr += parseInt(col.width, 10);
         });
         $fakeThead.css('padding-right', pr - 1); // -1是容错处理: 由于Table元素的特性需要放宽一个像素(todo 需要验证现在是否还需要)
 
@@ -130,9 +137,8 @@ class Fixed {
 
         // left fixed
         const scrollLeft = $tableDiv.scrollLeft();
-        each(FIXED_LEFT_MAP[_], item => {
-            const $th = getTh(_, item.getAttribute(TH_NAME));
-            item.style.left = scrollLeft + $th.get(0).offsetLeft + PX;
+        each(FIXED_LEFT_MAP[_], col => {
+            getFakeTh(_, col.key).css('left', col.pl + scrollLeft);
         });
 
         let scrollRight = theadWidth - divWidth - scrollLeft;
@@ -143,10 +149,8 @@ class Fixed {
         }
 
         // right fixed
-        let pr = 0;
-        FIXED_RIGHT_MAP[_].forEach(item => {
-            item.style.right = pr + scrollRight + PX;
-            pr += getTh(_, item.getAttribute(TH_NAME)).width();
+        FIXED_RIGHT_MAP[_].forEach(col => {
+            getFakeTh(_, col.key).css('right', col.pr + scrollRight);
         });
     }
 
@@ -161,10 +165,9 @@ class Fixed {
         }
 
         const fixedPrevious = 'fixed-previous';
-        const len = FIXED_RIGHT_MAP[_].length;
-        const $th = jTool(FIXED_RIGHT_MAP[_].slice(len - 1, len));
+        const $firstFixedFakeTh = getFakeThead(_).find('th[fixed="right"]').eq(0);
         const $allVisibleTh = getFakeVisibleTh(_);
-        const index = $th.index($allVisibleTh);
+        const index = $firstFixedFakeTh.index($allVisibleTh);
 
         $allVisibleTh.removeAttr(fixedPrevious);
         $allVisibleTh.eq(index - 1).attr(fixedPrevious, '');
