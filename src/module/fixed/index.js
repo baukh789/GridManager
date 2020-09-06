@@ -34,16 +34,12 @@ const FIXED_LEFT_MAP = {};
 const FIXED_RIGHT_MAP = {};
 
 class Fixed {
-    // todo 已经存在 settings._fixed, 需要验证enable还有作用
-    enable = {};
-
     /**
      * 生成td固定列样式: 通过添加style的方式比修改td的dom性能会高
      * @param _
      */
     init(settings) {
         const { _, browser, columnMap } = settings;
-        this.enable[_] = true;
 
         const $tableDiv = getDiv(_);
         const styleId = `fixed-style-${_}`;
@@ -126,32 +122,28 @@ class Fixed {
      * @param _
      */
     updateFakeThead(_) {
-        if (!this.enable[_]) {
-            return;
-        }
-
-        const $fakeThead = getFakeThead(_);
-        const $tableDiv = getDiv(_);
-        const divWidth = $tableDiv.width();
-        const theadWidth = $fakeThead.width();
-
         // left fixed
-        const scrollLeft = $tableDiv.scrollLeft();
-        each(FIXED_LEFT_MAP[_], col => {
-            getFakeTh(_, col.key).css('left', col.pl + scrollLeft);
-        });
-
-        let scrollRight = theadWidth - divWidth - scrollLeft;
-
-        // 存在Y轴滚动轴
-        if (getTbody(_).height() > $tableDiv.get(0).clientHeight) {
-            scrollRight += scroll.width;
+        if (FIXED_LEFT_MAP[_] && FIXED_LEFT_MAP[_].length) {
+            const scrollLeft = getDiv(_).scrollLeft();
+            each(FIXED_LEFT_MAP[_], col => {
+                getFakeTh(_, col.key).css('left', col.pl + scrollLeft);
+            });
         }
 
         // right fixed
-        FIXED_RIGHT_MAP[_].forEach(col => {
-            getFakeTh(_, col.key).css('right', col.pr + scrollRight);
-        });
+        if (FIXED_RIGHT_MAP[_] && FIXED_RIGHT_MAP[_].length) {
+            const $tableDiv = getDiv(_);
+            let scrollRight = getFakeThead(_).width() - $tableDiv.width() - $tableDiv.scrollLeft();
+
+            // 存在Y轴滚动轴
+            if (getTbody(_).height() > $tableDiv.get(0).clientHeight) {
+                scrollRight += scroll.width;
+            }
+
+            FIXED_RIGHT_MAP[_].forEach(col => {
+                getFakeTh(_, col.key).css('right', col.pr + scrollRight);
+            });
+        }
     }
 
     /**
@@ -160,7 +152,7 @@ class Fixed {
      */
     updateBeforeTh(_) {
         // 当前不存在 right fixed
-        if (!this.enable[_] || !FIXED_RIGHT_MAP[_] || !FIXED_RIGHT_MAP[_].length) {
+        if (!FIXED_RIGHT_MAP[_] || !FIXED_RIGHT_MAP[_].length) {
             return;
         }
 
