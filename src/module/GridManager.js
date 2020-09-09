@@ -180,6 +180,12 @@ export default class GridManager {
             // 不使用宽度调整功能
             arg.supportAdjust = false;
 
+            // 不使用禁止分割线
+            arg.disableLine = false;
+
+            // 不使用行移动
+            arg.supportMoveRow = false;
+
             // 增加多层嵌套标识
             arg.__isNested = true;
         }

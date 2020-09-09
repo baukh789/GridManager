@@ -48,7 +48,7 @@ class Scroll {
         $setTopHead.removeAttr(TABLE_HEAD_KEY);
 
         const settings = getSettings(_);
-        compileFakeThead(settings, $setTopHead.get(0).querySelector('tr'));
+        compileFakeThead(settings, $setTopHead.get(0));
     }
 
     /**

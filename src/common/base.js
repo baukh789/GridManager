@@ -292,6 +292,7 @@ export const setAreVisible = (_, thNameList, isVisible) => {
 
 /**
  * 更新最后一项可视列的标识, 不用css的原因: css无法区分是否显示
+ * 注意事项: 嵌套表头不使用
  * @param _
  */
 export const updateVisibleLast = _ => {

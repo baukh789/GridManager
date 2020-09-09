@@ -298,8 +298,10 @@ class Dom {
                 $tbody.removeAttr('filled');
             }
 
-            // 为最后一列的th, td增加标识
-            updateVisibleLast(_);
+            // 为最后一列的th, td增加标识: 嵌套表头不处理
+            if (!settings.__isNested) {
+                updateVisibleLast(_);
+            }
         });
     }
 
