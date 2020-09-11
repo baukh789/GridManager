@@ -854,8 +854,8 @@ describe('base', () => {
             settings.columnMap['title'].isShow = true;
             settings.columnMap['createDate'].isShow = false;
 
-            let picThTextWidth = getThTextWidth('test', jTool('[grid-manager-thead="test"] th[th-name="pic"]'), settings.columnMap['pic'].isIconFollowText);
-            let titleThTextWidth = getThTextWidth('test', jTool('[grid-manager-thead="test"] th[th-name="title"]'), settings.columnMap['title'].isIconFollowText);
+            let picThTextWidth = getThTextWidth('test', settings.columnMap['pic'], settings.isIconFollowText);
+            let titleThTextWidth = getThTextWidth('test', settings.columnMap['title'], settings.isIconFollowText);
             let overage = 1200 - 40 - 50 - 150 - 130 - 100 - picThTextWidth - titleThTextWidth;
             updateThWidth(settings, false);
             expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
@@ -877,8 +877,8 @@ describe('base', () => {
     });
 
 
-    describe('getThTextWidth(_, $th, isIconFollowText)', () => {
-        let $th;
+    describe('getThTextWidth(_, col, isIconFollowText, __isNested)', () => {
+        let col;
         beforeEach(() => {
             document.body.innerHTML = tableTestTpl;
 
@@ -886,11 +886,13 @@ describe('base', () => {
             document.querySelector('.text-dreamland').style.position = 'absolute';
             document.querySelector('.text-dreamland').style.visibility = 'hidden';
             document.querySelector('.text-dreamland').style.zIndex = -10;
-            $th = jTool('thead[grid-manager-thead="test"] th[th-name="pic"]');
+            col = {
+                key: 'pic'
+            };
         });
 
         afterEach(() => {
-            $th = null;
+            col = null;
             document.querySelector('.text-dreamland').style.position = 'static';
             document.querySelector('.text-dreamland').style.visibility = 'visible';
             document.querySelector('.text-dreamland').style.zIndex = 1;
@@ -899,12 +901,12 @@ describe('base', () => {
 
         it('基础验证', () => {
             expect(getThTextWidth).toBeDefined();
-            expect(getThTextWidth.length).toBe(3);
+            expect(getThTextWidth.length).toBe(4);
         });
 
         it('执行验证', () => {
-            expect(typeof getThTextWidth('test', $th)).toBe('number');
-            expect(typeof getThTextWidth('test', $th, true)).toBe('number');
+            expect(typeof getThTextWidth('test', col)).toBe('number');
+            expect(typeof getThTextWidth('test', col, true)).toBe('number');
         });
     });
 

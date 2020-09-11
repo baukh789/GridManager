@@ -2,7 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from '@jTool';
-import { isString, isArray, each, extend } from '@jTool/utils';
+import { isString, isArray, each, extend, isValidArray } from '@jTool/utils';
 import {
     FAKE_TABLE_HEAD_KEY,
     TABLE_HEAD_KEY,
@@ -329,7 +329,7 @@ export const updateVisibleLast = _ => {
  * @param isInit: 是否为init调用
  */
 export const updateThWidth = (settings, isInit) => {
-    const { _, columnMap, isIconFollowText } = settings;
+    const { _, columnMap, isIconFollowText, __isNested } = settings;
     let totalWidth = getDiv(_).width();
     let usedTotalWidth = 0;
 
@@ -338,7 +338,7 @@ export const updateThWidth = (settings, isInit) => {
     // 存储首列
     let firstCol;
     each(columnMap, (key, col) => {
-        const { __width, width, isShow, pk } = col;
+        let { __width, width, isShow, pk, children } = col;
 
         // 不可见列: 不处理
         if (!isShow) {
@@ -356,12 +356,32 @@ export const updateThWidth = (settings, isInit) => {
             return;
         }
 
+        // 已设置宽度并存在子项: 进行平均值处理，以保证在渲染时值可以平分
+        if (width && width !== 'auto' && __isNested && isValidArray(children)) {
+            let num = 0;
+            const getLen = col => {
+                col.children.forEach(item => {
+                    if (isValidArray(item.children)) {
+                        getLen(item);
+                    } else {
+                        num++;
+                    }
+                });
+            };
+            getLen(col);
+            col.width = width = parseInt(parseInt(width, 10) / num, 10) * num + PX;
+        }
+
         // 自适应列: 更新为最小宽度，统计总宽，收录自适应列数组
         if ((isInit && (!width || width === 'auto')) ||
             (!isInit && (!__width || __width === 'auto'))) {
-            col.width = getThTextWidth(_, getFakeTh(_, key), isIconFollowText);
+            col.width = getThTextWidth(_, col, isIconFollowText, __isNested) + PX;
             usedTotalWidth += parseInt(col.width, 10);
-            autoList.push(col);
+
+            // 存在嵌套子项的列不参与平分余值
+            if (!__isNested || !isValidArray(children)) {
+                autoList.push(col);
+            }
             return;
         }
 
@@ -416,48 +436,83 @@ export const updateThWidth = (settings, isInit) => {
 };
 
 /**
- * 获取TH中文本的宽度. 该宽度指的是文本所实际占用的宽度
+ * 获取TH中文本的宽度: 该宽度指的是当前th内的文本实际所占用的宽度
+ * @param $th: _
  * @param $th: fake-th
  * @param isIconFollowText: 表头的icon图标是否跟随文本, 如果根随则需要加上两个icon所占的空间
  * @returns {*}
  */
-export const getThTextWidth = (_, $th, isIconFollowText) => {
-    // th下的GridManager包裹容器
-    const $thWarp = jTool('.th-wrap', $th);
 
-    // 文本所在容器
-    const thText = jTool('.th-text', $th);
+/**
+ * 获取TH中文本的宽度: 该宽度指的是当前th内的文本实际所占用的宽度
+ * @param _
+ * @param col
+ * @param isIconFollowText
+ * @param __isNested: 是否使用多层嵌套表头
+ * @returns {number}
+ */
+export const getThTextWidth = (_, col, isIconFollowText, __isNested) => {
+    const getWidth = (_, $th, isIconFollowText) => {
+        // th下的GridManager包裹容器
+        const $thWarp = jTool('.th-wrap', $th);
 
-    // 获取文本长度
-    const textWidth = getTextWidth(_, thText.html(), {
-        fontSize: thText.css('font-size'),
-        fontWeight: thText.css('font-weight'),
-        fontFamily: thText.css('font-family')
-    });
-    const thPaddingLeft = $thWarp.css('padding-left');
-    const thPaddingRight = $thWarp.css('padding-right');
+        // 文本所在容器
+        const thText = jTool('.th-text', $th);
 
-    // 计算icon所占的空间
-    // 仅在isIconFollowText === true时进行计算。
-    // isIconFollowText === false时，icon使用的是padding-right，所以无需进行计算
-    let iconWidth = 0;
-    if (isIconFollowText) {
-        // 表头提醒
-        const remindAction = jTool(`.${REMIND_CLASS}`, $th);
-        remindAction.length && (iconWidth += remindAction.width());
+        // 获取文本长度
+        const textWidth = getTextWidth(_, thText.html(), {
+            fontSize: thText.css('font-size'),
+            fontWeight: thText.css('font-weight'),
+            fontFamily: thText.css('font-family')
+        });
+        const thPaddingLeft = $thWarp.css('padding-left');
+        const thPaddingRight = $thWarp.css('padding-right');
 
-        // 排序
-        const sortingAction = jTool(`.${SORT_CLASS}`, $th);
-        sortingAction.length && (iconWidth += sortingAction.width());
+        // 计算icon所占的空间
+        // 仅在isIconFollowText === true时进行计算。
+        // isIconFollowText === false时，icon使用的是padding-right，所以无需进行计算
+        let iconWidth = 0;
+        if (isIconFollowText) {
+            // 表头提醒
+            const remindAction = jTool(`.${REMIND_CLASS}`, $th);
+            remindAction.length && (iconWidth += remindAction.width());
 
-        // 筛选
-        const filterAction = jTool(`.${CLASS_FILTER}`, $th);
-        filterAction.length && (iconWidth += filterAction.width());
+            // 排序
+            const sortingAction = jTool(`.${SORT_CLASS}`, $th);
+            sortingAction.length && (iconWidth += sortingAction.width());
+
+            // 筛选
+            const filterAction = jTool(`.${CLASS_FILTER}`, $th);
+            filterAction.length && (iconWidth += filterAction.width());
+        }
+
+        // 返回宽度值
+        // 文本所占宽度 + icon所占的空间 + 左内间距 + 右内间距 + (由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错) + th-wrap减去的1px
+        return textWidth + iconWidth + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1;
+    };
+
+    // 当前未开启多层嵌套表头 或 多层嵌套表头无效
+    if (!__isNested || !isValidArray(col.children)) {
+        return getWidth(_, getFakeTh(_, col.key), isIconFollowText);
     }
 
-    // 返回宽度值
-    // 文本所占宽度 + icon所占的空间 + 左内间距 + 右内间距 + (由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错) + th-wrap减去的1px
-    return textWidth + iconWidth + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1;
+    // 存在有效的多层嵌套表头: 顶层采取所有子项的合，展现时最下层列平分顶层列的宽
+    let width = 0;
+    let num = 0;
+    const addWidth = col => {
+        col.children.forEach(item => {
+            if (!isValidArray(item.children)) {
+                num++;
+                width += getWidth(_, getFakeTh(_, col.key), isIconFollowText);
+            } else {
+                addWidth(item);
+            }
+        });
+    };
+    addWidth(col);
+
+    // 去除小数，以保证在渲染时平分的值均为整数
+    return parseInt(width / num, 10) * num;
 };
 
 /**
