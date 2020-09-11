@@ -55,7 +55,7 @@ class Scroll {
      * 更新表头置顶
      * @param _
      * @param isResetWidth: 是否重置宽度
-     * @returns {boolean}
+     * @returns {}
      */
     update(_, isResetWidth) {
         const $tableDiv = getDiv(_);
@@ -70,8 +70,14 @@ class Scroll {
         // 重置宽度
         if (isResetWidth) {
             $fakeThead.width(getThead(_).width());
+            let width;
+            const allFakeTh = getAllFakeTh(_);
             each(getAllTh(_), (th, i) => {
-                getAllFakeTh(_).eq(i).width(jTool(th).width());
+                width = jTool(th).width();
+                allFakeTh.eq(i).css({
+                    width: width,
+                    'max-width': width
+                });
             });
         }
 

@@ -91,8 +91,15 @@ const runMoveEvent = (_, allTh, $th, $nextTh, thMinWidth, thBeforeWidth) => {
         }
 
         $fakeThead.width(surplusWidth + thAfterWidth + nextThWidth);
-        $th.width(thAfterWidth);
-        $nextTh.width(nextThWidth);
+        // max-width的作用: 可以使th的宽度不被内容撑开(width在th元素中起不到这种做用)
+        $th.css({
+            width: thAfterWidth,
+            'max-width': thAfterWidth
+        });
+        $nextTh.css({
+            width: nextThWidth,
+            'max-width': nextThWidth
+        });
 
         // 更新固定列
         fixed.updateFakeThead(_);

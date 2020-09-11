@@ -6,7 +6,7 @@ import { getStyle, isObject, isNumber, isString, each, isUndefined, getDomList }
  * @returns {boolean}
  */
 const isPxAttr = name => {
-    return ['width', 'height', 'top', 'left', 'right', 'bottom', 'padding', 'margin'].some(key => name.indexOf(key) !== -1);
+    return ['width', 'max-width', 'height', 'top', 'left', 'right', 'bottom', 'padding', 'margin'].some(key => name.indexOf(key) !== -1);
 };
 
 /**
