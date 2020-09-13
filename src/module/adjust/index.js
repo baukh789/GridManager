@@ -32,7 +32,8 @@ import {
     updateScrollStatus,
     clearTargetEvent,
     getAllTh,
-    getAllFakeTh
+    getAllFakeTh,
+    getThName
 } from '@common/base';
 import { NO_SELECT_CLASS_NAME } from '@common/constants';
 import { getSettings, updateCache } from '@common/cache';
@@ -91,8 +92,15 @@ const runMoveEvent = (_, allTh, $th, $nextTh, thMinWidth, thBeforeWidth) => {
         }
 
         $fakeThead.width(surplusWidth + thAfterWidth + nextThWidth);
-        $th.width(thAfterWidth);
-        $nextTh.width(nextThWidth);
+        // max-width的作用: 可以使th的宽度不被内容撑开(width在th元素中起不到这种做用)
+        $th.css({
+            width: thAfterWidth,
+            'max-width': thAfterWidth
+        });
+        $nextTh.css({
+            width: nextThWidth,
+            'max-width': nextThWidth
+        });
 
         // 更新固定列
         fixed.updateFakeThead(_);
@@ -176,7 +184,7 @@ class Adjust {
             const $table = getTable(_);
 
             // 当前存储属性
-            const { adjustBefore, adjustAfter, isIconFollowText } = getSettings(_);
+            const { adjustBefore, adjustAfter, isIconFollowText, columnMap } = getSettings(_);
 
             // 事件源同层级下的所有th
             const $allTh = getFakeVisibleTh(_);
@@ -194,7 +202,7 @@ class Adjust {
             $table.addClass(NO_SELECT_CLASS_NAME);
 
             // 执行移动事件
-            runMoveEvent(_, $allTh.get(), $th, $nextTh, getThTextWidth(_, $th, isIconFollowText), Math.ceil(event.clientX - $th.offset().left));
+            runMoveEvent(_, $allTh.get(), $th, $nextTh, getThTextWidth(_, columnMap[getThName($th)], isIconFollowText), Math.ceil(event.clientX - $th.offset().left));
 
             // 绑定停止事件
             runStopEvent(_, $table, $th, $td, adjustAfter);

@@ -214,7 +214,6 @@ class Config {
         updateConfigListHeight(_);
 
         const { closeConfigByBody } = eventMap[_];
-        console.log('closeConfigByBody', closeConfigByBody);
         const events = closeConfigByBody[EVENTS];
         // 点击空处关闭
         const $target = jTool(closeConfigByBody[TARGET]);

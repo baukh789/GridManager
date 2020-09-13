@@ -136,7 +136,7 @@
 		var table = document.querySelector('table');
 		function init() {
 			table.GM({
-				gridManagerName: 'test7',
+				gridManagerName: 'test',
                 width: '100%',
 				height: '100%',
 				supportAjaxPage:true,
@@ -153,8 +153,6 @@
 					return 'https://www.lovejavascript.com/blogManager/getBlogList';
 				},
 				ajaxType: 'POST',
-
-                disableCache: true,
 
                 summaryHandler: data => {
 				    let praiseNumber = 0;
@@ -221,7 +219,7 @@
 					},{
 						key: 'title',
 						align: 'left',
-                        width: '300px',
+                        // width: '300px',
 						text: '标题',
 						sorting: '',
 						// 使用函数返回 dom node
@@ -243,13 +241,12 @@
 						key: 'blogData',
 						text: '博文数据',
 						align: 'left',
-                        width: '400px',
+                        // width: '200px',
                         children: [
                             {
                                 key: 'type',
                                 text: '博文分类',
                                 align: 'left',
-                                width: '150px',
                                 template: function(type, rowObject){
                                     return TYPE_MAP[type];
                                 }
@@ -258,25 +255,21 @@
                                 key: 'blogInteractive',
                                 text: '博文互动',
                                 align: 'left',
-                                width: '150px',
                                 children: [
                                     {
                                         key: 'commentSum',
-                                        text: '评论',
-                                        align: 'left',
-                                        width: '150px',
+                                        text: '评论评论评论评论评论',
+                                        align: 'left'
                                     },
                                     {
                                         key: 'praiseNumber',
                                         text: '点赞',
-                                        align: 'left',
-                                        width: '150px'
+                                        align: 'left'
                                     },
                                     {
                                         key: 'readNumber',
                                         text: '阅读',
-                                        align: 'left',
-                                        width: '150px',
+                                        align: 'left'
                                     }
                                 ]
                             }
@@ -284,7 +277,7 @@
 					},{
                         key: 'author',
                         align: 'center',
-                        width: '390px',
+                        width: '391px',
                         text: '作者',
                         children: [
                             {
