@@ -335,6 +335,24 @@ export const updateThWidth = (settings, isInit) => {
 
     const autoList = [];
 
+    // 嵌套自动宽列
+    const autoNestedList = [];
+
+    // 获取嵌套列所站的列数
+    const getNestedLen = col => {
+        let num = 0;
+        const getLen = col => {
+            col.children.forEach(item => {
+                if (isValidArray(item.children)) {
+                    getLen(item);
+                } else {
+                    num++;
+                }
+            });
+        };
+        getLen(col);
+        return num;
+    };
     // 存储首列
     let firstCol;
     each(columnMap, (key, col) => {
@@ -358,17 +376,7 @@ export const updateThWidth = (settings, isInit) => {
 
         // 已设置宽度并存在子项: 进行平均值处理，以保证在渲染时值可以平分
         if (width && width !== 'auto' && __isNested && isValidArray(children)) {
-            let num = 0;
-            const getLen = col => {
-                col.children.forEach(item => {
-                    if (isValidArray(item.children)) {
-                        getLen(item);
-                    } else {
-                        num++;
-                    }
-                });
-            };
-            getLen(col);
+            const num = getNestedLen(col);
             col.width = width = parseInt(parseInt(width, 10) / num, 10) * num + PX;
         }
 
@@ -378,8 +386,10 @@ export const updateThWidth = (settings, isInit) => {
             col.width = getThTextWidth(_, col, isIconFollowText, __isNested) + PX;
             usedTotalWidth += parseInt(col.width, 10);
 
-            // 存在嵌套子项的列不参与平分余值
-            if (!__isNested || !isValidArray(children)) {
+            // 存在嵌套子项的列 与 不存在嵌套子项的列分开存储
+            if (__isNested && isValidArray(children)) {
+                autoNestedList.push(col);
+            } else {
                 autoList.push(col);
             }
             return;
@@ -402,17 +412,32 @@ export const updateThWidth = (settings, isInit) => {
         }
     });
     const autoLen = autoList.length;
+    const autoNestedLen = autoNestedList.length;
 
-    // 剩余的值
+    // 剩余的值，平分逻辑:
+    // 权重一: 嵌套auto列长度与普通auto列长度相加取平均值，并跟据嵌套自动列的列数调整平分值
+    // 权重二: 未存在普通auto平分，将第一个可定制列宽度强制与剩余宽度相加
+    // 权重三: 存在普通auto，平分剩余值，最后不可平分的值放至普通auto列的最后一列
     let overage = totalWidth - usedTotalWidth;
 
-    // 未存在自动列 且 存在剩余的值: 将第一个可定制列宽度强制与剩余宽度相加
-    if (autoLen === 0 && overage > 0) {
+    // 存在剩余宽度: 存在嵌套自动列, 与普通自动列平分，并跟据嵌套自动列的列数调整平分值
+    if (overage > 0 && autoNestedLen) {
+        let splitVal = Math.floor(overage / (autoNestedLen + autoLen));
+        each(autoNestedList, col => {
+            const num = getNestedLen(col);
+            splitVal = parseInt(parseInt(splitVal, 10) / num, 10) * num;
+            col.width = parseInt(col.width, 10) + splitVal + PX;
+            overage = overage - splitVal;
+        });
+    }
+
+    // 存在剩余的值: 未存在自动列, 将第一个可定制列宽度强制与剩余宽度相加
+    if (overage > 0 && !autoLen) {
         firstCol.width = parseInt(firstCol.width, 10) + overage + PX;
     }
 
-    // 存在自动列 且 存在剩余宽度: 平分剩余的宽度
-    if (autoLen && overage > 0) {
+    // 存在剩余宽度: 存在普通自动列, 平分剩余的宽度
+    if (overage > 0 && autoLen) {
         const splitVal = Math.floor(overage / autoLen);
         each(autoList, (col, index) => {
             // 最后一项自动列: 将余值全部赋予
