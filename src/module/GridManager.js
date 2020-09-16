@@ -883,7 +883,7 @@ export default class GridManager {
     showLoading(table) {
         const _ = getKey(table);
         const settings = getSettings(_);
-        if (settings.autoShowLoading) {
+        if (!settings.autoShowLoading) {
             if(isRendered(_, settings)) {
                 showLoading(_, settings.loadingTemplate);
             }
@@ -898,7 +898,7 @@ export default class GridManager {
     hideLoading(table) {
         const _ = getKey(table);
         const settings = getSettings(_);
-        if(settings.autoShowLoading) {
+        if(!settings.autoShowLoading) {
             if (isRendered(_, settings)) {
                 hideLoading(_, 0);
             }
