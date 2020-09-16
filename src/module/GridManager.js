@@ -18,7 +18,7 @@ import {
     isValidArray
 } from '@jTool/utils';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, READY_CLASS_NAME, PX } from '@common/constants';
-import { getCloneRowData, getKey, getThead, getFakeThead, getAllTh, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
+import { showLoading, hideLoading, getCloneRowData, getKey, getThead, getFakeThead, getAllTh, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
 import { clearCacheDOM } from '@common/domCache';
@@ -126,6 +126,14 @@ export default class GridManager {
         // 校验: ajaxData
         if (!arg.ajaxData) {
             outError('ajaxData undefined');
+            return;
+        }
+
+        // 校验: autoShowLoading
+        if (isUndefined(arg.autoShowLoading)) {
+            arg.autoShowLoading = true;
+        }else if (!isBoolean(arg.autoShowLoading)) {
+            outError('autoShowLoading params error');
             return;
         }
 
@@ -865,5 +873,35 @@ export default class GridManager {
 
         // 清除dom缓存
         clearCacheDOM(_);
+    }
+
+    /**
+     * @静态方法
+     * 显示加载框
+     */
+    static
+    showLoading(table) {
+        const _ = getKey(table);
+        const settings = getSettings(_);
+        if (settings.autoShowLoading) {
+            if(isRendered(_, settings)) {
+                showLoading(_, settings.loadingTemplate);
+            }
+        }
+    }
+
+    /**
+     * @静态方法
+     * 隐藏加载框
+     */
+    static
+    hideLoading(table) {
+        const _ = getKey(table);
+        const settings = getSettings(_);
+        if(settings.autoShowLoading) {
+            if (isRendered(_, settings)) {
+                hideLoading(_, 0);
+            }
+        }
     }
 }
