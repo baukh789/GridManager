@@ -143,13 +143,13 @@ describe('base', () => {
         });
         it('基础验证', () => {
             expect(hideLoading).toBeDefined();
-            expect(hideLoading.length).toBe(1);
+            expect(hideLoading.length).toBe(2);
         });
 
         it('执行验证', () => {
             jasmine.clock().install();
             expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(1);
-            hideLoading(_);
+            hideLoading(_, 500);
             jasmine.clock().tick(500);
             expect(jTool('.table-wrap').find(`.${LOADING_CLASS_NAME}`).length).toBe(0);
             jasmine.clock().uninstall();

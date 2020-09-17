@@ -86,10 +86,10 @@ export const showLoading = (_, loadingTemplate) => {
  * 隐藏加载中动画
  * @param _
  */
-export const hideLoading = _ => {
+export const hideLoading = (_, delayTime) => {
     setTimeout(() => {
         jTool(`.${LOADING_CLASS_NAME}`, getWrap(_)).remove();
-    }, 500);
+    }, delayTime);
 };
 
 /**
