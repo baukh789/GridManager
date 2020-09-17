@@ -248,6 +248,13 @@
                 // useRadio: true,
 				pageSize: 20,
 				query: {ex: '用户自定义的查询参数,格式:{key:value}'},
+                disableAutoLoading: true,
+                exportConfig: {
+                    handler: (fileName, query, pageData, sortData, selectedList, tableData) => {
+                        GM.showLoading('test');
+                        GM.hideLoading('test', 500);
+                    }
+                },
 				columnData: [{
 					key: 'name',
 					remind: 'the username',
@@ -297,8 +304,12 @@
 				sortingAfter: function(query){
 					console.log('Event: 排序后', query);
 				},
+                ajaxBeforeSend: function() {
+                    GM.showLoading('test');
+                },
 				ajaxSuccess: function(data){
 					console.log('Event: ajaxSuccess', data);
+                    GM.hideLoading('test', 300);
 				},
                 checkedAfter: function(list){
                     console.log(list);

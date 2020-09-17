@@ -18,19 +18,7 @@ import {
     isValidArray
 } from '@jTool/utils';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, READY_CLASS_NAME, PX } from '@common/constants';
-import {
-    getCloneRowData,
-    getKey,
-    getThead,
-    getFakeThead,
-    getAllTh,
-    calcLayout,
-    updateThWidth,
-    setAreVisible,
-    getFakeTh,
-    updateVisibleLast,
-    updateScrollStatus
-} from '@common/base';
+import { showLoading, hideLoading, getCloneRowData, getKey, getThead, getFakeThead, getAllTh, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
 import { clearCacheDOM } from '@common/domCache';
@@ -752,6 +740,30 @@ export default class GridManager {
     print(table) {
         const _ = getKey(table);
         isRendered(_) && print(_);
+    }
+
+    /**
+     * @静态方法
+     * 显示加载框
+     * @param table
+     */
+    static
+    showLoading(table) {
+        const _ = getKey(table);
+        const settings = getSettings(_);
+        isRendered(_, settings) && showLoading(_, settings.loadingTemplate);
+    }
+
+    /**
+     * @静态方法
+     * 隐藏加载框
+     * @param table
+     * @param delayTime: 延迟隐藏时间
+     */
+    static
+    hideLoading(table, delayTime) {
+        const _ = getKey(table);
+        isRendered(_) && hideLoading(_, delayTime);
     }
 
     /**

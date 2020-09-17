@@ -108,6 +108,9 @@ const gridStyle = {
     // 配置是否禁用边框线
     disableBorder: false,  // v2.6.1新增
 
+    // 是否禁用自动loading
+    // disableAutoLoading: false,
+
     // 数据加载中模板 v2.6.2新增
     loadingTemplate: '<section class="gm-loading"><div class="loader"><svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none"></circle></svg></div></section>',
 

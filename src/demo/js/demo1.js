@@ -158,6 +158,18 @@ const GM_PUBLISH_METHOD_MAP = {
         title: '打印当前页',
         code: `GridManager.print('${gridManagerName}');`
     },
+    showLoading: {
+        key: 'showLoading',
+        relyInit: true,
+        title: '显示加载中',
+        code: `GridManager.showLoading('${gridManagerName}');`
+    },
+    hideLoading: {
+        key: 'hideLoading',
+        relyInit: true,
+        title: '隐藏加载中',
+        code: `GridManager.hideLoading('${gridManagerName}', 300);`
+    },
     destroy: {
         key: 'destroy',
         relyInit: true,

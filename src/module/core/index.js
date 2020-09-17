@@ -27,11 +27,11 @@ class Core {
      */
     refresh(_, callback) {
         const settings = getSettings(_);
-        const { loadingTemplate, ajaxBeforeSend, ajaxSuccess, ajaxError, ajaxComplete } = settings;
+        const { disableAutoLoading, loadingTemplate, ajaxBeforeSend, ajaxSuccess, ajaxError, ajaxComplete } = settings;
         // 更新刷新图标状态
         ajaxPage.updateRefreshIconState(_, true);
 
-        showLoading(_, loadingTemplate);
+        !disableAutoLoading && showLoading(_, loadingTemplate);
 
         let ajaxPromise = transformToPromise(settings);
 
@@ -45,7 +45,7 @@ class Core {
                     this.driveDomForSuccessAfter(settings, response, callback);
                     ajaxSuccess(response);
                     ajaxComplete(response);
-                    hideLoading(_);
+                    !disableAutoLoading && hideLoading(_);
                     ajaxPage.updateRefreshIconState(_, false);
                 });
             } catch (e) {
@@ -55,7 +55,7 @@ class Core {
         .catch(error => {
             ajaxError(error);
             ajaxComplete(error);
-            hideLoading(_);
+            !disableAutoLoading && hideLoading(_);
             ajaxPage.updateRefreshIconState(_, false);
         });
     }

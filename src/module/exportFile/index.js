@@ -56,7 +56,7 @@ class ExportFile {
      */
 	async exportGrid(_, fileName, onlyChecked) {
 	    const settings = getSettings(_);
-	    const { query, loadingTemplate, exportConfig, pageData, sortData } = settings;
+	    const { query, disableAutoLoading, loadingTemplate, exportConfig, pageData, sortData } = settings;
 
         fileName = getFileName(_, fileName, query, exportConfig);
 
@@ -67,16 +67,16 @@ class ExportFile {
 
 	    switch (exportConfig.mode) {
             case 'static': {
-                this.downStatic(_, loadingTemplate, fileName, onlyChecked, exportConfig.suffix, handler, query, pageData, sortData, selectedList, tableData);
+                this.downStatic(_, disableAutoLoading, loadingTemplate, fileName, onlyChecked, exportConfig.suffix, handler, query, pageData, sortData, selectedList, tableData);
                 break;
             }
             case 'blob': {
-                await this.downBlob(_, loadingTemplate, fileName, handler, query, pageData, sortData, selectedList, tableData);
+                await this.downBlob(_, disableAutoLoading, loadingTemplate, fileName, handler, query, pageData, sortData, selectedList, tableData);
                 break;
             }
 
             case 'url': {
-                await this.downFilePath(_, loadingTemplate, fileName, handler, pageData, sortData, selectedList);
+                await this.downFilePath(_, disableAutoLoading, loadingTemplate, fileName, handler, pageData, sortData, selectedList);
                 break;
             }
         }
@@ -85,13 +85,14 @@ class ExportFile {
     /**
      * 下载方式: 静态下载
      * @param _
+     * @param disableAutoLoading
      * @param loadingTemplate
      * @param fileName
      * @param onlyChecked
      * @returns {boolean}
      */
-	downStatic(_, loadingTemplate, fileName, onlyChecked, suffix, exportHandler, query, pageData, sortData, selectedList, tableData) {
-        showLoading(_, loadingTemplate);
+	downStatic(_, disableAutoLoading, loadingTemplate, fileName, onlyChecked, suffix, exportHandler, query, pageData, sortData, selectedList, tableData) {
+        !disableAutoLoading && showLoading(_, loadingTemplate);
 
         let tableList = exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
 
@@ -139,12 +140,13 @@ class ExportFile {
         };
         dispatchDownload(fileName, `data:${dataType[suffix]};charset=utf-8,\ufeff${encodeURIComponent(exportHTML)}`);
 
-        hideLoading(_, loadingTemplate);
+        !disableAutoLoading && hideLoading(_, 300);
     }
 
     /**
      * 下载方式: 文件路径
      * @param _
+     * @param disableAutoLoading: 禁用自动loading
      * @param loadingTemplate: loading模板
      * @param fileName
      * @param exportHandler
@@ -153,21 +155,22 @@ class ExportFile {
      * @param selectedList
      * @returns {Promise<void>}
      */
-    async downFilePath(_, loadingTemplate, fileName, exportHandler, pageData, sortData, selectedList) {
+    async downFilePath(_, disableAutoLoading, loadingTemplate, fileName, exportHandler, pageData, sortData, selectedList) {
         try {
-            showLoading(_, loadingTemplate);
+            !disableAutoLoading && showLoading(_, loadingTemplate);
             const res = await exportHandler(fileName, pageData, sortData, selectedList);
             dispatchDownload(fileName, res);
         } catch (e) {
             outError(e);
         } finally {
-            hideLoading(_);
+            !disableAutoLoading && hideLoading(_, 300);
         }
     }
 
     /**
      * 下载方式: Blob格式
      * @param _
+     * @param disableAutoLoading: 禁用自动loading
      * @param loadingTemplate: loading模板
      * @param fileName: 导出的文件名，不包含后缀名
      * @param exportHandler: 执行函数
@@ -176,9 +179,9 @@ class ExportFile {
      * @param sortData: 排序信息
      * @param selectedList: 当前选中的列表
      */
-    async downBlob(_, loadingTemplate, fileName, exportHandler, query, pageData, sortData, selectedList, tableData) {
+    async downBlob(_, disableAutoLoading, loadingTemplate, fileName, exportHandler, query, pageData, sortData, selectedList, tableData) {
         try {
-            showLoading(_, loadingTemplate);
+            !disableAutoLoading && showLoading(_, loadingTemplate);
 
             const res = await exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
             const blobPrototype = Blob.prototype;
@@ -204,7 +207,7 @@ class ExportFile {
         } catch (e) {
             outError(e);
         } finally {
-            hideLoading(_);
+            !disableAutoLoading && hideLoading(_, 300);
         }
     }
 }
