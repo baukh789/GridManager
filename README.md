@@ -214,4 +214,4 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
 
 ## 浏览器兼容
 - Firefox >= 53, Chrome >= 55，Edge, Safari
-- 这里提一下为什么不支持IE: 使用表格插件的大都是管理平台或系统,通常都是会进行浏览器指定,所以设计之初就没有考虑这个方面.
+- 这里提一下为什么不支持IE: GridManager专为管理平台或系统打造,该类系统通常情况下会指定浏览器.

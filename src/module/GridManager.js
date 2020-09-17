@@ -18,7 +18,19 @@ import {
     isValidArray
 } from '@jTool/utils';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, READY_CLASS_NAME, PX } from '@common/constants';
-import { getCloneRowData, getKey, getThead, getFakeThead, getAllTh, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
+import {
+    getCloneRowData,
+    getKey,
+    getThead,
+    getFakeThead,
+    getAllTh,
+    calcLayout,
+    updateThWidth,
+    setAreVisible,
+    getFakeTh,
+    updateVisibleLast,
+    updateScrollStatus
+} from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
 import { clearCacheDOM } from '@common/domCache';
@@ -70,6 +82,12 @@ export default class GridManager {
      * @returns {*}
      */
     constructor(table, arg, callback) {
+        // 验证当前Element是否为table
+        if (table.nodeName !== 'TABLE') {
+            outError('nodeName !== "TABLE"');
+            return;
+        }
+
         // 存储class style， 在消毁实例时使用
         TABLE_PURE_LIST.forEach(item => {
             table['__' + item] = table.getAttribute(item);
@@ -232,6 +250,15 @@ export default class GridManager {
                 core.insertEmptyTemplate(settings, true);
                 runCallback();
             })();
+
+            // 监听外部容器变化
+            // const resizeObserver = new window.ResizeObserver(entries => {
+            //     for (let entry of entries) {
+            //         console.log(entry.target.offsetWidth);
+            //         // todo 这里应该考虑优化下GM.resetLayout和scroll.reset event的代码
+            //     }
+            // });
+            // resizeObserver.observe(getWrap(gridManagerName).parent().get(0));
         };
 
         // 初始化表格

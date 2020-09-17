@@ -4,7 +4,6 @@
  * */
 import jTool from '@jTool';
 import { isString } from '@jTool/utils';
-import { outError } from '@common/utils';
 import GridManager from './GridManager';
 import '../css/var.less';
 
@@ -13,12 +12,6 @@ import '../css/var.less';
 * */
 (() => {
     Element.prototype.GM = Element.prototype.GridManager = function () {
-		// 验证当前Element是否为table
-		if (this.nodeName !== 'TABLE') {
-			outError('nodeName !== "TABLE"');
-			return;
-		}
-
 		// 方法名
 		let name,
 
