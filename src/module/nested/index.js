@@ -15,7 +15,7 @@ const updateParent = (columnMap, col) => {
             // 存在四级及以上时才会调用
             parentCol.colspan = col.colspan;
         } else {
-            parentCol.colspan = parentCol.children.length + col.colspan - 1;
+            parentCol.colspan = parentCol.colspan + col.colspan - 1;
         }
         if (parentCol.pk) {
             updateParent(columnMap, parentCol);
