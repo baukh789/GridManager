@@ -8,7 +8,7 @@
  * */
 import jTool from '@jTool';
 import { each } from '@jTool/utils';
-import { getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus, getAllTh, getAllFakeTh, getScrollBarWidth } from '@common/base';
+import { getWrap, getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus, getAllTh, getAllFakeTh, getScrollBarWidth } from '@common/base';
 import { getSettings, updateCache } from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, PX } from '@common/constants';
 import { compileFakeThead } from '@common/framework';
@@ -90,14 +90,14 @@ class Scroll {
      * 存在多次渲染时, 将会存在多个resize事件. 每个事件对应处理一个table. 这样做的好处是, 多个表之间无关联. 保持了相对独立性
      */
 	bindResizeToTable(_) {
-		const $tableDiv = getDiv(_);
+		const $tableWrap = getWrap(_);
 		const $body = jTool('body');
 		let oldBodyWidth = $body.width();
 
-		// 绑定resize事件: 对表头吸顶的列宽度进行修正
-		jTool(window).bind(`${RESIZE}.${_}`, () => {
+		// reset 执行函数
+		const resetFN = () => {
             const settings = getSettings(_);
-            if ($tableDiv.length !== 1) {
+            if ($tableWrap.length !== 1) {
                 return;
             }
 
@@ -115,7 +115,24 @@ class Scroll {
             removeTooltip(_);
 
             settings.supportConfig && updateConfigListHeight(_);
-		});
+        };
+
+		const ResizeObserver = window.ResizeObserver;
+		// 支持ResizeObserver: 通过监听外部容器的大小来更新DOM
+		if (ResizeObserver) {
+            // 监听外部容器变化
+            const resizeObserver = new ResizeObserver(() => {
+                resetFN();
+            });
+            resizeObserver.observe($tableWrap.parent().get(0));
+		    return;
+        }
+
+		// 不支持ResizeObserver: 通过reset事件来更新DOM
+        // 绑定resize事件: 对表头吸顶的列宽度进行修正
+        jTool(window).bind(`${RESIZE}.${_}`, () => {
+            resetFN();
+        });
 	}
 
 	/**

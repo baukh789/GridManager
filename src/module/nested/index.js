@@ -12,10 +12,11 @@ const updateParent = (columnMap, col) => {
     const parentCol = columnMap[col.pk];
     if (parentCol) {
         if (!parentCol.colspan || parentCol.colspan === 1) {
-            // 存在四级及以上时才会调用
             parentCol.colspan = col.colspan;
         } else {
-            parentCol.colspan = parentCol.colspan + col.colspan - 1;
+            // 上一级colspan + 当前列的子项数量 - 列自身所占的位
+            // 使用当前列的子项数量而不使用col.colspan的原因: col.colspan 会随着该方法的调用而改变
+            parentCol.colspan = parentCol.colspan + col.children.length - 1;
         }
         if (parentCol.pk) {
             updateParent(columnMap, parentCol);

@@ -104,7 +104,7 @@ export default class GridManager {
 
         // init: 当前已经实例化
         if (settings.rendered) {
-            outWarn(`${gridManagerName} had been used`);
+            // outWarn(`${gridManagerName} had been used`);
 
             // 如果已经存在，则清除之前的数据。#001
             GridManager.destroy(gridManagerName);
@@ -238,15 +238,6 @@ export default class GridManager {
                 core.insertEmptyTemplate(settings, true);
                 runCallback();
             })();
-
-            // 监听外部容器变化
-            // const resizeObserver = new window.ResizeObserver(entries => {
-            //     for (let entry of entries) {
-            //         console.log(entry.target.offsetWidth);
-            //         // todo 这里应该考虑优化下GM.resetLayout和scroll.reset event的代码
-            //     }
-            // });
-            // resizeObserver.observe(getWrap(gridManagerName).parent().get(0));
         };
 
         // 初始化表格
