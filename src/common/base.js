@@ -324,6 +324,25 @@ export const updateVisibleLast = _ => {
 };
 
 /**
+ * 获取嵌套列所占的列数
+ * @param col
+ * @returns {number}
+ */
+export const getNestedLen = col => {
+    let num = 0;
+    const getLen = col => {
+        col.children.forEach(item => {
+            if (isValidArray(item.children)) {
+                getLen(item);
+            } else {
+                num++;
+            }
+        });
+    };
+    getLen(col);
+    return num;
+};
+/**
  * 更新列宽
  * @param settings
  * @param isInit: 是否为init调用
@@ -338,21 +357,6 @@ export const updateThWidth = (settings, isInit) => {
     // 嵌套自动宽列
     const autoNestedList = [];
 
-    // 获取嵌套列所站的列数
-    const getNestedLen = col => {
-        let num = 0;
-        const getLen = col => {
-            col.children.forEach(item => {
-                if (isValidArray(item.children)) {
-                    getLen(item);
-                } else {
-                    num++;
-                }
-            });
-        };
-        getLen(col);
-        return num;
-    };
     // 存储首列
     let firstCol;
     each(columnMap, (key, col) => {

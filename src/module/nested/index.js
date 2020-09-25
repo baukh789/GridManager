@@ -4,25 +4,8 @@
  * - DOM标识: 存在嵌套表头的表格将在 table-div 上增加 gm-nested 属性
  */
 import { each, isValidArray } from '@jTool/utils';
-import { getDiv } from '@common/base';
+import { getDiv, getNestedLen } from '@common/base';
 import './style.less';
-
-// 更新父级
-const updateParent = (columnMap, col) => {
-    const parentCol = columnMap[col.pk];
-    if (parentCol) {
-        if (!parentCol.colspan || parentCol.colspan === 1) {
-            parentCol.colspan = col.colspan;
-        } else {
-            // 上一级colspan + 当前列的子项数量 - 列自身所占的位
-            // 使用当前列的子项数量而不使用col.colspan的原因: col.colspan 会随着该方法的调用而改变
-            parentCol.colspan = parentCol.colspan + col.children.length - 1;
-        }
-        if (parentCol.pk) {
-            updateParent(columnMap, parentCol);
-        }
-    }
-};
 const pushList = (columnMap, columnList, list, rowspan) => {
     each(list, item => {
         // 这里不直接使用item而用columnMap的原因: item的children中存储的是初始时的数据，缺失level字段
@@ -33,8 +16,7 @@ const pushList = (columnMap, columnList, list, rowspan) => {
         }
         if (isValidArray(col.children)) {
             col.rowspan = 1;
-            col.colspan = col.children.length;
-            updateParent(columnMap, col);
+            col.colspan = getNestedLen(col);
             pushList(columnMap, columnList, col.children, rowspan - 1);
         } else {
             col.rowspan = rowspan;
