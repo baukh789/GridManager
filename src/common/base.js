@@ -324,25 +324,6 @@ export const updateVisibleLast = _ => {
 };
 
 /**
- * 获取嵌套列所占的列数
- * @param col
- * @returns {number}
- */
-export const getNestedLen = col => {
-    let num = 0;
-    const getLen = col => {
-        col.children.forEach(item => {
-            if (isValidArray(item.children)) {
-                getLen(item);
-            } else {
-                num++;
-            }
-        });
-    };
-    getLen(col);
-    return num;
-};
-/**
  * 更新列宽
  * @param settings
  * @param isInit: 是否为init调用
@@ -380,7 +361,7 @@ export const updateThWidth = (settings, isInit) => {
 
         // 已设置宽度并存在子项: 进行平均值处理，以保证在渲染时值可以平分
         if (width && width !== 'auto' && __isNested && isValidArray(children)) {
-            const num = getNestedLen(col);
+            const num = col.colspan;
             col.width = width = parseInt(parseInt(width, 10) / num, 10) * num + PX;
         }
 
@@ -428,7 +409,7 @@ export const updateThWidth = (settings, isInit) => {
     if (overage > 0 && autoNestedLen) {
         let splitVal = Math.floor(overage / (autoNestedLen + autoLen));
         each(autoNestedList, col => {
-            const num = getNestedLen(col);
+            const num = col.colspan;
             splitVal = parseInt(parseInt(splitVal, 10) / num, 10) * num;
             col.width = parseInt(col.width, 10) + splitVal + PX;
             overage = overage - splitVal;

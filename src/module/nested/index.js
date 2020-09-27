@@ -4,8 +4,36 @@
  * - DOM标识: 存在嵌套表头的表格将在 table-div 上增加 gm-nested 属性
  */
 import { each, isValidArray } from '@jTool/utils';
-import { getDiv, getNestedLen } from '@common/base';
+import { getDiv } from '@common/base';
 import './style.less';
+
+/**
+ * 获取嵌套列所占的列数
+ * @param col
+ * @returns {number}
+ */
+const getNestedLen = col => {
+    let num = 0;
+    const getLen = col => {
+        col.children.forEach(item => {
+            if (isValidArray(item.children)) {
+                getLen(item);
+            } else {
+                num++;
+            }
+        });
+    };
+    getLen(col);
+    return num;
+};
+
+/**
+ * 生成嵌套数据递归函数
+ * @param columnMap
+ * @param columnList
+ * @param list
+ * @param rowspan
+ */
 const pushList = (columnMap, columnList, list, rowspan) => {
     each(list, item => {
         // 这里不直接使用item而用columnMap的原因: item的children中存储的是初始时的数据，缺失level字段
