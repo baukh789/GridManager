@@ -1,6 +1,6 @@
 import ajaxPage from '../ajaxPage';
 import { CLASS_DRAG_ACTION } from '../drag/constants';
-import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, FOLD_KEY, GM_CREATE, CELL_HIDDEN, DISABLE_CUSTOMIZE } from '@common/constants';
+import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, FOLD_KEY, GM_CREATE, CELL_HIDDEN, DISABLE_CUSTOMIZE, MOVEROW_KEY } from '@common/constants';
 import { isUndefined, isString, isObject, each } from '@jTool/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
@@ -157,6 +157,10 @@ class Render {
                 break;
             // 插件自动生成折叠列
             case FOLD_KEY:
+                gmCreateAttr = GM_CREATE;
+                break;
+            // 插件自动移动行列
+            case MOVEROW_KEY:
                 gmCreateAttr = GM_CREATE;
                 break;
             // 普通列

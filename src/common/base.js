@@ -417,7 +417,7 @@ export const updateThWidth = (settings, isInit) => {
     }
 
     // 存在剩余的值: 未存在自动列, 将第一个可定制列宽度强制与剩余宽度相加
-    if (overage > 0 && !autoLen) {
+    if (firstCol && overage > 0 && !autoLen) {
         firstCol.width = parseInt(firstCol.width, 10) + overage + PX;
     }
 
@@ -439,6 +439,10 @@ export const updateThWidth = (settings, isInit) => {
     each(columnMap, (key, col) => {
         // 可见 且 禁用定制列 不处理
         if (col.isShow && col[DISABLE_CUSTOMIZE]) {
+            return;
+        }
+        // 当前非顶级列: 只对顶级列进行处理, 不处理嵌套层 todo 后续版本要开启子项的宽度配置时这里将要做调整
+        if (col.pk) {
             return;
         }
         getTh(_, key).width(col.width);
