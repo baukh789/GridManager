@@ -18,6 +18,8 @@ import { removeTooltip } from '@module/remind';
 import { RESIZE, SCROLL } from '@common/events';
 import './style.less';
 
+// 存储容器监听器，用于消除时
+const resizeObserverMap = {};
 class Scroll {
     // 当前Y滚动轴的宽度
     width = 0;
@@ -124,7 +126,14 @@ class Scroll {
             const resizeObserver = new ResizeObserver(() => {
                 resetFN();
             });
-            resizeObserver.observe($tableWrap.parent().get(0));
+            const el = $tableWrap.parent().get(0);
+            resizeObserver.observe(el);
+
+            // 存储监听器，用于消除时
+            resizeObserverMap[_] = {
+                observer: resizeObserver,
+                el
+            };
 		    return;
         }
 
@@ -159,6 +168,13 @@ class Scroll {
 
 		// 清理: 表格滚动轴功能
         getDiv(_).unbind(SCROLL);
+
+        // 清除存储容器监听器，不支持ResizeObserver的浏览器resizeObserverMap[_]将为空
+        const obs = resizeObserverMap[_];
+        if (obs && obs.el && obs.observer) {
+            obs.observer.unobserve(obs.el);
+            delete resizeObserverMap[_];
+        }
 	}
 }
 export default new Scroll();
