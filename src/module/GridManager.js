@@ -833,6 +833,8 @@ export default class GridManager {
 
         updateThWidth(settings, true);
 
+        setSettings(settings);
+
         // 更新fake header
         scroll.update(_, true);
 

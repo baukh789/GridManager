@@ -93,8 +93,8 @@ class Scroll {
      */
 	bindResizeToTable(_) {
 		const $tableWrap = getWrap(_);
-		const $body = jTool('body');
-		let oldBodyWidth = $body.width();
+		const $tableParent = $tableWrap.parent(); // 父容器，渲染之后离的最近的那一层
+		let oldParentWidth = $tableParent.width();
 
 		// reset 执行函数
 		const resetFN = () => {
@@ -104,10 +104,10 @@ class Scroll {
             }
 
             // 当可视宽度变化时，更新表头宽度
-            const bodyWidth = $body.width();
-            if (bodyWidth !== oldBodyWidth) {
+            const parentWidth = $tableParent.width();
+            if (parentWidth !== oldParentWidth) {
                 updateThWidth(settings);
-                oldBodyWidth = bodyWidth;
+                oldParentWidth = parentWidth;
                 updateCache(_);
             }
             updateScrollStatus(_);
@@ -126,7 +126,7 @@ class Scroll {
             const resizeObserver = new ResizeObserver(() => {
                 resetFN();
             });
-            const el = $tableWrap.parent().get(0);
+            const el = $tableParent.get(0);
             resizeObserver.observe(el);
 
             // 存储监听器，用于消除时
