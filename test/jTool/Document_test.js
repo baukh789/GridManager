@@ -152,7 +152,6 @@ describe('Document', () => {
 
 	it('closest', () => {
 		expect(jTool('#div2').closest('body').DOMList[0].tagName).toBe(divEle2.parentNode.tagName);
-		expect(jTool(document).closest('body').DOMList).toBeUndefined();
 	});
 
 	it('parent', () => {

@@ -149,31 +149,12 @@ export default {
      * @param selectorText
      */
     closest: function (selectorText) {
-        let parentDOM = getDomList(this, 0).parentNode;
+        const node = getDomList(this, 0);
+        // 当前选择器文本为空
         if (isUndefined(selectorText)) {
-            return new Sizzle(parentDOM);
+            return new Sizzle(node.parentNode);
         }
-        const target = document.querySelectorAll(selectorText);
-
-        // 递归查找匹配的父级元素
-        function getParentNode() {
-            if (!parentDOM || !target.length || parentDOM.nodeType !== 1) {
-                parentDOM = null;
-                return;
-            }
-
-            if ([].indexOf.call(target, parentDOM) !== -1) {
-                return;
-            }
-
-            parentDOM = parentDOM.parentNode;
-
-            getParentNode();
-        }
-
-        getParentNode();
-
-        return new Sizzle(parentDOM);
+        return new Sizzle(node.closest(selectorText));
     },
 
     /**
