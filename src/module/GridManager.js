@@ -831,6 +831,8 @@ export default class GridManager {
             fixed.init(settings);
         }
 
+        // 在各模块的初始化中会对settings进行修改，所以需要重新获取一次
+        settings = getSettings(_);
         updateThWidth(settings, true);
 
         setSettings(settings);
