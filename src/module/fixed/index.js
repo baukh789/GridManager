@@ -33,6 +33,9 @@ const getStickyCss = (_, index, direction, shadowValue, directionValue) => {
 const FIXED_LEFT_MAP = {};
 const FIXED_RIGHT_MAP = {};
 
+// 存储当前实例部分属性，用于减少DOM操作: 当该值不变时, 不执行更新操作
+const FIXED_CACHE_MAP = {};
+
 class Fixed {
     /**
      * 生成td固定列样式: 通过添加style的方式比修改td的dom性能会高
@@ -122,9 +125,26 @@ class Fixed {
      * @param _
      */
     updateFakeThead(_) {
+        const $tableDiv = getDiv(_);
+        const scrollLeft = $tableDiv.scrollLeft();
+        const theadWidth = getFakeThead(_).width();
+        const tbodyHeight = getTbody(_).height();
+
+        // 性能: 当属性未变更时，不再执行DOM操作
+        if (FIXED_CACHE_MAP[_]
+            && FIXED_CACHE_MAP[_].scrollLeft === scrollLeft
+            && FIXED_CACHE_MAP[_].theadWidth === theadWidth
+            && FIXED_CACHE_MAP[_].tbodyHeight === tbodyHeight) {
+            return;
+        }
+        FIXED_CACHE_MAP[_] = {
+            scrollLeft,
+            theadWidth,
+            tbodyHeight
+        };
+
         // left fixed
         if (FIXED_LEFT_MAP[_] && FIXED_LEFT_MAP[_].length) {
-            const scrollLeft = getDiv(_).scrollLeft();
             each(FIXED_LEFT_MAP[_], col => {
                 getFakeTh(_, col.key).css('left', col.pl + scrollLeft);
             });
@@ -132,8 +152,7 @@ class Fixed {
 
         // right fixed
         if (FIXED_RIGHT_MAP[_] && FIXED_RIGHT_MAP[_].length) {
-            const $tableDiv = getDiv(_);
-            let scrollRight = getFakeThead(_).width() - $tableDiv.width() - $tableDiv.scrollLeft();
+            let scrollRight = theadWidth - $tableDiv.width() - scrollLeft;
 
             // 存在Y轴滚动轴
             if (getTbody(_).height() > $tableDiv.get(0).clientHeight) {

@@ -50,7 +50,7 @@ class Tree {
      * 更新树DOM
      * @param _
      * @param state: 打开状态
-     * @param $tr: 更新的tr节点，未指定时将对tbody下所有节点进行更新(对外公开方法中，不包含开参数)
+     * @param $tr: 更新的tr节点，未指定时将对tbody下所有节点进行更新(对外公开方法中，不包含该参数)
      */
     updateDOM(_, state, $tr) {
         const $tbody = getTbody(_);
