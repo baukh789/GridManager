@@ -103,20 +103,24 @@ class Scroll {
                 return;
             }
 
-            // 当可视宽度变化时，更新表头宽度
-            const parentWidth = $tableParent.width();
-            if (parentWidth !== oldParentWidth) {
-                updateThWidth(settings);
-                oldParentWidth = parentWidth;
-                updateCache(_);
+            try {
+                // 当可视宽度变化时，更新表头宽度
+                const parentWidth = $tableParent.width();
+                if (parentWidth !== oldParentWidth) {
+                    updateThWidth(settings);
+                    oldParentWidth = parentWidth;
+                    updateCache(_);
+                }
+                updateScrollStatus(_);
+
+                this.update(_, true);
+
+                removeTooltip(_);
+
+                settings.supportConfig && updateConfigListHeight(_);
+            } catch (e) {
+                // 表格所在容器大小发生变化后，DOM节点被其它程序销毁所引发的控制台报错。可忽略
             }
-            updateScrollStatus(_);
-
-            this.update(_, true);
-
-            removeTooltip(_);
-
-            settings.supportConfig && updateConfigListHeight(_);
         };
 
 		const ResizeObserver = window.ResizeObserver;
