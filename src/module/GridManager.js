@@ -53,7 +53,7 @@ const isRendered = (_, settings) => {
     if (settings.rendered) {
         return true;
     }
-    outError(`run failed，please check ${_} had been init`);
+    outWarn(`run failed，please check ${_} had been init`);
 };
 
 // 存储默认配置
