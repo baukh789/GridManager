@@ -84,7 +84,7 @@ class Drag {
             $dreamlandDIV.get(0).innerHTML = _this.createHtml({ $table,  $th });
 
             // 存储移动时的th所处的位置
-            let _thIndex = 0;
+            let thIndex = 0;
 
             // 境像所需要的样式: 这些样式不会随移动而改变
             const thWidth = $th.width();
@@ -101,19 +101,20 @@ class Drag {
                 height: tableHeight + 2
             });
 
+            $dreamlandDIV.show();
+
             // 绑定拖拽滑动事件
             const $doing = jTool(doing[TARGET]);
             $doing.off(doing[EVENTS]);
             $doing.on(doing[EVENTS], function (e2) {
-                $dreamlandDIV.show();
-                _thIndex = $th.index($allFakeVisibleTh);
+                thIndex = $th.index($allFakeVisibleTh);
                 // 事件源的上一个th
                 let $prevTh,
                     prevThName;
 
                 // 当前移动的非第一列
-                if (_thIndex > 0) {
-                    $prevTh = $allFakeVisibleTh.eq(_thIndex - 1);
+                if (thIndex > 0) {
+                    $prevTh = $allFakeVisibleTh.eq(thIndex - 1);
                     prevThName = getThName($prevTh);
                 }
 
@@ -122,8 +123,8 @@ class Drag {
                     nextThName;
 
                 // 当前移动的非最后一列
-                if (_thIndex < $allFakeVisibleTh.length - 1) {
-                    $nextTh = $allFakeVisibleTh.eq(_thIndex + 1);
+                if (thIndex < $allFakeVisibleTh.length - 1) {
+                    $nextTh = $allFakeVisibleTh.eq(thIndex + 1);
                     nextThName = getThName($nextTh);
                 }
 
