@@ -1,6 +1,6 @@
 import ajaxPage from '../ajaxPage';
 import { CLASS_DRAG_ACTION } from '../drag/constants';
-import { WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, FOLD_KEY, GM_CREATE, CELL_HIDDEN, DISABLE_CUSTOMIZE, MOVEROW_KEY } from '@common/constants';
+import { PX, WRAP_KEY, DIV_KEY, TABLE_HEAD_KEY, ORDER_KEY, CHECKBOX_KEY, FOLD_KEY, GM_CREATE, CELL_HIDDEN, DISABLE_CUSTOMIZE, MOVEROW_KEY } from '@common/constants';
 import { isUndefined, isString, isObject, each } from '@jTool/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
@@ -182,8 +182,12 @@ class Render {
         // 嵌入colspan rowspan
         const colspanAttr = isUndefined(col.colspan) ? '' : `colspan="${col.colspan}"`;
         const rowspanAttr = isUndefined(col.rowspan) ? '' : `rowspan="${col.rowspan}"`;
+        let width = 'auto';
+        if (col.width) {
+            width = col.width + PX;
+        }
         return {
-            thAttr: `th-name="${thName}" ${colspanAttr} ${rowspanAttr} style="width:${col.width || 'auto'}" ${cellHiddenAttr} ${alignAttr} ${sortingAttr} ${filterAttr} ${fixedAttr} ${remindAttr} ${gmCreateAttr}`,
+            thAttr: `th-name="${thName}" ${colspanAttr} ${rowspanAttr} style="width:${width}" ${cellHiddenAttr} ${alignAttr} ${sortingAttr} ${filterAttr} ${fixedAttr} ${remindAttr} ${gmCreateAttr}`,
             thTextClassName,
             thText,
             compileAttr

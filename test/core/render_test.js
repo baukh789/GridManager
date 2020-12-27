@@ -422,7 +422,7 @@ describe('core render', () => {
                 key: 'title',
                 text: () => '标题',  // 到这一步时，text已经被转换为function
                 isShow: true,
-                width: '120px'
+                width: 120
             };
             expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
@@ -443,7 +443,7 @@ describe('core render', () => {
                 key: 'gm_order',
                 text: '序号',  // 自动创建的列不会转换为function
                 isShow: true,
-                width: '40px'
+                width: 40
             };
             expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
@@ -464,7 +464,7 @@ describe('core render', () => {
                 key: 'gm_checkbox',
                 text: '',  // 自动创建的列不会转换为function
                 isShow: true,
-                width: '50px'
+                width: 50
             };
             expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
@@ -485,7 +485,7 @@ describe('core render', () => {
                 key: 'gm_fold',
                 text: '',  // 自动创建的列不会转换为function
                 isShow: true,
-                width: '40px'
+                width: 40
             };
             expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
@@ -508,7 +508,7 @@ describe('core render', () => {
                         key: 'gm_order',
                         text: '序号',  // 自动创建的列不会转换为function
                         isShow: true,
-                        width: '40px',
+                        width: 40,
                         index: 0
                     },
                     title: {
@@ -548,7 +548,7 @@ describe('core render', () => {
                         key: 'gm_order',
                         text: '序号',  // 自动创建的列不会转换为function
                         isShow: true,
-                        width: '40px',
+                        width: 40,
                         level: 0,
                         index: 0
                     },

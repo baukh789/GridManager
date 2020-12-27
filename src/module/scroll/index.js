@@ -8,7 +8,19 @@
  * */
 import jTool from '@jTool';
 import { each } from '@jTool/utils';
-import { getWrap, getDiv, getTable, getThead, getFakeThead, updateThWidth, updateScrollStatus, getAllTh, getAllFakeTh, getScrollBarWidth } from '@common/base';
+import {
+    getWrap,
+    getDiv,
+    getTable,
+    getThead,
+    getFakeThead,
+    updateThWidth,
+    updateScrollStatus,
+    getAllTh,
+    getAllFakeTh,
+    getScrollBarWidth,
+    getFakeTh
+} from '@common/base';
 import { getSettings, updateCache } from '@common/cache';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, PX } from '@common/constants';
 import { compileFakeThead } from '@common/framework';
@@ -65,6 +77,8 @@ class Scroll {
             return;
         }
 
+        // updateCache(_);
+
         // 重置位置
         const $fakeThead = getFakeThead(_);
         $fakeThead.css('left', -$tableDiv.scrollLeft() + PX);
@@ -73,14 +87,25 @@ class Scroll {
         if (isResetWidth) {
             $fakeThead.width(getThead(_).width());
             let width;
-            const allFakeTh = getAllFakeTh(_);
-            each(getAllTh(_), (th, i) => {
-                width = jTool(th).width();
-                allFakeTh.eq(i).css({
-                    width: width,
+
+            const columnMap = getSettings(_).columnMap;
+
+            for (let key in columnMap) {
+                width = columnMap[key].width;
+                getFakeTh(_, key).css({
+                    width,
                     'max-width': width
                 });
-            });
+            }
+            // getColumn
+            // const allFakeTh = getAllFakeTh(_);
+            // each(getAllTh(_), (th, i) => {
+            //     width = jTool(th).width();
+            //     allFakeTh.eq(i).css({
+            //         width: width,
+            //         'max-width': width
+            //     });
+            // });
         }
 
         fixed.updateFakeThead(_);

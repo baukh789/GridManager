@@ -10,7 +10,7 @@
  * thead区域的固定th使用 absolute 定位，不使用sticky的原因是Firefox在设置了position: absolute的父容器内定位异常;
  * tbody区域的固定td使用 sticky 定位，通过脚本动态生成style标签;
  */
-import { getFakeTh, getDiv, getThead, getFakeThead, getTbody, getFakeVisibleTh } from '@common/base';
+import { getTh, getFakeTh, getDiv, getThead, getFakeThead, getTbody, getFakeVisibleTh } from '@common/base';
 import { DIV_KEY, EMPTY_TPL_KEY, PX } from '@common/constants';
 import { each } from '@jTool/utils';
 import scroll from '@module/scroll';
@@ -19,11 +19,30 @@ import './style.less';
 const LEFT = 'left';
 const RIGHT = 'right';
 const SHADOW_COLOR = '#e8e8e8';
-const getStickyCss = (_, index, direction, shadowValue, directionValue) => {
+/**
+ * 动态设置td的stick left 或 right: 浏览器缩放时该值需要重置
+ * @param _
+ * @param style
+ * @param index
+ * @param directionValue
+ */
+const setDirectionValue = (_, style, index, directionValue) => {
+    style.setProperty(`--gm-${_}-${index}-sticky-value`, directionValue + PX);
+};
+
+/**
+ * 获取sticky所需的css
+ * @param _
+ * @param index
+ * @param direction
+ * @param shadowValue
+ * @returns {string}
+ */
+const getStickyCss = (_, index, direction, shadowValue) => {
     return `[${DIV_KEY}="${_}"][gm-overflow-x="true"] tr:not([${EMPTY_TPL_KEY}]) td:nth-of-type(${index + 1}){`
            + 'position: sticky;\n'
            + 'position: -webkit-sticky;\n' // 解决safari兼容问题
-           + `${direction}: ${directionValue + PX};\n`
+           + `${direction}: var(--gm-${_}-${index}-sticky-value);\n`
            + 'z-index: 3;\n'
            + `box-shadow: ${shadowValue};`
         + '}';
@@ -79,9 +98,9 @@ class Fixed {
             if (index === leftLen - 1) {
                 shadowValue = `2px 0 4px ${SHADOW_COLOR}`;
             }
-            styleStr += getStickyCss(_, col.index, LEFT, shadowValue, pl);
+            styleStr += getStickyCss(_, col.index, LEFT, shadowValue);
             col.pl = pl;
-            pl += parseInt(col.width, 10);
+            pl += col.width;
             $fakeTh.css({
                 height: theadHeight,
                 lineHeight: theadHeight,
@@ -108,11 +127,12 @@ class Fixed {
                 lineHeight: theadHeight,
                 boxShadow: shadowValue
             });
-            styleStr += getStickyCss(_, col.index, RIGHT, shadowValue, pr);
+            styleStr += getStickyCss(_, col.index, RIGHT, shadowValue);
             col.pr = pr;
-            pr += parseInt(col.width, 10);
+            pr += col.width;
         });
-        $fakeThead.css('padding-right', pr - 1); // -1是容错处理: 由于Table元素的特性需要放宽一个像素(todo 需要验证现在是否还需要)
+        // $fakeThead.css('padding-right', pr - 1); // -1是容错处理: 由于Table元素的特性需要放宽一个像素(todo 需要验证现在是否还需要)
+        $fakeThead.css('padding-right', pr);
 
         styleLink.innerHTML = styleStr;
         $tableDiv.append(styleLink);
@@ -126,8 +146,9 @@ class Fixed {
      */
     updateFakeThead(_) {
         const $tableDiv = getDiv(_);
+        const tableDivStyle = $tableDiv.get(0).style;
         const scrollLeft = $tableDiv.scrollLeft();
-        const theadWidth = getFakeThead(_).width();
+        const theadWidth = getThead(_).width();
         const tbodyHeight = getTbody(_).height();
 
         // 性能: 当属性未变更时，不再执行DOM操作
@@ -142,12 +163,23 @@ class Fixed {
             theadWidth,
             tbodyHeight
         };
-
+        getFakeThead(_).width(theadWidth);
         // left fixed
         if (FIXED_LEFT_MAP[_] && FIXED_LEFT_MAP[_].length) {
+            let pl = 0;
+            let width;
             each(FIXED_LEFT_MAP[_], col => {
-                getFakeTh(_, col.key).css('left', col.pl + scrollLeft);
+                width = getTh(_, col.key).width();
+                getFakeTh(_, col.key).css({
+                    width,
+                    'left': pl + scrollLeft
+                });
+
+                setDirectionValue(_, tableDivStyle, col.index, pl);
+                // 不直接使用col的原因: 浏览器缩放时，固定列不会跟随变更
+                pl += width;
             });
+            getFakeThead(_).css('padding-left', pl);
         }
 
         // right fixed
@@ -159,9 +191,18 @@ class Fixed {
                 scrollRight += scroll.width;
             }
 
+            let pr = 0;
+            let width;
             FIXED_RIGHT_MAP[_].forEach(col => {
-                getFakeTh(_, col.key).css('right', col.pr + scrollRight);
+                width = getTh(_, col.key).width();
+                getFakeTh(_, col.key).css({
+                    width,
+                    'right': pr + scrollRight
+                });
+                setDirectionValue(_, tableDivStyle, col.index, pr);
+                pr += getTh(_, col.key).width();
             });
+            getFakeThead(_).css('padding-right', pr);
         }
     }
 

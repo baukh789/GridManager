@@ -316,7 +316,7 @@ class MoveRow {
             isAutoCreate: true,
             isShow: true,
             disableCustomize: true,
-            width: '30px',
+            width: 30,
             fixed,
             template: () => {
                 return '<td gm-create gm-moverow><i class="gm-icon gm-icon-move"></i></td>';

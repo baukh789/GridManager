@@ -122,7 +122,7 @@ describe('moveRow', () => {
             expect(col.isAutoCreate).toBe(true);
             expect(col.isShow).toBe(true);
             expect(col.disableCustomize).toBe(true);
-            expect(col.width).toBe('30px');
+            expect(col.width).toBe(30);
             expect(col.fixed).toBeUndefined();
             expect(col.template()).toBe('<td gm-create gm-moverow><i class="gm-icon gm-icon-move"></i></td>');
         });
@@ -133,7 +133,7 @@ describe('moveRow', () => {
             expect(col.isAutoCreate).toBe(true);
             expect(col.isShow).toBe(true);
             expect(col.disableCustomize).toBe(true);
-            expect(col.width).toBe('30px');
+            expect(col.width).toBe(30);
             expect(col.fixed).toBe('left');
             expect(col.template()).toBe('<td gm-create gm-moverow><i class="gm-icon gm-icon-move"></i></td>');
         });

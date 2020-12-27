@@ -31,9 +31,8 @@ import {
     getThTextWidth,
     updateScrollStatus,
     clearTargetEvent,
-    getAllTh,
-    getAllFakeTh,
-    getThName
+    getThName,
+    getTh
 } from '@common/base';
 import { NO_SELECT_CLASS_NAME } from '@common/constants';
 import { getSettings, updateCache } from '@common/cache';
@@ -41,7 +40,6 @@ import { EVENTS, TARGET, SELECTOR } from '@common/events';
 import fixed from '@module/fixed';
 import { getEvent, eventMap } from './event';
 import { CLASS_ADJUST_ACTION, CLASS_ADJUST_ING } from './constants';
-import { each } from '@jTool/utils';
 
 /**
  * 执行移动事件
@@ -122,11 +120,11 @@ const runStopEvent = (_, $table, $th, $td, adjustAfter) => {
         jTool(abort[TARGET]).off(abort[EVENTS]);
         jTool(doing[TARGET]).off(doing[EVENTS], doing[SELECTOR]);
 
-        const $allTh = getAllTh(_);
-        // 修改与置顶thead 对应的 thead
-        each(getAllFakeTh(_), (th, i) => {
-            $allTh.eq(i).width(jTool(th).width());
-        });
+        const settings = updateCache(_, true);
+        const columnMap = settings.columnMap;
+        for (let key in columnMap) {
+            getTh(_, key).width(columnMap[key].width);
+        }
 
         // 更新滚动轴状态
         updateScrollStatus(_);
@@ -138,7 +136,9 @@ const runStopEvent = (_, $table, $th, $td, adjustAfter) => {
         $th.find(`.${CLASS_ADJUST_ING}`).remove();
 
         // 更新存储信息
-        updateCache(_);
+        // updateCache(_);
+
+        // fixed.updateFakeThead(_);
     });
 };
 class Adjust {

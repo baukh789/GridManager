@@ -342,7 +342,6 @@ export const updateThWidth = (settings, isInit) => {
     let firstCol;
     each(columnMap, (key, col) => {
         let { __width, width, isShow, pk, children } = col;
-
         // 不可见列: 不处理
         if (!isShow) {
             return;
@@ -355,21 +354,21 @@ export const updateThWidth = (settings, isInit) => {
 
         // 禁用定制列: 仅统计总宽，不进行宽度处理
         if (col[DISABLE_CUSTOMIZE]) {
-            totalWidth -= parseInt(width, 10);
+            totalWidth -= width;
             return;
         }
 
         // 已设置宽度并存在子项: 进行平均值处理，以保证在渲染时值可以平分
         if (width && width !== 'auto' && __isNested && isValidArray(children)) {
             const num = col.colspan;
-            col.width = width = parseInt(parseInt(width, 10) / num, 10) * num + PX;
+            col.width = width = parseInt(width / num, 10) * num;
         }
 
         // 自适应列: 更新为最小宽度，统计总宽，收录自适应列数组
         if ((isInit && (!width || width === 'auto')) ||
             (!isInit && (!__width || __width === 'auto'))) {
-            col.width = getThTextWidth(_, col, isIconFollowText, __isNested) + PX;
-            usedTotalWidth += parseInt(col.width, 10);
+            col.width = getThTextWidth(_, col, isIconFollowText, __isNested);
+            usedTotalWidth += col.width;
 
             // 存在嵌套子项的列 与 不存在嵌套子项的列分开存储
             if (__isNested && isValidArray(children)) {
@@ -382,13 +381,13 @@ export const updateThWidth = (settings, isInit) => {
 
         // init
         if (isInit) {
-            usedTotalWidth += parseInt(width, 10);
+            usedTotalWidth += width;
         }
 
         // not init
         if (!isInit) {
             col.width = __width;
-            usedTotalWidth += parseInt(__width, 10);
+            usedTotalWidth += __width;
         }
 
         // 通过col.index更新首列
@@ -411,14 +410,14 @@ export const updateThWidth = (settings, isInit) => {
         each(autoNestedList, col => {
             const num = col.colspan;
             splitVal = parseInt(parseInt(splitVal, 10) / num, 10) * num;
-            col.width = parseInt(col.width, 10) + splitVal + PX;
+            col.width = col.width + splitVal;
             overage = overage - splitVal;
         });
     }
 
     // 存在剩余的值: 未存在自动列, 将第一个可定制列宽度强制与剩余宽度相加
     if (firstCol && overage > 0 && !autoLen) {
-        firstCol.width = parseInt(firstCol.width, 10) + overage + PX;
+        firstCol.width = firstCol.width + overage;
     }
 
     // 存在剩余宽度: 存在普通自动列, 平分剩余的宽度
@@ -427,10 +426,10 @@ export const updateThWidth = (settings, isInit) => {
         each(autoList, (col, index) => {
             // 最后一项自动列: 将余值全部赋予
             if (index === autoLen - 1) {
-                col.width = parseInt(col.width, 10) + overage + PX;
+                col.width = col.width + overage;
                 return;
             }
-            col.width = parseInt(col.width, 10) + splitVal + PX;
+            col.width = col.width + splitVal;
             overage = overage - splitVal;
         });
     }

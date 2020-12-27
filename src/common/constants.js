@@ -66,7 +66,7 @@ export const CACHE_ERROR_KEY = 'grid-manager-cache-error';
 export const EMPTY_TPL_KEY = 'empty-template';
 
 // order width
-export const ORDER_WIDTH = '50px';
+export const ORDER_WIDTH = 50;
 
 // fold: key
 export const FOLD_KEY = 'gm_fold';
@@ -75,7 +75,7 @@ export const FOLD_KEY = 'gm_fold';
 export const ORDER_KEY = 'gm_order';
 
 // checkbox width
-export const CHECKBOX_WIDTH = '40px';
+export const CHECKBOX_WIDTH = 40;
 
 // moverow key
 export const MOVEROW_KEY = 'gm_moverow';

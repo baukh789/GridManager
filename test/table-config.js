@@ -9,10 +9,10 @@ export function getColumnMap() {
             'isAutoCreate': true,
             'isShow': true,
             'disableCustomize': true,
-            'width': '40px',
+            'width': 40,
             'align': 'center',
             'index': 0,
-            '__width': '40px',
+            '__width': 40,
             '__isShow': true
         },
         'gm_order': {
@@ -21,27 +21,27 @@ export function getColumnMap() {
             'isAutoCreate': true,
             'isShow': true,
             'disableCustomize': true,
-            'width': '50px',
+            'width': 50,
             'align': 'center',
             'index': 1,
-            '__width': '50px',
+            '__width': 50,
             '__isShow': true
         },
         'pic': {
             'key': 'pic',
             'remind': 'the pic',
-            'width': '110px',
+            'width': 110,
             'align': 'center',
             'text': '缩略图',
             'isShow': true,
             'index': 2,
-            '__width': '110px',
+            '__width': 110,
             '__isShow': true
         },
         'title': {
             'key': 'title',
             'remind': 'the title',
-            'width': '508px',
+            'width': 508,
             'align': 'left',
             'text': '标题',
             'sorting': '',
@@ -54,7 +54,7 @@ export function getColumnMap() {
             'remind': 'the type',
             'text': '博文分类',
             'align': 'center',
-            'width': '150px',
+            'width': 150,
             'sorting': '',
             'filter': {
                 'option': [{
@@ -84,60 +84,60 @@ export function getColumnMap() {
             },
             'isShow': true,
             'index': 4,
-            '__width': '150px',
+            '__width': 150,
             '__isShow': true
         },
         'info': {
             'key': 'info',
             'remind': 'the info',
-            'width': '100px',
+            'width': 100,
             'text': '简介',
             'isShow': true,
             'index': 5,
-            '__width': '100px',
+            '__width': 100,
             '__isShow': true
         },
         'username': {
             'key': 'username',
             'remind': 'the username',
             'align': 'center',
-            'width': '100px',
+            'width': 100,
             'text': '作者',
             'isShow': true,
             'index': 6,
-            '__width': '100px',
+            '__width': 100,
             '__isShow': true
         },
         'createDate': {
             'key': 'createDate',
-            'width': '130px',
+            'width': 130,
             'text': '创建时间',
             'sorting': 'DESC',
             'isShow': true,
             'index': 7,
-            '__width': '130px',
+            '__width': 130,
             '__isShow': true
         },
         'lastDate': {
             'key': 'lastDate',
-            'width': '130px',
+            'width': 130,
             'text': '最后修改时间',
             'sorting': '',
             'isShow': true,
             'index': 8,
-            '__width': '130px',
+            '__width': 130,
             '__isShow': true
         },
         'action': {
             'key': 'action',
             'remind': 'the action',
-            'width': '100px',
+            'width': 100,
             'align': 'center',
             'disableCustomize': true,
             'text': '<span style="color: red">操作</span>',
             'isShow': true,
             'index': 9,
-            '__width': '100px',
+            '__width': 100,
             '__isShow': true
         }
     };

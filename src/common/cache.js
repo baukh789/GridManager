@@ -4,10 +4,22 @@
 * 1.Store: 渲染表格时所使用的json数据 [存储在GM实例]
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
-import { getCloneRowData, getTable, getTh } from '@common/base';
-import { isUndefined, isFunction, isObject, isString, isNumber, isValidArray, isElement, each, isNodeList, extend, getBrowser } from '@jTool/utils';
+import {getCloneRowData, getFakeTh, getTable, getTh} from '@common/base';
+import {
+    isUndefined,
+    isFunction,
+    isObject,
+    isString,
+    isValidArray,
+    isElement,
+    each,
+    isNodeList,
+    extend,
+    getBrowser,
+    isNumber
+} from '@jTool/utils';
 import { outInfo, outError, equal, getObjectIndexToArray, cloneObject } from '@common/utils';
-import { DISABLE_CUSTOMIZE, PX } from '@common/constants';
+import { DISABLE_CUSTOMIZE } from '@common/constants';
 import { Settings } from '@common/Settings';
 import TextConfig from '@module/i18n/config';
 import store from '@common/Store';
@@ -541,9 +553,10 @@ export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumn
                 return;
             }
 
-            // 宽度转换: 100 => 100px
-            if (isNumber(col.width)) {
-                col.width = `${col.width}px`;
+            // 宽度转换: 100px => 100
+            // 不使用isString的原因: 存在'30'类型的数据
+            if (col.width && !isNumber(col.width)) {
+                col.width = parseInt(col.width, 10);
             }
 
             // 属性: 表头提醒
@@ -704,17 +717,26 @@ export const getSettings = _ => {
  * @param settings
  */
 export const setSettings = settings => {
+    console.warn('setSettings');
     store.settings[settings._] = extend(true, {}, settings);
 };
 
 /**
  * 更新Cache, 包含[更新表格列Map, 重置settings, 存储用户记忆]
  * @param _
+ * @param useFakeTh: 是否使用fake th
  */
-export const updateCache = _ => {
+export const updateCache = (_, useFakeTh) => {
+    console.warn('setSettings');
     const settings = getSettings(_);
     const columnMap = settings.columnMap;
 
+    const getThFn = (_, key) => {
+        if (useFakeTh) {
+            return getFakeTh(_, key);
+        }
+        return getTh(_, key);
+    };
     // 更新 columnMap , 适用操作[宽度调整, 位置调整, 可视状态调整]
     each(columnMap, (key, col) => {
         // 禁用定制列: 不处理
@@ -722,10 +744,11 @@ export const updateCache = _ => {
             return;
         }
 
-        let th = getTh(_, col.key);
+        let th = getThFn(_, col.key);
         // 宽度
-        col.width = th.width() + PX;
+        col.width = th.width();
 
+        console.log('updateCache', col.key, col.width);
         // 位置索引
         col.index = th.index();
 

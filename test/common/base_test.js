@@ -718,58 +718,58 @@ describe('base', () => {
 
         it('初始化时的更新', () => {
             updateThWidth(settings, true);
-            expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
-            expect(settings.columnMap['gm_order'].width).toBe('50px');
-            expect(settings.columnMap['pic'].width).toBe('110px');
-            expect(settings.columnMap['title'].width).toBe('508px');
-            expect(settings.columnMap['type'].width).toBe('150px');
-            expect(settings.columnMap['info'].width).toBe('100px');
-            expect(settings.columnMap['username'].width).toBe('100px');
-            expect(settings.columnMap['createDate'].width).toBe('130px');
-            expect(settings.columnMap['lastDate'].width).toBe('130px');
-            expect(settings.columnMap['action'].width).toBe('100px');
+            expect(settings.columnMap['gm_checkbox'].width).toBe(40);
+            expect(settings.columnMap['gm_order'].width).toBe(50);
+            expect(settings.columnMap['pic'].width).toBe(110);
+            expect(settings.columnMap['title'].width).toBe(508);
+            expect(settings.columnMap['type'].width).toBe(150);
+            expect(settings.columnMap['info'].width).toBe(100);
+            expect(settings.columnMap['username'].width).toBe(100);
+            expect(settings.columnMap['createDate'].width).toBe(130);
+            expect(settings.columnMap['lastDate'].width).toBe(130);
+            expect(settings.columnMap['action'].width).toBe(100);
         });
 
         it('非初始化时的更新', () => {
             updateThWidth(settings, false);
-            expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
-            expect(settings.columnMap['gm_order'].width).toBe('50px');
-            expect(settings.columnMap['pic'].width).toBe('110px');
-            expect(settings.columnMap['title'].width).toBe('290px');
-            expect(settings.columnMap['type'].width).toBe('150px');
-            expect(settings.columnMap['info'].width).toBe('100px');
-            expect(settings.columnMap['username'].width).toBe('100px');
-            expect(settings.columnMap['createDate'].width).toBe('130px');
-            expect(settings.columnMap['lastDate'].width).toBe('130px');
-            expect(settings.columnMap['action'].width).toBe('100px');
+            expect(settings.columnMap['gm_checkbox'].width).toBe(40);
+            expect(settings.columnMap['gm_order'].width).toBe(50);
+            expect(settings.columnMap['pic'].width).toBe(110);
+            expect(settings.columnMap['title'].width).toBe(290);
+            expect(settings.columnMap['type'].width).toBe(150);
+            expect(settings.columnMap['info'].width).toBe(100);
+            expect(settings.columnMap['username'].width).toBe(100);
+            expect(settings.columnMap['createDate'].width).toBe(130);
+            expect(settings.columnMap['lastDate'].width).toBe(130);
+            expect(settings.columnMap['action'].width).toBe(100);
         });
 
         it('隐藏一个定制列', () => {
             updateThWidth(settings, false);
-            expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
-            expect(settings.columnMap['gm_order'].width).toBe('50px');
-            expect(settings.columnMap['pic'].width).toBe('110px');
-            expect(settings.columnMap['title'].width).toBe('290px');
-            expect(settings.columnMap['type'].width).toBe('150px');
-            expect(settings.columnMap['info'].width).toBe('100px');
-            expect(settings.columnMap['username'].width).toBe('100px');
-            expect(settings.columnMap['createDate'].width).toBe('130px');
-            expect(settings.columnMap['lastDate'].width).toBe('130px');
-            expect(settings.columnMap['action'].width).toBe('100px');
+            expect(settings.columnMap['gm_checkbox'].width).toBe(40);
+            expect(settings.columnMap['gm_order'].width).toBe(50);
+            expect(settings.columnMap['pic'].width).toBe(110);
+            expect(settings.columnMap['title'].width).toBe(290);
+            expect(settings.columnMap['type'].width).toBe(150);
+            expect(settings.columnMap['info'].width).toBe(100);
+            expect(settings.columnMap['username'].width).toBe(100);
+            expect(settings.columnMap['createDate'].width).toBe(130);
+            expect(settings.columnMap['lastDate'].width).toBe(130);
+            expect(settings.columnMap['action'].width).toBe(100);
         });
 
         it('隐藏一个拥有宽度的可定制列', () => {
             settings.columnMap['pic'].isShow = false;
             updateThWidth(settings, false);
-            expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
-            expect(settings.columnMap['gm_order'].width).toBe('50px');
-            expect(settings.columnMap['title'].width).toBe('400px');
-            expect(settings.columnMap['type'].width).toBe('150px');
-            expect(settings.columnMap['info'].width).toBe('100px');
-            expect(settings.columnMap['username'].width).toBe('100px');
-            expect(settings.columnMap['createDate'].width).toBe('130px');
-            expect(settings.columnMap['lastDate'].width).toBe('130px');
-            expect(settings.columnMap['action'].width).toBe('100px');
+            expect(settings.columnMap['gm_checkbox'].width).toBe(40);
+            expect(settings.columnMap['gm_order'].width).toBe(50);
+            expect(settings.columnMap['title'].width).toBe(400);
+            expect(settings.columnMap['type'].width).toBe(150);
+            expect(settings.columnMap['info'].width).toBe(100);
+            expect(settings.columnMap['username'].width).toBe(100);
+            expect(settings.columnMap['createDate'].width).toBe(130);
+            expect(settings.columnMap['lastDate'].width).toBe(130);
+            expect(settings.columnMap['action'].width).toBe(100);
         });
 
         it('仅有一个自动和两个拥有宽度的定制列', () => {
@@ -778,12 +778,12 @@ describe('base', () => {
             settings.columnMap['info'].isShow = false;
             settings.columnMap['username'].isShow = false;
             updateThWidth(settings, false);
-            expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
-            expect(settings.columnMap['gm_order'].width).toBe('50px');
-            expect(settings.columnMap['title'].width).toBe('750px');
-            expect(settings.columnMap['createDate'].width).toBe('130px');
-            expect(settings.columnMap['lastDate'].width).toBe('130px');
-            expect(settings.columnMap['action'].width).toBe('100px');
+            expect(settings.columnMap['gm_checkbox'].width).toBe(40);
+            expect(settings.columnMap['gm_order'].width).toBe(50);
+            expect(settings.columnMap['title'].width).toBe(750);
+            expect(settings.columnMap['createDate'].width).toBe(130);
+            expect(settings.columnMap['lastDate'].width).toBe(130);
+            expect(settings.columnMap['action'].width).toBe(100);
         });
 
         it('仅有两个拥有宽度的定制列', () => {
@@ -793,11 +793,11 @@ describe('base', () => {
             settings.columnMap['username'].isShow = false;
             settings.columnMap['title'].isShow = false;
             updateThWidth(settings, false);
-            expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
-            expect(settings.columnMap['gm_order'].width).toBe('50px');
-            expect(settings.columnMap['createDate'].width).toBe('880px');
-            expect(settings.columnMap['lastDate'].width).toBe('130px');
-            expect(settings.columnMap['action'].width).toBe('100px');
+            expect(settings.columnMap['gm_checkbox'].width).toBe(40);
+            expect(settings.columnMap['gm_order'].width).toBe(50);
+            expect(settings.columnMap['createDate'].width).toBe(880);
+            expect(settings.columnMap['lastDate'].width).toBe(130);
+            expect(settings.columnMap['action'].width).toBe(100);
         });
 
         it('仅有一个拥有宽度的定制列', () => {
@@ -808,10 +808,10 @@ describe('base', () => {
             settings.columnMap['title'].isShow = false;
             settings.columnMap['createDate'].isShow = false;
             updateThWidth(settings, false);
-            expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
-            expect(settings.columnMap['gm_order'].width).toBe('50px');
-            expect(settings.columnMap['lastDate'].width).toBe('1010px');
-            expect(settings.columnMap['action'].width).toBe('100px');
+            expect(settings.columnMap['gm_checkbox'].width).toBe(40);
+            expect(settings.columnMap['gm_order'].width).toBe(50);
+            expect(settings.columnMap['lastDate'].width).toBe(1010);
+            expect(settings.columnMap['action'].width).toBe(100);
         });
 
         it('打开一个拥有宽度的定制列', () => {
@@ -822,11 +822,11 @@ describe('base', () => {
             settings.columnMap['title'].isShow = false;
             settings.columnMap['createDate'].isShow = false;
             updateThWidth(settings, false);
-            expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
-            expect(settings.columnMap['gm_order'].width).toBe('50px');
-            expect(settings.columnMap['type'].width).toBe('880px');
-            expect(settings.columnMap['lastDate'].width).toBe('130px');
-            expect(settings.columnMap['action'].width).toBe('100px');
+            expect(settings.columnMap['gm_checkbox'].width).toBe(40);
+            expect(settings.columnMap['gm_order'].width).toBe(50);
+            expect(settings.columnMap['type'].width).toBe(880);
+            expect(settings.columnMap['lastDate'].width).toBe(130);
+            expect(settings.columnMap['action'].width).toBe(100);
         });
 
         it('打开一个自适应宽度的定制列', () => {
@@ -837,12 +837,12 @@ describe('base', () => {
             settings.columnMap['title'].isShow = true;
             settings.columnMap['createDate'].isShow = false;
             updateThWidth(settings, false);
-            expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
-            expect(settings.columnMap['gm_order'].width).toBe('50px');
-            expect(settings.columnMap['type'].width).toBe('150px');
-            expect(settings.columnMap['title'].width).toBe('730px');
-            expect(settings.columnMap['lastDate'].width).toBe('130px');
-            expect(settings.columnMap['action'].width).toBe('100px');
+            expect(settings.columnMap['gm_checkbox'].width).toBe(40);
+            expect(settings.columnMap['gm_order'].width).toBe(50);
+            expect(settings.columnMap['type'].width).toBe(150);
+            expect(settings.columnMap['title'].width).toBe(730);
+            expect(settings.columnMap['lastDate'].width).toBe(130);
+            expect(settings.columnMap['action'].width).toBe(100);
         });
 
         it('再打开一个自适应宽度的定制列', () => {
@@ -858,17 +858,17 @@ describe('base', () => {
             let titleThTextWidth = getThTextWidth('test', settings.columnMap['title'], settings.isIconFollowText);
             let overage = 1200 - 40 - 50 - 150 - 130 - 100 - picThTextWidth - titleThTextWidth;
             updateThWidth(settings, false);
-            expect(settings.columnMap['gm_checkbox'].width).toBe('40px');
-            expect(settings.columnMap['gm_order'].width).toBe('50px');
+            expect(settings.columnMap['gm_checkbox'].width).toBe(40);
+            expect(settings.columnMap['gm_order'].width).toBe(50);
 
             // windows 系统不执行以下脚本
             if (navigator.platform !== 'Win32') {
-                expect(settings.columnMap['pic'].width).toBe(`${overage / 2 + picThTextWidth}px`);
-                expect(settings.columnMap['title'].width).toBe(`${overage / 2 + titleThTextWidth}px`);
+                expect(settings.columnMap['pic'].width).toBe(overage / 2 + picThTextWidth);
+                expect(settings.columnMap['title'].width).toBe(overage / 2 + titleThTextWidth);
             }
-            expect(settings.columnMap['type'].width).toBe('150px');
-            expect(settings.columnMap['lastDate'].width).toBe('130px');
-            expect(settings.columnMap['action'].width).toBe('100px');
+            expect(settings.columnMap['type'].width).toBe(150);
+            expect(settings.columnMap['lastDate'].width).toBe(130);
+            expect(settings.columnMap['action'].width).toBe(100);
 
             picThTextWidth = null;
             titleThTextWidth = null;

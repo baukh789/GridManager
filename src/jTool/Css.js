@@ -37,7 +37,8 @@ export default {
         if (isString(key) && isUndefined(value)) {
             let style = getStyle(DOMList[0], key);
             if (isPxAttr(key)) {
-                style = parseInt(style, 10);
+                // style = parseInt(style, 10);
+                style = parseFloat(style);
             }
             return style;
         }

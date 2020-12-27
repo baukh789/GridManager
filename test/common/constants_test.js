@@ -1,7 +1,6 @@
 import {
     GM_VERSION,
     TABLE_KEY,
-    RENDERING_KEY,
     WRAP_KEY,
     DIV_KEY,
     CONFIG_KEY,
@@ -101,7 +100,7 @@ describe('常量验证', () => {
     });
 
     it('ORDER_WIDTH', () => {
-        expect(ORDER_WIDTH).toBe('50px');
+        expect(ORDER_WIDTH).toBe(50);
     });
 
     it('ORDER_KEY', () => {
@@ -109,7 +108,7 @@ describe('常量验证', () => {
     });
 
     it('CHECKBOX_WIDTH', () => {
-        expect(CHECKBOX_WIDTH).toBe('40px');
+        expect(CHECKBOX_WIDTH).toBe(40);
     });
 
     it('CHECKBOX_KEY', () => {

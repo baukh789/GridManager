@@ -785,7 +785,7 @@ describe('cache', () => {
                     isAutoCreate: true,
                     isShow: true,
                     disableCustomize: true,
-                    width: '30px',
+                    width: 30,
                     fixed,
                     template: () => {
                         return '<td gm-create gm-moverow><i class="gm-icon gm-icon-move"></i></td>';
@@ -827,7 +827,7 @@ describe('cache', () => {
                     isAutoCreate: true,
                     isShow: true,
                     disableCustomize: true,
-                    width: '40px',
+                    width: 40,
                     template: () => {
                         return '<td gm-create gm-fold><span full-column-fold><i class="gm-icon gm-icon-add"></i></span></td>';
                     }
@@ -872,7 +872,7 @@ describe('cache', () => {
             };
             settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
 
-            expect(settings.columnMap['gm_moverow'].width).toBe('30px');
+            expect(settings.columnMap['gm_moverow'].width).toBe(30);
         });
 
 
@@ -886,7 +886,7 @@ describe('cache', () => {
             };
             settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
 
-            expect(settings.columnMap['gm_fold'].width).toBe('40px');
+            expect(settings.columnMap['gm_fold'].width).toBe(40);
         });
 
         it('存在width为number类型', () => {
@@ -894,7 +894,7 @@ describe('cache', () => {
             arg.columnData[0].width = 200;
             settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
 
-            expect(settings.columnMap[key].width).toBe('200px');
+            expect(settings.columnMap[key].width).toBe(200);
 
             key = null;
         });
@@ -953,18 +953,18 @@ describe('cache', () => {
             // 当前无用户记忆
             arg.disableCache = false;
             settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
-            expect(settings.columnMap.pic.width).toBe('110px');
+            expect(settings.columnMap.pic.width).toBe(110);
         });
 
         it('开启缓存: 当前有用户记忆', () => {
-            columnMap.pic.width = '120px';
+            columnMap.pic.width = 120;
             window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
                 '/context.html#userList-test': JSON.stringify({column: columnMap, page: {pSize: 20}})
             }));
 
             arg.disableCache = false;
             settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
-            expect(settings.columnMap.pic.width).toBe('120px');
+            expect(settings.columnMap.pic.width).toBe(120);
         });
 
         it('开启缓存: 与用户记忆数量不匹配', () => {
@@ -979,7 +979,7 @@ describe('cache', () => {
         });
 
         it('开启缓存: 与用户记忆项不匹配', () => {
-            columnMap.pic.__width = '120px';
+            columnMap.pic.__width = 120;
             window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
                 '/context.html#userList-test': JSON.stringify({column: columnMap, page: {pSize: 20}})
             }));
@@ -1062,7 +1062,7 @@ describe('cache', () => {
 
         it('基础验证', () => {
             expect(updateCache).toBeDefined();
-            expect(updateCache.length).toBe(1);
+            expect(updateCache.length).toBe(2);
         });
 
         it('执行验证', () => {
