@@ -79,6 +79,14 @@
         }
     }
 }
+
+// 禁用文本的情况下，禁止触发表头提醒。添加后可以解决宽度调整时因为触发了表头提醒，而导致宽度调整中止
+.no-select-text{
+    .gm-remind-action{
+        pointer-events: none;
+    }
+}
+
 // 表头的icon图标跟随文本
 .gm-icon-follow-text{
     .gm-remind-action{
