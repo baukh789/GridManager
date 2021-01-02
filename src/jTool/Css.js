@@ -1,4 +1,4 @@
-import { getStyle, isObject, isNumber, isString, each, isUndefined, getDomList } from './utils';
+import {getStyle, isObject, isNumber, isString, each, isUndefined, getDomList, isNull} from './utils';
 
 /**
  * 当前属性的单位是否为px
@@ -17,6 +17,9 @@ const isPxAttr = name => {
  */
 function setStyle(DOMList, name, val) {
     const PX = 'px';
+    if (isNull(val) || isUndefined(val)) {
+        return;
+    }
     if (isNumber(val)) {
         val = val.toString();
     }
@@ -39,6 +42,7 @@ export default {
             if (isPxAttr(key)) {
                 // style = parseInt(style, 10);
                 style = parseFloat(style);
+                // style = Math.round(parseFloat(style) * 100) / 100;
             }
             return style;
         }

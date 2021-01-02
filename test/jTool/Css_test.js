@@ -91,4 +91,10 @@ describe('Css', () => {
 		expect(divEle3.style.color).toBe('rgb(255, 255, 255)');
 		expect(divEle3.style.fontSize).toBe('18px');
 	});
+
+    it('设置 css 为无效值', () => {
+        jTool('#div2').css({height: undefined, width: null});
+        expect(divEle2.style.height).toBe('');
+        expect(divEle2.style.width).toBe('');
+    });
 });
