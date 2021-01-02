@@ -93,7 +93,7 @@ class Tree {
 
         $tr ? updateState($tr, state) : updateAllState(state);
 
-        fixed.updateFakeThead(_);
+        fixed.update(_);
     }
 
     /**

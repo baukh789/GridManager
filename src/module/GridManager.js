@@ -18,9 +18,24 @@ import {
     isValidArray
 } from '@jTool/utils';
 import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, READY_CLASS_NAME, PX } from '@common/constants';
-import { showLoading, hideLoading, getCloneRowData, getKey, getThead, getFakeThead, getAllTh, calcLayout, updateThWidth, setAreVisible, getFakeTh, updateVisibleLast, updateScrollStatus } from '@common/base';
+import {
+    showLoading,
+    hideLoading,
+    getCloneRowData,
+    getKey,
+    getThead,
+    getFakeThead,
+    getAllTh,
+    calcLayout,
+    updateThWidth,
+    setAreVisible,
+    getFakeTh,
+    updateVisibleLast,
+    updateScrollStatus,
+    getTable
+} from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
-import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable } from '@common/cache';
+import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable, updateCache } from '@common/cache';
 import { clearCacheDOM } from '@common/domCache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
@@ -81,7 +96,7 @@ export default class GridManager {
             table['__' + item] = table.getAttribute(item);
         });
 
-        const $table = jTool(table);
+        let $table = jTool(table);
         arg = extend({}, GridManager.defaultOption, arg);
 
         let gridManagerName = arg.gridManagerName;
@@ -110,9 +125,15 @@ export default class GridManager {
             GridManager.destroy(gridManagerName);
         }
 
-        // 渲染队列: 验证是否已经存在
-        if (RENDER_QUEUE[gridManagerName]) {
+        // 渲染队列: 当前队列已存在 且 已经开始渲染
+        if (RENDER_QUEUE[gridManagerName] && !SIV_waitTableAvailable[gridManagerName]) {
             return;
+        }
+
+        // 渲染队列: 当前队列已存在 且 未进行渲染
+        if (RENDER_QUEUE[gridManagerName] && SIV_waitTableAvailable[gridManagerName]) {
+            clearInterval(SIV_waitTableAvailable[gridManagerName]);
+            delete SIV_waitTableAvailable[gridManagerName];
         }
         // 渲染队列: 新增(暂时不需要存储有用的数据，使用)
         RENDER_QUEUE[gridManagerName] = true;
@@ -238,17 +259,24 @@ export default class GridManager {
                 core.insertEmptyTemplate(settings, true);
                 runCallback();
             })();
+
+            // table实例完成后，重置表头[angular 中必须要这么做]
+            scroll.update(settings._);
         };
 
         // 初始化表格
         // 表格不可用时进行等待, 并且对相同gridManagerName的表格进行覆盖以保证只渲染一次
+        clearInterval(SIV_waitTableAvailable[gridManagerName]);
         SIV_waitTableAvailable[gridManagerName] = setInterval(() => {
+            // 重新获取dom: 在react框架版本中，参数table会在gm-react componentDidUpdate时出现变更的情况
+            $table = getTable(gridManagerName);
+            table = $table.get(0);
             if (getStyle(table, 'width').indexOf(PX) === -1) {
                 return;
             }
 
             clearInterval(SIV_waitTableAvailable[gridManagerName]);
-            SIV_waitTableAvailable[gridManagerName] = null;
+            delete SIV_waitTableAvailable[gridManagerName];
 
             // 初始化表格, setInterval未停止前 initTable并不会执行
             this.initTable($table, settings).then(initTableAfter);
@@ -320,7 +348,6 @@ export default class GridManager {
      * @param table
      * @param width
      * @param height
-     * @returns {string}
      */
 	static
     resetLayout(table, width, height) {
@@ -328,9 +355,8 @@ export default class GridManager {
         const settings = getSettings(_);
         if (isRendered(_, settings)) {
             calcLayout(_, width, height, settings.supportAjaxPage);
-            updateThWidth(settings);
-            updateScrollStatus(_);
-            scroll.update(_, true);
+
+            scroll.update(_);
         }
     }
 
@@ -834,11 +860,7 @@ export default class GridManager {
         // 在各模块的初始化中会对settings进行修改，所以需要重新获取一次
         settings = getSettings(_);
         updateThWidth(settings, true);
-
         setSettings(settings);
-
-        // 更新fake header
-        scroll.update(_, true);
 
         // 更新最后一项可视列的标识: 嵌套模式不需要处理
         if (settings.__isNested) {
@@ -859,6 +881,9 @@ export default class GridManager {
         each(getAllTh(_), item => {
             item.innerHTML = '';
         });
+
+        // 更新存储信息
+        updateCache(_);
     }
 
     /**

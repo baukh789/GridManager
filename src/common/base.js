@@ -499,9 +499,9 @@ export const getThTextWidth = (_, col, isIconFollowText, __isNested) => {
             filterAction.length && (iconWidth += filterAction.width());
         }
 
-        // 返回宽度值
+        // 返回宽度值: 返回前向上取整
         // 文本所占宽度 + icon所占的空间 + 左内间距 + 右内间距 + (由于使用 table属性: border-collapse: collapse; 和th: border-right引发的table宽度计算容错) + th-wrap减去的1px
-        return textWidth + iconWidth + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1;
+        return Math.ceil(textWidth + iconWidth + (thPaddingLeft || 0) + (thPaddingRight || 0) + 2 + 1);
     };
 
     // 当前未开启多层嵌套表头 或 多层嵌套表头无效
@@ -540,6 +540,38 @@ export const getTextWidth = (_, content, cssObj) => {
     $textDreamland.html(content);
     $textDreamland.css(cssObj);
     return $textDreamland.width();
+    // return Math.ceil($textDreamland.width());
+};
+
+/**
+ * 更新fake thead
+ * @param settings
+ * @param noChange: 指定宽度为未变更，用于节省性能消耗
+ */
+export const updateFakeThead = (settings, noChange) => {
+    const { _, columnMap } = settings;
+    const $tableDiv = getDiv(_);
+    if (!$tableDiv.length) {
+        return;
+    }
+
+    // 重置位置
+    const $fakeThead = getFakeThead(_);
+    $fakeThead.css('left', -$tableDiv.scrollLeft() + PX);
+
+    // 重置宽度
+    if (!noChange) {
+        let width;
+
+        for (let key in columnMap) {
+            width = columnMap[key].width;
+            getFakeTh(_, key).css({
+                width,
+                'max-width': width
+            });
+        }
+        $fakeThead.width(getThead(_).width());
+    }
 };
 
 /**

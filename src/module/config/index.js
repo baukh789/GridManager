@@ -4,12 +4,11 @@
 import './style.less';
 import jTool from '@jTool';
 import { each } from '@jTool/utils';
-import { getDiv, updateThWidth, setAreVisible, updateVisibleLast, updateScrollStatus, getFakeTh, getWrap, clearTargetEvent } from '@common/base';
+import { getDiv, updateThWidth, setAreVisible, updateVisibleLast, updateScrollStatus, getFakeTh, getWrap, clearTargetEvent, updateFakeThead } from '@common/base';
 import { updateCache, getSettings } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { CONFIG_KEY, CHECKED_CLASS, TH_NAME, CHECKED, DISABLE_CUSTOMIZE, PX } from '@common/constants';
 import checkbox from '../checkbox';
-import scroll from '../scroll';
 import fixed from '../fixed';
 import configTpl from './config.tpl.html';
 import { getEvent, eventMap } from './event';
@@ -148,16 +147,18 @@ class Config {
      */
     update(_) {
         // 执行前，先对当前的columnMap进行更新
-        const settings = updateCache(_);
+        let settings = updateCache(_);
+        getDiv(_).scrollLeft(0);
 
         // 重置当前可视th的宽度
         updateThWidth(settings);
 
         // 更新存储信息
-        updateCache(_);
+        settings = updateCache(_);
 
         // 处理置顶表头
-        scroll.update(_, true);
+        updateFakeThead(settings);
+        fixed.update(_);
 
         // 更新最后一项可视列的标识
         updateVisibleLast(_);
@@ -165,13 +166,13 @@ class Config {
         // 更新滚动轴显示状态
         updateScrollStatus(_);
 
-        fixed.updateBeforeTh(_);
+        fixed.resetFlag(_);
     }
 
 	/**
 	 * 表格配置区域HTML
      * @param params{configInfo}
-	 * @returns {parseData}
+	 * @returns {}
      */
 	@parseTpl(configTpl)
 	createHtml(params) {

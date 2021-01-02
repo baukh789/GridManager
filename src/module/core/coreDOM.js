@@ -289,7 +289,7 @@ class Dom {
             // 合并单元格
             mergeRow(_, columnMap);
 
-            fixed.updateFakeThead(_);
+            fixed.update(_);
 
             // 增加tbody是否填充满标识
             if ($tbody.height() >= getDiv(_).height()) {

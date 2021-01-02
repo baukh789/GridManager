@@ -717,7 +717,6 @@ export const getSettings = _ => {
  * @param settings
  */
 export const setSettings = settings => {
-    console.warn('setSettings');
     store.settings[settings._] = extend(true, {}, settings);
 };
 
@@ -727,7 +726,6 @@ export const setSettings = settings => {
  * @param useFakeTh: 是否使用fake th
  */
 export const updateCache = (_, useFakeTh) => {
-    console.warn('setSettings');
     const settings = getSettings(_);
     const columnMap = settings.columnMap;
 
@@ -745,10 +743,10 @@ export const updateCache = (_, useFakeTh) => {
         }
 
         let th = getThFn(_, col.key);
+
         // 宽度
         col.width = th.width();
 
-        console.log('updateCache', col.key, col.width);
         // 位置索引
         col.index = th.index();
 

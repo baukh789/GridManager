@@ -38,6 +38,7 @@ import { NO_SELECT_CLASS_NAME } from '@common/constants';
 import { getSettings, updateCache } from '@common/cache';
 import { EVENTS, TARGET, SELECTOR } from '@common/events';
 import fixed from '@module/fixed';
+import scroll from '@module/scroll';
 import { getEvent, eventMap } from './event';
 import { CLASS_ADJUST_ACTION, CLASS_ADJUST_ING } from './constants';
 
@@ -101,7 +102,7 @@ const runMoveEvent = (_, allTh, $th, $nextTh, thMinWidth, thBeforeWidth) => {
         });
 
         // 更新固定列
-        fixed.updateFakeThead(_);
+        fixed.update(_);
     });
 };
 
@@ -129,16 +130,14 @@ const runStopEvent = (_, $table, $th, $td, adjustAfter) => {
         // 更新滚动轴状态
         updateScrollStatus(_);
 
+        // 更新表头置顶
+        scroll.update(_);
+
         adjustAfter(event);
         $table.removeClass(NO_SELECT_CLASS_NAME);
 
         // 删除移动中的虚线标识
         $th.find(`.${CLASS_ADJUST_ING}`).remove();
-
-        // 更新存储信息
-        // updateCache(_);
-
-        // fixed.updateFakeThead(_);
     });
 };
 class Adjust {

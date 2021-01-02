@@ -176,7 +176,7 @@ class Drag {
                 // 更新滚动轴状态
                 updateScrollStatus(_);
 
-                fixed.updateBeforeTh(_);
+                fixed.resetFlag(_);
 
                 // 开启文字选中效果
                 $body.removeClass(NO_SELECT_CLASS_NAME);

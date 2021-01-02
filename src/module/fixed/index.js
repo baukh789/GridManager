@@ -137,46 +137,57 @@ class Fixed {
         styleLink.innerHTML = styleStr;
         $tableDiv.append(styleLink);
 
-        this.updateBeforeTh(_);
+        this.resetFlag(_);
     }
 
     /**
-     * 渲染fake thead: 在scroll事件中触发，原因是fake thead使用了绝对定位，在th使用sticky时，需要实时修正left | right值
+     * 渲染fake thead: 是fake thead使用了绝对定位，在th使用sticky时，需要实时修正left | right值
      * @param _
      */
-    updateFakeThead(_) {
+    update(_) {
         const $tableDiv = getDiv(_);
         const tableDivStyle = $tableDiv.get(0).style;
         const scrollLeft = $tableDiv.scrollLeft();
-        const theadWidth = getThead(_).width();
+        const divWidth = $tableDiv.width();
+        const theadWidth = getFakeThead(_).width();
         const tbodyHeight = getTbody(_).height();
 
         // 性能: 当属性未变更时，不再执行DOM操作
         if (FIXED_CACHE_MAP[_]
+            && FIXED_CACHE_MAP[_].divWidth === divWidth
             && FIXED_CACHE_MAP[_].scrollLeft === scrollLeft
             && FIXED_CACHE_MAP[_].theadWidth === theadWidth
             && FIXED_CACHE_MAP[_].tbodyHeight === tbodyHeight) {
             return;
         }
         FIXED_CACHE_MAP[_] = {
+            divWidth,
             scrollLeft,
             theadWidth,
             tbodyHeight
         };
-        getFakeThead(_).width(theadWidth);
+
+        const overFlow = getDiv(_).attr('gm-overflow-x') === 'true';
+        const getThWidth = (_, col) => {
+            if (overFlow) {
+                return getTh(_, col.key).width();
+            }
+            return col.width;
+        };
+
         // left fixed
         if (FIXED_LEFT_MAP[_] && FIXED_LEFT_MAP[_].length) {
             let pl = 0;
             let width;
             each(FIXED_LEFT_MAP[_], col => {
-                width = getTh(_, col.key).width();
+                // 不直接使用col的原因: 浏览器缩放时，固定列不会跟随变更
+                width = getThWidth(_, col);
                 getFakeTh(_, col.key).css({
                     width,
                     'left': pl + scrollLeft
                 });
 
                 setDirectionValue(_, tableDivStyle, col.index, pl);
-                // 不直接使用col的原因: 浏览器缩放时，固定列不会跟随变更
                 pl += width;
             });
             getFakeThead(_).css('padding-left', pl);
@@ -194,13 +205,14 @@ class Fixed {
             let pr = 0;
             let width;
             FIXED_RIGHT_MAP[_].forEach(col => {
-                width = getTh(_, col.key).width();
+                // 不直接使用col的原因: 浏览器缩放时，固定列不会跟随变更
+                width = getThWidth(_, col);
                 getFakeTh(_, col.key).css({
                     width,
                     'right': pr + scrollRight
                 });
                 setDirectionValue(_, tableDivStyle, col.index, pr);
-                pr += getTh(_, col.key).width();
+                pr += width;
             });
             getFakeThead(_).css('padding-right', pr);
         }
@@ -210,7 +222,7 @@ class Fixed {
      * 更新right fixed previous标识
      * @param _
      */
-    updateBeforeTh(_) {
+    resetFlag(_) {
         // 当前不存在 right fixed
         if (!FIXED_RIGHT_MAP[_] || !FIXED_RIGHT_MAP[_].length) {
             return;
