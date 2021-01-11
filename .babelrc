@@ -5,8 +5,8 @@
 
             {
                 "targets": {
-                    "chrome": "38",
-                    "firefox": "56"
+                    "chrome": "56",
+                    "firefox": "59"
                 },
                 "useBuiltIns": "entry",
                 "corejs": 3
