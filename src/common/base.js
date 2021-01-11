@@ -34,34 +34,34 @@ import { TARGET, EVENTS, SELECTOR } from '@common/events';
 /**
  * 获取clone行数据匹配，修改它并不会污染原数据。
  * @param columnMap
- * @param obj
+ * @param row: 行数据
  * @param cleanKeyList: 指定从clone数据中清除字段列表
  */
-export const getCloneRowData = (columnMap, obj, cleanKeyList) => {
-    let cloneObj = extend(true, {}, obj);
+export const getCloneRowData = (columnMap, row, cleanKeyList) => {
+    let cloneRow = extend(true, {}, row);
 
     // 删除自定义参数: 通过columnMap设置的项
     for (let key in columnMap) {
         if (columnMap[key].isAutoCreate) {
-            delete cloneObj[key];
+            delete cloneRow[key];
         }
     }
 
     // 删除自定义参数: 行禁用标识
-    delete cloneObj[ROW_DISABLED_CHECKBOX];
+    delete cloneRow[ROW_DISABLED_CHECKBOX];
 
     // 删除自定义参数: 行唯一标识
-    delete cloneObj[TR_CACHE_KEY];
+    delete cloneRow[TR_CACHE_KEY];
 
     // 删除自定义参数: 行层级标识
-    delete cloneObj[TR_LEVEL_KEY];
+    delete cloneRow[TR_LEVEL_KEY];
 
     // 删除自定义参数: 为当前行增加一个calssName
-    delete cloneObj[ROW_CLASS_NAME];
+    delete cloneRow[ROW_CLASS_NAME];
 
     // 清除指定字段
-    cleanKeyList && cleanKeyList.forEach(item => delete cloneObj[item]);
-    return cloneObj;
+    cleanKeyList && cleanKeyList.forEach(item => delete cloneRow[item]);
+    return cloneRow;
 };
 
 /**
