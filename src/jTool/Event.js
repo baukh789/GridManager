@@ -21,7 +21,7 @@
  * 在选择元素上绑定一个或多个事件的事件处理函数: .bind('click mousedown', function(){}) 或.on('click mousedown', function(){})
  * 在选择元素上为当前并不存在的子元素绑定事件处理函数: .on('click mousedown', '.test', function(){})
  * */
-import {isElement, isFunction, each, noop, getDomList} from './utils';
+import { isElement, isFunction, each, noop, getDomList } from './utils';
 
 const EVENT_KEY = 'jToolEvent';
 
@@ -68,24 +68,17 @@ const getEventObject = (DOMList, event, querySelector, callback, useCapture) => 
     }
     const eventSplit = event.split(' ');
     const eventList = [];
-    let	eventScopeSplit, eventObj;
 
     each(eventSplit, eventName => {
-        if (eventName.trim() === '') {
-            return true;
+        if (eventName.trim()) {
+            eventList.push({
+                eventName: eventName + querySelector,
+                type: eventName.split('.')[0],
+                querySelector: querySelector,
+                callback: callback || noop,
+                useCapture: useCapture || false
+            });
         }
-
-        eventScopeSplit = eventName.split('.');
-        eventObj = {
-            eventName: eventName + querySelector,
-            type: eventScopeSplit[0],
-            querySelector: querySelector,
-            callback: callback || noop,
-            useCapture: useCapture || false,
-            // TODO: nameScope暂时不用, 因为nameScope中的值存在于eventName中，eventName已对同类型的事件进行了区分
-            nameScope: eventScopeSplit[1] || undefined
-        };
-        eventList.push(eventObj);
     });
     return eventList;
 };

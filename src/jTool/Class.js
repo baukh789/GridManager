@@ -36,11 +36,6 @@ export default {
         return this;
     },
 
-    // todo baukh@20200326: 该功能在表格中未使用到
-    // toggleClass: function (className) {
-    //     changeClass(getDomList(this), className, 'toggle');
-    // },
-
     // 不支持多 className
     hasClass: function (className) {
         return [].some.call(getDomList(this), function (dom) {

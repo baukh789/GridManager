@@ -629,7 +629,6 @@ export const getScrollBarWidth = _ => {
     el.style.overflow = 'scroll';
     el.style.scrollbarWidth = 'thin';
 
-    // getDiv(_).append(el);  // todo .html中的clone清除后，可以不再需要get(0)
     getDiv(_).get(0).appendChild(el);
 
     const width = el.offsetWidth - el.clientWidth;

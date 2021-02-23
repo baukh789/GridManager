@@ -51,7 +51,6 @@ export default {
 
         // 引入动画样式至页面
         const jToolAnimate = document.createElement('style');
-        // jToolAnimate.className = 'jTool-animate-style';  // todo baukh@20200326: 标识这么一个className并没有什么作用
         jToolAnimate.type = 'text/css';
         document.head.appendChild(jToolAnimate);
         jToolAnimate.textContent = jToolAnimate.textContent + animateText;

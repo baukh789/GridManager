@@ -113,10 +113,6 @@ export default {
             each(childList, child => {
                 // todo baukh@20200512: 在做fixed的时候，发现这行cloneNode可能没用，后续确后清除
                 child = child.cloneNode(true);
-                // text node todo @baukh20200330: 当前为文本节点时， nodeType是3而不是空。这块的逻辑可能已经无用了
-                // if(!child.nodeType) {
-                //     child = document.createTextNode(child);
-                // }
                 if(firstChild) {
                     element.insertBefore(child, firstChild);
                 } else {

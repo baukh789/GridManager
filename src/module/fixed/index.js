@@ -131,7 +131,6 @@ class Fixed {
             col.pr = pr;
             pr += col.width;
         });
-        // $fakeThead.css('padding-right', pr - 1); // -1是容错处理: 由于Table元素的特性需要放宽一个像素(todo 需要验证现在是否还需要)
         $fakeThead.css('padding-right', pr);
 
         styleLink.innerHTML = styleStr;

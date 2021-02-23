@@ -4,11 +4,6 @@
  * settings.mergeSort: 是否合并排序字段
  * false: {sort_createDate: 'DESC', sort_title: 'ASC'}
  * true: sort: {createDate: 'DESC'}
- *
- * #002:
- * 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
- * 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
- * 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
  */
 import { isString, isFunction, each, isEmptyObject, extend } from '@jTool/utils';
 import ajax from '@jTool/Ajax';
@@ -72,13 +67,6 @@ export const transformToPromise = settings =>  {
 
     // ajaxData === string url
     if (isString(data)) {
-        // todo baukh@20200326: 这块在ajax中已经存在同样的逻辑，验证后需要将这块及#002的注释清除
-        // #002
-        // 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
-        // if (ajaxType.toUpperCase() === 'POST' && !ajaxHeaders[CONTENT_TYPE]) {
-        //     ajaxHeaders[CONTENT_TYPE] = 'application/x-www-form-urlencoded';
-        // }
-
         return new Promise((resolve, reject) => {
             ajax({
                 url: data,

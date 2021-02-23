@@ -33,7 +33,6 @@ function setStyle(DOMList, name, val) {
 export default {
     // 如果长度是带 px 的值, 会将其转换成 数字
     // 其他情况 不做处理, 返回对应的字符串
-    // TODO 颜色处理 返回16进制颜色值, 考虑 rgba 的情况
     css: function (key, value) {
         const DOMList = getDomList(this);
         // getter

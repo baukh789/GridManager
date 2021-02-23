@@ -1,9 +1,14 @@
-/*
+/**
  * ajax
  * type === GET: data格式 name=baukh&age=29
  * type === POST: data格式 { name: 'baukh', age:29 }
  * 与 jquery 不同的是,[success, error, complete]返回的第二个参数, 并不是返回错误信息, 而是错误码
- * */
+ *
+ * #001:
+ * 当前为POST请求 且 Content-Type 未进行配置时, 默认使用 application/x-www-form-urlencoded
+ * 1. Content-Type = application/x-www-form-urlencoded 的数据形式为 form data
+ * 2. Content-Type = text/plain;charset=UTF-8 的数据形式为 request payload
+ */
 import { noop, each, isObject, extend } from './utils';
 
 // 内容类型
@@ -57,6 +62,7 @@ export default function ajax(options) {
     // POST
     if (type === 'POST') {
         // 配置默认消息主体编码方式
+        // #001
         if(!headers[CONTENT_TYPE]) {
             headers[CONTENT_TYPE] = FORM_URL_ENCODED;
         }

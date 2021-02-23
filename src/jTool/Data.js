@@ -60,17 +60,6 @@ export default {
     },
 
     /**
-     * 删除固有属性
-     * @param key
-     */
-    // todo baukh@20200326: 该功能在表格中未使用到
-    // removeProp: function (key) {
-    //     each(this, v => {
-    //         delete v[key];
-    //     });
-    // },
-
-    /**
      * value
      * @param value
      * @returns {*|string}
