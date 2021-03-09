@@ -214,3 +214,8 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
 
 ## 浏览器兼容
 - Firefox >= 59, Chrome >= 56，Edge >= 16, Safari >= 13
+
+## 微信讨论群
+> 使用问题可扫码加群讨论，BUG类问题请通过issues提交。
+<img alt="" width="200" height="200" class="avatar width-full rounded-2" src="https://gridmanager.lovejavascript.com/wx-code.jpg">
+
