@@ -5,7 +5,7 @@ const getRules = require('./webpack-common.loader');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const CleanPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 const { name, version } = require('./package.json');
 const buildPath = path.join(__dirname, './dist');
@@ -13,7 +13,6 @@ const buildPath = path.join(__dirname, './dist');
 const srcDir = path.join(__dirname, './src');
 const resolve = dir => path.resolve(__dirname, dir);
 
-// API: https://www.css88.com/doc/webpack2/configuration/devtool/
 const config = {
     mode: 'production',
 
@@ -54,9 +53,9 @@ const config = {
         minimizer: [
             // 压缩js
             new TerserPlugin({
-                cache: true,
+                // cache: true,
                 parallel: true,
-                sourceMap: false,
+                // sourceMap: false,
                 terserOptions: {
                     warnings: false,
                     ie8: false,
@@ -81,7 +80,9 @@ const config = {
 
 	// 以插件形式定制webpack构建过程
 	plugins: [
-        new CleanPlugin([buildPath]),
+        new CleanWebpackPlugin({
+            cleanOnceBeforeBuildPatterns: [resolve('./dist')]
+        }),
         // 将样式文件 抽取至独立文件内
         new MiniCssExtractPlugin({
             filename: 'css/gm.css',
@@ -90,11 +91,13 @@ const config = {
 
         // 将文件复制到构建目录
 		// CopyWebpackPlugin-> https://github.com/webpack-contrib/copy-webpack-plugin
-		new CopyWebpackPlugin([
-            {from: __dirname + '/src/demo', to: 'demo'},
-			{from: path.join(__dirname, '/package.json'), to: '', toType: 'file'},
-			{from: path.join(__dirname, '/README.md'), to: '', toType: 'file'}
-		]),
+		new CopyWebpackPlugin({
+            patterns: [
+                {from: __dirname + '/src/demo/', to: 'demo/', toType: 'dir'},
+                {from: path.join(__dirname, '/package.json'), to: './'},
+                {from: path.join(__dirname, '/README.md'), to: './'}
+            ]
+        }),
 
         // 配置环境变量
         new webpack.DefinePlugin({

@@ -2,8 +2,9 @@
  * Created by baukh on 17/10/24.
  */
 import Store from '../../src/common/Store';
-import { version } from '../../package.json';
+import pak from '../../package.json';
 
+const version = pak.version;
 describe('Store.js', () => {
 	it('Store.version', () => {
 		expect(Store.version).toBe(version);

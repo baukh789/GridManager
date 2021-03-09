@@ -32,9 +32,17 @@ import {
     getScrollBarWidth
 } from '../../src/common/base';
 import tableTpl from '../table-test.tpl.html';
-import { getColumnMap } from '../table-config';
-import { TOOLBAR_KEY, LOADING_CLASS_NAME, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY, TR_LEVEL_KEY, CELL_HIDDEN } from '../../src/common/constants';
-import { clearCacheDOM } from '../../src/common/domCache';
+import {getColumnMap} from '../table-config';
+import {
+    TOOLBAR_KEY,
+    LOADING_CLASS_NAME,
+    ROW_DISABLED_CHECKBOX,
+    TR_CACHE_KEY,
+    TR_LEVEL_KEY,
+    CELL_HIDDEN
+} from '../../src/common/constants';
+import {clearCacheDOM} from '../../src/common/domCache';
+
 const tableTestTpl = tableTpl;
 
 describe('base', () => {

@@ -4,18 +4,18 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = () => {
     return [
         {
-        	enforce: 'pre',
-        	test: /\.js$/,
-        	include: [path.join(__dirname, 'src')],
-        	exclude: /node_modules/,
-        	use: [
-        		{
-        			loader: 'eslint-loader',
-        			options: {
-        				formatter: require('eslint-friendly-formatter')
-        			}
-        		}
-        	]
+            enforce: 'pre',
+            test: /\.js$/,
+            include: [path.join(__dirname, 'src')],
+            exclude: /node_modules/,
+            use: [
+                {
+                    loader: 'eslint-loader',
+                    options: {
+                        formatter: require('eslint-friendly-formatter')
+                    }
+                }
+            ]
         },
         {
             test: /\.js$/,

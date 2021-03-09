@@ -5,8 +5,9 @@
  */
 const webpack = require('webpack');
 const path = require('path');
-const CleanPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { version } = require('./package.json');
+
 module.exports = function (config) {
 	// karma config: http://karma-runner.github.io/1.0/config/configuration-file.html
 	// karma-coverage: https://www.npmjs.com/package/karma-coverage
@@ -17,11 +18,42 @@ module.exports = function (config) {
 
 		// 使用框架
 		// 可用的框架：https://npmjs.org/browse/keyword/karma-adapter
-		frameworks: ['jasmine-ajax', 'jasmine'],
-
+		frameworks: ['jasmine-ajax', 'jasmine', 'webpack'],
+        // compilerOptions: {
+        //     module: 'commonjs'
+        // },
 		// 需要测试的文件列表
 		files: [
-            'test/**/*_test.js'
+            // 'test/**/*_test.js'
+            { pattern: 'test/!(jTool|common|tree)/*_test.js' }
+
+            // { pattern: 'test/adjust/*_test.js', watched: false },
+            // { pattern: 'test/ajaxPage/*_test.js', watched: false },
+            // { pattern: 'test/checkbox/*_test.js', watched: false },
+            // { pattern: 'test/common/*_test.js', watched: false },
+            // { pattern: 'test/config/*_test.js', watched: false },
+            // { pattern: 'test/core/*_test.js', watched: false },
+            // { pattern: 'test/drag/*_test.js', watched: false },
+            // { pattern: 'test/dropdown/*_test.js', watched: false },
+            // { pattern: 'test/filter/*_test.js', watched: false },
+            // { pattern: 'test/fixed/*_test.js', watched: false },
+            // { pattern: 'test/fullColumn/*_test.js', watched: false },
+            // { pattern: 'test/i18n/*_test.js', watched: false },
+            // { pattern: 'test/jTool/Ajax_test.js', watched: false },
+            // { pattern: 'test/jTool/Animate_test.js', watched: false },
+            // { pattern: 'test/jTool/Class_test.js', watched: false },
+            // { pattern: 'test/jTool/Css_test.js', watched: false },
+            // { pattern: 'test/jTool/Data_test.js', watched: false },
+            // { pattern: 'test/jTool/Document_test.js', watched: false },
+            // { pattern: 'test/menu/*_test.js', watched: false },
+            // { pattern: 'test/merge/*_test.js', watched: false },
+            // { pattern: 'test/moveRow/*_test.js', watched: false },
+            // { pattern: 'test/nested/*_test.js', watched: false },
+            // { pattern: 'test/order/*_test.js', watched: false },
+            // { pattern: 'test/remind/*_test.js', watched: false },
+            // { pattern: 'test/sort/*_test.js', watched: false },
+            // { pattern: 'test/summary/*_test.js', watched: false },
+            // { pattern: 'test/tree/*_test.js', watched: false },
 		],
 
 		// 使用端口
@@ -32,7 +64,6 @@ module.exports = function (config) {
 
 		// 持续集成模式: 配置为true 将会持续运行测试, 直致完成返回0(成功)或1(失败). 示例: Done. Your build exited with 0.
 		singleRun: true,
-
 
 		// 日志级别
 		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
@@ -82,11 +113,17 @@ module.exports = function (config) {
                     '@package.json': path.join(__dirname, './package.json')
                 }
 			},
+            // output: {
+            //     filename: '[name].js',
+            //     path: path.join(__dirname, '_karma_webpack_') + Math.floor(Math.random() * 1000000),
+            // },
 			plugins: [
-                new CleanPlugin(['coverage']),
-				new webpack.ProvidePlugin({
-					'Promise': 'es6-promise'
-				}),
+                new CleanWebpackPlugin({
+                    cleanOnceBeforeBuildPatterns: [path.join(__dirname, './coverage')]
+                }),
+				// new webpack.ProvidePlugin({
+				// 	'Promise': 'es6-promise'
+				// }),
                 new webpack.DefinePlugin({
                     'process.env': {
                         VERSION: JSON.stringify(version)
@@ -102,10 +139,9 @@ module.exports = function (config) {
                         }]
                     },
 					{
-						test: /\.js?$/,
-						use: ['babel-loader'],
-						exclude: /(node_modules|bower_components)/,
-						include: [path.join(__dirname, 'src'), path.join(__dirname, 'test')]
+                        test: /\.js$/,
+                        exclude: /node_modules/,
+                        use: ['babel-loader']
 					},
                     {
                         test: /\.less/,
@@ -195,9 +231,10 @@ module.exports = function (config) {
 			}
 		},
 
-		webpackMiddleware: {noInfo: false}, // no webpack output
+		// webpackMiddleware: {noInfo: false}, // no webpack output
 
 		// Karma有多少个浏览器并行启动
-		concurrency: Infinity
+		concurrency: Infinity,
+        processKillTimeout: 1000
 	});
 };

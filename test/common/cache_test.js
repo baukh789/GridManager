@@ -3,7 +3,7 @@ import jTool from '../../src/jTool';
 import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '../../src/common/constants';
 import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, resetTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, updateCache } from '../../src/common/cache';
 import store from '../../src/common/Store';
-import { version } from '../../package.json';
+import pkg from '../../package.json';
 import tableTpl from '../table-test.tpl.html';
 import getTableTestData from '../table-test.data.js';
 import { getColumnMap, getColumnData } from '../table-config';
@@ -11,6 +11,7 @@ import i18n from '../../src/module/i18n';
 import {CHECKBOX_KEY, ORDER_KEY, TR_CACHE_KEY, TR_LEVEL_KEY} from '../../src/common/constants';
 import { clearCacheDOM } from '../../src/common/domCache';
 
+const version = pkg.version;
 // 清除空格
 const tableTestTpl = tableTpl;
 describe('cache', () => {

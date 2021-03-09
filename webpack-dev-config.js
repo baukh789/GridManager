@@ -6,14 +6,38 @@ const { version } = require('./package.json');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const resolve = dir => path.resolve(__dirname, dir);
-// API: http://www.css88.com/doc/webpack2/guides/development/
+
+const devServer = {
+    clientLogLevel: 'info',
+    disableHostCheck: true,
+    port: '2015',
+    hot: true,
+    contentBase: [
+        path.join(__dirname, './src'),
+        path.join(__dirname, './coverage')
+    ],
+    compress: true,
+    overlay: {
+        warnings: false,
+        errors: true
+    },
+    // before: function (app, server, compiler) {
+    //     console.log(app, server, compiler);
+    // },
+    // proxy: {
+    //     '/coverage/index.html': '/coverage/chart/index.html',
+    // }
+};
+
 const config = {
     mode: 'development',
 	// map
-	//  http://www.css88.com/doc/webpack2/configuration/devtool/
-    devtool: 'cheap-eval-source-map',
 
-	// 入口文件配置
+    devtool: 'eval-cheap-source-map',
+
+    devServer,
+
+    // 入口文件配置
 	context: path.join(__dirname, 'src/'),
 
 	// 入口文件配置
