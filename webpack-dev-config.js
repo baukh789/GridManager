@@ -20,15 +20,11 @@ const devServer = {
     overlay: {
         warnings: false,
         errors: true
-    },
-    // before: function (app, server, compiler) {
-    //     console.log(app, server, compiler);
-    // },
-    // proxy: {
-    //     '/coverage/index.html': '/coverage/chart/index.html',
-    // }
+    }
 };
 
+console.info('[GridManager] Demo is running at: http://localhost:2015/demo/index.html');
+console.info('[GridManager] Coverage is running at: http://localhost:2015/chart');
 const config = {
     mode: 'development',
 	// map

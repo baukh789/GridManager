@@ -4,6 +4,8 @@
 ```
 npm run test
 ```
+在当前已启动服务的情况下，可通过`http://127.0.0.1:2015/chart/index.html`查看已生成的测试覆盖率。
+
 
 ## 发布脚本
 ```
@@ -17,5 +19,4 @@ npm version <version_category: major | minor | patch>
 - 执行发布脚本`npm publish dist`
 - 执行提交代码脚本`git push && git push --tags`
 
-## 问题点收集
-- `karma-phantomjs-launcher`在安装时，会由于github release包在下载时会跳转至一个临时连接。解决方法: 将已经下载好的包移至错误提示目录内，重新安装即可。
+

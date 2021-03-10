@@ -24,36 +24,7 @@ module.exports = function (config) {
         // },
 		// 需要测试的文件列表
 		files: [
-            // 'test/**/*_test.js'
-            { pattern: 'test/!(jTool|common|tree)/*_test.js' }
-
-            // { pattern: 'test/adjust/*_test.js', watched: false },
-            // { pattern: 'test/ajaxPage/*_test.js', watched: false },
-            // { pattern: 'test/checkbox/*_test.js', watched: false },
-            // { pattern: 'test/common/*_test.js', watched: false },
-            // { pattern: 'test/config/*_test.js', watched: false },
-            // { pattern: 'test/core/*_test.js', watched: false },
-            // { pattern: 'test/drag/*_test.js', watched: false },
-            // { pattern: 'test/dropdown/*_test.js', watched: false },
-            // { pattern: 'test/filter/*_test.js', watched: false },
-            // { pattern: 'test/fixed/*_test.js', watched: false },
-            // { pattern: 'test/fullColumn/*_test.js', watched: false },
-            // { pattern: 'test/i18n/*_test.js', watched: false },
-            // { pattern: 'test/jTool/Ajax_test.js', watched: false },
-            // { pattern: 'test/jTool/Animate_test.js', watched: false },
-            // { pattern: 'test/jTool/Class_test.js', watched: false },
-            // { pattern: 'test/jTool/Css_test.js', watched: false },
-            // { pattern: 'test/jTool/Data_test.js', watched: false },
-            // { pattern: 'test/jTool/Document_test.js', watched: false },
-            // { pattern: 'test/menu/*_test.js', watched: false },
-            // { pattern: 'test/merge/*_test.js', watched: false },
-            // { pattern: 'test/moveRow/*_test.js', watched: false },
-            // { pattern: 'test/nested/*_test.js', watched: false },
-            // { pattern: 'test/order/*_test.js', watched: false },
-            // { pattern: 'test/remind/*_test.js', watched: false },
-            // { pattern: 'test/sort/*_test.js', watched: false },
-            // { pattern: 'test/summary/*_test.js', watched: false },
-            // { pattern: 'test/tree/*_test.js', watched: false },
+            { pattern: 'test/**/*_test.js' }
 		],
 
 		// 使用端口
@@ -101,7 +72,10 @@ module.exports = function (config) {
 		// webpack config: https://github.com/webpack-contrib/karma-webpack
 		webpack: {
             mode: 'development',
-
+            optimization: {
+                runtimeChunk: false,
+                splitChunks: false
+            },
 			// 入口文件配置
 			resolve: {
 				extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀

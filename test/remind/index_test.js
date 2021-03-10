@@ -1,4 +1,3 @@
-import jTool from '../../src/jTool';
 import remind, { removeTooltip, tooltip } from '../../src/module/remind';
 import tpl from '../table-test.tpl.html';
 import { clearCacheDOM } from '../../src/common/domCache';
