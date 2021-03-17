@@ -174,7 +174,7 @@ export default {
      */
     remove: function () {
         each(this, v => {
-            v.remove(); // v.parentNode.removeChild(v);
+            v.remove();
         });
     }
 };
