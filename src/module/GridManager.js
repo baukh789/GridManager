@@ -264,15 +264,13 @@ export default class GridManager {
             scroll.update(settings._);
         };
 
-        // 初始化表格
-        // 表格不可用时进行等待, 并且对相同gridManagerName的表格进行覆盖以保证只渲染一次
-        clearInterval(SIV_waitTableAvailable[gridManagerName]);
-        SIV_waitTableAvailable[gridManagerName] = setInterval(() => {
+        // 初始化表格函数
+        const runInit = () => {
             // 重新获取dom: 在react框架版本中，参数table会在gm-react componentDidUpdate时出现变更的情况
             $table = getTable(gridManagerName);
             table = $table.get(0);
             if (getStyle(table, 'width').indexOf(PX) === -1) {
-                return;
+                return true;
             }
 
             clearInterval(SIV_waitTableAvailable[gridManagerName]);
@@ -280,7 +278,15 @@ export default class GridManager {
 
             // 初始化表格, setInterval未停止前 initTable并不会执行
             this.initTable($table, settings).then(initTableAfter);
-        }, 50);
+        };
+
+        // 在setInterval之前，先执行一次: 如当前表格不可用则等待, 并且对相同gridManagerName的表格进行覆盖以保证只渲染一次
+        if (runInit()) {
+            clearInterval(SIV_waitTableAvailable[gridManagerName]);
+            SIV_waitTableAvailable[gridManagerName] = setInterval(() => {
+                runInit();
+            }, 50);
+        }
     }
 
     /**
