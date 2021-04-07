@@ -15,19 +15,16 @@ module.exports = function (config) {
 	config.set({
 		// 将用于解决所有的模式基本路径（例如，文件，排除）
 		basePath: '',
-
 		// 使用框架
 		// 可用的框架：https://npmjs.org/browse/keyword/karma-adapter
 		frameworks: ['jasmine-ajax', 'jasmine', 'webpack'],
-        // compilerOptions: {
-        //     module: 'commonjs'
-        // },
+
 		// 需要测试的文件列表
 		files: [
             { pattern: 'test/**/*_test.js' }
 		],
 
-		// 使用端口
+        // 使用端口
 		port: 9876,
 
 		// 是否在输出日志中使用颜色
@@ -38,12 +35,12 @@ module.exports = function (config) {
 
 		// 日志级别
 		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		logLevel: config.LOG_INFO,
+		logLevel: config.LOG_DEBUG,
 
 		// 是否监听文件变化
-		autoWatch: true,
+		autoWatch: false,
 
-		// 配置启动单元测试的环境
+        // 配置启动单元测试的环境
 		browsers: ['ChromeHeadless'],
 
         // 捕获浏览器的超时时间

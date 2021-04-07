@@ -98,7 +98,7 @@ describe('summary', () => {
             `.replace(/\s/g, '');
             installSummary(settings, columnList, tableData, trObjectList);
             expect(trObjectList[0].className).toEqual([]);
-            expect(trObjectList[0].attribute).toEqual(['gm-summary']);
+            expect(trObjectList[0].attribute).toEqual(['gm-summary-row']);
             expect(trObjectList[0].tdList.join('').replace(/\s/g, '')).toBe(htmlStr);
         });
 
@@ -148,7 +148,7 @@ describe('summary', () => {
             `.replace(/\s/g, '');
             installSummary(settings, columnList, tableData, trObjectList);
             expect(trObjectList[0].className).toEqual([]);
-            expect(trObjectList[0].attribute).toEqual(['gm-summary']);
+            expect(trObjectList[0].attribute).toEqual(['gm-summary-row']);
             expect(trObjectList[0].tdList.join('').replace(/\s/g, '')).toBe(htmlStr);
         });
     });

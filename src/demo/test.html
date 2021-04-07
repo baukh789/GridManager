@@ -5,14 +5,15 @@
     <title>Title</title>
     <style>
         html, body{
-            overflow: hidden;
+            /*overflow: hidden;*/
         }
         .lalala{
             width: 100%;
+            height: 300px;
             overflow-x: scroll;
         }
         table{
-            /*width: 2000px;*/
+            width: 2000px;
             border-collapse: collapse;
         }
         th, td {
@@ -21,27 +22,27 @@
             width: auto;
         }
         table thead {
-            display: block;
-            width: 100%;
-            height: 400px;
-            overflow-y: scroll;
+            /*display: block;*/
+            /*width: 100%;*/
+            height: 40px;
+            /*overflow-y: scroll;*/
             position: sticky;
             position: -webkit-sticky;
             top: 0;
             left: 0;
-            z-index: 2;
+            /*z-index: 2;*/
             background: cadetblue;
         }
 
         table tbody {
-            display: block;
-            height: 400px;
+            /*display: block;*/
+            /*height: 400px;*/
         }
 
         table thead,
         tbody tr{
-            width: 2000px;
-            display: table;
+            /*width: 2000px;*/
+            /*display: table;*/
             height: 40px;
             table-layout: fixed;
             font-size: 16px;
@@ -54,6 +55,7 @@
             position: -webkit-sticky;
             top: 0;
             left: 0;
+            z-index: 2;
         }
         tr td:last-child, tr:first-child th:last-child{
             background: red;
@@ -61,12 +63,25 @@
             position: -webkit-sticky;
             top: 0;
             right: 0;
+            z-index: 2;
+        }
+        /*.tfoot{*/
+        /*    position: sticky;*/
+        /*    position: -webkit-sticky;*/
+        /*    bottom: 0;*/
+        /*    background: #0f88eb;*/
+        /*}*/
+        .tfoot td{
+            position: sticky;
+            position: -webkit-sticky;
+            top: auto !important;
+            bottom: 0;
+            background: #0f88eb;
         }
     </style>
 </head>
 <body>
 <div class="lalala">
-
     <table style="table-layout: fixed">
         <thead>
         <tr>
@@ -159,7 +174,7 @@
             <td>5</td>
             <td>6</td>
         </tr>
-        <tr>
+        <tr class="tfoot">
             <td>1</td>
             <td>2</td>
             <td>3</td>

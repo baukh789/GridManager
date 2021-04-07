@@ -363,6 +363,22 @@ const demo1 = {
                     console.log(list, tableData);
                 }
             },
+            summaryHandler: function(data){
+                let praiseNumber = 0;
+                let readNumber = 0;
+                let commentSum = 0;
+                data.forEach(item => {
+                    praiseNumber += parseInt(item.praiseNumber, 10);
+                    readNumber += item.readNumber;
+                    commentSum += item.commentSum;
+                });
+                return {
+                    pic: '共计',
+                    praiseNumber,
+                    readNumber,
+                    commentSum
+                };
+            },
 
             // 禁用缓存
             disableCache: false,

@@ -1,4 +1,4 @@
-import { getColTd, getTh, getTable } from '@common/base';
+import {getColTd, getTh, getTable, getTbody} from '@common/base';
 import jTool from '@jTool';
 import { each } from '@jTool/utils';
 import './style.less';
@@ -16,7 +16,8 @@ export const mergeRow = (_, columnMap) => {
             return true;
         }
 
-        const $tdList = getColTd(getTh(_, key), _);
+        // 排除了汇总行
+        const $tdList = getColTd(getTh(_, key), getTbody(_).find('tr:not([gm-summary-row])'));
 
         let len = $tdList.length;
         let index = len;

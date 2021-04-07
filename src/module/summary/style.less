@@ -1,3 +1,14 @@
-table[grid-manager] tbody tr[gm-summary] td{
-    background: #F2F6FC;
+.table-div[gm-summary] {
+    tr[gm-summary-row] td{
+        background: #F2F6FC;
+        position: sticky;
+        position: -webkit-sticky; // safari 需要
+        bottom: 0; // safari 下并不会使用该值，而会在js中进行控制
+        border-top: var(--gm-border);
+    }
+
+    // 汇总行的上一行: 不显示下边框
+    tr:nth-last-child(2) td{
+        border-bottom: none;
+    }
 }

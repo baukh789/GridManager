@@ -71,8 +71,8 @@
 			"data":[
 				{
                     "id": 1,
-					"name": "baukh",
-					"age": "28",
+					"name": "baukh1",
+					"age": "30",
 					"createDate": "2015-03-12",
 					"info": "野生前端程序",
                     "children": [
@@ -117,21 +117,21 @@
 				},
 				{
                     "id": 2,
-					"name": "baukh",
+					"name": "baukh2",
 					"age": "28",
 					"createDate": "2015-03-12",
 					"info": "野生前端程序"
 				},
 				{
                     "id": 3,
-					"name": "baukh",
+					"name": "baukh3",
 					"age": "28",
 					"createDate": "2015-03-12",
 					"info": "野生前端程序"
 				},
 				{
                     "id": 4,
-					"name": "baukh",
+					"name": "baukh4",
 					"age": "28",
 					"createDate": "2015-03-12",
 					"info": "野生前端程序",
@@ -156,27 +156,27 @@
 				},
 				{
                     "id": 5,
-					"name": "baukh",
+					"name": "baukh5",
 					"age": "28",
 					"createDate": "2015-03-12",
 					"info": "野生前端程序"
 				},{
                     "id": 6,
-					"name": "baukh",
+					"name": "baukh6",
 					"age": "28",
 					"createDate": "2015-03-12",
 					"info": "野生前端程序"
 				},
 				{
                     "id": 7,
-					"name": "baukh",
-					"age": "28",
+					"name": "baukh7",
+					"age": "32",
 					"createDate": "2015-03-12",
 					"info": "野生前端程序"
 				},
 				{
                     "id": 8,
-					"name": "baukh",
+					"name": "baukh8",
 					"age": "28",
 					"createDate": "2015-03-12",
 					"info": "野生前端程序"
@@ -244,7 +244,7 @@
                     openState: false,
                     treeKey: 'children'
                 },
-				ajaxData: ajaxData2,
+				ajaxData: ajaxData1,
                 // useRadio: true,
 				pageSize: 20,
 				query: {ex: '用户自定义的查询参数,格式:{key:value}'},
@@ -254,6 +254,16 @@
                         GM.showLoading('test');
                         GM.hideLoading('test', 500);
                     }
+                },
+                summaryHandler: function(data){
+                    let num = 0;
+                    data.forEach(item => {
+                        num += parseInt(item.age, 10);
+                    });
+                    return {
+                        name: '平均年龄',
+                        age: num / data.length
+                    };
                 },
 				columnData: [{
 					key: 'name',

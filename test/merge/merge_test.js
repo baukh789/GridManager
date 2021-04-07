@@ -1,5 +1,5 @@
 import { mergeRow, clearMergeRow } from '../../src/module/merge';
-import { TABLE_HEAD_KEY } from '../../src/common/constants';
+import { TABLE_HEAD_KEY, TABLE_BODY_KEY } from '../../src/common/constants';
 import jTool from '../../src/jTool';
 import { clearCacheDOM } from '../../src/common/domCache';
 describe('merge', () => {
@@ -14,11 +14,12 @@ describe('merge', () => {
                 <thead ${TABLE_HEAD_KEY}="test">
                     <tr><th th-name="username">username</th><th th-name="createDate">createDate</th><th th-name="lastDate">lastDate</th></tr>
                 </thead>
-                <tbody>
+                <tbody ${TABLE_BODY_KEY}="test">
                     <tr><td>张三</td><td>2019-11-11</td><td>2019-12-11</td></tr>
                     <tr><td>李四</td><td>2019-11-11</td><td>2019-12-12</td></tr>
                     <tr><td>王五</td><td>2019-11-12</td><td>2019-12-11</td></tr>
                     <tr><td>赵六</td><td>2019-11-13</td><td>2019-12-11</td></tr>
+                    <tr gm-summary-row=""><td>统计</td><td>共4人</td><td></td></tr>
                 </tbody>
             </table>
         `;
