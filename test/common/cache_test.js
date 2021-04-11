@@ -10,6 +10,7 @@ import { getColumnMap, getColumnData } from '../table-config';
 import i18n from '../../src/module/i18n';
 import {CHECKBOX_KEY, ORDER_KEY, TR_CACHE_KEY, TR_LEVEL_KEY} from '../../src/common/constants';
 import { clearCacheDOM } from '../../src/common/domCache';
+import {each} from '@jTool/utils';
 
 const version = pkg.version;
 // 清除空格
@@ -531,7 +532,32 @@ describe('cache', () => {
             settings = {
                 disableCache: false,
                 _: 'test',
-                columnMap: getColumnMap(),
+                columnMap: {
+                    lastDate: {
+                        key: 'lastDate',
+                        width: 130,
+                        text: '最后修改时间',
+                        sorting: '',
+                        isShow: true,
+                        index: 0,
+                        __index: 0,
+                        __width: 130,
+                        __isShow: true
+                    },
+                    action: {
+                        key: 'action',
+                        remind: 'the action',
+                        width: 100,
+                        align: 'center',
+                        disableCustomize: true,
+                        text: '<span style="color: red">操作</span>',
+                        isShow: true,
+                        index: 1,
+                        __index: 1,
+                        __width: 100,
+                        __isShow: true
+                    }
+                },
                 supportAjaxPage: true,
                 pageData: {
                     cPage: 1,
@@ -564,38 +590,74 @@ describe('cache', () => {
 
         it('当前未存在其它存储', () => {
             saveUserMemory(settings);
-            expect(getUserMemory('test')).toEqual({column: getColumnMap(), page: {pSize: 20}});
+            expect(getUserMemory('test')).toEqual({
+                column: {
+                    lastDate: {
+                        index: 0,
+                        __index: 0,
+                        width: 130,
+                        __width: 130,
+                        isShow: true,
+                        __isShow: true
+                    },
+                    action: {
+                        index: 1,
+                        __index: 1,
+                        width: 100,
+                        __width: 100,
+                        isShow: true,
+                        __isShow: true
+                    }
+                },
+                pSize: 20
+            });
         });
 
         it('当前已存在其它存储', () => {
             window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
-                '/context.html#userList-otherTable': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
+                '/context.html#userList-otherTable': JSON.stringify({
+                    column: {
+                        lastDate: {
+                            index: 0,
+                            __index: 0,
+                            width: 130,
+                            __width: 130,
+                            isShow: true,
+                            __isShow: true
+                        }
+                    },
+                    pSize: 10
+                })
             }));
             saveUserMemory(settings);
-            expect(getUserMemory('test')).toEqual({column: getColumnMap(), page: {pSize: 20}});
-        });
-
-        it('type === undefined', () => {
-            settings.columnMap.title.remind = undefined;
-            saveUserMemory(settings);
-            expect(getUserMemory('test').column.title.remind).toBeUndefined();
-        });
-
-        it('type === function', () => {
-            settings.columnMap.title.template = () => {};
-            saveUserMemory(settings);
-            expect(getUserMemory('test').column.title.template).toBeUndefined();
-        });
-
-        it('type === object', () => {
-            settings.columnMap.title.template = {};
-            saveUserMemory(settings);
-            expect(getUserMemory('test').column.title.template).toBeUndefined();
+            expect(getUserMemory('test')).toEqual({
+                column: {
+                    lastDate: {
+                        index: 0,
+                        __index: 0,
+                        width: 130,
+                        __width: 130,
+                        isShow: true,
+                        __isShow: true
+                    },
+                    action: {
+                        index: 1,
+                        __index: 1,
+                        width: 100,
+                        __width: 100,
+                        isShow: true,
+                        __isShow: true
+                    }
+                },
+                pSize: 20
+            });
         });
     });
 
     describe('delUserMemory', () => {
         let settings = null;
+        let otherTableCache = null;
+        let testTableCache = null;
         beforeEach(() => {
             // 在测试中不能对pathname进行修改，该值默认为/context.html， 如果修改的话将会报出如下错误: Some of your tests did a full page reload!
             // window.location.pathname = '/context.html';
@@ -617,6 +679,33 @@ describe('cache', () => {
             };
             console._log = console.log;
             console.log = jasmine.createSpy('log');
+
+            otherTableCache = {
+                column: {
+                    lastDate: {
+                        index: 0,
+                        __index: 0,
+                        width: 130,
+                        __width: 130,
+                        isShow: true,
+                        __isShow: true
+                    }
+                },
+                pSize: 10
+            };
+            testTableCache = {
+                column: {
+                    lastDate: {
+                        index: 0,
+                        __index: 0,
+                        width: 130,
+                        __width: 130,
+                        isShow: true,
+                        __isShow: true
+                    }
+                },
+                pSize: 20
+            };
         });
         afterEach(() => {
             // window.location.pathname = null;
@@ -627,6 +716,8 @@ describe('cache', () => {
             // 还原console
             console.log = console._log;
             settings = null;
+            otherTableCache = null;
+            testTableCache = null;
         });
 
         it('基础验证', () => {
@@ -640,12 +731,12 @@ describe('cache', () => {
 
         it('定点清除', () => {
             window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
-                '/context.html#userList-otherTable': JSON.stringify({column: getColumnMap(), page: {pSize: 20}}),
-                '/context.html#userList-test': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
+                '/context.html#userList-otherTable': JSON.stringify(otherTableCache),
+                '/context.html#userList-test': JSON.stringify(testTableCache)
             }));
             saveUserMemory(settings);
             expect(delUserMemory('test')).toBe(true);
-            expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-otherTable']).toBe(JSON.stringify({column: getColumnMap(), page: {pSize: 20}}));
+            expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-otherTable']).toBe(JSON.stringify(otherTableCache));
             expect(JSON.parse(window.localStorage.getItem(MEMORY_KEY))['/context.html#userList-test']).toBeUndefined();
 
             expect(console.log).toHaveBeenCalledWith('%c GridManager Info %c delete user memory of test ', ...CONSOLE_STYLE[CONSOLE_INFO]);
@@ -653,8 +744,8 @@ describe('cache', () => {
 
         it('清除所有', () => {
             window.localStorage.setItem(MEMORY_KEY, JSON.stringify({
-                '/context.html#userList-otherTable': JSON.stringify({column: getColumnMap(), page: {pSize: 20}}),
-                '/context.html#userList-test': JSON.stringify({column: getColumnMap(), page: {pSize: 20}})
+                '/context.html#userList-otherTable': JSON.stringify(otherTableCache),
+                '/context.html#userList-test': JSON.stringify(testTableCache)
             }));
             saveUserMemory(settings);
             expect(delUserMemory()).toBe(true);

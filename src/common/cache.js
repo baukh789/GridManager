@@ -23,17 +23,13 @@ import { DISABLE_CUSTOMIZE } from '@common/constants';
 import { Settings } from '@common/Settings';
 import TextConfig from '@module/i18n/config';
 import store from '@common/Store';
-import {
-    CACHE_ERROR_KEY,
-    MEMORY_KEY,
-    VERSION_KEY,
-    ORDER_KEY,
-    CHECKBOX_KEY,
-    CHECKBOX_DISABLED_KEY,
-    TR_CACHE_KEY,
-    TR_LEVEL_KEY,
-    CELL_HIDDEN
-} from './constants';
+import { CACHE_ERROR_KEY, MEMORY_KEY, VERSION_KEY, ORDER_KEY, CHECKBOX_KEY, CHECKBOX_DISABLED_KEY, TR_CACHE_KEY, TR_LEVEL_KEY, CELL_HIDDEN } from './constants';
+
+// 用户记忆所存储的字段
+const MEMORY_COLUMN_KEY_LIST = ['width', '__width', 'isShow', '__isShow', 'index', '__index'];
+
+// 用户记忆是否清除所验证的字段
+const MEMORY_CHECK_COLUMN_KEY_LIST = ['__width', '__isShow', '__index'];
 
 const getStorage = key => {
     return localStorage.getItem(key);
@@ -342,16 +338,14 @@ export const getMemoryKey = _ => {
  * @returns {*} 成功则返回本地存储数据,失败则返回空对象
  */
 export const getUserMemory = _ => {
-    const memoryKey = getMemoryKey(_);
-
     let memory = getStorage(MEMORY_KEY);
     // 如无数据，增加缓存错误标识
     if (!memory || memory === '{}') {
-        getTable(_).attr(CACHE_ERROR_KEY, 'error');
+        getTable(_).attr(CACHE_ERROR_KEY, 'error'); // todo 这里应该考虑存储在settings上
         return {};
     }
     memory = JSON.parse(memory);
-    return JSON.parse(memory[memoryKey] || '{}');
+    return JSON.parse(memory[getMemoryKey(_)] || '{}');
 };
 
 /**
@@ -366,42 +360,22 @@ export const saveUserMemory = settings => {
         return;
     }
 
-    let _cache = {};
-    const cloneMap = extend(true, {}, columnMap);
-    const useTemplate = ['template', 'text'];
-
-    // 清除指定类型的字段
-    each(cloneMap, (undefind, col) => {
-        each(col, (key, item) => {
-            // 清除: undefined
-            if (isUndefined(col[key])) {
-                delete col[key];
-            }
-
-            // 未使用模板的字段直接跳出
-            if (useTemplate.indexOf(key) === -1) {
-                return;
-            }
-
-            // delete template of function type
-            if (isFunction(item)) {
-                delete col[key];
-            }
-
-            // delete template of object type
-            if (isObject(item)) {
-                delete col[key];
-            }
+    const column = {};
+    each(columnMap, (key, item) => {
+        const col = {};
+        MEMORY_COLUMN_KEY_LIST.forEach(memory => {
+            col[memory] = item[memory];
         });
+        column[key] = col;
     });
 
-    _cache.column = cloneMap;
+    const _cache = {
+        column
+    };
 
     // 存储分页
     if (supportAjaxPage) {
-        const _pageCache = {};
-        _pageCache[pageSizeKey] = pageData[pageSizeKey];
-        _cache.page = _pageCache;
+        _cache[pageSizeKey] = pageData[pageSizeKey];
     }
 
     const cacheString = JSON.stringify(_cache);
@@ -435,8 +409,7 @@ export const delUserMemory = _ => {
     memory = JSON.parse(memory);
 
     // 指定删除的table, 则定点清除
-    const _key = getMemoryKey(_);
-    delete memory[_key];
+    delete memory[getMemoryKey(_)];
 
     // 清除后, 重新存储
     setStorage(MEMORY_KEY, JSON.stringify(memory));
@@ -598,6 +571,9 @@ export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumn
             // 为列Map 增加索引
             columnMap[key].index = index;
 
+            // 存储由用户配置的列索引, 该值不随着之后的操作变更
+            columnMap[key].__index = index;
+
             // 存储由用户配置的列宽度值, 该值不随着之后的操作变更
             columnMap[key].__width = col.width;
 
@@ -652,35 +628,15 @@ export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumn
         // 与用户记忆项不匹配
         isUsable && each(columnMap, (key, col) => {
             if (!columnCache[key]
-                // 宽度
-                || columnCache[key].__width !== col.width
-
-                // 显示状态
-                || columnCache[key].__isShow !== col.isShow
-
-                // 文本排列方向
-                || columnCache[key].align !== col.align
-
-                // 数据排序
-                || columnCache[key].sorting !== col.sorting
-
-                // 禁止使用个性配置功能
-                || columnCache[key][DISABLE_CUSTOMIZE] !== col[DISABLE_CUSTOMIZE]
-
-                // 禁止使用行移动
-                || columnCache[key].disableMoveRow !== col.disableMoveRow
-
-                // 相同数据列合并功能
-                || columnCache[key].merge !== col.merge
-
-                // 固定列
-                || columnCache[key].fixed !== col.fixed
-
-                // 字段描述
-                || JSON.stringify(columnCache[key].remind) !== JSON.stringify(col.remind)
-
-                // 过滤
-                || JSON.stringify(columnCache[key].filter) !== JSON.stringify(col.filter)) {
+                || MEMORY_CHECK_COLUMN_KEY_LIST.some(memoryKey => {
+                    const memory = columnCache[key][memoryKey];
+                    const item = col[memoryKey];
+                    if (isObject(memory)) {
+                        return JSON.stringify(memory) !== JSON.stringify(item);
+                    }
+                    return memory !== item;
+                })
+            ) {
                 isUsable = false;
                 return false;
             }
@@ -735,7 +691,7 @@ export const updateCache = (_, useFakeTh) => {
         }
         return getTh(_, key);
     };
-    // 更新 columnMap , 适用操作[宽度调整, 位置调整, 可视状态调整]
+    // 更新 columnMap, 适用顶层表头操作[宽度调整, 位置调整, 可视状态调整]
     each(columnMap, (key, col) => {
         // 禁用定制列: 不处理
         if (col[DISABLE_CUSTOMIZE]) {

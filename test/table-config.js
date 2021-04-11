@@ -12,6 +12,7 @@ export function getColumnMap() {
             'width': 40,
             'align': 'center',
             'index': 0,
+            '__index': 0,
             '__width': 40,
             '__isShow': true
         },
@@ -24,6 +25,7 @@ export function getColumnMap() {
             'width': 50,
             'align': 'center',
             'index': 1,
+            '__index': 1,
             '__width': 50,
             '__isShow': true
         },
@@ -35,6 +37,7 @@ export function getColumnMap() {
             'text': '缩略图',
             'isShow': true,
             'index': 2,
+            '__index': 2,
             '__width': 110,
             '__isShow': true
         },
@@ -47,6 +50,7 @@ export function getColumnMap() {
             'sorting': '',
             'isShow': true,
             'index': 3,
+            '__index': 3,
             '__isShow': true
         },
         'type': {
@@ -84,6 +88,7 @@ export function getColumnMap() {
             },
             'isShow': true,
             'index': 4,
+            '__index': 4,
             '__width': 150,
             '__isShow': true
         },
@@ -94,6 +99,7 @@ export function getColumnMap() {
             'text': '简介',
             'isShow': true,
             'index': 5,
+            '__index': 5,
             '__width': 100,
             '__isShow': true
         },
@@ -105,6 +111,7 @@ export function getColumnMap() {
             'text': '作者',
             'isShow': true,
             'index': 6,
+            '__index': 6,
             '__width': 100,
             '__isShow': true
         },
@@ -115,6 +122,7 @@ export function getColumnMap() {
             'sorting': 'DESC',
             'isShow': true,
             'index': 7,
+            '__index': 7,
             '__width': 130,
             '__isShow': true
         },
@@ -125,6 +133,7 @@ export function getColumnMap() {
             'sorting': '',
             'isShow': true,
             'index': 8,
+            '__index': 8,
             '__width': 130,
             '__isShow': true
         },
@@ -137,6 +146,7 @@ export function getColumnMap() {
             'text': '<span style="color: red">操作</span>',
             'isShow': true,
             'index': 9,
+            '__index': 9,
             '__width': 100,
             '__isShow': true
         }

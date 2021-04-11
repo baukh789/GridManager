@@ -233,11 +233,11 @@ class AjaxPage {
         let	pSize = pageSize || 10;
         // 根据本地缓存配置每页显示条数
 		if (!disableCache) {
-            const userMemory = getUserMemory(_);
+            const memoryPageSize = getUserMemory(_)[pageSizeKey];
 
             // 验证是否存在每页显示条数缓存数据
-            if (userMemory && userMemory.page && userMemory.page[pageSizeKey]) {
-                pSize = userMemory.page[pageSizeKey];
+            if (memoryPageSize) {
+                pSize = memoryPageSize;
             }
 		}
 

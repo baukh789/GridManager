@@ -189,7 +189,7 @@
                     }
                 },
 				emptyTemplate: '<div class="void-template">通过 emptyTemplate 配置的空数据提示</div>',
-
+                disableCache: false,
 				columnData: [
 					{
 						key: 'pic',
@@ -248,7 +248,7 @@
                                 text: '博文分类',
                                 align: 'left',
                                 template: function(type, rowObject){
-                                    return TYPE_MAP[type];
+                                    return TYPE_MAP[type] + 3;
                                 }
                             },
                             {
