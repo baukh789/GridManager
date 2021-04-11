@@ -35,7 +35,7 @@ module.exports = function (config) {
 
 		// 日志级别
 		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		logLevel: config.LOG_DEBUG,
+		logLevel: config.LOG_INFO,
 
 		// 是否监听文件变化
 		autoWatch: false,
@@ -92,9 +92,9 @@ module.exports = function (config) {
                 new CleanWebpackPlugin({
                     cleanOnceBeforeBuildPatterns: [path.join(__dirname, './coverage')]
                 }),
-				// new webpack.ProvidePlugin({
-				// 	'Promise': 'es6-promise'
-				// }),
+				new webpack.ProvidePlugin({
+					'Promise': 'es6-promise'
+				}),
                 new webpack.DefinePlugin({
                     'process.env': {
                         VERSION: JSON.stringify(version)
