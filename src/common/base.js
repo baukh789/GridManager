@@ -593,15 +593,16 @@ export const updateScrollStatus = _ => {
  */
 export const calcLayout = (_, width, height, supportAjaxPage) => {
     const tableWrap = getWrap(_).get(0);
-    const theadHeight = getThead(_).height() + 1; // 1为边框，该边框并不真实存在于thead内: 这样做有利于固定列的展示
+    const theadHeight = getThead(_).height();
+    const tableHeaderHeight = theadHeight + 1;// 1为边框，该边框并不真实存在于thead内: 这样做有利于固定列的展示
 
     // 包含calc的样式，无法通过jTool对像进行赋值，所以需要通过.style的方式赋值
     tableWrap.style.width = `calc(${width})`;
     tableWrap.style.height = `calc(${height})`;
-    tableWrap.style.paddingTop = theadHeight + PX;
+    tableWrap.style.paddingTop = tableHeaderHeight + PX;
 
     getDiv(_).get(0).style.height = supportAjaxPage ? `calc(100% - ${jTool(`[${TOOLBAR_KEY}="${_}"]`).height() + PX})` : '100%';
-    jTool('.table-header', tableWrap).height(theadHeight);
+    jTool('.table-header', tableWrap).height(tableHeaderHeight);
     getTable(_).css('margin-top',  -theadHeight);
 };
 

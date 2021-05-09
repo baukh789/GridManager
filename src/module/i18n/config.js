@@ -83,6 +83,11 @@ export default function () {
         'zh-tw': '打印',
         'en-us': 'Print'
     };
+    _this['copy'] = {
+        'zh-cn': '复制',
+        'zh-tw': '復制',
+        'en-us': 'Copy'
+    };
     _this['ok'] = {
         'zh-cn': '确定',
         'zh-tw': '確定',

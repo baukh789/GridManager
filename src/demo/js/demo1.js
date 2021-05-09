@@ -353,6 +353,9 @@ const demo1 = {
             // 禁用边框线
             // disableBorder: true,
 
+            // 使用单元格触焦高亮样式
+            useCellFocus: true,
+
             // 行移动
             supportMoveRow: true,
             moveRowConfig: {
@@ -364,19 +367,13 @@ const demo1 = {
                 }
             },
             summaryHandler: function(data){
-                let praiseNumber = 0;
                 let readNumber = 0;
-                let commentSum = 0;
                 data.forEach(item => {
-                    praiseNumber += parseInt(item.praiseNumber, 10);
                     readNumber += item.readNumber;
-                    commentSum += item.commentSum;
                 });
                 return {
                     pic: '共计',
-                    praiseNumber,
-                    readNumber,
-                    commentSum
+                    readNumber
                 };
             },
 
@@ -492,20 +489,20 @@ const demo1 = {
             emptyTemplate: settings => {
                 return `<div style="text-align: center;">${settings.query.title ? '搜索为空' : '暂无数据'}</div>`;
             },
-            // 单个td的hover事件
+            // 单个td的click事件
             // cellClick: (row, rowIndex, colIndex) => {
-            //     // console.log(row, rowIndex, colIndex);
+            //     console.log(row, rowIndex, colIndex);
             //     return {
             //         text: '这里有个提示',
             //         position: 'left'
             //     };
             // },
-            rowHover: (a, b, c) => {
-                return {
-                    text: '这里有个提示',
-                    position: 'right'
-                };
-            },
+            // rowHover: (a, b, c) => {
+            //     return {
+            //         text: '这里有个提示',
+            //         position: 'right'
+            //     };
+            // },
             // useWordBreak: true,
             columnData: [
                 {
@@ -556,6 +553,9 @@ const demo1 = {
                         titleNode.classList.add('plugin-action');
                         return titleNode;
                     }
+                }, {
+                    key: 'readNumber',
+                    text: '阅读量'
                 }, {
                     key: 'type',
                     remind: {

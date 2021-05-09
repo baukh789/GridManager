@@ -1,7 +1,7 @@
 import jTool from '@jTool';
 import { eventMap } from '@module/menu/event';
 import { EVENTS, TARGET } from '@common/events';
-import { DISABLED_CLASS_NAME, MENU_KEY } from '@common/constants';
+import { DISABLED_CLASS_NAME, MENU_KEY, TD_FOCUS } from '@common/constants';
 import i18n from '@module/i18n';
 import { getSettings } from '@common/cache';
 import { toPage } from '@module/ajaxPage';
@@ -149,6 +149,23 @@ const getPrint = settings => {
 };
 
 /**
+ * 菜单项: 复制单元格
+ * @param settings
+ * @returns {{onClick: onClick, content: string}}
+ */
+const getCopyCell = settings => {
+    const fakeCopyAttr = 'gm-fake-copy';
+    return {
+        content: `${i18n(settings, 'copy')}<i class="gm-icon gm-icon-copy"></i><input ${fakeCopyAttr}="${settings._}"/>`,
+        onClick: _ => {
+            const fakeCopy = document.querySelector(`[${fakeCopyAttr}=${_}]`);
+            fakeCopy.value = getTbody(_).find(`td[${TD_FOCUS}]`).text();
+            fakeCopy.select();
+            document.execCommand('Copy');
+        }
+    };
+};
+/**
  * 菜单项: 配置
  * @param settings
  * @returns {{onClick: onClick, content: string}}
@@ -190,7 +207,7 @@ export const clearMenuDOM = _ => {
  */
 export const createMenuDom = _ => {
     const settings = getSettings(_);
-    const { supportAjaxPage, supportExport, supportConfig, supportPrint, menuHandler } = settings;
+    const { supportAjaxPage, supportExport, supportConfig, supportPrint, menuHandler, useCellFocus } = settings;
     let menuList = [];
     // 分页类
     if (supportAjaxPage) {
@@ -204,6 +221,11 @@ export const createMenuDom = _ => {
 
     // 刷新
     menuList.push(getRefreshPage(settings));
+
+    // 复制
+    if (useCellFocus) {
+        menuList.push(getCopyCell(settings));
+    }
 
     // 打印
     if (supportPrint) {

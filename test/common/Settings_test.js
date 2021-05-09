@@ -103,6 +103,14 @@ describe('Settings', () => {
         expect(settings.skinClassName).toBe('');
     });
 
+    it('验证属性[useWordBreak]初始值', () => {
+        expect(settings.useWordBreak).toBe(false);
+    });
+
+    it('验证属性[useCellFocus]初始值', () => {
+        expect(settings.useCellFocus).toBeUndefined();
+    });
+
     it('验证属性[isIconFollowText]初始值', () => {
         expect(settings.isIconFollowText).toBe(false);
     });

@@ -47,6 +47,9 @@ export const TR_PARENT_KEY = 'parent-key';
 // tr 子行的展示状态
 export const TR_CHILDREN_STATE = 'children-state';
 
+// td 触集标识
+export const TD_FOCUS = 'gm-focus-td';
+
 // 行 禁用选中
 export const ROW_DISABLED_CHECKBOX = 'gm_checkbox_disabled';
 

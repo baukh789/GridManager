@@ -65,6 +65,9 @@
         }
         td {
             border-bottom: var(--gm-border);
+            &[gm-focus-td]{
+                box-shadow: inset 0 0 0 1px var(--gm-color-active) !important; // important用于处理固定列样式权重过高问题
+            }
         }
     }
 
@@ -136,6 +139,7 @@
         }
         tr {
             height: 39px;
+            // 复杂表头需要border-top
             th{
                 border-top: var(--gm-border);
             }

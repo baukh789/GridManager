@@ -15,7 +15,7 @@ import {
     updateVisibleLast
 } from '@common/base';
 import { outError } from '@common/utils';
-import { TABLE_PURE_LIST, TABLE_BODY_KEY, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD, DISABLE_CUSTOMIZE } from '@common/constants';
+import { TABLE_PURE_LIST, TABLE_BODY_KEY, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD, DISABLE_CUSTOMIZE, TD_FOCUS } from '@common/constants';
 import { resetTableData, getRowData, getSettings } from '@common/cache';
 import { mergeRow } from '../merge';
 import filter from '../filter';
@@ -378,7 +378,7 @@ class Dom {
      * @param _
      */
     bindEvent(_) {
-        const { rowHover, rowClick, cellHover, cellClick } = getSettings(_);
+        const { rowHover, rowClick, cellHover, cellClick, useCellFocus } = getSettings(_);
 
         eventMap[_] = getEvent(getQuerySelector(_));
         const event = eventMap[_];
@@ -455,6 +455,15 @@ class Dom {
             const cellClickEvent = event.cellClick;
             jTool(cellClickEvent[TARGET]).on(cellClickEvent[EVENTS], cellClickEvent[SELECTOR], function () {
                 tooltip(_, this, cellClick(...getCellParams(this)));
+            });
+        })();
+
+        // 单元格触焦事件: mousedown
+        useCellFocus && (() => {
+            const cellFocusEvent = event.cellFocus;
+            jTool(cellFocusEvent[TARGET]).on(cellFocusEvent[EVENTS], cellFocusEvent[SELECTOR], function () {
+                getTbody(_).find(`[${TD_FOCUS}]`).removeAttr(TD_FOCUS);
+                this.setAttribute(TD_FOCUS, '');
             });
         })();
     }

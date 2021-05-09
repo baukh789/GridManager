@@ -2,7 +2,7 @@
  * 核心功能所需的事件项
  * @param scope: querySelector 域
  */
-import { MOUSE_MOVE, MOUSE_CLICK, createEventsObj } from '@common/events';
+import { MOUSE_MOVE, MOUSE_CLICK, createEventsObj, MOUSE_DOWN } from '@common/events';
 import { TR_CACHE_KEY } from '@common/constants';
 
 export const getEvent = scope => {
@@ -19,7 +19,10 @@ export const getEvent = scope => {
         cellHover: createEventsObj(MOUSE_MOVE, scope, td),
 
         // 单元格 click
-        cellClick: createEventsObj(MOUSE_CLICK, scope, td)
+        cellClick: createEventsObj(MOUSE_CLICK, scope, td),
+
+        // 单元格触焦 mousedown
+        cellFocus: createEventsObj(MOUSE_DOWN, scope, 'td')
     };
 };
 
