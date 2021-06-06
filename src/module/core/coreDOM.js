@@ -118,11 +118,11 @@ class Dom {
     }
 
     /**
-     * 重新组装table body
+     * 重新组装table body: 这个方法最大的性能问题在于tbody过大时，首次获取tbody或其父容器时过慢
      * @param settings
      * @param data
      */
-    renderTableBody(settings, data) {
+    async renderTableBody(settings, data) {
         const {
             _,
             columnMap,
@@ -282,27 +282,27 @@ class Dom {
         !__isNested && this.initVisible(_, columnMap);
 
         // 解析框架
-        sendCompile(settings).then(() => {
-            // 插入tree dom
-            supportTreeData && tree.insertDOM(_, treeConfig);
+        await sendCompile(settings);
 
-            // 合并单元格
-            mergeRow(_, columnMap);
+        // 插入tree dom
+        supportTreeData && tree.insertDOM(_, treeConfig);
 
-            fixed.update(_);
+        // 合并单元格
+        mergeRow(_, columnMap);
 
-            // 增加tbody是否填充满标识
-            if ($tbody.height() >= getDiv(_).height()) {
-                $tbody.attr('filled', '');
-            } else {
-                $tbody.removeAttr('filled');
-            }
+        fixed.update(_);
 
-            // 为最后一列的th, td增加标识: 嵌套表头不处理
-            if (!settings.__isNested) {
-                updateVisibleLast(_);
-            }
-        });
+        // 增加tbody是否填充满标识
+        if ($tbody.height() >= getDiv(_).height()) {
+            $tbody.attr('filled', '');
+        } else {
+            $tbody.removeAttr('filled');
+        }
+
+        // 为最后一列的th, td增加标识: 嵌套表头不处理
+        if (!settings.__isNested) {
+            updateVisibleLast(_);
+        }
     }
 
     /**

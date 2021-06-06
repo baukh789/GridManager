@@ -201,10 +201,10 @@ export const compileFullColumn = (settings, row, index, template, model) => {
 export async function sendCompile(settings) {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
-    let domList = document.querySelectorAll(`${getQuerySelector(_)} [${FRAMEWORK_KEY}]`);
     if (compileList.length === 0) {
-        return;
+        return Promise.resolve();
     }
+    let domList = document.querySelectorAll(`${getQuerySelector(_)} [${FRAMEWORK_KEY}]`);
 
     // 以下为框架版本才会使用到
     compileList.forEach((item, index) => {

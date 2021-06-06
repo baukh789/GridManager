@@ -79,7 +79,7 @@ class Core {
      * @param response
      * @param callback
      */
-    driveDomForSuccessAfter(settings, response, callback) {
+    async driveDomForSuccessAfter(settings, response, callback) {
         const { _, rendered, responseHandler, supportCheckbox, supportAjaxPage, supportMenu, checkboxConfig, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
 
         // 用于防止在填tbody时，实例已经被消毁的情况。
@@ -121,7 +121,7 @@ class Core {
             const $div = getDiv(_);
             $div.removeClass(EMPTY_DATA_CLASS_NAME);
             $div.scrollTop(0);
-            coreDOM.renderTableBody(settings, _data);
+            await coreDOM.renderTableBody(settings, _data);
         }
 
         // 渲染选择框
