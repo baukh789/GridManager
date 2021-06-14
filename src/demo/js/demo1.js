@@ -356,6 +356,9 @@ const demo1 = {
             // 使用单元格触焦高亮样式
             useCellFocus: true,
 
+            // 使用行隐藏功能
+            useHideRow: true,
+
             // 行移动
             supportMoveRow: true,
             moveRowConfig: {

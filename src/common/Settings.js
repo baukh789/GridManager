@@ -123,6 +123,9 @@ const gridStyle = {
     // 是否使用单元格触焦, 启用后点击单元格会增加高亮样式，并且在快捷菜单中将出现复制功能
     // useCellFocus: false,
 
+    // 是否使用行隐藏功能，启用后快捷菜单中将出现隐藏行功能
+    // useHideRow: false,
+
     // 表头的icon图标是否跟随文本
     isIconFollowText: false // v2.7.0 新增
 };

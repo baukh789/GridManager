@@ -6,6 +6,7 @@ import i18n from '@module/i18n';
 import { getSettings } from '@common/cache';
 import { toPage } from '@module/ajaxPage';
 import exportFile from '@module/exportFile';
+import { hideRow } from '@module/rowVisible';
 import { getTbody } from '@common/base';
 import print from '@module/print';
 import config from '@module/config';
@@ -165,6 +166,21 @@ const getCopyCell = settings => {
         }
     };
 };
+
+/**
+ * 菜单项: 隐藏行
+ * @param settings
+ * @returns {{onClick: onClick, content: string}}
+ */
+const getHideRow = settings => {
+    return {
+        content: `${i18n(settings, 'hide-row')}<i class="gm-icon gm-icon-hide"></i>`,
+        onClick: _ => {
+            hideRow(getSettings(_), getTbody(_).find(`td[${TD_FOCUS}]`).parent());
+        }
+    };
+};
+
 /**
  * 菜单项: 配置
  * @param settings
@@ -207,7 +223,7 @@ export const clearMenuDOM = _ => {
  */
 export const createMenuDom = _ => {
     const settings = getSettings(_);
-    const { supportAjaxPage, supportExport, supportConfig, supportPrint, menuHandler, useCellFocus } = settings;
+    const { supportAjaxPage, supportExport, supportConfig, supportPrint, menuHandler, useCellFocus, useHideRow } = settings;
     let menuList = [];
     // 分页类
     if (supportAjaxPage) {
@@ -230,6 +246,11 @@ export const createMenuDom = _ => {
     // 打印
     if (supportPrint) {
         menuList.push(getPrint(settings));
+    }
+
+    // 隐藏行
+    if (useHideRow) {
+        menuList.push(getHideRow(settings));
     }
 
     // 配置列

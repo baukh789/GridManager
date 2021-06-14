@@ -17,6 +17,7 @@ import {
     TR_LEVEL_KEY,
     TR_PARENT_KEY,
     TR_CHILDREN_STATE,
+    TD_FOCUS,
     ROW_DISABLED_CHECKBOX,
     ROW_CLASS_NAME,
     NO_SELECT_CLASS_NAME,
@@ -35,7 +36,9 @@ import {
     DISABLED_CLASS_NAME,
     REMIND_CLASS,
     SORT_CLASS,
-    ODD
+    ODD,
+    DISABLE_CUSTOMIZE,
+    ROW_HIDE_KEY
 } from '../../src/common/constants';
 
 describe('常量验证', () => {
@@ -89,6 +92,10 @@ describe('常量验证', () => {
 
     it('TR_CHILDREN_STATE', () => {
         expect(TR_CHILDREN_STATE).toBe('children-state');
+    });
+
+    it('TD_FOCUS', () => {
+        expect(TD_FOCUS).toBe('gm-focus-td');
     });
 
     it('ROW_DISABLED_CHECKBOX', () => {
@@ -185,5 +192,13 @@ describe('常量验证', () => {
 
     it('ODD', () => {
         expect(ODD).toBe('odd');
+    });
+
+    it('DISABLE_CUSTOMIZE', () => {
+        expect(DISABLE_CUSTOMIZE).toBe('disableCustomize');
+    });
+
+    it('ROW_HIDE_KEY', () => {
+        expect(ROW_HIDE_KEY).toBe('gm-row-hide');
     });
 });

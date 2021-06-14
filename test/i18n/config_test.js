@@ -9,7 +9,7 @@ describe('textConfig', () => {
         textConfig = null;
     });
     it('验证国际化文本总数', () => {
-        expect(Object.keys(textConfig).length).toBe(17);
+        expect(Object.keys(textConfig).length).toBe(18);
     });
     it('验证国际化文本[order-text]初始值', () => {
         expect(textConfig['order-text']['zh-cn']).toBe('序号');
@@ -99,6 +99,12 @@ describe('textConfig', () => {
         expect(textConfig['copy']['zh-cn']).toBe('复制');
         expect(textConfig['copy']['zh-tw']).toBe('復制');
         expect(textConfig['copy']['en-us']).toBe('Copy');
+    });
+
+    it('验证国际化文本[hide-row]初始值', () => {
+        expect(textConfig['hide-row']['zh-cn']).toBe('隐藏行');
+        expect(textConfig['hide-row']['zh-tw']).toBe('隱藏行');
+        expect(textConfig['hide-row']['en-us']).toBe('Hidden Row');
     });
 
     it('验证国际化文本[ok]初始值', () => {

@@ -1,4 +1,5 @@
-import {getColTd, getTh, getTable, getTbody} from '@common/base';
+import { getColTd, getTh, getTable, getTbody } from '@common/base';
+import { ROW_HIDE_KEY } from '@common/constants';
 import jTool from '@jTool';
 import { each } from '@jTool/utils';
 import './style.less';
@@ -16,8 +17,8 @@ export const mergeRow = (_, columnMap) => {
             return true;
         }
 
-        // 排除了汇总行
-        const $tdList = getColTd(getTh(_, key), getTbody(_).find('tr:not([gm-summary-row])'));
+        // 排除: 汇总行 和 隐藏行
+        const $tdList = getColTd(getTh(_, key), getTbody(_).find(`tr:not([gm-summary-row]):not([${ROW_HIDE_KEY}])`));
 
         let len = $tdList.length;
         let index = len;

@@ -143,6 +143,9 @@ export const ODD = 'odd';
 // 该列是否禁止使用个性配置功能(宽度调整、位置更换、列的显示隐藏)
 export const DISABLE_CUSTOMIZE = 'disableCustomize';
 
+// 行隐藏标识
+export const ROW_HIDE_KEY = 'gm-row-hide';
+
 // 像素
 export const PX = 'px';
 // 公开方法列表

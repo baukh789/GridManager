@@ -74,17 +74,16 @@
     th, td {
         border-right: var(--gm-border);
         // 文本对齐
-        &[align] {
-            &[align="left"] {
-                text-align: left;
-            }
-            &[align="center"] {
-                text-align: center;
-            }
-            &[align="right"] {
-                text-align: right;
-            }
+        &[align="left"] {
+            text-align: left;
         }
+        &[align="center"] {
+            text-align: center;
+        }
+        &[align="right"] {
+            text-align: right;
+        }
+
         // 不可见单元格
         &[cell-hidden]{
             display: none;

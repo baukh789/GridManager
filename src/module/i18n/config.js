@@ -88,6 +88,11 @@ export default function () {
         'zh-tw': '復制',
         'en-us': 'Copy'
     };
+    _this['hide-row'] = {
+        'zh-cn': '隐藏行',
+        'zh-tw': '隱藏行',
+        'en-us': 'Hidden Row'
+    };
     _this['ok'] = {
         'zh-cn': '确定',
         'zh-tw': '確定',

@@ -17,7 +17,7 @@ import {
     getStyle,
     isValidArray
 } from '@jTool/utils';
-import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, READY_CLASS_NAME, PX } from '@common/constants';
+import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, READY_CLASS_NAME, PX, ROW_HIDE_KEY } from '@common/constants';
 import {
     showLoading,
     hideLoading,
@@ -32,7 +32,8 @@ import {
     getFakeTh,
     updateVisibleLast,
     updateScrollStatus,
-    getTable
+    getTable,
+    getTbody
 } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable, updateCache } from '@common/cache';
@@ -58,6 +59,7 @@ import sort, { updateSort } from './sort';
 import filter from './filter';
 import fixed from './fixed';
 import print from './print';
+import { showRow, hideRow } from './rowVisible';
 
 const isRendered = (_, settings) => {
     // 部分静态方法自身不使用settings， 所以这个参数可能为空
@@ -787,6 +789,44 @@ export default class GridManager {
     hideLoading(table, delayTime) {
         const _ = getKey(table);
         isRendered(_) && hideLoading(_, delayTime);
+    }
+
+    /**
+     * @静态方法
+     * 显示行
+     * @param table
+     * @param index: 行的索引，为空时将显示所有已隐藏的行
+     */
+    static
+    showRow(table, index) {
+        const _ = getKey(table);
+        if (!isRendered(_)) {
+            return;
+        }
+
+        let $tr = null;
+        // 指定显示某一行
+        if (isNumber(index)) {
+            $tr = getTbody(_).find('tr').eq(index);
+        } else {
+            // 未指定时则全部显示
+            $tr = getTbody(_).find(`tr[${ROW_HIDE_KEY}]`);
+        }
+        showRow(getSettings(_), $tr);
+    }
+
+    /**
+     * @静态方法
+     * 隐藏行
+     * @param table
+     * @param index: 行的索引，为空时将不执行
+     */
+    static
+    hideRow(table, index) {
+        const _ = getKey(table);
+        if (isRendered(_) && isNumber(index)) {
+            hideRow(getSettings(_), getTbody(_).find('tr').eq(index));
+        }
     }
 
     /**

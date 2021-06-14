@@ -1,0 +1,16 @@
+tbody tr{
+    // 隐藏行
+    &[gm-row-hide="ing"]{
+        animation: gmHideEffect .5s ease-in-out 1 forwards;
+    }
+
+    // 显示行
+    &[gm-row-hide="out"]{
+        animation: gmShowEffect .5s ease-in-out 1 forwards;
+    }
+
+    // 已隐藏
+    &[gm-row-hide="true"]{
+        display: none;
+    }
+}

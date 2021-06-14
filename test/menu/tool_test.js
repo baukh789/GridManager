@@ -58,6 +58,8 @@ describe('menu tool', () => {
                 supportExport: true,
                 supportConfig: true,
                 supportPrint: true,
+                useCellFocus: true,
+                useHideRow: true,
                 textConfig: new TextConfig(),
                 pageData: {
                     pSize: 20,
@@ -74,7 +76,7 @@ describe('menu tool', () => {
             expect($menu.length).toBe(1);
             expect($menu.attr('grid-master')).toBe('test');
 
-            expect($menu.find('[menu-action]').length).toBe(7);
+            expect($menu.find('[menu-action]').length).toBe(9);
             expect($menu.find('.menu-line').length).toBe(1);
 
             expect(jTool(getMenuQuerySelector('test')).length).toBe(1);
@@ -88,6 +90,8 @@ describe('menu tool', () => {
                 supportExport: true,
                 supportConfig: true,
                 supportPrint: true,
+                useCellFocus: true,
+                useHideRow: true,
                 textConfig: new TextConfig(),
                 pageData: {
                     pSize: 20,
@@ -106,7 +110,7 @@ describe('menu tool', () => {
             expect($menu.length).toBe(1);
             expect($menu.attr('grid-master')).toBe('test');
 
-            expect($menu.find('[menu-action]').length).toBe(6);
+            expect($menu.find('[menu-action]').length).toBe(8);
             expect($menu.find('.menu-line').length).toBe(2);
 
             expect(jTool(getMenuQuerySelector('test')).length).toBe(1);

@@ -111,6 +111,10 @@ describe('Settings', () => {
         expect(settings.useCellFocus).toBeUndefined();
     });
 
+    it('验证属性[useHideRow]初始值', () => {
+        expect(settings.useHideRow).toBeUndefined();
+    });
+
     it('验证属性[isIconFollowText]初始值', () => {
         expect(settings.isIconFollowText).toBe(false);
     });
