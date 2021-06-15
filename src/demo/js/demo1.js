@@ -288,6 +288,7 @@ const demo1 = {
             // supportAutoOrder: false,
             // 自动序号配置
             autoOrderConfig: {
+                // width: 40,
                 // 固定列
                 fixed: 'left'
             },
@@ -300,6 +301,7 @@ const demo1 = {
                 // 使用行选中
                 // useRowCheck: true,
 
+                // width: 100,
                 key: 'id',
                 // 复选时最大可选数
                 // max: 2,
@@ -516,7 +518,7 @@ const demo1 = {
                             'color': 'yellow'
                         }
                     },
-                    width: '110px',
+                    width: '140',
                     align: 'center',
                     text: '缩略图',
                     disableMoveRow: true,
