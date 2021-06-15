@@ -68,9 +68,6 @@ export const CACHE_ERROR_KEY = 'grid-manager-cache-error';
 // 空模板属性 key
 export const EMPTY_TPL_KEY = 'empty-template';
 
-// order width
-export const ORDER_WIDTH = 50;
-
 // fold: key
 export const FOLD_KEY = 'gm_fold';
 

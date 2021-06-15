@@ -1,6 +1,6 @@
 'use strict';
 import jTool from '../../src/jTool';
-import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '../../src/common/constants';
+import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_DISABLED_KEY} from '../../src/common/constants';
 import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, resetTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, updateCache } from '../../src/common/cache';
 import store from '../../src/common/Store';
 import pkg from '../../package.json';
@@ -904,7 +904,7 @@ describe('cache', () => {
                     isAutoCreate: true,
                     isShow: true,
                     disableCustomize: true,
-                    width: ORDER_WIDTH,
+                    width: 50,
                     align: 'center',
                     template: nodeData => {
                         return `<td gm-order gm-create>${nodeData}</td>`;

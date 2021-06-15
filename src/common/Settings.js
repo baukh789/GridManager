@@ -257,7 +257,10 @@ const autoOrder = {
     // 自动序号配置
     autoOrderConfig: {
         // 固定列, 默认为undefined
-        // fixed: undefined
+        // fixed: undefined,
+
+        // 宽度
+        width: 50 // @2.15.3
     }
 };
 

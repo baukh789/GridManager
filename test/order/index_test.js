@@ -1,5 +1,5 @@
 import order from '../../src/module/order';
-import { ORDER_KEY, ORDER_WIDTH, GM_CREATE } from '../../src/common/constants';
+import { ORDER_KEY, GM_CREATE } from '../../src/common/constants';
 import { Settings } from '../../src/common/Settings';
 import TextConfig from '../../src/module/i18n/config';
 
@@ -21,7 +21,7 @@ describe('order', () => {
             expect(column.isAutoCreate).toBe(true);
             expect(column.isShow).toBe(true);
             expect(column.disableCustomize).toBe(true);
-            expect(column.width).toBe(ORDER_WIDTH);
+            expect(column.width).toBe(50);
             expect(column.fixed).toBe(undefined);
             expect(column.template()).toBe(`<td ${GM_CREATE} gm-order></td>`);
             expect(column.template(1, {}, 1, true)).toBe(`<td ${GM_CREATE} gm-order>1</td>`);

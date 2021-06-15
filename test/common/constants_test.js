@@ -8,7 +8,6 @@ import {
     TABLE_HEAD_KEY,
     FAKE_TABLE_HEAD_KEY,
     TABLE_BODY_KEY,
-    ORDER_WIDTH,
     ORDER_KEY,
     CHECKBOX_KEY,
     CHECKBOX_DISABLED_KEY,
@@ -103,10 +102,6 @@ describe('常量验证', () => {
 
     it('ROW_CLASS_NAME', () => {
         expect(ROW_CLASS_NAME).toBe('gm_row_class_name');
-    });
-
-    it('ORDER_WIDTH', () => {
-        expect(ORDER_WIDTH).toBe(50);
     });
 
     it('ORDER_KEY', () => {
