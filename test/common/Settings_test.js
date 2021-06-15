@@ -212,8 +212,8 @@ describe('Settings', () => {
 	});
 
     it('验证属性[checkboxConfig]初始值', () => {
-        expect(settings.checkboxConfig.useRadio).toBe(false);
-        expect(settings.checkboxConfig.useRowCheck).toBe(false);
+        expect(settings.checkboxConfig.useRadio).toBeUndefined();
+        expect(settings.checkboxConfig.useRowCheck).toBeUndefined();
         expect(settings.checkboxConfig.max).toBeUndefined(null);
     });
 

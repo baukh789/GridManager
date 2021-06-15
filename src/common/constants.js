@@ -77,9 +77,6 @@ export const FOLD_KEY = 'gm_fold';
 // order: key
 export const ORDER_KEY = 'gm_order';
 
-// checkbox width
-export const CHECKBOX_WIDTH = 40;
-
 // moverow key
 export const MOVEROW_KEY = 'gm_moverow';
 

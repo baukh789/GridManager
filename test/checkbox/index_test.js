@@ -1,5 +1,5 @@
 import checkbox from '../../src/module/checkbox';
-import { CHECKBOX_KEY, CHECKBOX_WIDTH, CHECKBOX_DISABLED_KEY } from '../../src/common/constants';
+import { CHECKBOX_KEY, CHECKBOX_DISABLED_KEY } from '../../src/common/constants';
 
 describe('checkbox', () => {
     describe('addSign', () => {
@@ -58,6 +58,7 @@ describe('checkbox', () => {
         it('单选', () => {
             conf = {
                 fixed: 'left',
+                width: 50,
                 useRadio: true
             };
             column = checkbox.getColumn(conf);
@@ -66,7 +67,7 @@ describe('checkbox', () => {
             expect(column.isAutoCreate).toBe(true);
             expect(column.isShow).toBe(true);
             expect(column.disableCustomize).toBe(true);
-            expect(column.width).toBe(CHECKBOX_WIDTH);
+            expect(column.width).toBe(50);
             expect(column.fixed).toBe('left');
 
             htmlStr = `
@@ -85,6 +86,7 @@ describe('checkbox', () => {
         it('多选', () => {
             conf = {
                 fixed: 'right',
+                width: 40,
                 useRadio: false
             };
             column = checkbox.getColumn(conf);
@@ -93,7 +95,7 @@ describe('checkbox', () => {
             expect(column.isAutoCreate).toBe(true);
             expect(column.isShow).toBe(true);
             expect(column.disableCustomize).toBe(true);
-            expect(column.width).toBe(CHECKBOX_WIDTH);
+            expect(column.width).toBe(40);
             expect(column.fixed).toBe('right');
             htmlStr = `
             <td gm-create gm-checkbox>

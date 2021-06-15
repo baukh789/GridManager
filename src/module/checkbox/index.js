@@ -49,7 +49,7 @@
  *          - checkedList: 已选中行数据,数组类型
  *          - isChecked: 当前的选中状态
  */
-import { CHECKBOX_WIDTH,
+import {
     TR_CACHE_KEY,
     CHECKBOX_KEY,
     ROW_DISABLED_CHECKBOX,
@@ -288,7 +288,7 @@ class Checkbox {
 			isAutoCreate: true,
 			isShow: true,
             disableCustomize: true,
-			width: CHECKBOX_WIDTH,
+			width: conf.width,
             fixed: conf.fixed,
             // align: 'center',  // 调整为由样式控制
 			template: (checked, row, index, isTop) => {

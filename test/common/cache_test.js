@@ -1,6 +1,6 @@
 'use strict';
 import jTool from '../../src/jTool';
-import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_WIDTH, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '../../src/common/constants';
+import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, ORDER_WIDTH, CHECKBOX_DISABLED_KEY} from '../../src/common/constants';
 import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, resetTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, updateCache } from '../../src/common/cache';
 import store from '../../src/common/Store';
 import pkg from '../../package.json';
@@ -10,7 +10,6 @@ import { getColumnMap, getColumnData } from '../table-config';
 import i18n from '../../src/module/i18n';
 import {CHECKBOX_KEY, ORDER_KEY, TR_CACHE_KEY, TR_LEVEL_KEY} from '../../src/common/constants';
 import { clearCacheDOM } from '../../src/common/domCache';
-import {each} from '@jTool/utils';
 
 const version = pkg.version;
 // 清除空格
@@ -891,7 +890,7 @@ describe('cache', () => {
                     isAutoCreate: true,
                     isShow: true,
                     disableCustomize: true,
-                    width: CHECKBOX_WIDTH,
+                    width: 40,
                     align: 'center',
                     template: checked => {
                         return this.getColumnTemplate({checked, useRadio: settings.useRadio});

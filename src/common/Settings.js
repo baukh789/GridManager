@@ -271,10 +271,10 @@ const checkbox = {
     // 选择框配置
     checkboxConfig: {
         // 是否通过点击行来进行选中
-        useRowCheck: false,
+        // useRowCheck: undefined,
 
         // 当前选中操作是否使用单选
-        useRadio: false
+        // useRadio: undefined
 
         // 指定选中操作精准匹配字段，该值需保证每条数据的唯一性。默认不指定，对整条数据进行匹配。配置此项可提升选中操作性能, 数据量越大越明显。
         // key: undefined, // @2.11.9新增
@@ -283,7 +283,10 @@ const checkbox = {
         // max: undefined // @2.9.8 新增
 
         // 是否使用固定列, 默认为undefined
-        // fixed: undefined // @2.11.0
+        // fixed: undefined, // @2.11.0
+
+        // 宽度
+        width: 40 // @2.15.3
     },
 
     // 选择事件执行前事件

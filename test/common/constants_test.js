@@ -10,7 +10,6 @@ import {
     TABLE_BODY_KEY,
     ORDER_WIDTH,
     ORDER_KEY,
-    CHECKBOX_WIDTH,
     CHECKBOX_KEY,
     CHECKBOX_DISABLED_KEY,
     TR_CACHE_KEY,
@@ -112,10 +111,6 @@ describe('常量验证', () => {
 
     it('ORDER_KEY', () => {
         expect(ORDER_KEY).toBe('gm_order');
-    });
-
-    it('CHECKBOX_WIDTH', () => {
-        expect(CHECKBOX_WIDTH).toBe(40);
     });
 
     it('CHECKBOX_KEY', () => {
