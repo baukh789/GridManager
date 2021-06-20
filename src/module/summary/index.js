@@ -16,6 +16,12 @@ export const installSummary = (settings, columnList, tableData, trObjectList) =>
     }
     getDiv(_).attr(SUMMARY_FLAG, '');
     const tdList = [];
+
+    let style = '';
+    // 兼容性处理: safari 在处理sticky时，需要减去thead的高度
+    if (browser === 'safari') {
+        style = `style="bottom: ${getThead(_).height()}px"`;
+    }
     each(columnList, col => {
         const { key, align } = col;
         let summary = summaryMap[key];
@@ -27,11 +33,6 @@ export const installSummary = (settings, columnList, tableData, trObjectList) =>
         let { text, compileAttr } = compileTd(settings, () => summary, {}, undefined, key);
         text = isElement(text) ? text.outerHTML : text;
 
-        let style = '';
-        // 兼容性处理: safari 在处理sticky时，需要减去thead的高度
-        if (browser === 'safari') {
-            style = `style="bottom: ${getThead(_).height()}px"`;
-        }
         tdList.push(`<td ${compileAttr} ${alignAttr} ${DISABLE_MOVE} ${style}>${text}</td>`);
     });
     trObjectList.push({
