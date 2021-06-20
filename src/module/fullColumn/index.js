@@ -6,10 +6,13 @@ import { getSettings } from '@common/cache';
 import { getEvent, eventMap } from './event';
 import './style.less';
 import {EVENTS, SELECTOR, TARGET} from '@common/events';
-import { TR_CACHE_KEY, PX, FOLD_KEY } from '@common/constants';
+import { TR_CACHE_KEY, PX, FOLD_KEY, TR_PARENT_KEY } from '@common/constants';
 
 // 折叠事件区域
 const FOLD_ACTION = 'full-column-fold';
+
+// 通栏状态标识
+const FULL_COLUMN_STATE = 'full-column-state';
 
 // 获取通栏
 const getFullObject = (settings, colspan, template, useFold, openState, row, index, model) => {
@@ -20,25 +23,25 @@ const getFullObject = (settings, colspan, template, useFold, openState, row, ind
     // 在useFold开启时添加特定属性
     let foldAttr = [];
     if (useFold) {
-        foldAttr = [`full-column-state="${openState}"`, `full-column-key=${index}`];
+        foldAttr = [`${FULL_COLUMN_STATE}="${openState}"`];
     }
 
     return {
         className: [],
-        attribute: [`full-column="${model}"`].concat(foldAttr),
+        attribute: [`full-column="${model}"`, `${TR_PARENT_KEY}=${index}`].concat(foldAttr),
         tdList: [`<td colspan="${colspan}"><div class="full-column-div" ${compileAttr}>${text}</div></td>`]
     };
 };
 
 // 获取通栏间隔
-const getIntervalObject = (colspan, interval = 0) => {
+const getIntervalObject = (colspan, index, interval = 0) => {
     // 对于数字类型的间隔增加单位
     if (isNumber(interval)) {
         interval = interval + PX;
     }
     return {
         className: [],
-        attribute: [`full-column-interval="${interval}"`],
+        attribute: [`full-column-interval="${interval}"`, `${TR_PARENT_KEY}=${index}`],
         tdList: [`<td colspan="${colspan}"><div style="height: ${interval}"></div></td>`]
     };
 };
@@ -68,7 +71,7 @@ const addObject = (settings, row, index, trObjectList, model) => {
         }
     }
     if (model === 'bottom' && (isFunction(topTemplate) || isFunction(bottomTemplate))) {
-        trObjectList.push(getIntervalObject(colspan, interval));
+        trObjectList.push(getIntervalObject(colspan, index, interval));
     }
 };
 // 获取icon class name
@@ -90,11 +93,11 @@ class FullColumn {
                 const $onlyFold = jTool(this);
                 const $tr = $onlyFold.closest('tr');
                 const cacheKey = $tr.attr(TR_CACHE_KEY);
-                const $fullColumn = jTool(`${getQuerySelector(_)} tbody [full-column-key="${cacheKey}"]`);
+                const $fullColumn = jTool(`${getQuerySelector(_)} tbody [${TR_PARENT_KEY}="${cacheKey}"]`);
                 const openState = !($onlyFold.attr(FOLD_ACTION) === 'true');
                 $onlyFold.attr(FOLD_ACTION, openState);
-                $fullColumn.attr('full-column-state', openState);
-                $tr.attr('full-column-state', openState);
+                $fullColumn.attr(FULL_COLUMN_STATE, openState);
+                $tr.attr(FULL_COLUMN_STATE, openState);
 
                 $onlyFold.removeClass(getIconClass(!openState));
                 $onlyFold.addClass(getIconClass(openState));
