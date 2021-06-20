@@ -1,6 +1,6 @@
 import jTool from '@jTool';
 import { showRow, hideRow } from '../../src/module/rowVisible';
-import { TABLE_BODY_KEY, TABLE_HEAD_KEY, ROW_HIDE_KEY } from '@common/constants';
+import {TABLE_BODY_KEY, TABLE_HEAD_KEY, TR_CACHE_KEY, ROW_HIDE_KEY} from '@common/constants';
 
 // 获取指定类型的DOM长度
 const getTrLen = type => {
@@ -16,10 +16,10 @@ describe('rowVisible', () => {
                     <tr><th th-name="username">username</th><th th-name="createDate">createDate</th><th th-name="lastDate">lastDate</th></tr>
                 </thead>
                 <tbody ${TABLE_BODY_KEY}="test">
-                    <tr><td>张三</td><td>2019-11-11</td><td>2019-12-11</td></tr>
-                    <tr><td>李四</td><td>2019-11-11</td><td>2019-12-12</td></tr>
-                    <tr><td>王五</td><td>2019-11-12</td><td>2019-12-11</td></tr>
-                    <tr><td>赵六</td><td>2019-11-13</td><td>2019-12-11</td></tr>
+                    <tr ${TR_CACHE_KEY}="0"><td>张三</td><td>2019-11-11</td><td>2019-12-11</td></tr>
+                    <tr ${TR_CACHE_KEY}="1"><td>李四</td><td>2019-11-11</td><td>2019-12-12</td></tr>
+                    <tr ${TR_CACHE_KEY}="2"><td>王五</td><td>2019-11-12</td><td>2019-12-11</td></tr>
+                    <tr ${TR_CACHE_KEY}="3"><td>赵六</td><td>2019-11-13</td><td>2019-12-11</td></tr>
                     <tr gm-summary-row=""><td>统计</td><td>共4人</td><td></td></tr>
                 </tbody>
             </table>
@@ -56,7 +56,7 @@ describe('rowVisible', () => {
         expect(getTrLen('true')).toBe(0);
     });
     it('执行hideRow后验证', done => {
-        hideRow(settings, $tr);
+        hideRow(settings, 2);
         expect(getTrLen('out')).toBe(0);
         expect(getTrLen('ing')).toBe(1);
         expect(getTrLen('true')).toBe(0);
@@ -70,7 +70,7 @@ describe('rowVisible', () => {
     });
     it('执行showRow后验证', done => {
         $tr.attr('ROW_HIDE_KEY', true);
-        showRow(settings, $tr);
+        showRow(settings, 2);
         expect(getTrLen('out')).toBe(1);
         expect(getTrLen('ing')).toBe(0);
         expect(getTrLen('true')).toBe(0);

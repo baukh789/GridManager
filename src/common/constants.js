@@ -41,7 +41,7 @@ export const TR_CACHE_KEY = 'gm-cache-key';
 // tr level key
 export const TR_LEVEL_KEY = 'gm-level-key';
 
-// tr 上一层级的 cache key
+// tr 上一层级的 cache key: 包含树型结构与通栏结构
 export const TR_PARENT_KEY = 'parent-key';
 
 // tr 子行的展示状态

@@ -1,7 +1,7 @@
 import jTool from '@jTool';
 import { eventMap } from '@module/menu/event';
 import { EVENTS, TARGET } from '@common/events';
-import { DISABLED_CLASS_NAME, MENU_KEY, TD_FOCUS } from '@common/constants';
+import { DISABLED_CLASS_NAME, MENU_KEY, TD_FOCUS, TR_CACHE_KEY, TR_PARENT_KEY } from '@common/constants';
 import i18n from '@module/i18n';
 import { getSettings } from '@common/cache';
 import { toPage } from '@module/ajaxPage';
@@ -175,8 +175,11 @@ const getCopyCell = settings => {
 const getHideRow = settings => {
     return {
         content: `${i18n(settings, 'hide-row')}<i class="gm-icon gm-icon-hide"></i>`,
-        onClick: _ => {
-            hideRow(getSettings(_), getTbody(_).find(`td[${TD_FOCUS}]`).parent());
+        onClick: (_, target) => {
+            const $tr = jTool(target).closest('tr');
+            // 存在TR_CACHE_KEY: 当前为普通tr
+            // 不存在TR_CACHE_KEY: 当前为通栏行或树的子行
+            hideRow(getSettings(_), $tr.attr(TR_CACHE_KEY) || $tr.attr(TR_PARENT_KEY));
         }
     };
 };
@@ -220,8 +223,9 @@ export const clearMenuDOM = _ => {
 /**
  * 生成菜单DOM，并绑定事件
  * @param _
+ * @param target: 触发菜单打开时的元素，在部分事件中会使用到
  */
-export const createMenuDom = _ => {
+export const createMenuDom = (_, target) => {
     const settings = getSettings(_);
     const { supportAjaxPage, supportExport, supportConfig, supportPrint, menuHandler, useCellFocus, useHideRow } = settings;
     let menuList = [];
@@ -296,7 +300,7 @@ export const createMenuDom = _ => {
             if (isDisabled(this, e)) {
                 return false;
             }
-            onClick(_);
+            onClick(_, target);
             clearMenuDOM(_);
         });
     });

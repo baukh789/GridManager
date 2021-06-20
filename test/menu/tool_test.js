@@ -30,7 +30,7 @@ describe('menu tool', () => {
         });
         it('基础验证', () => {
             expect(createMenuDom).toBeDefined();
-            expect(createMenuDom.length).toBe(1);
+            expect(createMenuDom.length).toBe(2);
             expect(clearMenuDOM).toBeDefined();
             expect(clearMenuDOM.length).toBe(1);
         });
@@ -106,7 +106,7 @@ describe('menu tool', () => {
                 }
             };
             eventMap.test = getEvent('test', '#baukh');
-            $menu = createMenuDom('test');
+            $menu = createMenuDom('test', window.event);
             expect($menu.length).toBe(1);
             expect($menu.attr('grid-master')).toBe('test');
 

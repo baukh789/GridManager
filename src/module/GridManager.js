@@ -17,7 +17,7 @@ import {
     getStyle,
     isValidArray
 } from '@jTool/utils';
-import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, READY_CLASS_NAME, PX, ROW_HIDE_KEY } from '@common/constants';
+import { TABLE_KEY, CACHE_ERROR_KEY, TABLE_PURE_LIST, CHECKBOX_KEY, READY_CLASS_NAME, PX } from '@common/constants';
 import {
     showLoading,
     hideLoading,
@@ -32,8 +32,7 @@ import {
     getFakeTh,
     updateVisibleLast,
     updateScrollStatus,
-    getTable,
-    getTbody
+    getTable
 } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable, updateCache } from '@common/cache';
@@ -800,19 +799,9 @@ export default class GridManager {
     static
     showRow(table, index) {
         const _ = getKey(table);
-        if (!isRendered(_)) {
-            return;
+        if (isRendered(_)) {
+            showRow(getSettings(_), index);
         }
-
-        let $tr = null;
-        // 指定显示某一行
-        if (isNumber(index)) {
-            $tr = getTbody(_).find('tr').eq(index);
-        } else {
-            // 未指定时则全部显示
-            $tr = getTbody(_).find(`tr[${ROW_HIDE_KEY}]`);
-        }
-        showRow(getSettings(_), $tr);
     }
 
     /**
@@ -825,7 +814,7 @@ export default class GridManager {
     hideRow(table, index) {
         const _ = getKey(table);
         if (isRendered(_) && isNumber(index)) {
-            hideRow(getSettings(_), getTbody(_).find('tr').eq(index));
+            hideRow(getSettings(_), index);
         }
     }
 
