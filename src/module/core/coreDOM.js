@@ -404,7 +404,7 @@ class Dom {
                     return;
                 }
                 hoverTr = this;
-                tooltip(_, this, rowHover(...getRowParams(this)), () => {
+                tooltip(_, this, rowHover(...getRowParams(this), this), () => {
                     hoverTr = null;
                 });
             });
@@ -415,7 +415,7 @@ class Dom {
         rowClick && (() => {
             const rowClickEvent = event.rowClick;
             jTool(rowClickEvent[TARGET]).on(rowClickEvent[EVENTS], rowClickEvent[SELECTOR], function () {
-                tooltip(_, this, rowClick(...getRowParams(this)));
+                tooltip(_, this, rowClick(...getRowParams(this), this));
             });
         })();
 
@@ -444,7 +444,7 @@ class Dom {
                     return;
                 }
                 hoverTd = this;
-                tooltip(_, this, cellHover(...getCellParams(hoverTd)), () => {
+                tooltip(_, this, cellHover(...getCellParams(hoverTd), this), () => {
                     hoverTd = null;
                 });
             });
@@ -454,7 +454,7 @@ class Dom {
         cellClick && (() => {
             const cellClickEvent = event.cellClick;
             jTool(cellClickEvent[TARGET]).on(cellClickEvent[EVENTS], cellClickEvent[SELECTOR], function () {
-                tooltip(_, this, cellClick(...getCellParams(this)));
+                tooltip(_, this, cellClick(...getCellParams(this), this));
             });
         })();
 
