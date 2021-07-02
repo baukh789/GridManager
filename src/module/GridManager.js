@@ -714,9 +714,20 @@ export default class GridManager {
         const _ = getKey(table);
         const settings = getSettings(_);
         if (isRendered(_, settings)) {
-            const { columnMap, supportCheckbox } = settings;
+            const { columnMap, supportCheckbox, rowRenderHandler } = settings;
             const rowDataList = isArray(rowData) ? rowData : [rowData];
-            const { tableData, updateCacheList } = updateRowData(_, key, rowDataList);
+
+            let { tableData, updateCacheList } = updateRowData(_, key, rowDataList);
+            updateCacheList = updateCacheList.map(row => {
+                let index = -1;
+                each(tableData, (item, _index) => {
+                    if (item[key] === row[key]) {
+                        index = _index;
+                        return false;
+                    }
+                });
+                return rowRenderHandler(row, index);
+            });
 
             // 更新选中数据
             if (supportCheckbox) {
