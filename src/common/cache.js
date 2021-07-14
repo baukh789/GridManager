@@ -464,6 +464,16 @@ export const updateTemplate = arg => {
  * @param fullColumnFn
  */
 export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn) => {
+    // 转换简易列: ['key1'] => [{key, text}]
+    if (isString(arg.columnData[0])) {
+        arg.columnData = arg.columnData.map(item => {
+           return {
+               key: item,
+               text: item
+           };
+        });
+    }
+
     // 更新模板，将非函数类型的模板转换为函数类型
     arg = updateTemplate(arg);
 
