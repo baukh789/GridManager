@@ -58,6 +58,7 @@ import {
     INDETERMINATE,
     UNCHECKED,
     CHECKED_CLASS,
+    TR_PARENT_KEY,
     INDETERMINATE_CLASS } from '@common/constants';
 import jTool from '@jTool';
 import { each, isNumber, isString } from '@jTool/utils';
@@ -236,12 +237,17 @@ class Checkbox {
         // tr点击选中
         if (useRowCheck) {
             jTool(trChange[TARGET]).on(trChange[EVENTS], trChange[SELECTOR], function (e) {
+                // 当前为子项: 子项不支持点击选中
+                if (this.getAttribute(TR_PARENT_KEY)) {
+                    return;
+                }
                 const rowData = getRowData(_, this, true);
                 const $checkboxWrap = jTool('td[gm-checkbox] label', this);
                 let $td = jTool(e.target);
                 if (e.target.nodeName !== 'TD') {
                     $td = $td.closest('td');
                 }
+
                 if (
                     // 当前行数据未指定禁止选中
                     !rowData[ROW_DISABLED_CHECKBOX] &&
