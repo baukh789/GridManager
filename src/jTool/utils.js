@@ -289,10 +289,15 @@ export function extend() {
  * @returns {string}
  */
 export const getBrowser = () => {
-    const list = navigator.userAgent.toLowerCase().match(/(msie|firefox|chrome|opera|version).*?([\d.]+)/);
-    return list[1].replace(/version/, 'safari');
+    try {
+        const list = navigator.userAgent.toLowerCase().match(/(msie|firefox|chrome|opera|version).*?([\d.]+)/);
+        return list[1].replace(/version/, 'safari');
+    } catch (e) {
+        return '-';
+    }
 };
 
+// 返回的对象用于向jTool上extend时使用
 export default {
     isWindow,
     noop,
