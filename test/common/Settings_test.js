@@ -71,6 +71,14 @@ describe('Settings', () => {
 		expect(settings.height).toBe('300px');
 	});
 
+    it('验证属性[minHeight]初始值', () => {
+        expect(settings.minHeight).toBeUndefined();
+    });
+
+    it('验证属性[maxHeight]初始值', () => {
+        expect(settings.maxHeight).toBeUndefined();
+    });
+
 	it('验证属性[animateTime]初始值', () => {
 		expect(settings.animateTime).toBe(300);
 	});

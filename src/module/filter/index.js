@@ -141,7 +141,7 @@ class Filter {
     @parseTpl(filterTpl)
     createHtml(params) {
         const { settings, columnFilter } = params;
-        const tableWarpHeight = getWrap(settings._).height();
+        const tableWrapHeight = getWrap(settings._).height();
         let listHtml = '';
         columnFilter.selected = columnFilter.selected || '';
         columnFilter.option.forEach(item => {
@@ -164,7 +164,7 @@ class Filter {
         });
         return {
             icon: columnFilter.selected ? ` ${CLASS_FILTER_SELECTED}` : '',
-            style: `style="max-height: ${tableWarpHeight - 100 + PX}"`,
+            style: `style="max-height: ${tableWrapHeight - 100 + PX}"`,
             ok: i18n(settings, 'ok'),
             reset: i18n(settings, 'reset'),
             list: listHtml

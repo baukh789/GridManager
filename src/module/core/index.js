@@ -200,9 +200,9 @@ class Core {
      * @param _
      */
     waitContainerAvailable(_) {
-        const tableWarp = document.querySelector(`[${WRAP_KEY}="${_}"]`);
+        const tableWrap = document.querySelector(`[${WRAP_KEY}="${_}"]`);
         function isAvailable() {
-            return getStyle(tableWarp, 'width') !== '100%';
+            return getStyle(tableWrap, 'width') !== '100%';
         }
         if (isAvailable()) {
             return;

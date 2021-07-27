@@ -980,12 +980,13 @@ describe('base', () => {
         });
     });
 
-    describe('calcLayout(_, width, height, supportAjaxPage)', () => {
+    describe('calcLayout(settings)', () => {
         let $wrap = null;
         let $div = null;
         let theadHeight = null;
         let ajaxPageHeight = null;
         let $tableHeader = null;
+        let settings = null;
         beforeEach(() => {
             document.body.innerHTML = tableTestTpl;
             $wrap = jTool('.table-wrap');
@@ -1002,15 +1003,22 @@ describe('base', () => {
             theadHeight = null;
             ajaxPageHeight = null;
             $tableHeader = null;
+            settings = null;
         });
 
         it('基础验证', () => {
             expect(calcLayout).toBeDefined();
-            expect(calcLayout.length).toBe(4);
+            expect(calcLayout.length).toBe(1);
         });
 
         it('有分页的验证', () => {
-            calcLayout('test', '1000px', '500px', true);
+            settings = {
+                _: 'test',
+                width: '1000px',
+                height: '500px',
+                supportAjaxPage: true
+            };
+            calcLayout(settings);
             expect($wrap.width()).toBe(1000);
             expect($wrap.height()).toBe(500);
             expect($div.height()).toBe(500 - ajaxPageHeight);
@@ -1018,7 +1026,13 @@ describe('base', () => {
         });
 
         it('无分页的验证', () => {
-            calcLayout('test', '1000px', '500px', false);
+            settings = {
+                _: 'test',
+                width: '1000px',
+                height: '500px',
+                supportAjaxPage: false
+            };
+            calcLayout(settings);
             expect($wrap.width()).toBe(1000);
             expect($wrap.height()).toBe(500);
             expect($div.height()).toBe(500);

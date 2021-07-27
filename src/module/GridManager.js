@@ -361,7 +361,7 @@ export default class GridManager {
         const _ = getKey(table);
         const settings = getSettings(_);
         if (isRendered(_, settings)) {
-            calcLayout(_, width, height, settings.supportAjaxPage);
+            calcLayout(settings);
 
             scroll.update(_);
         }

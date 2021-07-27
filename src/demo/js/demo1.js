@@ -294,6 +294,7 @@ const demo1 = {
             gridManagerName: 'test',
             width: '100%',
             height: '100%',
+            // minHeight: '400px',
             // 初始渲染时是否加载数据
             // firstLoading: false,
 

@@ -37,7 +37,7 @@ import { sendCompile, compileTd } from '@common/framework';
  */
 class Dom {
     init($table, settings) {
-        const { _, width, height, supportAjaxPage, useWordBreak } = settings;
+        const { _, useWordBreak } = settings;
         // add wrap div
         $table.wrap(render.createWrapTpl({ settings }), '.table-div');
 
@@ -45,7 +45,7 @@ class Dom {
         $table.append(render.createTheadTpl({settings}));
 
         // 计算布局
-        calcLayout(_, width, height, supportAjaxPage);
+        calcLayout(settings);
 
         // append tbody
         const tbody = document.createElement('tbody');

@@ -99,6 +99,12 @@ const gridStyle = {
     // 高度配置
     height: '300px',
 
+    // 最小高度
+    // minHeight: undefined, // v2.16.1增加
+
+    // 最大高度
+    // maxHeight: undefined, // v2.16.1增加
+
     // 动画效果时长
     animateTime: 300,
 
