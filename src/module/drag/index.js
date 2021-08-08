@@ -101,12 +101,11 @@ class Drag {
                 height: tableHeight + 2
             });
 
-            $dreamlandDIV.show();
-
             // 绑定拖拽滑动事件
             const $doing = jTool(doing[TARGET]);
             $doing.off(doing[EVENTS]);
             $doing.on(doing[EVENTS], function (e2) {
+                $dreamlandDIV.show(); // 放在mousemove中是为了解决仅双击不移动时列从底部闪现问题
                 thIndex = $th.index($allFakeVisibleTh);
                 // 事件源的上一个th
                 let $prevTh,
