@@ -123,7 +123,8 @@ const config = {
                     {source: `./tempzip/${name}-${version}`, destination: `./zip/${name}-${version}.zip`}
                 ],
                 delete: [
-                    './tempzip'
+                    './tempzip',
+                    './dist/demo' // 防止将demo传至npm
                 ]
             }
         })
