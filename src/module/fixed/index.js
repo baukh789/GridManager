@@ -10,10 +10,22 @@
  * thead区域的固定th使用 absolute 定位，不使用sticky的原因是Firefox在设置了position: absolute的父容器内定位异常;
  * tbody区域的固定td使用 sticky 定位，通过脚本动态生成style标签;
  */
-import { getTh, getFakeTh, getDiv, getThead, getFakeThead, getTbody, getFakeVisibleTh } from '@common/base';
+import {
+    getTh,
+    getFakeTh,
+    getDiv,
+    getThead,
+    getFakeThead,
+    getTbody,
+    getFakeVisibleTh,
+    getQuerySelector, clearTargetEvent
+} from '@common/base';
 import { DIV_KEY, EMPTY_TPL_KEY, PX } from '@common/constants';
+import jTool from '@jTool';
 import { each } from '@jTool/utils';
 import scroll from '@module/scroll';
+import { getEvent, eventMap } from './event';
+import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import './style.less';
 
 const LEFT = 'left';
@@ -55,6 +67,8 @@ const FIXED_RIGHT_MAP = {};
 // 存储当前实例部分属性，用于减少DOM操作: 当该值不变时, 不执行更新操作
 const FIXED_CACHE_MAP = {};
 
+// 固定列td触焦标识
+const FIXED_FOCUS_FLAG = 'fixed-focus';
 class Fixed {
     /**
      * 生成td固定列样式: 通过添加style的方式比修改td的dom性能会高
@@ -72,6 +86,14 @@ class Fixed {
             styleLink.id = styleId;
         }
 
+        // 绑定固定列td触焦事件
+        const tableSelector = getQuerySelector(_);
+        eventMap[_] = getEvent(_, tableSelector);
+        const { fixedFocus } = eventMap[_];
+        jTool(fixedFocus[TARGET]).on(fixedFocus[EVENTS], fixedFocus[SELECTOR], function () {
+            getTbody(_).find(`[${FIXED_FOCUS_FLAG}]`).removeAttr(FIXED_FOCUS_FLAG);
+            this.setAttribute(FIXED_FOCUS_FLAG, '');
+        });
         const $fakeThead = getFakeThead(_);
 
         // theadHeight: 这里使用thead 而不是 fakeThead的原因是因为这样可以获取更准确的值，不至于在框架中出现错误
@@ -243,6 +265,7 @@ class Fixed {
     destroy(_) {
         delete FIXED_LEFT_MAP[_];
         delete FIXED_RIGHT_MAP[_];
+        clearTargetEvent(eventMap[_]);
     }
 }
 

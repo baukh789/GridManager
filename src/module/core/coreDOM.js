@@ -185,8 +185,9 @@ class Dom {
                 const alignAttr = col.align ? `align=${col.align}` : '';
                 const moveRowAttr = supportMoveRow ? moveRow.addSign(col) : '';
                 const useRowCheckAttr = supportCheckbox ? checkbox.addSign(col) : '';
+                const fixedAttr = col.fixed ? `fixed=${col.fixed}` : '';
                 text = isElement(text) ? text.outerHTML : text;
-                tdList.push(`<td ${compileAttr} ${alignAttr} ${moveRowAttr} ${useRowCheckAttr}>${text}</td>`);
+                tdList.push(`<td ${compileAttr} ${alignAttr} ${moveRowAttr} ${useRowCheckAttr} ${fixedAttr}>${text}</td>`);
             });
         };
 
