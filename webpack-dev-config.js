@@ -11,6 +11,7 @@ const devServer = {
     clientLogLevel: 'info',
     disableHostCheck: true,
     port: '2015',
+    // host: '192.168.0.102',
     hot: true,
     contentBase: [
         path.join(__dirname, './src'),
