@@ -515,6 +515,7 @@ export default class GridManager {
 	 * - setQuery() 执行后会立即触发刷新操作
 	 * - 在此配置的query在分页事件触发时, 会以参数形式传递至pagingAfter(query)事件内
 	 * - setQuery方法中对query字段执行的操作是覆盖而不是合并, query参数位传递的任意值都会将原来的值覆盖.
+     * - setQuery() 执行后不会清除已选中的数据，如需清除可以在callback中执行setCheckedData(table, [])
 	 */
 	static
 	setQuery(table, query, gotoPage, callback) {
