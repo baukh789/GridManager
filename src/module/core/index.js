@@ -6,22 +6,9 @@
  */
 import './style.less';
 import { isString, isFunction, isArray, getStyle } from '@jTool/utils';
-import {
-    showLoading,
-    hideLoading,
-    getDiv,
-    getTbody,
-    getVisibleTh,
-    getEmpty
-} from '@common/base';
+import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmpty } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
-import {
-    getTableData,
-    setTableData,
-    getSettings,
-    setSettings,
-    SIV_waitContainerAvailable
-} from '@common/cache';
+import { getTableData, setTableData, setCheckedData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, EMPTY_TPL_KEY, PX } from '@common/constants';
 import { clearMenuDOM } from '../menu/tool';
 import ajaxPage from '../ajaxPage';
@@ -40,7 +27,13 @@ class Core {
      */
     refresh(_, callback) {
         const settings = getSettings(_);
-        const { disableAutoLoading, loadingTemplate, ajaxBeforeSend, ajaxSuccess, ajaxError, ajaxComplete } = settings;
+        const { disableAutoLoading, loadingTemplate, ajaxBeforeSend, ajaxSuccess, ajaxError, ajaxComplete, checkboxConfig } = settings;
+
+        // 禁用状态保持: 指定在刷新类操作时(搜索、刷新、分页、排序、过滤)，清除选中状态
+        if (checkboxConfig.disableStateKeep) {
+            setCheckedData(_, [], true);
+        }
+
         // 更新刷新图标状态
         ajaxPage.updateRefreshIconState(_, true);
 

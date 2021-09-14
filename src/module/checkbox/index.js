@@ -127,6 +127,7 @@ export const updateCheckboxState = ($checkbox, state) => {
  * @param _
  * @param tableData
  * @param useRadio: 当前事件源为单选
+ * @param max: 最大选择数
  */
 export const resetCheckboxDOM = (_, tableData, useRadio, max) => {
     const $table = getTable(_);
