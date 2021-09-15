@@ -17,6 +17,8 @@ import { getEvent, eventMap } from './event';
 import { CLASS_FILTER, CLASS_FILTER_SELECTED, CLASS_FILTER_CONTENT } from './constants';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 
+// 选中数据使用的分隔符
+const FILTER_SELECTED_FLAG = ',';
 class Filter {
     /**
      * 初始化
@@ -87,7 +89,7 @@ class Filter {
             });
 
             const settings = getSettings(_);
-            const checkedStr = checkedList.join(',');
+            const checkedStr = checkedList.join(FILTER_SELECTED_FLAG);
             settings.columnMap[thName].filter.selected = checkedStr;
             settings.pageData[settings.currentPageKey] = 1;
             extend(settings.query, {[thName]: checkedStr});
@@ -145,7 +147,7 @@ class Filter {
         let listHtml = '';
         columnFilter.selected = columnFilter.selected || '';
         columnFilter.option.forEach(item => {
-            let selectedList = columnFilter.selected.split(',');
+            let selectedList = columnFilter.selected.split(FILTER_SELECTED_FLAG);
             selectedList = selectedList.map(item => {
                 return item.trim();
             });
@@ -182,7 +184,7 @@ class Filter {
         each($filters, item => {
             let $radioOrCheckbox = jTool(item).closest('.gm-radio-checkbox');
             if (filter.isMultiple) {
-                updateCheckboxState($radioOrCheckbox, filter.selected.indexOf(item.value)  >= 0 ? CHECKED : UNCHECKED);
+                updateCheckboxState($radioOrCheckbox, filter.selected.split(FILTER_SELECTED_FLAG).includes(item.value) ? CHECKED : UNCHECKED);
             } else {
                 updateRadioState($radioOrCheckbox, item.value === filter.selected);
             }
