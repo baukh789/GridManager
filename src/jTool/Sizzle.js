@@ -1,4 +1,4 @@
-import { isWindow, createDOM, each, isString, isNodeList, isElement, isArray, isJTool } from './utils';
+import { isWindow, createDOM, each, isString, isNodeList, isElement, isArray, isJTool, rootDocument } from './utils';
 import { DOM_LIST, JTOOL_KEY } from './constants';
 
 export default function Sizzle(selector, context) {
@@ -10,7 +10,7 @@ export default function Sizzle(selector, context) {
         }
 
         // selector: window || document || Element
-        if (isWindow(selector) || selector === document || isElement(selector)) {
+        if (isWindow(selector) || selector === rootDocument || isElement(selector)) {
             return [selector];
         }
 
@@ -33,12 +33,12 @@ export default function Sizzle(selector, context) {
         // selector: css selector, 仅在selector为CSS选择器时，context才会生效
         // context -> undefined
         if (!context) {
-            return document.querySelectorAll(selector);
+            return rootDocument.querySelectorAll(selector);
         }
 
         // context: 字符CSS选择器
         if (isString(context)) {
-            context = document.querySelectorAll(context);
+            context = rootDocument.querySelectorAll(context);
         }
 
         // context: DOM 将HTMLElement转换为数组

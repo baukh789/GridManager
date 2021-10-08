@@ -17,6 +17,12 @@ const typeMap = {
     '[object HTMLDocument]': 'document'
 };
 
+// root window
+export const rootWindow = window;
+
+// root document
+export const rootDocument = rootWindow.document;
+
 export const isWindow = object => {
     return object && object === object.window;
 };
@@ -88,16 +94,16 @@ export const getStyle = (dom, key) => {
 // 通过html字符串, 生成DOM.  返回生成后的子节点
 // 该方法无处处理包含table标签的字符串,但是可以处理table下属的标签
 export const createDOM = htmlString => {
-    let jToolDOM = document.querySelector(`#${JTOOL_DOM_ID}`);
+    let jToolDOM = rootDocument.querySelector(`#${JTOOL_DOM_ID}`);
     if (!jToolDOM) {
         // table标签 可以在新建element时可以更好的容错.
         // div标签, 添加thead,tbody等表格标签时,只会对中间的文本进行创建
         // table标签,在添加任务标签时,都会成功生成.且会对table类标签进行自动补全
-        const el = document.createElement('table');
+        const el = rootDocument.createElement('table');
         el.id = JTOOL_DOM_ID;
         el.style.display = 'none';
-        document.body.appendChild(el);
-        jToolDOM = document.querySelector(`#${JTOOL_DOM_ID}`);
+        rootDocument.body.appendChild(el);
+        jToolDOM = rootDocument.querySelector(`#${JTOOL_DOM_ID}`);
     }
 
     jToolDOM.innerHTML = isUndefined(htmlString) ? '' : htmlString;
@@ -117,7 +123,7 @@ export const createDOM = htmlString => {
         }
     }
 
-    document.body.removeChild(jToolDOM);
+    rootDocument.body.removeChild(jToolDOM);
     return childNodes;
 };
 

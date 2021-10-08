@@ -21,6 +21,7 @@
  */
 import './style.less';
 import jTool from '@jTool';
+import { rootDocument } from '@jTool/utils';
 import {
     getQuerySelector,
     getDiv,
@@ -167,7 +168,7 @@ class Adjust {
             // 添加虚线标识及样式
             let $adjusting = $th.find(`.${CLASS_ADJUST_ING}`);
             if (!$adjusting.length) {
-                const adjustingDOM = document.createElement('span');
+                const adjustingDOM = rootDocument.createElement('span');
                 adjustingDOM.className = CLASS_ADJUST_ING;
                 $thWrap.append(adjustingDOM);
                 $adjusting = $th.find(`.${CLASS_ADJUST_ING}`);

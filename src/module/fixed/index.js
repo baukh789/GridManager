@@ -22,7 +22,7 @@ import {
 } from '@common/base';
 import { DIV_KEY, EMPTY_TPL_KEY, PX } from '@common/constants';
 import jTool from '@jTool';
-import { each } from '@jTool/utils';
+import { each, rootDocument } from '@jTool/utils';
 import scroll from '@module/scroll';
 import { getEvent, eventMap } from './event';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
@@ -79,10 +79,10 @@ class Fixed {
 
         const $tableDiv = getDiv(_);
         const styleId = `fixed-style-${_}`;
-        let styleLink = document.getElementById(styleId);
+        let styleLink = rootDocument.getElementById(styleId);
 
         if (!styleLink) {
-            styleLink = document.createElement('style');
+            styleLink = rootDocument.createElement('style');
             styleLink.id = styleId;
         }
 

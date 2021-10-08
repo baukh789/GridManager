@@ -2,7 +2,7 @@
  * 项目中的一些基础方法
  */
 import jTool from '@jTool';
-import { isString, isArray, each, extend, isValidArray } from '@jTool/utils';
+import { isString, isArray, each, extend, isValidArray, rootDocument } from '@jTool/utils';
 import {
     FAKE_TABLE_HEAD_KEY,
     TABLE_HEAD_KEY,
@@ -627,7 +627,7 @@ export const clearTargetEvent = eventMap => {
  * @returns {number}
  */
 export const getScrollBarWidth = _ => {
-    const el = document.createElement('div');
+    const el = rootDocument.createElement('div');
 
     el.style.width = '100px';
     el.style.height = '100px';

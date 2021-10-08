@@ -61,7 +61,7 @@ import {
     TR_PARENT_KEY,
     INDETERMINATE_CLASS } from '@common/constants';
 import jTool from '@jTool';
-import { each, isNumber, isString } from '@jTool/utils';
+import { each, isNumber, isString, rootDocument } from '@jTool/utils';
 import { getQuerySelector, getTable, clearTargetEvent } from '@common/base';
 import { getSettings, getCheckedData, getRowData } from '@common/cache';
 import { parseTpl } from '@common/parse';
@@ -280,7 +280,7 @@ class Checkbox {
 	 * @returns {NodeListOf<Element>}
 	 */
 	getCheckedTr(_) {
-		return document.querySelectorAll(`${getQuerySelector(_)} tbody tr[checked="true"]`);
+		return rootDocument.querySelectorAll(`${getQuerySelector(_)} tbody tr[checked="true"]`);
 	}
 
 	/**

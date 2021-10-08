@@ -2,7 +2,7 @@
  * exportFile: 数据导出
  */
 import jTool from '@jTool';
-import { isFunction, each, isArray } from '@jTool/utils';
+import { isFunction, each, isArray, rootDocument } from '@jTool/utils';
 import { showLoading, hideLoading, getFakeVisibleTh, getTbody } from '@common/base';
 import { outError } from '@common/utils';
 import { getSettings, getCheckedData, getTableData } from '@common/cache';
@@ -36,12 +36,12 @@ const getFileName = (_, fileName, query, exportConfig) => {
  * @param href
  */
 const dispatchDownload = (fileName, href) => {
-    const a = document.createElement('a');
+    const a = rootDocument.createElement('a');
     a.addEventListener('click', () => {
         a.download = fileName;
         a.href = href;
     });
-    const e = document.createEvent('MouseEvents');
+    const e = rootDocument.createEvent('MouseEvents');
     e.initEvent('click', false, false);
     a.dispatchEvent(e);
 };

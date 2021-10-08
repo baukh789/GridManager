@@ -1,5 +1,5 @@
 import jTool from '@jTool';
-import { isUndefined, isString, isObject, isElement, isValidArray, each } from '@jTool/utils';
+import { isUndefined, isString, isObject, isElement, isValidArray, each, rootDocument } from '@jTool/utils';
 import {
     calcLayout,
     getTable,
@@ -48,7 +48,7 @@ class Dom {
         calcLayout(settings);
 
         // append tbody
-        const tbody = document.createElement('tbody');
+        const tbody = rootDocument.createElement('tbody');
         tbody.setAttribute(TABLE_BODY_KEY, _);
         // 根据参数增加td断字标识
         if (useWordBreak) {

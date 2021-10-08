@@ -3,7 +3,7 @@
  */
 import './style.less';
 import jTool from '@jTool';
-import { isUndefined, isString, each } from '@jTool/utils';
+import { isUndefined, isString, each, rootDocument } from '@jTool/utils';
 import { getQuerySelector, getTable, getTbody, getTh, getColTd, clearTargetEvent } from '@common/base';
 import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE, GM_CREATE, PX } from '@common/constants';
 import { getEvent, eventMap } from './event';
@@ -129,7 +129,7 @@ class Tree {
             if (!$insertTd) {
                 $insertTd = jTool(`td:not([${GM_CREATE}])`, $trNode).eq(0);
             }
-            const treeDOM = document.createElement('span');
+            const treeDOM = rootDocument.createElement('span');
             treeDOM.setAttribute(treeKey, openState);
             treeDOM.style.width = (level + 1) * 14 + PX;
 

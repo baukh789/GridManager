@@ -5,7 +5,7 @@
  * 3.重置tbody
  */
 import './style.less';
-import { isString, isFunction, isArray, getStyle } from '@jTool/utils';
+import { isString, isFunction, isArray, getStyle, rootDocument } from '@jTool/utils';
 import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmpty } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
 import { getTableData, setTableData, setCheckedData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
@@ -193,7 +193,7 @@ class Core {
      * @param _
      */
     waitContainerAvailable(_) {
-        const tableWrap = document.querySelector(`[${WRAP_KEY}="${_}"]`);
+        const tableWrap = rootDocument.querySelector(`[${WRAP_KEY}="${_}"]`);
         function isAvailable() {
             return getStyle(tableWrap, 'width') !== '100%';
         }

@@ -11,7 +11,7 @@
  * --注意事项--
  * show与hide方法只是一个简单的实现,不支持参数及动画效果
  * */
-import { each, getStyle, noop, getDomList } from './utils';
+import { each, getStyle, noop, getDomList, rootDocument } from './utils';
 import _Css from './Css';
 const INLINE_BLOCK = 'inline-block';
 const TABLE_CELL = 'table-cell';
@@ -50,9 +50,9 @@ export default {
         const animateText = `@keyframes jToolAnimate {from {${animateFromText}}to {${animateToText}}}`;
 
         // 引入动画样式至页面
-        const jToolAnimate = document.createElement('style');
+        const jToolAnimate = rootDocument.createElement('style');
         jToolAnimate.type = 'text/css';
-        document.head.appendChild(jToolAnimate);
+        rootDocument.head.appendChild(jToolAnimate);
         jToolAnimate.textContent = jToolAnimate.textContent + animateText;
 
         // 启用动画
@@ -62,7 +62,7 @@ export default {
         setTimeout(() => {
             _Css.css.call(this, styleObj);
             node.style.animation = '';
-            document.head.removeChild(jToolAnimate);
+            rootDocument.head.removeChild(jToolAnimate);
             callback();
         }, time);
     },

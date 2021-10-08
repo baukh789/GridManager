@@ -3,7 +3,7 @@
  *  #001: 如果已经存在，则清除之前的实例，重新进行实例化。原因：如果不清除而直接返回错误，会让使用者存在不便。
  * */
 import jTool from '@jTool';
-import { isString } from '@jTool/utils';
+import { isString, rootWindow } from '@jTool/utils';
 import GridManager from './GridManager';
 import '../css/var.less';
 
@@ -56,8 +56,8 @@ import '../css/var.less';
  */
 (() => {
     // window只存储第一次加载的GM对像, 后续加载的对像将不再向window上挂载
-    if (!window.GridManager && !window.GM) {
-        window.GridManager = window.GM = GridManager;
+    if (!rootWindow.GridManager && !rootWindow.GM) {
+        rootWindow.GridManager = rootWindow.GM = GridManager;
     }
 })();
 
@@ -81,8 +81,8 @@ import '../css/var.less';
     });
 
     // 恢复jTool占用的$变量
-    window.$ = jQuery;
-})(window.jQuery);
+    rootWindow.$ = jQuery;
+})(rootWindow.jQuery);
 
 export { jTool };
 export default GridManager;

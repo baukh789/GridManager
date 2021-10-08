@@ -1,5 +1,5 @@
 import { getQuerySelector } from '@common/base';
-import { isNull, isUndefined } from '@jTool/utils';
+import { isNull, isUndefined, rootDocument } from '@jTool/utils';
 // 框架解析唯一值
 const FRAMEWORK_KEY = 'data-compile-node';
 
@@ -204,7 +204,7 @@ export async function sendCompile(settings) {
     if (compileList.length === 0) {
         return Promise.resolve();
     }
-    let domList = document.querySelectorAll(`${getQuerySelector(_)} [${FRAMEWORK_KEY}]`);
+    let domList = rootDocument.querySelectorAll(`${getQuerySelector(_)} [${FRAMEWORK_KEY}]`);
 
     // 以下为框架版本才会使用到
     compileList.forEach((item, index) => {
@@ -218,7 +218,7 @@ export async function sendCompile(settings) {
         await compileVue(compileList);
 
         // vue会改变domList 中的数据，导致在清除解析标识无法正常运行，所以需要再次更新domList
-        domList = document.querySelectorAll(`${getQuerySelector(_)} [${FRAMEWORK_KEY}]`);
+        domList = rootDocument.querySelectorAll(`${getQuerySelector(_)} [${FRAMEWORK_KEY}]`);
     }
 
     // 解析框架: Angular 1.x

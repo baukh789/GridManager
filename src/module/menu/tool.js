@@ -1,4 +1,5 @@
 import jTool from '@jTool';
+import { rootDocument } from '@jTool/utils';
 import { eventMap } from '@module/menu/event';
 import { EVENTS, TARGET } from '@common/events';
 import { DISABLED_CLASS_NAME, MENU_KEY, TD_FOCUS, TR_CACHE_KEY, TR_PARENT_KEY } from '@common/constants';
@@ -159,10 +160,10 @@ const getCopyCell = settings => {
     return {
         content: `${i18n(settings, 'copy')}<i class="gm-icon gm-icon-copy"></i><input ${fakeCopyAttr}="${settings._}"/>`,
         onClick: _ => {
-            const fakeCopy = document.querySelector(`[${fakeCopyAttr}=${_}]`);
+            const fakeCopy = rootDocument.querySelector(`[${fakeCopyAttr}=${_}]`);
             fakeCopy.value = getTbody(_).find(`td[${TD_FOCUS}]`).text();
             fakeCopy.select();
-            document.execCommand('Copy');
+            rootDocument.execCommand('Copy');
         }
     };
 };
@@ -316,8 +317,8 @@ export const createMenuDom = (_, target) => {
  * @returns {{top: *, left: *}}
  */
 export const getMenuPosition = (width, height, clientX, clientY) => {
-    const documentElement = document.documentElement;
-    const body = document.body;
+    const documentElement = rootDocument.documentElement;
+    const body = rootDocument.body;
 
     // 使用html而非body是因为鼠标事件的坐标是以html为准
     const offsetHeight = documentElement.offsetHeight;

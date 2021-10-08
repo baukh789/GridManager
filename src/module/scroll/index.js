@@ -7,6 +7,7 @@
  * 且该事件可能在消毁的时候失败， 所以在注册事件时需要进行unbind。
  * */
 import jTool from '@jTool';
+import { rootWindow } from '@jTool/utils';
 import {
     getWrap,
     getDiv,
@@ -106,7 +107,7 @@ class Scroll {
 	bindResizeToTable(_) {
 		const $tableWrap = getWrap(_);
 		const $tableParent = $tableWrap.parent(); // 父容器，渲染之后离的最近的那一层
-		const ResizeObserver = window.ResizeObserver;
+		const ResizeObserver = rootWindow.ResizeObserver;
 		// 支持ResizeObserver: 通过监听外部容器的大小来更新DOM
 		if (ResizeObserver) {
             // 监听外部容器变化
@@ -129,7 +130,7 @@ class Scroll {
 
 		// 不支持ResizeObserver: 通过reset事件来更新DOM, [safari]
         // 绑定resize事件: 对表头吸顶的列宽度进行修正
-        jTool(window).bind(`${RESIZE}.${_}`, () => {
+        jTool(rootWindow).bind(`${RESIZE}.${_}`, () => {
             // 当前事件未被暂停时执行update, 在resetLayout会触发暂停
             if (this.pauseResizeEventMap[_]) {
                 this.update(_);
@@ -163,7 +164,7 @@ class Scroll {
 	 */
 	destroy(_) {
 		// 清理: resize事件. 该事件并不干扰其它resize事件
-		jTool(window).unbind(`${RESIZE}.${_}`);
+		jTool(rootWindow).unbind(`${RESIZE}.${_}`);
 
 		// 清理: 表格滚动轴功能
         getDiv(_).unbind(SCROLL);
