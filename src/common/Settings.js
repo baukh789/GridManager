@@ -105,6 +105,9 @@ const gridStyle = {
     // 最大高度
     // maxHeight: undefined, // v2.16.1增加
 
+    // 行高度，当某个td的高度超出该数值时，当前行的高度将等于该td的高度 // v2.17.0增加
+    lineHeight: '41px',
+
     // 动画效果时长
     animateTime: 300,
 

@@ -642,3 +642,12 @@ export const getScrollBarWidth = _ => {
     el.remove();
     return width;
 };
+
+/**
+ * 设置行高
+ * @param _
+ * @param height
+ */
+export const setLineHeightValue = (_, height) => {
+    getDiv(_).get(0).style.setProperty('--gm-line-height', height);
+};

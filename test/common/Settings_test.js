@@ -79,7 +79,11 @@ describe('Settings', () => {
         expect(settings.maxHeight).toBeUndefined();
     });
 
-	it('验证属性[animateTime]初始值', () => {
+    it('验证属性[lineHeight]初始值', () => {
+        expect(settings.lineHeight).toBe('41px');
+    });
+
+    it('验证属性[animateTime]初始值', () => {
 		expect(settings.animateTime).toBe(300);
 	});
 

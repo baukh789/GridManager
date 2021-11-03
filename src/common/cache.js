@@ -590,7 +590,7 @@ export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumn
             // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
             columnMap[key].__isShow = col.isShow;
 
-            // 存在多层嵌套时，递归增加标识
+            // 存在多层嵌套时，递归增加标识: columnMap中的数据会保持平铺
             if (__isNested) {
                 if (isValidArray(col.children)) {
                     // delete columnMap[key].width;

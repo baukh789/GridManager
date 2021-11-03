@@ -29,7 +29,8 @@ import {
     updateScrollStatus,
     calcLayout,
     clearTargetEvent,
-    getScrollBarWidth
+    getScrollBarWidth,
+    setLineHeightValue
 } from '../../src/common/base';
 import tableTpl from '../table-test.tpl.html';
 import {getColumnMap} from '../table-config';
@@ -1089,6 +1090,26 @@ describe('base', () => {
 
         it('执行验证', () => {
             expect(typeof getScrollBarWidth('test')).toBe('number'); // 执行环境不一样，值会不同，这里只验证是否为数字返回
+        });
+    });
+
+    describe('setLineHeightValue(_, height)', () => {
+        let div = null;
+        beforeEach(() => {
+            document.body.innerHTML = tableTestTpl;
+            div = jTool('.table-div').get(0);
+        });
+
+        afterEach(() => {
+            document.body.innerHTML = '';
+            div = null;
+        });
+
+        it('执行验证', () => {
+            // 默认的值为'41px', 但在单元测试中因为未执行渲染所以默认为空字符串
+            expect(getComputedStyle(div).getPropertyValue('--gm-line-height')).toBe('');
+            setLineHeightValue('test', '100px');
+            expect(getComputedStyle(div).getPropertyValue('--gm-line-height')).toBe('100px');
         });
     });
 });

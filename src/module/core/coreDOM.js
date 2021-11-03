@@ -12,7 +12,8 @@ import {
     getQuerySelector,
     clearTargetEvent,
     getDiv,
-    updateVisibleLast
+    updateVisibleLast,
+    setLineHeightValue
 } from '@common/base';
 import { outError } from '@common/utils';
 import { TABLE_PURE_LIST, TABLE_BODY_KEY, TR_CACHE_KEY, TR_PARENT_KEY, TR_LEVEL_KEY, TR_CHILDREN_STATE, TH_NAME, ROW_CLASS_NAME, ODD, DISABLE_CUSTOMIZE, TD_FOCUS } from '@common/constants';
@@ -37,12 +38,15 @@ import { sendCompile, compileTd } from '@common/framework';
  */
 class Dom {
     init($table, settings) {
-        const { _, useWordBreak } = settings;
+        const { _, useWordBreak, lineHeight } = settings;
         // add wrap div
         $table.wrap(render.createWrapTpl({ settings }), '.table-div');
 
         // append thead
         $table.append(render.createTheadTpl({settings}));
+
+        // 存储行高css变量
+        setLineHeightValue(_, lineHeight);
 
         // 计算布局
         calcLayout(settings);

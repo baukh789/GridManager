@@ -32,7 +32,8 @@ import {
     getFakeTh,
     updateVisibleLast,
     updateScrollStatus,
-    getTable
+    getTable,
+    setLineHeightValue
 } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
 import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable, updateCache } from '@common/cache';
@@ -827,6 +828,20 @@ export default class GridManager {
         const _ = getKey(table);
         if (isRendered(_) && isNumber(index)) {
             hideRow(getSettings(_), index);
+        }
+    }
+
+    /**
+     * @静态方法
+     * 设置行高度 v2.17.0
+     * @param table
+     * @param height
+     */
+    static
+    setLineHeight(table, height) {
+        const _ = getKey(table);
+        if (isRendered(_) && isString(height)) {
+            setLineHeightValue(_, height);
         }
     }
 
