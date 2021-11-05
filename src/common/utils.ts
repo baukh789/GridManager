@@ -10,7 +10,7 @@ import { isString } from '@jTool/utils';
  * @param type 输出分类[info,warn,error]
  * @returns {*}
  */
-const OUT_LOG = (s, type) => {
+const OUT_LOG = (s: string, type: string) => {
     console.log(`%c GridManager ${type} %c ${s} `, ...CONSOLE_STYLE[type]);
 };
 
@@ -19,7 +19,7 @@ const OUT_LOG = (s, type) => {
  * @param s 输出文本
  * @returns {*}
  */
-export const outInfo = s => {
+export const outInfo = (s: string) => {
     OUT_LOG(s, CONSOLE_INFO);
 };
 
@@ -28,7 +28,7 @@ export const outInfo = s => {
  * @param s 输出文本
  * @returns {*}
  */
-export const outWarn = s => {
+export const outWarn = (s: string) => {
     OUT_LOG(s, CONSOLE_WARN);
 };
 
@@ -37,7 +37,7 @@ export const outWarn = s => {
  * @param s 输出文本
  * @returns {*}
  */
-export const outError = s => {
+export const outError = (s: string) => {
     OUT_LOG(s, CONSOLE_ERROR);
 };
 
@@ -48,7 +48,7 @@ export const outError = s => {
  * @param key: 指定精准匹配字段，只要当前字段相同则判定相同
  * @returns {boolean}
  */
-export const equal = (o1, o2, key) => {
+export const equal = (o1: any, o2: any, key: string) => {
     const k1 = Object.keys(o1);
     const k2 = Object.keys(o2);
 
@@ -74,7 +74,7 @@ export const equal = (o1, o2, key) => {
  * @param key: 指定精准匹配字段
  * @returns {number}
  */
-export const getObjectIndexToArray = (arr, obj, key) => {
+export const getObjectIndexToArray = (arr: Array<any>, obj: any, key: string) => {
     let index = -1;
     let isInclude = false;
     arr.some((item, i) => {
@@ -92,6 +92,6 @@ export const getObjectIndexToArray = (arr, obj, key) => {
  * @param o
  * @returns {any}
  */
-export const cloneObject = o => {
+export const cloneObject = (o: any) => {
     return JSON.parse(JSON.stringify(o));
 };
