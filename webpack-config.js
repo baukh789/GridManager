@@ -26,7 +26,7 @@ const config = {
 
 	// 配置模块如何解析
 	resolve: {
-		extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
+        extensions: ['.js', '.ts'], // 当requrie的模块找不到时,添加这些后缀
         alias: {
             '@common': resolve('src/common'),
             '@jTool': resolve('src/jTool'),

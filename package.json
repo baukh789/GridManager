@@ -79,6 +79,8 @@
         "sinon": "^1.17.7",
         "style-loader": "^0.20.3",
         "terser-webpack-plugin": "^5.1.1",
+        "ts-loader": "^9.2.6",
+        "typescript": "^4.4.4",
         "url-loader": "^1.1.2",
         "webpack": "^5.24.3",
         "webpack-bundle-analyzer": "^4.4.0",
