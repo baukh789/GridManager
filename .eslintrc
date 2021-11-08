@@ -13,7 +13,7 @@
         "window": true,
         "navigator": true
     },
-    "parser": "babel-eslint",
+    "parser": "@typescript-eslint/parser",
     "rules": {
         //在定义对象的时候，getter/setter需要同时出现
         "accessor-pairs": 2,
