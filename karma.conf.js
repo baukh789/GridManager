@@ -75,7 +75,7 @@ module.exports = function (config) {
             },
 			// 入口文件配置
 			resolve: {
-				extensions: ['.js'], // 当requrie的模块找不到时,添加这些后缀
+				extensions: ['.js', '.ts'], // 当requrie的模块找不到时,添加这些后缀
                 alias: {
                     '@common': path.join(__dirname, './src/common'),
                     '@jTool': path.join(__dirname, './src/jTool'),
@@ -108,6 +108,18 @@ module.exports = function (config) {
                         use: [{
                             loader: path.join(__dirname, './webpack-loaders/karma-log-loader.js')
                         }]
+                    },
+                    {
+                        test: /\.tsx?$/,
+                        exclude: /node_modules/,
+                        use: [
+                            {
+                                loader: 'babel-loader'
+                            },
+                            {
+                                loader: 'ts-loader'
+                            }
+                        ]
                     },
 					{
                         test: /\.js$/,
