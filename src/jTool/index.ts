@@ -11,7 +11,7 @@ import _Animate from './Animate';
 import _Data from './Data';
 
 // 如果需要集成Angular,React,在此处进行集成
-const jTool = function (selector, context) {
+const jTool = function (selector: any, context?: any): any {
 	return new Sizzle(selector, context);
 };
 
@@ -23,11 +23,12 @@ jTool.extend(utils);
 jTool.ajax = ajax;
 
 // 捆绑jTool 方法
-each([_Event, _Css, _Class, _Document, _Offset, _Element, _Animate, _Data], v => {
+each([_Event, _Css, _Class, _Document, _Offset, _Element, _Animate, _Data], (v: any) => {
     jTool.prototype.extend(v);
 });
 
 // 抛出全局变量jTool
+// @ts-ignore
 window.jTool = jTool;
 
 export default jTool;

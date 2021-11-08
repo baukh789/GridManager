@@ -37,8 +37,8 @@ import { TARGET, EVENTS, SELECTOR } from '@common/events';
  * @param row: 行数据
  * @param cleanKeyList: 指定从clone数据中清除字段列表
  */
-export const getCloneRowData = (columnMap, row, cleanKeyList) => {
-    let cloneRow = extend(true, {}, row);
+export const getCloneRowData = (columnMap: any, row: object, cleanKeyList: Array<string>): object => {
+    let cloneRow = extend(true, {}, row) as any;
 
     // 删除自定义参数: 通过columnMap设置的项
     for (let key in columnMap) {
@@ -69,7 +69,7 @@ export const getCloneRowData = (columnMap, row, cleanKeyList) => {
  * @param _
  * @param loadingTemplate
  */
-export const showLoading = (_, loadingTemplate) => {
+export const showLoading = (_: string, loadingTemplate: string): void => {
     const $tableWrap = getWrap(_);
 
     const $loading = $tableWrap.find(`.${LOADING_CLASS_NAME}`);
@@ -77,7 +77,7 @@ export const showLoading = (_, loadingTemplate) => {
         $loading.remove();
     }
 
-    const $loadingDom = jTool(loadingTemplate);
+    const $loadingDom = jTool(loadingTemplate) as any;
     $loadingDom.addClass(LOADING_CLASS_NAME);
     $tableWrap.append($loadingDom);
 };
@@ -85,8 +85,9 @@ export const showLoading = (_, loadingTemplate) => {
 /**
  * 隐藏加载中动画
  * @param _
+ * @param delayTime: 延迟时间
  */
-export const hideLoading = (_, delayTime) => {
+export const hideLoading = (_: string, delayTime: number): void => {
     setTimeout(() => {
         jTool(`.${LOADING_CLASS_NAME}`, getWrap(_)).remove();
     }, delayTime || 0);
@@ -97,11 +98,11 @@ export const hideLoading = (_, delayTime) => {
  * @param target
  * @returns {*|string}
  */
-export const getKey = target => {
+export const getKey = (target: HTMLTableElement | string): string => {
     if (isString(target)) {
-        return target;
+        return target as string;
     }
-    return target.getAttribute(TABLE_KEY);
+    return (target as HTMLTableElement).getAttribute(TABLE_KEY);
 };
 
 /**
@@ -109,7 +110,7 @@ export const getKey = target => {
  * @param _
  * @returns {string}
  */
-export const getQuerySelector = _ => {
+export const getQuerySelector = (_: string): string => {
     return `[${TABLE_KEY}="${_}"]`;
 };
 
@@ -118,40 +119,40 @@ export const getQuerySelector = _ => {
  * @param _
  * @returns {*}
  */
-export const getTable = _ => getCacheDOM(_, TABLE_KEY);
+export const getTable = (_: string) => getCacheDOM(_, TABLE_KEY);
 
 /**
  * get table div
  * @param _
  * @returns {*}
  */
-export const getDiv = _ => getCacheDOM(_, DIV_KEY);
+export const getDiv = (_: string) => getCacheDOM(_, DIV_KEY);
 
 /**
  * get table wrap
  * @param _
  * @returns {*}
  */
-export const getWrap = _ => getCacheDOM(_, WRAP_KEY);
+export const getWrap = (_: string) => getCacheDOM(_, WRAP_KEY);
 
 /**
  * get table head
  * @param _
  * @returns {*}
  */
-export const getThead = _ => getCacheDOM(_, TABLE_HEAD_KEY);
+export const getThead = (_: string) => getCacheDOM(_, TABLE_HEAD_KEY);
 
 /**
  * get fake head
  * @param _
  * @returns {*}
  */
-export const getFakeThead = _ => getCacheDOM(_, FAKE_TABLE_HEAD_KEY);
+export const getFakeThead = (_: string) => getCacheDOM(_, FAKE_TABLE_HEAD_KEY);
 /**
  * get tbody
  * @param _
  */
-export const getTbody = _ => getCacheDOM(_, TABLE_BODY_KEY);
+export const getTbody = (_: string) => getCacheDOM(_, TABLE_BODY_KEY);
 
 /**
  * get head th
@@ -159,7 +160,7 @@ export const getTbody = _ => getCacheDOM(_, TABLE_BODY_KEY);
  * @param thName: 1.thName 2.fake th
  * @returns {*}
  */
-export const getTh = (_, thName) => {
+export const getTh = (_: string, thName: string | any) => {
     // jTool object
     if (thName.jTool) {
         thName = getThName(thName);
@@ -173,7 +174,7 @@ export const getTh = (_, thName) => {
  * @param thName
  * @returns {*}
  */
-export const getFakeTh = (_, thName) => {
+export const getFakeTh = (_: string, thName: string) => {
     return jTool(`[${FAKE_TABLE_HEAD_KEY}="${_}"] th[${TH_NAME}="${thName}"]`);
 };
 
@@ -182,20 +183,20 @@ export const getFakeTh = (_, thName) => {
  * @param _
  * @returns {*}
  */
-export const getAllTh = _ => getCacheDOM(_, 'allTh', `[${TABLE_HEAD_KEY}="${_}"] th`);
+export const getAllTh = (_: string) => getCacheDOM(_, 'allTh', `[${TABLE_HEAD_KEY}="${_}"] th`);
 /**
  * get all fake th
  * @param _
  * @returns {*}
  */
-export const getAllFakeTh = _ => getCacheDOM(_, 'allFakeTh', `[${FAKE_TABLE_HEAD_KEY}="${_}"] th`);
+export const getAllFakeTh = (_: string) => getCacheDOM(_, 'allFakeTh', `[${FAKE_TABLE_HEAD_KEY}="${_}"] th`);
 
 /**
  * get visible th
  * @param _
  * @returns {*}
  */
-export const getVisibleTh = _ => {
+export const getVisibleTh = (_: string) => {
     return jTool(`[${TABLE_HEAD_KEY}="${_}"] th:not(${CELL_HIDDEN})`);
 };
 
@@ -205,7 +206,7 @@ export const getVisibleTh = _ => {
  * @param isExcludeGmCreate: 是否排除自动创建的列
  * @returns {*}
  */
-export const getFakeVisibleTh = (_, isExcludeGmCreate) => {
+export const getFakeVisibleTh = (_: string, isExcludeGmCreate?: boolean) => {
     return jTool(`[${FAKE_TABLE_HEAD_KEY}="${_}"] th:not([${CELL_HIDDEN}])${isExcludeGmCreate ? `:not([${GM_CREATE}])` : ''}`);
 };
 
@@ -214,7 +215,7 @@ export const getFakeVisibleTh = (_, isExcludeGmCreate) => {
  * @param $dom: $th or $td
  * @returns {*}
  */
-export const getThName = $dom => {
+export const getThName = ($dom: any) => {
     return $dom.attr(TH_NAME);
 };
 
@@ -222,7 +223,7 @@ export const getThName = $dom => {
  * 获取空模版jTool对像
  * @param _
  */
-export const getEmpty = _ => {
+export const getEmpty = (_: string) => {
     return jTool(`[${EMPTY_TPL_KEY}="${_}"]`);
 };
 
@@ -230,7 +231,7 @@ export const getEmpty = _ => {
  * 更新数据为空显示DOM所占的列数
  * @param _
  */
-export const updateEmptyCol = _ => {
+export const updateEmptyCol = (_: string): void => {
     const emptyDOM = getEmpty(_);
     if (emptyDOM.length === 0) {
         return;
@@ -245,14 +246,14 @@ export const updateEmptyCol = _ => {
  * @param $context: $tr || tr || _
  * @returns {jTool}
  */
-export const getColTd = ($dom, $context) => {
+export const getColTd = ($dom: any, $context: string | any) => {
     // 获取tbody下全部匹配的td
     if (isString($context)) {
         return jTool(`tbody tr td:nth-child(${$dom.index() + 1})`, getTable($context));
     }
 
     // 获取指定$context下匹配的td
-    return jTool(`td:nth-child(${$dom.index() + 1})`, $context);
+    return jTool(`td:nth-child(${$dom.index() + 1})`, $context as any);
 };
 
 /**
@@ -261,9 +262,9 @@ export const getColTd = ($dom, $context) => {
  * @param thNameList: Array [thName]
  * @param isVisible: 是否可见
  */
-export const setAreVisible = (_, thNameList, isVisible) => {
+export const setAreVisible = (_: string, thNameList: Array<string>, isVisible: boolean): void => {
     // 在 showTh | hideTh方法中允许传入数组
-    each(isArray(thNameList) ? thNameList : [thNameList], thName => {
+    each(isArray(thNameList) ? thNameList : [thNameList], (thName: string) => {
         const $th = getTh(_, thName);
         const $fakeTh = getFakeTh(_, thName);
         const $td = getColTd($th, _);
@@ -295,7 +296,7 @@ export const setAreVisible = (_, thNameList, isVisible) => {
  * 注意事项: 嵌套表头不使用
  * @param _
  */
-export const updateVisibleLast = _ => {
+export const updateVisibleLast = (_: string): void => {
     // let offsetRight = null;
     // 这块的代码是调试的，还是需要考虑下用其它方式，因为这种方式存在问题: 最后一列居中的分割线没办法直接顶到最右侧
     // each(getFakeThead(_).find('tr th:last-child'), (item, index) => {
@@ -328,19 +329,19 @@ export const updateVisibleLast = _ => {
  * @param settings
  * @param isInit: 是否为init调用
  */
-export const updateThWidth = (settings, isInit) => {
+export const updateThWidth = (settings: any, isInit: boolean): void => {
     const { _, columnMap, isIconFollowText, __isNested } = settings;
     let totalWidth = getDiv(_).width();
     let usedTotalWidth = 0;
 
-    const autoList = [];
+    const autoList: Array<any> = [];
 
     // 嵌套自动宽列
-    const autoNestedList = [];
+    const autoNestedList: Array<any> = [];
 
     // 存储首列
-    let firstCol;
-    each(columnMap, (key, col) => {
+    let firstCol: any;
+    each(columnMap, (key: string, col: any) => {
         let { __width, width, isShow, pk, children } = col;
         // 不可见列: 不处理
         if (!isShow) {
@@ -361,6 +362,7 @@ export const updateThWidth = (settings, isInit) => {
         // 已设置宽度并存在子项: 进行平均值处理，以保证在渲染时值可以平分
         if (width && width !== 'auto' && __isNested && isValidArray(children)) {
             const num = col.colspan;
+            // @ts-ignore
             col.width = width = parseInt(width / num, 10) * num;
         }
 
@@ -407,8 +409,9 @@ export const updateThWidth = (settings, isInit) => {
     // 存在剩余宽度: 存在嵌套自动列, 与普通自动列平分，并跟据嵌套自动列的列数调整平分值
     if (overage > 0 && autoNestedLen) {
         let splitVal = Math.floor(overage / (autoNestedLen + autoLen));
-        each(autoNestedList, col => {
+        each(autoNestedList, (col: any) => {
             const num = col.colspan;
+            // @ts-ignore
             splitVal = parseInt(parseInt(splitVal, 10) / num, 10) * num;
             col.width = col.width + splitVal;
             overage = overage - splitVal;
@@ -423,7 +426,7 @@ export const updateThWidth = (settings, isInit) => {
     // 存在剩余宽度: 存在普通自动列, 平分剩余的宽度
     if (overage > 0 && autoLen) {
         const splitVal = Math.floor(overage / autoLen);
-        each(autoList, (col, index) => {
+        each(autoList, (col: any, index: number) => {
             // 最后一项自动列: 将余值全部赋予
             if (index === autoLen - 1) {
                 col.width = col.width + overage;
@@ -435,7 +438,7 @@ export const updateThWidth = (settings, isInit) => {
     }
 
     // 绘制th宽度
-    each(columnMap, (key, col) => {
+    each(columnMap, (key: string, col: any) => {
         // 可见 且 禁用定制列 不处理
         if (col.isShow && col[DISABLE_CUSTOMIZE]) {
             return;
@@ -464,8 +467,8 @@ export const updateThWidth = (settings, isInit) => {
  * @param __isNested: 是否使用多层嵌套表头
  * @returns {number}
  */
-export const getThTextWidth = (_, col, isIconFollowText, __isNested) => {
-    const getWidth = (_, $th, isIconFollowText) => {
+export const getThTextWidth = (_: string, col: any, isIconFollowText: boolean, __isNested: boolean) => {
+    const getWidth = (_: string, $th: any, isIconFollowText: boolean) => {
         // th下的GridManager包裹容器
         const $thWarp = jTool('.th-wrap', $th);
 
@@ -512,8 +515,8 @@ export const getThTextWidth = (_, col, isIconFollowText, __isNested) => {
     // 存在有效的多层嵌套表头: 顶层采取所有子项的合，展现时最下层列平分顶层列的宽
     let width = 0;
     let num = 0;
-    const addWidth = col => {
-        col.children.forEach(item => {
+    const addWidth = (col: any) => {
+        col.children.forEach((item: any) => {
             if (!isValidArray(item.children)) {
                 num++;
                 width += getWidth(_, getFakeTh(_, col.key), isIconFollowText);
@@ -525,6 +528,7 @@ export const getThTextWidth = (_, col, isIconFollowText, __isNested) => {
     addWidth(col);
 
     // 去除小数，以保证在渲染时平分的值均为整数
+    // @ts-ignore
     return parseInt(width / num, 10) * num;
 };
 
@@ -535,7 +539,7 @@ export const getThTextWidth = (_, col, isIconFollowText, __isNested) => {
  * @param cssObj: 样式对像，示例: {fontSize: '12px', ...}
  * @returns {*}
  */
-export const getTextWidth = (_, content, cssObj) => {
+export const getTextWidth = (_: string, content: string, cssObj: object): number => {
     const $textDreamland = jTool(`[${WRAP_KEY}="${_}"] .text-dreamland`);
     $textDreamland.html(content);
     $textDreamland.css(cssObj);
@@ -548,7 +552,7 @@ export const getTextWidth = (_, content, cssObj) => {
  * @param settings
  * @param noChange: 指定宽度为未变更，用于节省性能消耗
  */
-export const updateFakeThead = (settings, noChange) => {
+export const updateFakeThead = (settings: any, noChange: boolean): void => {
     const { _, columnMap } = settings;
     const $tableDiv = getDiv(_);
     if (!$tableDiv.length) {
@@ -578,7 +582,7 @@ export const updateFakeThead = (settings, noChange) => {
  * 更新滚动轴显示状态
  * @param _
  */
-export const updateScrollStatus = _ => {
+export const updateScrollStatus = (_: string): void => {
     const $tableDiv = getDiv(_);
     // 宽度: table的宽度大于 tableDiv的宽度时，显示滚动条
     $tableDiv.attr('gm-overflow-x', getThead(_).width() > $tableDiv.width());
@@ -588,7 +592,7 @@ export const updateScrollStatus = _ => {
  * 计算表格布局
  * @param settings
  */
-export const calcLayout = settings => {
+export const calcLayout = (settings: any): void => {
     const { _, width, height, minHeight, maxHeight, supportAjaxPage } = settings;
     const tableWrap = getWrap(_).get(0);
     const theadHeight = getThead(_).height();
@@ -614,7 +618,7 @@ export const calcLayout = settings => {
  * 清除目标元素上的事件，该事件在各个模块调用
  * @param eventMap
  */
-export const clearTargetEvent = eventMap => {
+export const clearTargetEvent = (eventMap: any): void => {
     for (let key in eventMap) {
         const eve = eventMap[key];
         const $target = jTool(eve[TARGET]);
@@ -626,12 +630,13 @@ export const clearTargetEvent = eventMap => {
  * 获取滚动轴宽度
  * @returns {number}
  */
-export const getScrollBarWidth = _ => {
+export const getScrollBarWidth = (_: string): number => {
     const el = rootDocument.createElement('div');
 
     el.style.width = '100px';
     el.style.height = '100px';
     el.style.overflow = 'scroll';
+    // @ts-ignore
     el.style.scrollbarWidth = 'thin';
 
     getDiv(_).get(0).appendChild(el);
@@ -648,6 +653,6 @@ export const getScrollBarWidth = _ => {
  * @param _
  * @param height
  */
-export const setLineHeightValue = (_, height) => {
+export const setLineHeightValue = (_: string, height: string) => {
     getDiv(_).get(0).style.setProperty('--gm-line-height', height);
 };
