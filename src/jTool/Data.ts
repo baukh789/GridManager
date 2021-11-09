@@ -5,7 +5,7 @@ import { isUndefined, isNull, each, getDomList } from './utils';
  * @param value
  * @returns {*}
  */
-const transformVal = value => {
+const transformVal = (value: null | string): undefined | string => {
     // null => undefined
     return isNull(value) ? undefined : value;
 };
@@ -17,10 +17,10 @@ export default {
      * @param value
      * @returns {*}
      */
-    attr: function (key, value) {
+    attr: function (key: string, value: string) {
         // setter
         if (!isUndefined(value)) {
-            each(this, v => {
+            each(this, (v: HTMLElement) => {
                 v.setAttribute(key, value);
             });
             return this;
@@ -34,8 +34,8 @@ export default {
      * 删除普通属性
      * @param key
      */
-    removeAttr: function (key) {
-        each(this, v => {
+    removeAttr: function (key: string): void {
+        each(this, (v: HTMLElement) => {
             v.removeAttribute(key);
         });
     },
@@ -46,10 +46,10 @@ export default {
      * @param value
      * @returns {*}
      */
-    prop: function (key, value) {
+    prop: function (key: string, value: string) {
         // setter
         if (!isUndefined(value)) {
-            each(this, v => {
+            each(this, (v: HTMLElement) => {
                 v[key] = value;
             });
             return this;
@@ -64,7 +64,7 @@ export default {
      * @param value
      * @returns {*|string}
      */
-    val: function (value) {
+    val: function (value: string) {
         return this.prop('value', value) || '';
     }
 };

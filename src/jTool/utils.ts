@@ -1,4 +1,8 @@
-import {JTOOL_KEY, JTOOL_DOM_ID, DOM_LIST} from './constants';
+import { JTOOL_KEY, JTOOL_DOM_ID, DOM_LIST } from './constants';
+interface JTool {
+    jTool: boolean;
+}
+
 const typeMap = {
     '[object String]': 'string',
     '[object Boolean]': 'boolean',
@@ -23,31 +27,32 @@ export const rootWindow = window;
 // root document
 export const rootDocument = rootWindow.document;
 
-export const isWindow = object => {
+export const isWindow = (object: any): boolean => {
     return object && object === object.window;
 };
 
-export const type = object => {
+export const type = (object: any): string => {
     return object instanceof Element ? 'element' : typeMap[Object.prototype.toString.call(object)];
 };
 
 export const noop = () => {};
 
-export const isJTool = obj => {
+export const isJTool = (obj: any): boolean => {
     return obj[JTOOL_KEY];
 };
 
-export const getDomList = (obj, index) => {
+// ts 返回应该是: HTMLElement | Array<HTMLElement> | undefined
+export const getDomList = (obj: JTool, index?: number): any => {
     const list = obj[DOM_LIST];
     if (isUndefined(list)) {
         return;
     }
     if (!isNumber(index)) {
-        return list;
+        return list as Array<HTMLElement>;
     }
-    return list[index];
+    return list[index] as HTMLElement;
 };
-export const each = (object, callback) => {
+export const each = (object: any, callback: any): void => {
     // 当前参数不可用，直接跳出
     if (!object) {
         return;
@@ -66,7 +71,7 @@ export const each = (object, callback) => {
     // 数组或类数组: callback(value, index)
     if (!isUndefined(object.length)) {
         // 由于存在类数组 NodeList, 所以不能直接调用 every 方法
-        [].every.call(object, (ele, index) => {
+        [].every.call(object, (ele: any, index: number) => {
             // 处理jTool 对象
             if (!isWindow(ele) && isJTool(ele)) {
                 ele = ele.get(0);
@@ -87,13 +92,13 @@ export const each = (object, callback) => {
 };
 
 // 获取节点样式
-export const getStyle = (dom, key) => {
+export const getStyle = (dom: HTMLElement, key: string): string => {
     return getComputedStyle(dom)[key];
 };
 
 // 通过html字符串, 生成DOM.  返回生成后的子节点
 // 该方法无处处理包含table标签的字符串,但是可以处理table下属的标签
-export const createDOM = htmlString => {
+export const createDOM = (htmlString: string): NodeList => {
     let jToolDOM = rootDocument.querySelector(`#${JTOOL_DOM_ID}`);
     if (!jToolDOM) {
         // table标签 可以在新建element时可以更好的容错.
@@ -132,7 +137,7 @@ export const createDOM = htmlString => {
  * @param o
  * @returns {boolean}
  */
-export const isUndefined = o => {
+export const isUndefined = (o: any): boolean => {
     return type(o) === 'undefined';
 };
 
@@ -141,7 +146,7 @@ export const isUndefined = o => {
  * @param o
  * @returns {boolean}
  */
-export const isNull = o => {
+export const isNull = (o: any): boolean => {
     return type(o) === 'null';
 };
 /**
@@ -149,7 +154,7 @@ export const isNull = o => {
  * @param o
  * @returns {boolean}
  */
-export const isString = o => {
+export const isString = (o: any): boolean => {
     return type(o) === 'string';
 };
 
@@ -158,7 +163,7 @@ export const isString = o => {
  * @param o
  * @returns {boolean}
  */
-export const isFunction = o => {
+export const isFunction = (o: any): boolean => {
     return type(o) === 'function';
 };
 
@@ -167,7 +172,7 @@ export const isFunction = o => {
  * @param o
  * @returns {boolean}
  */
-export const isNumber = o => {
+export const isNumber = (o: any): boolean => {
     return type(o) === 'number';
 };
 
@@ -176,7 +181,7 @@ export const isNumber = o => {
  * @param o
  * @returns {boolean}
  */
-export const isBoolean = o => {
+export const isBoolean = (o: any): boolean => {
     return type(o) === 'boolean';
 };
 
@@ -185,7 +190,7 @@ export const isBoolean = o => {
  * @param o
  * @returns {boolean}
  */
-export const isObject = o => {
+export const isObject = (o: any): boolean => {
     return type(o) === 'object';
 };
 
@@ -194,7 +199,7 @@ export const isObject = o => {
  * @param o
  * @returns {boolean}
  */
-export const isEmptyObject = obj => {
+export const isEmptyObject = (obj: object): boolean => {
     let isEmptyObj = true;
     for (const pro in obj) {
         if(obj.hasOwnProperty(pro)) {
@@ -209,7 +214,7 @@ export const isEmptyObject = obj => {
  * @param o
  * @returns {boolean}
  */
-export const isArray = o => {
+export const isArray = (o: any): boolean => {
     return type(o) === 'array';
 };
 
@@ -217,7 +222,7 @@ export const isArray = o => {
  * 是否为可用的数组
  * @param a
  */
-export const isValidArray = o => {
+export const isValidArray = (o: any): boolean => {
     return isArray(o) && o.length > 0;
 };
 
@@ -226,7 +231,7 @@ export const isValidArray = o => {
  * @param o
  * @returns {boolean}
  */
-export const isElement = o => {
+export const isElement = (o: any): boolean => {
     return type(o) === 'element';
 };
 
@@ -235,7 +240,7 @@ export const isElement = o => {
  * @param o
  * @returns {boolean}
  */
-export const isNodeList = o => {
+export const isNodeList = (o: any): boolean => {
     return type(o) === 'nodeList';
 };
 
@@ -244,7 +249,7 @@ export const isNodeList = o => {
  * 未对数组进行递归的原因: 框架中会为列配置项添加字段，这会导致出现内存溢出问题
  * @returns {{}}
  */
-export function extend() {
+export function extend(...[]: any): object { // todo 因为这里需要动态的传参，所有在ts改造中使用了...[]: any，该方法需要改造
     // 参数为空,返回空对象
     if (arguments.length === 0) {
         return {};
@@ -272,7 +277,7 @@ export function extend() {
         options = arguments[i] || {};
         ex(options, target);
     }
-    function ex(options, target) {
+    function ex(options: object, target: object) {
         for (let key in options) {
             if (options.hasOwnProperty(key)) {
                 // 数组不进行递归
@@ -294,7 +299,7 @@ export function extend() {
  * 获取浏览器名称
  * @returns {string}
  */
-export const getBrowser = () => {
+export const getBrowser = (): string => {
     try {
         const list = navigator.userAgent.toLowerCase().match(/(msie|firefox|chrome|opera|version).*?([\d.]+)/);
         return list[1].replace(/version/, 'safari');

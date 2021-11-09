@@ -20,12 +20,12 @@ const FORM_URL_ENCODED = 'application/x-www-form-urlencoded';
  * @param data
  * @returns {string|*}
  */
-function getFormData(data) {
+function getFormData(data: string | object): string {
     if (!isObject(data)) {
-        return data;
+        return data as string;
     }
     let str = '';
-    each(data, (key, value) => {
+    each(data, (key: string, value: string): void => {
         if(str) {
             str += '&';
         }
@@ -33,7 +33,20 @@ function getFormData(data) {
     });
     return str;
 }
-export default function ajax(options) {
+
+interface AjaxOptions {
+    url?: string;
+    type?: string;
+    data?: object | Array<object>;
+    headers: object;
+    async: boolean;
+    xhrFields: object;
+    beforeSend: (xhr: object) => {};
+    complete: (xhr: object, status: number) => {};
+    success: (response: object, status: number) => {};
+    error: (xhr: object, status: number, statusText: string) => {};
+}
+export default function ajax(options: AjaxOptions) {
     let { url, type, data, headers, async, xhrFields, beforeSend, complete, success, error } = extend({
         url: null,		// 请求地址
         type: 'GET',	// 请求类型
@@ -45,7 +58,7 @@ export default function ajax(options) {
         complete: noop,	// 请求发送后执行事件
         success: noop,	// 请求成功后执行事件
         error: noop		// 请求失败后执行事件
-    }, options);
+    }, options) as AjaxOptions;
 
     type = type.toUpperCase();
 

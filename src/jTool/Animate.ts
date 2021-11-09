@@ -36,13 +36,13 @@ export default {
      * @param time
      * @param callback
      */
-    animate: function (styleObj, time = 0, callback = noop) {
+    animate: function (styleObj: object, time = 0, callback = noop): void {
         let animateFromText = '';   // 动画执行前样式文本
         let animateToText = '';     // 动画执行后样式文本
         let node = getDomList(this, 0);
 
         // 组装动画 keyframes
-        each(styleObj, (key, v) => {
+        each(styleObj, (key: string, v: string) => {
             animateFromText += key + ':' + getStyle(node, key) + ';';
             animateToText += key + ':' + v + ';';
         });
@@ -67,13 +67,13 @@ export default {
         }, time);
     },
     show: function () {
-        each(this,  v => {
+        each(this,  (v: HTMLElement) => {
             v.style.display = DISPLAY_MAP[v.nodeName] || 'block';
         });
         return this;
     },
     hide: function () {
-        each(this, v => {
+        each(this, (v: HTMLElement) => {
             v.style.display = 'none';
         });
         return this;
