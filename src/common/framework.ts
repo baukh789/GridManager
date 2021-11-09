@@ -1,5 +1,27 @@
 import { getQuerySelector } from '@common/base';
 import { isNull, isUndefined, rootDocument } from '@jTool/utils';
+interface TdTemplate {
+    (col: object, row: object, index: number, key: string): string;
+}
+interface ThTemplate {
+    (): string;
+}
+interface FullColumnTemplate {
+    (row: object, index: number): string;
+}
+interface EmptyTemplate {
+    (settings: any): string;
+}
+interface CompileCell {
+    key?: string;
+    el?: HTMLTableElement;
+    row?: object;
+    template?: ThTemplate | TdTemplate | FullColumnTemplate | EmptyTemplate;
+    type?: string;
+    fnArg?: Array<any>;
+    index?: number;
+}
+
 // 框架解析唯一值
 const FRAMEWORK_KEY = 'data-compile-node';
 
@@ -11,7 +33,7 @@ const compileMap = {};
  * @param _
  * @returns {*}
  */
-export const getCompileList = _ => {
+export const getCompileList = (_: string): Array<CompileCell> => {
     if (!compileMap[_]) {
         compileMap[_] = [];
     }
@@ -22,7 +44,7 @@ export const getCompileList = _ => {
  * 清空当前表格解析列表
  * @param _
  */
-export const clearCompileList = _ => {
+export const clearCompileList = (_: string): void => {
     compileMap[_] = [];
 };
 
@@ -31,12 +53,12 @@ export const clearCompileList = _ => {
  * @param settings
  * @param el
  */
-export const compileFakeThead = (settings, el) => {
+export const compileFakeThead = (settings: any, el: HTMLTableElement) => {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     if (compileAngularjs || compileVue || compileReact) {
         const compileList = getCompileList(_);
         const thList = el.querySelectorAll(`[${FRAMEWORK_KEY}]`);
-        [].forEach.call(thList, (item, index) => {
+        [].forEach.call(thList, (item: HTMLTableElement, index: number) => {
             const obj = compileList[index];
             compileList.push({...obj});
         });
@@ -50,7 +72,10 @@ export const compileFakeThead = (settings, el) => {
  * @param template
  * @returns {string}
  */
-export const compileTh = (settings, key, template) => {
+export const compileTh = (settings: any, key: string, template: ThTemplate): {
+    text: string;
+    compileAttr: string;
+} => {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
     let text = '';
@@ -82,7 +107,10 @@ export const compileTh = (settings, key, template) => {
  * @param template
  * @returns {*}
  */
-export const compileTd = (settings, template, row, index, key) => {
+export const compileTd = (settings: any, template: TdTemplate, row: object, index: number, key: string): {
+    text: string;
+    compileAttr: string;
+} => {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
 
@@ -130,7 +158,7 @@ export const compileTd = (settings, template, row, index, key) => {
  * @param template
  * @returns {string}
  */
-export const compileEmptyTemplate = (settings, el, template) => {
+export const compileEmptyTemplate = (settings: any, el: HTMLTableElement, template: EmptyTemplate): string => {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
 
@@ -161,7 +189,10 @@ export const compileEmptyTemplate = (settings, el, template) => {
  * @param template
  * @returns {*}
  */
-export const compileFullColumn = (settings, row, index, template, model) => {
+export const compileFullColumn = (settings: any, row: object, index: number, template: FullColumnTemplate, model: string): {
+    text: string;
+    compileAttr: string;
+} => {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
 
@@ -198,7 +229,7 @@ export const compileFullColumn = (settings, row, index, template, model) => {
  * @param settings
  * @returns {Promise<void>}
  */
-export async function sendCompile(settings) {
+export async function sendCompile(settings: any) {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
     if (compileList.length === 0) {
@@ -209,7 +240,7 @@ export async function sendCompile(settings) {
     // 以下为框架版本才会使用到
     compileList.forEach((item, index) => {
         if (!item.el) {
-            item.el = domList[index];
+            item.el = domList[index] as HTMLTableElement;
         }
     });
 
@@ -232,7 +263,7 @@ export async function sendCompile(settings) {
     }
 
     // 清除解析数据及标识
-    [].forEach.call(domList, el => {
+    [].forEach.call(domList, (el: HTMLTableElement) => {
         el.removeAttribute(FRAMEWORK_KEY);
     });
 

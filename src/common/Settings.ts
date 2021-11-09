@@ -75,7 +75,7 @@ const adjust = {
  */
 const menu = {
     supportMenu: true,
-    menuHandler: list => list
+    menuHandler: (list: Array<object>): Array<object> => list
 };
 
 /**
@@ -146,15 +146,19 @@ const gridStyle = {
  */
 const events = {
     // 单行hover事件
+    // @ts-ignore
     rowHover: null,
 
     // 单行点击事件
+    // @ts-ignore
     rowClick: null,
 
     // 单元格hover事件
+    // @ts-ignore
     cellHover: null,
 
     // 单元格点击事件
+    // @ts-ignore
     cellClick: null
 };
 
@@ -482,16 +486,16 @@ const gridData = {
     ajaxError: noop,
 
     // 请求前处理程序, 可以通过该方法修改全部的请求参数 @v2.3.14
-    requestHandler: request => request,
+    requestHandler: (request: object) => request,
 
     // 执行请求后执行程序, 通过该程序可以修改返回值格式. 仅有成功后该函数才会执行 @v2.3.14
-    responseHandler: response => response,
+    responseHandler: (response: object) => response,
 
     // 单行数据渲染时执行程序
-    rowRenderHandler: row => row,
+    rowRenderHandler: (row: object) => row,
 
     // 汇总处理函数
-    summaryHandler: data => { return {}; },
+    summaryHandler: (data: object) => { return {}; },
 
     // 返回数据中列表数据的key键值,默认为data
     dataKey: 'data',

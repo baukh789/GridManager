@@ -2,7 +2,13 @@
  * 实例化数据的存储对象
  */
 import { GM_VERSION } from '@common/constants';
-const Store = {
+interface StoreInterface {
+    version: string;
+    responseData: any;
+    checkedData: any;
+    settings: any;
+}
+const Store: StoreInterface = {
 	// 版本号
 	version: GM_VERSION,
 

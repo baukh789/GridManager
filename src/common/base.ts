@@ -37,7 +37,7 @@ import { TARGET, EVENTS, SELECTOR } from '@common/events';
  * @param row: 行数据
  * @param cleanKeyList: 指定从clone数据中清除字段列表
  */
-export const getCloneRowData = (columnMap: any, row: object, cleanKeyList: Array<string>): object => {
+export const getCloneRowData = (columnMap: any, row: object, cleanKeyList?: Array<string>): object => {
     let cloneRow = extend(true, {}, row) as any;
 
     // 删除自定义参数: 通过columnMap设置的项
@@ -77,7 +77,7 @@ export const showLoading = (_: string, loadingTemplate: string): void => {
         $loading.remove();
     }
 
-    const $loadingDom = jTool(loadingTemplate) as any;
+    const $loadingDom = jTool(loadingTemplate);
     $loadingDom.addClass(LOADING_CLASS_NAME);
     $tableWrap.append($loadingDom);
 };

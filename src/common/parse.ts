@@ -5,16 +5,16 @@
  */
 /* 仅在该文件内使用 new Function */
 /* eslint no-new-func: "off"*/
-export const parseTpl = tpl => {
-    return (target, key, descriptor) => {
+export const parseTpl = (tpl: string) => {
+    return (target: object, key: string, descriptor: any) => {
         const oldValue = descriptor.value;
         // params 中如果存在 tpl 则使用 params 中的进行渲染
-        descriptor.value = params => {
+        descriptor.value = (params: any) => {
             const vm = oldValue.call(target, params);
 
             let str = params && params.tpl || tpl;
 
-            return str.replace(/\{\{([^(\}\})]+)\}\}/g, (match, evalStr) => {
+            return str.replace(/\{\{([^(\}\})]+)\}\}/g, (match: string, evalStr: string) => {
                 return new Function('vm', 'return ' + evalStr)(vm) || '';
             });
         };

@@ -4,7 +4,7 @@
 * 1.Store: 渲染表格时所使用的json数据 [存储在GM实例]
 * 2.UserMemory: 用户记忆 [存储在localStorage]
 * */
-import {getCloneRowData, getFakeTh, getTable, getTh} from '@common/base';
+import { getCloneRowData, getFakeTh, getTable, getTh } from '@common/base';
 import {
     isUndefined,
     isFunction,
@@ -31,15 +31,15 @@ const MEMORY_COLUMN_KEY_LIST = ['width', '__width', 'isShow', '__isShow', 'index
 // 用户记忆是否清除所验证的字段
 const MEMORY_CHECK_COLUMN_KEY_LIST = ['__width', '__isShow', '__index'];
 
-const getStorage = key => {
+const getStorage = (key: string): string => {
     return localStorage.getItem(key);
 };
 
-const setStorage = (key, memory) => {
+const setStorage = (key: string, memory: string): void => {
     localStorage.setItem(key, memory);
 };
 
-const removeStorage = key => {
+const removeStorage = (key: string): void => {
     localStorage.removeItem(key);
 };
 
@@ -57,21 +57,21 @@ export const SIV_waitTableAvailable =  {};
  * 版本信息
  * @returns {*}
  */
-export const getVersion = () => {
+export const getVersion = (): string => {
     return store.version;
 };
 
 /**
  * 获取当前行使用的数据
  * @param _
- * @param target: 将要获取数据所对应的tr[Element or NodeList]
+ * @param target: 将要获取数据所对应的tr
  * @param useSourceData: 使用原数据 或 克隆数据
  * @returns {*}
  */
-export const getRowData = (_, target, useSourceData) => {
+export const getRowData = (_: string, target: HTMLTableElement, useSourceData: boolean): object => {
     const settings = getSettings(_);
     const tableData = getTableData(_);
-    const getTrData = tr => {
+    const getTrData = (tr: HTMLTableElement): object => {
         const cacheKey = tr.getAttribute(TR_CACHE_KEY);
         let rowData = tableData[cacheKey] || {};
 
@@ -97,8 +97,8 @@ export const getRowData = (_, target, useSourceData) => {
 
     // target type =  NodeList 类型时, 返回数组
     if (isNodeList(target)) {
-        let rodData = [];
-        each(target, tr => {
+        let rodData: Array<object> = [];
+        each(target, (tr: HTMLTableElement) => {
             rodData.push(getTrData(tr));
         });
         return rodData;
@@ -115,15 +115,15 @@ export const getRowData = (_, target, useSourceData) => {
  * @param rowDataList: 需要更新的数据列表
  * @returns tableData: 更新后的表格数据
  */
-export const updateRowData = (_, key, rowDataList) => {
+export const updateRowData = (_: string, key: string, rowDataList: Array<object>) => {
     const tableData = getTableData(_);
     const settings = getSettings(_);
     const supportTreeData = settings.supportTreeData;
     const treeKey = settings.treeConfig.treeKey;
 
     // 当前正在展示的被更新项getRowData
-    const updateCacheList = [];
-    const updateData = (list, newItem) => {
+    const updateCacheList: Array<object> = [];
+    const updateData = (list: Array<any>, newItem: any): void => {
         list.some(item => {
             if (item[key] === newItem[key]) {
                 extend(item, newItem);
@@ -156,7 +156,7 @@ export const updateRowData = (_, key, rowDataList) => {
  * 获取表格数据
  * @param _
  */
-export const getTableData = _ => {
+export const getTableData = (_: string): Array<any> => {
     return cloneObject(store.responseData[_] || []);
 };
 
@@ -165,7 +165,7 @@ export const getTableData = _ => {
  * @param _
  * @param data
  */
-export const setTableData = (_, data) => {
+export const setTableData = (_: string, data: Array<any>): void => {
     store.responseData[_] = data;
 };
 
@@ -175,7 +175,7 @@ export const setTableData = (_, data) => {
  * @param data
  * @returns {*}
  */
-export const resetTableData = (_, data) => {
+export const resetTableData = (_: string, data: Array<object>): Array<object> => {
 
     const {
         columnMap,
@@ -192,7 +192,7 @@ export const resetTableData = (_, data) => {
 
     const checkboxKey = checkboxConfig.key;
     // 为每一行数据增加唯一标识
-    const addCacheKey = (row, level, index, pIndex) => {
+    const addCacheKey = (row: object, level: number, index: number, pIndex?: string): void => {
         let cacheKey = index.toString();
         if (!isUndefined(pIndex)) {
             cacheKey = `${pIndex}-${index}`;
@@ -204,7 +204,7 @@ export const resetTableData = (_, data) => {
 
             // 递归处理层极结构
             if (hasChildren) {
-                children.forEach((item, index) => {
+                children.forEach((item: object, index: number) => {
                     addCacheKey(item, level + 1, index, cacheKey);
                 });
             }
@@ -218,7 +218,7 @@ export const resetTableData = (_, data) => {
         row[TR_LEVEL_KEY] = level;
     };
 
-    const newData =  data.map((row, index) => {
+    const newData = data.map((row, index): object => {
         // add order
         if (supportAutoOrder) {
             let	orderBaseNumber = 1;
@@ -232,7 +232,7 @@ export const resetTableData = (_, data) => {
 
         // add checkbox
         if (supportCheckbox) {
-            row[CHECKBOX_KEY] = getCheckedData(_).some(item => {
+            row[CHECKBOX_KEY] = getCheckedData(_).some((item: object) => {
                 return equal(getCloneRowData(columnMap, item), getCloneRowData(columnMap, row), checkboxKey);
             });
             row[CHECKBOX_DISABLED_KEY] = false;
@@ -256,11 +256,11 @@ export const resetTableData = (_, data) => {
  * @param _
  * @returns {*|Array}
  */
-export const getCheckedData = _ => {
+export const getCheckedData = (_: string): Array<object> => {
     const checkedList = store.checkedData[_] || [];
 
     // 返回clone后的数组，以防止在外部操作导致数据错误。
-    return checkedList.map(item => extend(true, {}, item));
+    return checkedList.map((item: object) => extend(true, {}, item));
 };
 
 /**
@@ -269,7 +269,7 @@ export const getCheckedData = _ => {
  * @param dataList: 数据列表， isClear===true时该项只能为选中的数据
  * @param isClear: 是否清空原有的选中项 (该参数不公开)
  */
-export const setCheckedData = (_, dataList, isClear) => {
+export const setCheckedData = (_: string, dataList: Array<object>, isClear?: boolean): void => {
     const { columnMap, checkboxConfig } = getSettings(_);
     // 覆盖操作，清空原有的选中数据。 并且 dataList 将会按选中状态进行处理
     if (isClear) {
@@ -309,11 +309,11 @@ export const setCheckedData = (_, dataList, isClear) => {
  * @param key
  * @param rowDataList
  */
-export const updateCheckedData = (_, columnMap, key, rowDataList) => {
+export const updateCheckedData = (_: string, columnMap: object, key: string, rowDataList: Array<object>): void => {
     if (!store.checkedData[_]) {
         return;
     }
-    store.checkedData[_] = store.checkedData[_].map(item => {
+    store.checkedData[_] = store.checkedData[_].map((item: object): object => {
         rowDataList.forEach(newItem => {
             if (item[key] === newItem[key]) {
                 extend(item, getCloneRowData(columnMap, newItem));
@@ -328,7 +328,7 @@ export const updateCheckedData = (_, columnMap, key, rowDataList) => {
  * @param _
  * @returns {*}
  */
-export const getMemoryKey = _ => {
+export const getMemoryKey = (_: string): string => {
     return location.pathname + location.hash + '-' + _;
 };
 
@@ -337,7 +337,10 @@ export const getMemoryKey = _ => {
  * @param _
  * @returns {*} 成功则返回本地存储数据,失败则返回空对象
  */
-export const getUserMemory = _ => {
+interface UserMemory {
+    column?: object;
+}
+export const getUserMemory = (_: string): UserMemory => {
     let memory = getStorage(MEMORY_KEY);
     // 如无数据，增加缓存错误标识
     if (!memory || memory === '{}') {
@@ -353,7 +356,7 @@ export const getUserMemory = _ => {
  * @param settings
  * @returns {boolean}
  */
-export const saveUserMemory = settings => {
+export const saveUserMemory = (settings: any): void => {
     const { disableCache, _, columnMap, supportAjaxPage, pageData, pageSizeKey } = settings;
     // 当前为禁用缓存模式，直接跳出
     if (disableCache) {
@@ -361,7 +364,7 @@ export const saveUserMemory = settings => {
     }
 
     const column = {};
-    each(columnMap, (key, item) => {
+    each(columnMap, (key: string, item: object): void => {
         const col = {};
         MEMORY_COLUMN_KEY_LIST.forEach(memory => {
             col[memory] = item[memory];
@@ -369,7 +372,7 @@ export const saveUserMemory = settings => {
         column[key] = col;
     });
 
-    const _cache = {
+    const _cache: UserMemory = {
         column
     };
 
@@ -379,12 +382,7 @@ export const saveUserMemory = settings => {
     }
 
     const cacheString = JSON.stringify(_cache);
-    let memory = getStorage(MEMORY_KEY);
-    if (!memory) {
-        memory = {};
-    } else {
-        memory = JSON.parse(memory);
-    }
+    const memory = JSON.parse(getStorage(MEMORY_KEY) || '{}');
     memory[getMemoryKey(_)] = cacheString;
     setStorage(MEMORY_KEY, JSON.stringify(memory));
 };
@@ -394,7 +392,7 @@ export const saveUserMemory = settings => {
  * @param _
  * @returns {boolean}
  */
-export const delUserMemory = _ => {
+export const delUserMemory = (_?: string): boolean => {
     // 如果未指定删除的table, 则全部清除
     if (!_) {
         removeStorage(MEMORY_KEY);
@@ -422,14 +420,14 @@ export const delUserMemory = _ => {
  * @param arg
  * @returns {*}
  */
-export const updateTemplate = arg => {
+export const updateTemplate = (arg: any): any => {
     const { columnData, emptyTemplate } = arg;
 
     // 强制转换模板为函数: emptyTemplate
     if (emptyTemplate && !isFunction(emptyTemplate)) {
         arg.emptyTemplate = () => emptyTemplate;
     }
-    const resetTemplate = list => {
+    const resetTemplate = (list: Array<any>) => {
         list.forEach(col => {
             // 强制转换模板为函数: text
             const text = col.text;
@@ -463,10 +461,10 @@ export const updateTemplate = arg => {
  * @param orderColumnFn
  * @param fullColumnFn
  */
-export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn) => {
+export const initSettings = (arg: any, moveColumnRowFn: any, checkboxColumnFn: any, orderColumnFn: any, fullColumnFn: any): any => {
     // 转换简易列: ['key1'] => [{key, text}]
     if (isString(arg.columnData[0])) {
-        arg.columnData = arg.columnData.map(item => {
+        arg.columnData = arg.columnData.map((item: string): object => {
            return {
                key: item,
                text: item
@@ -478,6 +476,7 @@ export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumn
     arg = updateTemplate(arg);
 
     // 合并参数
+    // @ts-ignore
     let settings = new Settings();
     settings.textConfig = new TextConfig();
 
@@ -525,7 +524,7 @@ export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumn
     // 固定列规则: 当前为嵌套表头 并且 列数大于1
     const supportFixed = !__isNested && columnData.length > 1;
 
-    const resetData = (data, level, parentKey) => {
+    const resetData = (data: Array<any>, level: number, parentKey?: string): void => {
         data.forEach((col, index) => {
             col = extend(true, {}, col);
             const key = col.key;
@@ -636,7 +635,7 @@ export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumn
         }
 
         // 与用户记忆项不匹配
-        isUsable && each(columnMap, (key, col) => {
+        isUsable && each(columnMap, (key: string, col: object) => {
             if (!columnCache[key]
                 || MEMORY_CHECK_COLUMN_KEY_LIST.some(memoryKey => {
                     const memory = columnCache[key][memoryKey];
@@ -674,7 +673,7 @@ export const initSettings = (arg, moveColumnRowFn, checkboxColumnFn, orderColumn
  * @param _
  * @returns {*}
  */
-export const getSettings = _ => {
+export const getSettings = (_: string): any => {
     // 返回的是 clone 对象 而非对象本身
     return extend(true, {}, store.settings[_] || {});
 };
@@ -682,7 +681,7 @@ export const getSettings = _ => {
  * 设置配置项
  * @param settings
  */
-export const setSettings = settings => {
+export const setSettings = (settings: any): void => {
     store.settings[settings._] = extend(true, {}, settings);
 };
 
@@ -691,18 +690,18 @@ export const setSettings = settings => {
  * @param _
  * @param useFakeTh: 是否使用fake th
  */
-export const updateCache = (_, useFakeTh) => {
+export const updateCache = (_: string, useFakeTh: boolean): void => {
     const settings = getSettings(_);
     const columnMap = settings.columnMap;
 
-    const getThFn = (_, key) => {
+    const getThFn = (_: string, key: string) => {
         if (useFakeTh) {
             return getFakeTh(_, key);
         }
         return getTh(_, key);
     };
     // 更新 columnMap, 适用顶层表头操作[宽度调整, 位置调整, 可视状态调整]
-    each(columnMap, (key, col) => {
+    each(columnMap, (key: string, col: any) => {
         // 禁用定制列: 不处理
         if (col[DISABLE_CUSTOMIZE]) {
             return;
@@ -750,7 +749,7 @@ export const verifyVersion = () => {
  * 清空缓存
  * @param _
  */
-export const clearCache = _ => {
+export const clearCache = (_: string) => {
     delete store.responseData[_];
     delete store.checkedData[_];
     delete store.settings[_];
