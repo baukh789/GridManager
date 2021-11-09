@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "experimentalDecorators": true,
+        "suppressImplicitAnyIndexErrors": true,
         "noImplicitAny": true,
         "noEmitOnError": true,
         "outDir": "./dist/",
