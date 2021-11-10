@@ -22,10 +22,19 @@
  * 在选择元素上为当前并不存在的子元素绑定事件处理函数: .on('click mousedown', '.test', function(){})
  * */
 import { isElement, isFunction, each, noop, getDomList } from './utils';
-
+interface JTool {
+    jTool: boolean;
+}
+interface EventObject {
+    eventName: string;
+    type: string;
+    callback: any;
+    querySelector: string;
+    useCapture: boolean
+}
 const EVENT_KEY = 'jToolEvent';
 
-const getEvents = element => {
+const getEvents = (element: HTMLElement) => {
     return element[EVENT_KEY] || {};
 };
 /**
@@ -37,8 +46,8 @@ const getEvents = element => {
  * @param useCapture
  * @returns {[]|default}
  */
-const getEventObject = (DOMList, event, querySelector, callback, useCapture) => {
-    // $(dom).on(event, callback);
+const getEventObject = (DOMList: Array<HTMLElement>, event: string, querySelector?: any, callback?: any, useCapture?: boolean): Array<EventObject> => {
+    // ex: $(dom).on(event, callback);
     if (isFunction(querySelector)) {
         useCapture = callback || false;
         callback = querySelector;
@@ -53,10 +62,10 @@ const getEventObject = (DOMList, event, querySelector, callback, useCapture) => 
     // 预绑定功能实现
     if(querySelector !== '') {
         const fn = callback;
-        callback = function (e) {
+        callback = function (e: Event): void {
             // 验证子选择器所匹配的nodeList中是否包含当前事件源 或 事件源的父级
             // 注意: 这个方法为包装函数,此处的this为触发事件的Element
-            let target = e.target;
+            let target = e.target as Node;
             while(target && target !== this) {
                 if([].indexOf.call(this.querySelectorAll(querySelector), target) !== -1) {
                     fn.apply(target, arguments);
@@ -67,9 +76,9 @@ const getEventObject = (DOMList, event, querySelector, callback, useCapture) => 
         };
     }
     const eventSplit = event.split(' ');
-    const eventList = [];
+    const eventList: Array<EventObject> = [];
 
-    each(eventSplit, eventName => {
+    each(eventSplit, (eventName: string) => {
         if (eventName.trim()) {
             eventList.push({
                 eventName: eventName + querySelector,
@@ -84,25 +93,25 @@ const getEventObject = (DOMList, event, querySelector, callback, useCapture) => 
 };
 
 export default {
-	on: function (event, querySelector, callback, useCapture) {
+	on: function (event: string, querySelector: string, callback: any, useCapture: boolean): JTool {
 		// 将事件触发执行的函数存储于DOM上, 在清除事件时使用
 		return this.addEvent(getEventObject(getDomList(this), event, querySelector, callback, useCapture));
 	},
 
-	off: function (event, querySelector) {
+	off: function (event: string, querySelector: string): JTool {
 		return this.removeEvent(getEventObject(getDomList(this), event, querySelector));
 	},
 
-	bind: function (event, callback, useCapture) {
+	bind: function (event: string, callback: any, useCapture: boolean): JTool {
 		return this.on(event, undefined, callback, useCapture);
 	},
 
-	unbind: function (event) {
+	unbind: function (event: string): JTool {
 		return this.removeEvent(getEventObject(getDomList(this), event));
 	},
 
-	trigger: function (eventName) {
-		each(this, element => {
+	trigger: function (eventName: string): JTool {
+		each(this, (element: HTMLElement) => {
 			try {
 				// #Event001: trigger的事件是直接绑定在当前DOM上的
                 const eve = getEvents(element)[eventName];
@@ -126,9 +135,9 @@ export default {
      * @param eventList
      * @returns {default}
      */
-	addEvent: function (eventList) {
-		each(eventList, eventObj => {
-			each(this, v => {
+	addEvent: function (eventList: Array<EventObject>): JTool {
+		each(eventList, (eventObj: EventObject) => {
+			each(this, (v: HTMLElement) => {
 			    const events = getEvents(v);
 			    const { eventName, type, callback, useCapture } = eventObj;
                 events[eventName] = events[eventName] || [];
@@ -145,14 +154,14 @@ export default {
      * @param eventList
      * @returns {default}
      */
-	removeEvent: function (eventList) {
-		each(eventList, eventObj => {
-			each(this, ele => {
+	removeEvent: function (eventList: Array<EventObject>): JTool {
+		each(eventList, (eventObj: EventObject) => {
+			each(this, (ele: HTMLElement) => {
 			    const events = getEvents(ele);
 				const eventName = eventObj.eventName;
 				const eventFnList = events[eventName];
 				if (eventFnList) {
-					each(eventFnList, fn => {
+					each(eventFnList, (fn: any) => {
 						ele.removeEventListener(fn.type, fn.callback);
 					});
 					delete events[eventName];

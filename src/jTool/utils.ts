@@ -41,7 +41,7 @@ export const isJTool = (obj: any): boolean => {
     return obj[JTOOL_KEY];
 };
 
-// ts 返回应该是: HTMLElement | Array<HTMLElement> | undefined
+// ts 返回应该是: HTMLElement | Array<HTMLElement> | undefined | Document
 export const getDomList = (obj: JTool, index?: number): any => {
     const list = obj[DOM_LIST];
     if (isUndefined(list)) {

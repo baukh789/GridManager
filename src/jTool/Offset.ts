@@ -18,7 +18,7 @@ import { getDomList, getStyle, isNumber } from './utils';
  * @param type
  * @returns {undefined|number|*}
  */
-const scrollFN = (node, value, type) => {
+const scrollFN = (node: HTMLElement | Document, value: number, type: string) => {
     // scroll 对应 element 属性
     const scrollAttr = {
         top: 'scrollTop',
@@ -27,7 +27,7 @@ const scrollFN = (node, value, type) => {
 
     // 转换: node === document
     if (node.nodeType === 9) {
-        node = node.body;
+        node = (node as Document).body;
     }
 
     // setter
@@ -71,11 +71,11 @@ export default {
 
 	},
 	// 获取|设置 匹配元素相对滚动条顶部的偏移 value is number
-	scrollTop: function (value) {
+	scrollTop: function (value: number) {
 		return scrollFN(getDomList(this, 0), value, 'top');
 	},
 	// 获取|设置 匹配元素相对滚动条左部的偏移 value is number
-	scrollLeft: function (value) {
+	scrollLeft: function (value: number) {
 		return scrollFN(getDomList(this, 0), value, 'left');
 	}
 };

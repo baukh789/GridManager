@@ -16,6 +16,7 @@ const jTool = function (selector: any, context?: any): any {
 };
 
 // 把jquery原先的jQuery.fn给省略了.原先的方式是 init = jQuery.fn.init; init.prototype = jQuery.fn;
+// @ts-ignore
 Sizzle.prototype = jTool.prototype = {};
 // 捆绑jTool 工具
 jTool.extend = jTool.prototype.extend = extend;

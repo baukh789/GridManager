@@ -1,7 +1,11 @@
 import { isWindow, createDOM, each, isString, isNodeList, isElement, isArray, isJTool, rootDocument } from './utils';
 import { DOM_LIST, JTOOL_KEY } from './constants';
 
-export default function Sizzle(selector, context) {
+interface JTool {
+    jTool: boolean;
+}
+const Sizzle = function (selector: undefined | null | Window | Document | HTMLElement | NodeList | Array<HTMLElement> | string,
+                               context?: JTool | HTMLElement | NodeList | string): JTool {
     let DOMList = (() => {
         // selector -> undefined || null
         if (!selector) {
@@ -25,24 +29,25 @@ export default function Sizzle(selector, context) {
         }
 
         // selector: Html String
-        if (/<.+>/.test(selector)) {
-            return createDOM(selector.trim());
+        if (/<.+>/.test(selector as string)) {
+            return createDOM((selector as string).trim());
         }
 
         // 以下的selector都为 css选择器
         // selector: css selector, 仅在selector为CSS选择器时，context才会生效
         // context -> undefined
         if (!context) {
-            return rootDocument.querySelectorAll(selector);
+            return rootDocument.querySelectorAll(selector as string);
         }
 
         // context: 字符CSS选择器
         if (isString(context)) {
-            context = rootDocument.querySelectorAll(context);
+            context = rootDocument.querySelectorAll(context as string) as NodeList;
         }
 
         // context: DOM 将HTMLElement转换为数组
         if (isElement(context)) {
+            // @ts-ignore
             context = [context];
         }
 
@@ -51,10 +56,10 @@ export default function Sizzle(selector, context) {
             context = context[DOM_LIST];
         }
 
-        const list = [];
-        each(context, v => {
+        const list: Array<HTMLElement> = [];
+        each(context, (v: HTMLElement) => {
             // NodeList 只是类数组, 直接使用 concat 并不会将两个数组中的参数边接, 而是会直接将 NodeList 做为一个参数合并成为二维数组
-            each(v.querySelectorAll(selector), v2 => {
+            each(v.querySelectorAll(selector as string), (v2: HTMLElement) => {
                 v2 && list.push(v2);
             });
         });
@@ -76,4 +81,8 @@ export default function Sizzle(selector, context) {
     this.querySelector = selector;
 
     return this;
-}
+} as any as {
+    new (selector: undefined | null | Window | Document | HTMLElement | NodeList | Array<HTMLElement> | string,
+         context?: JTool | HTMLElement | NodeList | string): JTool;
+};
+export default Sizzle;
