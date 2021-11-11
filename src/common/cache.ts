@@ -690,7 +690,7 @@ export const setSettings = (settings: any): void => {
  * @param _
  * @param useFakeTh: 是否使用fake th
  */
-export const updateCache = (_: string, useFakeTh: boolean): void => {
+export const updateCache = (_: string, useFakeTh: boolean): any => {
     const settings = getSettings(_);
     const columnMap = settings.columnMap;
 

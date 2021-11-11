@@ -467,7 +467,7 @@ export const updateThWidth = (settings: any, isInit: boolean): void => {
  * @param __isNested: 是否使用多层嵌套表头
  * @returns {number}
  */
-export const getThTextWidth = (_: string, col: any, isIconFollowText: boolean, __isNested: boolean) => {
+export const getThTextWidth = (_: string, col: any, isIconFollowText: boolean, __isNested?: boolean) => {
     const getWidth = (_: string, $th: any, isIconFollowText: boolean) => {
         // th下的GridManager包裹容器
         const $thWarp = jTool('.th-wrap', $th);

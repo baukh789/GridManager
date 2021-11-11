@@ -28,7 +28,6 @@ import {
     getTable,
     getFakeThead,
     getFakeVisibleTh,
-    getColTd,
     getThTextWidth,
     updateScrollStatus,
     clearTargetEvent,
@@ -42,18 +41,16 @@ import fixed from '@module/fixed';
 import scroll from '@module/scroll';
 import { getEvent, eventMap } from './event';
 import { CLASS_ADJUST_ACTION, CLASS_ADJUST_ING } from './constants';
-
 /**
  * 执行移动事件
  * @param _
- * @param allTh: fake all th
  * @param $th: fake th
  * @param $nextTh: fake th
  * @param thMinWidth: 当前th所允许的最小宽度
  * @param thBeforeWidth: 当前th在移动前的宽度
  * @private
  */
-const runMoveEvent = (_, allTh, $th, $nextTh, thMinWidth, thBeforeWidth) => {
+const runMoveEvent = (_: string, $th: any, $nextTh: any, thMinWidth: number, thBeforeWidth: number) => {
     let thAfterWidth; // 变更后的宽度, 宽度调整中每一次调整都会更新一次这个值
     let nextThWidth = $nextTh.width(); // 位于触发宽度调整th下一个th
     const $div = getDiv(_);
@@ -64,7 +61,7 @@ const runMoveEvent = (_, allTh, $th, $nextTh, thMinWidth, thBeforeWidth) => {
 
     // 排除当前操作列与下一列的宽度
     const surplusWidth = $fakeThead.width() - nextThWidth - $th.width();
-    jTool(doing[TARGET]).on(doing[EVENTS], doing[SELECTOR], function (event) {
+    jTool(doing[TARGET]).on(doing[EVENTS], doing[SELECTOR], function (event: MouseEvent) {
         thAfterWidth = Math.ceil(event.clientX - offsetLeft);
         // 验证是否更改
         const nowThWidth = $th.width();
@@ -112,13 +109,12 @@ const runMoveEvent = (_, allTh, $th, $nextTh, thMinWidth, thBeforeWidth) => {
  * @param _
  * @param $table
  * @param $th
- * @param $td
  * @param adjustAfter
  * @private
  */
-const runStopEvent = (_, $table, $th, $td, adjustAfter) => {
+const runStopEvent = (_: string, $table: any, $th: any, adjustAfter: (e: MouseEvent) => {}) => {
     const { doing, abort } = eventMap[_];
-    jTool(abort[TARGET]).on(abort[EVENTS], event => {
+    jTool(abort[TARGET]).on(abort[EVENTS], (event: MouseEvent) => {
         jTool(abort[TARGET]).off(abort[EVENTS]);
         jTool(doing[TARGET]).off(doing[EVENTS], doing[SELECTOR]);
 
@@ -155,12 +151,12 @@ class Adjust {
      * 绑定宽度调整事件
      * @param: _
      */
-    init(_) {
+    init(_: string) {
         // 监听鼠标调整列宽度
         eventMap[_] = getEvent(_, getQuerySelector(_));
         const { start } = eventMap[_];
 
-        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (event) {
+        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (event: MouseEvent) {
             // 事件源所在的th
             const $th = jTool(this).closest('th');
             const $thWrap = $th.find('.th-wrap');
@@ -192,9 +188,6 @@ class Adjust {
             // 事件源下一个可视th
             const $nextTh = $allTh.eq($th.index($allTh) + 1);
 
-            // 存储与事件源同列的所有td
-            const $td = getColTd($th, _);
-
             // 宽度调整触发回调事件
             adjustBefore(event);
 
@@ -202,10 +195,10 @@ class Adjust {
             $table.addClass(NO_SELECT_CLASS_NAME);
 
             // 执行移动事件
-            runMoveEvent(_, $allTh.get(), $th, $nextTh, getThTextWidth(_, columnMap[getThName($th)], isIconFollowText), Math.ceil(event.clientX - $th.offset().left));
+            runMoveEvent(_, $th, $nextTh, getThTextWidth(_, columnMap[getThName($th)], isIconFollowText), Math.ceil(event.clientX - $th.offset().left));
 
             // 绑定停止事件
-            runStopEvent(_, $table, $th, $td, adjustAfter);
+            runStopEvent(_, $table, $th, adjustAfter);
         });
     }
 
@@ -213,7 +206,7 @@ class Adjust {
      * 消毁
      * @param _
      */
-    destroy(_) {
+    destroy(_: string) {
         clearTargetEvent(eventMap[_]);
     }
 }

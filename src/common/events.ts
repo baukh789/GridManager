@@ -39,7 +39,7 @@ export const SELECTOR = 'selector';
 
 
 // 获取事件对像
-export const createEventsObj = (events: string, target: string, selector: string): {
+export const createEventsObj = (events: string, target: string, selector?: string): {
     [EVENTS]: string;
     [TARGET]: string;
     [SELECTOR]: string;
