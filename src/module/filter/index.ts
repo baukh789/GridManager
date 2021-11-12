@@ -17,6 +17,14 @@ import { getEvent, eventMap } from './event';
 import { CLASS_FILTER, CLASS_FILTER_SELECTED, CLASS_FILTER_CONTENT } from './constants';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 
+interface FilterObject{
+	option: Array<{
+		value: string;
+		text: string;
+	}>;
+	selected: string;
+	isMultiple: boolean
+}
 // 选中数据使用的分隔符
 const FILTER_SELECTED_FLAG = ',';
 class Filter {
@@ -24,7 +32,7 @@ class Filter {
      * 初始化
      * @param _
      */
-    init(_) {
+    init(_: string): void {
         const _this = this;
         const $body = jTool('body');
         const tableSelector = getQuerySelector(_);
@@ -33,7 +41,7 @@ class Filter {
         const { toggle, close, submit, reset, checkboxAction, radioAction } = eventMap[_];
 
         // 事件: 切换可视状态
-        jTool(toggle[TARGET]).on(toggle[EVENTS], toggle[SELECTOR], function (e) {
+        jTool(toggle[TARGET]).on(toggle[EVENTS], toggle[SELECTOR], function (e: MouseEvent) {
             e.stopPropagation();
             e.preventDefault();
             const $allFilterCon = jTool(`${tableSelector} .${CLASS_FILTER_CONTENT}`);
@@ -44,7 +52,7 @@ class Filter {
             const $filterCon = $filterAction.find(`.${CLASS_FILTER_CONTENT}`);
 
             // 清除事件源的其它过滤体
-            each($allFilterCon, item => {
+            each($allFilterCon, (item: HTMLElement) => {
                 $filterCon.get(0) !== item ? item.style.display = 'none' : '';
             });
 
@@ -65,7 +73,7 @@ class Filter {
             }
 
             // 点击空处关闭
-            jTool(close[TARGET]).on(close[EVENTS], function (e) {
+            jTool(close[TARGET]).on(close[EVENTS], function (e: MouseEvent) {
                 const eventSource = jTool(e.target);
                 if (eventSource.hasClass(CLASS_FILTER_CONTENT) || eventSource.closest(`.${CLASS_FILTER_CONTENT}`).length === 1) {
                     return false;
@@ -83,8 +91,8 @@ class Filter {
             const $filters = jTool('.gm-radio-checkbox-input', $filterCon);
             const $th = $filterCon.closest('th');
             const thName = getThName($th);
-            const checkedList = [];
-            each($filters, item => {
+            const checkedList: Array<string> = [];
+            each($filters, (item: HTMLInputElement) => {
                 item.checked && checkedList.push(item.value);
             });
 
@@ -129,7 +137,7 @@ class Filter {
         // 事件: 单选框事件
         jTool(radioAction[TARGET]).on(radioAction[EVENTS], radioAction[SELECTOR], function () {
             const $filterRadio = jTool(this).closest('.filter-list').find('.filter-radio');
-            each($filterRadio, item => {
+            each($filterRadio, (item: HTMLInputElement) => {
                 updateRadioState(jTool(item).find('.gm-radio'), this === item.querySelector('.gm-radio-input'));
             });
         });
@@ -138,18 +146,18 @@ class Filter {
     /**
      * 表头的筛选菜单HTML
      * @param params
-     * @returns {parseData}
+     * @returns {object}
      */
     @parseTpl(filterTpl)
-    createHtml(params) {
+    createHtml(params: { settings: any, columnFilter: FilterObject }): object {
         const { settings, columnFilter } = params;
         const tableWrapHeight = getWrap(settings._).height();
         let listHtml = '';
         columnFilter.selected = columnFilter.selected || '';
         columnFilter.option.forEach(item => {
             let selectedList = columnFilter.selected.split(FILTER_SELECTED_FLAG);
-            selectedList = selectedList.map(item => {
-                return item.trim();
+            selectedList = selectedList.map((s: string) => {
+                return s.trim();
             });
 
             const parseData = {
@@ -178,10 +186,10 @@ class Filter {
      * @param $th: fake-th
      * @param filter
      */
-    update($th, filter) {
+    update($th: any, filter: FilterObject): void {
         const $filterIcon = jTool('.fa-icon', $th);
         const $filters = jTool(`.${CLASS_FILTER_CONTENT} .gm-radio-checkbox-input`, $th);
-        each($filters, item => {
+        each($filters, (item: HTMLInputElement) => {
             let $radioOrCheckbox = jTool(item).closest('.gm-radio-checkbox');
             if (filter.isMultiple) {
                 updateCheckboxState($radioOrCheckbox, filter.selected.split(FILTER_SELECTED_FLAG).includes(item.value) ? CHECKED : UNCHECKED);
@@ -197,7 +205,7 @@ class Filter {
      * 消毁
      * @param _
      */
-    destroy(_) {
+    destroy(_: string): void {
         clearTargetEvent(eventMap[_]);
     }
 }
