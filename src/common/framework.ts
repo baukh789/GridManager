@@ -108,8 +108,8 @@ export const compileTh = (settings: any, key: string, template: ThTemplate): {
  * @returns {*}
  */
 export const compileTd = (settings: any, template: TdTemplate, row: object, index: number, key: string): {
-    text: string;
-    compileAttr: string;
+	text: any; // string | HtmlElement
+	compileAttr: string;
 } => {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);

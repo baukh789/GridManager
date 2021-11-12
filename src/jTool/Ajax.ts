@@ -38,13 +38,14 @@ interface AjaxOptions {
     url?: string;
     type?: string;
     data?: object | Array<object>;
-    headers: object;
-    async: boolean;
-    xhrFields: object;
-    beforeSend: (xhr: object) => {};
-    complete: (xhr: object, status: number) => {};
-    success: (response: object, status: number) => {};
-    error: (xhr: object, status: number, statusText: string) => {};
+    headers?: object;
+    async?: boolean;
+    xhrFields?: object;
+    beforeSend?: (xhr: object) => {};
+	cache?: boolean;
+    complete?(xhr: object, status: number): any;
+    success?(response: object, status: number): any;
+    error?(xhr: object, status: number, statusText: string): any;
 }
 export default function ajax(options: AjaxOptions) {
     let { url, type, data, headers, async, xhrFields, beforeSend, complete, success, error } = extend({

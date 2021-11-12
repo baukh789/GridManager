@@ -68,7 +68,7 @@ export const getVersion = (): string => {
  * @param useSourceData: 使用原数据 或 克隆数据
  * @returns {*}
  */
-export const getRowData = (_: string, target: HTMLTableElement, useSourceData: boolean): object => {
+export const getRowData = (_: string, target: HTMLTableElement, useSourceData?: boolean): object => {
     const settings = getSettings(_);
     const tableData = getTableData(_);
     const getTrData = (tr: HTMLTableElement): object => {
@@ -478,6 +478,7 @@ export const initSettings = (arg: any, moveColumnRowFn: any, checkboxColumnFn: a
     // 合并参数
     // @ts-ignore
     let settings = new Settings();
+	// @ts-ignore
     settings.textConfig = new TextConfig();
 
     extend(true, settings, arg);
@@ -690,7 +691,7 @@ export const setSettings = (settings: any): void => {
  * @param _
  * @param useFakeTh: 是否使用fake th
  */
-export const updateCache = (_: string, useFakeTh: boolean): any => {
+export const updateCache = (_: string, useFakeTh?: boolean): any => {
     const settings = getSettings(_);
     const columnMap = settings.columnMap;
 

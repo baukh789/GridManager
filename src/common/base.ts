@@ -87,7 +87,7 @@ export const showLoading = (_: string, loadingTemplate: string): void => {
  * @param _
  * @param delayTime: 延迟时间
  */
-export const hideLoading = (_: string, delayTime: number): void => {
+export const hideLoading = (_: string, delayTime?: number): void => {
     setTimeout(() => {
         jTool(`.${LOADING_CLASS_NAME}`, getWrap(_)).remove();
     }, delayTime || 0);
@@ -262,7 +262,7 @@ export const getColTd = ($dom: any, $context: string | any) => {
  * @param thNameList: Array [thName]
  * @param isVisible: 是否可见
  */
-export const setAreVisible = (_: string, thNameList: Array<string>, isVisible: boolean): void => {
+export const setAreVisible = (_: string, thNameList: string | Array<string>, isVisible: boolean): void => {
     // 在 showTh | hideTh方法中允许传入数组
     each(isArray(thNameList) ? thNameList : [thNameList], (thName: string) => {
         const $th = getTh(_, thName);
@@ -329,7 +329,7 @@ export const updateVisibleLast = (_: string): void => {
  * @param settings
  * @param isInit: 是否为init调用
  */
-export const updateThWidth = (settings: any, isInit: boolean): void => {
+export const updateThWidth = (settings: any, isInit?: boolean): void => {
     const { _, columnMap, isIconFollowText, __isNested } = settings;
     let totalWidth = getDiv(_).width();
     let usedTotalWidth = 0;
@@ -552,7 +552,7 @@ export const getTextWidth = (_: string, content: string, cssObj: object): number
  * @param settings
  * @param noChange: 指定宽度为未变更，用于节省性能消耗
  */
-export const updateFakeThead = (settings: any, noChange: boolean): void => {
+export const updateFakeThead = (settings: any, noChange?: boolean): void => {
     const { _, columnMap } = settings;
     const $tableDiv = getDiv(_);
     if (!$tableDiv.length) {

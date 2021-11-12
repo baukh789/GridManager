@@ -92,7 +92,7 @@ export const each = (object: any, callback: any): void => {
 };
 
 // 获取节点样式
-export const getStyle = (dom: HTMLElement, key: string): string => {
+export const getStyle = (dom: Element, key: string): string => {
     return getComputedStyle(dom)[key];
 };
 
