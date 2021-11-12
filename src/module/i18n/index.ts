@@ -10,7 +10,7 @@ import { outWarn } from '@common/utils';
  * @param key 键值
  * @returns {*|string}
  */
-const getText = (settings, key) => {
+const getText = (settings: any, key: string): string => {
     return settings.textConfig[key][settings.i18n];
 };
 
@@ -24,8 +24,8 @@ const getText = (settings, key) => {
  * @returns {string}
  */
 /* eslint-disable */
-export default function(settings, key, v1, v2, v3) {
-    let intrusion = [];
+export default function(settings: any, key: string, v1?: number | string | Array<string | number>, v2?: number | string, v3?: number | string) {
+    let intrusion: Array<string> = [];
     const len = arguments.length;
     // 处理参数，实现多态化
     if (len === 3 && isArray(arguments[2])) {
@@ -44,7 +44,8 @@ export default function(settings, key, v1, v2, v3) {
 
         // 更换包含{}的文本
         return _text.replace(/{\d+}/g, word => {
-            const _v = intrusion[word.match(/\d+/)];
+            // @ts-ignore
+			const _v = intrusion[word.match(/\d+/)];
             return isUndefined(_v) ? '' : _v;
         });
     } catch (e) {
