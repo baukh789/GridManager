@@ -15,11 +15,31 @@ import { getEvent, eventMap } from './event';
 import { CLASS_CONFIG, CLASS_CONFIG_ING, CLASS_NO_CLICK } from './constants';
 import { EVENTS, TARGET, SELECTOR } from '@common/events';
 
+// column
+interface Column {
+	key: string;
+	index: number;
+	isShow: boolean;
+}
+
+// 配置区域模板参数
+interface ConfigHtmlParams{
+	_: string;
+	configInfo: object;
+}
+
+// 列模板参数
+interface ColHtmlParams{
+	key: string;
+	isShow: boolean;
+	label: object;
+}
+
 /**
  * 获取config 的 jtool对像
  * @param _
  */
-const getDOM = _ => {
+const getDOM = (_: string): any => {
     return jTool(`[${CONFIG_KEY}="${_}"]`);
 };
 
@@ -27,7 +47,7 @@ const getDOM = _ => {
  * 更新配置列表区的高度: 用于解决 config-list 无法继承 gm-config-area 设置的 max-height问题
  * @param _
  */
-export const updateConfigListHeight = _ => {
+export const updateConfigListHeight = (_: string): void => {
     const $tableWrap = getWrap(_);
     const $configArea = getDOM(_);
     const configList = $configArea.find('.config-list').get(0);
@@ -46,7 +66,7 @@ class Config {
      * 初始化配置列[隐藏展示列]
      * @param _
      */
-    init(_) {
+    init(_: string): void {
         const _this = this;
         eventMap[_] = getEvent(_);
         const { closeConfig, liChange } = eventMap[_];
@@ -58,7 +78,7 @@ class Config {
         });
 
         // 事件: 设置
-        jTool(liChange[TARGET]).on(liChange[EVENTS], liChange[SELECTOR], function (e) {
+        jTool(liChange[TARGET]).on(liChange[EVENTS], liChange[SELECTOR], function (e: MouseEvent) {
             e.preventDefault();
 
             // 单个的设置项
@@ -109,21 +129,21 @@ class Config {
      * 更新配置区域列表
      * @param _
      */
-    updateConfigList(_) {
+    updateConfigList(_: string): void {
         const $configArea = getDOM(_);
         const $configList = jTool('.config-list', $configArea);
 
         // 可视列计数
         let showNum = 0;
 
-        const columnList = [];
-        each(getSettings(_).columnMap, (key, col) => {
+        const columnList: Array<Column> = [];
+        each(getSettings(_).columnMap, (key: string, col: Column) => {
             columnList[col.index] = col;
         });
 
         // 重置列的可视操作
         $configList.html('');
-        each(columnList, col => {
+        each(columnList, (col: Column) => {
             const { key, isShow } = col;
             if (col[DISABLE_CUSTOMIZE]) {
                 return;
@@ -145,7 +165,7 @@ class Config {
      * 对项配置成功后，通知相关组件进行更新
      * @param _
      */
-    update(_) {
+    update(_: string): void {
         // 执行前，先对当前的columnMap进行更新
         let settings = updateCache(_);
         getDiv(_).scrollLeft(0);
@@ -175,7 +195,7 @@ class Config {
 	 * @returns {}
      */
 	@parseTpl(configTpl)
-	createHtml(params) {
+	createHtml(params: ConfigHtmlParams): object {
 	    return {
 	        key: `${CONFIG_KEY}="${params._}"`,
             info: params.configInfo
@@ -187,7 +207,7 @@ class Config {
      * @param params{key, key, isShow}
      * @returns {string}
      */
-    createColumn(params) {
+    createColumn(params: ColHtmlParams): string {
         const { key, isShow, label } = params;
 
         const checkboxTpl = checkbox.getCheckboxTpl({checked: isShow, label});
@@ -199,7 +219,7 @@ class Config {
 	 * @param _
 	 * @returns {boolean}
 	 */
-	toggle(_) {
+	toggle(_: string): void {
         getDOM(_).css('display') === 'block' ?  this.hide(_) : this.show(_);
 	}
 
@@ -207,7 +227,7 @@ class Config {
      * 显示配置区域
      * @param _
      */
-	show(_) {
+	show(_: string): void {
         const $configArea = getDOM(_);
 
         this.updateConfigList(_);
@@ -219,7 +239,7 @@ class Config {
         // 点击空处关闭
         const $target = jTool(closeConfigByBody[TARGET]);
         $target.off(events);
-        $target.on(events, function (e) {
+        $target.on(events, function (e: MouseEvent) {
             const eventSource = jTool(e.target);
             if (eventSource.hasClass(CLASS_CONFIG) || eventSource.closest(`.${CLASS_CONFIG}`).length === 1) {
                 return false;
@@ -233,7 +253,7 @@ class Config {
      * 隐藏配置区域
      * @param _
      */
-    hide(_) {
+    hide(_: string): void {
         getDOM(_).hide();
     }
 
@@ -241,7 +261,7 @@ class Config {
 	 * 消毁
 	 * @param _
 	 */
-	destroy(_) {
+	destroy(_: string): void {
         // 清除事件
         clearTargetEvent(eventMap[_]);
 	}
