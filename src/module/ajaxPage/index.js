@@ -462,38 +462,6 @@ class AjaxPage {
     }
 
 	/**
-	 * 跳转至指定页
-	 * @param settings
-	 * @param now 跳转页
-	 */
-	gotoPage(settings, now) {
-		if (!now || now < 1) {
-            now = 1;
-		}
-
-		const { _, useNoTotalsMode, currentPageKey, pageData, pageSize, pageSizeKey, sortData, query, pagingBefore, pagingAfter } = settings;
-		const { tPage } = pageData;
-		// 未使用使用无总条数模式 且 跳转的指定页大于总页数时，强制跳转至最后一页
-		if (!useNoTotalsMode && now > tPage) {
-            now = tPage;
-		}
-
-		// 替换被更改的值
-		pageData[currentPageKey] = now;
-		pageData[pageSizeKey] = pageData[pageSizeKey] || pageSize;
-
-		// 更新缓存
-		setSettings(settings);
-
-		// 调用事件、渲染DOM
-		const newQuery = extend({}, query, sortData, pageData);
-		pagingBefore(newQuery);
-		core.refresh(_, () => {
-			pagingAfter(newQuery);
-		});
-	}
-
-	/**
 	 * 消毁
 	 * @param _
 	 */
