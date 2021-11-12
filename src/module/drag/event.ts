@@ -6,7 +6,7 @@
 import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { MOUSE_DOWN, MOUSE_MOVE, MOUSE_UP, createEventsObj } from '@common/events';
 import { CLASS_DRAG_ACTION } from './constants';
-export const getEvent = (_, scope) => {
+export const getEvent = (_: string, scope: string): object => {
     return {
         // 开始
         start: createEventsObj(MOUSE_DOWN, scope, `[${FAKE_TABLE_HEAD_KEY}="${_}"] .${CLASS_DRAG_ACTION}`),

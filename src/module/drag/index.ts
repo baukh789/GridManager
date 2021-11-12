@@ -35,7 +35,7 @@ class Drag {
 	 * 初始化拖拽
 	 * @param _
      */
-	init(_) {
+	init(_: string): void {
         const _this = this;
         const $table = getTable(_);
         const $body = jTool('body');
@@ -43,7 +43,7 @@ class Drag {
         const { start, doing, abort } = eventMap[_];
 
         // 拖拽事件仅绑在fake head th
-        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (event) {
+        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (event: MouseEvent) {
             // 获取设置项
             let settings = getSettings(_);
 
@@ -104,7 +104,7 @@ class Drag {
             // 绑定拖拽滑动事件
             const $doing = jTool(doing[TARGET]);
             $doing.off(doing[EVENTS]);
-            $doing.on(doing[EVENTS], function (e2) {
+            $doing.on(doing[EVENTS], function (e2: MouseEvent) {
                 $dreamlandDIV.show(); // 放在mousemove中是为了解决仅双击不移动时列从底部闪现问题
                 thIndex = $th.index($allFakeVisibleTh);
                 // 事件源的上一个th
@@ -146,7 +146,7 @@ class Drag {
             const abortEvents = abort[EVENTS];
             const $abort = jTool(abort[TARGET]);
             $abort.off(abortEvents);
-            $abort.on(abortEvents, function (event) {
+            $abort.on(abortEvents, function (event: MouseEvent) {
                 jTool(doing[TARGET]).off(doing[EVENTS]);
                 $abort.off(abortEvents);
 
@@ -189,7 +189,7 @@ class Drag {
      * @returns {parseData}
      */
 	@parseTpl(dreamlandTpl)
-    createHtml(params) {
+    createHtml(params: any): object {
 	    const { $table, $th } = params;
 
 	    // 这里获取的tdList排除了tree children
@@ -197,7 +197,7 @@ class Drag {
 
 	    // tbody内容：将原tr与td上的属性一并带上，解决一部分样式问题
         let tbodyHtml = '';
-        each($colTd, v => {
+        each($colTd, (v: HTMLTableCellElement) => {
             tbodyHtml += `<tr style="height: ${v.offsetHeight + PX}">${v.outerHTML}</tr>`;
         });
 
@@ -209,7 +209,7 @@ class Drag {
     }
 
 	/**
-	 * 拖拽触发后更新DOM
+	 * 拖拽触发后更新DOM, ts中的any都是jtool类型
 	 * @param _
 	 * @param $prevTh
 	 * @param $nextTh
@@ -218,13 +218,13 @@ class Drag {
 	 * @param $dreamlandDIV
 	 * @param $allFakeVisibleTh
 	 */
-	updateDrag(_, $prevTh, $nextTh, $th, $colTd, $dreamlandDIV, $allFakeVisibleTh) {
+	updateDrag(_: string, $prevTh: any, $nextTh: any, $th: any, $colTd: any, $dreamlandDIV: any, $allFakeVisibleTh: any): any {
 		// 处理向左拖拽
 		if ($prevTh && $dreamlandDIV.offset().left < $prevTh.offset().left) {
             // 事件源对应的上一组td
 		    let prevTd = getColTd($prevTh, _);
             $prevTh.before($th);
-			each($colTd, (v, i) => {
+			each($colTd, (v: HTMLTableCellElement, i: number) => {
 				prevTd.eq(i).before(v);
 			});
 
@@ -241,7 +241,7 @@ class Drag {
             // 事件源对应的下一组td
 		    let nextTd = getColTd($nextTh, _);
 			$nextTh.after($th);
-			each($colTd, (v, i) => {
+			each($colTd, (v: HTMLTableCellElement, i: number) => {
 				nextTd.eq(i).after(v);
 			});
 
@@ -261,7 +261,7 @@ class Drag {
 	 * 消毁
 	 * @param _
 	 */
-	destroy(_) {
+	destroy(_: string): void {
         clearTargetEvent(eventMap[_]);
 	}
 }
