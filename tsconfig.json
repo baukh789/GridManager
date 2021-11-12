@@ -1,14 +1,16 @@
 {
+  	// API: https://www.tslang.cn/docs/handbook/compiler-options.html
     "compilerOptions": {
-        "experimentalDecorators": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "noImplicitAny": true,
-        "noEmitOnError": true,
-        "outDir": "./dist/",
-        "module": "es6",
-        "target": "es6",
-        "allowJs": true,
-        "moduleResolution": "node",
+        "experimentalDecorators": true, // 启用实验性的ES装饰器。
+        "suppressImplicitAnyIndexErrors": true, // 阻止 --noImplicitAny对缺少索引签名的索引对象报错
+        "noImplicitAny": true, // 在表达式和声明上有隐含的 any类型时报错。
+        "noEmitOnError": true, // 发生错误时不输出文件
+        "outDir": "./dist/", // 重定向输出目录。
+	  	"target": "ES2017", // 指定 ECMAScript 的目标版本:
+        "module": "ES2015", // 指定模块代码的生成方式
+        "allowJs": true, // 允许编译javascript文件。
+        "moduleResolution": "node", // 决定如何处理模块。
+	  	"sourceMap": true, // 生成相应的 .map文件。
         "baseUrl": "./",
         "paths": {
             "@*": ["./src/*", "./typings/*"]
