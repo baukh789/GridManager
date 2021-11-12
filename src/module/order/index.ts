@@ -7,11 +7,9 @@ import './style.less';
 class Order {
 	/**
 	 * 获取序号列对象
-	 * @param $table
-	 * @param language
-	 * @returns {{key: string, name: (*|string), isShow: boolean, width: string, align: string}}
+	 * @param settings
      */
-	getColumn(settings) {
+	getColumn(settings: any): object {
 	    const { autoOrderConfig } = settings;
 		return {
 			key: ORDER_KEY,
@@ -22,7 +20,7 @@ class Order {
 			width: autoOrderConfig.width,
             fixed: autoOrderConfig.fixed,
 			// align: 'center',  // 调整为由样式控制
-			template: (order, row, index, isTop) => {
+			template: (order: string, row: object, index: number, isTop: boolean) => {
 				return `<td ${GM_CREATE} gm-order>${isTop ? order : ''}</td>`;
 			}
 		};
