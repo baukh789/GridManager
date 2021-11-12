@@ -5,7 +5,7 @@
  */
 import { MOUSE_DOWN, createEventsObj } from '@common/events';
 
-export const getEvent = (_, scope) => {
+export const getEvent = (_: string, scope: string): object => {
     return {
         // 触焦事件
         fixedFocus: createEventsObj(MOUSE_DOWN, scope, 'td[fixed]')

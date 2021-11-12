@@ -28,6 +28,22 @@ import { getEvent, eventMap } from './event';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import './style.less';
 
+// column
+interface Column {
+	key: string;
+	index: number;
+	isShow: boolean;
+	width: number;
+	pk?: string;
+	children?: Array<Column>;
+	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
+	isAutoCreate: boolean;
+	align: string;
+	fixed: string;
+	pl: number; // 仅在fixed中使用
+	pr: number; // 仅在fixed中使用
+}
+
 const LEFT = 'left';
 const RIGHT = 'right';
 const SHADOW_COLOR = '#e8e8e8';
@@ -38,7 +54,7 @@ const SHADOW_COLOR = '#e8e8e8';
  * @param index
  * @param directionValue
  */
-const setDirectionValue = (_, style, index, directionValue) => {
+const setDirectionValue = (_: string, style: CSSStyleDeclaration, index: number, directionValue: number): void => {
     style.setProperty(`--gm-${_}-${index}-sticky-value`, directionValue + PX);
 };
 
@@ -50,7 +66,7 @@ const setDirectionValue = (_, style, index, directionValue) => {
  * @param shadowValue
  * @returns {string}
  */
-const getStickyCss = (_, index, direction, shadowValue) => {
+const getStickyCss = (_: string, index: number, direction: string, shadowValue: string): string => {
     return `[${DIV_KEY}="${_}"][gm-overflow-x="true"] tr:not([${EMPTY_TPL_KEY}]) td:nth-of-type(${index + 1}){`
            + 'position: sticky;\n'
            + 'position: -webkit-sticky;\n' // 解决safari兼容问题
@@ -72,9 +88,9 @@ const FIXED_FOCUS_FLAG = 'fixed-focus';
 class Fixed {
     /**
      * 生成td固定列样式: 通过添加style的方式比修改td的dom性能会高
-     * @param _
+     * @param settings
      */
-    init(settings) {
+    init(settings: any): void {
         const { _, browser, columnMap } = settings;
 
         const $tableDiv = getDiv(_);
@@ -102,9 +118,9 @@ class Fixed {
 
         let pl = 0;
         let pr = 0;
-        const leftList = [];
-        const rightList = [];
-        each(columnMap, (key, col) => {
+        const leftList: Array<Column> = [];
+        const rightList: Array<Column> = [];
+        each(columnMap, (key: string, col: Column) => {
             if (col.fixed === 'left') {
                leftList.push(col);
            }
@@ -115,7 +131,7 @@ class Fixed {
         const leftLen = leftList.length;
         let shadowValue = 'none';
         FIXED_LEFT_MAP[_] = leftList.sort((a, b) => a.index - b.index);
-        each(FIXED_LEFT_MAP[_], (col, index) => {
+        each(FIXED_LEFT_MAP[_], (col: Column, index: number) => {
             const $fakeTh = getFakeTh(_, col.key);
             if (index === leftLen - 1) {
                 shadowValue = `2px 0 4px ${SHADOW_COLOR}`;
@@ -139,7 +155,7 @@ class Fixed {
         shadowValue = 'none';
         const rightLen = rightList.length;
         FIXED_RIGHT_MAP[_] = rightList.sort((a, b) => b.index - a.index);
-        FIXED_RIGHT_MAP[_].forEach((col, index) => {
+        FIXED_RIGHT_MAP[_].forEach((col: Column, index: number) => {
             const $fakeTh = getFakeTh(_, col.key);
             if (index === rightLen - 1) {
                 shadowValue = `-2px 0 4px ${SHADOW_COLOR}`;
@@ -165,7 +181,7 @@ class Fixed {
      * 渲染fake thead: 是fake thead使用了绝对定位，在th使用sticky时，需要实时修正left | right值
      * @param _
      */
-    update(_) {
+    update(_: string): void {
         const $tableDiv = getDiv(_);
         const tableDivStyle = $tableDiv.get(0).style;
         const scrollLeft = $tableDiv.scrollLeft();
@@ -189,7 +205,7 @@ class Fixed {
         };
 
         const overFlow = getDiv(_).attr('gm-overflow-x') === 'true';
-        const getThWidth = (_, col) => {
+        const getThWidth = (_: string, col: Column): number => {
             if (overFlow) {
                 return getTh(_, col.key).width();
             }
@@ -200,7 +216,7 @@ class Fixed {
         if (FIXED_LEFT_MAP[_] && FIXED_LEFT_MAP[_].length) {
             let pl = 0;
             let width;
-            each(FIXED_LEFT_MAP[_], col => {
+            each(FIXED_LEFT_MAP[_], (col: Column) => {
                 // 不直接使用col的原因: 浏览器缩放时，固定列不会跟随变更
                 width = getThWidth(_, col);
                 getFakeTh(_, col.key).css({
@@ -225,7 +241,7 @@ class Fixed {
 
             let pr = 0;
             let width;
-            FIXED_RIGHT_MAP[_].forEach(col => {
+            FIXED_RIGHT_MAP[_].forEach((col: Column) => {
                 // 不直接使用col的原因: 浏览器缩放时，固定列不会跟随变更
                 width = getThWidth(_, col);
                 getFakeTh(_, col.key).css({
@@ -243,7 +259,7 @@ class Fixed {
      * 更新right fixed previous标识
      * @param _
      */
-    resetFlag(_) {
+    resetFlag(_: string): void {
         // 当前不存在 right fixed
         if (!FIXED_RIGHT_MAP[_] || !FIXED_RIGHT_MAP[_].length) {
             return;
@@ -262,7 +278,7 @@ class Fixed {
      * 消毁
      * @param _
      */
-    destroy(_) {
+    destroy(_: string): void {
         delete FIXED_LEFT_MAP[_];
         delete FIXED_RIGHT_MAP[_];
         clearTargetEvent(eventMap[_]);
