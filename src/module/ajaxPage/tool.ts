@@ -1,11 +1,17 @@
 import { TOOLBAR_KEY } from '@common/constants';
 
+interface PageData {
+	tPage: number | string;
+	tSize: number | string;
+	cPage?: number | string; // 动态取值[currentPageKey]
+	pSize?: number | string; // 动态取值[pageSizeKey]
+}
 /**
  * 获取选择器
  * @param _
  * @returns {string}
  */
-export const getQuerySelector = _ => {
+export const getQuerySelector = (_: string): string => {
     return `[${TOOLBAR_KEY}="${_}"]`;
 };
 
@@ -15,7 +21,7 @@ export const getQuerySelector = _ => {
  * @param pageData 分页数据格式
  * @private
  */
-export const joinPaginationNumber = (currentPageKey, pageData) => {
+export const joinPaginationNumber = (currentPageKey: string, pageData: PageData): string => {
     // 当前页
     let cPage = Number(pageData[currentPageKey] || 0);
 
@@ -67,7 +73,7 @@ export const joinPaginationNumber = (currentPageKey, pageData) => {
  * @returns {{tPage: number, cPage: *, pSize: *, tSize: *}}
  * @private
  */
-export const getPageData = (settings, totals, len) => {
+export const getPageData = (settings: any, totals: number, len: number): PageData => {
     const { pageData, pageSizeKey, pageSize, currentPageKey } = settings;
     const pSize = pageData[pageSizeKey] || pageSize;
     const cPage = pageData[currentPageKey] || 1;

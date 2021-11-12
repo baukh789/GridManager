@@ -1,12 +1,12 @@
-/**
- * 分页功能所需的事件项
- * @param gridManagerName
- * @param scope: querySelector 域
- */
 import { TOOLBAR_KEY } from '@common/constants';
 import { KEY_UP, MOUSE_CLICK, createEventsObj } from '@common/events';
-export const getEvent = gridManagerName => {
-    const target = `[${TOOLBAR_KEY}="${gridManagerName}"]`;
+
+/**
+ * 分页功能所需的事件项
+ * @param _
+ */
+export const getEvent = (_: string): object => {
+    const target = `[${TOOLBAR_KEY}="${_}"]`;
     return {
         // 快捷跳转
         input: createEventsObj(KEY_UP, target, '.gp-input'),
