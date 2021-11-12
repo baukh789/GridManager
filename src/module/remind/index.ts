@@ -11,11 +11,17 @@ import remindTpl from './remind.tpl.html';
 import { getEvent, eventMap } from './event';
 import { TARGET, EVENTS, SELECTOR, MOUSE_LEAVE } from '@common/events';
 
+// 配置信息
+interface ConfigInfo {
+	text: string;
+	position: string;
+}
+
 /**
  * 删除tr上的Remind
  * @param _
  */
-export const removeTooltip = _ => {
+export const removeTooltip = (_: string): void => {
     const $trRemind = getDiv(_).find('.gm-tooltip');
     if ($trRemind.length) {
         $trRemind.remove();
@@ -27,7 +33,7 @@ export const removeTooltip = _ => {
  * @param dom: tr 或 td
  * @param conf: 配置信息
  */
-export const tooltip = (_, dom, conf, callback) => {
+export const tooltip = (_: string, dom: HTMLTableCellElement, conf: ConfigInfo, callback: any): void => {
     if (!isObject(conf)) {
         return;
     }
@@ -64,7 +70,7 @@ class Remind {
      * 初始化表头提醒
      * @param _
      */
-    init(_) {
+    init(_: string): void {
         eventMap[_] = getEvent(_, `${getQuerySelector(_)} [${FAKE_TABLE_HEAD_KEY}]`);
         const { start } = eventMap[_];
 
@@ -85,7 +91,7 @@ class Remind {
      * @returns {string}
      */
     @parseTpl(remindTpl)
-	createHtml(params) {
+	createHtml(params: any): object {
         const { remind } = params;
         let styleStr = '';
         let text = '';
@@ -112,7 +118,7 @@ class Remind {
 	 * 消毁
 	 * @param _
 	 */
-	destroy(_) {
+	destroy(_: string): void {
 	    clearTargetEvent(eventMap[_]);
         removeTooltip(_);
 	}

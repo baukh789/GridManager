@@ -8,12 +8,12 @@
 import { REMIND_CLASS, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { MOUSE_OVER, MOUSE_LEAVE, createEventsObj } from '@common/events';
 
-export const getEvent = (gridManagerName, scope) => {
+export const getEvent = (_: string, scope: string): object => {
     return {
         // 触发 #001
-        start: createEventsObj(MOUSE_OVER, scope, `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .${REMIND_CLASS}`),
+        start: createEventsObj(MOUSE_OVER, scope, `[${FAKE_TABLE_HEAD_KEY}="${_}"] .${REMIND_CLASS}`),
 
-        tooltipLeave: createEventsObj(MOUSE_LEAVE, scope, `[${FAKE_TABLE_HEAD_KEY}="${gridManagerName}"] .${REMIND_CLASS}`)
+        tooltipLeave: createEventsObj(MOUSE_LEAVE, scope, `[${FAKE_TABLE_HEAD_KEY}="${_}"] .${REMIND_CLASS}`)
     };
 };
 
