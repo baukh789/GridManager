@@ -15,7 +15,7 @@ import { GM_CREATE, CELL_HIDDEN } from '@common/constants';
  * @param query: 查询参数
  * @param exportConfig: 配置信息
  */
-const getFileName = (_, fileName, query, exportConfig) => {
+const getFileName = (_: string, fileName: string, query: object, exportConfig: any): string => {
     // 未存在指定下载名称时, 使用exportConfig.fileName
     if (!fileName) {
         const confName = exportConfig.fileName;
@@ -35,7 +35,7 @@ const getFileName = (_, fileName, query, exportConfig) => {
  * @param fileName
  * @param href
  */
-const dispatchDownload = (fileName, href) => {
+const dispatchDownload = (fileName: string, href: string): void => {
     const a = rootDocument.createElement('a');
     a.addEventListener('click', () => {
         a.download = fileName;
@@ -54,7 +54,7 @@ class ExportFile {
 	 * @returns {boolean}
      * @private
      */
-	async exportGrid(_, fileName, onlyChecked) {
+	async exportGrid(_: string, fileName: string, onlyChecked: boolean): Promise<any> {
 	    const settings = getSettings(_);
 	    const { query, disableAutoLoading, loadingTemplate, exportConfig, pageData, sortData } = settings;
 
@@ -91,10 +91,10 @@ class ExportFile {
      * @param onlyChecked
      * @returns {boolean}
      */
-	downStatic(_, disableAutoLoading, loadingTemplate, fileName, onlyChecked, suffix, exportHandler, query, pageData, sortData, selectedList, tableData) {
+	downStatic(_: string, disableAutoLoading: boolean, loadingTemplate: string, fileName: string, onlyChecked: boolean, suffix: string, exportHandler: any, query: object, pageData: object, sortData: object, selectedList: Array<object>, tableData: Array<object>): void {
         !disableAutoLoading && showLoading(_, loadingTemplate);
 
-        let tableList = exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
+        let tableList: Array<Array<string>> = exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
 
         // exportHandler 未返回数组表示当前exportHandler未被配置
         if (!isArray(tableList)) {
@@ -109,17 +109,17 @@ class ExportFile {
             }
             tableList = [];
             // 存储导出的thead
-            const thList = [];
-            each(thDOM, v => {
+            const thList: Array<string> = [];
+            each(thDOM, (v: HTMLTableCellElement) => {
                 thList.push(`"${v.querySelector('.th-text').textContent || ''}"`);
             });
             tableList.push(thList);
 
             // 存储导出的tbody
-            each(trDOM, v => {
-                let tdList = [];
+            each(trDOM, (v: HTMLTableCellElement) => {
+                let tdList: Array<string> = [];
                 const tdDOM = jTool(`td:not([${GM_CREATE}]):not([${CELL_HIDDEN}])`, v);
-                each(tdDOM, v2 => {
+                each(tdDOM, (v2: HTMLTableCellElement) => {
                     tdList.push(`"${v2.textContent || ''}"`); // 添加""的原因: 规避内容中英文逗号被识别为分割单元格的标识
                 });
                 tableList.push(tdList);
@@ -127,7 +127,7 @@ class ExportFile {
         }
 
         let exportHTML = '';
-        each(tableList, (v, i) => {
+        each(tableList, (v: Array<string>, i: number) => {
             if (i !== 0) {
                 exportHTML += '\r\n';
             }
@@ -155,7 +155,7 @@ class ExportFile {
      * @param selectedList
      * @returns {Promise<void>}
      */
-    async downFilePath(_, disableAutoLoading, loadingTemplate, fileName, exportHandler, pageData, sortData, selectedList) {
+    async downFilePath(_: string, disableAutoLoading: boolean, loadingTemplate: string, fileName: string, exportHandler: any, pageData: object, sortData: object, selectedList: Array<object>): Promise<any> {
         try {
             !disableAutoLoading && showLoading(_, loadingTemplate);
             const res = await exportHandler(fileName, pageData, sortData, selectedList);
@@ -179,7 +179,7 @@ class ExportFile {
      * @param sortData: 排序信息
      * @param selectedList: 当前选中的列表
      */
-    async downBlob(_, disableAutoLoading, loadingTemplate, fileName, exportHandler, query, pageData, sortData, selectedList, tableData) {
+    async downBlob(_: string, disableAutoLoading: boolean, loadingTemplate: string, fileName: string, exportHandler: any, query: object, pageData: object, sortData: object, selectedList: Array<object>, tableData: Array<object>): Promise<any> {
         try {
             !disableAutoLoading && showLoading(_, loadingTemplate);
 
