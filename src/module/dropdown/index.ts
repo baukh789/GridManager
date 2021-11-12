@@ -12,7 +12,7 @@ class Dropdown {
      * 初始化下拉框
      * @param _
      */
-    init({ _, defaultValue = '', onChange }) {
+    init({ _, defaultValue = '', onChange }: { _: string, defaultValue: string, onChange: any}): void {
         eventMap[_] = getEvent(`[${TOOLBAR_KEY}="${_}"]`);
         const { open, close, selected } = eventMap[_];
 
@@ -23,7 +23,7 @@ class Dropdown {
         $text.text(defaultValue);
 
         // 事件: 展示状态
-        jTool(open[TARGET]).on(open[EVENTS], open[SELECTOR], function (e) {
+        jTool(open[TARGET]).on(open[EVENTS], open[SELECTOR], function (e: MouseEvent) {
             e.stopPropagation();
             // 事件: 关闭
             const $close = jTool(close[TARGET]);
@@ -62,10 +62,10 @@ class Dropdown {
      * @returns {{liStr: string}}
      */
     @parseTpl(dropdownTpl)
-    createHtml(params) {
+    createHtml(params: any): object {
         const { sizeData } = params;
         let liStr = '';
-        sizeData.forEach(item => {
+        sizeData.forEach((item: number) => {
             liStr += `<li value="${item}">${item}</li>`;
         });
 
@@ -78,7 +78,7 @@ class Dropdown {
      * 消毁
      * @param _
      */
-    destroy(_) {
+    destroy(_: string): void {
         clearTargetEvent(eventMap[_]);
     }
 }

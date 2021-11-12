@@ -4,7 +4,7 @@
  */
 import { MOUSE_CLICK, createEventsObj } from '@common/events';
 
-export const getEvent = scope => {
+export const getEvent = (scope: string): object => {
     return {
         // 切换展示状态
         open: createEventsObj(MOUSE_CLICK, scope, '.gm-dropdown .gm-dropdown-text'),
