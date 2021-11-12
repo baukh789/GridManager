@@ -10,6 +10,19 @@ import wrapTpl from './wrap.tpl.html';
 import theadTpl from './thead.tpl.html';
 import thTpl from './th.tpl.html';
 
+// column
+interface Column {
+	key: string;
+	index: number;
+	isShow: boolean;
+	pk?: string;
+	children?: Array<Column>;
+	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
+	isAutoCreate: boolean;
+	align: string;
+	fixed: string;
+}
+
 /**
  * 生成构建时所需要的模板
  */
@@ -20,7 +33,7 @@ class Render {
      * @returns {}
      */
     @parseTpl(wrapTpl)
-    createWrapTpl(params) {
+    createWrapTpl(params: { settings: any }): object {
         const settings = params.settings;
         const { _, skinClassName, isIconFollowText, disableBorder, disableLine, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
         const wrapClassList = ['table-wrap'];
@@ -58,27 +71,27 @@ class Render {
      * @returns {}
      */
     @parseTpl(theadTpl)
-    createTheadTpl(params) {
+    createTheadTpl(params: any): object {
         const settings = params.settings;
         const { columnMap, _, __isNested } = settings;
 
-        const columnList = [[]];
+        const columnList: Array<Array<Column>> = [[]];
         const topList = columnList[0];
 
         // 多层嵌套，进行递归处理
         if (__isNested) {
             nested.push(columnMap, columnList);
         } else {
-            each(columnMap, (key, col) => {
+            each(columnMap, (key: string, col: Column) => {
                 topList[col.index] = col;
             });
         }
 
         let thListTpl = '';
         // columnList 生成thead
-        each(columnList, list => {
+        each(columnList, (list: Array<Column>) => {
             thListTpl += '<tr>';
-            each(list, col => {
+            each(list, (col: Column) => {
                 thListTpl += this.createThTpl({settings, col});
             });
             thListTpl += '</tr>';
@@ -96,7 +109,7 @@ class Render {
      * @returns {}
      */
     @parseTpl(thTpl)
-    createThTpl(params) {
+    createThTpl(params: any): object {
         const { settings, col } = params;
         const { query, supportDrag, sortData, sortUpText, sortDownText } = settings;
 

@@ -5,7 +5,7 @@
 import { MOUSE_MOVE, MOUSE_CLICK, createEventsObj, MOUSE_DOWN } from '@common/events';
 import { TR_CACHE_KEY } from '@common/constants';
 
-export const getEvent = scope => {
+export const getEvent = (scope: string): object => {
     const tr = `tr[${TR_CACHE_KEY}]`;
     const td = `tr[${TR_CACHE_KEY}] td`;
     return {

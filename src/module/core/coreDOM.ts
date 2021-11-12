@@ -33,11 +33,31 @@ import { installSummary } from '../summary';
 import { getEvent, eventMap } from './event';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import { sendCompile, compileTd } from '@common/framework';
+
+// column
+interface Column {
+	key: string;
+	index: number;
+	isShow: boolean;
+	pk?: string;
+	children?: Array<Column>;
+	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
+	isAutoCreate: boolean;
+	align: string;
+	fixed: string;
+}
+
+// 生成过程中的tr对像存储器
+interface TrObject {
+	className: Array<string>,
+	attribute: Array<string>,
+	tdList: Array<string>
+}
 /**
  * core dom
  */
 class Dom {
-    init($table, settings) {
+    init($table: any, settings: any): void {
         const { _, useWordBreak, lineHeight } = settings;
         // add wrap div
         $table.wrap(render.createWrapTpl({ settings }), '.table-div');
@@ -68,14 +88,14 @@ class Dom {
      * 重绘thead
      * @param settings
      */
-    redrawThead(settings) {
+    redrawThead(settings: any): void {
         const { _, columnMap, sortUpText, sortDownText, supportAdjust } = settings;
         // 单个table下的TH
         const $thList = getAllTh(_);
 
         // 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
         // 单个TH下的上层DIV
-        each($thList, item => {
+        each($thList, (item: HTMLTableElement) => {
             const onlyTH = jTool(item);
             const onlyThWarp = jTool('.th-wrap', onlyTH);
             const thName = onlyTH.attr(TH_NAME);
@@ -126,7 +146,7 @@ class Dom {
      * @param settings
      * @param data
      */
-    async renderTableBody(settings, data) {
+    async renderTableBody(settings: any, data: Array<object>): Promise<any> {
         const {
             _,
             columnMap,
@@ -150,19 +170,19 @@ class Dom {
         tbody.innerHTML = '';
 
         // 存储tr对像列表
-        let trObjectList = [];
+        let trObjectList: Array<TrObject> = [];
 
         // 通过index对columnMap进行排序
-        const topList = [];
-        const columnList = [];
-        each(columnMap, (key, col) => {
+        const topList: Array<Column> = [];
+        const columnList: Array<Column> = [];
+        each(columnMap, (key: string, col: Column) => {
             if (!col.pk) {
                 topList[col.index] = col;
             }
         });
 
-        const pushList = list => {
-            each(list, col => {
+        const pushList = (list: Array<Column>) => {
+            each(list, (col: Column) => {
                 if (!isValidArray(col.children)) {
                     columnList.push(col);
                     return;
@@ -173,19 +193,18 @@ class Dom {
         pushList(topList);
 
         // 插入常规的TR
-        const installNormal = (trObject, row, rowIndex, isTop) => {
+        const installNormal = (trObject: TrObject, row: object, rowIndex: number, isTop: boolean): void => {
             // 与当前位置信息匹配的td列表
 
             const tdList = trObject.tdList;
-            each(columnList, col => {
+            each(columnList, (col: Column) => {
                 const tdTemplate = col.template;
-
                 if (col.isAutoCreate) {
                     tdList.push(tdTemplate(row[col.key], row, rowIndex, isTop));
                     return;
                 }
 
-                let { text, compileAttr } = compileTd(settings, tdTemplate, row, rowIndex, col.key);
+				let { text, compileAttr } = compileTd(settings, tdTemplate, row, rowIndex, col.key);
                 const alignAttr = col.align ? `align=${col.align}` : '';
                 const moveRowAttr = supportMoveRow ? moveRow.addSign(col) : '';
                 const useRowCheckAttr = supportCheckbox ? checkbox.addSign(col) : '';
@@ -196,12 +215,12 @@ class Dom {
         };
 
         try {
-            const installTr = (list, level, pIndex) => {
+            const installTr = (list: Array<object>, level: number, pIndex?: string): void => {
                 const isTop = isUndefined(pIndex);
-                each(list, (row, index) => {
+                each(list, (row: object, index: number) => {
                     const className = [];
                     const attribute = [];
-                    const tdList = [];
+                    const tdList: Array<string> = [];
                     const cacheKey = row[TR_CACHE_KEY];
 
                     // 增加行 class name
@@ -223,7 +242,7 @@ class Dom {
 
                     attribute.push(`${TR_CACHE_KEY}="${cacheKey}"`);
 
-                    const trObject = {
+                    const trObject: TrObject = {
                         className,
                         attribute,
                         tdList
@@ -315,7 +334,7 @@ class Dom {
      * @param settings
      * @param updateCacheList
      */
-    updateTrDOM(settings, updateCacheList) {
+    updateTrDOM(settings: any, updateCacheList: Array<object>): void {
         const { _, columnMap, supportTreeData, treeConfig } = settings;
         const { treeKey } = treeConfig;
         updateCacheList.forEach(row => {
@@ -334,13 +353,13 @@ class Dom {
             const hasChildren = children && children.length;
             tree.add(_, cacheKey, level, hasChildren);
 
-            each(columnMap, (key, col) => {
+            each(columnMap, (key: string, col: Column) => {
                 // 不处理项: 自动添加列
                 if (col.isAutoCreate) {
                     return;
                 }
 
-                let tdTemplate = col.template;
+                let tdTemplate = col.template as any;
                 const tdNode = getColTd(getTh(_, key), trNode).get(0);
 
                 // 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
@@ -372,8 +391,8 @@ class Dom {
      * @param _
      * @param columnMap
      */
-    initVisible(_, columnMap) {
-        each(columnMap, (key, col) => {
+    initVisible(_: string, columnMap: object): void {
+        each(columnMap, (key: string, col: Column) => {
             setAreVisible(_, key, col.isShow);
         });
     }
@@ -382,14 +401,14 @@ class Dom {
      * 为新生成的table下属元素绑定事件
      * @param _
      */
-    bindEvent(_) {
+    bindEvent(_: string): void {
         const { rowHover, rowClick, cellHover, cellClick, useCellFocus } = getSettings(_);
 
         eventMap[_] = getEvent(getQuerySelector(_));
         const event = eventMap[_];
 
         // 行事件透出参数
-        const getRowParams = tr => {
+        const getRowParams = (tr: HTMLTableElement) => {
             return [
                 // row
                 getRowData(_, tr),
@@ -401,7 +420,7 @@ class Dom {
 
         // 行事件: hover
         rowHover && (() => {
-            let hoverTr;
+            let hoverTr: HTMLTableElement;
             const rowHoverEvent = event.rowHover;
             jTool(rowHoverEvent[TARGET]).on(rowHoverEvent[EVENTS], rowHoverEvent[SELECTOR], function () {
                 // 防止hover在同一个行内多次触发
@@ -420,13 +439,13 @@ class Dom {
         rowClick && (() => {
             const rowClickEvent = event.rowClick;
             jTool(rowClickEvent[TARGET]).on(rowClickEvent[EVENTS], rowClickEvent[SELECTOR], function () {
-                tooltip(_, this, rowClick(...getRowParams(this), this));
+				tooltip(_, this, rowClick(...getRowParams(this), this));
             });
         })();
 
         // 单元格透出参数
-        const getCellParams = td => {
-            const tr = td.parentNode;
+        const getCellParams = (td: HTMLTableCellElement) => {
+            const tr = td.parentNode as HTMLTableElement;
             return [
                 // row
                 getRowData(_, tr),
@@ -441,7 +460,7 @@ class Dom {
 
         // 单元格事件: hover
         cellHover && (() => {
-            let hoverTd;
+            let hoverTd: HTMLTableCellElement;
             const cellHoverEvent = event.cellHover;
             jTool(cellHoverEvent[TARGET]).on(cellHoverEvent[EVENTS], cellHoverEvent[SELECTOR], function () {
                 // 防止hover在同一个单元格内多次触发
@@ -477,7 +496,7 @@ class Dom {
      * 消毁
      * @param _
      */
-    destroy(_) {
+    destroy(_: string): void {
         clearTargetEvent(eventMap[_]);
 
         try {

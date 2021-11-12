@@ -25,7 +25,7 @@ class Core {
      * @param callback
      * @private
      */
-    refresh(_, callback) {
+    refresh(_: string, callback?: any): void {
         const settings = getSettings(_);
         const { disableAutoLoading, loadingTemplate, ajaxBeforeSend, ajaxSuccess, ajaxError, ajaxComplete, checkboxConfig } = settings;
 
@@ -42,7 +42,7 @@ class Core {
         let ajaxPromise = transformToPromise(settings);
 
         ajaxBeforeSend(ajaxPromise);
-        ajaxPromise.then(response => {
+        ajaxPromise.then((response: object) => {
             // 异步重新获取settings
             try {
                 const settings = getSettings(_);
@@ -58,7 +58,7 @@ class Core {
                 console.error(e);
             }
         })
-        .catch(error => {
+        .catch((error: Error) => {
             ajaxError(error);
             ajaxComplete(error);
             !disableAutoLoading && hideLoading(_);
@@ -72,7 +72,7 @@ class Core {
      * @param response
      * @param callback
      */
-    async driveDomForSuccessAfter(settings, response, callback) {
+    async driveDomForSuccessAfter(settings: any, response: object | string, callback: any): Promise<any> {
         const { _, rendered, responseHandler, supportCheckbox, supportAjaxPage, supportMenu, checkboxConfig, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
 
         // 用于防止在填tbody时，实例已经被消毁的情况。
@@ -85,7 +85,7 @@ class Core {
             return;
         }
 
-        let parseRes = isString(response) ? JSON.parse(response) : response;
+        let parseRes = isString(response) ? JSON.parse(response as string) : response;
 
         // 执行请求后执行程序, 通过该程序可以修改返回值格式
         parseRes = responseHandler(cloneObject(parseRes));
@@ -140,7 +140,7 @@ class Core {
      * @param settings
      * @param isInit: 是否为初始化时调用
      */
-    insertEmptyTemplate(settings, isInit) {
+    insertEmptyTemplate(settings: any, isInit?: boolean): void {
         const { _, emptyTemplate } = settings;
         // 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
         // 用于解决容器为不可见时，触发了setQuery的情况
@@ -165,7 +165,7 @@ class Core {
      * @param settings
      * @returns {Promise<any>}
      */
-    async createDOM($table, settings) {
+    async createDOM($table: any, settings: any): Promise<any> {
         const { _ } = settings;
 
         // 创建DOM前 先清空框架解析列表
@@ -192,7 +192,7 @@ class Core {
      * 等待容器可用: 防止因容器的宽度不可用，而导致的列宽出错
      * @param _
      */
-    waitContainerAvailable(_) {
+    waitContainerAvailable(_: string): Promise<void> {
         const tableWrap = rootDocument.querySelector(`[${WRAP_KEY}="${_}"]`);
         function isAvailable() {
             return getStyle(tableWrap, 'width') !== '100%';

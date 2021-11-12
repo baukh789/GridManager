@@ -11,7 +11,7 @@ import { cloneObject } from '@common/utils';
 import { setSettings } from '@common/cache';
 
 // 获取参数信息
-export const getParams = settings => {
+export const getParams = (settings: any): object => {
     const { query, supportAjaxPage, pageData, sortData, mergeSort, sortKey, currentPageKey, pageSizeKey, requestHandler } = settings;
     const params = extend(true, {}, query);
     // 合并分页信息至请求参
@@ -26,11 +26,11 @@ export const getParams = settings => {
         // settings.mergeSort: 是否合并排序字段
         if (mergeSort) {
             params[sortKey] = '';
-            each(sortData, (key, value) => {
+            each(sortData, (key: string, value: string) => {
                 params[sortKey] = `${params[sortKey]}${params[sortKey] ? ',' : ''}${key}:${value}`;
             });
         } else {
-            each(sortData, (key, value) => {
+            each(sortData, (key: string, value: string) => {
                 // 增加sort_前缀,防止与搜索时的条件重叠
                 params[`${sortKey}${key}`] = value;
             });
@@ -47,18 +47,18 @@ export const getParams = settings => {
  * @param settings
  * @returns promise
  */
-export const transformToPromise = settings =>  {
+export const transformToPromise = (settings: any): any =>  {
     const params = getParams(settings);
     const { supportAjaxPage, pageData, sortData, sortKey, ajaxType, ajaxHeaders, ajaxXhrFields, ajaxData } = settings;
     // 将 requestHandler 内修改的分页参数合并至 settings.pageData
     if (supportAjaxPage) {
-        each(pageData, (key, value) => {
+        each(pageData, (key: string, value: string) => {
             pageData[key] = params[key] || value;
         });
     }
 
     // 将 requestHandler 内修改的排序参数合并至 settings.sortData
-    each(sortData, (key, value) => {
+    each(sortData, (key: string, value: string) => {
         sortData[key] = params[`${sortKey}${key}`] || value;
     });
     setSettings(settings);
