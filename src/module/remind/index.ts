@@ -33,7 +33,7 @@ export const removeTooltip = (_: string): void => {
  * @param dom: tr 或 td
  * @param conf: 配置信息
  */
-export const tooltip = (_: string, dom: HTMLTableCellElement, conf: ConfigInfo, callback: any): void => {
+export const tooltip = (_: string, dom: HTMLTableCellElement, conf: ConfigInfo, callback?: any): void => {
     if (!isObject(conf)) {
         return;
     }
