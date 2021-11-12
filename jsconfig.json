@@ -17,6 +17,6 @@
             "@module/*": ["./src/module/*"]
 		}
 	},
-	"include": ["./src/**/*", "./test/**/*"],
+	"include": ["./src/**/*", "./test/**/*", "./typings/*"],
 	"exclude": ["./node_modules", "./dist"]
 }
