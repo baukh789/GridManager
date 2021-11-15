@@ -5,7 +5,7 @@
 import { EMPTY_TPL_KEY } from '@common/constants';
 import { MOUSE_DOWN, MOUSE_MOVE, MOUSE_UP, createEventsObj } from '@common/events';
 
-export const getEvent = scope => {
+export const getEvent = (scope: string): object => {
     const name = 'gmLineDrag';
     return {
         // 开始

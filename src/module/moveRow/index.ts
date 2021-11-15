@@ -21,6 +21,32 @@ import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from './constants';
 import { coreDOM } from '../core';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 
+// column
+interface Column {
+	key: string;
+	index: number;
+	isShow?: boolean;
+	pk?: string;
+	children?: Array<Column>;
+	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
+	isAutoCreate: boolean;
+	align?: string;
+	fixed?: string;
+	merge?: string;
+	disableMoveRow?: boolean;
+}
+
+interface ColumnMap {
+	[index:string]: Column
+}
+
+// 移动行配置
+interface MoveRowConfig {
+	key: string;
+	useSingleMode: boolean;
+	fixed?: string;
+	handler?(list: Array<object>, tableData: Array<object>): void;
+}
 /**
  * 更新移动
  * @param _
@@ -32,7 +58,7 @@ import { TARGET, EVENTS, SELECTOR } from '@common/events';
  * @param $tr
  * @param tableData
  */
-const update = (_, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData) => {
+const update = (_: string, key: string, $tbody: any, $dreamlandDIV: any, $prevTr: any, $nextTr: any, $tr: any, tableData: Array<object>): any => {
     const oldCacheKey = $tr.attr(TR_CACHE_KEY);
     let $target;
     // 处理向上移动
@@ -84,7 +110,7 @@ const update = (_, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData)
  * @param columnMap
  * @param changeList
  */
-const mergeToCheckedData = (_, checkboxKey, key, columnMap, changeList) => {
+const mergeToCheckedData = (_: string, checkboxKey: string, key: string, columnMap: ColumnMap, changeList: Array<any>): void => {
     if (!isString(key)) {
         return;
     }
@@ -107,10 +133,10 @@ const mergeToCheckedData = (_, checkboxKey, key, columnMap, changeList) => {
 };
 
 class MoveRow {
-    init(_) {
+    init(_: string): void {
         const _this = this;
         const { supportAutoOrder, supportCheckbox, checkboxConfig, moveRowConfig, animateTime, columnMap } = getSettings(_);
-        const { key, useSingleMode, handler } = moveRowConfig;
+        const { key, useSingleMode, handler } = moveRowConfig as MoveRowConfig;
 
         const $body = jTool('body');
         const table = getTable(_).get(0);
@@ -124,24 +150,25 @@ class MoveRow {
 
         $tableDiv.attr('move-row', useSingleMode ? 'single' : 'all');
 
-        let oldData;
+        let oldData: Array<any>;
         // 事件: 行移动触发
-        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (e) {
+        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (e: MouseEvent) {
+        	const target = e.target as HTMLTableCellElement;
             // 不用e.button的原因: 1.兼容问题, 2.buttons可以在同时按下左键与其它键时依旧跳出
             if (e.buttons !== 1) {
                 return;
             }
             // 当前事件源为模板内节点
-            if (e.target.nodeName !== 'TD') {
+            if (target.nodeName !== 'TD') {
                 return;
             }
 
             // 单独列模式: 非移动列的td不请触发事件
-            if (useSingleMode && !isString(e.target.getAttribute('gm-moverow'))) {
+            if (useSingleMode && !isString(target.getAttribute('gm-moverow'))) {
                 return;
             }
             // 非单独列模式: 事件源所在的列为禁止触发移动的列
-            if (!useSingleMode && isString(e.target.getAttribute(DISABLE_MOVE))) {
+            if (!useSingleMode && isString(target.getAttribute(DISABLE_MOVE))) {
                 return;
             }
             const tr = this;
@@ -180,7 +207,7 @@ class MoveRow {
             const $doing = jTool(doing[TARGET]);
             const doingEvents = doing[EVENTS];
             $doing.off(doingEvents);
-            $doing.on(doingEvents, function (e2) {
+            $doing.on(doingEvents, function (e2: MouseEvent) {
                 trIndex = $tr.index();
 
                 // 事件源的上一个tr
@@ -233,12 +260,13 @@ class MoveRow {
                 // 更新序号
                 if (supportAutoOrder) {
                     const $orderDOM = jTool('[gm-order]', $allTr);
-                    const orderList = [];
-                    each($orderDOM, order => {
+                    const orderList: Array<number> = [];
+                    each($orderDOM, (order: HTMLTableCellElement) => {
                         orderList.push(parseInt(order.innerText, 10));
                     });
                     orderList.sort((a, b) => a - b);
-                    each($orderDOM, (order, index) => {
+                    each($orderDOM, (order: HTMLTableCellElement, index: number) => {
+                    	// @ts-ignore 交由JS自动从number转换为string
                         order.innerText = orderList[index];
                     });
                 }
@@ -268,7 +296,7 @@ class MoveRow {
      * 增加行移动标识
      * @param col
      */
-    addSign(col) {
+    addSign(col: Column): string {
         return col.disableMoveRow ? DISABLE_MOVE : '';
     }
 
@@ -278,7 +306,7 @@ class MoveRow {
      * @returns {}
      */
     @parseTpl(dreamlandTpl)
-    createHtml(params) {
+    createHtml(params: any): object {
         const { table, tr, overFlow, $thList } = params;
         const cloneTr = tr.cloneNode(true);
         cloneTr.style.height = getStyle(tr, 'height');
@@ -286,7 +314,7 @@ class MoveRow {
         const cloneTd = cloneTr.querySelectorAll('td');
 
         // 当前存在固定列
-        each($thList, (th, index) => {
+        each($thList, (th: HTMLTableCellElement, index: number) => {
             cloneTd[index].style.width = getStyle(th, 'width');
 
             // fixed: 因为当前容器为绝对定位，所以需要动态更新left
@@ -308,7 +336,7 @@ class MoveRow {
      * @param moveRowConfig
      * @returns {}
      */
-    getColumn(moveRowConfig) {
+    getColumn(moveRowConfig: MoveRowConfig) {
         const { fixed } = moveRowConfig;
         return {
             key: MOVEROW_KEY,
@@ -328,7 +356,7 @@ class MoveRow {
      * 消毁
      * @param _
      */
-    destroy(_) {
+    destroy(_: string): void {
         clearTargetEvent(eventMap[_]);
     }
 }
