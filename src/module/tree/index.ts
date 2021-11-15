@@ -11,6 +11,18 @@ import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } fro
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import fixed from '@module/fixed';
 
+// 树配置项
+interface TreeConfig {
+	// 指定树展开操作按键所属容器
+	insertTo?: string;
+
+	// 层级关键字段
+	treeKey?: string;
+
+	// 初始打开状态
+	openState?: boolean;
+}
+
 /**
  * 树功能
  * 当树功能开启后，行移动功能将失效
@@ -24,7 +36,7 @@ class Tree {
      * @param level
      * @param hasChildren
      */
-    add(_, cacheKey, level, hasChildren) {
+    add(_: string, cacheKey: string, level: number, hasChildren: boolean): void {
         addTreeCache(_, {
             cacheKey,
             level,
@@ -32,7 +44,7 @@ class Tree {
         });
     }
 
-    init(_) {
+    init(_: string): void {
         const _this = this;
         // 绑定事件
         eventMap[_] = getEvent(getQuerySelector(_), treeKey);
@@ -52,10 +64,10 @@ class Tree {
      * @param state: 打开状态
      * @param $tr: 更新的tr节点，未指定时将对tbody下所有节点进行更新(对外公开方法中，不包含该参数)
      */
-    updateDOM(_, state, $tr) {
+    updateDOM(_: string, state: boolean, $tr: any): void {
         const $tbody = getTbody(_);
 
-        const updateState = ($tr, openState) => {
+        const updateState = ($tr: any, openState: boolean): void => {
             const $treeEle = jTool(`[${treeKey}]`, $tr);
             const $action = jTool('i', $treeEle);
             const cacheKey = $tr.attr(TR_CACHE_KEY);
@@ -75,13 +87,13 @@ class Tree {
 
             // 折叠时，需要将所有的子集全部折叠
             if (!openState) {
-                each($childrenTr, tr => {
+                each($childrenTr, (tr: HTMLTableRowElement) => {
                     updateState(jTool(tr), false);
                 });
             }
         };
 
-        const updateAllState = openState => {
+        const updateAllState = (openState: boolean): void => {
             const $treeEle = jTool(`[${treeKey}]`, $tbody);
             const $action = jTool('i', $treeEle);
             $action.removeClass(getIconClass(!openState));
@@ -101,11 +113,11 @@ class Tree {
      * @param _
      * @param config
      */
-    insertDOM(_, config) {
+    insertDOM(_: string, config: TreeConfig) {
         const { openState, insertTo } = config;
         const $table = getTable(_);
         const parentKeyList = [];
-        each(jTool(`tr[${TR_PARENT_KEY}]`, $table), item => {
+        each(jTool(`tr[${TR_PARENT_KEY}]`, $table), (item: HTMLTableRowElement) => {
             parentKeyList.push(item.getAttribute(TR_PARENT_KEY));
         });
 
@@ -130,6 +142,7 @@ class Tree {
                 $insertTd = jTool(`td:not([${GM_CREATE}])`, $trNode).eq(0);
             }
             const treeDOM = rootDocument.createElement('span');
+            // @ts-ignore 类型交于js自行转换
             treeDOM.setAttribute(treeKey, openState);
             treeDOM.style.width = (level + 1) * 14 + PX;
 
@@ -146,7 +159,7 @@ class Tree {
      * 消毁
      * @param _
      */
-    destroy(_) {
+    destroy(_: string): void {
         clearTargetEvent(eventMap[_]);
         clearTreeCache(_);
     }

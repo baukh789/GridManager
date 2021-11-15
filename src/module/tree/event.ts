@@ -3,7 +3,7 @@
  */
 import { MOUSE_CLICK, createEventsObj } from '@common/events';
 
-export const getEvent = (scope, key) => {
+export const getEvent = (scope: string, key: string): object => {
     return {
         // 折叠事件
         toggle: createEventsObj(MOUSE_CLICK, scope, `[${key}] i`)
