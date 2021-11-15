@@ -77,12 +77,27 @@ import './style.less';
 // 禁止选择标识
 const DISABLED_SELECTED = 'disabled-selected';
 
+interface ParamsConfig {
+	checked?: boolean,
+	disabled?: boolean,
+	useRadio?: boolean,
+	isTop?: boolean,
+	label?: string,
+	value?: string
+}
+
+interface columnConfig {
+	width: number | string,
+	fixed: string,
+	useRadio: boolean
+}
+
 /**
  * 更新单选框状态
  * @param $radio
  * @param state Boolean
  */
-export const updateRadioState = ($radio, state) => {
+export const updateRadioState = ($radio: any, state: boolean) => {
     const $input = jTool('input[type="radio"]', $radio);
     const className = 'gm-radio-checked';
     if (state) {
@@ -98,7 +113,7 @@ export const updateRadioState = ($radio, state) => {
  * @param $checkbox: '<span class="gm-checkbox"></span>'
  * @param state: [checked: 选中, indeterminate: 半选中, uncheck: 未选中]
  */
-export const updateCheckboxState = ($checkbox, state) => {
+export const updateCheckboxState = ($checkbox: any, state: string) => {
     const $input = jTool('input[type="checkbox"]', $checkbox);
     switch (state) {
         case CHECKED: {
@@ -129,7 +144,7 @@ export const updateCheckboxState = ($checkbox, state) => {
  * @param useRadio: 当前事件源为单选
  * @param max: 最大选择数
  */
-export const resetCheckboxDOM = (_, tableData, useRadio, max) => {
+export const resetCheckboxDOM = (_: string, tableData: any [], useRadio?: boolean, max?: number): void => {
     const $table = getTable(_);
 
     // 更改tbody区域选中状态
@@ -158,7 +173,7 @@ export const resetCheckboxDOM = (_, tableData, useRadio, max) => {
 
     if (!useRadio && isNumber(max)) {
         const $tbodyCheckWrap = jTool('tbody .gm-checkbox-wrapper ', $table);
-        each($tbodyCheckWrap, wrap => {
+        each($tbodyCheckWrap, (wrap: any) => {
             const $wrap = jTool(wrap);
             const checkbox = jTool('.gm-checkbox', $wrap);
             if (!checkbox.hasClass('gm-checkbox-checked')) {
@@ -176,7 +191,7 @@ class Checkbox {
      * 初始化选择框事件
      * @param _
      */
-    init(_) {
+    init(_: string): void {
         eventMap[_] = getEvent(_, getQuerySelector(_));
 
         const { allChange, checkboxChange, radioChange, trChange } = eventMap[_];
@@ -237,7 +252,7 @@ class Checkbox {
 
         // tr点击选中
         if (useRowCheck) {
-            jTool(trChange[TARGET]).on(trChange[EVENTS], trChange[SELECTOR], function (e) {
+            jTool(trChange[TARGET]).on(trChange[EVENTS], trChange[SELECTOR], function (e: any) {
                 // 当前为子项: 子项不支持点击选中
                 if (this.getAttribute(TR_PARENT_KEY)) {
                     return;
@@ -270,7 +285,7 @@ class Checkbox {
      * 增加行行选中标识
      * @param col
      */
-    addSign(col) {
+    addSign(col: any) {
         return col.disableRowCheck ? DISABLED_SELECTED : '';
     }
 
@@ -279,7 +294,7 @@ class Checkbox {
 	 * @param _
 	 * @returns {NodeListOf<Element>}
 	 */
-	getCheckedTr(_) {
+	getCheckedTr(_: string) {
 		return rootDocument.querySelectorAll(`${getQuerySelector(_)} tbody tr[checked="true"]`);
 	}
 
@@ -288,7 +303,7 @@ class Checkbox {
 	 * @param conf
 	 * @returns {}
 	 */
-	getColumn(conf) {
+	getColumn(conf: columnConfig) {
 		return {
 			key: CHECKBOX_KEY,
 			text: conf.useRadio ? '' : this.getCheckboxTpl({}),
@@ -298,7 +313,7 @@ class Checkbox {
 			width: conf.width,
             fixed: conf.fixed,
             // align: 'center',  // 调整为由样式控制
-			template: (checked, row, index, isTop) => {
+			template: (checked: boolean, row: object, index: any, isTop: boolean) => {
                 return this.getColumnTemplate({checked, disabled: row[CHECKBOX_DISABLED_KEY], useRadio: conf.useRadio, isTop});
 			}
 		};
@@ -311,7 +326,7 @@ class Checkbox {
      * @returns {}
      */
     @parseTpl(columnTpl)
-	getColumnTemplate(params) {
+	getColumnTemplate(params: ParamsConfig) {
 	    const { checked, disabled, useRadio, isTop } = params;
 	    const template = isTop ? (useRadio ? this.getRadioTpl({checked, disabled}) : this.getCheckboxTpl({checked, disabled})) : '';
         return {
@@ -325,10 +340,10 @@ class Checkbox {
      * @returns {}
      */
     @parseTpl(checkboxTpl)
-    getCheckboxTpl(params) {
+    getCheckboxTpl(params: ParamsConfig) {
         // 在th渲染时，params为空对像，选中状态由updateCheckboxState方法修改
         const { checked, disabled, label, value } = params;
-        return {
+		return {
             checked: checked ? CHECKED : UNCHECKED,
             disabled,
             label,
@@ -342,7 +357,7 @@ class Checkbox {
      * @returns {}
      */
     @parseTpl(radioTpl)
-    getRadioTpl(params) {
+    getRadioTpl(params: ParamsConfig) {
         const { checked, disabled, label, value } = params;
         return {
             checked,
@@ -356,7 +371,7 @@ class Checkbox {
 	 * 消毁
 	 * @param _
 	 */
-	destroy(_) {
+	destroy(_:string): void {
 		clearTargetEvent(eventMap[_]);
 	}
 }

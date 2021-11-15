@@ -9,8 +9,8 @@ import { getTableData, setTableData, setCheckedData } from '@common/cache';
  * @param isRadio: 当前事件源为单选
  * @returns {*}
  */
-export const resetData = (gridManagerName, status, isAllCheck, cacheKey, isRadio) => {
-    const tableData = getTableData(gridManagerName);
+export const resetData = (_: string, status: boolean, isAllCheck: boolean, cacheKey?: any, isRadio?: boolean) => {
+    const tableData = getTableData(_);
     // 复选-全选
     if (isAllCheck && !cacheKey) {
         tableData.forEach(row => {
@@ -33,14 +33,14 @@ export const resetData = (gridManagerName, status, isAllCheck, cacheKey, isRadio
         });
 
         // 清空当前选中项
-        setCheckedData(gridManagerName, [], true);
+        setCheckedData(_, [], true);
     }
 
     // 存储数据
-    setTableData(gridManagerName, tableData);
+    setTableData(_, tableData);
 
     // 更新选中数据
-    setCheckedData(gridManagerName, tableData);
+    setCheckedData(_, tableData);
 
     return tableData;
 };
