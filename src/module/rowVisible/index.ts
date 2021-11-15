@@ -5,16 +5,17 @@ import jTool from '@jTool';
 import {isUndefined} from '@jTool/utils';
 
 // 获取TR列表: cacheKey相匹配的普通行及通栏行、树结构行
-const getTrList = cacheKey => {
+const getTrList = (cacheKey: string): any => {
     return jTool(`[${TR_CACHE_KEY}="${cacheKey}"], [${TR_PARENT_KEY}="${cacheKey}"], [${TR_PARENT_KEY}^="${cacheKey}-"]`);
 };
+
 /**
  * 显示已隐藏的行
  * @param settings
  * @param cacheKey: 行的索引，为空时将显示所有已隐藏的行
  */
-export const showRow = (settings, cacheKey) => {
-    let $trList;
+export const showRow = (settings: any, cacheKey: string): void => {
+    let $trList: any;
     // 为空时将显示所有已隐藏的行
     if (isUndefined(cacheKey)) {
         $trList = jTool(`[${ROW_HIDE_KEY}]`);
@@ -34,7 +35,7 @@ export const showRow = (settings, cacheKey) => {
  * @param settings
  * @param cacheKey: 行的索引，为空时将不执行
  */
-export const hideRow = (settings, cacheKey) => {
+export const hideRow = (settings: any, cacheKey: string): void => {
     const $trList = getTrList(cacheKey);
     $trList.attr(ROW_HIDE_KEY, 'ing');
     setTimeout(() => {
