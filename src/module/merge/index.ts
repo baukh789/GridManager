@@ -81,7 +81,7 @@ export const mergeRow = (_: string, columnMap: ColumnMap): void => {
  * @param _
  * @param $context
  */
-export const clearMergeRow = (_: string, $context: any): void => {
+export const clearMergeRow = (_: string, $context?: any): void => {
     $context = $context || getTable(_);
     jTool(`[${ROW_SPAN}]`, $context).removeAttr(ROW_SPAN);
     jTool(`[${MERGE_TD}]`, $context).removeAttr(MERGE_TD);
