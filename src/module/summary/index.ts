@@ -5,7 +5,25 @@ import { DISABLE_MOVE } from '@module/moveRow/constants';
 import { SUMMARY_FLAG, SUMMARY_ROW } from './constants';
 import './style.less';
 
-export const installSummary = (settings, columnList, tableData, trObjectList) => {
+// column
+interface Column {
+	key: string;
+	index: number;
+	isShow?: boolean;
+	pk?: string;
+	children?: Array<Column>;
+	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
+	isAutoCreate: boolean;
+	align?: string;
+	fixed?: string;
+	merge?: string;
+	disableMoveRow?: boolean;
+	level?: number;
+	rowspan?: number;
+	colspan?: number;
+}
+
+export const installSummary = (settings: any, columnList: Array<object>, tableData: Array<object>, trObjectList: Array<object>): void => {
     const { _, summaryHandler, browser } = settings;
     const summaryMap = summaryHandler(tableData);
 
@@ -15,14 +33,14 @@ export const installSummary = (settings, columnList, tableData, trObjectList) =>
         return;
     }
     getDiv(_).attr(SUMMARY_FLAG, '');
-    const tdList = [];
+    const tdList: Array<string> = [];
 
     let style = '';
     // 兼容性处理: safari 在处理sticky时，需要减去thead的高度
     if (browser === 'safari') {
         style = `style="bottom: ${getThead(_).height()}px"`;
     }
-    each(columnList, col => {
+    each(columnList, (col: Column) => {
         const { key, align } = col;
         let summary = summaryMap[key];
         if (isNull(summary) || isUndefined(summary)) {
