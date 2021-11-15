@@ -7,15 +7,37 @@ import { each, isValidArray } from '@jTool/utils';
 import { getDiv } from '@common/base';
 import './style.less';
 
+// column
+interface Column {
+	key: string;
+	index: number;
+	isShow?: boolean;
+	pk?: string;
+	children?: Array<Column>;
+	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
+	isAutoCreate: boolean;
+	align?: string;
+	fixed?: string;
+	merge?: string;
+	disableMoveRow?: boolean;
+	level?: number;
+	rowspan?: number;
+	colspan?: number;
+}
+
+interface ColumnMap {
+	[index:string]: Column
+}
+
 /**
  * 获取嵌套列所占的列数
  * @param col
  * @returns {number}
  */
-const getNestedLen = col => {
+const getNestedLen = (col: Column): number => {
     let num = 0;
-    const getLen = col => {
-        col.children.forEach(item => {
+    const getLen = (c: Column) => {
+        c.children.forEach(item => {
             if (isValidArray(item.children)) {
                 getLen(item);
             } else {
@@ -34,8 +56,8 @@ const getNestedLen = col => {
  * @param list
  * @param rowspan
  */
-const pushList = (columnMap, columnList, list, rowspan) => {
-    each(list, item => {
+const pushList = (columnMap: ColumnMap, columnList: Array<Array<object>>, list: Array<any>, rowspan: number): void => {
+    each(list, (item: any) => {
         // 这里不直接使用item而用columnMap的原因: item的children中存储的是初始时的数据，缺失level字段
         const col = columnMap[item.key];
         const { level } = col;
@@ -61,7 +83,7 @@ class Nested {
      * 增加嵌套表头标识: 用于样式文件
      * @param _
      */
-    addSign(_) {
+    addSign(_: string): void {
         getDiv(_).attr('gm-nested', '');
     }
 
@@ -70,10 +92,10 @@ class Nested {
      * @param columnMap
      * @param columnList
      */
-    push(columnMap, columnList) {
+    push(columnMap: ColumnMap, columnList: Array<Array<object>>): void {
         let maxLevel = 0;
         const topList = columnList[0];
-        each(columnMap, (key, col) => {
+        each(columnMap, (key: string, col: Column) => {
             const { level, index } = col;
             // 生成最上层数组
             if (level === 0) {
