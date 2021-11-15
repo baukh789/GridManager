@@ -37,11 +37,14 @@ class Scroll {
     // 当前Y滚动轴的宽度
     width = 0;
 
+	// 控制 resize 事件是否暂停执行，在resetLayout会触发暂停 todo 这个需要确认是否可以提成外部变量
+	pauseResizeEventMap = {};
+
     /**
      * 初始化
      * @param _
      */
-	init(_) {
+	init(_: string): void {
         this.render(_);
         this.bindResizeToTable(_);
         this.bindScrollToTableDiv(_);
@@ -52,7 +55,7 @@ class Scroll {
      * 生成表头置顶DOM
      * @param _
      */
-    render(_) {
+    render(_: string): void {
         getTable(_).append(getThead(_).clone(true).attr(FAKE_TABLE_HEAD_KEY, _));
 
         const $setTopHead = getFakeThead(_);
@@ -62,7 +65,7 @@ class Scroll {
         compileFakeThead(settings, $setTopHead.get(0));
     }
 
-    update(_) {
+    update(_: string): void {
         const $tableWrap = getWrap(_);
         let oldWrapWidth = wrapWidthMap[_];
         let settings = getSettings(_);
@@ -97,14 +100,12 @@ class Scroll {
         });
     }
 
-    // 控制 resize 事件是否暂停执行，在resetLayout会触发暂停
-    pauseResizeEventMap = {};
     /**
 	 * 为单个table绑定resize事件
 	 * @param _
      * 存在多次渲染时, 将会存在多个resize事件. 每个事件对应处理一个table. 这样做的好处是, 多个表之间无关联. 保持了相对独立性
      */
-	bindResizeToTable(_) {
+	bindResizeToTable(_: string): void {
 		const $tableWrap = getWrap(_);
 		const $tableParent = $tableWrap.parent(); // 父容器，渲染之后离的最近的那一层
 		const ResizeObserver = rootWindow.ResizeObserver;
@@ -147,7 +148,7 @@ class Scroll {
 	 * 绑定表格滚动轴功能
 	 * @param _
      */
-	bindScrollToTableDiv(_) {
+	bindScrollToTableDiv(_: string): void {
 		const tableDIV = getDiv(_);
 		// 绑定滚动条事件 #001
 		tableDIV.unbind(SCROLL);
@@ -162,7 +163,7 @@ class Scroll {
 	 * 消毁
 	 * @param _
 	 */
-	destroy(_) {
+	destroy(_: string): void {
 		// 清理: resize事件. 该事件并不干扰其它resize事件
 		jTool(rootWindow).unbind(`${RESIZE}.${_}`);
 
