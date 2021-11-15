@@ -97,7 +97,7 @@ interface columnConfig {
  * @param $radio
  * @param state Boolean
  */
-export const updateRadioState = ($radio: any, state: boolean) => {
+export const updateRadioState = ($radio: any, state: boolean): void => {
     const $input = jTool('input[type="radio"]', $radio);
     const className = 'gm-radio-checked';
     if (state) {
@@ -113,7 +113,7 @@ export const updateRadioState = ($radio: any, state: boolean) => {
  * @param $checkbox: '<span class="gm-checkbox"></span>'
  * @param state: [checked: 选中, indeterminate: 半选中, uncheck: 未选中]
  */
-export const updateCheckboxState = ($checkbox: any, state: string) => {
+export const updateCheckboxState = ($checkbox: any, state: string): void => {
     const $input = jTool('input[type="checkbox"]', $checkbox);
     switch (state) {
         case CHECKED: {
@@ -252,15 +252,16 @@ class Checkbox {
 
         // tr点击选中
         if (useRowCheck) {
-            jTool(trChange[TARGET]).on(trChange[EVENTS], trChange[SELECTOR], function (e: any) {
+            jTool(trChange[TARGET]).on(trChange[EVENTS], trChange[SELECTOR], function (e: MouseEvent) {
                 // 当前为子项: 子项不支持点击选中
                 if (this.getAttribute(TR_PARENT_KEY)) {
                     return;
                 }
                 const rowData = getRowData(_, this, true);
                 const $checkboxWrap = jTool('td[gm-checkbox] label', this);
-                let $td = jTool(e.target);
-                if (e.target.nodeName !== 'TD') {
+                const target = e.target as HTMLTableCellElement;
+                let $td = jTool(target);
+                if (target.nodeName !== 'TD') {
                     $td = $td.closest('td');
                 }
 
@@ -274,8 +275,8 @@ class Checkbox {
                     !$checkboxWrap.hasClass(DISABLED_SELECTED) &&
 
                     // 当前事件源非单选框或多选框(防止多次触发);
-                    [].indexOf.call(e[TARGET].classList, 'gm-radio-checkbox-input') === -1) {
-                    $checkboxWrap.find('input').trigger('click');
+                    [].indexOf.call(target.classList, 'gm-radio-checkbox-input') === -1) {
+                    $checkboxWrap.find('input').trigger('click'); // todo 这行代码会导致当前事件函数二次执行
                 }
             });
         }
@@ -285,7 +286,7 @@ class Checkbox {
      * 增加行行选中标识
      * @param col
      */
-    addSign(col: any) {
+    addSign(col: any): string {
         return col.disableRowCheck ? DISABLED_SELECTED : '';
     }
 
@@ -294,7 +295,7 @@ class Checkbox {
 	 * @param _
 	 * @returns {NodeListOf<Element>}
 	 */
-	getCheckedTr(_: string) {
+	getCheckedTr(_: string): NodeList {
 		return rootDocument.querySelectorAll(`${getQuerySelector(_)} tbody tr[checked="true"]`);
 	}
 
@@ -303,7 +304,7 @@ class Checkbox {
 	 * @param conf
 	 * @returns {}
 	 */
-	getColumn(conf: columnConfig) {
+	getColumn(conf: columnConfig): object {
 		return {
 			key: CHECKBOX_KEY,
 			text: conf.useRadio ? '' : this.getCheckboxTpl({}),
@@ -326,7 +327,7 @@ class Checkbox {
      * @returns {}
      */
     @parseTpl(columnTpl)
-	getColumnTemplate(params: ParamsConfig) {
+	getColumnTemplate(params: ParamsConfig): object {
 	    const { checked, disabled, useRadio, isTop } = params;
 	    const template = isTop ? (useRadio ? this.getRadioTpl({checked, disabled}) : this.getCheckboxTpl({checked, disabled})) : '';
         return {
@@ -340,7 +341,7 @@ class Checkbox {
      * @returns {}
      */
     @parseTpl(checkboxTpl)
-    getCheckboxTpl(params: ParamsConfig) {
+    getCheckboxTpl(params: ParamsConfig): object {
         // 在th渲染时，params为空对像，选中状态由updateCheckboxState方法修改
         const { checked, disabled, label, value } = params;
 		return {
@@ -357,7 +358,7 @@ class Checkbox {
      * @returns {}
      */
     @parseTpl(radioTpl)
-    getRadioTpl(params: ParamsConfig) {
+    getRadioTpl(params: ParamsConfig): object {
         const { checked, disabled, label, value } = params;
         return {
             checked,

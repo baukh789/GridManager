@@ -2,14 +2,14 @@ import { CHECKBOX_KEY, ROW_DISABLED_CHECKBOX } from '@common/constants';
 import { getTableData, setTableData, setCheckedData } from '@common/cache';
 /**
  * 重置当前渲染数据中的选择状态
- * @param gridManagerName
+ * @param _
  * @param status: 要变更的状态, 单选操作该值无需传递，因为在单选情况下该值永远为true
  * @param isAllCheck: 触发源是否为全选操作
  * @param cacheKey: 所在行的key
  * @param isRadio: 当前事件源为单选
  * @returns {*}
  */
-export const resetData = (_: string, status: boolean, isAllCheck: boolean, cacheKey?: any, isRadio?: boolean) => {
+export const resetData = (_: string, status: boolean, isAllCheck: boolean, cacheKey?: any, isRadio?: boolean): Array<any> => {
     const tableData = getTableData(_);
     // 复选-全选
     if (isAllCheck && !cacheKey) {
