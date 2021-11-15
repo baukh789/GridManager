@@ -19,20 +19,20 @@ import { TARGET, EVENTS, SELECTOR } from '@common/events';
  * 更新排序样式
  * @param _
  */
-const updateSortStyle = _ => {
+const updateSortStyle = (_: string): void => {
     const { sortData, sortUpText, sortDownText } = getSettings(_);
     const upClass = 'sorting-up';
     const downClass = 'sorting-down';
     const thAttr = 'sorting';
 
     // 重置排序样式
-    each(jTool(`${getQuerySelector(_)} .${SORT_CLASS}`), v => {
+    each(jTool(`${getQuerySelector(_)} .${SORT_CLASS}`), (v: HTMLElement) => {
         jTool(v).removeClass(`${upClass} ${downClass}`);
         jTool(v).closest('th').attr(thAttr, '');
     });
 
     // 根据排序数据更新排序
-    each(sortData, (key, value) => {
+    each(sortData, (key: string, value: string) => {
         // 这里未用getTh的原因: getTh方法只能获取th, 这里需要同时对th和 fake-th进行操作
         const $th = jTool(`${getQuerySelector(_)} th[${TH_NAME}="${key}"]`);
         const $sortAction = jTool(`.${SORT_CLASS}`, $th);
@@ -62,10 +62,10 @@ const updateSortStyle = _ => {
  * @param callback: 回调函数[function]
  * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
  * */
-export const updateSort = (_, sortJson, callback, refresh) => {
+export const updateSort = (_: string, sortJson: object, callback?: any, refresh?: boolean): void => {
     if (!isObject(sortJson) || isEmptyObject(sortJson)) {
         outWarn('sortJson unavailable');
-        return false;
+        return;
     }
 
     const settings = getSettings(_);
@@ -96,7 +96,7 @@ export const updateSort = (_, sortJson, callback, refresh) => {
 
     // 执行更新
     if (refresh) {
-        core.refresh(_, response => {
+        core.refresh(_, (response: object) => {
             // 更新排序样式
             updateSortStyle(_);
 
@@ -120,12 +120,12 @@ class Sort {
      * 初始化排序
      * @param _
      */
-    init(_) {
+    init(_: string): void {
         eventMap[_] = getEvent(_, getQuerySelector(_));
         const { start } = eventMap[_];
 
         // 绑定排序事件
-        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (e) {
+        jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (e: MouseEvent) {
             // th对应的名称
             const thName = getThName(jTool(this).closest('th'));
             const { sortData, sortMode, sortUpText, sortDownText } = getSettings(_);
@@ -164,7 +164,7 @@ class Sort {
 	 * @returns {parseData}
      */
 	@parseTpl(sortTpl)
-	createHtml() {
+	createHtml(): object {
 		return {};
 	}
 
@@ -172,7 +172,7 @@ class Sort {
 	 * 消毁
 	 * @param _
 	 */
-	destroy(_) {
+	destroy(_: string): void {
 	    clearTargetEvent(eventMap[_]);
 	}
 }
