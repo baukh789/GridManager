@@ -38,13 +38,14 @@ import { sendCompile, compileTd } from '@common/framework';
 interface Column {
 	key: string;
 	index: number;
-	isShow: boolean;
+	isShow?: boolean;
 	pk?: string;
 	children?: Array<Column>;
 	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
 	isAutoCreate: boolean;
-	align: string;
-	fixed: string;
+	align?: string;
+	fixed?: string;
+	merge?: string;
 }
 
 // 生成过程中的tr对像存储器
