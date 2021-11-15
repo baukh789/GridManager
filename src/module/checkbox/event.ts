@@ -5,7 +5,7 @@
  */
 import { MOUSE_CLICK, createEventsObj } from '@common/events';
 import { TR_CACHE_KEY } from '@common/constants';
-export const getEvent = (gridManagerName, scope) => {
+export const getEvent = (_: string, scope: string) => {
     return {
         // 全选框点击
         allChange: createEventsObj(MOUSE_CLICK, scope, 'th[gm-checkbox] .gm-checkbox-wrapper'),

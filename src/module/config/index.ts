@@ -23,16 +23,16 @@ interface Column {
 }
 
 // 配置区域模板参数
-interface ConfigHtmlParams{
+interface ConfigHtmlParams {
 	_: string;
 	configInfo: object;
 }
 
 // 列模板参数
-interface ColHtmlParams{
+interface ColHtmlParams {
 	key: string;
 	isShow: boolean;
-	label: object;
+	label: string;
 }
 
 /**
@@ -151,7 +151,7 @@ class Config {
             // 注意: 这里重新获取一遍th-text，是由于col存储的可能是未通过框架解析的框架模板
             const label = getFakeTh(_, key).find('.th-text').text();
             $configList.append(this.createColumn({ key, isShow, label }));
-            if (isShow) {
+			if (isShow) {
                 showNum++;
             }
         });
@@ -209,8 +209,7 @@ class Config {
      */
     createColumn(params: ColHtmlParams): string {
         const { key, isShow, label } = params;
-
-        const checkboxTpl = checkbox.getCheckboxTpl({checked: isShow, label});
+		const checkboxTpl = checkbox.getCheckboxTpl({checked: isShow, label});
         return `<li th-name="${key}"${isShow ? ' class="checked-li"' : ''}>${checkboxTpl}</li>`;
     }
 
