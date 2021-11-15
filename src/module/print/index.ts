@@ -6,7 +6,7 @@ import { getTable } from '@common/base';
 import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, GM_CREATE, CELL_HIDDEN } from '@common/constants';
 import { MERGE_TD } from '@module/merge/constants';
 import { each } from '@jTool/utils';
-export default function print(_) {
+export default function print(_: string): void {
     const $table = getTable(_).clone(true);
     const style = '<style>\n'
             + 'table{width: 100%;border-collapse: collapse;border-spacing: 0;}\n'
@@ -27,7 +27,7 @@ export default function print(_) {
     // 清除表格样式
     const $th = $table.find(`[${TABLE_HEAD_KEY}] th`);
     $th.removeAttr('style');
-    each($th, (th, i) => {
+    each($th, (th: HTMLTableCellElement, i: number) => {
         th.innerHTML = fakeTh.eq(i).find('.th-text').html();
     });
     $table.removeAttr('style');
