@@ -4,7 +4,7 @@
  */
 import { createEventsObj, MOUSE_CLICK } from '@common/events';
 
-export const getEvent = (scope, key) => {
+export const getEvent = (scope: string, key: string): object => {
     return {
         // 触发 #001
         fold: createEventsObj(MOUSE_CLICK, scope, `i[${key}]`)

@@ -189,9 +189,9 @@ export const compileEmptyTemplate = (settings: any, el: HTMLTableElement, templa
  * @param template
  * @returns {*}
  */
-export const compileFullColumn = (settings: any, row: object, index: number, template: FullColumnTemplate, model: string): {
-    text: string;
-    compileAttr: string;
+export const compileFullColumn = (settings: any, row: object, index: number, template: FullColumnTemplate, model: string) : {
+	text: string | HTMLTableElement;
+	compileAttr: string;
 } => {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
