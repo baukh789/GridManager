@@ -5,7 +5,7 @@
 import { WRAP_KEY } from '@common/constants';
 import { MOUSE_DOWN, CONTEXT_MENU, createEventsObj } from '@common/events';
 
-export const getEvent = _ => {
+export const getEvent = (_: string): object => {
     return {
         // 打开菜单
         openMenu: createEventsObj(CONTEXT_MENU, `[${WRAP_KEY}="${_}"]`),

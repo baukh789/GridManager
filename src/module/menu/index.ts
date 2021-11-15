@@ -38,17 +38,17 @@ class Menu {
      * 初始化
      * @param _
      */
-    init(_) {
+    init(_: string): void {
         eventMap[_] = getEvent(_);
 
         const { openMenu, closeMenu } = eventMap[_];
 
         // 绑定打开右键菜单栏
-        jTool(openMenu[TARGET]).on(openMenu[EVENTS], function (e) {
+        jTool(openMenu[TARGET]).on(openMenu[EVENTS], function (e: MouseEvent) {
             e.preventDefault();
             e.stopPropagation();
 
-            const target = e.target;
+            const target = e.target as HTMLTableCellElement;
             // 验证：如果不是tbdoy或者是tbody的子元素，直接跳出
             if (target.nodeName !== 'TBODY' && jTool(target).closest('tbody').length === 0) {
                 return;
@@ -61,7 +61,7 @@ class Menu {
             $menu.css(getMenuPosition($menu.width(), $menu.height(), e.clientX, e.clientY));
 
             // 禁用菜单自身的右键
-            $menu.on(openMenu[EVENTS], function (e1) {
+            $menu.on(openMenu[EVENTS], function (e1: MouseEvent) {
                 e1.preventDefault();
                 e1.stopPropagation();
             });
@@ -70,7 +70,7 @@ class Menu {
             const $closeTarget = jTool(closeMenu[TARGET]);
             const closeEvents = closeMenu[EVENTS];
             $closeTarget.off(closeEvents);
-            $closeTarget.on(closeEvents, function (e2) {
+            $closeTarget.on(closeEvents, function (e2: MouseEvent) {
                 const eventSource = jTool(e2.target);
                 // 当前为menu自身
                 if (eventSource.attr(MENU_KEY) || eventSource.closest(`[${MENU_KEY}]`).length === 1) {
@@ -86,7 +86,7 @@ class Menu {
 	 * 消毁
 	 * @param _
 	 */
-	destroy(_) {
+	destroy(_: string): void {
 	    // 清除事件
         clearTargetEvent(eventMap[_]);
 

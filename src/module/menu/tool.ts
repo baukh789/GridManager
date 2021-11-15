@@ -12,13 +12,20 @@ import { getTbody } from '@common/base';
 import print from '@module/print';
 import config from '@module/config';
 
+// 菜单项对象
+interface MenuItemObject {
+	content: string;
+	onClick(_: string, target?: HTMLTableCellElement): void;
+	run?(_: string, $dom: any): void;
+	line?: boolean;
+}
 /**
  * 获取右键菜单中的某项 是为禁用状态. 若为禁用状态清除事件默认行为
  * @param dom
  * @param events
  * @returns {boolean}
  */
-const isDisabled = (dom, events) => {
+const isDisabled = (dom: HTMLElement, events: MouseEvent): boolean => {
     if (jTool(dom).hasClass(DISABLED_CLASS_NAME)) {
         events.stopPropagation();
         events.preventDefault();
@@ -31,17 +38,17 @@ const isDisabled = (dom, events) => {
  * @param settings
  * @returns {{onClick: onClick, run: run, content: string}}
  */
-const getPreviousPage = settings => {
+const getPreviousPage = (settings: any): MenuItemObject => {
     return {
         content: `${i18n(settings, 'previous-page')}<i class="gm-icon gm-icon-up"></i>`,
-        onClick: _ => {
+        onClick: (_: string) => {
             const settings = getSettings(_);
             const { currentPageKey, pageData } = settings;
             const cPage = pageData[currentPageKey];
 
             toPage(settings, cPage > 1 ? cPage - 1 : cPage);
         },
-        run: (_, $dom) => {
+        run: (_: string, $dom: any) => {
             const settings = getSettings(_);
             const { pageData, currentPageKey } = settings;
             const cPage = pageData[currentPageKey];
@@ -60,17 +67,17 @@ const getPreviousPage = settings => {
  * @param settings
  * @returns {{onClick: onClick, run: run, content: string}}
  */
-const getNextPage = settings => {
+const getNextPage = (settings: any): MenuItemObject => {
     return {
         content: `${i18n(settings, 'next-page')}<i class="gm-icon gm-icon-down"></i>`,
         line: true,
-        onClick: _ => {
+        onClick: (_: string) => {
             const settings = getSettings(_);
             const { currentPageKey, pageData } = settings;
             const cPage = pageData[currentPageKey];
             toPage(settings, cPage < pageData.tPage ? cPage + 1 : cPage);
         },
-        run: (_, $dom) => {
+        run: (_: string, $dom: any) => {
             const settings = getSettings(_);
             const { pageData, currentPageKey } = settings;
             const cPage = pageData[currentPageKey];
@@ -89,10 +96,10 @@ const getNextPage = settings => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getRefreshPage = settings => {
+const getRefreshPage = (settings: any): MenuItemObject => {
     return {
         content: `${i18n(settings, 'refresh')}<i class="gm-icon gm-icon-refresh"></i>`,
-        onClick: _ => {
+        onClick: (_: string) => {
             const settings = getSettings(_);
             const { currentPageKey, pageData } = settings;
             toPage(settings, pageData[currentPageKey]);
@@ -105,10 +112,10 @@ const getRefreshPage = settings => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getExportPage = settings => {
+const getExportPage = (settings: any): MenuItemObject => {
     return {
         content: `${i18n(settings, 'export')}<i class="gm-icon gm-icon-export"></i>`,
-        onClick: _ => {
+        onClick: (_: string) => {
             exportFile.exportGrid(_, undefined, false);
         }
     };
@@ -119,13 +126,13 @@ const getExportPage = settings => {
  * @param settings
  * @returns {{onClick: onClick, run: run, content: string}}
  */
-const getExportCheckedPage = settings => {
+const getExportCheckedPage = (settings: any): MenuItemObject => {
     return {
         content: `${i18n(settings, 'export-checked')}<i class="gm-icon gm-icon-export-checked"></i>`,
-        onClick: _ => {
+        onClick: (_: string) => {
             exportFile.exportGrid(_, undefined, true);
         },
-        run: (_, $dom) => {
+        run: (_: string, $dom: any) => {
             // 验证：当前是否存在已选中的项
             if (jTool('tr[checked="true"]', getTbody(_)).length === 0) {
                 $dom.addClass(DISABLED_CLASS_NAME);
@@ -141,10 +148,10 @@ const getExportCheckedPage = settings => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getPrint = settings => {
+const getPrint = (settings: any): MenuItemObject => {
     return {
         content: `${i18n(settings, 'print')}<i class="gm-icon gm-icon-print"></i>`,
-        onClick: _ => {
+        onClick: (_: string) => {
             print(_);
         }
     };
@@ -155,12 +162,12 @@ const getPrint = settings => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getCopyCell = settings => {
+const getCopyCell = (settings: any): MenuItemObject => {
     const fakeCopyAttr = 'gm-fake-copy';
     return {
         content: `${i18n(settings, 'copy')}<i class="gm-icon gm-icon-copy"></i><input ${fakeCopyAttr}="${settings._}"/>`,
-        onClick: _ => {
-            const fakeCopy = rootDocument.querySelector(`[${fakeCopyAttr}=${_}]`);
+        onClick: (_: string) => {
+            const fakeCopy = rootDocument.querySelector(`[${fakeCopyAttr}=${_}]`) as HTMLInputElement;
             fakeCopy.value = getTbody(_).find(`td[${TD_FOCUS}]`).text();
             fakeCopy.select();
             rootDocument.execCommand('Copy');
@@ -173,10 +180,10 @@ const getCopyCell = settings => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getHideRow = settings => {
+const getHideRow = (settings: any): MenuItemObject => {
     return {
         content: `${i18n(settings, 'hide-row')}<i class="gm-icon gm-icon-hide"></i>`,
-        onClick: (_, target) => {
+        onClick: (_: string, target: HTMLTableCellElement) => {
             const $tr = jTool(target).closest('tr');
             // 存在TR_CACHE_KEY: 当前为普通tr
             // 不存在TR_CACHE_KEY: 当前为通栏行或树的子行
@@ -190,10 +197,10 @@ const getHideRow = settings => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getConfig = settings => {
+const getConfig = (settings: any): MenuItemObject => {
     return {
         content: `${i18n(settings, 'config')}<i class="gm-icon gm-icon-config"></i>`,
-        onClick: _ => {
+        onClick: (_: string) => {
             config.toggle(_);
         }
     };
@@ -204,7 +211,7 @@ const getConfig = settings => {
  * @param _
  * @returns {string}
  */
-export const getMenuQuerySelector = _ => {
+export const getMenuQuerySelector = (_: string): string => {
     return `[${MENU_KEY}="${_}"]`;
 };
 
@@ -212,7 +219,7 @@ export const getMenuQuerySelector = _ => {
  * 关闭菜单
  * @param _
  */
-export const clearMenuDOM = _ => {
+export const clearMenuDOM = (_: string): void => {
     const { closeMenu } = eventMap[_];
     // 清除body上的事件
     jTool(closeMenu[TARGET]).off(closeMenu[EVENTS]);
@@ -226,7 +233,7 @@ export const clearMenuDOM = _ => {
  * @param _
  * @param target: 触发菜单打开时的元素，在部分事件中会使用到
  */
-export const createMenuDom = (_, target) => {
+export const createMenuDom = (_: string, target: HTMLTableCellElement): any => {
     const settings = getSettings(_);
     const { supportAjaxPage, supportExport, supportConfig, supportPrint, menuHandler, useCellFocus, useHideRow } = settings;
     let menuList = [];
@@ -269,7 +276,7 @@ export const createMenuDom = (_, target) => {
     // 生成菜单html string
     let menuContent = '';
     const len = menuList.length;
-    menuList.forEach((item, index) => {
+    menuList.forEach((item: any, index: number) => {
         menuContent += `<span menu-action>${item.content}</span>`;
 
         // 根据配置项，增加分割线: 如果为最后一项则不进行配置
@@ -287,7 +294,7 @@ export const createMenuDom = (_, target) => {
 
     // 执行run函数、绑定点击事件
     const menuActionList = $menu.find('[menu-action]');
-    menuList.forEach((item, index) => {
+    menuList.forEach((item: MenuItemObject, index: number) => {
         const { run, onClick } = item;
         const $dom = menuActionList.eq(index);
 
@@ -297,7 +304,7 @@ export const createMenuDom = (_, target) => {
         }
 
         // 绑定点击事件
-        $dom.bind('click', function (e) {
+        $dom.bind('click', function (e: MouseEvent) {
             if (isDisabled(this, e)) {
                 return false;
             }
@@ -316,7 +323,7 @@ export const createMenuDom = (_, target) => {
  * @param clientY: 鼠标Y轴禁标
  * @returns {{top: *, left: *}}
  */
-export const getMenuPosition = (width, height, clientX, clientY) => {
+export const getMenuPosition = (width: number, height: number, clientX: number, clientY: number): object => {
     const documentElement = rootDocument.documentElement;
     const body = rootDocument.body;
 
