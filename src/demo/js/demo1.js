@@ -86,6 +86,12 @@ const GM_PUBLISH_METHOD_MAP = {
         title: '设置表头配置区域可视状态',
         code: `GridManager.setConfigVisible('${gridManagerName}', true);`
     },
+	setLineHeight: {
+		key: 'setLineHeight',
+		relyInit: true,
+		title: '配置行的高度',
+		code: `GridManager.setLineHeight('${gridManagerName}', '70px');`
+	},
     showTh: {
         key: 'showTh',
         relyInit: true,
@@ -387,7 +393,7 @@ const demo1 = {
                     console.log(list, tableData);
                 }
             },
-            summaryHandler: function(data){
+            summaryHandler: function(data) {
                 let readNumber = 0;
                 data.forEach(item => {
                     readNumber += item.readNumber;
