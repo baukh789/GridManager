@@ -61,7 +61,21 @@ import fixed from './fixed';
 import print from './print';
 import { showRow, hideRow } from './rowVisible';
 
-const isRendered = (_, settings) => {
+// column
+interface Column {
+	key: string;
+	index: number;
+	isShow?: boolean;
+	pk?: string;
+	children?: Array<Column>;
+	template?(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
+	isAutoCreate?: boolean;
+	align?: string;
+	fixed?: string;
+	filter?: any;
+}
+
+const isRendered = (_: string, settings?: any): boolean => {
     // 部分静态方法自身不使用settings， 所以这个参数可能为空
     if (!settings) {
         settings = getSettings(_);
@@ -86,7 +100,7 @@ export default class GridManager {
      * @param callback: 回调
      * @returns {*}
      */
-    constructor(table, arg, callback) {
+    constructor(table: HTMLTableElement, arg: any, callback?: any) {
         // 验证当前Element是否为table
         if (table.nodeName !== 'TABLE') {
             outError('nodeName !== "TABLE"');
@@ -199,7 +213,7 @@ export default class GridManager {
         }
 
         // 相互冲突的参数项处理: 多层嵌套表头
-        if (arg.columnData.some(item => isValidArray(item.children))) {
+        if (arg.columnData.some((item: Column) => isValidArray(item.children))) {
             // 不使用配置功能
             arg.supportConfig = false;
 
@@ -297,24 +311,21 @@ export default class GridManager {
 	 * GridManager.version || GM.version
 	 * @returns {string}
 	 */
-	static
-	get version() {
+	static get version(): string {
 		return getVersion();
 	}
 
 	/**
      * 获取默认配置项
      */
-    static
-    get defaultOption() {
+    static get defaultOption(): object {
 	    return defaultOption;
     }
 
     /**
      * 配置默认配置项
      */
-	static
-    set defaultOption(conf) {
+	static set defaultOption(conf: object) {
         defaultOption = conf;
     }
 
@@ -322,8 +333,7 @@ export default class GridManager {
      * 合并默认配置项，用于追加全局通用配置项
      * @param conf
      */
-    static
-    mergeDefaultOption(conf) {
+    static mergeDefaultOption(conf: object): void {
         defaultOption = extend(defaultOption, conf);
     }
 
@@ -333,8 +343,7 @@ export default class GridManager {
 	 * @param table
 	 * @returns {*}
 	 */
-	static
-	get(table) {
+	static get(table: string | HTMLTableElement): any {
         return getSettings(getKey(table));
 	}
 
@@ -345,8 +354,7 @@ export default class GridManager {
 	 * @param table
 	 * @returns {{}}
      */
-	static
-	getLocalStorage(table) {
+	static getLocalStorage(table: string | HTMLTableElement): object {
 		return getUserMemory(getKey(table));
 	}
 
@@ -357,11 +365,13 @@ export default class GridManager {
      * @param width
      * @param height
      */
-	static
-    resetLayout(table, width, height) {
+	static resetLayout(table: string | HTMLTableElement, width: string, height: string): void {
         const _ = getKey(table);
         const settings = getSettings(_);
         if (isRendered(_, settings)) {
+			settings.width = width;
+			settings.height = height;
+			setSettings(settings);
             calcLayout(settings);
 
             scroll.update(_);
@@ -374,8 +384,7 @@ export default class GridManager {
 	 * @param table
 	 * @returns {boolean}
      */
-	static
-	clear(table) {
+	static clear(table: string | HTMLTableElement): boolean {
 	    const _ = getKey(table);
         return isRendered(_) && delUserMemory(_);
 	}
@@ -386,8 +395,7 @@ export default class GridManager {
      * @param table
      * @returns {{}}
      */
-    static
-    getTableData(table) {
+    static getTableData(table: string | HTMLTableElement): Array<object> {
         const _ = getKey(table);
         return isRendered(_) && getTableData(_);
     }
@@ -399,8 +407,7 @@ export default class GridManager {
 	 * @param target 将要获取数据所对应的tr[Element or NodeList]
 	 * @returns {{}}
      */
-	static
-	getRowData(table, target) {
+	static getRowData(table: string | HTMLTableElement, target: NodeList | HTMLTableRowElement): object {
         const _ = getKey(table);
         return isRendered(_) && getRowData(_, target);
 	}
@@ -413,8 +420,7 @@ export default class GridManager {
 	 * @param callback 回调函数[function]
      * @param refresh 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
      */
-	static
-	setSort(table, sortJson, callback, refresh) {
+	static setSort(table: string | HTMLTableElement, sortJson: object, callback: any, refresh: boolean): void {
         const _ = getKey(table);
         isRendered(_) && updateSort(_, sortJson, callback, refresh);
 	}
@@ -424,8 +430,7 @@ export default class GridManager {
      * @param table
      * @param visible
      */
-    static
-    setConfigVisible(table, visible) {
+    static setConfigVisible(table: string | HTMLTableElement, visible: boolean): void {
         const _ = getKey(table);
         const settings = getSettings(_);
         if (!isRendered(_, settings)) {
@@ -460,8 +465,7 @@ export default class GridManager {
 	 * @param table
 	 * @param thName or thNameList
      */
-	static
-	showTh(table, thName) {
+	static showTh(table: string | HTMLTableElement, thName: string | Array<string>): void {
         const _ = getKey(table);
         if (isRendered(_) && getSettings(_).supportConfig) {
             setAreVisible(_, thName, true);
@@ -475,8 +479,7 @@ export default class GridManager {
 	 * @param table
      * @param thName or thNameList
      */
-	static
-	hideTh(table, thName) {
+	static hideTh(table: string | HTMLTableElement, thName: string | Array<string>): void {
         const _ = getKey(table);
         if (isRendered(_) && getSettings(_).supportConfig) {
             setAreVisible(_, thName, false);
@@ -492,15 +495,14 @@ export default class GridManager {
 	 * @param onlyChecked 是否只导出已选中的表格
 	 * @returns {boolean}
      */
-	static
-	exportGrid(table, fileName, onlyChecked) {
+	static exportGrid(table: string | HTMLTableElement, fileName: string, onlyChecked: boolean): Promise<any> {
         const _ = getKey(table);
         return isRendered(_) && exportFile.exportGrid(_, fileName, onlyChecked);
 	}
 
 	// TODO 临时方案，exportGridToXls 下个版本将清除，使用exportGrid替代
-    static
-    exportGridToXls(table, fileName, onlyChecked) {
+	// @ts-ignore
+    static exportGridToXls(table, fileName, onlyChecked) {
 	    outWarn('exportGridToXls下个版本将移除，请使用exportGrid进行替换');
         return GridManager.exportGrid(table, fileName, onlyChecked);
     }
@@ -518,8 +520,7 @@ export default class GridManager {
 	 * - setQuery方法中对query字段执行的操作是覆盖而不是合并, query参数位传递的任意值都会将原来的值覆盖.
      * - setQuery() 执行后不会清除已选中的数据，如需清除可以在callback中执行setCheckedData(table, [])
 	 */
-	static
-	setQuery(table, query, gotoPage, callback) {
+	static setQuery(table: string | HTMLTableElement, query: object, gotoPage: boolean | number, callback: any): void {
         const _ = getKey(table);
         const settings = getSettings(_);
         if (!isRendered(_, settings)) {
@@ -538,7 +539,7 @@ export default class GridManager {
 		}
 
 		// 更新过滤相关字段
-        settings._filter && each(columnMap, (key, col) => {
+        settings._filter && each(columnMap, (key: string, col: Column) => {
             if (col.filter) {
                 col.filter.selected = isString(query[key]) ? query[key] : '';
                 // 这里不使用base.getTh的原因: 需要同时更新thead 和 fake-thead
@@ -568,8 +569,7 @@ export default class GridManager {
 	 * @param table
 	 * @param ajaxData: 配置的数据
 	 */
-	static
-	setAjaxData(table, ajaxData, callback) {
+	static setAjaxData(table: string | HTMLTableElement, ajaxData: any, callback: any): void {
 	    const _ = getKey(table);
         const settings = getSettings(_);
         if (isRendered(_, settings)) {
@@ -587,8 +587,7 @@ export default class GridManager {
 	 * @param isGotoFirstPage:  是否刷新时跳转至第一页[boolean类型, 默认false]
 	 * @param callback: 回调函数
 	 */
-	static
-	refreshGrid(table, isGotoFirstPage, callback) {
+	static refreshGrid(table: string | HTMLTableElement, isGotoFirstPage: boolean, callback: any): void {
         const _ = getKey(table);
         const settings = getSettings(_);
 	    if (isRendered(_, settings)) {
@@ -609,8 +608,7 @@ export default class GridManager {
      * 渲染表格 使用现有数据，对表格进行渲染
      * @param table
      */
-    static
-	renderGrid(table) {
+    static renderGrid(table: string | HTMLTableElement): void {
         const _ = getKey(table);
         const settings = getSettings(_);
         if (isRendered(_, settings)) {
@@ -629,8 +627,7 @@ export default class GridManager {
      * @param table
      * @param settings
      */
-	static
-    resetSettings(table, settings) {
+	static resetSettings(table: string | HTMLTableElement, settings: any): void {
         const _ = getKey(table);
         isRendered(_, settings) && setSettings(settings);
     }
@@ -640,8 +637,7 @@ export default class GridManager {
      * 更新模板 [现仅在react版本中使用到]
      * @param arg
      */
-    static
-    updateTemplate(arg) {
+    static updateTemplate(arg: any): any {
         return updateTemplate(arg);
     }
 
@@ -651,8 +647,7 @@ export default class GridManager {
 	 * @param table
 	 * @returns {NodeList} 当前选中的行
      */
-	static
-	getCheckedTr(table) {
+	static getCheckedTr(table: string | HTMLTableElement): NodeList {
         const _ = getKey(table);
         return isRendered(_) && checkbox.getCheckedTr(_);
 	};
@@ -663,8 +658,7 @@ export default class GridManager {
 	 * @param table
 	 * @returns {{}}
      */
-	static
-	getCheckedData(table) {
+	static getCheckedData(table: string | HTMLTableElement): object {
         const _ = getKey(table);
         return isRendered(_) && getCheckedData(_);
 	};
@@ -676,8 +670,7 @@ export default class GridManager {
      * @param checkedData: 选中的数据列表
      * @returns {{}}
      */
-    static
-    setCheckedData(table, checkedData) {
+    static setCheckedData(table: string | HTMLTableElement, checkedData: Array<object>): void {
         const _ = getKey(table);
         const settings = getSettings(_);
         if (isRendered(_, settings)) {
@@ -699,7 +692,7 @@ export default class GridManager {
             if (supportMenu) {
                 clearMenuDOM(_);
             }
-            return resetCheckboxDOM(_, tableData, useRadio, max);
+            resetCheckboxDOM(_, tableData, useRadio, max);
         }
     };
 
@@ -711,18 +704,17 @@ export default class GridManager {
      * @param rowData: 需要更新的数据列表
      * @returns tableData: 更新后的表格数据
      */
-    static
-    updateRowData(table, key, rowData) {
+    static updateRowData(table: string | HTMLTableElement, key: string, rowData: object | Array<object>): Array<object> {
         const _ = getKey(table);
         const settings = getSettings(_);
         if (isRendered(_, settings)) {
             const { columnMap, supportCheckbox, rowRenderHandler } = settings;
-            const rowDataList = isArray(rowData) ? rowData : [rowData];
+            const rowDataList = isArray(rowData) ? <Array<object>>rowData : [rowData];
 
             let { tableData, updateCacheList } = updateRowData(_, key, rowDataList);
             updateCacheList = updateCacheList.map(row => {
                 let index = -1;
-                each(tableData, (item, _index) => {
+                each(tableData, (item: object, _index: number) => {
                     if (item[key] === row[key]) {
                         index = _index;
                         return false;
@@ -748,7 +740,7 @@ export default class GridManager {
      * @param table
      * @param state
      */
-    static updateTreeState(table, state) {
+    static updateTreeState(table: string | HTMLTableElement, state: boolean): void {
         const _ = getKey(table);
         isRendered(_) && tree.updateDOM(_, state);
     }
@@ -759,8 +751,7 @@ export default class GridManager {
      * @param table
      * @returns {*|void}
      */
-	static
-	cleanData(table) {
+	static cleanData(table: string | HTMLTableElement): void {
         const _ = getKey(table);
         if (isRendered(_)) {
             setTableData(_, []);
@@ -773,8 +764,7 @@ export default class GridManager {
      * 打印
      * @param table
      */
-    static
-    print(table) {
+    static print(table: string | HTMLTableElement): void {
         const _ = getKey(table);
         isRendered(_) && print(_);
     }
@@ -784,8 +774,7 @@ export default class GridManager {
      * 显示加载框
      * @param table
      */
-    static
-    showLoading(table) {
+    static showLoading(table: string | HTMLTableElement): void {
         const _ = getKey(table);
         const settings = getSettings(_);
         isRendered(_, settings) && showLoading(_, settings.loadingTemplate);
@@ -797,8 +786,7 @@ export default class GridManager {
      * @param table
      * @param delayTime: 延迟隐藏时间
      */
-    static
-    hideLoading(table, delayTime) {
+    static hideLoading(table: string | HTMLTableElement, delayTime: number): void {
         const _ = getKey(table);
         isRendered(_) && hideLoading(_, delayTime);
     }
@@ -809,8 +797,7 @@ export default class GridManager {
      * @param table
      * @param index: 行的索引，为空时将显示所有已隐藏的行
      */
-    static
-    showRow(table, index) {
+    static showRow(table: string | HTMLTableElement, index: number): void {
         const _ = getKey(table);
         if (isRendered(_)) {
             showRow(getSettings(_), index);
@@ -823,8 +810,7 @@ export default class GridManager {
      * @param table
      * @param index: 行的索引，为空时将不执行
      */
-    static
-    hideRow(table, index) {
+    static hideRow(table: string | HTMLTableElement, index: number): void {
         const _ = getKey(table);
         if (isRendered(_) && isNumber(index)) {
             hideRow(getSettings(_), index);
@@ -837,8 +823,7 @@ export default class GridManager {
      * @param table
      * @param height
      */
-    static
-    setLineHeight(table, height) {
+    static setLineHeight(table: string | HTMLTableElement, height: string) {
         const _ = getKey(table);
         if (isRendered(_) && isString(height)) {
             setLineHeightValue(_, height);
@@ -850,7 +835,7 @@ export default class GridManager {
 	 * @param $table
 	 * @param settings
      */
-	async initTable($table, settings) {
+	async initTable($table: string | HTMLTableElement, settings: any): Promise<any> {
 		// 渲染HTML，嵌入所需的事件源DOM
         await core.createDOM($table, settings);
 
@@ -940,7 +925,7 @@ export default class GridManager {
         $theadTr.height(trHeight);
         getFakeThead(_).find('tr').height(trHeight);
 
-        each(getAllTh(_), item => {
+        each(getAllTh(_), (item: HTMLTableCellElement) => {
             item.innerHTML = '';
         });
 
@@ -953,8 +938,7 @@ export default class GridManager {
      * 消毁当前实例
      * @param table
      */
-    static
-    destroy(table) {
+    static destroy(table: string | HTMLTableElement): void {
         const _ = getKey(table);
 
         try {

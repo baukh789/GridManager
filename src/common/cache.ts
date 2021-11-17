@@ -68,10 +68,10 @@ export const getVersion = (): string => {
  * @param useSourceData: 使用原数据 或 克隆数据
  * @returns {*}
  */
-export const getRowData = (_: string, target: HTMLTableElement, useSourceData?: boolean): object => {
+export const getRowData = (_: string, target: HTMLTableRowElement | NodeList, useSourceData?: boolean): object => {
     const settings = getSettings(_);
     const tableData = getTableData(_);
-    const getTrData = (tr: HTMLTableElement): object => {
+    const getTrData = (tr: HTMLTableRowElement): object => {
         const cacheKey = tr.getAttribute(TR_CACHE_KEY);
         let rowData = tableData[cacheKey] || {};
 
@@ -92,13 +92,13 @@ export const getRowData = (_: string, target: HTMLTableElement, useSourceData?: 
 
     // target type = Element 元素时, 返回单条数据对象;
     if (isElement(target)) {
-        return getTrData(target);
+        return getTrData(target as HTMLTableRowElement);
     }
 
     // target type =  NodeList 类型时, 返回数组
     if (isNodeList(target)) {
         let rodData: Array<object> = [];
-        each(target, (tr: HTMLTableElement) => {
+        each(target, (tr: HTMLTableRowElement) => {
             rodData.push(getTrData(tr));
         });
         return rodData;

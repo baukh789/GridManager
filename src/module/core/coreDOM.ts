@@ -409,7 +409,7 @@ class Dom {
         const event = eventMap[_];
 
         // 行事件透出参数
-        const getRowParams = (tr: HTMLTableElement) => {
+        const getRowParams = (tr: HTMLTableRowElement) => {
             return [
                 // row
                 getRowData(_, tr),
@@ -446,7 +446,7 @@ class Dom {
 
         // 单元格透出参数
         const getCellParams = (td: HTMLTableCellElement) => {
-            const tr = td.parentNode as HTMLTableElement;
+            const tr = td.parentNode as HTMLTableRowElement;
             return [
                 // row
                 getRowData(_, tr),

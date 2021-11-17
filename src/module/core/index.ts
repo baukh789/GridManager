@@ -72,7 +72,7 @@ class Core {
      * @param response
      * @param callback
      */
-    async driveDomForSuccessAfter(settings: any, response: object | string, callback: any): Promise<any> {
+    async driveDomForSuccessAfter(settings: any, response: object | string, callback?: any): Promise<any> {
         const { _, rendered, responseHandler, supportCheckbox, supportAjaxPage, supportMenu, checkboxConfig, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
 
         // 用于防止在填tbody时，实例已经被消毁的情况。
