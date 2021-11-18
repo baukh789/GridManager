@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="../css/gm.css">
+	<script type="text/javascript" src="../js/gm.js"></script>
+	<title>GridManager: Excel</title>
+	<style>
+		html, body{
+			width: 100%;
+			height: 100%;
+			overflow-x:hidden;
+			margin: 0;
+			padding: 0;
+		}
+		h2{
+			font-size:22px;
+			padding:10px 30px;
+			color:#333;
+		}
+		p{
+			font-size:14px;
+			padding:10px 30px;
+			color:#333;
+			text-indent:2em;
+			margin: 0;
+		}
+		hr{
+			margin-top: 18px;
+			margin-bottom: 18px;
+			border: 0;
+			border-top: 1px solid #eee;
+		}
+	</style>
+</head>
+
+<body>
+<table grid-manager="test"></table>
+
+<script>
+	const getData = num => {
+		const data = [];
+		for (let i = 1; i<= num; i++) {
+			data.push({
+				"id": i,
+				"name": `baukh-${i}`,
+				"age": "28",
+				"createDate": "2015-03-12",
+				"info": "野生前端程序"
+			});
+		}
+		return data;
+	};
+	const ajaxData = {
+		"data": getData(40)
+	};
+</script>
+<script type="text/javascript">
+	const onEdit = function (dom) {
+		const cacheKey = dom.getAttribute('edit-key');
+
+	};
+	const editTemplate = (cell, row, index, key) => {
+		return `<div class="edit-template" onclick="onEdit(this)" edit-key="${index}">${cell}</div>`;
+	};
+	// 实例化
+	const option = {
+		gridManagerName:'test',
+		// supportAjaxPage: true,
+		// supportCheckbox: false,
+		// supportAutoOrder: false,
+		supportMoveRow: true,
+		useCellFocus: true,
+		useHideRow: true,
+		height: '100%',
+		ajaxData,
+		// useRadio: true,
+		pageSize: 20,
+		disableAutoLoading: true,
+		exportConfig: {
+			handler: (fileName, query, pageData, sortData, selectedList, tableData) => {
+				GM.showLoading('test');
+				GM.hideLoading('test', 500);
+			}
+		},
+		summaryHandler: function(data){
+			let num = 0;
+			data.forEach(item => {
+				num += parseInt(item.age, 10);
+			});
+			return {
+				name: '平均年龄',
+				age: num / data.length
+			};
+		},
+		columnData: [{
+			key: 'name',
+			remind: 'the username',
+			sorting: 'up',
+			width: '200px',
+			text: 'username',
+			template: editTemplate
+		},{
+			key: 'age',
+			remind: 'the age',
+			sorting: '',
+			width: '200px',
+			text: 'age'
+		},{
+			key: 'info',
+			remind: 'the info',
+			sorting: '',
+			text: 'info'
+		},{
+			key: 'createDate',
+			text: '创建时间',
+			remind: 'the createDate',
+			sorting: 'down',
+			width: '200px',
+			fixed: 'right'
+		}
+		]
+	};
+	new window.GM(document.querySelector('table[grid-manager]'), option);
+</script>
+</body>
+</html>
