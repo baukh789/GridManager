@@ -1,11 +1,12 @@
 import { TOOLBAR_KEY } from '@common/constants';
 import { KEY_UP, MOUSE_CLICK, createEventsObj } from '@common/events';
+import { EventMap } from 'typings/types';
 
 /**
  * 分页功能所需的事件项
  * @param _
  */
-export const getEvent = (_: string): object => {
+export const getEvent = (_: string): EventMap => {
     const target = `[${TOOLBAR_KEY}="${_}"]`;
     return {
         // 快捷跳转

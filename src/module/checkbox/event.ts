@@ -5,7 +5,8 @@
  */
 import { MOUSE_CLICK, createEventsObj } from '@common/events';
 import { TR_CACHE_KEY } from '@common/constants';
-export const getEvent = (_: string, scope: string) => {
+import { EventMap } from 'typings/types';
+export const getEvent = (_: string, scope: string): EventMap => {
     return {
         // 全选框点击
         allChange: createEventsObj(MOUSE_CLICK, scope, 'th[gm-checkbox] .gm-checkbox-wrapper'),

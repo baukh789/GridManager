@@ -1,3 +1,5 @@
+import { EventObj } from 'typings/types';
+
 // 事件: click
 export const MOUSE_CLICK = 'click';
 
@@ -37,13 +39,8 @@ export const TARGET = 'target';
 // 事件选择器
 export const SELECTOR = 'selector';
 
-
 // 获取事件对像
-export const createEventsObj = (events: string, target: string, selector?: string): {
-    [EVENTS]: string;
-    [TARGET]: string;
-    [SELECTOR]: string;
-} => {
+export const createEventsObj = (events: string, target: string, selector?: string): EventObj => {
     return {
         [EVENTS]: events,
         [TARGET]: target,

@@ -1,11 +1,6 @@
 import { TOOLBAR_KEY } from '@common/constants';
+import { PageData, SettingObj } from 'typings/types';
 
-interface PageData {
-	tPage: number | string;
-	tSize: number | string;
-	cPage?: number | string; // 动态取值[currentPageKey]
-	pSize?: number | string; // 动态取值[pageSizeKey]
-}
 /**
  * 获取选择器
  * @param _
@@ -73,7 +68,7 @@ export const joinPaginationNumber = (currentPageKey: string, pageData: PageData)
  * @returns {{tPage: number, cPage: *, pSize: *, tSize: *}}
  * @private
  */
-export const getPageData = (settings: any, totals: number, len: number): PageData => {
+export const getPageData = (settings: SettingObj, totals: number, len: number): PageData => {
     const { pageData, pageSizeKey, pageSize, currentPageKey } = settings;
     const pSize = pageData[pageSizeKey] || pageSize;
     const cPage = pageData[currentPageKey] || 1;

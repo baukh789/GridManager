@@ -9,9 +9,11 @@ import _Offset from './Offset';
 import _Element from './Element';
 import _Animate from './Animate';
 import _Data from './Data';
+import { JTool } from 'typings/types';
 
 // 如果需要集成Angular,React,在此处进行集成
-const jTool = function (selector: any, context?: any): any {
+const jTool = function (selector: JTool | undefined | null | Window | Document | HTMLElement | NodeList | Array<HTMLElement> | string,
+						context?: JTool | HTMLElement | NodeList | string): JTool {
 	return new Sizzle(selector, context);
 };
 
@@ -24,7 +26,7 @@ jTool.extend(utils);
 jTool.ajax = ajax;
 
 // 捆绑jTool 方法
-each([_Event, _Css, _Class, _Document, _Offset, _Element, _Animate, _Data], (v: any) => {
+each([_Event, _Css, _Class, _Document, _Offset, _Element, _Animate, _Data], (v: object) => {
     jTool.prototype.extend(v);
 });
 

@@ -2,27 +2,9 @@ import { getColTd, getTh, getTable, getTbody } from '@common/base';
 import { ROW_HIDE_KEY } from '@common/constants';
 import jTool from '@jTool';
 import { each } from '@jTool/utils';
-import './style.less';
-
 import { ROW_SPAN, MERGE_TD, ROW_LAST } from './constants';
-
-// column
-interface Column {
-	key: string;
-	index: number;
-	isShow?: boolean;
-	pk?: string;
-	children?: Array<Column>;
-	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
-	isAutoCreate: boolean;
-	align?: string;
-	fixed?: string;
-	merge?: string;
-}
-
-interface ColumnMap {
-	[index:string]: Column
-}
+import { Column, ColumnMap, JTool } from 'typings/types';
+import './style.less';
 
 /**
  * 根据配置项[merge]合并行数据相同的单元格
@@ -81,7 +63,7 @@ export const mergeRow = (_: string, columnMap: ColumnMap): void => {
  * @param _
  * @param $context
  */
-export const clearMergeRow = (_: string, $context?: any): void => {
+export const clearMergeRow = (_: string, $context?: JTool): void => {
     $context = $context || getTable(_);
     jTool(`[${ROW_SPAN}]`, $context).removeAttr(ROW_SPAN);
     jTool(`[${MERGE_TD}]`, $context).removeAttr(MERGE_TD);

@@ -29,6 +29,7 @@ import fixed from '@module/fixed';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ING, CLASS_DREAMLAND } from './constants';
+import { JTool } from 'typings/types';
 
 class Drag {
     /**
@@ -189,7 +190,7 @@ class Drag {
      * @returns {parseData}
      */
 	@parseTpl(dreamlandTpl)
-    createHtml(params: any): object {
+    createHtml(params: any): string {
 	    const { $table, $th } = params;
 
 	    // 这里获取的tdList排除了tree children
@@ -201,6 +202,7 @@ class Drag {
             tbodyHtml += `<tr style="height: ${v.offsetHeight + PX}">${v.outerHTML}</tr>`;
         });
 
+		// @ts-ignore
         return {
             class: $table.get(0).className,
             th: $th.get(0).outerHTML,
@@ -209,7 +211,7 @@ class Drag {
     }
 
 	/**
-	 * 拖拽触发后更新DOM, ts中的any都是jtool类型
+	 * 拖拽触发后更新DOM
 	 * @param _
 	 * @param $prevTh
 	 * @param $nextTh
@@ -218,7 +220,7 @@ class Drag {
 	 * @param $dreamlandDIV
 	 * @param $allFakeVisibleTh
 	 */
-	updateDrag(_: string, $prevTh: any, $nextTh: any, $th: any, $colTd: any, $dreamlandDIV: any, $allFakeVisibleTh: any): any {
+	updateDrag(_: string, $prevTh: JTool, $nextTh: JTool, $th: JTool, $colTd: JTool, $dreamlandDIV: JTool, $allFakeVisibleTh: JTool): JTool {
 		// 处理向左拖拽
 		if ($prevTh && $dreamlandDIV.offset().left < $prevTh.offset().left) {
             // 事件源对应的上一组td

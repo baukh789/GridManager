@@ -22,9 +22,7 @@
  * 在选择元素上为当前并不存在的子元素绑定事件处理函数: .on('click mousedown', '.test', function(){})
  * */
 import { isElement, isFunction, each, noop, getDomList } from './utils';
-interface JTool {
-    jTool: boolean;
-}
+import { JTool } from 'typings/types';
 interface EventObject {
     eventName: string;
     type: string;

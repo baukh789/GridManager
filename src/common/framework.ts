@@ -1,21 +1,13 @@
 import { getQuerySelector } from '@common/base';
 import { isNull, isUndefined, rootDocument } from '@jTool/utils';
-interface TdTemplate {
-    (col: object, row: object, index: number, key: string): string;
-}
-interface ThTemplate {
-    (): string;
-}
-interface FullColumnTemplate {
-    (row: object, index: number): string;
-}
-interface EmptyTemplate {
-    (settings: any): string;
-}
+import { Row, SettingObj, ThTemplate, TdTemplate, FullColumnTemplate, EmptyTemplate } from 'typings/types';
+
+
+// 单元格解析
 interface CompileCell {
     key?: string;
     el?: HTMLTableElement;
-    row?: object;
+    row?: Row;
     template?: ThTemplate | TdTemplate | FullColumnTemplate | EmptyTemplate;
     type?: string;
     fnArg?: Array<any>;
@@ -53,7 +45,7 @@ export const clearCompileList = (_: string): void => {
  * @param settings
  * @param el
  */
-export const compileFakeThead = (settings: any, el: HTMLTableElement) => {
+export const compileFakeThead = (settings: SettingObj, el: HTMLTableElement) => {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     if (compileAngularjs || compileVue || compileReact) {
         const compileList = getCompileList(_);
@@ -72,7 +64,7 @@ export const compileFakeThead = (settings: any, el: HTMLTableElement) => {
  * @param template
  * @returns {string}
  */
-export const compileTh = (settings: any, key: string, template: ThTemplate): {
+export const compileTh = (settings: SettingObj, key: string, template: ThTemplate): {
     text: string;
     compileAttr: string;
 } => {
@@ -107,7 +99,7 @@ export const compileTh = (settings: any, key: string, template: ThTemplate): {
  * @param template
  * @returns {*}
  */
-export const compileTd = (settings: any, template: TdTemplate, row: object, index: number, key: string): {
+export const compileTd = (settings: SettingObj, template: TdTemplate, row: Row, index: number, key: string): {
 	text: any; // string | HtmlElement
 	compileAttr: string;
 } => {
@@ -158,7 +150,7 @@ export const compileTd = (settings: any, template: TdTemplate, row: object, inde
  * @param template
  * @returns {string}
  */
-export const compileEmptyTemplate = (settings: any, el: HTMLTableElement, template: EmptyTemplate): string => {
+export const compileEmptyTemplate = (settings: SettingObj, el: HTMLTableElement, template: EmptyTemplate): string => {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
 
@@ -189,7 +181,7 @@ export const compileEmptyTemplate = (settings: any, el: HTMLTableElement, templa
  * @param template
  * @returns {*}
  */
-export const compileFullColumn = (settings: any, row: object, index: number, template: FullColumnTemplate, model: string) : {
+export const compileFullColumn = (settings: SettingObj, row: Row, index: number, template: FullColumnTemplate, model: string) : {
 	text: string | HTMLTableElement;
 	compileAttr: string;
 } => {
@@ -229,7 +221,7 @@ export const compileFullColumn = (settings: any, row: object, index: number, tem
  * @param settings
  * @returns {Promise<void>}
  */
-export async function sendCompile(settings: any) {
+export async function sendCompile(settings: SettingObj) {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
     if (compileList.length === 0) {

@@ -8,7 +8,9 @@ import jTool from '@jTool';
 import {DIV_KEY, FAKE_TABLE_HEAD_KEY, TABLE_BODY_KEY, TABLE_HEAD_KEY, TABLE_KEY, WRAP_KEY} from '@common/constants';
 
 // 缓存map: 操作较少的不需要放在这里
-const cacheMap: any = {
+const cacheMap: {
+	[index:string]: any
+} = {
     [TABLE_KEY]: {},
     [DIV_KEY]: {},
     [WRAP_KEY]: {},
@@ -27,7 +29,7 @@ const cacheMap: any = {
  * @returns {*}
  */
 export const getCacheDOM = (_: string, key: string, querySelector?: string) => {
-    const cache = cacheMap[key] as any;
+    const cache = cacheMap[key];
     if (!cache[_]) {
         cache[_] = jTool(querySelector || `[${key}="${_}"]`);
     }

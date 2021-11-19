@@ -3,8 +3,9 @@
  * @param scope: querySelector 域
  */
 import { MOUSE_CLICK, createEventsObj } from '@common/events';
+import { EventMap } from 'typings/types';
 
-export const getEvent = (scope: string): object => {
+export const getEvent = (scope: string): EventMap => {
     return {
         // 切换展示状态
         open: createEventsObj(MOUSE_CLICK, scope, '.gm-dropdown .gm-dropdown-text'),

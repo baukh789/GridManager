@@ -9,7 +9,8 @@
 import { DIV_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { CLASS_ADJUST_ACTION } from './constants';
 import { MOUSE_DOWN, MOUSE_MOVE, MOUSE_UP, MOUSE_LEAVE, createEventsObj } from '@common/events';
-export function getEvent(_: string, scope: string): object {
+import { EventMap } from 'typings/types';
+export function getEvent(_: string, scope: string): EventMap {
     return {
         // 宽度调整触发
         start: createEventsObj(MOUSE_DOWN, scope, `[${FAKE_TABLE_HEAD_KEY}="${_}"] .${CLASS_ADJUST_ACTION}`),

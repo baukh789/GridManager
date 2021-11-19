@@ -9,9 +9,10 @@ import { isString, isFunction, each, isEmptyObject, extend } from '@jTool/utils'
 import ajax from '@jTool/Ajax';
 import { cloneObject } from '@common/utils';
 import { setSettings } from '@common/cache';
+import { SettingObj } from 'typings/types';
 
 // 获取参数信息
-export const getParams = (settings: any): object => {
+export const getParams = (settings: SettingObj): object => {
     const { query, supportAjaxPage, pageData, sortData, mergeSort, sortKey, currentPageKey, pageSizeKey, requestHandler } = settings;
     const params = extend(true, {}, query);
     // 合并分页信息至请求参
@@ -47,7 +48,7 @@ export const getParams = (settings: any): object => {
  * @param settings
  * @returns promise
  */
-export const transformToPromise = (settings: any): any =>  {
+export const transformToPromise = (settings: SettingObj): Promise<any> =>  {
     const params = getParams(settings);
     const { supportAjaxPage, pageData, sortData, sortKey, ajaxType, ajaxHeaders, ajaxXhrFields, ajaxData } = settings;
     // 将 requestHandler 内修改的分页参数合并至 settings.pageData

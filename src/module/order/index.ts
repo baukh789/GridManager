@@ -3,13 +3,14 @@
  * */
 import { ORDER_KEY, GM_CREATE } from '@common/constants';
 import i18n from '../i18n';
+import { SettingObj } from 'typings/types';
 import './style.less';
 class Order {
 	/**
 	 * 获取序号列对象
 	 * @param settings
      */
-	getColumn(settings: any): object {
+	getColumn(settings: SettingObj): object {
 	    const { autoOrderConfig } = settings;
 		return {
 			key: ORDER_KEY,

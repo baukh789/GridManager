@@ -14,32 +14,13 @@ import configTpl from './config.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_CONFIG, CLASS_CONFIG_ING, CLASS_NO_CLICK } from './constants';
 import { EVENTS, TARGET, SELECTOR } from '@common/events';
-
-// column
-interface Column {
-	key: string;
-	index: number;
-	isShow: boolean;
-}
-
-// 配置区域模板参数
-interface ConfigHtmlParams {
-	_: string;
-	configInfo: object;
-}
-
-// 列模板参数
-interface ColHtmlParams {
-	key: string;
-	isShow: boolean;
-	label: string;
-}
+import { JTool, Column, ConfigHtmlParams, ColHtmlParams } from 'typings/types';
 
 /**
  * 获取config 的 jtool对像
  * @param _
  */
-const getDOM = (_: string): any => {
+const getDOM = (_: string): JTool => {
     return jTool(`[${CONFIG_KEY}="${_}"]`);
 };
 
@@ -195,7 +176,8 @@ class Config {
 	 * @returns {}
      */
 	@parseTpl(configTpl)
-	createHtml(params: ConfigHtmlParams): object {
+	createHtml(params: ConfigHtmlParams): string {
+		// @ts-ignore
 	    return {
 	        key: `${CONFIG_KEY}="${params._}"`,
             info: params.configInfo
@@ -239,7 +221,7 @@ class Config {
         const $target = jTool(closeConfigByBody[TARGET]);
         $target.off(events);
         $target.on(events, function (e: MouseEvent) {
-            const eventSource = jTool(e.target);
+            const eventSource = jTool(e.target as HTMLElement);
             if (eventSource.hasClass(CLASS_CONFIG) || eventSource.closest(`.${CLASS_CONFIG}`).length === 1) {
                 return false;
             }

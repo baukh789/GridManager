@@ -3,6 +3,7 @@
  * */
 import { isUndefined, isArray } from '@jTool/utils';
 import { outWarn } from '@common/utils';
+import { SettingObj } from 'typings/types';
 
 /**
  * 指定[表格 键值 语种]获取对应文本
@@ -10,7 +11,7 @@ import { outWarn } from '@common/utils';
  * @param key 键值
  * @returns {*|string}
  */
-const getText = (settings: any, key: string): string => {
+const getText = (settings: SettingObj, key: string): string => {
     return settings.textConfig[key][settings.i18n];
 };
 
@@ -24,7 +25,7 @@ const getText = (settings: any, key: string): string => {
  * @returns {string}
  */
 /* eslint-disable */
-export default function(settings: any, key: string, v1?: number | string | Array<string | number>, v2?: number | string, v3?: number | string) {
+export default function(settings: SettingObj, key: string, v1?: number | string | Array<string | number>, v2?: number | string, v3?: number | string) {
     let intrusion: Array<string> = [];
     const len = arguments.length;
     // 处理参数，实现多态化

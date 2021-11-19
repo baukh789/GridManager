@@ -1,8 +1,6 @@
 import Sizzle from './Sizzle';
 import { getDomList, isJTool } from '@jTool/utils';
-interface JTool {
-    jTool: boolean;
-}
+import { JTool } from 'typings/types';
 
 export default {
 	// 获取指定DOM Element

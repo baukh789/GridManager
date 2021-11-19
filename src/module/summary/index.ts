@@ -3,27 +3,10 @@ import { compileTd } from '@common/framework';
 import { getDiv, getThead } from '@common/base';
 import { DISABLE_MOVE } from '@module/moveRow/constants';
 import { SUMMARY_FLAG, SUMMARY_ROW } from './constants';
+import { SettingObj, Row, Column, TrObject } from 'typings/types';
 import './style.less';
 
-// column
-interface Column {
-	key: string;
-	index: number;
-	isShow?: boolean;
-	pk?: string;
-	children?: Array<Column>;
-	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
-	isAutoCreate: boolean;
-	align?: string;
-	fixed?: string;
-	merge?: string;
-	disableMoveRow?: boolean;
-	level?: number;
-	rowspan?: number;
-	colspan?: number;
-}
-
-export const installSummary = (settings: any, columnList: Array<object>, tableData: Array<object>, trObjectList: Array<object>): void => {
+export const installSummary = (settings: SettingObj, columnList: Array<Column>, tableData: Array<Row>, trObjectList: Array<TrObject>): void => {
     const { _, summaryHandler, browser } = settings;
     const summaryMap = summaryHandler(tableData);
 

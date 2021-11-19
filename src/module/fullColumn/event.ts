@@ -3,8 +3,9 @@
  * @param scope: querySelector 域
  */
 import { createEventsObj, MOUSE_CLICK } from '@common/events';
+import { EventMap } from 'typings/types';
 
-export const getEvent = (scope: string, key: string): object => {
+export const getEvent = (scope: string, key: string): EventMap => {
     return {
         // 触发 #001
         fold: createEventsObj(MOUSE_CLICK, scope, `i[${key}]`)

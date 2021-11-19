@@ -16,15 +16,8 @@ import filterTpl from './filter.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_FILTER, CLASS_FILTER_SELECTED, CLASS_FILTER_CONTENT } from './constants';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
+import { JTool, SettingObj, FilterObject } from 'typings/types';
 
-interface FilterObject{
-	option: Array<{
-		value: string;
-		text: string;
-	}>;
-	selected: string;
-	isMultiple: boolean
-}
 // 选中数据使用的分隔符
 const FILTER_SELECTED_FLAG = ',';
 class Filter {
@@ -74,7 +67,7 @@ class Filter {
 
             // 点击空处关闭
             jTool(close[TARGET]).on(close[EVENTS], function (e: MouseEvent) {
-                const eventSource = jTool(e.target);
+                const eventSource = jTool(<HTMLElement>e.target);
                 if (eventSource.hasClass(CLASS_FILTER_CONTENT) || eventSource.closest(`.${CLASS_FILTER_CONTENT}`).length === 1) {
                     return false;
                 }
@@ -149,7 +142,7 @@ class Filter {
      * @returns {object}
      */
     @parseTpl(filterTpl)
-    createHtml(params: { settings: any, columnFilter: FilterObject }): object {
+    createHtml(params: { settings: SettingObj, columnFilter: FilterObject }): string {
         const { settings, columnFilter } = params;
         const tableWrapHeight = getWrap(settings._).height();
         let listHtml = '';
@@ -172,6 +165,8 @@ class Filter {
                 listHtml += `<li class="filter-radio">${checkbox.getRadioTpl(parseData)}</li>`;
             }
         });
+
+		// @ts-ignore
         return {
             icon: columnFilter.selected ? ` ${CLASS_FILTER_SELECTED}` : '',
             style: `style="max-height: ${tableWrapHeight - 100 + PX}"`,
@@ -186,7 +181,7 @@ class Filter {
      * @param $th: fake-th
      * @param filter
      */
-    update($th: any, filter: FilterObject): void {
+    update($th: JTool, filter: FilterObject): void {
         const $filterIcon = jTool('.fa-icon', $th);
         const $filters = jTool(`.${CLASS_FILTER_CONTENT} .gm-radio-checkbox-input`, $th);
         each($filters, (item: HTMLInputElement) => {

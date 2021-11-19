@@ -20,33 +20,8 @@ import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from './constants';
 import { coreDOM } from '../core';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
+import { Column, ColumnMap, MoveRowConfig, Row, JTool } from 'typings/types';
 
-// column
-interface Column {
-	key: string;
-	index: number;
-	isShow?: boolean;
-	pk?: string;
-	children?: Array<Column>;
-	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
-	isAutoCreate: boolean;
-	align?: string;
-	fixed?: string;
-	merge?: string;
-	disableMoveRow?: boolean;
-}
-
-interface ColumnMap {
-	[index:string]: Column
-}
-
-// 移动行配置
-interface MoveRowConfig {
-	key: string;
-	useSingleMode: boolean;
-	fixed?: string;
-	handler?(list: Array<object>, tableData: Array<object>): void;
-}
 /**
  * 更新移动
  * @param _
@@ -58,7 +33,7 @@ interface MoveRowConfig {
  * @param $tr
  * @param tableData
  */
-const update = (_: string, key: string, $tbody: any, $dreamlandDIV: any, $prevTr: any, $nextTr: any, $tr: any, tableData: Array<object>): any => {
+const update = (_: string, key: string, $tbody: JTool, $dreamlandDIV: JTool, $prevTr: JTool, $nextTr: JTool, $tr: JTool, tableData: Array<Row>): JTool => {
     const oldCacheKey = $tr.attr(TR_CACHE_KEY);
     let $target;
     // 处理向上移动
@@ -110,7 +85,7 @@ const update = (_: string, key: string, $tbody: any, $dreamlandDIV: any, $prevTr
  * @param columnMap
  * @param changeList
  */
-const mergeToCheckedData = (_: string, checkboxKey: string, key: string, columnMap: ColumnMap, changeList: Array<any>): void => {
+const mergeToCheckedData = (_: string, checkboxKey: string, key: string, columnMap: ColumnMap, changeList: Array<Row>): void => {
     if (!isString(key)) {
         return;
     }
@@ -150,7 +125,7 @@ class MoveRow {
 
         $tableDiv.attr('move-row', useSingleMode ? 'single' : 'all');
 
-        let oldData: Array<any>;
+        let oldData: Array<Row>;
         // 事件: 行移动触发
         jTool(start[TARGET]).on(start[EVENTS], start[SELECTOR], function (e: MouseEvent) {
         	const target = e.target as HTMLTableCellElement;
@@ -306,7 +281,7 @@ class MoveRow {
      * @returns {}
      */
     @parseTpl(dreamlandTpl)
-    createHtml(params: any): object {
+    createHtml(params: any): string {
         const { table, tr, overFlow, $thList } = params;
         const cloneTr = tr.cloneNode(true);
         cloneTr.style.height = getStyle(tr, 'height');
@@ -325,6 +300,8 @@ class MoveRow {
                 cloneTd[index].style.boxShadow = getStyle(th, 'box-shadow');
             }
         });
+
+		// @ts-ignore
         return {
             class: table.className,
             tbody: cloneTr.outerHTML

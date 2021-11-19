@@ -6,8 +6,9 @@
 import { FAKE_TABLE_HEAD_KEY } from '@common/constants';
 import { CLASS_FILTER } from './constants';
 import { MOUSE_DOWN, MOUSE_UP, MOUSE_CLICK, createEventsObj } from '@common/events';
+import { EventMap } from 'typings/types';
 
-export const getEvent = (_: string, scope: string): object => {
+export const getEvent = (_: string, scope: string): EventMap => {
     const filterSign = `[${FAKE_TABLE_HEAD_KEY}="${_}"] .${CLASS_FILTER}`;
     return {
         // 切换可视状态

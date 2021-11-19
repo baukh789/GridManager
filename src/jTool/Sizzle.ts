@@ -1,10 +1,8 @@
 import { isWindow, createDOM, each, isString, isNodeList, isElement, isArray, isJTool, rootDocument } from './utils';
 import { DOM_LIST, JTOOL_KEY } from './constants';
+import { JTool } from 'typings/types';
 
-interface JTool {
-    jTool: boolean;
-}
-const Sizzle = function (selector: undefined | null | Window | Document | HTMLElement | NodeList | Array<HTMLElement> | string,
+const Sizzle = function (selector: JTool | undefined | null | Window | Document | HTMLElement | NodeList | Array<HTMLElement> | string,
                                context?: JTool | HTMLElement | NodeList | string): JTool {
     let DOMList = (() => {
         // selector -> undefined || null
@@ -82,7 +80,7 @@ const Sizzle = function (selector: undefined | null | Window | Document | HTMLEl
 
     return this;
 } as any as {
-    new (selector: undefined | null | Window | Document | HTMLElement | NodeList | Array<HTMLElement> | string,
+    new (selector: JTool | undefined | null | Window | Document | HTMLElement | NodeList | Array<HTMLElement> | string,
          context?: JTool | HTMLElement | NodeList | string): JTool;
 };
 export default Sizzle;

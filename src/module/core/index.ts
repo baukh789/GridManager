@@ -17,6 +17,7 @@ import scroll from '../scroll';
 import coreDOM from './coreDOM';
 import { transformToPromise } from './tool';
 import { sendCompile, compileEmptyTemplate, clearCompileList } from '@common/framework';
+import { SettingObj, JTool } from 'typings/types';
 
 class Core {
     /**
@@ -72,7 +73,7 @@ class Core {
      * @param response
      * @param callback
      */
-    async driveDomForSuccessAfter(settings: any, response: object | string, callback?: any): Promise<any> {
+    async driveDomForSuccessAfter(settings: SettingObj, response: object | string, callback?: any): Promise<any> {
         const { _, rendered, responseHandler, supportCheckbox, supportAjaxPage, supportMenu, checkboxConfig, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
 
         // 用于防止在填tbody时，实例已经被消毁的情况。
@@ -140,7 +141,7 @@ class Core {
      * @param settings
      * @param isInit: 是否为初始化时调用
      */
-    insertEmptyTemplate(settings: any, isInit?: boolean): void {
+    insertEmptyTemplate(settings: SettingObj, isInit?: boolean): void {
         const { _, emptyTemplate } = settings;
         // 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
         // 用于解决容器为不可见时，触发了setQuery的情况
@@ -165,7 +166,7 @@ class Core {
      * @param settings
      * @returns {Promise<any>}
      */
-    async createDOM($table: any, settings: any): Promise<any> {
+    async createDOM($table: JTool, settings: SettingObj): Promise<any> {
         const { _ } = settings;
 
         // 创建DOM前 先清空框架解析列表

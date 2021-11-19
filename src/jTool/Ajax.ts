@@ -43,9 +43,9 @@ interface AjaxOptions {
     xhrFields?: object;
     beforeSend?: (xhr: object) => {};
 	cache?: boolean;
-    complete?(xhr: object, status: number): any;
-    success?(response: object, status: number): any;
-    error?(xhr: object, status: number, statusText: string): any;
+    complete?(xhr: object, status: number): void;
+    success?(response: object, status: number): void;
+    error?(xhr: object, status: number, statusText: string): void;
 }
 export default function ajax(options: AjaxOptions) {
     let { url, type, data, headers, async, xhrFields, beforeSend, complete, success, error } = extend({

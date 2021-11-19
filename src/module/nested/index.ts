@@ -5,29 +5,8 @@
  */
 import { each, isValidArray } from '@jTool/utils';
 import { getDiv } from '@common/base';
+import { Column, ColumnMap } from 'typings/types';
 import './style.less';
-
-// column
-interface Column {
-	key: string;
-	index: number;
-	isShow?: boolean;
-	pk?: string;
-	children?: Array<Column>;
-	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
-	isAutoCreate: boolean;
-	align?: string;
-	fixed?: string;
-	merge?: string;
-	disableMoveRow?: boolean;
-	level?: number;
-	rowspan?: number;
-	colspan?: number;
-}
-
-interface ColumnMap {
-	[index:string]: Column
-}
 
 /**
  * 获取嵌套列所占的列数
@@ -56,8 +35,8 @@ const getNestedLen = (col: Column): number => {
  * @param list
  * @param rowspan
  */
-const pushList = (columnMap: ColumnMap, columnList: Array<Array<object>>, list: Array<any>, rowspan: number): void => {
-    each(list, (item: any) => {
+const pushList = (columnMap: ColumnMap, columnList: Array<Array<Column>>, list: Array<Column>, rowspan: number): void => {
+    each(list, (item: Column) => {
         // 这里不直接使用item而用columnMap的原因: item的children中存储的是初始时的数据，缺失level字段
         const col = columnMap[item.key];
         const { level } = col;
@@ -92,7 +71,7 @@ class Nested {
      * @param columnMap
      * @param columnList
      */
-    push(columnMap: ColumnMap, columnList: Array<Array<object>>): void {
+    push(columnMap: ColumnMap, columnList: Array<Array<Column>>): void {
         let maxLevel = 0;
         const topList = columnList[0];
         each(columnMap, (key: string, col: Column) => {

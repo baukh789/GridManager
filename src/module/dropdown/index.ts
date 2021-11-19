@@ -62,13 +62,14 @@ class Dropdown {
      * @returns {{liStr: string}}
      */
     @parseTpl(dropdownTpl)
-    createHtml(params: any): object {
+    createHtml(params: any): string {
         const { sizeData } = params;
         let liStr = '';
         sizeData.forEach((item: number) => {
             liStr += `<li value="${item}">${item}</li>`;
         });
 
+        // @ts-ignore
         return {
             li: liStr
         };

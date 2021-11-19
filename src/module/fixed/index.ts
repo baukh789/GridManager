@@ -26,23 +26,9 @@ import { each, rootDocument } from '@jTool/utils';
 import scroll from '@module/scroll';
 import { getEvent, eventMap } from './event';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
+import { Column } from 'typings/types';
+import { SettingObj } from 'typings/types';
 import './style.less';
-
-// column
-interface Column {
-	key: string;
-	index: number;
-	isShow: boolean;
-	width: number;
-	pk?: string;
-	children?: Array<Column>;
-	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
-	isAutoCreate: boolean;
-	align: string;
-	fixed: string;
-	pl: number; // 仅在fixed中使用
-	pr: number; // 仅在fixed中使用
-}
 
 const LEFT = 'left';
 const RIGHT = 'right';
@@ -90,7 +76,7 @@ class Fixed {
      * 生成td固定列样式: 通过添加style的方式比修改td的dom性能会高
      * @param settings
      */
-    init(settings: any): void {
+    init(settings: SettingObj): void {
         const { _, browser, columnMap } = settings;
 
         const $tableDiv = getDiv(_);

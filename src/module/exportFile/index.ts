@@ -7,6 +7,7 @@ import { showLoading, hideLoading, getFakeVisibleTh, getTbody } from '@common/ba
 import { outError } from '@common/utils';
 import { getSettings, getCheckedData, getTableData } from '@common/cache';
 import { GM_CREATE, CELL_HIDDEN } from '@common/constants';
+import { PageData, SortData, Row } from 'typings/types';
 
 /**
  * 获取文件名称
@@ -91,7 +92,7 @@ class ExportFile {
      * @param onlyChecked
      * @returns {boolean}
      */
-	downStatic(_: string, disableAutoLoading: boolean, loadingTemplate: string, fileName: string, onlyChecked: boolean, suffix: string, exportHandler: any, query: object, pageData: object, sortData: object, selectedList: Array<object>, tableData: Array<object>): void {
+	downStatic(_: string, disableAutoLoading: boolean, loadingTemplate: string, fileName: string, onlyChecked: boolean, suffix: string, exportHandler: any, query: object, pageData: PageData, sortData: SortData, selectedList: Array<Row>, tableData: Array<Row>): void {
         !disableAutoLoading && showLoading(_, loadingTemplate);
 
         let tableList: Array<Array<string>> = exportHandler(fileName, query, pageData, sortData, selectedList, tableData);
@@ -155,7 +156,7 @@ class ExportFile {
      * @param selectedList
      * @returns {Promise<void>}
      */
-    async downFilePath(_: string, disableAutoLoading: boolean, loadingTemplate: string, fileName: string, exportHandler: any, pageData: object, sortData: object, selectedList: Array<object>): Promise<any> {
+    async downFilePath(_: string, disableAutoLoading: boolean, loadingTemplate: string, fileName: string, exportHandler: any, pageData: PageData, sortData: object, selectedList: Array<object>): Promise<any> {
         try {
             !disableAutoLoading && showLoading(_, loadingTemplate);
             const res = await exportHandler(fileName, pageData, sortData, selectedList);

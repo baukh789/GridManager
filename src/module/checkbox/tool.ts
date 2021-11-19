@@ -1,5 +1,6 @@
 import { CHECKBOX_KEY, ROW_DISABLED_CHECKBOX } from '@common/constants';
 import { getTableData, setTableData, setCheckedData } from '@common/cache';
+import { Row } from 'typings/types';
 /**
  * 重置当前渲染数据中的选择状态
  * @param _
@@ -9,7 +10,7 @@ import { getTableData, setTableData, setCheckedData } from '@common/cache';
  * @param isRadio: 当前事件源为单选
  * @returns {*}
  */
-export const resetData = (_: string, status: boolean, isAllCheck: boolean, cacheKey?: any, isRadio?: boolean): Array<any> => {
+export const resetData = (_: string, status: boolean, isAllCheck: boolean, cacheKey?: string | number, isRadio?: boolean): Array<Row> => {
     const tableData = getTableData(_);
     // 复选-全选
     if (isAllCheck && !cacheKey) {
@@ -29,7 +30,7 @@ export const resetData = (_: string, status: boolean, isAllCheck: boolean, cache
     // 单选
     if (isRadio) {
         tableData.forEach((row, index) => {
-            row[CHECKBOX_KEY] = index === parseInt(cacheKey, 10);
+            row[CHECKBOX_KEY] = index === parseInt(<string>cacheKey, 10);
         });
 
         // 清空当前选中项

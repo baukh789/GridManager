@@ -7,6 +7,7 @@ import { getEvent, eventMap } from './event';
 import './style.less';
 import {EVENTS, SELECTOR, TARGET} from '@common/events';
 import { TR_CACHE_KEY, PX, FOLD_KEY, TR_PARENT_KEY } from '@common/constants';
+import { SettingObj, Row, FullColumnTemplate, TrObject } from 'typings/types';
 
 // 折叠事件区域
 const FOLD_ACTION = 'full-column-fold';
@@ -15,7 +16,7 @@ const FOLD_ACTION = 'full-column-fold';
 const FULL_COLUMN_STATE = 'full-column-state';
 
 // 获取通栏
-const getFullObject = (settings: any, colspan: number, template: any, useFold: boolean, openState: boolean, row: object, index: number, model: string): object => {
+const getFullObject = (settings: SettingObj, colspan: number, template: FullColumnTemplate, useFold: boolean, openState: boolean, row: Row, index: number, model: string): TrObject => {
     // 通栏tr
     let { text, compileAttr } = compileFullColumn(settings, row, index, template, model);
     text = isElement(text) ? (text as HTMLTableElement).outerHTML : text;
@@ -27,20 +28,20 @@ const getFullObject = (settings: any, colspan: number, template: any, useFold: b
     }
 
     return {
-        className: [] as Array<void>,
+        className: [],
         attribute: [`full-column="${model}"`, `${TR_PARENT_KEY}=${index}`].concat(foldAttr),
         tdList: [`<td colspan="${colspan}"><div class="full-column-div" ${compileAttr}>${text}</div></td>`]
     };
 };
 
 // 获取通栏间隔
-const getIntervalObject = (colspan: number, index: number, interval: number | string = 0): object => {
+const getIntervalObject = (colspan: number, index: number, interval: number | string = 0): TrObject => {
     // 对于数字类型的间隔增加单位 todo 需要验证interval是否存在string的情况
     if (isNumber(interval)) {
         interval = interval + PX;
     }
     return {
-        className: [] as Array<void>,
+        className: [],
         attribute: [`full-column-interval="${interval}"`, `${TR_PARENT_KEY}=${index}`],
         tdList: [`<td colspan="${colspan}"><div style="height: ${interval}"></div></td>`]
     };
@@ -54,7 +55,7 @@ const getIntervalObject = (colspan: number, index: number, interval: number | st
  * @param trObjectList
  * @param model
  */
-const addObject = (settings: any, row: object, index: number, trObjectList: Array<object>, model: string): void => {
+const addObject = (settings: SettingObj, row: Row, index: number, trObjectList: Array<TrObject>, model: string): void => {
     const { columnMap, fullColumn } = settings;
     const { topTemplate, bottomTemplate, useFold, interval, openState = false } = fullColumn;
     const colspan = Object.keys(columnMap).length;
@@ -112,7 +113,7 @@ class FullColumn {
      * @param index
      * @param trObjectList
      */
-    addTop(settings: any, row: object, index: number, trObjectList: Array<object>): void {
+    addTop(settings: SettingObj, row: Row, index: number, trObjectList: Array<TrObject>): void {
         addObject(settings, row, index, trObjectList, 'top');
     }
 
@@ -123,7 +124,7 @@ class FullColumn {
      * @param index
      * @param trObjectList
      */
-    addBottom(settings: any, row: object, index: number, trObjectList: Array<object>): void {
+    addBottom(settings: SettingObj, row: Row, index: number, trObjectList: Array<TrObject>): void {
         addObject(settings, row, index, trObjectList, 'bottom');
     }
 
@@ -132,7 +133,7 @@ class FullColumn {
      * @param settings
      * @returns {}
      */
-    getColumn(settings: any): object {
+    getColumn(settings: SettingObj): object {
         const { openState = false, fixed } = settings.fullColumn;
         return {
             key: FOLD_KEY,

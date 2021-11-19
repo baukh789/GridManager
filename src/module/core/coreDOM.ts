@@ -33,32 +33,13 @@ import { installSummary } from '../summary';
 import { getEvent, eventMap } from './event';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import { sendCompile, compileTd } from '@common/framework';
+import { JTool, SettingObj, Column, ColumnMap, TrObject, Row } from 'typings/types';
 
-// column
-interface Column {
-	key: string;
-	index: number;
-	isShow?: boolean;
-	pk?: string;
-	children?: Array<Column>;
-	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
-	isAutoCreate: boolean;
-	align?: string;
-	fixed?: string;
-	merge?: string;
-}
-
-// 生成过程中的tr对像存储器
-interface TrObject {
-	className: Array<string>,
-	attribute: Array<string>,
-	tdList: Array<string>
-}
 /**
  * core dom
  */
 class Dom {
-    init($table: any, settings: any): void {
+    init($table: JTool, settings: SettingObj): void {
         const { _, useWordBreak, lineHeight } = settings;
         // add wrap div
         $table.wrap(render.createWrapTpl({ settings }), '.table-div');
@@ -89,7 +70,7 @@ class Dom {
      * 重绘thead
      * @param settings
      */
-    redrawThead(settings: any): void {
+    redrawThead(settings: SettingObj): void {
         const { _, columnMap, sortUpText, sortDownText, supportAdjust } = settings;
         // 单个table下的TH
         const $thList = getAllTh(_);
@@ -147,7 +128,7 @@ class Dom {
      * @param settings
      * @param data
      */
-    async renderTableBody(settings: any, data: Array<object>): Promise<any> {
+    async renderTableBody(settings: SettingObj, data: Array<Row>): Promise<any> {
         const {
             _,
             columnMap,
@@ -194,7 +175,7 @@ class Dom {
         pushList(topList);
 
         // 插入常规的TR
-        const installNormal = (trObject: TrObject, row: object, rowIndex: number, isTop: boolean): void => {
+        const installNormal = (trObject: TrObject, row: Row, rowIndex: number, isTop: boolean): void => {
             // 与当前位置信息匹配的td列表
 
             const tdList = trObject.tdList;
@@ -216,9 +197,9 @@ class Dom {
         };
 
         try {
-            const installTr = (list: Array<object>, level: number, pIndex?: string): void => {
+            const installTr = (list: Array<Row>, level: number, pIndex?: string): void => {
                 const isTop = isUndefined(pIndex);
-                each(list, (row: object, index: number) => {
+                each(list, (row: Row, index: number) => {
                     const className = [];
                     const attribute = [];
                     const tdList: Array<string> = [];
@@ -335,7 +316,7 @@ class Dom {
      * @param settings
      * @param updateCacheList
      */
-    updateTrDOM(settings: any, updateCacheList: Array<object>): void {
+    updateTrDOM(settings: SettingObj, updateCacheList: Array<Row>): void {
         const { _, columnMap, supportTreeData, treeConfig } = settings;
         const { treeKey } = treeConfig;
         updateCacheList.forEach(row => {
@@ -360,7 +341,7 @@ class Dom {
                     return;
                 }
 
-                let tdTemplate = col.template as any;
+                let tdTemplate = col.template;
                 const tdNode = getColTd(getTh(_, key), trNode).get(0);
 
                 // 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
@@ -392,7 +373,7 @@ class Dom {
      * @param _
      * @param columnMap
      */
-    initVisible(_: string, columnMap: object): void {
+    initVisible(_: string, columnMap: ColumnMap): void {
         each(columnMap, (key: string, col: Column) => {
             setAreVisible(_, key, col.isShow);
         });

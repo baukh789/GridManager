@@ -30,6 +30,7 @@ import {
 import { getCacheDOM } from '@common/domCache';
 import { CLASS_FILTER } from '@module/filter/constants';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
+import { Column, ColumnMap, JTool, Row, SettingObj, EventMap } from 'typings/types';
 
 /**
  * 获取clone行数据匹配，修改它并不会污染原数据。
@@ -37,8 +38,8 @@ import { TARGET, EVENTS, SELECTOR } from '@common/events';
  * @param row: 行数据
  * @param cleanKeyList: 指定从clone数据中清除字段列表
  */
-export const getCloneRowData = (columnMap: any, row: object, cleanKeyList?: Array<string>): object => {
-    let cloneRow = extend(true, {}, row) as any;
+export const getCloneRowData = (columnMap: ColumnMap, row: Row, cleanKeyList?: Array<string>): Row => {
+    let cloneRow = extend(true, {}, row);
 
     // 删除自定义参数: 通过columnMap设置的项
     for (let key in columnMap) {
@@ -160,12 +161,12 @@ export const getTbody = (_: string) => getCacheDOM(_, TABLE_BODY_KEY);
  * @param thName: 1.thName 2.fake th
  * @returns {*}
  */
-export const getTh = (_: string, thName: string | any) => {
+export const getTh = (_: string, thName: string | JTool) => {
     // jTool object
-    if (thName.jTool) {
-        thName = getThName(thName);
+    if ((thName as JTool).jTool) {
+        thName = getThName(thName as JTool);
     }
-    return jTool(`[${TABLE_HEAD_KEY}="${_}"] th[${TH_NAME}="${thName}"]`);
+	return jTool(`[${TABLE_HEAD_KEY}="${_}"] th[${TH_NAME}="${thName}"]`);
 };
 
 /**
@@ -215,7 +216,7 @@ export const getFakeVisibleTh = (_: string, isExcludeGmCreate?: boolean) => {
  * @param $dom: $th or $td
  * @returns {*}
  */
-export const getThName = ($dom: any) => {
+export const getThName = ($dom: JTool): string => {
     return $dom.attr(TH_NAME);
 };
 
@@ -223,7 +224,7 @@ export const getThName = ($dom: any) => {
  * 获取空模版jTool对像
  * @param _
  */
-export const getEmpty = (_: string) => {
+export const getEmpty = (_: string): JTool => {
     return jTool(`[${EMPTY_TPL_KEY}="${_}"]`);
 };
 
@@ -246,14 +247,14 @@ export const updateEmptyCol = (_: string): void => {
  * @param $context: $tr || tr || _
  * @returns {jTool}
  */
-export const getColTd = ($dom: any, $context: string | any) => {
+export const getColTd = ($dom: JTool, $context: string | JTool): JTool => {
     // 获取tbody下全部匹配的td
     if (isString($context)) {
-        return jTool(`tbody tr td:nth-child(${$dom.index() + 1})`, getTable($context));
+        return jTool(`tbody tr td:nth-child(${$dom.index() + 1})`, getTable($context as string));
     }
 
     // 获取指定$context下匹配的td
-    return jTool(`td:nth-child(${$dom.index() + 1})`, $context as any);
+    return jTool(`td:nth-child(${$dom.index() + 1})`, $context as JTool);
 };
 
 /**
@@ -329,19 +330,19 @@ export const updateVisibleLast = (_: string): void => {
  * @param settings
  * @param isInit: 是否为init调用
  */
-export const updateThWidth = (settings: any, isInit?: boolean): void => {
+export const updateThWidth = (settings: SettingObj, isInit?: boolean): void => {
     const { _, columnMap, isIconFollowText, __isNested } = settings;
     let totalWidth = getDiv(_).width();
     let usedTotalWidth = 0;
 
-    const autoList: Array<any> = [];
+    const autoList: Array<Column> = [];
 
     // 嵌套自动宽列
-    const autoNestedList: Array<any> = [];
+    const autoNestedList: Array<Column> = [];
 
     // 存储首列
-    let firstCol: any;
-    each(columnMap, (key: string, col: any) => {
+    let firstCol: Column;
+    each(columnMap, (key: string, col: Column) => {
         let { __width, width, isShow, pk, children } = col;
         // 不可见列: 不处理
         if (!isShow) {
@@ -360,6 +361,7 @@ export const updateThWidth = (settings: any, isInit?: boolean): void => {
         }
 
         // 已设置宽度并存在子项: 进行平均值处理，以保证在渲染时值可以平分
+		// @ts-ignore 需要确认是否还存在字符串形式的宽度
         if (width && width !== 'auto' && __isNested && isValidArray(children)) {
             const num = col.colspan;
             // @ts-ignore
@@ -367,8 +369,8 @@ export const updateThWidth = (settings: any, isInit?: boolean): void => {
         }
 
         // 自适应列: 更新为最小宽度，统计总宽，收录自适应列数组
-        if ((isInit && (!width || width === 'auto')) ||
-            (!isInit && (!__width || __width === 'auto'))) {
+		// @ts-ignore 需要确认是否还存在字符串形式的宽度
+        if ((isInit && (!width || width === 'auto')) || (!isInit && (!__width || __width === 'auto'))) {
             col.width = getThTextWidth(_, col, isIconFollowText, __isNested);
             usedTotalWidth += col.width;
 
@@ -409,7 +411,7 @@ export const updateThWidth = (settings: any, isInit?: boolean): void => {
     // 存在剩余宽度: 存在嵌套自动列, 与普通自动列平分，并跟据嵌套自动列的列数调整平分值
     if (overage > 0 && autoNestedLen) {
         let splitVal = Math.floor(overage / (autoNestedLen + autoLen));
-        each(autoNestedList, (col: any) => {
+        each(autoNestedList, (col: Column) => {
             const num = col.colspan;
             // @ts-ignore
             splitVal = parseInt(parseInt(splitVal, 10) / num, 10) * num;
@@ -426,7 +428,7 @@ export const updateThWidth = (settings: any, isInit?: boolean): void => {
     // 存在剩余宽度: 存在普通自动列, 平分剩余的宽度
     if (overage > 0 && autoLen) {
         const splitVal = Math.floor(overage / autoLen);
-        each(autoList, (col: any, index: number) => {
+        each(autoList, (col: Column, index: number) => {
             // 最后一项自动列: 将余值全部赋予
             if (index === autoLen - 1) {
                 col.width = col.width + overage;
@@ -438,7 +440,7 @@ export const updateThWidth = (settings: any, isInit?: boolean): void => {
     }
 
     // 绘制th宽度
-    each(columnMap, (key: string, col: any) => {
+    each(columnMap, (key: string, col: Column) => {
         // 可见 且 禁用定制列 不处理
         if (col.isShow && col[DISABLE_CUSTOMIZE]) {
             return;
@@ -467,8 +469,8 @@ export const updateThWidth = (settings: any, isInit?: boolean): void => {
  * @param __isNested: 是否使用多层嵌套表头
  * @returns {number}
  */
-export const getThTextWidth = (_: string, col: any, isIconFollowText: boolean, __isNested?: boolean) => {
-    const getWidth = (_: string, $th: any, isIconFollowText: boolean) => {
+export const getThTextWidth = (_: string, col: Column, isIconFollowText: boolean, __isNested?: boolean): number => {
+    const getWidth = (_: string, $th: JTool, isIconFollowText: boolean) => {
         // th下的GridManager包裹容器
         const $thWarp = jTool('.th-wrap', $th);
 
@@ -515,8 +517,8 @@ export const getThTextWidth = (_: string, col: any, isIconFollowText: boolean, _
     // 存在有效的多层嵌套表头: 顶层采取所有子项的合，展现时最下层列平分顶层列的宽
     let width = 0;
     let num = 0;
-    const addWidth = (col: any) => {
-        col.children.forEach((item: any) => {
+    const addWidth = (col: Column) => {
+        col.children.forEach((item: Column) => {
             if (!isValidArray(item.children)) {
                 num++;
                 width += getWidth(_, getFakeTh(_, col.key), isIconFollowText);
@@ -552,7 +554,7 @@ export const getTextWidth = (_: string, content: string, cssObj: object): number
  * @param settings
  * @param noChange: 指定宽度为未变更，用于节省性能消耗
  */
-export const updateFakeThead = (settings: any, noChange?: boolean): void => {
+export const updateFakeThead = (settings: SettingObj, noChange?: boolean): void => {
     const { _, columnMap } = settings;
     const $tableDiv = getDiv(_);
     if (!$tableDiv.length) {
@@ -592,7 +594,7 @@ export const updateScrollStatus = (_: string): void => {
  * 计算表格布局
  * @param settings
  */
-export const calcLayout = (settings: any): void => {
+export const calcLayout = (settings: SettingObj): void => {
     const { _, width, height, minHeight, maxHeight, supportAjaxPage } = settings;
     const tableWrap = getWrap(_).get(0);
     const theadHeight = getThead(_).height();
@@ -618,7 +620,7 @@ export const calcLayout = (settings: any): void => {
  * 清除目标元素上的事件，该事件在各个模块调用
  * @param eventMap
  */
-export const clearTargetEvent = (eventMap: any): void => {
+export const clearTargetEvent = (eventMap: EventMap): void => {
     for (let key in eventMap) {
         const eve = eventMap[key];
         const $target = jTool(eve[TARGET]);

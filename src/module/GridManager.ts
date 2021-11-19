@@ -60,22 +60,9 @@ import filter from './filter';
 import fixed from './fixed';
 import print from './print';
 import { showRow, hideRow } from './rowVisible';
+import { Column, ArgColumn, SettingObj, JTool, ArgObj, SortData } from 'typings/types';
 
-// column
-interface Column {
-	key: string;
-	index: number;
-	isShow?: boolean;
-	pk?: string;
-	children?: Array<Column>;
-	template?(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
-	isAutoCreate?: boolean;
-	align?: string;
-	fixed?: string;
-	filter?: any;
-}
-
-const isRendered = (_: string, settings?: any): boolean => {
+const isRendered = (_: string, settings?: SettingObj): boolean => {
     // 部分静态方法自身不使用settings， 所以这个参数可能为空
     if (!settings) {
         settings = getSettings(_);
@@ -100,7 +87,7 @@ export default class GridManager {
      * @param callback: 回调
      * @returns {*}
      */
-    constructor(table: HTMLTableElement, arg: any, callback?: any) {
+    constructor(table: HTMLTableElement, arg: ArgObj, callback?: any) {
         // 验证当前Element是否为table
         if (table.nodeName !== 'TABLE') {
             outError('nodeName !== "TABLE"');
@@ -113,7 +100,7 @@ export default class GridManager {
         });
 
         let $table = jTool(table);
-        arg = extend({}, GridManager.defaultOption, arg);
+        arg = <ArgObj>extend({}, GridManager.defaultOption, arg);
 
         let gridManagerName = arg.gridManagerName;
         // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
@@ -213,7 +200,7 @@ export default class GridManager {
         }
 
         // 相互冲突的参数项处理: 多层嵌套表头
-        if (arg.columnData.some((item: Column) => isValidArray(item.children))) {
+        if (arg.columnData.some((item: ArgColumn) => isValidArray(item.children))) {
             // 不使用配置功能
             arg.supportConfig = false;
 
@@ -343,7 +330,7 @@ export default class GridManager {
 	 * @param table
 	 * @returns {*}
 	 */
-	static get(table: string | HTMLTableElement): any {
+	static get(table: string | HTMLTableElement): SettingObj {
         return getSettings(getKey(table));
 	}
 
@@ -420,7 +407,7 @@ export default class GridManager {
 	 * @param callback 回调函数[function]
      * @param refresh 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
      */
-	static setSort(table: string | HTMLTableElement, sortJson: object, callback: any, refresh: boolean): void {
+	static setSort(table: string | HTMLTableElement, sortJson: SortData, callback: any, refresh: boolean): void {
         const _ = getKey(table);
         isRendered(_) && updateSort(_, sortJson, callback, refresh);
 	}
@@ -627,7 +614,7 @@ export default class GridManager {
      * @param table
      * @param settings
      */
-	static resetSettings(table: string | HTMLTableElement, settings: any): void {
+	static resetSettings(table: string | HTMLTableElement, settings: SettingObj): void {
         const _ = getKey(table);
         isRendered(_, settings) && setSettings(settings);
     }
@@ -637,7 +624,7 @@ export default class GridManager {
      * 更新模板 [现仅在react版本中使用到]
      * @param arg
      */
-    static updateTemplate(arg: any): any {
+    static updateTemplate(arg: ArgObj): ArgObj {
         return updateTemplate(arg);
     }
 
@@ -835,7 +822,7 @@ export default class GridManager {
 	 * @param $table
 	 * @param settings
      */
-	async initTable($table: string | HTMLTableElement, settings: any): Promise<any> {
+	async initTable($table: JTool, settings: SettingObj): Promise<any> {
 		// 渲染HTML，嵌入所需的事件源DOM
         await core.createDOM($table, settings);
 

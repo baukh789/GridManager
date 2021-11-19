@@ -9,19 +9,7 @@ import nested from '../nested';
 import wrapTpl from './wrap.tpl.html';
 import theadTpl from './thead.tpl.html';
 import thTpl from './th.tpl.html';
-
-// column
-interface Column {
-	key: string;
-	index: number;
-	isShow: boolean;
-	pk?: string;
-	children?: Array<Column>;
-	template(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop
-	isAutoCreate: boolean;
-	align: string;
-	fixed: string;
-}
+import { Column } from 'typings/types';
 
 /**
  * 生成构建时所需要的模板
@@ -33,7 +21,7 @@ class Render {
      * @returns {}
      */
     @parseTpl(wrapTpl)
-    createWrapTpl(params: { settings: any }): object {
+    createWrapTpl(params: { settings: any }): string {
         const settings = params.settings;
         const { _, skinClassName, isIconFollowText, disableBorder, disableLine, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
         const wrapClassList = ['table-wrap'];
@@ -56,12 +44,14 @@ class Render {
         if (disableLine) {
             wrapClassList.push('disable-line');
         }
+
+		// @ts-ignore
         return {
             wrapKey: `${WRAP_KEY}="${_}"`,
             divKey: `${DIV_KEY}="${_}"`,
             classNames: wrapClassList.join(' '),
             configTpl: supportConfig ? config.createHtml({_, configInfo}) : '',
-            ajaxPageTpl: supportAjaxPage ? ajaxPage.createHtml({settings, tpl: ajaxPageTemplate}) : ''
+            ajaxPageTpl: supportAjaxPage ? ajaxPage.createHtml({ settings, tpl: ajaxPageTemplate }) : ''
         };
     }
 
@@ -71,7 +61,7 @@ class Render {
      * @returns {}
      */
     @parseTpl(theadTpl)
-    createTheadTpl(params: any): object {
+    createTheadTpl(params: any): string {
         const settings = params.settings;
         const { columnMap, _, __isNested } = settings;
 
@@ -97,6 +87,7 @@ class Render {
             thListTpl += '</tr>';
         });
 
+		// @ts-ignore
         return {
             key: `${TABLE_HEAD_KEY}="${_}"`,
             thListTpl
@@ -109,7 +100,7 @@ class Render {
      * @returns {}
      */
     @parseTpl(thTpl)
-    createThTpl(params: any): object {
+    createThTpl(params: any): string {
         const { settings, col } = params;
         const { query, supportDrag, sortData, sortUpText, sortDownText } = settings;
 
@@ -199,6 +190,8 @@ class Render {
         if (col.width) {
             width = col.width + PX;
         }
+
+		// @ts-ignore
         return {
             thAttr: `th-name="${thName}" ${colspanAttr} ${rowspanAttr} style="width:${width}" ${cellHiddenAttr} ${alignAttr} ${sortingAttr} ${filterAttr} ${fixedAttr} ${remindAttr} ${gmCreateAttr}`,
             thTextClassName,

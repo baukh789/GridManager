@@ -71,7 +71,7 @@ class Menu {
             const closeEvents = closeMenu[EVENTS];
             $closeTarget.off(closeEvents);
             $closeTarget.on(closeEvents, function (e2: MouseEvent) {
-                const eventSource = jTool(e2.target);
+                const eventSource = jTool(<HTMLElement>e2.target);
                 // 当前为menu自身
                 if (eventSource.attr(MENU_KEY) || eventSource.closest(`[${MENU_KEY}]`).length === 1) {
                     return;

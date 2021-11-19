@@ -41,6 +41,8 @@ import fixed from '@module/fixed';
 import scroll from '@module/scroll';
 import { getEvent, eventMap } from './event';
 import { CLASS_ADJUST_ACTION, CLASS_ADJUST_ING } from './constants';
+import { JTool } from 'typings/types';
+
 /**
  * 执行移动事件
  * @param _
@@ -50,7 +52,7 @@ import { CLASS_ADJUST_ACTION, CLASS_ADJUST_ING } from './constants';
  * @param thBeforeWidth: 当前th在移动前的宽度
  * @private
  */
-const runMoveEvent = (_: string, $th: any, $nextTh: any, thMinWidth: number, thBeforeWidth: number) => {
+const runMoveEvent = (_: string, $th: JTool, $nextTh: JTool, thMinWidth: number, thBeforeWidth: number) => {
     let thAfterWidth; // 变更后的宽度, 宽度调整中每一次调整都会更新一次这个值
     let nextThWidth = $nextTh.width(); // 位于触发宽度调整th下一个th
     const $div = getDiv(_);
@@ -112,7 +114,7 @@ const runMoveEvent = (_: string, $th: any, $nextTh: any, thMinWidth: number, thB
  * @param adjustAfter
  * @private
  */
-const runStopEvent = (_: string, $table: any, $th: any, adjustAfter: (e: MouseEvent) => {}) => {
+const runStopEvent = (_: string, $table: JTool, $th: JTool, adjustAfter: (e: MouseEvent) => {}) => {
     const { doing, abort } = eventMap[_];
     jTool(abort[TARGET]).on(abort[EVENTS], (event: MouseEvent) => {
         jTool(abort[TARGET]).off(abort[EVENTS]);

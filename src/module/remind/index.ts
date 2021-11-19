@@ -91,7 +91,7 @@ class Remind {
      * @returns {string}
      */
     @parseTpl(remindTpl)
-	createHtml(params: any): object {
+	createHtml(params: any): string {
         const { remind } = params;
         let styleStr = '';
         let text = '';
@@ -109,6 +109,8 @@ class Remind {
             });
             styleStr += '"';
         }
+
+		// @ts-ignore
 	    return {
             text,
             style: styleStr

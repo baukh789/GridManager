@@ -10,6 +10,7 @@ import { getEvent, eventMap } from './event';
 import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from './tool';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import fixed from '@module/fixed';
+import { JTool } from 'typings/types';
 
 // 树配置项
 interface TreeConfig {
@@ -64,10 +65,10 @@ class Tree {
      * @param state: 打开状态
      * @param $tr: 更新的tr节点，未指定时将对tbody下所有节点进行更新(对外公开方法中，不包含该参数)
      */
-    updateDOM(_: string, state: boolean, $tr?: any): void {
+    updateDOM(_: string, state: boolean, $tr?: JTool): void {
         const $tbody = getTbody(_);
 
-        const updateState = ($tr: any, openState: boolean): void => {
+        const updateState = ($tr: JTool, openState: boolean): void => {
             const $treeEle = jTool(`[${treeKey}]`, $tr);
             const $action = jTool('i', $treeEle);
             const cacheKey = $tr.attr(TR_CACHE_KEY);

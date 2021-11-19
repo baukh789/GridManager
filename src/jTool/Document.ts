@@ -1,9 +1,7 @@
 import Sizzle from './Sizzle';
 import { each, createDOM, isUndefined, isString, isElement, isNumber, isJTool, getDomList } from './utils';
+import { JTool } from 'typings/types';
 
-interface JTool {
-    jTool: boolean;
-}
 export default {
     /**
      * 向元素的尾部添加节点

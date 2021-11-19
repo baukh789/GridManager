@@ -13,6 +13,7 @@ import core from '../core';
 import sortTpl from './sort.tpl.html';
 import { getEvent, eventMap } from './event';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
+import { SortData } from 'typings/types';
 
 
 /**
@@ -62,7 +63,7 @@ const updateSortStyle = (_: string): void => {
  * @param callback: 回调函数[function]
  * @param refresh: 是否执行完成后对表格进行自动刷新[boolean, 默认为true]
  * */
-export const updateSort = (_: string, sortJson: object, callback?: any, refresh?: boolean): void => {
+export const updateSort = (_: string, sortJson: SortData, callback?: any, refresh?: boolean): void => {
     if (!isObject(sortJson) || isEmptyObject(sortJson)) {
         outWarn('sortJson unavailable');
         return;
@@ -136,7 +137,7 @@ class Sort {
 
             // 升降序单一触发(点击同一个小箭头可取消)
             if (sortMode === 'single') {
-                const $i = jTool(e.target);
+                const $i = jTool(<HTMLElement>e.target);
                 // 触发源: 向上小箭头
                 if ($i.hasClass('sa-up')) {
                     newSort = oldSort === sortUpText ? '' : sortUpText;
@@ -164,7 +165,8 @@ class Sort {
 	 * @returns {parseData}
      */
 	@parseTpl(sortTpl)
-	createHtml(): object {
+	createHtml(): string {
+		// @ts-ignore
 		return {};
 	}
 

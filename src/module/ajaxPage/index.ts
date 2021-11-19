@@ -67,12 +67,12 @@ import ajaxPageTpl from './ajax-page.tpl.html';
 import { getQuerySelector, getPageData, joinPaginationNumber } from './tool';
 import { getEvent, eventMap } from './event';
 import { EVENTS, TARGET, SELECTOR } from '@common/events';
+import { JTool, PageData, SettingObj } from 'typings/types';
 
-interface PageData {
-	tPage: number | string;
-	tSize: number | string;
-	cPage?: number | string; // 动态取值[currentPageKey]
-	pSize?: number | string; // 动态取值[pageSizeKey]
+// 生成html所需参数
+interface CreateHtmlParams {
+	settings: SettingObj
+	tpl: string
 }
 
 /**
@@ -83,7 +83,7 @@ interface PageData {
  * @param asyncTotalText: 异步总页loading文本
  * @private
  */
-const resetPageInfo = ($footerToolbar: any, settings: any, pageData: PageData, asyncTotalText: string): void => {
+const resetPageInfo = ($footerToolbar: JTool, settings: SettingObj, pageData: PageData, asyncTotalText: string): void => {
 	const { currentPageKey, pageSizeKey } = settings;
 	// 从多少开始
 	const fromNum = pageData[currentPageKey] === 1 ? 1 : (pageData[currentPageKey] - 1) * pageData[pageSizeKey] + 1;
@@ -102,6 +102,7 @@ const resetPageInfo = ($footerToolbar: any, settings: any, pageData: PageData, a
 
 	// 当前没有总条数 且 存在异步加载文本: 使用异步加载文本填充总条数与总页数
 	if (!totalNum && asyncTotalText) {
+		// @ts-ignore 交由js进行转换 string => number
 		totalNum = tPage = asyncTotalText;
 	}
 
@@ -154,7 +155,7 @@ const resetPageInfo = ($footerToolbar: any, settings: any, pageData: PageData, a
  * @param pageData 分页数据格式
  * @private
  */
-const updateFooterDOM = ($footerToolbar: any, settings: any, pageData: PageData): void => {
+const updateFooterDOM = ($footerToolbar: JTool, settings: SettingObj, pageData: PageData): void => {
 	const { useNoTotalsMode, currentPageKey } = settings;
 	useNoTotalsMode && $footerToolbar.attr('no-totals-mode', 'true');
 
@@ -198,7 +199,7 @@ const updateFooterDOM = ($footerToolbar: any, settings: any, pageData: PageData)
  * @param settings
  * @param now 跳转页
  */
-export const toPage = (settings: any, now: number): void => {
+export const toPage = (settings: SettingObj, now: number): void => {
 	if (!now || now < 1) {
 		now = 1;
 	}
@@ -357,11 +358,13 @@ class AjaxPage {
 	/**
 	 * 分页所需HTML
 	 * @param params
-	 * @returns {parseData}
+	 * @returns {}
 	 */
 	@parseTpl(ajaxPageTpl)
-	createHtml(params: any): object {
+	createHtml(params: CreateHtmlParams): string {
 		const { settings } = params;
+
+		// @ts-ignore
 		return {
 			gridManagerName: settings._,
 			keyName: TOOLBAR_KEY,
@@ -381,7 +384,7 @@ class AjaxPage {
 	 * @param totals 总条数
 	 * @param len 本次请求返回的总条数，该参数仅在totals为空时使用
 	 */
-	resetPageData(settings: any, totals: number, len: number): void {
+	resetPageData(settings: SettingObj, totals: number, len: number): void {
 		const { _, useNoTotalsMode, currentPageKey, pageData, asyncTotals, pageSizeKey, pageSize } = settings;
 		const $footerToolbar = jTool(getQuerySelector(_));
 		const cPage = pageData[currentPageKey] || 1;
@@ -397,7 +400,7 @@ class AjaxPage {
 			resetPageInfo($footerToolbar, settings, pageData, asyncTotalsText);
 
 			// 更新Cache
-			setSettings(extend(true, settings, { pageData }));
+			setSettings(<SettingObj>extend(true, settings, { pageData }));
 
 			// 显示底部工具条
 			$footerToolbar.css('visibility', 'visible');
