@@ -19,4 +19,6 @@ npm version <version_category: major | minor | patch>
 - 执行发布脚本`npm publish dist`
 - 执行提交代码脚本`git push && git push --tags`
 
-
+### 发布后需操作
+- 发布框架版本
+- 发布gm-site
