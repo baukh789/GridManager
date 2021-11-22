@@ -349,7 +349,7 @@ export const updateThWidth = (settings: SettingObj, isInit?: boolean): void => {
             return;
         }
 
-        // 当前非顶级列: 只对顶级列进行处理, 不处理嵌套层 todo 后续版本要开启子项的宽度配置时这里将要做调整
+        // 当前非顶级列: 只对顶级列进行处理, 不处理嵌套层, 后续版本要开启子项的宽度配置时这里将要做调整
         if (pk) {
             return;
         }
@@ -445,7 +445,7 @@ export const updateThWidth = (settings: SettingObj, isInit?: boolean): void => {
         if (col.isShow && col[DISABLE_CUSTOMIZE]) {
             return;
         }
-        // 当前非顶级列: 只对顶级列进行处理, 不处理嵌套层 todo 后续版本要开启子项的宽度配置时这里将要做调整
+        // 当前非顶级列: 只对顶级列进行处理, 不处理嵌套层, 后续版本要开启子项的宽度配置时这里将要做调整
         if (col.pk) {
             return;
         }

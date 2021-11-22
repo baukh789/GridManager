@@ -249,7 +249,7 @@ export const isNodeList = (o: any): boolean => {
  * 未对数组进行递归的原因: 框架中会为列配置项添加字段，这会导致出现内存溢出问题
  * @returns {{}}
  */
-export function extend(...[]: any): object { // todo 因为这里需要动态的传参，所有在ts改造中使用了...[]: any，该方法需要改造
+export function extend(...[]: any): object { // 因为这里需要动态的传参，所有在ts改造中使用了...[]: any
     // 参数为空,返回空对象
     if (arguments.length === 0) {
         return {};

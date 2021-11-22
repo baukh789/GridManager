@@ -142,31 +142,6 @@ export const ROW_HIDE_KEY = 'gm-row-hide';
 
 // 像素
 export const PX = 'px';
-// 公开方法列表
-// export const GM_PUBLISH_METHOD_LIST = [
-// 	'init',
-// 	'get',
-// 	'version',
-// 	'getLocalStorage',
-//  'resetLayout',
-// 	'clear',
-// 	'getRowData',
-//  'updateRowData',
-// 	'setSort',
-//  'setConfigVisible',
-// 	'showTh',
-// 	'hideTh',
-// 	'exportGridToXls',
-// 	'setQuery',
-// 	'setAjaxData',
-// 	'refreshGrid',
-// 	'getCheckedTr',
-// 	'getCheckedData',
-// 	'setCheckedData',
-//  'updateTreeState',
-// 	'cleanData',
-// 	'destroy'
-// ];
 
 // console样式
 const getStyle = (bgColor: string) => {

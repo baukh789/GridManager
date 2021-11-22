@@ -487,12 +487,6 @@ export default class GridManager {
         return isRendered(_) && exportFile.exportGrid(_, fileName, onlyChecked);
 	}
 
-	// TODO 临时方案，exportGridToXls 下个版本将清除，使用exportGrid替代
-	// @ts-ignore
-    static exportGridToXls(table, fileName, onlyChecked) {
-	    outWarn('exportGridToXls下个版本将移除，请使用exportGrid进行替换');
-        return GridManager.exportGrid(table, fileName, onlyChecked);
-    }
 	/**
 	 * @静态方法
 	 * 设置查询条件
