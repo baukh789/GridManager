@@ -7,7 +7,6 @@
 	<title>GridManager:使用Promise方式加载</title>
 	<style>
 		html, body{
-			width: 100%;
 			overflow-x:hidden;
 			margin: 0;
 			padding: 0;
@@ -70,12 +69,42 @@
 			padding: 5px 20px;
 			margin-right: 10px;
 		}
-		.void-template{
-			height:300px;
-			line-height: 300px;
-			text-align: center;
-			font-size: 24px;
-			color: #ccc;
+		.bottom-bar a{
+			font-size: 12px;
+			margin-right: 10px;
+		}
+		.grid-main {
+			height: calc(100vh - 64px - 57px);
+		}
+
+		.table-form{
+			display: flex;
+			padding: 14px 100px;
+		}
+		.tf-photo{
+			width: 60px;
+			height: 60px;
+			border: 1px solid #eee;
+			border-radius: 50%;
+			overflow: hidden;
+		}
+		.tf-photo img{
+			width: 60px;;
+		}
+		.tf-text{
+			width: 240px;
+			padding-left: 10px
+		}
+		.tf-el{
+			line-height: 30px;
+		}
+		.tf-el label{
+			display: inline-block;
+			width: 50px;
+			color: #666;
+			margin-right: 10px;
+			text-align: right;
+			font-weight: 600;
 		}
 	</style>
 	<script>
@@ -94,17 +123,11 @@
 </head>
 
 <body>
+
 <section class="search-area">
 	<div class="sa-ele">
 		<label class="se-title">标题:</label>
 		<input class="se-con" name="title"/>
-	</div>
-	<div class="sa-ele">
-		<label class="se-title">博文分类:</label>
-		<select class="se-con" name="type">
-			<option value="-1">请选择</option>
-			<!--通过js增加-->
-		</select>
 	</div>
 	<div class="sa-ele">
 		<label class="se-title">内容:</label>
@@ -115,16 +138,14 @@
 		<button class="reset-action">重置</button>
 	</div>
 </section>
-
 <section class="grid-main">
-	<table></table>
+	<table id="test"></table>
 </section>
-
 <section class="bottom-bar">
 	<button id="init-gm" disabled>init</button>
 	<button id="destroy-gm" disabled>destroy</button>
+	<a href="https://github.com/baukh789/GridManager/blob/master/src/demo/promise.html" target="_blank">查看源码</a>
 </section>
-
 <script type="text/javascript">
 	// 模拟了一个简单的promise请求
 	const getBlogList = function(paramse) {
@@ -158,14 +179,15 @@
 	// GridManager 渲染
 	var table = document.querySelector('table');
 	function init() {
-		table.GM({gridManagerName: 'test'
-			,height: '400px'
+		table.GM({
+			gridManagerName: 'test'
+			,height: '100%'
 			,supportAjaxPage:true
 			,isCombSorting: false
 			,disableCache: false
-			,ajaxData: function (setting) {
+			,ajaxData: function (setting, params) {
 				// 传入分页及排序的配置项
-				return getBlogList(Object.assign({}, setting.pageData, setting.sortData));
+				return getBlogList(Object.assign({}, params, setting.pageData, setting.sortData));
 			}
 			,ajaxType: 'POST'
 			,supportMenu: true
@@ -267,20 +289,6 @@
 			}
 		});
 	}
-	/**
-	 * 渲染博文类型
-	 */
-	(function () {
-		// 渲染下拉框
-		var typeSelect = document.querySelector('.search-area select[name="type"]');
-
-		for(var key in TYPE_MAP){
-			var option = document.createElement('option');
-			option.value = key;
-			option.innerText = TYPE_MAP[key];
-			typeSelect.appendChild(option);
-		}
-	})();
 
 	/**
 	 * 提供demo中的搜索, 重置
@@ -314,7 +322,6 @@
 	(function () {
 		var initDOM = document.getElementById('init-gm');
 		var destroyDOM = document.getElementById('destroy-gm');
-		var codeShowDOM = document.querySelector('.code-show');
 		// 绑定初始化事件
 		initDOM.onclick = function(){
 			init();
