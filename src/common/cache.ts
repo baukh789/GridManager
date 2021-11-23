@@ -167,7 +167,42 @@ export const getTableData = (_: string): Array<Row> => {
  * @param data
  */
 export const setTableData = (_: string, data: Array<Row>): void => {
+	// diffTableData(_, data);
     store.responseData[_] = data;
+};
+
+/**
+ * 表格数据比对: 返回结果用于render，empty代表该条数据未变更，长度变化时以返回结果长度为准
+ * @param _
+ * @param newTableData
+ */
+export const diffTableData = (_: string, newTableData: Array<Row>) => {
+	const tableData = store.responseData[_] || [];
+	console.log('tableData', tableData);
+	const differenceList = cloneObject(newTableData);
+	const settings = getSettings(_);
+	const { supportTreeData, treeConfig } = settings;
+	const { treeKey } = treeConfig;
+
+	// 循环比对时，在旧数据与新数据间取长度较大的值为循环对象，以确保可以对所有值进行比对
+	const difference = (newList: Array<Row>, oldList: Array<Row>) => {
+		each(newList, (newRow: Row, index: number) => {
+			const oldRow = oldList[index] || {};
+
+			// 验证两个对像是否存在差异: 不存在差异的值为 empty，并在后续的DOM操作中跳过当前索引
+			if (equal(oldRow, newRow)) {
+				delete newList[index];
+			}
+
+			// 树型数据
+			if (supportTreeData && newRow[treeKey]) {
+				difference(newRow[treeKey], oldRow[treeKey] || []);
+			}
+		});
+
+	};
+	difference(differenceList, tableData);
+	console.log(differenceList);
 };
 
 /**
