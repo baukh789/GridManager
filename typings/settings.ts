@@ -7,10 +7,13 @@ export interface FilterObject{
 	selected: string;
 	isMultiple: boolean
 }
+interface ThTemplate {
+	(): string;
+}
 // 表格实列 列
 export interface Column {
 	key?: string;
-	text?(): any;
+	text?: string | ThTemplate; // 自动创建的列不会转换为函数
 	index?: number;
 	width?: number;
 	__width?: number | undefined;

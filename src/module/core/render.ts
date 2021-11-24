@@ -9,7 +9,7 @@ import nested from '../nested';
 import wrapTpl from './wrap.tpl.html';
 import theadTpl from './thead.tpl.html';
 import thTpl from './th.tpl.html';
-import { Column } from 'typings/types';
+import { Column, SettingObj, ThTemplate } from 'typings/types';
 
 /**
  * 生成构建时所需要的模板
@@ -21,7 +21,7 @@ class Render {
      * @returns {}
      */
     @parseTpl(wrapTpl)
-    createWrapTpl(params: { settings: any }): string {
+    createWrapTpl(params: { settings: SettingObj }): string {
         const settings = params.settings;
         const { _, skinClassName, isIconFollowText, disableBorder, disableLine, supportConfig, supportAjaxPage, configInfo, ajaxPageTemplate } = settings;
         const wrapClassList = ['table-wrap'];
@@ -61,7 +61,7 @@ class Render {
      * @returns {}
      */
     @parseTpl(theadTpl)
-    createTheadTpl(params: any): string {
+    createTheadTpl(params: { settings: SettingObj }): string {
         const settings = params.settings;
         const { columnMap, _, __isNested } = settings;
 
@@ -100,7 +100,7 @@ class Render {
      * @returns {}
      */
     @parseTpl(thTpl)
-    createThTpl(params: any): string {
+    createThTpl(params: { settings: SettingObj, col: Column }): string {
         const { settings, col } = params;
         const { query, supportDrag, sortData, sortUpText, sortDownText } = settings;
 
@@ -148,7 +148,7 @@ class Render {
 
         let gmCreateAttr = '';
         let thName = col.key;
-        let thText = col.text;
+        let thText = <string>col.text;
         let compileAttr = '';
         switch (col.key) {
             // 插件自动生成序号列
@@ -169,7 +169,7 @@ class Render {
                 break;
             // 普通列
             default:
-                const obj = compileTh(settings, thName, col.text);
+                const obj = compileTh(settings, thName, <ThTemplate>col.text);
                 thText = obj.text;
                 compileAttr = obj.compileAttr;
                 break;
