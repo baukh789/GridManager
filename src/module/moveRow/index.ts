@@ -18,7 +18,7 @@ import { MOVEROW_KEY, TR_CACHE_KEY, NO_SELECT_CLASS_NAME, PX } from '@common/con
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from './constants';
-import { coreDOM } from '../core';
+import { renderTr } from '../core/render';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import { Column, ColumnMap, MoveRowConfig, Row, JTool } from 'typings/types';
 
@@ -256,7 +256,7 @@ class MoveRow {
                 isFunction(handler) && handler(changeList, tableData);
 
                 // 更新变更项DOM
-                coreDOM.updateTrDOM(getSettings(_), changeList);
+				renderTr(getSettings(_), changeList);
 
                 // 将更新后的数据合并至已选中存储器
                 supportCheckbox && mergeToCheckedData(_, checkboxConfig.key, key, columnMap, changeList);

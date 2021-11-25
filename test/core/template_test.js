@@ -1,7 +1,7 @@
-import render from '../../src/module/core/render';
+import template from '../../src/module/core/template';
 import { clearCompileList } from '../../src/common/framework';
 
-describe('core render', () => {
+describe('core template', () => {
     describe('createWrapTpl', () => {
         let settings = null;
         let htmlStr = null;
@@ -29,7 +29,7 @@ describe('core render', () => {
                 supportConfig: false,
                 supportAjaxPage: false
             };
-            expect(render.createWrapTpl({settings}).replace(/\s/g, '')).toEqual(htmlStr);
+            expect(template.getWrapTpl({settings}).replace(/\s/g, '')).toEqual(htmlStr);
         });
 
         it('执行验证: 增加皮肤标识', () => {
@@ -49,7 +49,7 @@ describe('core render', () => {
                 supportConfig: false,
                 supportAjaxPage: false
             };
-            expect(render.createWrapTpl({settings}).replace(/\s/g, '')).toEqual(htmlStr);
+            expect(template.getWrapTpl({settings}).replace(/\s/g, '')).toEqual(htmlStr);
         });
 
         it('执行验证: 增加跟随文本class', () => {
@@ -69,7 +69,7 @@ describe('core render', () => {
                 supportConfig: false,
                 supportAjaxPage: false
             };
-            expect(render.createWrapTpl({settings}).replace(/\s/g, '')).toEqual(htmlStr);
+            expect(template.getWrapTpl({settings}).replace(/\s/g, '')).toEqual(htmlStr);
         });
 
         it('执行验证: 增加禁用边框线标识', () => {
@@ -89,7 +89,7 @@ describe('core render', () => {
                 supportConfig: false,
                 supportAjaxPage: false
             };
-            expect(render.createWrapTpl({settings}).replace(/\s/g, '')).toEqual(htmlStr);
+            expect(template.getWrapTpl({settings}).replace(/\s/g, '')).toEqual(htmlStr);
         });
 
         it('执行验证: 增加禁用单元格分割线标识', () => {
@@ -109,7 +109,7 @@ describe('core render', () => {
                 supportConfig: false,
                 supportAjaxPage: false
             };
-            expect(render.createWrapTpl({settings}).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getWrapTpl({settings}).replace(/\s/g, '')).toBe(htmlStr);
         });
     });
 
@@ -143,7 +143,7 @@ describe('core render', () => {
                 text: () => '标题',  // 到这一步时，text已经被转换为function
                 isShow: true
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 开启表头提醒', () => {
@@ -163,7 +163,7 @@ describe('core render', () => {
                 text: () => '标题',  // 到这一步时，text已经被转换为function
                 isShow: true
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 开启排序', () => {
@@ -188,7 +188,7 @@ describe('core render', () => {
                 isShow: true,
                 sorting: ''
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
 
             // 排序方向为下
             htmlStr = `
@@ -204,7 +204,7 @@ describe('core render', () => {
                 isShow: true,
                 sorting: 'DESC'
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
 
             // 排序方向为上
             htmlStr = `
@@ -220,7 +220,7 @@ describe('core render', () => {
                 isShow: true,
                 sorting: 'ASC'
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 开启过滤', () => {
@@ -245,7 +245,7 @@ describe('core render', () => {
                     selected: undefined
                 }
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
 
 
             // 配置项选中
@@ -264,7 +264,7 @@ describe('core render', () => {
                     selected: '3'
                 }
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
             expect(settings.query.title).toBe('3');
         });
 
@@ -287,7 +287,7 @@ describe('core render', () => {
                 isShow: true,
                 fixed: ''
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
 
             // fixed: left
             htmlStr = `
@@ -303,7 +303,7 @@ describe('core render', () => {
                 isShow: true,
                 fixed: 'left'
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
 
             // fixed: right
             htmlStr = `
@@ -319,7 +319,7 @@ describe('core render', () => {
                 isShow: true,
                 fixed: 'right'
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: align', () => {
@@ -340,7 +340,7 @@ describe('core render', () => {
                 isShow: true,
                 align: 'left'
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 隐藏', () => {
@@ -360,7 +360,7 @@ describe('core render', () => {
                 text: () => '标题',  // 到这一步时，text已经被转换为function
                 isShow: false
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 启用拖拽', () => {
@@ -381,7 +381,7 @@ describe('core render', () => {
                 text: () => '标题',  // 到这一步时，text已经被转换为function
                 isShow: true
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 行列合并', () => {
@@ -403,7 +403,7 @@ describe('core render', () => {
                 colspan: 3,
                 rowspan: 2
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 存在宽', () => {
@@ -424,7 +424,7 @@ describe('core render', () => {
                 isShow: true,
                 width: 120
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 序号列', () => {
@@ -445,7 +445,7 @@ describe('core render', () => {
                 isShow: true,
                 width: 40
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 选择列', () => {
@@ -466,7 +466,7 @@ describe('core render', () => {
                 isShow: true,
                 width: 50
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 序号列', () => {
@@ -487,7 +487,7 @@ describe('core render', () => {
                 isShow: true,
                 width: 40
             };
-            expect(render.createThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
     });
     describe('createTheadTpl', () => {
@@ -537,7 +537,7 @@ describe('core render', () => {
                     </tr>
                 </thead>
             `.replace(/\s/g, '');
-            expect(render.createTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
         });
 
         it('执行验证: 嵌套表头', () => {
@@ -625,7 +625,7 @@ describe('core render', () => {
                     </tr>
                 </thead>
             `.replace(/\s/g, '');
-            expect(render.createTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
+            expect(template.getTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
         });
     });
 });

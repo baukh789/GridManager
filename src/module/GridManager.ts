@@ -46,6 +46,7 @@ import checkbox, { resetCheckboxDOM } from './checkbox';
 import tree from './tree';
 import config from './config';
 import core, { coreDOM } from './core';
+import { renderEmptyTbody, renderTr } from './core/render';
 import drag from './drag';
 import moveRow from './moveRow';
 import exportFile from './exportFile';
@@ -259,7 +260,7 @@ export default class GridManager {
                 // 启用回调
                 runCallback();
             }) : (() => {
-                core.insertEmptyTemplate(settings, true);
+				renderEmptyTbody(settings, true);
                 runCallback();
             })();
 
@@ -710,7 +711,7 @@ export default class GridManager {
             }
 
             // 更新DOM
-            coreDOM.updateTrDOM(settings, updateCacheList);
+			renderTr(settings, updateCacheList);
             return tableData;
         }
     }

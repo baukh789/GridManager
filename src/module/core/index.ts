@@ -6,17 +6,18 @@
  */
 import './style.less';
 import { isString, isFunction, isArray, getStyle, rootDocument } from '@jTool/utils';
-import { showLoading, hideLoading, getDiv, getTbody, getVisibleTh, getEmpty } from '@common/base';
+import { showLoading, hideLoading, getDiv } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
-import { getTableData, setTableData, setCheckedData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
-import { EMPTY_DATA_CLASS_NAME, WRAP_KEY, EMPTY_TPL_KEY, PX } from '@common/constants';
+import { setTableData, setCheckedData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
+import { EMPTY_DATA_CLASS_NAME, WRAP_KEY } from '@common/constants';
 import { clearMenuDOM } from '../menu/tool';
 import ajaxPage from '../ajaxPage';
 import { resetCheckboxDOM } from '../checkbox';
 import scroll from '../scroll';
 import coreDOM from './coreDOM';
+import { renderEmptyTbody, renderTbody, renderThead } from './render';
 import { transformToPromise } from './tool';
-import { sendCompile, compileEmptyTemplate, clearCompileList } from '@common/framework';
+import { sendCompile, clearCompileList } from '@common/framework';
 import { SettingObj, JTool } from 'typings/types';
 
 class Core {
@@ -108,14 +109,14 @@ class Core {
 
         // 数据为空时
         if (_data.length === 0) {
-            this.insertEmptyTemplate(settings);
+			renderEmptyTbody(settings);
             parseRes[totalsKey] = 0;
             setTableData(_, []);
         } else {
             const $div = getDiv(_);
             $div.removeClass(EMPTY_DATA_CLASS_NAME);
             $div.scrollTop(0);
-            await coreDOM.renderTableBody(settings, _data);
+            await renderTbody(settings, _data);
         }
 
         // 渲染选择框
@@ -137,30 +138,6 @@ class Core {
     };
 
     /**
-     * 插入空数据模板
-     * @param settings
-     * @param isInit: 是否为初始化时调用
-     */
-    insertEmptyTemplate(settings: SettingObj, isInit?: boolean): void {
-        const { _, emptyTemplate } = settings;
-        // 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
-        // 用于解决容器为不可见时，触发了setQuery的情况
-        if (isInit && getTableData(_).length !== 0) {
-            return;
-        }
-
-        const $tableDiv = getDiv(_);
-        $tableDiv.addClass(EMPTY_DATA_CLASS_NAME);
-        getTbody(_).html(`<tr ${EMPTY_TPL_KEY}="${_}" style="height: ${$tableDiv.height() - 1 + PX}"><td colspan="${getVisibleTh(_).length}"></td></tr>`);
-        const emptyTd = getEmpty(_).get(0).querySelector('td');
-
-        emptyTd.innerHTML = compileEmptyTemplate(settings, emptyTd, emptyTemplate);
-
-        // 解析框架: 空模板
-        sendCompile(settings);
-    }
-
-    /**
      * 渲染HTML，根据配置嵌入所需的事件源DOM
      * @param $table
      * @param settings
@@ -180,7 +157,7 @@ class Core {
         await this.waitContainerAvailable(_);
 
         // 重绘thead
-        coreDOM.redrawThead(settings);
+		renderThead(settings);
 
         // 初始化滚轴
         scroll.init(_);
@@ -212,5 +189,5 @@ class Core {
         });
     }
 }
-export { coreDOM };
+export { coreDOM, renderEmptyTbody };
 export default new Core();
