@@ -63,7 +63,7 @@ class Template {
     @parseTpl(theadTpl)
     getTheadTpl(params: { settings: SettingObj }): string {
         const settings = params.settings;
-        const { columnMap, _, __isNested } = settings;
+        const { columnMap, __isNested } = settings;
 
         const columnList: Array<Array<Column>> = [[]];
         const topList = columnList[0];
@@ -89,7 +89,6 @@ class Template {
 
 		// @ts-ignore
         return {
-            key: `${TABLE_HEAD_KEY}="${_}"`,
             thListTpl
         };
     }

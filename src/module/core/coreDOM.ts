@@ -1,19 +1,17 @@
 import jTool from '@jTool';
 import { rootDocument } from '@jTool/utils';
 import {
-	calcLayout,
 	getTable,
 	getWrap,
 	getTbody,
 	getQuerySelector,
-	clearTargetEvent,
-	setLineHeightValue
+	clearTargetEvent
 } from '@common/base';
 import {
 	TABLE_PURE_LIST,
 	TABLE_BODY_KEY,
 	TR_CACHE_KEY,
-	TD_FOCUS
+	TD_FOCUS, TABLE_HEAD_KEY
 } from '@common/constants';
 import { getRowData, getSettings } from '@common/cache';
 import { tooltip } from '../remind';
@@ -27,18 +25,14 @@ import { JTool, SettingObj } from 'typings/types';
  */
 class Dom {
     init($table: JTool, settings: SettingObj): void {
-        const { _, useWordBreak, lineHeight } = settings;
+        const { _, useWordBreak } = settings;
         // add wrap div
         $table.wrap(template.getWrapTpl({ settings }), '.table-div');
 
         // append thead
-        $table.append(template.getTheadTpl({settings}));
-
-        // 存储行高css变量
-        setLineHeightValue(_, lineHeight);
-
-        // 计算布局
-        calcLayout(settings);
+		const thead = rootDocument.createElement('thead');
+		thead.setAttribute(TABLE_HEAD_KEY, _);
+        $table.append(thead);
 
         // append tbody
         const tbody = rootDocument.createElement('tbody');

@@ -6,7 +6,7 @@
  */
 import './style.less';
 import { isString, isFunction, isArray, getStyle, rootDocument } from '@jTool/utils';
-import { showLoading, hideLoading, getDiv } from '@common/base';
+import {showLoading, hideLoading, getDiv, setLineHeightValue, calcLayout} from '@common/base';
 import { cloneObject, outError } from '@common/utils';
 import { setTableData, setCheckedData, getSettings, setSettings, SIV_waitContainerAvailable } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, WRAP_KEY } from '@common/constants';
@@ -144,7 +144,7 @@ class Core {
      * @returns {Promise<any>}
      */
     async createDOM($table: JTool, settings: SettingObj): Promise<any> {
-        const { _ } = settings;
+        const { _, lineHeight } = settings;
 
         // 创建DOM前 先清空框架解析列表
         clearCompileList(_);
@@ -156,10 +156,16 @@ class Core {
         // 等待容器可用
         await this.waitContainerAvailable(_);
 
-        // 重绘thead
+        // render thead
 		renderThead(settings);
 
-        // 初始化滚轴
+		// 存储行高css变量
+		setLineHeightValue(_, lineHeight);
+
+		// 计算布局
+		calcLayout(settings);
+
+		// 初始化滚轴
         scroll.init(_);
 
         // 解析框架: thead区域

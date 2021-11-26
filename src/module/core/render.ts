@@ -4,7 +4,7 @@ import {
 	getColTd,
 	getDiv,
 	getEmpty,
-	getTbody, getTh,
+	getTbody, getTh, getThead,
 	getVisibleTh,
 	setAreVisible,
 	updateVisibleLast
@@ -34,6 +34,7 @@ import remind from '@module/remind';
 import sort from '@module/sort';
 import filter from '@module/filter';
 import adjust from '@module/adjust';
+import template from './template';
 import { SettingObj, Column, TrObject, Row } from 'typings/types';
 
 /**
@@ -42,6 +43,8 @@ import { SettingObj, Column, TrObject, Row } from 'typings/types';
  */
 export const renderThead = (settings: SettingObj): void => {
 	const { _, columnMap, sortUpText, sortDownText, supportAdjust } = settings;
+	const $thead = getThead(_);
+	$thead.html(template.getTheadTpl({ settings }));
 	// 单个table下的TH
 	const $thList = getAllTh(_);
 
