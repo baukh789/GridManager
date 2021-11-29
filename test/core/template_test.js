@@ -522,20 +522,18 @@ describe('core template', () => {
             };
 
             htmlStr = `
-                <thead grid-manager-thead="test">
-                    <tr>
-                        <th th-name="gm_order" style="width:40px" gm-create gm-order>
-                            <div class="th-wrap">
-                                <span class="th-text" >序号</span>
-                            </div>
-                        </th>
-                        <th th-name="title" style="width:auto">
-                            <div class="th-wrap">
-                                <span class="th-text" >标题</span>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
+				<tr>
+					<th th-name="gm_order" style="width:40px" gm-create gm-order>
+						<div class="th-wrap">
+							<span class="th-text" >序号</span>
+						</div>
+					</th>
+					<th th-name="title" style="width:auto">
+						<div class="th-wrap">
+							<span class="th-text" >标题</span>
+						</div>
+					</th>
+				</tr>
             `.replace(/\s/g, '');
             expect(template.getTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
         });
@@ -598,32 +596,30 @@ describe('core template', () => {
             };
 
             htmlStr = `
-                <thead grid-manager-thead="test">
-                    <tr>
-                        <th th-name="gm_order" colspan="1" rowspan="2" style="width:40px" gm-create gm-order>
-                            <div class="th-wrap">
-                                <span class="th-text" >序号</span>
-                            </div>
-                        </th>
-                        <th th-name="title" colspan="2" rowspan="1" style="width:auto">
-                            <div class="th-wrap">
-                                <span class="th-text" >标题</span>
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th th-name="subtitle" colspan="1" rowspan="1" style="width:auto">
-                            <div class="th-wrap">
-                                <span class="th-text" >子标题</span>
-                            </div>
-                        </th>
-                        <th th-name="pic" colspan="1" rowspan="1" style="width:auto">
-                            <div class="th-wrap">
-                                <span class="th-text" >标题图片</span>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
+				<tr>
+					<th th-name="gm_order" colspan="1" rowspan="2" style="width:40px" gm-create gm-order>
+						<div class="th-wrap">
+							<span class="th-text" >序号</span>
+						</div>
+					</th>
+					<th th-name="title" colspan="2" rowspan="1" style="width:auto">
+						<div class="th-wrap">
+							<span class="th-text" >标题</span>
+						</div>
+					</th>
+				</tr>
+				<tr>
+					<th th-name="subtitle" colspan="1" rowspan="1" style="width:auto">
+						<div class="th-wrap">
+							<span class="th-text" >子标题</span>
+						</div>
+					</th>
+					<th th-name="pic" colspan="1" rowspan="1" style="width:auto">
+						<div class="th-wrap">
+							<span class="th-text" >标题图片</span>
+						</div>
+					</th>
+				</tr>
             `.replace(/\s/g, '');
             expect(template.getTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
         });
