@@ -45,7 +45,7 @@ import order from './order';
 import checkbox, { resetCheckboxDOM } from './checkbox';
 import tree from './tree';
 import config from './config';
-import core, { coreDOM } from './core';
+import core from './core';
 import { renderEmptyTbody, renderTr } from './core/render';
 import drag from './drag';
 import moveRow from './moveRow';
@@ -929,7 +929,7 @@ export default class GridManager {
             ajaxPage.destroy(_);
             checkbox.destroy(_);
             config.destroy(_);
-            coreDOM.destroy(_);
+            core.destroy(_);
             drag.destroy(_);
             dropdown.destroy(_);
             filter.destroy(_);
