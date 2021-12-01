@@ -66,7 +66,7 @@ const GM_PUBLISH_METHOD_MAP = {
         key: 'updateRowData',
         relyInit: true,
         title: '更新指定行所使用的数据',
-        code: `GridManager.updateRowData('${gridManagerName}', 'id', {id: 92, title: 'ccc'});`
+        code: `GridManager.updateRowData('${gridManagerName}', 'id', {id: 112, title: 'ccc'});`
     },
     updateTreeState: {
         key: 'updateTreeState',
