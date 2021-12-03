@@ -11,14 +11,14 @@ import {
     getCloneRowData,
     getFakeVisibleTh
 } from '@common/base';
-import { getTableData, setTableData, getSettings, getCheckedData, setCheckedData } from '@common/cache';
+import { getTableData, getSettings, getCheckedData, setCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
-import { mergeRow, clearMergeRow } from '../merge';
+import { clearMergeRow } from '../merge';
 import { MOVEROW_KEY, TR_CACHE_KEY, NO_SELECT_CLASS_NAME, PX } from '@common/constants';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from './constants';
-import { renderTr } from '../core/render';
+import core from '../core';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import { Column, ColumnMap, MoveRowConfig, Row, JTool } from 'typings/types';
 
@@ -81,7 +81,7 @@ const update = (_: string, key: string, $tbody: JTool, $dreamlandDIV: JTool, $pr
  * 将移动后的字段更新合并至已选中存储
  * @param _
  * @param checkboxKey
- * @param key
+ * @param key: 移动后需要更新的字段
  * @param columnMap
  * @param changeList
  */
@@ -110,7 +110,7 @@ const mergeToCheckedData = (_: string, checkboxKey: string, key: string, columnM
 class MoveRow {
     init(_: string): void {
         const _this = this;
-        const { supportAutoOrder, supportCheckbox, checkboxConfig, moveRowConfig, animateTime, columnMap } = getSettings(_);
+        const { supportCheckbox, checkboxConfig, moveRowConfig, animateTime, columnMap } = getSettings(_);
         const { key, useSingleMode, handler } = moveRowConfig as MoveRowConfig;
 
         const $body = jTool('body');
@@ -166,16 +166,13 @@ class MoveRow {
             $tableDiv.append(`<div class="${CLASS_DREAMLAND}"></div>`);
             $dreamlandDIV = jTool(`.${CLASS_DREAMLAND}`, $tableDiv);
 
-            // 先清除再添加合并列，是为了达到mousedown时可以获取到一个完整的且列可对齐的行
+            // 先清除再添加合并列
             clearMergeRow(_);
             const overFlow = getDiv(_).attr('gm-overflow-x') === 'true';
             $dreamlandDIV.get(0).innerHTML = _this.createHtml({ table, tr, $thList: getFakeVisibleTh(_), overFlow });
 
             // 增加移动中样式
             $tr.addClass(CLASS_DRAG_ING);
-
-            mergeRow(_, columnMap);
-            clearMergeRow(_, $dreamlandDIV);
 
             let trIndex = 0;
             // 事件: 行移动进行中
@@ -209,9 +206,6 @@ class MoveRow {
                 });
 
                 $allTr = update(_, key, $tbody, $dreamlandDIV, $prevTr, $nextTr, $tr, tableData);
-
-                // 合并行数据相同的单元格
-                mergeRow(_, columnMap);
             });
 
             // 事件: 行移动结束
@@ -229,37 +223,17 @@ class MoveRow {
                     $dreamlandDIV.remove();
                 });
 
-                // 存储表格数据
-                setTableData(_, tableData);
-
-                // 更新序号
-                if (supportAutoOrder) {
-                    const $orderDOM = jTool('[gm-order]', $allTr);
-                    const orderList: Array<number> = [];
-                    each($orderDOM, (order: HTMLTableCellElement) => {
-                        orderList.push(parseInt(order.innerText, 10));
-                    });
-                    orderList.sort((a, b) => a - b);
-                    each($orderDOM, (order: HTMLTableCellElement, index: number) => {
-                    	// @ts-ignore 交由JS自动从number转换为string
-                        order.innerText = orderList[index];
-                    });
-                }
-
-                // 合并行数据相同的单元格
-                mergeRow(_, columnMap);
-
                 // 遍历被修改的项
                 const changeList = tableData.filter((item, index) => {
                     return !equal(item, oldData[index]);
                 });
                 isFunction(handler) && handler(changeList, tableData);
 
-                // 更新变更项DOM
-				renderTr(getSettings(_), changeList);
+				// 将更新后的数据合并至已选中存储器
+				supportCheckbox && mergeToCheckedData(_, checkboxConfig.key, key, columnMap, changeList);
 
-                // 将更新后的数据合并至已选中存储器
-                supportCheckbox && mergeToCheckedData(_, checkboxConfig.key, key, columnMap, changeList);
+                // 更新变更项DOM
+				core.change(_, tableData, true);
 
                 // 开启文字选中效果
                 $body.removeClass(NO_SELECT_CLASS_NAME);

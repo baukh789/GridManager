@@ -116,7 +116,7 @@ describe('merge', () => {
     });
 
 
-    describe('clearMergeRow(_, $context)', () => {
+    describe('clearMergeRow(_)', () => {
         beforeEach(() => {
             document.body.innerHTML = `
             <table grid-manager="test">
@@ -139,20 +139,13 @@ describe('merge', () => {
 
         it('基础验证', () => {
             expect(clearMergeRow).toBeDefined();
-            expect(clearMergeRow.length).toBe(2);
+            expect(clearMergeRow.length).toBe(1);
         });
 
-        it('执行验证: 无指定容器', () => {
+        it('执行验证', () => {
             expect(jTool('td[merge-td]').length).toBe(2);
             expect(jTool('td[rowspan]').length).toBe(2);
             clearMergeRow('test');
-            expect(jTool('td[merge-td]').length).toBe(0);
-            expect(jTool('td[rowspan]').length).toBe(0);
-        });
-        it('执行验证: 存在指定容器', () => {
-            expect(jTool('td[merge-td]').length).toBe(2);
-            expect(jTool('td[rowspan]').length).toBe(2);
-            clearMergeRow('test', jTool('tbody'));
             expect(jTool('td[merge-td]').length).toBe(0);
             expect(jTool('td[rowspan]').length).toBe(0);
         });

@@ -36,7 +36,7 @@ import {
     setLineHeightValue
 } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
-import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, updateRowData, clearCache, SIV_waitTableAvailable, updateCache } from '@common/cache';
+import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, clearCache, SIV_waitTableAvailable, updateCache } from '@common/cache';
 import { clearCacheDOM } from '@common/domCache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
@@ -46,7 +46,7 @@ import checkbox, { resetCheckboxDOM } from './checkbox';
 import tree from './tree';
 import config from './config';
 import core from './core';
-import { renderEmptyTbody, renderTr } from './core/render';
+import { renderEmptyTbody } from './core/render';
 import drag from './drag';
 import moveRow from './moveRow';
 import exportFile from './exportFile';
@@ -61,7 +61,7 @@ import filter from './filter';
 import fixed from './fixed';
 import print from './print';
 import { showRow, hideRow } from './rowVisible';
-import { Column, ArgColumn, SettingObj, JTool, ArgObj, SortData } from 'typings/types';
+import { Column, ArgColumn, SettingObj, JTool, ArgObj, SortData, Row } from 'typings/types';
 
 const isRendered = (_: string, settings?: SettingObj): boolean => {
     // 部分静态方法自身不使用settings， 所以这个参数可能为空
@@ -690,20 +690,34 @@ export default class GridManager {
         const _ = getKey(table);
         const settings = getSettings(_);
         if (isRendered(_, settings)) {
-            const { columnMap, supportCheckbox, rowRenderHandler } = settings;
+            const { columnMap, supportCheckbox, supportTreeData, treeConfig, rowRenderHandler } = settings;
             const rowDataList = isArray(rowData) ? <Array<object>>rowData : [rowData];
 
-            let { tableData, updateCacheList } = updateRowData(_, key, rowDataList);
-            updateCacheList = updateCacheList.map(row => {
-                let index = -1;
-                each(tableData, (item: object, _index: number) => {
-                    if (item[key] === row[key]) {
-                        index = _index;
-                        return false;
-                    }
-                });
-                return rowRenderHandler(row, index);
-            });
+            const tableData = getTableData(_);
+			const treeKey = treeConfig.treeKey;
+
+			// 当前正在展示的被更新项getRowData
+			// let updateCacheList: Array<Row> = [];
+			const updateData = (list: Array<Row>, newItem: Row): void => {
+				list.some((item, index) => {
+					if (item[key] === newItem[key]) {
+						extend(item, rowRenderHandler(extend(item, newItem), index));
+						return true;
+					}
+
+					// 树型数据
+					if (supportTreeData) {
+						const children = item[treeKey];
+						if (children && children.length) {
+							return updateData(children, newItem);
+						}
+					}
+				});
+			};
+
+			rowDataList.forEach(newItem => {
+				updateData(tableData, newItem);
+			});
 
             // 更新选中数据
             if (supportCheckbox) {
@@ -711,7 +725,8 @@ export default class GridManager {
             }
 
             // 更新DOM
-			renderTr(settings, updateCacheList);
+			core.change(_, tableData);
+			// renderTr(settings, updateCacheList);
             return tableData;
         }
     }

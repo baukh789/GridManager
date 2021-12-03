@@ -8,7 +8,7 @@ import jTool from '@jTool';
 import { isString, isFunction, isArray, getStyle, rootDocument } from '@jTool/utils';
 import { showLoading, hideLoading, getDiv, setLineHeightValue, calcLayout, clearTargetEvent, getTable, getWrap, getQuerySelector, getTbody } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
-import { setTableData, setCheckedData, getSettings, setSettings, SIV_waitContainerAvailable, getRowData } from '@common/cache';
+import { getTableData, setTableData, formatTableData, setCheckedData, getSettings, setSettings, SIV_waitContainerAvailable, getRowData } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, TABLE_BODY_KEY, TABLE_HEAD_KEY, TABLE_PURE_LIST, TD_FOCUS, TR_CACHE_KEY, WRAP_KEY } from '@common/constants';
 import { sendCompile, clearCompileList } from '@common/framework';
 import { clearMenuDOM } from '@module/menu/tool';
@@ -17,11 +17,11 @@ import { resetCheckboxDOM } from '@module/checkbox';
 import scroll from '@module/scroll';
 import { tooltip } from '@module/remind';
 import template from './template';
-import { renderEmptyTbody, renderTbody, renderThead } from './render';
-import { transformToPromise } from './tool';
+import { renderEmptyTbody, renderTbody, renderThead, renderTr } from './render';
+import { transformToPromise, diffTableData } from './tool';
 import { getEvent, eventMap } from './event';
-import { SettingObj, JTool } from 'typings/types';
 import { EVENTS, SELECTOR, TARGET } from '@common/events';
+import { SettingObj, JTool, Row } from 'typings/types';
 import './style.less';
 
 const bindTrAndTdEvent = (_: string):void => {
@@ -163,7 +163,22 @@ class Core {
         });
     }
 
-    /**
+    // 需要同时支持columnMap和tableData todo 开发中
+    change(_: string, list: Array<Row>, useFormat?: boolean) {
+    	const oldTableData = getTableData(_);
+    	const newTableData = useFormat ? formatTableData(_, list) : list;
+		const diffTableList = diffTableData(_, oldTableData, newTableData);
+
+		const settings = getSettings(_);
+
+		// 触发渲染
+		renderTr(settings, diffTableList);
+
+		// 存储数据
+		setTableData(_, newTableData);
+	}
+
+	/**
      * 执行ajax成功后重新渲染DOM
      * @param settings
      * @param response

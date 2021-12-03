@@ -1,4 +1,5 @@
-import {getTableData, resetTableData} from '@common/cache';
+import jTool from '@jTool';
+import {getTableData, formatTableData, setCheckedData, setTableData} from '@common/cache';
 import {
 	getAllTh,
 	getColTd,
@@ -19,7 +20,6 @@ import {
 	TR_CHILDREN_STATE, TR_LEVEL_KEY,
 	TR_PARENT_KEY
 } from '@common/constants';
-import jTool from '@jTool';
 import { each, isElement, isObject, isString, isUndefined, isValidArray } from '@jTool/utils';
 import { compileEmptyTemplate, compileTd, sendCompile } from '@common/framework';
 import { outError } from '@common/utils';
@@ -122,48 +122,57 @@ export const renderEmptyTbody = (settings: SettingObj, isInit?: boolean): void =
 /**
  * render tr
  * @param settings
- * @param updateCacheList
+ * @param diffTableList
  */
-export const renderTr = (settings: SettingObj, updateCacheList: Array<Row>): void => {
+export const renderTr = (settings: SettingObj, diffTableList: Array<Row>): void => {
 	const { _, columnMap, supportTreeData, treeConfig } = settings;
 	const { treeKey } = treeConfig;
-	updateCacheList.forEach(row => {
-		const cacheKey = row[TR_CACHE_KEY];
-		const level = row[TR_LEVEL_KEY];
-		let index = parseInt(cacheKey.split('-').pop(), 10);
+	const render = (list: Array<Row>) => {
+		list.forEach(row => {
+			if (!row) {
+				return;
+			}
+			const cacheKey = row[TR_CACHE_KEY];
+			const level = row[TR_LEVEL_KEY];
+			let index = parseInt(cacheKey.split('-').pop(), 10);
 
-		const trNode = getTbody(_).find(`[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
+			const trNode = getTbody(_).find(`[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
 
-		if (!trNode) {
-			return;
-		}
-
-		// 添加tree map
-		const children = row[treeKey];
-		const hasChildren = children && children.length;
-		tree.add(_, cacheKey, level, hasChildren);
-
-		each(columnMap, (key: string, col: Column) => {
-			// 不处理项: 自动添加列
-			if (col.isAutoCreate) {
+			if (!trNode) {
 				return;
 			}
 
-			let tdTemplate = col.template;
-			const tdNode = getColTd(getTh(_, key), trNode).get(0);
-
-			// 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
-			const tdCloneNode = tdNode.cloneNode(true);
-
-			let { text, compileAttr } = compileTd(settings, tdTemplate, row, index, key);
-			text = isElement(text) ? text.outerHTML : text;
-			if (compileAttr) {
-				tdCloneNode.setAttribute(compileAttr.split('=')[0], compileAttr.split('=')[1]);
+			// 添加tree map
+			if (supportTreeData) {
+				const children = row[treeKey];
+				const hasChildren = children && children.length;
+				tree.add(_, cacheKey, level, hasChildren);
+				hasChildren && render(children);
 			}
-			tdCloneNode.innerHTML = text;
-			trNode.replaceChild(tdCloneNode, tdNode);
+
+			each(columnMap, (key: string, col: Column) => {
+				let tdTemplate = col.template;
+				const tdNode = getColTd(getTh(_, key), trNode).get(0);
+				// 自动添加列
+				if (col.isAutoCreate) {
+					tdNode.innerHTML = tdTemplate(row[col.key], row, index, level === 0);
+					return;
+				}
+
+				// 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
+				const tdCloneNode = tdNode.cloneNode(true);
+
+				let { text, compileAttr } = compileTd(settings, tdTemplate, row, index, key);
+				text = isElement(text) ? text.outerHTML : text;
+				if (compileAttr) {
+					tdCloneNode.setAttribute(compileAttr.split('=')[0], compileAttr.split('=')[1]);
+				}
+				tdCloneNode.innerHTML = text;
+				trNode.replaceChild(tdCloneNode, tdNode);
+			});
 		});
-	});
+	};
+	render(diffTableList);
 
 
 	// 解析框架
@@ -195,7 +204,11 @@ export const renderTbody = async (settings: SettingObj, data: Array<Row>): Promi
 
 	const { treeKey, openState } = treeConfig;
 
-	data = resetTableData(_, data);
+	data = formatTableData(_, data);
+
+	// 存储表格数据
+	setTableData(_, data);
+	setCheckedData(_, data);
 
 	// tbody dom
 	const $tbody = getTbody(_);

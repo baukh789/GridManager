@@ -3,7 +3,7 @@ import { ROW_HIDE_KEY } from '@common/constants';
 import jTool from '@jTool';
 import { each } from '@jTool/utils';
 import { ROW_SPAN, MERGE_TD, ROW_LAST } from './constants';
-import { Column, ColumnMap, JTool } from 'typings/types';
+import { Column, ColumnMap } from 'typings/types';
 import './style.less';
 
 /**
@@ -61,10 +61,9 @@ export const mergeRow = (_: string, columnMap: ColumnMap): void => {
 /**
  * 清除合并行数据相同的单元格
  * @param _
- * @param $context
  */
-export const clearMergeRow = (_: string, $context?: JTool): void => {
-    $context = $context || getTable(_);
-    jTool(`[${ROW_SPAN}]`, $context).removeAttr(ROW_SPAN);
-    jTool(`[${MERGE_TD}]`, $context).removeAttr(MERGE_TD);
+export const clearMergeRow = (_: string): void => {
+    const $table = getTable(_);
+    jTool(`[${ROW_SPAN}]`, $table).removeAttr(ROW_SPAN);
+    jTool(`[${MERGE_TD}]`, $table).removeAttr(MERGE_TD);
 };

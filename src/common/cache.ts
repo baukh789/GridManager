@@ -116,42 +116,42 @@ export const getRowData = (_: string, target: HTMLTableRowElement | NodeList, us
  * @param rowDataList: 需要更新的数据列表
  * @returns tableData: 更新后的表格数据
  */
-export const updateRowData = (_: string, key: string, rowDataList: Array<Row>) => {
-    const tableData = getTableData(_);
-    const settings = getSettings(_);
-    const supportTreeData = settings.supportTreeData;
-    const treeKey = settings.treeConfig.treeKey;
-
-    // 当前正在展示的被更新项getRowData
-    const updateCacheList: Array<Row> = [];
-    const updateData = (list: Array<Row>, newItem: Row): void => {
-        list.some(item => {
-            if (item[key] === newItem[key]) {
-                extend(item, newItem);
-                updateCacheList.push(item);
-                return true;
-            }
-
-            // 树型数据
-            if (supportTreeData) {
-                const children = item[treeKey];
-                if (children && children.length) {
-                    return updateData(children, newItem);
-                }
-            }
-        });
-    };
-
-    rowDataList.forEach(newItem => {
-        updateData(tableData, newItem);
-    });
-
-    setTableData(_, tableData);
-    return {
-        tableData,
-        updateCacheList
-    };
-};
+// export const updateRowData = (_: string, key: string, rowDataList: Array<Row>) => {
+//     const tableData = getTableData(_);
+//     const settings = getSettings(_);
+//     const supportTreeData = settings.supportTreeData;
+//     const treeKey = settings.treeConfig.treeKey;
+//
+//     // 当前正在展示的被更新项getRowData
+//     const updateCacheList: Array<Row> = [];
+//     const updateData = (list: Array<Row>, newItem: Row): void => {
+//         list.some(item => {
+//             if (item[key] === newItem[key]) {
+//                 extend(item, newItem);
+//                 updateCacheList.push(item);
+//                 return true;
+//             }
+//
+//             // 树型数据
+//             if (supportTreeData) {
+//                 const children = item[treeKey];
+//                 if (children && children.length) {
+//                     return updateData(children, newItem);
+//                 }
+//             }
+//         });
+//     };
+//
+//     rowDataList.forEach(newItem => {
+//         updateData(tableData, newItem);
+//     });
+//
+//     setTableData(_, tableData);
+//     return {
+//         tableData,
+//         updateCacheList
+//     };
+// };
 
 /**
  * 获取表格数据
@@ -176,7 +176,7 @@ export const setTableData = (_: string, data: Array<Row>): void => {
  * @param data
  * @returns {*}
  */
-export const resetTableData = (_: string, data: Array<Row>): Array<Row> => {
+export const formatTableData = (_: string, data: Array<Row>): Array<Row> => {
 
     const {
         columnMap,
@@ -245,10 +245,10 @@ export const resetTableData = (_: string, data: Array<Row>): Array<Row> => {
         // 单行数据渲染时执行程序
         return rowRenderHandler(row, index);
     });
-
-    // 存储表格数据
-    setTableData(_, newData);
-    setCheckedData(_, newData);
+	//
+    // // 存储表格数据
+    // setTableData(_, newData);
+    // setCheckedData(_, newData);
     return newData;
 };
 
