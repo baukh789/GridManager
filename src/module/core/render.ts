@@ -1,5 +1,5 @@
 import jTool from '@jTool';
-import {getTableData, formatTableData, setCheckedData, setTableData} from '@common/cache';
+import { getTableData } from '@common/cache';
 import {
 	getAllTh,
 	getColTd,
@@ -174,7 +174,6 @@ export const renderTr = (settings: SettingObj, diffTableList: Array<Row>): void 
 	};
 	render(diffTableList);
 
-
 	// 解析框架
 	sendCompile(settings).then(() => {
 		// 插入tree dom
@@ -203,12 +202,12 @@ export const renderTbody = async (settings: SettingObj, data: Array<Row>): Promi
 	} = settings;
 
 	const { treeKey, openState } = treeConfig;
-
-	data = formatTableData(_, data);
-
-	// 存储表格数据
-	setTableData(_, data);
-	setCheckedData(_, data);
+	//
+	// data = formatTableData(_, data);
+	//
+	// // 存储表格数据
+	// setTableData(_, data);
+	// setCheckedData(_, data);
 
 	// tbody dom
 	const $tbody = getTbody(_);

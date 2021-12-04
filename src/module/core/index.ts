@@ -226,6 +226,12 @@ class Core {
             const $div = getDiv(_);
             $div.removeClass(EMPTY_DATA_CLASS_NAME);
             $div.scrollTop(0);
+
+			_data = formatTableData(_, _data);
+
+			// 存储表格数据
+			setTableData(_, _data);
+			setCheckedData(_, _data);
             await renderTbody(settings, _data);
         }
 
