@@ -17,7 +17,7 @@ export default {
      * @param value
      * @returns {*}
      */
-    attr: function (key: string, value: string) {
+    attr: function (key: string, value?: string) {
         // setter
         if (!isUndefined(value)) {
             each(this, (v: HTMLElement) => {
