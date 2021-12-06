@@ -6,9 +6,10 @@ export { ArgColumn, ArgObj, Column, ColumnMap, SettingObj, Row, PageData, SortDa
 
 // 生成过程中的tr对像存储器
 export interface TrObject {
-	className: Array<string>,
-	attribute: Array<string>,
-	tdList: Array<string>
+	className: Array<string>;
+	attribute: Array<Array<string>>;
+	querySelector: string;
+	tdList: Array<string>;
 }
 
 // 配置区域模板参数
@@ -67,4 +68,10 @@ export interface FullColumnTemplate {
 // 为空模板函数
 export interface EmptyTemplate {
 	(settings: SettingObj): string;
+}
+
+// diff data
+export interface DiffData {
+	differenceList: Array<Row>;
+	lastRow: Row;
 }

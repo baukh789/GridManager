@@ -7,7 +7,7 @@ import { isUndefined, isString, each, rootDocument } from '@jTool/utils';
 import { getQuerySelector, getTable, getTbody, getTh, getColTd, clearTargetEvent } from '@common/base';
 import { TR_PARENT_KEY, TR_CACHE_KEY, TR_CHILDREN_STATE, GM_CREATE, PX } from '@common/constants';
 import { getEvent, eventMap } from './event';
-import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from './tool';
+import { treeElementKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from './tool';
 import { TARGET, EVENTS, SELECTOR } from '@common/events';
 import fixed from '@module/fixed';
 import { JTool } from 'typings/types';
@@ -18,7 +18,7 @@ interface TreeConfig {
 	insertTo?: string;
 
 	// 层级关键字段
-	treeKey?: string;
+	treeElementKey?: string;
 
 	// 初始打开状态
 	openState?: boolean;
@@ -36,11 +36,13 @@ class Tree {
      * @param cacheKey
      * @param level
      * @param hasChildren
+     * @param state
      */
-    add(_: string, cacheKey: string, level: number, hasChildren: boolean): void {
+    add(_: string, cacheKey: string, level: number, hasChildren: boolean, state: boolean): void {
         addTreeCache(_, {
             cacheKey,
             level,
+			state,
             hasChildren
         });
     }
@@ -48,7 +50,7 @@ class Tree {
     init(_: string): void {
         const _this = this;
         // 绑定事件
-        eventMap[_] = getEvent(getQuerySelector(_), treeKey);
+        eventMap[_] = getEvent(getQuerySelector(_), treeElementKey);
         const { toggle } = eventMap[_];
 
         getTbody(_).addClass('tree-tbody');
@@ -69,16 +71,16 @@ class Tree {
         const $tbody = getTbody(_);
 
         const updateState = ($tr: JTool, openState: boolean): void => {
-            const $treeEle = jTool(`[${treeKey}]`, $tr);
+            const $treeEle = jTool(`[${treeElementKey}]`, $tr);
             const $action = jTool('i', $treeEle);
             const cacheKey = $tr.attr(TR_CACHE_KEY);
             if (isUndefined(openState)) {
-                openState = !($treeEle.attr(treeKey) === 'true');
+                openState = !($treeEle.attr(treeElementKey) === 'true');
             }
 
             $action.removeClass(getIconClass(!openState));
             $action.addClass(getIconClass(openState));
-            $treeEle.attr(treeKey, openState);
+            $treeEle.attr(treeElementKey, openState);
 
             const $childrenTr = $tbody.find(`[${TR_PARENT_KEY}="${cacheKey}"]`);
             if ($childrenTr.length === 0) {
@@ -95,11 +97,11 @@ class Tree {
         };
 
         const updateAllState = (openState: boolean): void => {
-            const $treeEle = jTool(`[${treeKey}]`, $tbody);
+            const $treeEle = jTool(`[${treeElementKey}]`, $tbody);
             const $action = jTool('i', $treeEle);
             $action.removeClass(getIconClass(!openState));
             $action.addClass(getIconClass(openState));
-            $treeEle.attr(treeKey, openState);
+            $treeEle.attr(treeElementKey, openState);
             const $childrenTr = $tbody.find(`[${TR_PARENT_KEY}]`);
             $childrenTr.attr(TR_CHILDREN_STATE, openState);
         };
@@ -128,7 +130,10 @@ class Tree {
         }
 
         insetList.forEach(item => {
-            const { cacheKey, level, hasChildren } = item;
+            let { cacheKey, level, hasChildren, state } = item;
+            if (isUndefined(state)) {
+				state = openState;
+			}
 
             const $trNode = jTool(`tr[${TR_CACHE_KEY}="${cacheKey}"]`, $table);
 
@@ -142,15 +147,16 @@ class Tree {
             if (!$insertTd) {
                 $insertTd = jTool(`td:not([${GM_CREATE}])`, $trNode).eq(0);
             }
-            const treeDOM = rootDocument.createElement('span');
-            // @ts-ignore 类型交于js自行转换
-            treeDOM.setAttribute(treeKey, openState);
-            treeDOM.style.width = (level + 1) * 14 + PX;
 
-            if (hasChildren) {
-                treeDOM.innerHTML = `<i class="gm-icon ${getIconClass(openState)}"></i>`;
-            }
-            $insertTd.prepend(treeDOM);
+            // 添加层级所需空格，验证存在是在数据更新时不需要再次创建
+			const treeDOM = rootDocument.createElement('span');
+			treeDOM.setAttribute(treeElementKey, state + '');
+			treeDOM.style.width = (level + 1) * 14 + PX;
+
+			if (hasChildren) {
+				treeDOM.innerHTML = `<i class="gm-icon ${getIconClass(state)}"></i>`;
+			}
+			$insertTd.prepend(treeDOM);
         });
 
         clearTreeCache(_);

@@ -9,7 +9,7 @@ import { isString, isFunction, each, isEmptyObject, extend } from '@jTool/utils'
 import ajax from '@jTool/Ajax';
 import { cloneObject, equal } from '@common/utils';
 import { getSettings, setSettings } from '@common/cache';
-import { Row, SettingObj } from 'typings/types';
+import { DiffData, Row, SettingObj } from 'typings/types';
 
 // 获取参数信息
 export const getParams = (settings: SettingObj): object => {
@@ -99,17 +99,18 @@ export const transformToPromise = (settings: SettingObj): Promise<any> =>  {
  * @param oldTableData
  * @param newTableData
  */
-export const diffTableData = (_: string, oldTableData: Array<Row>, newTableData: Array<Row>): Array<Row> => {
+export const diffTableData = (_: string, oldTableData: Array<Row>, newTableData: Array<Row>): DiffData => {
 	const differenceList = cloneObject(newTableData);
 	const settings = getSettings(_);
 	const { supportTreeData, treeConfig } = settings;
 	const { treeKey } = treeConfig;
 
+	let lastRow: Row;
 	// 循环比对时，在旧数据与新数据间取长度较大的值为循环对象，以确保可以对所有值进行比对
 	const difference = (newList: Array<Row>, oldList: Array<Row>) => {
 		each(newList, (newRow: Row, index: number) => {
 			const oldRow = oldList[index] || {};
-
+			lastRow = newRow;
 			// 验证两个对像是否存在差异: 不存在差异的值为 empty，并在后续的DOM操作中跳过当前索引
 			if (equal(oldRow, newRow)) {
 				delete newList[index];
@@ -123,5 +124,8 @@ export const diffTableData = (_: string, oldTableData: Array<Row>, newTableData:
 
 	};
 	difference(differenceList, oldTableData);
-	return differenceList;
+	return {
+		differenceList,
+		lastRow
+	};
 };

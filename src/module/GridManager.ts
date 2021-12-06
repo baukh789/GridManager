@@ -724,9 +724,8 @@ export default class GridManager {
                 updateCheckedData(_, columnMap, key, rowDataList);
             }
 
-            // 更新DOM
+            // 触发更新
 			core.change(_, tableData);
-			// renderTr(settings, updateCacheList);
             return tableData;
         }
     }

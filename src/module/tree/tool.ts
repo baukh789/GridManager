@@ -2,11 +2,12 @@
 interface TreeCache {
 	cacheKey: string;
 	level: number;
+	state: boolean;
 	hasChildren: boolean;
 }
 
 // tree唯一标识
-export const treeKey = 'tree-element';
+export const treeElementKey = 'tree-element';
 
 // 待添加tree dom存储器
 const treeCacheMap = {};

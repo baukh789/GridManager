@@ -1,25 +1,7 @@
 import jTool from '@jTool';
 import { getTableData } from '@common/cache';
-import {
-	getAllTh,
-	getColTd,
-	getDiv,
-	getEmpty,
-	getTbody, getTh, getThead,
-	getVisibleTh,
-	setAreVisible,
-	updateVisibleLast
-} from '@common/base';
-import {
-	DISABLE_CUSTOMIZE,
-	EMPTY_DATA_CLASS_NAME,
-	EMPTY_TPL_KEY, ODD,
-	PX,
-	ROW_CLASS_NAME, TH_NAME,
-	TR_CACHE_KEY,
-	TR_CHILDREN_STATE, TR_LEVEL_KEY,
-	TR_PARENT_KEY
-} from '@common/constants';
+import { getAllTh, getDiv, getEmpty, getTbody, getThead, getVisibleTh, setAreVisible, updateVisibleLast } from '@common/base';
+import { DISABLE_CUSTOMIZE, EMPTY_DATA_CLASS_NAME, EMPTY_TPL_KEY, ODD, PX, ROW_CLASS_NAME, TH_NAME, TR_CACHE_KEY, TR_CHILDREN_STATE, TR_PARENT_KEY } from '@common/constants';
 import { each, isElement, isObject, isString, isUndefined, isValidArray } from '@jTool/utils';
 import { compileEmptyTemplate, compileTd, sendCompile } from '@common/framework';
 import { outError } from '@common/utils';
@@ -27,6 +9,7 @@ import moveRow from '@module/moveRow';
 import checkbox from '@module/checkbox';
 import fullColumn from '@module/fullColumn';
 import tree from '@module/tree';
+import { treeElementKey } from '@module/tree/tool';
 import { installSummary } from '@module/summary';
 import { mergeRow } from '@module/merge';
 import fixed from '@module/fixed';
@@ -35,7 +18,7 @@ import sort from '@module/sort';
 import filter from '@module/filter';
 import adjust from '@module/adjust';
 import template from './template';
-import { SettingObj, Column, TrObject, Row } from 'typings/types';
+import { SettingObj, Column, TrObject, Row, DiffData } from 'typings/types';
 
 /**
  * 重绘thead
@@ -120,76 +103,11 @@ export const renderEmptyTbody = (settings: SettingObj, isInit?: boolean): void =
 };
 
 /**
- * render tr
- * @param settings
- * @param diffTableList
- */
-export const renderTr = (settings: SettingObj, diffTableList: Array<Row>): void => {
-	const { _, columnMap, supportTreeData, treeConfig } = settings;
-	const { treeKey } = treeConfig;
-	const render = (list: Array<Row>) => {
-		list.forEach(row => {
-			if (!row) {
-				return;
-			}
-			const cacheKey = row[TR_CACHE_KEY];
-			const level = row[TR_LEVEL_KEY];
-			let index = parseInt(cacheKey.split('-').pop(), 10);
-
-			const trNode = getTbody(_).find(`[${TR_CACHE_KEY}="${cacheKey}"]`).get(0);
-
-			if (!trNode) {
-				return;
-			}
-
-			// 添加tree map
-			if (supportTreeData) {
-				const children = row[treeKey];
-				const hasChildren = children && children.length;
-				tree.add(_, cacheKey, level, hasChildren);
-				hasChildren && render(children);
-			}
-
-			each(columnMap, (key: string, col: Column) => {
-				let tdTemplate = col.template;
-				const tdNode = getColTd(getTh(_, key), trNode).get(0);
-				// 自动添加列
-				if (col.isAutoCreate) {
-					tdNode.innerHTML = tdTemplate(row[col.key], row, index, level === 0);
-					return;
-				}
-
-				// 不直接操作tdNode的原因: react不允许直接操作已经关联过框架的DOM
-				const tdCloneNode = tdNode.cloneNode(true);
-
-				let { text, compileAttr } = compileTd(settings, tdTemplate, row, index, key);
-				text = isElement(text) ? text.outerHTML : text;
-				if (compileAttr) {
-					tdCloneNode.setAttribute(compileAttr.split('=')[0], compileAttr.split('=')[1]);
-				}
-				tdCloneNode.innerHTML = text;
-				trNode.replaceChild(tdCloneNode, tdNode);
-			});
-		});
-	};
-	render(diffTableList);
-
-	// 解析框架
-	sendCompile(settings).then(() => {
-		// 插入tree dom
-		supportTreeData && tree.insertDOM(_, treeConfig);
-
-		// 合并单元格
-		mergeRow(_, columnMap);
-	});
-};
-
-/**
  * 重新组装table body: 这个方法最大的性能问题在于tbody过大时，首次获取tbody或其父容器时过慢
  * @param settings
- * @param data
+ * @param diffData
  */
-export const renderTbody = async (settings: SettingObj, data: Array<Row>): Promise<any> => {
+export const renderTbody = async (settings: SettingObj, diffData: DiffData): Promise<any> => {
 	const {
 		_,
 		columnMap,
@@ -202,19 +120,16 @@ export const renderTbody = async (settings: SettingObj, data: Array<Row>): Promi
 	} = settings;
 
 	const { treeKey, openState } = treeConfig;
-	//
-	// data = formatTableData(_, data);
-	//
-	// // 存储表格数据
-	// setTableData(_, data);
-	// setCheckedData(_, data);
 
 	// tbody dom
 	const $tbody = getTbody(_);
 	const tbody = $tbody.get(0);
 
-	// 清空 tbody
-	tbody.innerHTML = '';
+	// 清除数据为空时的dom
+	const $emptyTr = $tbody.find(`[${EMPTY_TPL_KEY}="${_}"]`);
+	if ($emptyTr.length) {
+		$emptyTr.remove();
+	}
 
 	// 存储tr对像列表
 	let trObjectList: Array<TrObject> = [];
@@ -277,21 +192,22 @@ export const renderTbody = async (settings: SettingObj, data: Array<Row>): Promi
 
 				// 非顶层
 				if (!isTop) {
-					attribute.push(`${TR_PARENT_KEY}="${pIndex}"`);
-					attribute.push(`${TR_CHILDREN_STATE}="${openState}"`);
+					attribute.push([TR_PARENT_KEY, pIndex]);
+					attribute.push([TR_CHILDREN_STATE, openState]);
 				}
 
 				// 顶层 且当前为树形结构
 				if (isTop && supportTreeData) {
 					// 不直接使用css odd是由于存在层级数据时无法排除折叠元素
-					index % 2 === 0 && attribute.push(ODD);
+					index % 2 === 0 && attribute.push([ODD, '']);
 				}
 
-				attribute.push(`${TR_CACHE_KEY}="${cacheKey}"`);
+				attribute.push([TR_CACHE_KEY, cacheKey]);
 
 				const trObject: TrObject = {
 					className,
 					attribute,
+					querySelector: `[${TR_CACHE_KEY}="${cacheKey}"]`,
 					tdList
 				};
 
@@ -315,8 +231,15 @@ export const renderTbody = async (settings: SettingObj, data: Array<Row>): Promi
 					const children = row[treeKey];
 					const hasChildren = children && children.length;
 
+					// 当前为更新时，保留原状态
+					let state;
+					const $treeElement = $tbody.find(`${trObject.querySelector} [${treeElementKey}]`);
+					if ($treeElement.length) {
+						state = $treeElement.attr(treeElementKey) === 'true';
+					}
+
 					// 添加tree map
-					tree.add(_, cacheKey, level, hasChildren);
+					tree.add(_, cacheKey, level, hasChildren, state);
 
 					// 递归处理层极结构
 					if (hasChildren) {
@@ -326,24 +249,41 @@ export const renderTbody = async (settings: SettingObj, data: Array<Row>): Promi
 			});
 		};
 
-		installTr(data, 0);
+		const { differenceList, lastRow } = diffData;
+		// 清除
+		const lastTr = $tbody.find(`[${TR_CACHE_KEY}="${lastRow[TR_CACHE_KEY]}"]`);
+		if (lastTr.length) {
+			const lastIndex = lastTr.index();
+			const allTr = $tbody.find(`[${TR_CACHE_KEY}`);
+			for (let i = lastIndex + 1; i < allTr.length; i++) {
+				allTr.eq(i).remove();
+			}
+		}
+		installTr(differenceList, 0);
 
 		// 插入汇总行
-		installSummary(settings, columnList, data, trObjectList);
+		installSummary(settings, columnList, getTableData(_), trObjectList);
 
-		let tbodyStr = '';
 		trObjectList.forEach(item => {
-			const { className, attribute, tdList } = item;
-			let classStr = '';
-			if (className.length) {
-				classStr = `class="${className.join(' ')}"`;
-			}
+			const { className, attribute, tdList, querySelector } = item;
 
-			const attrStr = attribute.join(' ');
+			// 通过dom节点上的属性反查dom
+			let tr = tbody.querySelector(querySelector);
 			const tdStr = tdList.join('');
-			tbodyStr = `${tbodyStr}<tr ${classStr} ${attrStr}>${tdStr}</tr>`;
+			if (tr) {
+				tr.innerHTML = tdStr;
+			} else {
+				const tr = document.createElement('tr');
+				if (className.length) {
+					tr.className = className.join(' ');
+				}
+				attribute.forEach(attr => {
+					tr.setAttribute(attr[0], attr[1]);
+				});
+				tr.innerHTML = tdStr;
+				tbody.appendChild(tr);
+			}
 		});
-		tbody.innerHTML = tbodyStr;
 	} catch (e) {
 		outError('render tbody error');
 		console.error(e);

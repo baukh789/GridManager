@@ -8,7 +8,16 @@ import jTool from '@jTool';
 import { isString, isFunction, isArray, getStyle, rootDocument } from '@jTool/utils';
 import { showLoading, hideLoading, getDiv, setLineHeightValue, calcLayout, clearTargetEvent, getTable, getWrap, getQuerySelector, getTbody } from '@common/base';
 import { cloneObject, outError } from '@common/utils';
-import { getTableData, setTableData, formatTableData, setCheckedData, getSettings, setSettings, SIV_waitContainerAvailable, getRowData } from '@common/cache';
+import {
+	getTableData,
+	setTableData,
+	formatTableData,
+	setCheckedData,
+	getSettings,
+	setSettings,
+	SIV_waitContainerAvailable,
+	getRowData
+} from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, TABLE_BODY_KEY, TABLE_HEAD_KEY, TABLE_PURE_LIST, TD_FOCUS, TR_CACHE_KEY, WRAP_KEY } from '@common/constants';
 import { sendCompile, clearCompileList } from '@common/framework';
 import { clearMenuDOM } from '@module/menu/tool';
@@ -17,7 +26,7 @@ import { resetCheckboxDOM } from '@module/checkbox';
 import scroll from '@module/scroll';
 import { tooltip } from '@module/remind';
 import template from './template';
-import { renderEmptyTbody, renderTbody, renderThead, renderTr } from './render';
+import { renderEmptyTbody, renderTbody, renderThead } from './render';
 import { transformToPromise, diffTableData } from './tool';
 import { getEvent, eventMap } from './event';
 import { EVENTS, SELECTOR, TARGET } from '@common/events';
@@ -164,18 +173,22 @@ class Core {
     }
 
     // 需要同时支持columnMap和tableData todo 开发中
-    change(_: string, list: Array<Row>, useFormat?: boolean) {
+	async change(_: string, list: Array<Row>, useFormat?: boolean) {
+		const settings = getSettings(_);
+    	if (list.length === 0) {
+			renderEmptyTbody(settings);
+			setTableData(_, []);
+			return;
+		}
     	const oldTableData = getTableData(_);
     	const newTableData = useFormat ? formatTableData(_, list) : list;
-		const diffTableList = diffTableData(_, oldTableData, newTableData);
-
-		const settings = getSettings(_);
-
-		// 触发渲染
-		renderTr(settings, diffTableList);
+		const diffData = diffTableData(_, oldTableData, newTableData);
 
 		// 存储数据
 		setTableData(_, newTableData);
+
+		// 触发渲染
+		await renderTbody(settings, diffData);
 	}
 
 	/**
@@ -219,21 +232,20 @@ class Core {
 
         // 数据为空时
         if (_data.length === 0) {
-			renderEmptyTbody(settings);
+			// renderEmptyTbody(settings);
             parseRes[totalsKey] = 0;
-            setTableData(_, []);
+            // setTableData(_, []);
         } else {
             const $div = getDiv(_);
             $div.removeClass(EMPTY_DATA_CLASS_NAME);
             $div.scrollTop(0);
 
-			_data = formatTableData(_, _data);
-
-			// 存储表格数据
-			setTableData(_, _data);
+			// 存储选中数据
 			setCheckedData(_, _data);
-            await renderTbody(settings, _data);
         }
+
+        // 数据变更
+		await this.change(_, _data, true);
 
         // 渲染选择框
         if (supportCheckbox) {

@@ -38,7 +38,8 @@ export const installSummary = (settings: SettingObj, columnList: Array<Column>, 
     });
     trObjectList.push({
         className: [],
-        attribute: [SUMMARY_ROW],
+        attribute: [[SUMMARY_ROW, '']],
+		querySelector: `[${SUMMARY_ROW}]`,
         tdList
     });
 };

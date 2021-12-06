@@ -22,14 +22,20 @@ const getFullObject = (settings: SettingObj, colspan: number, template: FullColu
     text = isElement(text) ? (text as HTMLTableElement).outerHTML : text;
 
     // 在useFold开启时添加特定属性
-    let foldAttr: Array<string> = [];
+    let foldAttr: Array<Array<string>> = [];
     if (useFold) {
-        foldAttr = [`${FULL_COLUMN_STATE}="${openState}"`];
+        foldAttr = [
+        	[FULL_COLUMN_STATE, openState + '']
+		];
     }
 
     return {
         className: [],
-        attribute: [`full-column="${model}"`, `${TR_PARENT_KEY}=${index}`].concat(foldAttr),
+        attribute: [
+        	['full-column', model],
+			[TR_PARENT_KEY, index + '']
+		].concat(foldAttr),
+		querySelector: `[full-column][${TR_PARENT_KEY}="${index}"]`,
         tdList: [`<td colspan="${colspan}"><div class="full-column-div" ${compileAttr}>${text}</div></td>`]
     };
 };
@@ -42,7 +48,8 @@ const getIntervalObject = (colspan: number, index: number, interval: number | st
     }
     return {
         className: [],
-        attribute: [`full-column-interval="${interval}"`, `${TR_PARENT_KEY}=${index}`],
+        attribute: [['full-column-interval', interval + ''], [TR_PARENT_KEY, index + '']],
+		querySelector: `[full-column-interval][${TR_PARENT_KEY}="${index}"]`,
         tdList: [`<td colspan="${colspan}"><div style="height: ${interval}"></div></td>`]
     };
 };
