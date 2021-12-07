@@ -1,4 +1,4 @@
-import { getParams, transformToPromise } from '../../src/module/core/tool';
+import { getParams, transformToPromise, diffTableData } from '../../src/module/core/tool';
 import getTableTestData from '../table-test.data.js';
 
 const _ = 'test';
@@ -304,4 +304,238 @@ describe('core tool', () => {
             expect(settings.sortData.age).toBe('DESC');
         });
     });
+
+    describe('diffTableData', () => {
+		let settings = null;
+		let oldData = null;
+		let newData = null;
+		let diffData = null;
+		beforeEach(() => {
+		});
+		afterEach(() => {
+			settings = null;
+			oldData = null;
+			newData = null;
+			diffData = null;
+		});
+
+		it('基础验证', () => {
+			expect(diffTableData).toBeDefined();
+			expect(diffTableData.length).toBe(3);
+		});
+
+		it('执行验证: 新老数据相同', () => {
+			settings = {
+				supportTreeData: false,
+				treeConfig: {}
+			};
+			oldData = [{
+				id: 1,
+				name: 'baukh'
+			}, {
+				id: 2,
+				name: 'baukh'
+			}];
+			newData = [{
+				id: 1,
+				name: 'baukh'
+			}, {
+				id: 2,
+				name: 'baukh'
+			}];
+			diffData = diffTableData(settings, oldData, newData);
+			expect(diffData.differenceList.length).toBe(2);
+			expect(diffData.differenceList[0]).toBeUndefined();
+			expect(diffData.differenceList[1]).toBeUndefined();
+			expect(diffData.lastRow).toEqual({
+				id: 2,
+				name: 'baukh'
+			});
+		});
+
+		it('执行验证: 新增一条数据', () => {
+			settings = {
+				supportTreeData: false,
+				treeConfig: {}
+			};
+			oldData = [{
+				id: 1,
+				name: 'baukh'
+			}, {
+				id: 2,
+				name: 'baukh'
+			}];
+			newData = [{
+				id: 1,
+				name: 'baukh'
+			}, {
+				id: 2,
+				name: 'baukh'
+			}, {
+				id: 3,
+				name: 'baukh'
+			}];
+			diffData = diffTableData(settings, oldData, newData);
+			expect(diffData.differenceList.length).toBe(3);
+			expect(diffData.differenceList[0]).toBeUndefined();
+			expect(diffData.differenceList[1]).toBeUndefined();
+			expect(diffData.differenceList[2]).toEqual({
+				id: 3,
+				name: 'baukh'
+			});
+			expect(diffData.lastRow).toEqual({
+				id: 3,
+				name: 'baukh'
+			});
+		});
+
+		it('执行验证: 减少一条数据', () => {
+			settings = {
+				supportTreeData: false,
+				treeConfig: {}
+			};
+			oldData = [{
+				id: 1,
+				name: 'baukh'
+			}, {
+				id: 2,
+				name: 'baukh'
+			}, {
+				id: 3,
+				name: 'baukh'
+			}];
+			newData = [{
+				id: 1,
+				name: 'baukh'
+			}, {
+				id: 2,
+				name: 'baukh'
+			}];
+			diffData = diffTableData(settings, oldData, newData);
+			expect(diffData.differenceList.length).toBe(2);
+			expect(diffData.differenceList[0]).toBeUndefined();
+			expect(diffData.differenceList[1]).toBeUndefined();
+			expect(diffData.lastRow).toEqual({
+				id: 2,
+				name: 'baukh'
+			});
+		});
+
+		it('执行验证: 修改一条数据', () => {
+			settings = {
+				supportTreeData: false,
+				treeConfig: {}
+			};
+			oldData = [{
+				id: 1,
+				name: 'baukh'
+			}, {
+				id: 2,
+				name: 'baukh'
+			}, {
+				id: 3,
+				name: 'baukh'
+			}];
+			newData = [{
+				id: 1,
+				name: 'baukh'
+			}, {
+				id: 2,
+				name: 'cc'
+			}, {
+				id: 3,
+				name: 'baukh'
+			}];
+			diffData = diffTableData(settings, oldData, newData);
+			expect(diffData.differenceList.length).toBe(3);
+			expect(diffData.differenceList[0]).toBeUndefined();
+			expect(diffData.differenceList[1]).toEqual({
+				id: 2,
+				name: 'cc'
+			});
+			expect(diffData.differenceList[2]).toBeUndefined();
+			expect(diffData.lastRow).toEqual({
+				id: 3,
+				name: 'baukh'
+			});
+		});
+
+		it('执行验证: 树型数据', () => {
+			settings = {
+				supportTreeData: true,
+				treeConfig: {
+					treeKey: 'children'
+				}
+			};
+			oldData = [{
+				id: 1,
+				name: 'baukh'
+			}, {
+				id: 2,
+				name: 'baukh',
+				children: [{
+					id: 21,
+					name: 'baukh'
+				}, {
+					id: 22,
+					name: 'baukh'
+				}]
+			}, {
+				id: 3,
+				name: 'baukh'
+			}];
+			newData = [{
+				id: 1,
+				name: 'baukh'
+			}, {
+				id: 2,
+				name: 'cc',
+				children: [{
+					id: 21,
+					name: 'baukh'
+				}, {
+					id: 22,
+					name: 'cc'
+				}]
+			}, {
+				id: 3,
+				name: 'baukh',
+				children: [{
+					id: 31,
+					name: 'cc'
+				}, {
+					id: 32,
+					name: 'cc'
+				}]
+			}];
+			diffData = diffTableData(settings, oldData, newData);
+			expect(diffData.differenceList.length).toBe(3);
+			expect(diffData.differenceList[0]).toBeUndefined();
+			expect(diffData.differenceList[1]).toEqual({
+				id: 2,
+				name: 'cc',
+				children: [
+					undefined,
+					{
+					id: 22,
+					name: 'cc'
+				}]
+			});
+			expect(diffData.differenceList[2]).toEqual({
+				id: 3,
+				name: 'baukh',
+				children: [{
+					id: 31,
+					name: 'cc'
+				}, {
+					id: 32,
+					name: 'cc'
+				}]
+			});
+			expect(diffData.lastRow).toEqual({
+				id: 32,
+				name: 'cc'
+			});
+		});
+	});
 });

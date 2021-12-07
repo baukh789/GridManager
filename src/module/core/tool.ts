@@ -8,7 +8,7 @@
 import { isString, isFunction, each, isEmptyObject, extend } from '@jTool/utils';
 import ajax from '@jTool/Ajax';
 import { cloneObject, equal } from '@common/utils';
-import { getSettings, setSettings } from '@common/cache';
+import { setSettings } from '@common/cache';
 import { DiffData, Row, SettingObj } from 'typings/types';
 
 // 获取参数信息
@@ -95,13 +95,12 @@ export const transformToPromise = (settings: SettingObj): Promise<any> =>  {
 
 /**
  * 表格数据比对: 返回结果用于render，empty代表该条数据未变更，长度变化时以返回结果长度为准
- * @param _
+ * @param settings
  * @param oldTableData
  * @param newTableData
  */
-export const diffTableData = (_: string, oldTableData: Array<Row>, newTableData: Array<Row>): DiffData => {
+export const diffTableData = (settings: SettingObj, oldTableData: Array<Row>, newTableData: Array<Row>): DiffData => {
 	const differenceList = cloneObject(newTableData);
-	const settings = getSettings(_);
 	const { supportTreeData, treeConfig } = settings;
 	const { treeKey } = treeConfig;
 

@@ -182,7 +182,7 @@ class Core {
 		}
     	const oldTableData = getTableData(_);
     	const newTableData = useFormat ? formatTableData(_, list) : list;
-		const diffData = diffTableData(_, oldTableData, newTableData);
+		const diffData = diffTableData(settings, oldTableData, newTableData);
 
 		// 存储数据
 		setTableData(_, newTableData);
