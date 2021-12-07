@@ -47,8 +47,8 @@ describe('fullColumn', () => {
             topTrObject = trObjectList[0];
             expect(topTrObject.className.length).toBe(0);
             expect(topTrObject.attribute.length).toBe(2);
-            expect(topTrObject.attribute[0]).toBe('full-column="top"');
-            expect(topTrObject.attribute[1]).toBe('parent-key=1');
+            expect(topTrObject.attribute).toEqual([['full-column', 'top'], ['parent-key', '1']]);
+            expect(topTrObject.querySelector).toBe('[full-column][parent-key="1"]');
             expect(topTrObject.tdList.length).toBe(1);
             expect(topTrObject.tdList[0]).toBe(`<td colspan="${Object.keys(settings.columnMap).length}"><div class="full-column-div" ><div>我是通栏，哈哈</div></div></td>`);
         });
@@ -71,9 +71,8 @@ describe('fullColumn', () => {
             topTrObject = trObjectList[0];
             expect(topTrObject.className.length).toBe(0);
             expect(topTrObject.attribute.length).toBe(3);
-            expect(topTrObject.attribute[0]).toBe('full-column="top"');
-            expect(topTrObject.attribute[1]).toBe('parent-key=1');
-            expect(topTrObject.attribute[2]).toBe('full-column-state="false"');
+            expect(topTrObject.attribute).toEqual([['full-column', 'top'], ['parent-key', '1'], ['full-column-state', 'false']]);
+			expect(topTrObject.querySelector).toBe('[full-column][parent-key="1"]');
             expect(topTrObject.tdList.length).toBe(1);
             expect(topTrObject.tdList[0]).toBe(`<td colspan="${Object.keys(settings.columnMap).length}"><div class="full-column-div" ><div>我是通栏，哈哈</div></div></td>`);
         });
@@ -126,16 +125,16 @@ describe('fullColumn', () => {
             topTrObject = trObjectList[0];
             expect(topTrObject.className.length).toBe(0);
             expect(topTrObject.attribute.length).toBe(2);
-            expect(topTrObject.attribute[0]).toBe('full-column="bottom"');
-            expect(topTrObject.attribute[1]).toBe('parent-key=1');
+            expect(topTrObject.attribute).toEqual([['full-column', 'bottom'], ['parent-key', '1']]);
+			expect(topTrObject.querySelector).toBe('[full-column][parent-key="1"]');
             expect(topTrObject.tdList.length).toBe(1);
             expect(topTrObject.tdList[0]).toBe(`<td colspan="${Object.keys(settings.columnMap).length}"><div class="full-column-div" ><div>我是通栏，哈哈</div></div></td>`);
 
             intervalTrObject = trObjectList[1];
             expect(intervalTrObject.className.length).toBe(0);
             expect(intervalTrObject.attribute.length).toBe(2);
-            expect(intervalTrObject.attribute[0]).toBe('full-column-interval="0px"');
-            expect(intervalTrObject.attribute[1]).toBe('parent-key=1');
+            expect(intervalTrObject.attribute).toEqual([['full-column-interval', '0px'], ['parent-key', '1']]);
+			expect(topTrObject.querySelector).toBe('[full-column][parent-key="1"]');
             expect(intervalTrObject.tdList.length).toBe(1);
             expect(intervalTrObject.tdList[0]).toBe(`<td colspan="${Object.keys(settings.columnMap).length}"><div style="height: 0px"></div></td>`);
         });

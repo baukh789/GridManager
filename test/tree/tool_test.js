@@ -1,9 +1,9 @@
-import { treeKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from '../../src/module/tree/tool';
+import { treeElementKey, getTreeCache, addTreeCache, clearTreeCache, getIconClass } from '../../src/module/tree/tool';
 
 describe('tree tool', () => {
-    describe('treeKey', () => {
+    describe('treeElementKey', () => {
         it('基础验证', () => {
-            expect(treeKey).toBe('tree-element');
+            expect(treeElementKey).toBe('tree-element');
         });
     });
 
