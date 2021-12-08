@@ -725,7 +725,7 @@ export default class GridManager {
             }
 
             // 触发更新
-			core.change(_, tableData);
+			core.changeTableData(_, tableData);
             return tableData;
         }
     }

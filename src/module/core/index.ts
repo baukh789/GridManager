@@ -172,8 +172,13 @@ class Core {
         });
     }
 
-    // 需要同时支持columnMap和tableData todo 开发中
-	async change(_: string, list: Array<Row>, useFormat?: boolean) {
+	/**
+	 * tableData数据变更处理函数
+	 * @param _
+	 * @param list
+	 * @param useFormat
+	 */
+	async changeTableData(_: string, list: Array<Row>, useFormat?: boolean) {
 		const settings = getSettings(_);
     	if (list.length === 0) {
 			renderEmptyTbody(settings);
@@ -245,7 +250,7 @@ class Core {
         }
 
         // 数据变更
-		await this.change(_, _data, true);
+		await this.changeTableData(_, _data, true);
 
         // 渲染选择框
         if (supportCheckbox) {

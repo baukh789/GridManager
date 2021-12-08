@@ -233,7 +233,7 @@ class MoveRow {
 				supportCheckbox && mergeToCheckedData(_, checkboxConfig.key, key, columnMap, changeList);
 
                 // 更新变更项DOM
-				core.change(_, tableData, true);
+				core.changeTableData(_, tableData, true);
 
                 // 开启文字选中效果
                 $body.removeClass(NO_SELECT_CLASS_NAME);
