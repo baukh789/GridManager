@@ -189,6 +189,9 @@ class Core {
     	const newTableData = useFormat ? formatTableData(_, list) : list;
 		const diffData = diffTableData(settings, oldTableData, newTableData);
 
+		// 存储选中数据
+		setCheckedData(_, newTableData);
+
 		// 存储数据
 		setTableData(_, newTableData);
 
@@ -244,9 +247,6 @@ class Core {
             const $div = getDiv(_);
             $div.removeClass(EMPTY_DATA_CLASS_NAME);
             $div.scrollTop(0);
-
-			// 存储选中数据
-			setCheckedData(_, _data);
         }
 
         // 数据变更
