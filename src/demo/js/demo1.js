@@ -505,11 +505,11 @@ const demo1 = {
                 // }
 
                 // 指定第92行不可选中
-                if (row.id === 92) {
-                        // row.gm_checkbox = true;
-                    row.gm_checkbox_disabled = true;
-                    row.gm_row_class_name = 'test-row-class';
-                }
+                // if (row.id === 92) {
+                //         // row.gm_checkbox = true;
+                //     row.gm_checkbox_disabled = true;
+                //     row.gm_row_class_name = 'test-row-class';
+                // }
                 return row;
             },
 
