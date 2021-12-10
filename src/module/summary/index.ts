@@ -6,16 +6,21 @@ import { SUMMARY_FLAG, SUMMARY_ROW } from './constants';
 import { SettingObj, Row, Column, TrObject } from 'typings/types';
 import './style.less';
 
+const querySelector = `[${SUMMARY_ROW}]`;
 export const installSummary = (settings: SettingObj, columnList: Array<Column>, tableData: Array<Row>, trObjectList: Array<TrObject>): void => {
     const { _, summaryHandler, browser } = settings;
     const summaryMap = summaryHandler(tableData);
 
+    const $tableDiv = getDiv(_);
+    // 汇总行是唯一的，如果已存在则清除
+	$tableDiv.find(querySelector).remove();
+
     // 未设置汇总行执行函数: 默认返回的为空对像
     if (isEmptyObject(summaryMap)) {
-        getDiv(_).removeAttr(SUMMARY_FLAG);
+		$tableDiv.removeAttr(SUMMARY_FLAG);
         return;
     }
-    getDiv(_).attr(SUMMARY_FLAG, '');
+	$tableDiv.attr(SUMMARY_FLAG, '');
     const tdList: Array<string> = [];
 
     let style = '';
@@ -39,7 +44,7 @@ export const installSummary = (settings: SettingObj, columnList: Array<Column>, 
     trObjectList.push({
         className: [],
         attribute: [[SUMMARY_ROW, '']],
-		querySelector: `[${SUMMARY_ROW}]`,
+		querySelector,
         tdList
     });
 };
