@@ -10,6 +10,7 @@ import ajax from '@jTool/Ajax';
 import { cloneObject, equal } from '@common/utils';
 import { setSettings } from '@common/cache';
 import { DiffData, Row, SettingObj } from 'typings/types';
+import { TR_CACHE_KEY } from '@common/constants';
 
 // 获取参数信息
 export const getParams = (settings: SettingObj): object => {
@@ -94,23 +95,33 @@ export const transformToPromise = (settings: SettingObj): Promise<any> =>  {
 };
 
 /**
- * 表格数据比对: 返回结果用于render，empty代表该条数据未变更，长度变化时以返回结果长度为准
+ * 表格数据比对:
+ * 1、返回结果用于render，empty代表该条数据未变更，长度变化时以返回结果长度为准
+ * 2、两份数组中[TR_CACHE_KEY]相同的数据, equal()返回值为diff结果
+ * 3、在DOM中找到与 diffFirst 匹配的tr，并清除之前的tr
+ * 4、在DOM中找到与 diffLast 匹配的tr，并清除之后的tr
  * @param settings
  * @param oldTableData
  * @param newTableData
  */
 export const diffTableData = (settings: SettingObj, oldTableData: Array<Row>, newTableData: Array<Row>): DiffData => {
-	const differenceList = cloneObject(newTableData);
+	const diffList = cloneObject(newTableData);
 	const { supportTreeData, treeConfig } = settings;
 	const { treeKey } = treeConfig;
 
-	let lastRow: Row;
+	// 存储第一个与最后一个: 在后续的差异比对中，这两项可能会不存在于differenceList内
+	let diffFirst: Row = diffList[0];
+	let diffLast: Row;
 	// 循环比对时，在旧数据与新数据间取长度较大的值为循环对象，以确保可以对所有值进行比对
 	const difference = (newList: Array<Row>, oldList: Array<Row>) => {
+		const oldMap = {};
+		oldList.forEach(item => {
+			oldMap[item[TR_CACHE_KEY]] = item;
+		});
 		each(newList, (newRow: Row, index: number) => {
-			const oldRow = oldList[index] || {};
-			lastRow = newRow;
-			// 验证两个对像是否存在差异: 不存在差异的值为 empty，并在后续的DOM操作中跳过当前索引
+			const oldRow = oldMap[newRow[TR_CACHE_KEY]] || {};
+			diffLast = newRow;
+			// 验证两个对像是否存在差异: 无差异的值为 empty，并在后续的DOM操作中跳过当前索引
 			if (equal(oldRow, newRow)) {
 				delete newList[index];
 			}
@@ -122,9 +133,10 @@ export const diffTableData = (settings: SettingObj, oldTableData: Array<Row>, ne
 		});
 
 	};
-	difference(differenceList, oldTableData);
+	difference(diffList, oldTableData);
 	return {
-		differenceList,
-		lastRow
+		diffList,
+		diffFirst,
+		diffLast
 	};
 };

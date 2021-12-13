@@ -9,6 +9,7 @@ export interface TrObject {
 	className: Array<string>;
 	attribute: Array<Array<string>>;
 	querySelector: string;
+	cacheKey?: string;
 	tdList: Array<string>;
 }
 
@@ -72,6 +73,7 @@ export interface EmptyTemplate {
 
 // diff data
 export interface DiffData {
-	differenceList: Array<Row>;
-	lastRow: Row;
+	diffList: Array<Row>;
+	diffFirst: Row;
+	diffLast: Row;
 }

@@ -304,6 +304,9 @@ const demo1 = {
             // 初始渲染时是否加载数据
             // firstLoading: false,
 
+			// 启用虚拟滚动
+			useVirtualScroll: true,
+
             // supportAutoOrder: false,
             // 自动序号配置
             autoOrderConfig: {

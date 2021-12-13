@@ -6,7 +6,19 @@
  */
 import jTool from '@jTool';
 import { isString, isFunction, isArray, getStyle, rootDocument } from '@jTool/utils';
-import { showLoading, hideLoading, getDiv, setLineHeightValue, calcLayout, clearTargetEvent, getTable, getWrap, getQuerySelector, getTbody } from '@common/base';
+import {
+	showLoading,
+	hideLoading,
+	getDiv,
+	setLineHeightValue,
+	calcLayout,
+	clearTargetEvent,
+	getTable,
+	getWrap,
+	getQuerySelector,
+	getTbody,
+	getThead
+} from '@common/base';
 import { cloneObject, outError } from '@common/utils';
 import {
 	getTableData,
@@ -187,7 +199,6 @@ class Core {
 		}
     	const oldTableData = getTableData(_);
     	const newTableData = useFormat ? formatTableData(_, list) : list;
-		const diffData = diffTableData(settings, oldTableData, newTableData);
 
 		// 存储选中数据
 		setCheckedData(_, newTableData);
@@ -195,8 +206,75 @@ class Core {
 		// 存储数据
 		setTableData(_, newTableData);
 
-		// 触发渲染
-		await renderTbody(settings, diffData);
+		const { useVirtualScroll, supportCheckbox, checkboxConfig } = settings;
+
+		// 非虚拟滚动: 触发render
+		if (!useVirtualScroll) {
+			const { diffList, diffFirst, diffLast } = diffTableData(settings, oldTableData, newTableData);
+			// 触发渲染
+			await renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
+
+			// 渲染选择框 DOM
+			if (supportCheckbox) {
+				resetCheckboxDOM(_, newTableData, checkboxConfig.useRadio, checkboxConfig.max);
+			}
+			return;
+		}
+
+		// 虚拟滚动
+		const $tableDiv = getDiv(_);
+		const tableDiv = $tableDiv.get(0);
+		const $table = getTable(_);
+		const $tbody = getTbody(_);
+		let tableData = getTableData(_);
+		let trHeight: number = 41;
+		let MAX_LENGTH = 10;
+		const theadHeight = getThead(_).height();
+
+		let oldBodyList: Array<Row> = [];
+		// 虚拟滚动交由scroll触发
+		scroll.virtualScrollMap[_] = () => {
+			tableData = getTableData(_);
+			const scrollTop = tableDiv.scrollTop;
+			// const nowHeight = $tableDiv.height();
+			if ($tbody.find('tr').length) {
+				trHeight = $tbody.find('tr').eq(0).height();
+			}
+			const visibleNum = Math.ceil($tableDiv.height() / trHeight);
+			const index = Math.ceil(scrollTop / trHeight);
+			let start = index - Math.ceil(visibleNum / 2);
+			if (start < 0) {
+				start = 0;
+			}
+			let end = start + MAX_LENGTH;
+			if (end >= tableData.length) {
+				end = tableData.length;
+				start = end - MAX_LENGTH;
+			}
+			if (start < 0) {
+				start = 0;
+			}
+
+			const bodyList = tableData.slice(start, end);
+			const { diffList, diffFirst, diffLast } = diffTableData(settings, oldBodyList, bodyList);
+			oldBodyList = bodyList;
+
+			// 触发渲染
+			renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
+
+			$table.css({
+				marginTop: start * trHeight - theadHeight,
+				marginBottom: (tableData.length - end) * trHeight
+			});
+
+			// 渲染选择框 DOM
+			if (supportCheckbox) {
+				resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
+			}
+		};
+
+		// 初始执行一次
+		scroll.virtualScrollMap[_]();
 	}
 
 	/**
@@ -206,7 +284,7 @@ class Core {
      * @param callback
      */
     async driveDomForSuccessAfter(settings: SettingObj, response: object | string, callback?: any): Promise<any> {
-        const { _, rendered, responseHandler, supportCheckbox, supportAjaxPage, supportMenu, checkboxConfig, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
+        const { _, rendered, responseHandler, supportAjaxPage, supportMenu, dataKey, totalsKey, useNoTotalsMode, asyncTotals } = settings;
 
         // 用于防止在填tbody时，实例已经被消毁的情况。
         if (!rendered) {
@@ -251,11 +329,6 @@ class Core {
 
         // 数据变更
 		await this.changeTableData(_, _data, true);
-
-        // 渲染选择框
-        if (supportCheckbox) {
-            resetCheckboxDOM(_, _data, checkboxConfig.useRadio, checkboxConfig.max);
-        }
 
         // 渲染分页
         if (supportAjaxPage) {

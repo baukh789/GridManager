@@ -451,6 +451,9 @@ const gridData = {
     // 初次渲染时是否加载数据
     firstLoading: true,
 
+	// 启用虚拟滚动 @2.18.0
+	useVirtualScroll: true,
+
     // @2.6.0 不再建议使用且在外续版本中会被移除
     // 后端API调用地址
     // ajax_url: '',

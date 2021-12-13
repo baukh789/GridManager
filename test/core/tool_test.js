@@ -1,5 +1,6 @@
 import { getParams, transformToPromise, diffTableData } from '../../src/module/core/tool';
 import getTableTestData from '../table-test.data.js';
+import {TR_CACHE_KEY} from '@common/constants';
 
 const _ = 'test';
 describe('core tool', () => {
@@ -331,24 +332,34 @@ describe('core tool', () => {
 			};
 			oldData = [{
 				id: 1,
+				[TR_CACHE_KEY]: '0',
 				name: 'baukh'
 			}, {
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'baukh'
 			}];
 			newData = [{
 				id: 1,
+				[TR_CACHE_KEY]: '0',
 				name: 'baukh'
 			}, {
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'baukh'
 			}];
 			diffData = diffTableData(settings, oldData, newData);
-			expect(diffData.differenceList.length).toBe(2);
-			expect(diffData.differenceList[0]).toBeUndefined();
-			expect(diffData.differenceList[1]).toBeUndefined();
-			expect(diffData.lastRow).toEqual({
+			expect(diffData.diffList.length).toBe(2);
+			expect(diffData.diffList[0]).toBeUndefined();
+			expect(diffData.diffList[1]).toBeUndefined();
+			expect(diffData.diffFirst).toEqual({
+				id: 1,
+				[TR_CACHE_KEY]: '0',
+				name: 'baukh'
+			});
+			expect(diffData.diffLast).toEqual({
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'baukh'
 			});
 		});
@@ -360,31 +371,43 @@ describe('core tool', () => {
 			};
 			oldData = [{
 				id: 1,
+				[TR_CACHE_KEY]: '0',
 				name: 'baukh'
 			}, {
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'baukh'
 			}];
 			newData = [{
 				id: 1,
+				[TR_CACHE_KEY]: '0',
 				name: 'baukh'
 			}, {
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'baukh'
 			}, {
 				id: 3,
+				[TR_CACHE_KEY]: '2',
 				name: 'baukh'
 			}];
 			diffData = diffTableData(settings, oldData, newData);
-			expect(diffData.differenceList.length).toBe(3);
-			expect(diffData.differenceList[0]).toBeUndefined();
-			expect(diffData.differenceList[1]).toBeUndefined();
-			expect(diffData.differenceList[2]).toEqual({
+			expect(diffData.diffList.length).toBe(3);
+			expect(diffData.diffList[0]).toBeUndefined();
+			expect(diffData.diffList[1]).toBeUndefined();
+			expect(diffData.diffList[2]).toEqual({
 				id: 3,
+				[TR_CACHE_KEY]: '2',
 				name: 'baukh'
 			});
-			expect(diffData.lastRow).toEqual({
+			expect(diffData.diffFirst).toEqual({
+				id: 1,
+				[TR_CACHE_KEY]: '0',
+				name: 'baukh'
+			});
+			expect(diffData.diffLast).toEqual({
 				id: 3,
+				[TR_CACHE_KEY]: '2',
 				name: 'baukh'
 			});
 		});
@@ -396,27 +419,38 @@ describe('core tool', () => {
 			};
 			oldData = [{
 				id: 1,
+				[TR_CACHE_KEY]: '0',
 				name: 'baukh'
 			}, {
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'baukh'
 			}, {
 				id: 3,
+				[TR_CACHE_KEY]: '2',
 				name: 'baukh'
 			}];
 			newData = [{
 				id: 1,
+				[TR_CACHE_KEY]: '0',
 				name: 'baukh'
 			}, {
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'baukh'
 			}];
 			diffData = diffTableData(settings, oldData, newData);
-			expect(diffData.differenceList.length).toBe(2);
-			expect(diffData.differenceList[0]).toBeUndefined();
-			expect(diffData.differenceList[1]).toBeUndefined();
-			expect(diffData.lastRow).toEqual({
+			expect(diffData.diffList.length).toBe(2);
+			expect(diffData.diffList[0]).toBeUndefined();
+			expect(diffData.diffList[1]).toBeUndefined();
+			expect(diffData.diffFirst).toEqual({
+				id: 1,
+				[TR_CACHE_KEY]: '0',
+				name: 'baukh'
+			});
+			expect(diffData.diffLast).toEqual({
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'baukh'
 			});
 		});
@@ -428,34 +462,47 @@ describe('core tool', () => {
 			};
 			oldData = [{
 				id: 1,
+				[TR_CACHE_KEY]: '0',
 				name: 'baukh'
 			}, {
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'baukh'
 			}, {
 				id: 3,
+				[TR_CACHE_KEY]: '2',
 				name: 'baukh'
 			}];
 			newData = [{
 				id: 1,
+				[TR_CACHE_KEY]: '0',
 				name: 'baukh'
 			}, {
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'cc'
 			}, {
 				id: 3,
+				[TR_CACHE_KEY]: '2',
 				name: 'baukh'
 			}];
 			diffData = diffTableData(settings, oldData, newData);
-			expect(diffData.differenceList.length).toBe(3);
-			expect(diffData.differenceList[0]).toBeUndefined();
-			expect(diffData.differenceList[1]).toEqual({
+			expect(diffData.diffList.length).toBe(3);
+			expect(diffData.diffList[0]).toBeUndefined();
+			expect(diffData.diffList[1]).toEqual({
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'cc'
 			});
-			expect(diffData.differenceList[2]).toBeUndefined();
-			expect(diffData.lastRow).toEqual({
+			expect(diffData.diffList[2]).toBeUndefined();
+			expect(diffData.diffFirst).toEqual({
+				id: 1,
+				[TR_CACHE_KEY]: '0',
+				name: 'baukh'
+			});
+			expect(diffData.diffLast).toEqual({
 				id: 3,
+				[TR_CACHE_KEY]: '2',
 				name: 'baukh'
 			});
 		});
@@ -469,71 +516,94 @@ describe('core tool', () => {
 			};
 			oldData = [{
 				id: 1,
+				[TR_CACHE_KEY]: '0',
 				name: 'baukh'
 			}, {
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'baukh',
 				children: [{
 					id: 21,
+					[TR_CACHE_KEY]: '1-0',
 					name: 'baukh'
 				}, {
 					id: 22,
+					[TR_CACHE_KEY]: '1-1',
 					name: 'baukh'
 				}]
 			}, {
 				id: 3,
+				[TR_CACHE_KEY]: '2',
 				name: 'baukh'
 			}];
 			newData = [{
 				id: 1,
+				[TR_CACHE_KEY]: '0',
 				name: 'baukh'
 			}, {
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'cc',
 				children: [{
 					id: 21,
+					[TR_CACHE_KEY]: '1-0',
 					name: 'baukh'
 				}, {
 					id: 22,
+					[TR_CACHE_KEY]: '1-1',
 					name: 'cc'
 				}]
 			}, {
 				id: 3,
+				[TR_CACHE_KEY]: '2',
 				name: 'baukh',
 				children: [{
 					id: 31,
+					[TR_CACHE_KEY]: '2-0',
 					name: 'cc'
 				}, {
 					id: 32,
+					[TR_CACHE_KEY]: '2-1',
 					name: 'cc'
 				}]
 			}];
 			diffData = diffTableData(settings, oldData, newData);
-			expect(diffData.differenceList.length).toBe(3);
-			expect(diffData.differenceList[0]).toBeUndefined();
-			expect(diffData.differenceList[1]).toEqual({
+			expect(diffData.diffList.length).toBe(3);
+			expect(diffData.diffList[0]).toBeUndefined();
+			expect(diffData.diffList[1]).toEqual({
 				id: 2,
+				[TR_CACHE_KEY]: '1',
 				name: 'cc',
 				children: [
 					undefined,
 					{
 					id: 22,
+					[TR_CACHE_KEY]: '1-1',
 					name: 'cc'
 				}]
 			});
-			expect(diffData.differenceList[2]).toEqual({
+			expect(diffData.diffList[2]).toEqual({
 				id: 3,
+				[TR_CACHE_KEY]: '2',
 				name: 'baukh',
 				children: [{
 					id: 31,
+					[TR_CACHE_KEY]: '2-0',
 					name: 'cc'
 				}, {
 					id: 32,
+					[TR_CACHE_KEY]: '2-1',
 					name: 'cc'
 				}]
 			});
-			expect(diffData.lastRow).toEqual({
+			expect(diffData.diffFirst).toEqual({
+				id: 1,
+				[TR_CACHE_KEY]: '0',
+				name: 'baukh'
+			});
+			expect(diffData.diffLast).toEqual({
 				id: 32,
+				[TR_CACHE_KEY]: '2-1',
 				name: 'cc'
 			});
 		});

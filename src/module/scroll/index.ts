@@ -33,6 +33,7 @@ const resizeObserverMap = {};
 
 // 容器宽度存储，用于减少性能消耗
 const wrapWidthMap = {};
+
 class Scroll {
     // 当前Y滚动轴的宽度
     width = 0;
@@ -40,6 +41,8 @@ class Scroll {
 	// 控制 resize 事件是否暂停执行，在resetLayout会触发暂停 todo 这个需要确认是否可以提成外部变量
 	pauseResizeEventMap = {};
 
+	// 用于存储table div 滚动回调
+	virtualScrollMap = {};
     /**
      * 初始化
      * @param _
@@ -150,9 +153,14 @@ class Scroll {
      */
 	bindScrollToTableDiv(_: string): void {
 		const tableDIV = getDiv(_);
+		const virtualScrollMap = this.virtualScrollMap;
 		// 绑定滚动条事件 #001
 		tableDIV.unbind(SCROLL);
 		tableDIV.bind(SCROLL, () => {
+			// 虚拟滚动
+			if (virtualScrollMap[_]) {
+				virtualScrollMap[_]();
+			}
             updateFakeThead(getSettings(_), true);
             fixed.update(_);
             removeTooltip(_);
@@ -176,6 +184,9 @@ class Scroll {
             obs.observer.unobserve(obs.el);
             delete resizeObserverMap[_];
         }
+
+        // 清除虚拟滚动
+		delete this.virtualScrollMap[_];
 	}
 }
 export default new Scroll();

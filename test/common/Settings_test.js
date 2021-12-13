@@ -279,6 +279,10 @@ describe('Settings', () => {
 		expect(settings.firstLoading).toBe(true);
 	});
 
+	it('验证属性[useVirtualScroll]初始值', () => {
+		expect(settings.useVirtualScroll).toBeUndefined();
+	});
+
 	it('验证属性[ajaxData]初始值', () => {
 		expect(settings.ajaxData).toBeUndefined();
 	});

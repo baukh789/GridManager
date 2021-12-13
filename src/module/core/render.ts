@@ -18,7 +18,7 @@ import sort from '@module/sort';
 import filter from '@module/filter';
 import adjust from '@module/adjust';
 import template from './template';
-import { SettingObj, Column, TrObject, Row, DiffData } from 'typings/types';
+import { SettingObj, Column, TrObject, Row } from 'typings/types';
 
 /**
  * 重绘thead
@@ -105,9 +105,11 @@ export const renderEmptyTbody = (settings: SettingObj, isInit?: boolean): void =
 /**
  * 重新组装table body: 这个方法最大的性能问题在于tbody过大时，首次获取tbody或其父容器时过慢
  * @param settings
- * @param diffData
+ * @param bodyList
+ * @param firstLineKey
+ * @param lastLineKey
  */
-export const renderTbody = async (settings: SettingObj, diffData: DiffData): Promise<any> => {
+export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, firstLineKey: string, lastLineKey: string): Promise<any> => {
 	const {
 		_,
 		columnMap,
@@ -207,6 +209,7 @@ export const renderTbody = async (settings: SettingObj, diffData: DiffData): Pro
 				const trObject: TrObject = {
 					className,
 					attribute,
+					cacheKey,
 					querySelector: `[${TR_CACHE_KEY}="${cacheKey}"]`,
 					tdList
 				};
@@ -249,28 +252,45 @@ export const renderTbody = async (settings: SettingObj, diffData: DiffData): Pro
 			});
 		};
 
-		const { differenceList, lastRow } = diffData;
-		// 清除
-		const lastTr = $tbody.find(`[${TR_CACHE_KEY}="${lastRow[TR_CACHE_KEY]}"]`);
-		if (lastTr.length) {
-			const lastIndex = lastTr.index();
-			const allTr = $tbody.find(`[${TR_CACHE_KEY}`);
-			for (let i = lastIndex + 1; i < allTr.length; i++) {
-				allTr.eq(i).remove();
+		// 清除 todo 对于树结构，通栏不兼容
+		const allTr = $tbody.find(`[${TR_CACHE_KEY}]`);
+		if (allTr.length && firstLineKey && lastLineKey) {
+			let firstLineIndex = 0;
+			let lastLineIndex = bodyList.length - 1;
+
+			const firstTr = $tbody.find(`[${TR_CACHE_KEY}="${firstLineKey}"]`);
+			if (firstTr.length) {
+				firstLineIndex = firstTr.index();
 			}
+
+			const lastTr = $tbody.find(`[${TR_CACHE_KEY}="${lastLineKey}"]`);
+			if (lastTr.length) {
+				lastLineIndex = lastTr.index();
+			}
+
+			each(allTr, (item: HTMLTableRowElement, index: number) => {
+				if (index < firstLineIndex || index > lastLineIndex) {
+					// console.log(index, firstLineIndex, lastLineIndex);
+					item.remove();
+				}
+			});
 		}
-		installTr(differenceList, 0);
+
+		installTr(bodyList, 0);
 
 		// 插入汇总行
 		installSummary(settings, columnList, getTableData(_), trObjectList);
 
+		const appendFragment = document.createDocumentFragment();
+		const prependFragment = document.createDocumentFragment();
 		trObjectList.forEach(item => {
-			const { className, attribute, tdList, querySelector } = item;
+			const { className, attribute, tdList, querySelector, cacheKey } = item;
 
 			// 通过dom节点上的属性反查dom
 			let tr = tbody.querySelector(querySelector);
 			const tdStr = tdList.join('');
 			if (tr) {
+				// console.log('querySelector', querySelector);
 				tr.innerHTML = tdStr;
 			} else {
 				const tr = document.createElement('tr');
@@ -281,9 +301,21 @@ export const renderTbody = async (settings: SettingObj, diffData: DiffData): Pro
 					tr.setAttribute(attr[0], attr[1]);
 				});
 				tr.innerHTML = tdStr;
-				tbody.appendChild(tr);
+
+				if (allTr.eq(0).length) {
+					const nowFirstKey = parseInt(allTr.eq(0).attr(TR_CACHE_KEY), 10);
+					if (cacheKey && parseInt(cacheKey, 10) < nowFirstKey) {
+						prependFragment.appendChild(tr);
+					} else {
+						appendFragment.appendChild(tr);
+					}
+				} else {
+					appendFragment.appendChild(tr);
+				}
 			}
 		});
+		tbody.insertBefore(prependFragment, tbody.firstChild);
+		tbody.appendChild(appendFragment);
 	} catch (e) {
 		outError('render tbody error');
 		console.error(e);
