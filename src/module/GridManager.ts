@@ -198,6 +198,9 @@ export default class GridManager {
 
             // 不使用通栏
             arg.__isFullColumn = false;
+
+            // 不使用虚拟滚动
+			arg.useVirtualScroll = false;
         }
 
         // 相互冲突的参数项处理: 多层嵌套表头
