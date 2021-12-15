@@ -375,16 +375,16 @@ class Core {
 		// 绑定事件
 		bindTrAndTdEvent(_);
 
-        setSettings(settings);
-
-        // 等待容器可用
-        await this.waitContainerAvailable(_);
-
-        // render thead
+		// render thead
 		renderThead(settings);
 
 		// 存储行高css变量
 		setLineHeightValue(_, lineHeight);
+
+        setSettings(settings);
+
+        // 等待容器可用
+        await this.waitContainerAvailable(_);
 
 		// 计算布局
 		calcLayout(settings);
