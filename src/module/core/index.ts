@@ -192,6 +192,7 @@ class Core {
 	 */
 	async changeTableData(_: string, list: Array<Row>, useFormat?: boolean) {
 		const settings = getSettings(_);
+		let virtualNum = 20; // 虚拟滚动每次显示条数
     	if (list.length === 0) {
 			renderEmptyTbody(settings);
 			setTableData(_, []);
@@ -208,8 +209,8 @@ class Core {
 
 		const { useVirtualScroll, supportCheckbox, checkboxConfig } = settings;
 
-		// 非虚拟滚动: 触发render
-		if (!useVirtualScroll) {
+		// 非虚拟滚动 或 虚拟滚动每次显示条数>=当前数据量: 触发render
+		if (!useVirtualScroll || virtualNum >= newTableData.length) {
 			const { diffList, diffFirst, diffLast } = diffTableData(settings, oldTableData, newTableData);
 			// 触发渲染
 			await renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
@@ -218,6 +219,9 @@ class Core {
 			if (supportCheckbox) {
 				resetCheckboxDOM(_, newTableData, checkboxConfig.useRadio, checkboxConfig.max);
 			}
+
+			// 清空虚拟滚动存储
+			delete scroll.virtualScrollMap[_];
 			return;
 		}
 
@@ -228,11 +232,10 @@ class Core {
 		const $tbody = getTbody(_);
 		let tableData = getTableData(_);
 		let trHeight: number = 41;
-		let MAX_LENGTH = 10;
 		const theadHeight = getThead(_).height();
-
 		let oldBodyList: Array<Row> = [];
-		// 虚拟滚动交由scroll触发
+
+		// 虚拟滚动交由scroll module触发
 		scroll.virtualScrollMap[_] = () => {
 			tableData = getTableData(_);
 			const scrollTop = tableDiv.scrollTop;
@@ -246,10 +249,10 @@ class Core {
 			if (start < 0) {
 				start = 0;
 			}
-			let end = start + MAX_LENGTH;
+			let end = start + virtualNum;
 			if (end >= tableData.length) {
 				end = tableData.length;
-				start = end - MAX_LENGTH;
+				start = end - virtualNum;
 			}
 			if (start < 0) {
 				start = 0;
