@@ -188,6 +188,9 @@ export default class GridManager {
 
             // 增加通栏标识
             arg.__isFullColumn = true;
+
+            // 不使用虚拟滚动
+			arg.useVirtualScroll = false;
         }
 
         // 相互冲突的参数项处理: 树型
