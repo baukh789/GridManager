@@ -180,20 +180,19 @@
 	var table = document.querySelector('table');
 	function init() {
 		table.GM({
-			gridManagerName: 'test'
-			,height: '100%'
-			,supportAjaxPage:true
-			,isCombSorting: false
-			,disableCache: false
-			,ajaxData: function (setting, params) {
+			gridManagerName: 'test',
+			height: '100%',
+			supportAjaxPage:true,
+			isCombSorting: false,
+			disableCache: false,
+			ajaxData: function (setting, params) {
 				// 传入分页及排序的配置项
 				return getBlogList(Object.assign({}, params, setting.pageData, setting.sortData));
-			}
-			,ajaxType: 'POST'
-			,supportMenu: true
-			,pageSize:30
-
-			,columnData: [
+			},
+			ajaxType: 'POST',
+			supportMenu: true,
+			pageSize:30,
+			columnData: [
 				{
 					key: 'pic',
 					remind: 'the pic',
@@ -282,9 +281,9 @@
 						return new Date(lastDate).toLocaleDateString();
 					}
 				}
-			]
+			],
 			// 排序后事件
-			,sortingAfter: function (data) {
+			sortingAfter: function (data) {
 				console.log('sortAfter', data);
 			}
 		});
