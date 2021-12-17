@@ -8,6 +8,9 @@ import {
     TABLE_HEAD_KEY,
     FAKE_TABLE_HEAD_KEY,
     TABLE_BODY_KEY,
+	TH_NAME,
+	ROW_INDEX_KEY,
+	TR_ROW_KEY,
     ORDER_KEY,
     CHECKBOX_KEY,
     CHECKBOX_DISABLED_KEY,
@@ -75,6 +78,18 @@ describe('常量验证', () => {
     it('TABLE_BODY_KEY', () => {
         expect(TABLE_BODY_KEY).toBe('grid-manager-tbody');
     });
+
+	it('TH_NAME', () => {
+		expect(TH_NAME).toBe('th-name');
+	});
+
+	it('ROW_INDEX_KEY', () => {
+		expect(ROW_INDEX_KEY).toBe('gm-row-index');
+	});
+
+	it('TR_ROW_KEY', () => {
+		expect(TR_ROW_KEY).toBe('gm-tr-row');
+	});
 
     it('TR_CACHE_KEY', () => {
         expect(TR_CACHE_KEY).toBe('gm-cache-key');

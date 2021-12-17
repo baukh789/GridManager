@@ -35,6 +35,12 @@ export const TABLE_BODY_KEY = 'grid-manager-tbody';
 // th唯一名称
 export const TH_NAME = 'th-name';
 
+// 当前行数据 在tbody中的索引
+export const ROW_INDEX_KEY = 'gm-row-index';
+
+// tr 存储行数据的属性名
+export const TR_ROW_KEY = 'gm-tr-row';
+
 // tr cache key
 export const TR_CACHE_KEY = 'gm-cache-key';
 
