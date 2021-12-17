@@ -198,7 +198,7 @@ class Core {
 			setTableData(_, []);
 			return;
 		}
-    	const oldTableData = getTableData(_);
+		let oldTableData = getTableData(_);
     	const newTableData = useFormat ? formatTableData(_, list) : list;
 
 		// 存储选中数据
@@ -209,8 +209,14 @@ class Core {
 
 		const { useVirtualScroll, supportCheckbox, checkboxConfig } = settings;
 
-		// 非虚拟滚动 或 虚拟滚动每次显示条数>=当前数据量: 触发render
+		const $table = getTable(_);
+		const theadHeight = getThead(_).height();
+		// 非虚拟滚动 或 虚拟滚动每次显示条数>=当前数据量: 不使用虚拟滚动的逻辑
 		if (!useVirtualScroll || virtualNum >= newTableData.length) {
+			// 当前存在虚拟滚动存储，清空oldTableData以保证显示正常，场景: 切换每页显示条数时，触发了`virtualNum >= newTableData.length`条件
+			if (scroll.virtualScrollMap[_]) {
+				oldTableData = [];
+			}
 			const { diffList, diffFirst, diffLast } = diffTableData(settings, oldTableData, newTableData);
 			// 触发渲染
 			await renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
@@ -222,58 +228,67 @@ class Core {
 
 			// 清空虚拟滚动存储
 			delete scroll.virtualScrollMap[_];
+			$table.css({
+				marginTop: -theadHeight,
+				marginBottom: 0
+			});
 			return;
 		}
 
-		// 虚拟滚动
+		// 虚拟滚动: 与树结构及通栏不兼容
 		const $tableDiv = getDiv(_);
-		const tableDiv = $tableDiv.get(0);
-		const $table = getTable(_);
+		// const tableDiv = $tableDiv.get(0);
 		const $tbody = getTbody(_);
 		let tableData = getTableData(_);
-		let trHeight: number = 41;
-		const theadHeight = getThead(_).height();
+		let trHeight: number = parseInt(settings.lineHeight, 10);
+		const tableDivHeight = $tableDiv.height();
 		let oldBodyList: Array<Row> = [];
 
+		// let sto: any;
 		// 虚拟滚动交由scroll module触发
 		scroll.virtualScrollMap[_] = () => {
-			tableData = getTableData(_);
-			const scrollTop = tableDiv.scrollTop;
-			// const nowHeight = $tableDiv.height();
-			if ($tbody.find('tr').length) {
-				trHeight = $tbody.find('tr').eq(0).height();
-			}
-			const visibleNum = Math.ceil($tableDiv.height() / trHeight);
-			const index = Math.ceil(scrollTop / trHeight);
-			let start = index - Math.ceil(visibleNum / 2);
-			if (start < 0) {
-				start = 0;
-			}
-			let end = start + virtualNum;
-			if (end >= tableData.length) {
-				end = tableData.length;
-				start = end - virtualNum;
-			}
-			if (start < 0) {
-				start = 0;
-			}
+			// if (sto) {
+			// 	clearTimeout(sto);
+			// }
+			// sto = setTimeout(() => {
+			// 	clearTimeout(sto);
+				tableData = getTableData(_);
+				const scrollTop = $tableDiv.scrollTop();
 
-			const bodyList = tableData.slice(start, end);
-			const { diffList, diffFirst, diffLast } = diffTableData(settings, oldBodyList, bodyList);
-			oldBodyList = bodyList;
+				// 获取当前第一行，为
+				const $firstTr = $tbody.find(`tr[${TR_CACHE_KEY}]`).eq(0);
+				if ($firstTr.length) {
+					trHeight = $firstTr.height();
+				}
+				const visibleNum = Math.ceil(tableDivHeight / trHeight);
+				const index = Math.ceil(scrollTop / trHeight);
+				let start = index - Math.ceil((virtualNum - visibleNum) / 2);
+				if (start < 0) {
+					start = 0;
+				}
+				let end = start + virtualNum;
+				if (end >= tableData.length) {
+					end = tableData.length;
+					start = end - virtualNum;
+				}
+				if (start < 0) {
+					start = 0;
+				}
+				$table.css({
+					marginTop: start * trHeight - theadHeight,
+					marginBottom: (tableData.length - end) * trHeight
+				});
+				const bodyList = tableData.slice(start, end);
+				const { diffList, diffFirst, diffLast } = diffTableData(settings, oldBodyList, bodyList);
+				oldBodyList = bodyList;
+				// 触发渲染
+				renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
 
-			// 触发渲染
-			renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
-
-			$table.css({
-				marginTop: start * trHeight - theadHeight,
-				marginBottom: (tableData.length - end) * trHeight
-			});
-
-			// 渲染选择框 DOM
-			if (supportCheckbox) {
-				resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
-			}
+				// 渲染选择框 DOM
+				if (supportCheckbox) {
+					resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
+				}
+			// }, 30);
 		};
 
 		// 初始执行一次

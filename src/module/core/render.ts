@@ -1,13 +1,13 @@
 import jTool from '@jTool';
-import { getTableData } from '@common/cache';
+import {getRowData, getTableData} from '@common/cache';
 import { getAllTh, getDiv, getEmpty, getTbody, getThead, getVisibleTh, setAreVisible, updateVisibleLast } from '@common/base';
-import { DISABLE_CUSTOMIZE, EMPTY_DATA_CLASS_NAME, EMPTY_TPL_KEY, ODD, PX, ROW_CLASS_NAME, TH_NAME, TR_CACHE_KEY, TR_CHILDREN_STATE, TR_PARENT_KEY } from '@common/constants';
-import { each, isElement, isObject, isString, isUndefined, isValidArray } from '@jTool/utils';
+import { DISABLE_CUSTOMIZE, EMPTY_DATA_CLASS_NAME, EMPTY_TPL_KEY, ODD, PX, ROW_CLASS_NAME, TH_NAME, TR_CACHE_KEY, TR_CHILDREN_STATE, TR_PARENT_KEY, TR_ROW_KEY, ROW_INDEX_KEY } from '@common/constants';
+import {each, isElement, isNumber, isObject, isString, isUndefined, isValidArray} from '@jTool/utils';
 import { compileEmptyTemplate, compileTd, sendCompile } from '@common/framework';
 import { outError } from '@common/utils';
 import moveRow from '@module/moveRow';
 import checkbox from '@module/checkbox';
-import fullColumn from '@module/fullColumn';
+import fullColumn, { getFullColumnTr, getFullColumnInterval } from '@module/fullColumn';
 import tree from '@module/tree';
 import { treeElementKey } from '@module/tree/tool';
 import { installSummary } from '@module/summary';
@@ -109,7 +109,7 @@ export const renderEmptyTbody = (settings: SettingObj, isInit?: boolean): void =
  * @param firstLineKey
  * @param lastLineKey
  */
-export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, firstLineKey: string, lastLineKey: string): Promise<any> => {
+export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, firstLineKey?: string, lastLineKey?: string): Promise<any> => {
 	const {
 		_,
 		columnMap,
@@ -163,6 +163,7 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 		const tdList = trObject.tdList;
 		each(columnList, (col: Column) => {
 			const tdTemplate = col.template;
+			// console.log('isAutoCreate', col.isAutoCreate, col.key);
 			if (col.isAutoCreate) {
 				tdList.push(tdTemplate(row[col.key], row, rowIndex, isTop));
 				return;
@@ -209,7 +210,7 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 				const trObject: TrObject = {
 					className,
 					attribute,
-					cacheKey,
+					row,
 					querySelector: `[${TR_CACHE_KEY}="${cacheKey}"]`,
 					tdList
 				};
@@ -252,48 +253,75 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 			});
 		};
 
-		// 清除 todo 对于树结构，通栏不兼容
-		const allTr = $tbody.find(`[${TR_CACHE_KEY}]`);
-		if (allTr.length && firstLineKey && lastLineKey) {
-			let firstLineIndex = 0;
-			let lastLineIndex = bodyList.length - 1;
-
-			const firstTr = $tbody.find(`[${TR_CACHE_KEY}="${firstLineKey}"]`);
-			if (firstTr.length) {
-				firstLineIndex = firstTr.index();
-			}
-
-			const lastTr = $tbody.find(`[${TR_CACHE_KEY}="${lastLineKey}"]`);
-			if (lastTr.length) {
-				lastLineIndex = lastTr.index();
-			}
-
-			each(allTr, (item: HTMLTableRowElement, index: number) => {
-				if (index < firstLineIndex || index > lastLineIndex) {
-					// console.log(index, firstLineIndex, lastLineIndex);
-					item.remove();
-				}
-			});
-		}
-
 		installTr(bodyList, 0);
 
 		// 插入汇总行
 		installSummary(settings, columnList, getTableData(_), trObjectList);
 
-		const appendFragment = document.createDocumentFragment();
 		const prependFragment = document.createDocumentFragment();
-		trObjectList.forEach(item => {
-			const { className, attribute, tdList, querySelector, cacheKey } = item;
 
-			// 通过dom节点上的属性反查dom
-			let tr = tbody.querySelector(querySelector);
+		const df = document.createDocumentFragment();
+		const $tr = $tbody.find('tr');
+		each($tr, (item: HTMLTableRowElement) => {
+			df.appendChild(item);
+		});
+
+		// 清除与数据不匹配的tr
+		if (df.children.length && firstLineKey && lastLineKey) {
+			let firstLineIndex: number;
+			let lastLineIndex: number;
+
+			// 处理开始行: 需要验证上通栏行
+			let firstTr = getFullColumnTr(df, 'top', firstLineKey);
+			if (!firstTr) {
+				firstTr = df.querySelector(`[${TR_CACHE_KEY}="${firstLineKey}"]`);
+			}
+			if (firstTr) {
+				firstLineIndex = [].indexOf.call(df.children, firstTr);
+			}
+
+			// 处理结束行: 需要验证分割行
+			let lastTr = getFullColumnInterval(df, lastLineKey);
+			if (!lastTr) {
+				lastTr = df.querySelector(`[${TR_CACHE_KEY}="${lastLineKey}"]`);
+			}
+			if (lastTr) {
+				lastLineIndex = [].indexOf.call(df.children, lastTr);
+			}
+
+			const list: Array<HTMLTableRowElement> = [];
+			each(df.children, (item: HTMLTableRowElement, index: number) => {
+				// DOM中不存在开始行与结束行的tr: 清空所有tr
+				if (!isNumber(firstLineIndex) && !isNumber(lastLineIndex)) {
+					list.push(item);
+					return;
+				}
+
+				// DOM中存在开始行的tr: 清空小于开始的tr
+				if (firstLineIndex && index < firstLineIndex) {
+					list.push(item);
+				}
+
+				// DOM中存在结束行的tr: 清空大于结束行的tr
+				if (lastLineIndex && index > lastLineIndex) {
+					list.push(item);
+				}
+			});
+			each(list, (item: HTMLTableRowElement) => item.remove());
+		}
+		trObjectList.forEach(item => {
+			const { className, attribute, tdList, row, querySelector } = item;
 			const tdStr = tdList.join('');
+
+			// 差异化更新
+			// 通过dom节点上的属性反查dom
+			let tr = df.querySelector(querySelector);
+
 			if (tr) {
 				// console.log('querySelector', querySelector);
 				tr.innerHTML = tdStr;
 			} else {
-				const tr = document.createElement('tr');
+				tr = document.createElement('tr');
 				if (className.length) {
 					tr.className = className.join(' ');
 				}
@@ -302,20 +330,28 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 				});
 				tr.innerHTML = tdStr;
 
-				if (allTr.eq(0).length) {
-					const nowFirstKey = parseInt(allTr.eq(0).attr(TR_CACHE_KEY), 10);
-					if (cacheKey && parseInt(cacheKey, 10) < nowFirstKey) {
+				const firstCacheTr = df.querySelector(`[${TR_CACHE_KEY}]`) as HTMLTableRowElement;
+				if (firstCacheTr && !isUndefined(row)) {
+					const firstNum = getRowData(_, firstCacheTr)[ROW_INDEX_KEY];
+					const nowNum = row[ROW_INDEX_KEY];
+					if (nowNum < firstNum) {
 						prependFragment.appendChild(tr);
 					} else {
-						appendFragment.appendChild(tr);
+						df.appendChild(tr);
 					}
 				} else {
-					appendFragment.appendChild(tr);
+					df.appendChild(tr);
 				}
 			}
+
+			// 将数据挂载至DOM
+			tr[TR_ROW_KEY] = row;
 		});
-		tbody.insertBefore(prependFragment, tbody.firstChild);
-		tbody.appendChild(appendFragment);
+
+		df.insertBefore(prependFragment, df.firstChild);
+
+		tbody.innerHTML = '';
+		tbody.appendChild(df);
 	} catch (e) {
 		outError('render tbody error');
 		console.error(e);

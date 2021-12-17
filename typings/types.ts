@@ -9,7 +9,7 @@ export interface TrObject {
 	className: Array<string>;
 	attribute: Array<Array<string>>;
 	querySelector: string;
-	cacheKey?: string;
+	row?: Row;
 	tdList: Array<string>;
 }
 

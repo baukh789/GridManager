@@ -17,6 +17,7 @@ export interface SortData {
 export interface Row {
 	'gm-cache-key'?: string;
 	'gm-level-key'?: number;
+	'gm-row-index'?: number;
 	gm_checkbox?: boolean;
 	gm_checkbox_disabled?: boolean;
 	gm_order?: number;

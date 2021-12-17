@@ -23,7 +23,7 @@ import { DISABLE_CUSTOMIZE } from '@common/constants';
 import { Settings } from '@common/Settings';
 import TextConfig from '@module/i18n/config';
 import store from '@common/Store';
-import { CACHE_ERROR_KEY, MEMORY_KEY, VERSION_KEY, ORDER_KEY, CHECKBOX_KEY, CHECKBOX_DISABLED_KEY, TR_CACHE_KEY, TR_LEVEL_KEY, CELL_HIDDEN } from './constants';
+import { CACHE_ERROR_KEY, MEMORY_KEY, VERSION_KEY, ORDER_KEY, CHECKBOX_KEY, CHECKBOX_DISABLED_KEY, TR_CACHE_KEY, TR_LEVEL_KEY, CELL_HIDDEN, TR_ROW_KEY, ROW_INDEX_KEY } from './constants';
 import { ArgColumn, ArgObj, Column, ColumnMap, Row, SettingObj } from 'typings/types';
 
 // 用户记忆所存储的字段
@@ -71,23 +71,8 @@ export const getVersion = (): string => {
  */
 export const getRowData = (_: string, target: HTMLTableRowElement | NodeList, useSourceData?: boolean): Row | Array<Row> => {
     const settings = getSettings(_);
-    const tableData = getTableData(_);
     const getTrData = (tr: HTMLTableRowElement): Row => {
-        const cacheKey = tr.getAttribute(TR_CACHE_KEY);
-        let rowData = tableData[cacheKey] || {};
-
-        // 树型结构的数据
-        if (settings.supportTreeData && cacheKey.indexOf('-') !== -1) {
-            const treeKey = settings.treeConfig.treeKey;
-            cacheKey.split('-').forEach((key, index) => {
-                if (index === 0) {
-                    rowData = tableData[key];
-                } else {
-                    rowData = rowData[treeKey][key];
-                }
-            });
-        }
-
+		let rowData = tr[TR_ROW_KEY];
         return useSourceData ? rowData : getCloneRowData(settings.columnMap, rowData);
     };
 
@@ -177,7 +162,6 @@ export const setTableData = (_: string, data: Array<Row>): void => {
  * @returns {*}
  */
 export const formatTableData = (_: string, data: Array<Row>): Array<Row> => {
-
     const {
         columnMap,
         rowRenderHandler,
@@ -188,18 +172,39 @@ export const formatTableData = (_: string, data: Array<Row>): Array<Row> => {
         pageSizeKey,
         currentPageKey,
         supportTreeData,
-        treeConfig
+        treeConfig,
+		fullColumn
     } = getSettings(_);
 
     const checkboxKey = checkboxConfig.key;
+
+    let lineNum = 0;
     // 为每一行数据增加唯一标识
     const addCacheKey = (row: Row, level: number, index: number, pIndex?: string): void => {
         let cacheKey = index.toString();
         if (!isUndefined(pIndex)) {
             cacheKey = `${pIndex}-${index}`;
         }
+		const { topTemplate, bottomTemplate } = fullColumn || {};
+        // 通栏: topTemplate
+		if (isFunction(topTemplate)) {
+			lineNum++;
+		}
 
-        if (supportTreeData) {
+		row[ROW_INDEX_KEY] = lineNum;
+		lineNum++;
+
+		// 通栏: bottomTemplate
+		if (isFunction(bottomTemplate)) {
+			lineNum++;
+		}
+
+		// 通栏: interval
+		if (isFunction(topTemplate) || isFunction(bottomTemplate)) {
+			lineNum++;
+		}
+
+		if (supportTreeData) {
             const children = row[treeConfig.treeKey];
             const hasChildren = children && children.length;
 

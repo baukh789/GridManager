@@ -1,6 +1,6 @@
 'use strict';
 import jTool from '../../src/jTool';
-import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_DISABLED_KEY} from '../../src/common/constants';
+import {CACHE_ERROR_KEY, CONSOLE_STYLE, CONSOLE_INFO, CONSOLE_ERROR, MEMORY_KEY, VERSION_KEY, CHECKBOX_DISABLED_KEY, TR_ROW_KEY} from '../../src/common/constants';
 import { SIV_waitContainerAvailable, SIV_waitTableAvailable, getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getMemoryKey, getTableData, formatTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, clearCache, updateCache } from '../../src/common/cache';
 import store from '../../src/common/Store';
 import pkg from '../../package.json';
@@ -79,28 +79,40 @@ describe('cache', () => {
 
         it('参数为element', () => {
             store.responseData['test'] = tableData;
+			[].forEach.call(tr, (item, index) => {
+				item[TR_ROW_KEY] = tableData[index];
+			});
             expect(getRowData('test', tr[8])).toEqual(getTableTestData().data[8]);
         });
 
         it('参数为NodeList', () => {
+			store.responseData['test'] = tableData;
+			[].forEach.call(tr, (item, index) => {
+				item[TR_ROW_KEY] = tableData[index];
+			});
             expect(getRowData('test', tr).length).toBe(10);
         });
 
         it('使用原数据', () => {
-            store.responseData['test'] = tableData;
+			store.responseData['test'] = tableData;
+			[].forEach.call(tr, (item, index) => {
+				item[TR_ROW_KEY] = tableData[index];
+			});
             expect(getRowData('test', tr[8], true)).toEqual(tableData[8]);
         });
 
         it('使用树型数据', () => {
-            store.responseData['test'] = tableData;
+			store.responseData['test'] = tableData;
+			[].forEach.call(tr, (item, index) => {
+				item[TR_ROW_KEY] = tableData[index];
+			});
             store.settings.test.supportTreeData = true;
             store.settings.test.treeConfig = {
                 insertTo: null,
                 treeKey: 'children',
                 openState: false
             };
-            tr[0].setAttribute('gm-cache-key', '0-0');
-            expect(getRowData('test', tr[0], true).id).toBe(921);
+			expect(getRowData('test', tr[8], true)).toEqual(tableData[8]);
         });
 
         it('参数异常', () => {
