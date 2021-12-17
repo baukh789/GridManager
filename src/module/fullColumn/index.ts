@@ -87,6 +87,16 @@ const getIconClass = (state: boolean): string => {
     return state ? 'gm-icon-sub' : 'gm-icon-add';
 };
 
+// 获取容器内指定的通栏节点 todo 未进行单元测试
+export const getFullColumnTr = (dom: Element | DocumentFragment, type:string, cacheKey: string) => {
+	return dom.querySelector(`[full-column="${type}"][${TR_PARENT_KEY}="${cacheKey}"]`);
+};
+
+// 获取容器内指定的分割节点 todo 未进行单元测试
+export const getFullColumnInterval = (dom: Element | DocumentFragment, cacheKey: string) => {
+	return dom.querySelector(`[full-column-interval][${TR_PARENT_KEY}="${cacheKey}"]`);
+};
+
 class FullColumn {
     init(_: string): void {
         const { useFold } = getSettings(_).fullColumn;
