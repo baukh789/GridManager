@@ -243,6 +243,7 @@ class Core {
 		let trHeight: number = parseInt(settings.lineHeight, 10);
 		const tableDivHeight = $tableDiv.height();
 		let oldBodyList: Array<Row> = [];
+		let scrollTop: number;
 
 		// let sto: any;
 		// 虚拟滚动交由scroll module触发
@@ -253,7 +254,11 @@ class Core {
 			// sto = setTimeout(() => {
 			// 	clearTimeout(sto);
 				tableData = getTableData(_);
-				const scrollTop = $tableDiv.scrollTop();
+				const nowScrollTop = $tableDiv.scrollTop();
+				if (nowScrollTop === scrollTop) {
+					return;
+				}
+				scrollTop = nowScrollTop;
 
 				// 获取当前第一行，为
 				const $firstTr = $tbody.find(`tr[${TR_CACHE_KEY}]`).eq(0);
