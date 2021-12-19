@@ -73,7 +73,7 @@
 	};
 	var ajaxData = {
 		"data": getData(10000),
-		"totals": 2
+		"totals": 10000
 	};
 </script>
 <script type="text/javascript">
@@ -84,6 +84,7 @@
 		table.GM({
 			gridManagerName:'test',
 			supportAjaxPage: true,
+			useVirtualScroll: true,
 			ajaxData,
 			exportConfig: {
 				handler: (fileName, query, pageData, sortData, selectedList, tableData) => {
