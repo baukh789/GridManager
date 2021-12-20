@@ -253,6 +253,8 @@ class Core {
 			// }
 			// sto = setTimeout(() => {
 			// 	clearTimeout(sto);
+				const settings = getSettings(_);
+				const { supportCheckbox, checkboxConfig } = settings;
 				tableData = getTableData(_);
 				const nowScrollTop = $tableDiv.scrollTop();
 				if (nowScrollTop === scrollTop) {
