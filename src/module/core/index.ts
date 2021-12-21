@@ -243,48 +243,56 @@ class Core {
 		let trHeight: number = parseInt(settings.lineHeight, 10);
 		const tableDivHeight = $tableDiv.height();
 		let oldBodyList: Array<Row> = [];
-		let scrollTop: number;
+		let oldScrollTop: number;
 
-		// let sto: any;
+		let sto: any;
 		// 虚拟滚动交由scroll module触发
 		scroll.virtualScrollMap[_] = () => {
-			// if (sto) {
-			// 	clearTimeout(sto);
-			// }
-			// sto = setTimeout(() => {
-			// 	clearTimeout(sto);
-				const settings = getSettings(_);
-				const { supportCheckbox, checkboxConfig } = settings;
-				tableData = getTableData(_);
-				const nowScrollTop = $tableDiv.scrollTop();
-				if (nowScrollTop === scrollTop) {
-					return;
-				}
-				scrollTop = nowScrollTop;
+			const settings = getSettings(_);
+			const { supportCheckbox, checkboxConfig } = settings;
+			tableData = getTableData(_);
+			const nowScrollTop = $tableDiv.scrollTop();
+			// 防抖: 阻挡X轴滚动
+			if (oldScrollTop && nowScrollTop === oldScrollTop) {
+				return;
+			}
 
-				// 获取当前第一行，为
-				const $firstTr = $tbody.find(`tr[${TR_CACHE_KEY}]`).eq(0);
-				if ($firstTr.length) {
-					trHeight = $firstTr.height();
-				}
-				const visibleNum = Math.ceil(tableDivHeight / trHeight);
-				const index = Math.ceil(scrollTop / trHeight);
-				let start = index - Math.ceil((virtualNum - visibleNum) / 2);
-				if (start < 0) {
-					start = 0;
-				}
-				let end = start + virtualNum;
-				if (end >= tableData.length) {
-					end = tableData.length;
-					start = end - virtualNum;
-				}
-				if (start < 0) {
-					start = 0;
-				}
-				$table.css({
-					marginTop: start * trHeight - theadHeight,
-					marginBottom: (tableData.length - end) * trHeight
-				});
+			// 获取当前第一行，为
+			const $firstTr = $tbody.find(`tr[${TR_CACHE_KEY}]`).eq(0);
+			if ($firstTr.length) {
+				trHeight = $firstTr.height();
+			}
+			const visibleNum = Math.ceil(tableDivHeight / trHeight);
+			const index = Math.ceil(nowScrollTop / trHeight);
+			let start = index - Math.ceil((virtualNum - visibleNum) / 2);
+			if (start < 0) {
+				start = 0;
+			}
+			let end = start + virtualNum;
+			if (end >= tableData.length) {
+				end = tableData.length;
+				start = end - virtualNum;
+			}
+			if (start < 0) {
+				start = 0;
+			}
+			$table.css({
+				marginTop: start * trHeight - theadHeight,
+				marginBottom: (tableData.length - end) * trHeight
+			});
+
+			// 防抖: 阻挡少于单行高度的滚动
+			if (oldScrollTop && Math.abs(nowScrollTop - oldScrollTop) < trHeight) {
+				return;
+			}
+			oldScrollTop = nowScrollTop;
+
+			// 防抖: 阻挡频率过快的滚动
+			if (sto) {
+				clearTimeout(sto);
+			}
+			sto = setTimeout(() => {
+				clearTimeout(sto);
 				const bodyList = tableData.slice(start, end);
 				const { diffList, diffFirst, diffLast } = diffTableData(settings, oldBodyList, bodyList);
 				oldBodyList = bodyList;
@@ -295,7 +303,7 @@ class Core {
 				if (supportCheckbox) {
 					resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
 				}
-			// }, 30);
+			}, 50);
 		};
 
 		// 初始执行一次
