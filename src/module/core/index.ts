@@ -245,7 +245,6 @@ class Core {
 		let oldBodyList: Array<Row> = [];
 		let oldScrollTop: number;
 
-		let sto: any;
 		// 虚拟滚动交由scroll module触发
 		scroll.virtualScrollMap[_] = () => {
 			const settings = getSettings(_);
@@ -257,11 +256,18 @@ class Core {
 				return;
 			}
 
-			// 获取当前第一行，为
+			// 获取当前第一行高度
 			const $firstTr = $tbody.find(`tr[${TR_CACHE_KEY}]`).eq(0);
 			if ($firstTr.length) {
 				trHeight = $firstTr.height();
 			}
+
+			// 防抖: 阻挡少于单行高度的滚动
+			if (oldScrollTop && Math.abs(nowScrollTop - oldScrollTop) < trHeight) {
+				return;
+			}
+			oldScrollTop = nowScrollTop;
+
 			const visibleNum = Math.ceil(tableDivHeight / trHeight);
 			const index = Math.ceil(nowScrollTop / trHeight);
 			let start = index - Math.ceil((virtualNum - visibleNum) / 2);
@@ -281,29 +287,16 @@ class Core {
 				marginBottom: (tableData.length - end) * trHeight
 			});
 
-			// 防抖: 阻挡少于单行高度的滚动
-			if (oldScrollTop && Math.abs(nowScrollTop - oldScrollTop) < trHeight) {
-				return;
-			}
-			oldScrollTop = nowScrollTop;
+			const bodyList = tableData.slice(start, end);
+			const { diffList, diffFirst, diffLast } = diffTableData(settings, oldBodyList, bodyList);
+			oldBodyList = bodyList;
+			// 触发渲染
+			renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
 
-			// 防抖: 阻挡频率过快的滚动
-			if (sto) {
-				clearTimeout(sto);
+			// 渲染选择框 DOM
+			if (supportCheckbox) {
+				resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
 			}
-			sto = setTimeout(() => {
-				clearTimeout(sto);
-				const bodyList = tableData.slice(start, end);
-				const { diffList, diffFirst, diffLast } = diffTableData(settings, oldBodyList, bodyList);
-				oldBodyList = bodyList;
-				// 触发渲染
-				renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
-
-				// 渲染选择框 DOM
-				if (supportCheckbox) {
-					resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
-				}
-			}, 50);
 		};
 
 		// 初始执行一次
