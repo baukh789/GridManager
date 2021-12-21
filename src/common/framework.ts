@@ -224,7 +224,6 @@ export const compileFullColumn = (settings: SettingObj, row: Row, index: number,
 export async function sendCompile(settings: SettingObj) {
     const { _, compileAngularjs, compileVue, compileReact } = settings;
     const compileList = getCompileList(_);
-	console.log('sendCompile', compileList.length);
     if (compileList.length === 0) {
         return Promise.resolve();
     }
