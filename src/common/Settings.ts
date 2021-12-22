@@ -452,7 +452,13 @@ const gridData = {
     firstLoading: true,
 
 	// 启用虚拟滚动 @2.18.0
-	// useVirtualScroll: false,
+	virtualScroll: {
+    	// 启用虚拟滚动
+		useVirtualScroll: false,
+
+		// 虚拟滚动每次显示条数
+		virtualNum: 20
+	},
 
     // @2.6.0 不再建议使用且在外续版本中会被移除
     // 后端API调用地址

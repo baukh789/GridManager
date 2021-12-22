@@ -192,7 +192,6 @@ class Core {
 	 */
 	async changeTableData(_: string, list: Array<Row>, useFormat?: boolean) {
 		const settings = getSettings(_);
-		let virtualNum = 20; // 虚拟滚动每次显示条数
     	if (list.length === 0) {
 			renderEmptyTbody(settings);
 			setTableData(_, []);
@@ -207,7 +206,8 @@ class Core {
 		// 存储数据
 		setTableData(_, newTableData);
 
-		const { useVirtualScroll, supportCheckbox, checkboxConfig } = settings;
+		const { virtualScroll, supportCheckbox, checkboxConfig } = settings;
+		const { useVirtualScroll, virtualNum } = virtualScroll;
 
 		const $table = getTable(_);
 		const theadHeight = getThead(_).height();

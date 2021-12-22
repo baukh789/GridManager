@@ -279,8 +279,9 @@ describe('Settings', () => {
 		expect(settings.firstLoading).toBe(true);
 	});
 
-	it('验证属性[useVirtualScroll]初始值', () => {
-		expect(settings.useVirtualScroll).toBeUndefined();
+	it('验证属性[virtualScroll]初始值', () => {
+		expect(settings.virtualScroll.useVirtualScroll).toBe(false);
+		expect(settings.virtualScroll.virtualNum).toBe(20);
 	});
 
 	it('验证属性[ajaxData]初始值', () => {

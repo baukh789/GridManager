@@ -305,7 +305,10 @@ const demo1 = {
             // firstLoading: false,
 
 			// 启用虚拟滚动
-			useVirtualScroll: true,
+			virtualScroll: {
+				useVirtualScroll: true,
+				// virtualNum: 30
+			},
 
             // supportAutoOrder: false,
             // 自动序号配置
