@@ -84,7 +84,11 @@
 		table.GM({
 			gridManagerName:'test',
 			supportAjaxPage: true,
-			useVirtualScroll: true,
+			virtualScroll: {
+				useVirtualScroll: true,
+				virtualNum: 20
+			},
+			height: '100%',
 			ajaxData,
 			exportConfig: {
 				handler: (fileName, query, pageData, sortData, selectedList, tableData) => {
@@ -92,16 +96,16 @@
 					GM.hideLoading('test', 500);
 				}
 			},
-			summaryHandler: function(data){
-				let num = 0;
-				data.forEach(item => {
-					num += parseInt(item.age, 10);
-				});
-				return {
-					name: '平均年龄',
-					age: num / data.length
-				};
-			},
+			// summaryHandler: function(data){
+			// 	let num = 0;
+			// 	data.forEach(item => {
+			// 		num += parseInt(item.age, 10);
+			// 	});
+			// 	return {
+			// 		name: '平均年龄',
+			// 		age: num / data.length
+			// 	};
+			// },
 			columnData: [{
 				key: 'name',
 				remind: 'the username',
