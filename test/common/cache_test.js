@@ -184,7 +184,7 @@ describe('cache', () => {
 
         it('基础验证', () => {
             expect(getTableData).toBeDefined();
-            expect(getTableData.length).toBe(1);
+            expect(getTableData.length).toBe(2);
             expect(setTableData).toBeDefined();
             expect(setTableData.length).toBe(2);
         });
@@ -193,6 +193,10 @@ describe('cache', () => {
             expect(getTableData('test')).toEqual([]);
             setTableData('test', tableData.data);
             expect(getTableData('test')).toEqual(tableData.data);
+			expect(getTableData('test', true)).toEqual(tableData.data);
+
+			expect(getTableData('test') === tableData.data).toBe(false);
+			expect(getTableData('test', true) === tableData.data).toBe(true);
         });
     });
 

@@ -141,9 +141,14 @@ export const getRowData = (_: string, target: HTMLTableRowElement | NodeList, us
 /**
  * 获取表格数据
  * @param _
+ * @param disableClone: 禁用clone，适用于获取后不进行修改的场景，在数据量较大时可提升性能
  */
-export const getTableData = (_: string): Array<Row> => {
-    return cloneObject(store.responseData[_] || []);
+export const getTableData = (_: string, disableClone?: boolean): Array<Row> => {
+	const tableData = store.responseData[_] || [];
+	if (disableClone) {
+		return tableData;
+	}
+    return cloneObject(tableData);
 };
 
 /**
