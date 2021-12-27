@@ -197,7 +197,7 @@ class Core {
 			setTableData(_, []);
 			return;
 		}
-		let oldTableData = getTableData(_);
+		let oldTableData = getTableData(_, true);
     	const newTableData = useFormat ? formatTableData(_, list) : list;
 
 		// 存储选中数据
@@ -239,17 +239,18 @@ class Core {
 		const $tableDiv = getDiv(_);
 		// const tableDiv = $tableDiv.get(0);
 		const $tbody = getTbody(_);
-		let tableData = getTableData(_);
+		let tableData = getTableData(_, true);
 		let trHeight: number = parseInt(settings.lineHeight, 10);
 		const tableDivHeight = $tableDiv.height();
 		let oldBodyList: Array<Row> = [];
 		let oldScrollTop: number;
 
+		let sto: any;
 		// 虚拟滚动交由scroll module触发
 		scroll.virtualScrollMap[_] = () => {
 			const settings = getSettings(_);
 			const { supportCheckbox, checkboxConfig } = settings;
-			tableData = getTableData(_);
+			tableData = getTableData(_, true);
 			const nowScrollTop = $tableDiv.scrollTop();
 			// 防抖: 阻挡X轴滚动
 			if (oldScrollTop && nowScrollTop === oldScrollTop) {
@@ -290,13 +291,21 @@ class Core {
 			const bodyList = tableData.slice(start, end);
 			const { diffList, diffFirst, diffLast } = diffTableData(settings, oldBodyList, bodyList);
 			oldBodyList = bodyList;
+
 			// 触发渲染
 			renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
 
-			// 渲染选择框 DOM
-			if (supportCheckbox) {
-				resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
+			// 防抖: 延迟重置选择框
+			if (sto) {
+				clearTimeout(sto);
 			}
+			sto = setTimeout(() => {
+				clearTimeout(sto);
+				// 渲染选择框 DOM
+				if (supportCheckbox) {
+					resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
+				}
+			}, 500);
 		};
 
 		// 初始执行一次

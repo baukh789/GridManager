@@ -87,7 +87,7 @@ export const renderEmptyTbody = (settings: SettingObj, isInit?: boolean): void =
 	const { _, emptyTemplate } = settings;
 	// 当前为第一次加载 且 已经执行过setQuery 时，不再插入空数据模板
 	// 用于解决容器为不可见时，触发了setQuery的情况
-	if (isInit && getTableData(_).length !== 0) {
+	if (isInit && getTableData(_, true).length !== 0) {
 		return;
 	}
 
@@ -256,7 +256,7 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 		installTr(bodyList, 0);
 
 		// 插入汇总行
-		installSummary(settings, columnList, getTableData(_), trObjectList);
+		installSummary(settings, columnList, getTableData(_, true), trObjectList);
 
 		const prependFragment = document.createDocumentFragment();
 
@@ -265,6 +265,7 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 		each($tr, (item: HTMLTableRowElement) => {
 			df.appendChild(item);
 		});
+		tbody.innerHTML = '';
 
 		// 清除与数据不匹配的tr
 		if (df.children.length && firstLineKey && lastLineKey) {
@@ -350,7 +351,6 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 
 		df.insertBefore(prependFragment, df.firstChild);
 
-		tbody.innerHTML = '';
 		tbody.appendChild(df);
 	} catch (e) {
 		outError('render tbody error');
