@@ -40,7 +40,7 @@ export const tooltip = (_: string, dom: HTMLTableCellElement, conf: ConfigInfo, 
     const { text, position } = conf;
     let rightModel = position === 'right' ? ' right-model' : '';
 
-    // tooltip显示高度
+    // tooltip显示高度: 在top定位时也会使用到
     const height = 30;
     const $div = getDiv(_);
     const $dom = jTool(dom);
