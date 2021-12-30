@@ -453,7 +453,8 @@ const gridData = {
 
 	// 启用虚拟滚动 @2.18.0
 	virtualScroll: {
-    	// 启用虚拟滚动
+    	// 启用虚拟滚动: 在使用supportTreeData与fullColumn时虚拟滚动无效。
+		// 启用后: 1、使用静态导出，必须配置handler，否则导出数据长度为virtualNum；2、打印时仅对当前配置virtualNum的条数生效
 		useVirtualScroll: false,
 
 		// 实际渲染的Tr数

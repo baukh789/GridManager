@@ -213,7 +213,7 @@ class Core {
 		const theadHeight = getThead(_).height();
 		// 非虚拟滚动 或 虚拟滚动每次显示条数>=当前数据量: 不使用虚拟滚动的逻辑
 		if (!useVirtualScroll || virtualNum >= newTableData.length) {
-			// 当前存在虚拟滚动存储，清空oldTableData以保证显示正常，场景: 切换每页显示条数时，触发了`virtualNum >= newTableData.length`条件
+			// 当前存在虚拟滚动存储，清空oldTableData以保证显示正常，场景: 切换每页显示条数时，会触发`virtualNum >= newTableData.length`条件
 			if (scroll.virtualScrollMap[_]) {
 				oldTableData = [];
 			}
@@ -237,7 +237,6 @@ class Core {
 
 		// 虚拟滚动: 与树结构及通栏不兼容
 		const $tableDiv = getDiv(_);
-		// const tableDiv = $tableDiv.get(0);
 		const $tbody = getTbody(_);
 		let tableData = getTableData(_, true);
 		let trHeight: number = parseInt(settings.lineHeight, 10);
