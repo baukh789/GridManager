@@ -336,6 +336,10 @@ describe('Settings', () => {
         expect(settings.rowRenderHandler({'name': 'baukh'}, 1)).toEqual({'name': 'baukh'});
     });
 
+    it('验证属性[summaryHandler]', () => {
+		expect(settings.summaryHandler).toBeUndefined();
+	});
+
     it('验证属性[dataKey]初始值', () => {
 		expect(settings.dataKey).toBe('data');
 	});

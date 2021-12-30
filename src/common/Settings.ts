@@ -456,7 +456,7 @@ const gridData = {
     	// 启用虚拟滚动
 		useVirtualScroll: false,
 
-		// 虚拟滚动每次显示条数
+		// 实际渲染的Tr数
 		virtualNum: 20
 	},
 
