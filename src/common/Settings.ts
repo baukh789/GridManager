@@ -501,7 +501,7 @@ const gridData = {
     responseHandler: (response: object) => response,
 
     // 单行数据渲染时执行程序
-    rowRenderHandler: (row: object) => row,
+    rowRenderHandler: (row: object, index: number) => row,
 
     // 汇总处理函数
     // summaryHandler: (data: object) => { return {}; },
