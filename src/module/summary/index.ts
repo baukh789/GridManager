@@ -1,15 +1,19 @@
-import { isElement, isEmptyObject, isNull, isUndefined, each } from '@jTool/utils';
+import {isElement, isEmptyObject, isNull, isUndefined, each, isFunction} from '@jTool/utils';
 import { compileTd } from '@common/framework';
 import { getDiv, getThead } from '@common/base';
 import { DISABLE_MOVE } from '@module/moveRow/constants';
 import { SUMMARY_FLAG, SUMMARY_ROW } from './constants';
-import { SettingObj, Row, Column, TrObject } from 'typings/types';
+import { SettingObj, Column, TrObject } from 'typings/types';
 import './style.less';
+import { getTableData } from '@common/cache';
 
 const querySelector = `[${SUMMARY_ROW}]`;
-export const installSummary = (settings: SettingObj, columnList: Array<Column>, tableData: Array<Row>, trObjectList: Array<TrObject>): void => {
+export const installSummary = (settings: SettingObj, columnList: Array<Column>, trObjectList: Array<TrObject>): void => {
     const { _, summaryHandler, browser } = settings;
-    const summaryMap = summaryHandler(tableData);
+    if (!isFunction(summaryHandler)) {
+    	return;
+	}
+    const summaryMap = summaryHandler(getTableData(_, true));
 
     const $tableDiv = getDiv(_);
     // 汇总行是唯一的，如果已存在则清除

@@ -255,8 +255,8 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, is
 
 		installTr(bodyList, 0);
 
-		// 插入汇总行
-		installSummary(settings, columnList, getTableData(_, true), trObjectList);
+		// 插入汇总行: 验证在函数内
+		installSummary(settings, columnList, trObjectList);
 
 		const prependFragment = document.createDocumentFragment();
 

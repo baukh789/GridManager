@@ -504,7 +504,7 @@ const gridData = {
     rowRenderHandler: (row: object) => row,
 
     // 汇总处理函数
-    summaryHandler: (data: object) => { return {}; },
+    // summaryHandler: (data: object) => { return {}; },
 
     // 返回数据中列表数据的key键值,默认为data
     dataKey: 'data',
