@@ -106,10 +106,11 @@ export const renderEmptyTbody = (settings: SettingObj, isInit?: boolean): void =
  * 重新组装table body: 这个方法最大的性能问题在于tbody过大时，首次获取tbody或其父容器时过慢
  * @param settings
  * @param bodyList
- * @param firstLineKey
- * @param lastLineKey
+ * @param isVirtualScroll: 当前是否为虚拟滚动
+ * @param firstTrCacheKey
+ * @param lastTrCacheKey
  */
-export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, firstLineKey?: string, lastLineKey?: string): Promise<any> => {
+export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, isVirtualScroll: boolean, firstTrCacheKey: string, lastTrCacheKey: string): Promise<any> => {
 	const {
 		_,
 		columnMap,
@@ -163,7 +164,6 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 		const tdList = trObject.tdList;
 		each(columnList, (col: Column) => {
 			const tdTemplate = col.template;
-			// console.log('isAutoCreate', col.isAutoCreate, col.key);
 			if (col.isAutoCreate) {
 				tdList.push(tdTemplate(row[col.key], row, rowIndex, isTop));
 				return;
@@ -268,23 +268,23 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 		tbody.innerHTML = '';
 
 		// 清除与数据不匹配的tr
-		if (df.children.length && firstLineKey && lastLineKey) {
+		if (df.children.length) {
 			let firstLineIndex: number;
 			let lastLineIndex: number;
 
 			// 处理开始行: 需要验证上通栏行
-			let firstTr = getFullColumnTr(df, 'top', firstLineKey);
+			let firstTr = getFullColumnTr(df, 'top', firstTrCacheKey);
 			if (!firstTr) {
-				firstTr = df.querySelector(`[${TR_CACHE_KEY}="${firstLineKey}"]`);
+				firstTr = df.querySelector(`[${TR_CACHE_KEY}="${firstTrCacheKey}"]`);
 			}
 			if (firstTr) {
 				firstLineIndex = [].indexOf.call(df.children, firstTr);
 			}
 
 			// 处理结束行: 需要验证分割行
-			let lastTr = getFullColumnInterval(df, lastLineKey);
+			let lastTr = getFullColumnInterval(df, lastTrCacheKey);
 			if (!lastTr) {
-				lastTr = df.querySelector(`[${TR_CACHE_KEY}="${lastLineKey}"]`);
+				lastTr = df.querySelector(`[${TR_CACHE_KEY}="${lastTrCacheKey}"]`);
 			}
 			if (lastTr) {
 				lastLineIndex = [].indexOf.call(df.children, lastTr);
@@ -319,7 +319,6 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 			let tr = df.querySelector(querySelector);
 
 			if (tr) {
-				// console.log('querySelector', querySelector);
 				tr.innerHTML = tdStr;
 			} else {
 				tr = document.createElement('tr');
@@ -333,7 +332,7 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 
 				const firstCacheTr = df.querySelector(`[${TR_CACHE_KEY}]`) as HTMLTableRowElement;
 				if (firstCacheTr && !isUndefined(row)) {
-					const firstNum = getRowData(_, firstCacheTr)[ROW_INDEX_KEY];
+					const firstNum = getRowData(_, firstCacheTr, true)[ROW_INDEX_KEY];
 					const nowNum = row[ROW_INDEX_KEY];
 					if (nowNum < firstNum) {
 						prependFragment.appendChild(tr);
@@ -363,7 +362,6 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 			setAreVisible(_, key, col.isShow);
 		});
 	}
-	// !__isNested && this.initVisible(_, columnMap);
 
 	// 解析框架
 	await sendCompile(settings);
@@ -374,17 +372,21 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, fi
 	// 合并单元格
 	mergeRow(_, columnMap);
 
-	fixed.update(_);
+	// 虚拟滚动无需执行以后逻辑
+	if (!isVirtualScroll) {
+		fixed.update(_);
 
-	// 增加tbody是否填充满标识
-	if ($tbody.height() >= getDiv(_).height()) {
-		$tbody.attr('filled', '');
-	} else {
-		$tbody.removeAttr('filled');
+		// 增加tbody是否填充满标识
+		if ($tbody.height() >= getDiv(_).height()) {
+			$tbody.attr('filled', '');
+		} else {
+			$tbody.removeAttr('filled');
+		}
+
+		// 为最后一列的th, td增加标识: 嵌套表头不处理
+		if (!settings.__isNested) {
+			updateVisibleLast(_);
+		}
 	}
 
-	// 为最后一列的th, td增加标识: 嵌套表头不处理
-	if (!settings.__isNested) {
-		updateVisibleLast(_);
-	}
 };

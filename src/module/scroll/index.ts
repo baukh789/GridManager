@@ -158,8 +158,9 @@ class Scroll {
 		tableDIV.unbind(SCROLL);
 		tableDIV.bind(SCROLL, () => {
 			// 虚拟滚动
-			if (virtualScrollMap[_]) {
-				virtualScrollMap[_]();
+			const virtualScrolFn = virtualScrollMap[_];
+			if (virtualScrolFn) {
+				virtualScrolFn(true);
 			}
             updateFakeThead(getSettings(_), true);
             fixed.update(_);

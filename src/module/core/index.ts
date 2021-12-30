@@ -219,7 +219,7 @@ class Core {
 			}
 			const { diffList, diffFirst, diffLast } = diffTableData(settings, oldTableData, newTableData);
 			// 触发渲染
-			await renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
+			await renderTbody(settings, diffList, false, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
 
 			// 渲染选择框 DOM
 			if (supportCheckbox) {
@@ -247,7 +247,7 @@ class Core {
 
 		let sto: any;
 		// 虚拟滚动交由scroll module触发
-		scroll.virtualScrollMap[_] = () => {
+		scroll.virtualScrollMap[_] = async (isVirtualScroll: boolean) => {
 			const settings = getSettings(_);
 			const { supportCheckbox, checkboxConfig } = settings;
 			tableData = getTableData(_, true);
@@ -293,7 +293,7 @@ class Core {
 			oldBodyList = bodyList;
 
 			// 触发渲染
-			renderTbody(settings, diffList, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
+			await renderTbody(settings, diffList, isVirtualScroll, diffFirst[TR_CACHE_KEY], diffLast[TR_CACHE_KEY]);
 
 			// 防抖: 延迟重置选择框
 			if (sto) {
@@ -305,11 +305,11 @@ class Core {
 				if (supportCheckbox) {
 					resetCheckboxDOM(_, tableData, checkboxConfig.useRadio, checkboxConfig.max);
 				}
-			}, 500);
+			}, 300);
 		};
 
 		// 初始执行一次
-		scroll.virtualScrollMap[_]();
+		scroll.virtualScrollMap[_](false);
 	}
 
 	/**
