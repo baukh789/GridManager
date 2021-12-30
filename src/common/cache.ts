@@ -66,7 +66,7 @@ export const getVersion = (): string => {
  * 获取当前行使用的数据
  * @param _
  * @param target: 将要获取数据所对应的tr
- * @param useSourceData: 使用原数据 或 克隆数据
+ * @param useSourceData: 使用原数据(性能高) 或 克隆数据(会清除GM添加的属性)
  * @returns {*}
  */
 export const getRowData = (_: string, target: HTMLTableRowElement | NodeList, useSourceData?: boolean): Row | Array<Row> => {

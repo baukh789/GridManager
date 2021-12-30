@@ -25,7 +25,8 @@ import {
     ROW_CLASS_NAME,
     DISABLE_CUSTOMIZE,
     PX,
-    SORT_CLASS
+    SORT_CLASS,
+	ROW_INDEX_KEY
 } from './constants';
 import { getCacheDOM } from '@common/domCache';
 import { CLASS_FILTER } from '@module/filter/constants';
@@ -53,6 +54,9 @@ export const getCloneRowData = (columnMap: ColumnMap, row: Row, cleanKeyList?: A
 
     // 删除自定义参数: 行唯一标识
     delete cloneRow[TR_CACHE_KEY];
+
+    // 删除自定义参数: 当前行数据 在tbody中的索引
+	delete cloneRow[ROW_INDEX_KEY];
 
     // 删除自定义参数: 行层级标识
     delete cloneRow[TR_LEVEL_KEY];
