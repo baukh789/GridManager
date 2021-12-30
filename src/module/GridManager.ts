@@ -190,7 +190,7 @@ export default class GridManager {
             arg.__isFullColumn = true;
 
             // 不使用虚拟滚动
-			arg.useVirtualScroll = false;
+			delete arg.virtualScroll;
         }
 
         // 相互冲突的参数项处理: 树型
@@ -203,7 +203,7 @@ export default class GridManager {
             arg.__isFullColumn = false;
 
             // 不使用虚拟滚动
-			arg.useVirtualScroll = false;
+			delete arg.virtualScroll;
         }
 
         // 相互冲突的参数项处理: 多层嵌套表头
