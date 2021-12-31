@@ -90,14 +90,6 @@
 			template: function(lastDate, rowObject){
 				return new Date(lastDate).format('YYYY-MM-DD HH:mm:ss');
 			}
-		},{
-			key: 'action',
-			remind: 'the action',
-			text: '操作',
-			template: function(action, rowObject){
-				return '<span class="plugin-action edit-action" learnLink-id="'+rowObject.id+'">编辑</span>'
-						+'<span class="plugin-action del-action" learnLink-id="'+rowObject.id+'">删除</span>';
-			}
 		}
 		]
 		// 分页前事件
