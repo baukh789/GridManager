@@ -2,9 +2,12 @@
  * 实例化数据的存储对象
  */
 import { GM_VERSION } from '@common/constants';
+import { Row } from 'typings/data';
 interface StoreInterface {
     version: string;
-    responseData: any;
+	responseData: {
+		[_: string]: Array<Row>
+	};
     checkedData: any;
     settings: any;
 }

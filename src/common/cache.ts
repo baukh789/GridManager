@@ -295,10 +295,16 @@ export const setCheckedData = (_: string, dataList: Array<Row>, isClear?: boolea
     const tableCheckedList = store.checkedData[_];
     const key = checkboxConfig.key;
 
+    // 防抖: 在添加过程中，tableCheckedList的长度会发生变化，所以将条件放到forEach外
+    const existChecked = tableCheckedList.length > 0;
     dataList.forEach(item => {
         const cloneObj = getCloneRowData(columnMap, item);
         const checked = item[CHECKBOX_KEY];
-        const index = getObjectIndexToArray(tableCheckedList, cloneObj, key);
+        let index = -1;
+        // 添加前为空，不需要进入
+        if (existChecked) {
+			index = getObjectIndexToArray(tableCheckedList, cloneObj, key);
+		}
 
         // 新增: 已选中 且 未存储
         if (checked && index === -1) {
