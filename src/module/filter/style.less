@@ -32,6 +32,10 @@
         &.filter-selected{
             color: var(--gm-color-active);
         }
+		// 解决window环境下未能居中的问题，todo 如后续发现其它图标存在同样的问题，需要抽离至图标样式文件内
+		&:before{
+			vertical-align: middle;
+		}
     }
     .fa-con{
         display: none;
