@@ -307,7 +307,7 @@ const demo1 = {
 			// 启用虚拟滚动
 			virtualScroll: {
 				useVirtualScroll: true,
-				virtualNum: 40
+				virtualNum: 20
 			},
 
             // supportAutoOrder: false,
