@@ -22,3 +22,5 @@ npm version <version_category: major | minor | patch>
 ### 发布后需操作
 - 发布框架版本
 - 发布gm-site
+- 发布gm-test
+- github发布releases
