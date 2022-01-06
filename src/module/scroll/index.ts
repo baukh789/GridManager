@@ -135,8 +135,8 @@ class Scroll {
 		// 不支持ResizeObserver: 通过reset事件来更新DOM, [safari]
         // 绑定resize事件: 对表头吸顶的列宽度进行修正
         jTool(rootWindow).bind(`${RESIZE}.${_}`, () => {
-            // 当前事件未被暂停时执行update, 在resetLayout会触发暂停
-            if (this.pauseResizeEventMap[_]) {
+            // 当前事件未被暂停时执行update
+            if (!this.pauseResizeEventMap[_]) {
                 this.update(_);
             }
         });
