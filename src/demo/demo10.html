@@ -31,6 +31,9 @@
 			border: 0;
 			border-top: 1px solid #eee;
 		}
+		.table-main{
+			height: calc(100% - 52px);
+		}
 		.bottom-bar{
 			background: #f8f8f8;
 			padding: 10px;
@@ -49,7 +52,9 @@
 </head>
 
 <body>
-<table grid-manager="cccc"></table>
+<div class="table-main">
+	<table grid-manager="cccc"></table>
+</div>
 <div class="bottom-bar">
 	<a href="https://github.com/baukh789/GridManager/blob/master/src/demo/demo10.html" target="_blank">查看源码</a>
 </div>
