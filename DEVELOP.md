@@ -21,6 +21,8 @@ npm version <version_category: major | minor | patch>
 
 ### 发布后需操作
 - 发布框架版本
-- 发布gm-site
-- 发布gm-test
+- 服务器执行installGM.sh
+- 更新管理端: 版本、压维包、发布记录和API
+- 发布gm-site (demo存在修改时，需要发布)
+- 发布gm-test (demo存在修改时，需要发布)
 - github发布releases
