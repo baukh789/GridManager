@@ -23,7 +23,7 @@
  * - content: String 显示文本
  * - line: Boolean 是否显示分割线
  * - run(gridManagerName, $dom): 每次打开菜单前的执行函数
- * - onClick(gridManagerName): 菜单项点击事件
+ * - onClick(gridManagerName, $cell): 菜单项点击事件
  */
 import jTool from '@jTool';
 import { clearTargetEvent } from '@common/base';
