@@ -1,4 +1,4 @@
-import { CHECKBOX_KEY, ROW_DISABLED_CHECKBOX } from '@common/constants';
+import { CHECKBOX_KEY, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY } from '@common/constants';
 import { getTableData, setTableData, setCheckedData } from '@common/cache';
 import { Row } from 'typings/types';
 /**
@@ -12,36 +12,44 @@ import { Row } from 'typings/types';
  */
 export const resetData = (_: string, status: boolean, isAllCheck: boolean, cacheKey?: string | number, isRadio?: boolean): Array<Row> => {
     const tableData = getTableData(_);
+    const diffList = [];
     // 复选-全选
     if (isAllCheck && !cacheKey) {
         tableData.forEach(row => {
             // 仅选中未禁用的项
             if (!row[ROW_DISABLED_CHECKBOX]) {
-                row[CHECKBOX_KEY] = status;
+				if (row[CHECKBOX_KEY] !== status) {
+					diffList.push(row);
+				}
+				row[CHECKBOX_KEY] = status;
             }
         });
     }
 
     // 复选-单个操作
-    if (!isAllCheck && cacheKey) {
+    if (!isAllCheck && !isRadio && cacheKey) {
         tableData[cacheKey][CHECKBOX_KEY] = status;
+		diffList.push(tableData[cacheKey]);
     }
 
     // 单选
     if (isRadio) {
-        tableData.forEach((row, index) => {
-            row[CHECKBOX_KEY] = index === parseInt(<string>cacheKey, 10);
+        tableData.forEach(row => {
+            if (row[TR_CACHE_KEY] === cacheKey) {
+				row[CHECKBOX_KEY] = true;
+				diffList.push(row);
+			} else {
+            	// 单选状态下会清空原先的数据, 所以单选时不需要将未选中的行数据归类于diffList内
+				row[CHECKBOX_KEY] = false;
+			}
         });
-
-        // 清空当前选中项
-        setCheckedData(_, [], true);
     }
 
     // 存储数据
     setTableData(_, tableData);
 
-    // 更新选中数据
-    setCheckedData(_, tableData);
+    // 更新选中数据: 单选状态下会清空原先的数据
+    setCheckedData(_, diffList, isRadio);
 
     return tableData;
 };

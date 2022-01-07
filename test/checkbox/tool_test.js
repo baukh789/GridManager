@@ -2,18 +2,23 @@ import { resetData } from '../../src/module/checkbox/tool';
 import store from '../../src/common/Store';
 import getTableTestData from '../table-test.data.js';
 import { getColumnMap } from '../table-config';
+import {TR_CACHE_KEY} from '@common/constants';
 
 const _ = 'test';
 describe('checkbox tool', () => {
     describe('resetData', () => {
         let tableData = null;
         beforeEach(() => {
-            tableData = getTableTestData();
+            tableData = getTableTestData().data;
+            // 模拟gm-cache-key
+			tableData.forEach((item, index) => {
+				item[TR_CACHE_KEY] = `${index}`;
+			});
             store.checkedData = {
                 [_]: []
             };
             store.responseData = {
-                [_]: tableData.data
+                [_]: tableData
             };
             store.settings = {
                 [_]: {
@@ -74,11 +79,11 @@ describe('checkbox tool', () => {
             expect(store.checkedData.test.length).toBe(0);
 
             // 选中一项
-            resetData(_, undefined, true, 3, true);
+            resetData(_, undefined, true, '3', true);
             expect(store.checkedData.test.length).toBe(1);
 
             // 再选中一项
-            resetData(_, undefined, true, 4, true);
+            resetData(_, undefined, true, '4', true);
             expect(store.checkedData.test.length).toBe(1);
         });
     });

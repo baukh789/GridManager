@@ -295,20 +295,22 @@ export const setCheckedData = (_: string, dataList: Array<Row>, isClear?: boolea
     const tableCheckedList = store.checkedData[_];
     const key = checkboxConfig.key;
 
-    // 防抖: 在添加过程中，tableCheckedList的长度会发生变化，所以将条件放到forEach外
     const existChecked = tableCheckedList.length > 0;
+    // 防抖: 将新增的单独使用，减少getObjectIndexToArray的调用次数
+	const addList: Array<any> = [];
     dataList.forEach(item => {
         const cloneObj = getCloneRowData(columnMap, item);
         const checked = item[CHECKBOX_KEY];
         let index = -1;
-        // 添加前为空，不需要进入
+        // 存在已选中项
         if (existChecked) {
 			index = getObjectIndexToArray(tableCheckedList, cloneObj, key);
 		}
 
         // 新增: 已选中 且 未存储
         if (checked && index === -1) {
-            tableCheckedList.push(cloneObj);
+        	// 将新增的数据延后合并的好处: 防止循环中tableCheckedList增长导致的性能消耗
+			addList.push(cloneObj);
             return;
         }
 
@@ -317,6 +319,7 @@ export const setCheckedData = (_: string, dataList: Array<Row>, isClear?: boolea
             tableCheckedList.splice(index, 1);
         }
     });
+	store.checkedData[_] = tableCheckedList.concat(addList);
 };
 
 /**
