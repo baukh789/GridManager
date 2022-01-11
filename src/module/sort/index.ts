@@ -165,9 +165,21 @@ class Sort {
 	 * @returns {parseData}
      */
 	@parseTpl(sortTpl)
-	createHtml(): string {
+	createHtml(params: any): string {
+		const { type, sortUpText, sortDownText } = params;
+		let typeClass = '';
+		switch (type) {
+			case sortUpText:
+				typeClass = ' sorting-up';
+				break;
+			case sortDownText:
+				typeClass = ' sorting-down';
+				break;
+		}
 		// @ts-ignore
-		return {};
+		return {
+			typeClass: typeClass
+		};
 	}
 
 	/**

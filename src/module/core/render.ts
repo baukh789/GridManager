@@ -49,17 +49,7 @@ export const renderThead = (settings: SettingObj): void => {
 
 		// 嵌入排序事件源
 		if (!isAutoCol && isString(column.sorting)) {
-			const sortingDom = jTool(sort.createHtml());
-
-			// 依据 column.sorting 进行初始显示
-			switch (column.sorting) {
-				case sortUpText:
-					sortingDom.addClass('sorting-up');
-					break;
-				case sortDownText:
-					sortingDom.addClass('sorting-down');
-					break;
-			}
+			const sortingDom = jTool(sort.createHtml({ type: column.sorting, sortUpText, sortDownText }));
 			onlyThWarp.append(sortingDom);
 		}
 
