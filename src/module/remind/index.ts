@@ -103,7 +103,7 @@ class Remind {
 
         const style = remind.style;
         if (isObject(style)) {
-            styleStr = 'style="';
+            styleStr = ' style="';
             Object.keys(style).forEach(key => {
                 styleStr = `${styleStr}${key}:${style[key]};`;
             });
