@@ -59,6 +59,7 @@ import {
     UNCHECKED,
     CHECKED_CLASS,
     TR_PARENT_KEY,
+	DISABLE_CUSTOMIZE,
     INDETERMINATE_CLASS } from '@common/constants';
 import jTool from '@jTool';
 import { each, isNumber, isString, rootDocument } from '@jTool/utils';
@@ -311,7 +312,7 @@ class Checkbox {
 			text: conf.useRadio ? '' : this.getCheckboxTpl({}),
 			isAutoCreate: true,
 			isShow: true,
-            disableCustomize: true,
+            [DISABLE_CUSTOMIZE]: true,
 			width: conf.width,
             fixed: conf.fixed,
             // align: 'center',  // 调整为由样式控制

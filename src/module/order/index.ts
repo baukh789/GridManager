@@ -1,7 +1,7 @@
 /*
  * order: 序号
  * */
-import { ORDER_KEY, GM_CREATE } from '@common/constants';
+import { ORDER_KEY, GM_CREATE, DISABLE_CUSTOMIZE } from '@common/constants';
 import i18n from '../i18n';
 import { SettingObj } from 'typings/types';
 import './style.less';
@@ -17,7 +17,7 @@ class Order {
 			text: i18n(settings, 'order-text'),
 			isAutoCreate: true,
 			isShow: true,
-            disableCustomize: true,
+            [DISABLE_CUSTOMIZE]: true,
 			width: autoOrderConfig.width,
             fixed: autoOrderConfig.fixed,
 			// align: 'center',  // 调整为由样式控制

@@ -14,7 +14,7 @@ import {
 import { getTableData, getSettings, getCheckedData, setCheckedData } from '@common/cache';
 import { parseTpl } from '@common/parse';
 import { clearMergeRow } from '../merge';
-import { MOVEROW_KEY, TR_CACHE_KEY, NO_SELECT_CLASS_NAME, PX } from '@common/constants';
+import { MOVEROW_KEY, TR_CACHE_KEY, NO_SELECT_CLASS_NAME, PX, DISABLE_CUSTOMIZE } from '@common/constants';
 import dreamlandTpl from './dreamland.tpl.html';
 import { getEvent, eventMap } from './event';
 import { CLASS_DRAG_ING, CLASS_DREAMLAND, DISABLE_MOVE } from './constants';
@@ -294,7 +294,7 @@ class MoveRow {
             text: '',
             isAutoCreate: true,
             isShow: true,
-            disableCustomize: true,
+            [DISABLE_CUSTOMIZE]: true,
             width: 30,
             fixed,
             template: () => {
