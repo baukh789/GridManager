@@ -1,5 +1,6 @@
 import template from '../../src/module/core/template';
 import { clearCompileList } from '../../src/common/framework';
+import TextConfig from '@module/i18n/config';
 
 describe('core template', () => {
     describe('createWrapTpl', () => {
@@ -151,6 +152,10 @@ describe('core template', () => {
                 <th th-name="title" style="width:auto" remind>
                     <div class="th-wrap">
                         <span class="th-text" >标题</span>
+                        <div class="gm-remind-action">
+							<i class="ra-icon gm-icon gm-icon-help"></i>
+							<div class="ra-area">this is title</div>
+						</div>
                     </div>
                 </th>
             `.replace(/\s/g, '');
@@ -179,6 +184,10 @@ describe('core template', () => {
                 <th th-name="title" style="width:auto" sorting>
                     <div class="th-wrap">
                         <span class="th-text" >标题</span>
+                        <div class="gm-sorting-action">
+							<i class="sa-icon sa-up gm-icon gm-icon-up"></i>
+							<i class="sa-icon sa-down gm-icon gm-icon-down"></i>
+						</div>
                     </div>
                 </th>
             `.replace(/\s/g, '');
@@ -195,6 +204,10 @@ describe('core template', () => {
                 <th th-name="title" style="width:auto" sorting="DESC">
                     <div class="th-wrap">
                         <span class="th-text" >标题</span>
+                        <div class="gm-sorting-action sorting-down">
+							<i class="sa-icon sa-up gm-icon gm-icon-up"></i>
+							<i class="sa-icon sa-down gm-icon gm-icon-down"></i>
+						</div>
                     </div>
                 </th>
             `.replace(/\s/g, '');
@@ -211,6 +224,10 @@ describe('core template', () => {
                 <th th-name="title" style="width:auto" sorting="ASC">
                     <div class="th-wrap">
                         <span class="th-text" >标题</span>
+                        <div class="gm-sorting-action sorting-up">
+							<i class="sa-icon sa-up gm-icon gm-icon-up"></i>
+							<i class="sa-icon sa-down gm-icon gm-icon-down"></i>
+						</div>
                     </div>
                 </th>
             `.replace(/\s/g, '');
@@ -226,47 +243,96 @@ describe('core template', () => {
         it('执行验证: 开启过滤', () => {
             settings = {
                 _: 'test',
+				i18n: 'zh-cn',
+				textConfig: new TextConfig(),
                 query: {}
             };
 
-            // 配置项未选中
             htmlStr = `
-                <th th-name="title" style="width:auto" filter>
+                <th th-name="type" style="width:auto" filter>
                     <div class="th-wrap">
                         <span class="th-text" >标题</span>
+                        <div class="gm-filter-area">
+							<i class="fa-icon gm-icon gm-icon-filter filter-selected"></i>
+							<div class="fa-con">
+								<ul class="filter-list" style="max-height: 400px">
+									<li class="filter-checkbox">
+										<label class="gm-checkbox-wrapper">
+											<span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+												<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input" value="1" checked="true"/>
+												<span class="gm-radio-checkbox-inner gm-checkbox-inner"></span>
+											</span>
+											<span class="gm-radio-checkbox-label">HTML</span>
+										</label>
+									</li>
+									<li class="filter-checkbox">
+										<label class="gm-checkbox-wrapper">
+											<span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
+												<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input" value="2" checked="true"/>
+												<span class="gm-radio-checkbox-inner gm-checkbox-inner"></span>
+											</span>
+											<span class="gm-radio-checkbox-label">CSS</span>
+										</label>
+									</li>
+									<li class="filter-checkbox">
+										<label class="gm-checkbox-wrapper">
+											<span class="gm-radio-checkbox gm-checkbox">
+												<input type="checkbox" class="gm-radio-checkbox-input gm-checkbox-input" value="3"/>
+												<span class="gm-radio-checkbox-inner gm-checkbox-inner"></span>
+											</span>
+											<span class="gm-radio-checkbox-label">javaScript</span>
+										</label>
+									</li>
+								</ul>
+								<div class="filter-bottom">
+									<span class="filter-button filter-submit">确定</span>
+									<span class="filter-button filter-reset">重置</span>
+								</div>
+							</div>
+						</div>
                     </div>
                 </th>
             `.replace(/\s/g, '');
             col = {
-                key: 'title',
+                key: 'type',
                 text: () => '标题',  // 到这一步时，text已经被转换为function
                 isShow: true,
                 filter: {
-                    selected: undefined
+					option: [
+						{value: '1', text: 'HTML'},
+						{value: '2', text: 'CSS'},
+						{value: '3', text: 'javaScript'}
+					],
+					selected: '1,2',
+					isMultiple: true
                 }
             };
+			document.body.innerHTML = '<div class="table-wrap" grid-manager-wrap="test" style="height: 500px"></div>';
             expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
-
-
-            // 配置项选中
-            htmlStr = `
-                <th th-name="title" style="width:auto" filter>
-                    <div class="th-wrap">
-                        <span class="th-text" >标题</span>
-                    </div>
-                </th>
-            `.replace(/\s/g, '');
-            col = {
-                key: 'title',
-                text: () => '标题',  // 到这一步时，text已经被转换为function
-                isShow: true,
-                filter: {
-                    selected: '3'
-                }
-            };
-            expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
-            expect(settings.query.title).toBe('3');
+            expect(settings.query.type).toBe('1,2');
+			document.body.innerHTML = '';
         });
+
+        it('开启宽度调整', () => {
+			htmlStr = `
+                <th th-name="title" style="width:auto">
+                    <div class="th-wrap">
+                        <span class="th-text" >标题</span>
+                        <span class="gm-adjust-action"></span>
+                    </div>
+                </th>
+            `.replace(/\s/g, '');
+			settings = {
+				_: 'test',
+				supportAdjust: true
+			};
+			col = {
+				key: 'title',
+				text: () => '标题',  // 到这一步时，text已经被转换为function
+				isShow: true
+			};
+			expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
+		});
 
         it('执行验证: 开启固定列', () => {
             settings = {
@@ -490,138 +556,139 @@ describe('core template', () => {
             expect(template.getThTpl({ settings, col }).replace(/\s/g, '')).toBe(htmlStr);
         });
     });
-    describe('createTheadTpl', () => {
-        let settings;
-        let htmlStr;
-        beforeEach(() => {
-
-        });
-        afterEach(() => {
-            settings = null;
-            htmlStr = null;
-        });
-        it('执行验证: 非嵌套表头', () => {
-            settings = {
-                _: 'test',
-                columnMap: {
-                    gm_order: {
-                        key: 'gm_order',
-                        text: '序号',  // 自动创建的列不会转换为function
-                        isShow: true,
-                        width: 40,
-                        index: 0
-                    },
-                    title: {
-                        key: 'title',
-                        text: () => '标题',
-                        isShow: true,
-                        index: 1
-                    }
-                },
-                __isNested: false
-            };
-
-            htmlStr = `
-				<tr>
-					<th th-name="gm_order" style="width:40px" gm-create gm-order>
-						<div class="th-wrap">
-							<span class="th-text" >序号</span>
-						</div>
-					</th>
-					<th th-name="title" style="width:auto">
-						<div class="th-wrap">
-							<span class="th-text" >标题</span>
-						</div>
-					</th>
-				</tr>
-            `.replace(/\s/g, '');
-            expect(template.getTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
-        });
-
-        it('执行验证: 嵌套表头', () => {
-            settings = {
-                _: 'test',
-                columnMap: {
-                    gm_order: {
-                        key: 'gm_order',
-                        text: '序号',  // 自动创建的列不会转换为function
-                        isShow: true,
-                        width: 40,
-                        level: 0,
-                        index: 0
-                    },
-                    title: {
-                        key: 'title',
-                        text: () => '标题',
-                        isShow: true,
-                        level: 0,
-                        index: 1,
-                        children: [
-                            {
-                                key: 'subtitle',
-                                text: () => '子标题',
-                                isShow: true,
-                                level: 1,
-                                pk: 'title',
-                                index: 0
-                            },
-                            {
-                                key: 'pic',
-                                text: () => '标题图片',
-                                isShow: true,
-                                level: 1,
-                                pk: 'title',
-                                index: 1
-                            }
-                        ]
-                    },
-                    subtitle: {
-                        key: 'subtitle',
-                        text: () => '子标题',
-                        isShow: true,
-                        level: 1,
-                        pk: 'title',
-                        index: 0
-                    },
-                    pic: {
-                        key: 'pic',
-                        text: () => '标题图片',
-                        isShow: true,
-                        level: 1,
-                        pk: 'title',
-                        index: 1
-                    }
-                },
-                __isNested: true
-            };
-
-            htmlStr = `
-				<tr>
-					<th th-name="gm_order" colspan="1" rowspan="2" style="width:40px" gm-create gm-order>
-						<div class="th-wrap">
-							<span class="th-text" >序号</span>
-						</div>
-					</th>
-					<th th-name="title" colspan="2" rowspan="1" style="width:auto">
-						<div class="th-wrap">
-							<span class="th-text" >标题</span>
-						</div>
-					</th>
-				</tr>
-				<tr>
-					<th th-name="subtitle" colspan="1" rowspan="1" style="width:auto">
-						<div class="th-wrap">
-							<span class="th-text" >子标题</span>
-						</div>
-					</th>
-					<th th-name="pic" colspan="1" rowspan="1" style="width:auto">
-						<div class="th-wrap">
-							<span class="th-text" >标题图片</span>
-						</div>
-					</th>
-				</tr>
-            `.replace(/\s/g, '');
-            expect(template.getTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
-        });
-    });
+    // getTheadTpl 方法内的逻辑已移至Render内
+    // describe('createTheadTpl', () => {
+    //     let settings;
+    //     let htmlStr;
+    //     beforeEach(() => {
+	//
+    //     });
+    //     afterEach(() => {
+    //         settings = null;
+    //         htmlStr = null;
+    //     });
+    //     it('执行验证: 非嵌套表头', () => {
+    //         settings = {
+    //             _: 'test',
+    //             columnMap: {
+    //                 gm_order: {
+    //                     key: 'gm_order',
+    //                     text: '序号',  // 自动创建的列不会转换为function
+    //                     isShow: true,
+    //                     width: 40,
+    //                     index: 0
+    //                 },
+    //                 title: {
+    //                     key: 'title',
+    //                     text: () => '标题',
+    //                     isShow: true,
+    //                     index: 1
+    //                 }
+    //             },
+    //             __isNested: false
+    //         };
+	//
+    //         htmlStr = `
+	// 			<tr>
+	// 				<th th-name="gm_order" style="width:40px" gm-create gm-order>
+	// 					<div class="th-wrap">
+	// 						<span class="th-text" >序号</span>
+	// 					</div>
+	// 				</th>
+	// 				<th th-name="title" style="width:auto">
+	// 					<div class="th-wrap">
+	// 						<span class="th-text" >标题</span>
+	// 					</div>
+	// 				</th>
+	// 			</tr>
+    //         `.replace(/\s/g, '');
+    //         expect(template.getTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
+    //     });
+	//
+    //     it('执行验证: 嵌套表头', () => {
+    //         settings = {
+    //             _: 'test',
+    //             columnMap: {
+    //                 gm_order: {
+    //                     key: 'gm_order',
+    //                     text: '序号',  // 自动创建的列不会转换为function
+    //                     isShow: true,
+    //                     width: 40,
+    //                     level: 0,
+    //                     index: 0
+    //                 },
+    //                 title: {
+    //                     key: 'title',
+    //                     text: () => '标题',
+    //                     isShow: true,
+    //                     level: 0,
+    //                     index: 1,
+    //                     children: [
+    //                         {
+    //                             key: 'subtitle',
+    //                             text: () => '子标题',
+    //                             isShow: true,
+    //                             level: 1,
+    //                             pk: 'title',
+    //                             index: 0
+    //                         },
+    //                         {
+    //                             key: 'pic',
+    //                             text: () => '标题图片',
+    //                             isShow: true,
+    //                             level: 1,
+    //                             pk: 'title',
+    //                             index: 1
+    //                         }
+    //                     ]
+    //                 },
+    //                 subtitle: {
+    //                     key: 'subtitle',
+    //                     text: () => '子标题',
+    //                     isShow: true,
+    //                     level: 1,
+    //                     pk: 'title',
+    //                     index: 0
+    //                 },
+    //                 pic: {
+    //                     key: 'pic',
+    //                     text: () => '标题图片',
+    //                     isShow: true,
+    //                     level: 1,
+    //                     pk: 'title',
+    //                     index: 1
+    //                 }
+    //             },
+    //             __isNested: true
+    //         };
+	//
+    //         htmlStr = `
+	// 			<tr>
+	// 				<th th-name="gm_order" colspan="1" rowspan="2" style="width:40px" gm-create gm-order>
+	// 					<div class="th-wrap">
+	// 						<span class="th-text" >序号</span>
+	// 					</div>
+	// 				</th>
+	// 				<th th-name="title" colspan="2" rowspan="1" style="width:auto">
+	// 					<div class="th-wrap">
+	// 						<span class="th-text" >标题</span>
+	// 					</div>
+	// 				</th>
+	// 			</tr>
+	// 			<tr>
+	// 				<th th-name="subtitle" colspan="1" rowspan="1" style="width:auto">
+	// 					<div class="th-wrap">
+	// 						<span class="th-text" >子标题</span>
+	// 					</div>
+	// 				</th>
+	// 				<th th-name="pic" colspan="1" rowspan="1" style="width:auto">
+	// 					<div class="th-wrap">
+	// 						<span class="th-text" >标题图片</span>
+	// 					</div>
+	// 				</th>
+	// 			</tr>
+    //         `.replace(/\s/g, '');
+    //         expect(template.getTheadTpl({ settings }).replace(/\s/g, '')).toBe(htmlStr);
+    //     });
+    // });
 });

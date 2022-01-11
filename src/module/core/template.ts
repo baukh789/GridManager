@@ -1,14 +1,16 @@
 import ajaxPage from '../ajaxPage';
 import { CLASS_DRAG_ACTION } from '../drag/constants';
 import { PX, WRAP_KEY, DIV_KEY, ORDER_KEY, CHECKBOX_KEY, FOLD_KEY, GM_CREATE, CELL_HIDDEN, DISABLE_CUSTOMIZE, MOVEROW_KEY } from '@common/constants';
-import { isUndefined, isString, isObject, each } from '@jTool/utils';
+import { isUndefined, isString, isObject } from '@jTool/utils';
 import { compileTh } from '@common/framework';
 import { parseTpl } from '@common/parse';
 import config from '../config';
-import nested from '../nested';
 import wrapTpl from './wrap.tpl.html';
-import theadTpl from './thead.tpl.html';
 import thTpl from './th.tpl.html';
+import remind from '@module/remind';
+import sort from '@module/sort';
+import filter from '@module/filter';
+import adjust from '@module/adjust';
 import { Column, SettingObj, ThTemplate } from 'typings/types';
 
 /**
@@ -56,44 +58,6 @@ class Template {
     }
 
     /**
-     * 生成table head 模板
-     * @param params
-     * @returns {}
-     */
-    @parseTpl(theadTpl)
-    getTheadTpl(params: { settings: SettingObj }): string {
-        const settings = params.settings;
-        const { columnMap, __isNested } = settings;
-
-        const columnList: Array<Array<Column>> = [[]];
-        const topList = columnList[0];
-
-        // 多层嵌套，进行递归处理
-        if (__isNested) {
-            nested.push(columnMap, columnList);
-        } else {
-            each(columnMap, (key: string, col: Column) => {
-                topList[col.index] = col;
-            });
-        }
-
-        let thListTpl = '';
-        // columnList 生成thead
-        each(columnList, (list: Array<Column>) => {
-            thListTpl += '<tr>';
-            each(list, (col: Column) => {
-                thListTpl += this.getThTpl({settings, col});
-            });
-            thListTpl += '</tr>';
-        });
-
-		// @ts-ignore
-        return {
-            thListTpl
-        };
-    }
-
-    /**
      * 获取table th 模板
      * @param params
      * @returns {}
@@ -101,30 +65,35 @@ class Template {
     @parseTpl(thTpl)
     getThTpl(params: { settings: SettingObj, col: Column }): string {
         const { settings, col } = params;
-        const { query, supportDrag, sortData, sortUpText, sortDownText } = settings;
+        const { query, supportDrag, sortData, sortUpText, sortDownText, supportAdjust } = settings;
 
         // 表头提醒
         let remindAttr = '';
+        let remindHtml = '';
         if (col.remind) {
             remindAttr = 'remind';
+			remindHtml = remind.createHtml({ remind: col.remind });
         }
 
         // 排序
-        let sortingAttr = '';
+        let sortAttr = '';
+        let sortHtml = '';
         if (isString(col.sorting)) {
             if (col.sorting === sortDownText) {
-                sortingAttr = `sorting="${sortDownText}"`;
+                sortAttr = `sorting="${sortDownText}"`;
                 sortData[col.key] = sortDownText;
             } else if (col.sorting === sortUpText) {
-                sortingAttr = `sorting="${sortUpText}"`;
+                sortAttr = `sorting="${sortUpText}"`;
                 sortData[col.key] = sortUpText;
             } else {
-                sortingAttr = 'sorting';
+                sortAttr = 'sorting';
             }
+			sortHtml = sort.createHtml({ type: col.sorting, sortUpText, sortDownText });
         }
 
         // 过滤
         let filterAttr = '';
+        let filterHtml = '';
         if (isObject(col.filter)) {
             filterAttr = 'filter';
             if (isUndefined(col.filter.selected)) {
@@ -132,9 +101,18 @@ class Template {
             } else {
                 query[col.key] = col.filter.selected;
             }
+			filterHtml = filter.createHtml({settings, columnFilter: col.filter});
         }
 
-        // 固定列
+		// 嵌入宽度调整事件源,以下情况除外
+		// 1.插件自动生成的选择列和序号列不做事件绑定
+		// 2.禁止使用个性配置功能的列
+		let adjustHtml = '';
+		if (supportAdjust && !col[DISABLE_CUSTOMIZE]) {
+			adjustHtml = adjust.html;
+		}
+
+		// 固定列
         let fixedAttr = '';
         if (col.fixed === 'left' || col.fixed === 'right') {
             fixedAttr = `fixed="${col.fixed}"`;
@@ -192,10 +170,14 @@ class Template {
 
 		// @ts-ignore
         return {
-            thAttr: `th-name="${thName}" ${colspanAttr} ${rowspanAttr} style="width:${width}" ${cellHiddenAttr} ${alignAttr} ${sortingAttr} ${filterAttr} ${fixedAttr} ${remindAttr} ${gmCreateAttr}`,
+            thAttr: `th-name="${thName}" ${colspanAttr} ${rowspanAttr} style="width:${width}" ${cellHiddenAttr} ${alignAttr} ${sortAttr} ${filterAttr} ${fixedAttr} ${remindAttr} ${gmCreateAttr}`,
             thTextClassName,
             thText,
-            compileAttr
+            compileAttr,
+			remindHtml,
+			sortHtml,
+			filterHtml,
+			adjustHtml
         };
     }
 }

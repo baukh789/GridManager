@@ -1,8 +1,7 @@
-import jTool from '@jTool';
-import {getRowData, getTableData} from '@common/cache';
-import { getAllTh, getDiv, getEmpty, getTbody, getThead, getVisibleTh, setAreVisible, updateVisibleLast } from '@common/base';
-import { DISABLE_CUSTOMIZE, EMPTY_DATA_CLASS_NAME, EMPTY_TPL_KEY, ODD, PX, ROW_CLASS_NAME, TH_NAME, TR_CACHE_KEY, TR_CHILDREN_STATE, TR_PARENT_KEY, TR_ROW_KEY, ROW_INDEX_KEY } from '@common/constants';
-import {each, isElement, isNumber, isObject, isString, isUndefined, isValidArray} from '@jTool/utils';
+import { getRowData, getTableData } from '@common/cache';
+import { getDiv, getEmpty, getTbody, getThead, getVisibleTh, setAreVisible, updateVisibleLast } from '@common/base';
+import { EMPTY_DATA_CLASS_NAME, EMPTY_TPL_KEY, ODD, PX, ROW_CLASS_NAME, TR_CACHE_KEY, TR_CHILDREN_STATE, TR_PARENT_KEY, TR_ROW_KEY, ROW_INDEX_KEY } from '@common/constants';
+import {each, isElement, isNumber, isUndefined, isValidArray} from '@jTool/utils';
 import { compileEmptyTemplate, compileTd, sendCompile } from '@common/framework';
 import { outError } from '@common/utils';
 import moveRow from '@module/moveRow';
@@ -13,11 +12,8 @@ import { treeElementKey } from '@module/tree/tool';
 import { installSummary } from '@module/summary';
 import { mergeRow } from '@module/merge';
 import fixed from '@module/fixed';
-import remind from '@module/remind';
-import sort from '@module/sort';
-import filter from '@module/filter';
-import adjust from '@module/adjust';
 import template from './template';
+import nested from '@module/nested';
 import { SettingObj, Column, TrObject, Row } from 'typings/types';
 
 /**
@@ -25,48 +21,30 @@ import { SettingObj, Column, TrObject, Row } from 'typings/types';
  * @param settings
  */
 export const renderThead = (settings: SettingObj): void => {
-	const { _, columnMap, sortUpText, sortDownText, supportAdjust } = settings;
-	const $thead = getThead(_);
-	$thead.html(template.getTheadTpl({ settings }));
-	// 单个table下的TH
-	const $thList = getAllTh(_);
+	const { _, columnMap, __isNested } = settings;
 
-	// 由于部分操作需要在th已经存在于dom的情况下执行, 所以存在以下循环
-	// 单个TH下的上层DIV
-	each($thList, (item: HTMLTableElement) => {
-		const onlyTH = jTool(item);
-		const onlyThWarp = jTool('.th-wrap', onlyTH);
-		const thName = onlyTH.attr(TH_NAME);
-		const column = columnMap[thName];
+	const columnList: Array<Array<Column>> = [[]];
+	const topList = columnList[0];
 
-		// 是否为GM自动添加的列
-		const isAutoCol = column.isAutoCreate;
+	// 多层嵌套，进行递归处理
+	if (__isNested) {
+		nested.push(columnMap, columnList);
+	} else {
+		each(columnMap, (key: string, col: Column) => {
+			topList[col.index] = col;
+		});
+	}
 
-		// 嵌入表头提醒事件源
-		if (!isAutoCol && column.remind) {
-			onlyThWarp.append(jTool(remind.createHtml({ remind: column.remind })));
-		}
-
-		// 嵌入排序事件源
-		if (!isAutoCol && isString(column.sorting)) {
-			const sortingDom = jTool(sort.createHtml({ type: column.sorting, sortUpText, sortDownText }));
-			onlyThWarp.append(sortingDom);
-		}
-
-		// 嵌入表头的筛选事件源
-		// 插件自动生成的序号列与选择列不做事件绑定
-		if (!isAutoCol && column.filter && isObject(column.filter)) {
-			const filterDom = jTool(filter.createHtml({settings, columnFilter: column.filter}));
-			onlyThWarp.append(filterDom);
-		}
-
-		// 嵌入宽度调整事件源,以下情况除外
-		// 1.插件自动生成的选择列和序号列不做事件绑定
-		// 2.禁止使用个性配置功能的列
-		if (supportAdjust && !isAutoCol && !column[DISABLE_CUSTOMIZE]) {
-			onlyThWarp.append(jTool(adjust.html));
-		}
+	let thListTpl = '';
+	// columnList 生成thead
+	each(columnList, (list: Array<Column>) => {
+		thListTpl += '<tr>';
+		each(list, (col: Column) => {
+			thListTpl += template.getThTpl({settings, col});
+		});
+		thListTpl += '</tr>';
 	});
+	getThead(_).html(thListTpl);
 };
 /**
  * 渲染为空DOM
