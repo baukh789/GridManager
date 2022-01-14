@@ -888,9 +888,9 @@ export default class GridManager {
             menu.init(_);
         }
 
-        // 初始化Ajax分页
+        // 初始化Ajax分页: init内修改了settings
         if (settings.supportAjaxPage) {
-            ajaxPage.init(_);
+            ajaxPage.init(settings);
         }
 
         // 初始化树形结构
@@ -901,13 +901,11 @@ export default class GridManager {
             fullColumn.init(_);
         }
 
-        // 配置固定列功能
+        // 配置固定列功能: init内修改了settings
         if (settings._fixed) {
             fixed.init(settings);
         }
 
-        // 在各模块的初始化中会对settings进行修改，所以需要重新获取一次
-        settings = getSettings(_);
         updateThWidth(settings, true);
         setSettings(settings);
 

@@ -230,11 +230,11 @@ class AjaxPage {
 
 	/**
 	 * 初始化分页
-	 * @param _
+	 * @param settings
 	 */
-	init(_: string): void {
-		const settings = getSettings(_);
-		const { disableCache, pageSizeKey, pageSize, currentPageKey, useNoTotalsMode } = settings;
+	init(settings: SettingObj): void {
+		// const settings = getSettings(_);
+		const { _, disableCache, pageSizeKey, pageSize, currentPageKey, useNoTotalsMode } = settings;
 		eventMap[_] = getEvent(_);
 
 		// 每页显示条数
