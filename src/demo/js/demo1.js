@@ -264,6 +264,7 @@ const demo1 = {
                 return;
             }
             fnRunInfo.innerHTML = '';
+            /* eslint-disable*/
             const log = eval(fnCode.value);
             const nowFn = fnRun.getAttribute('now-fun');
             console.group(nowFn);
