@@ -907,6 +907,8 @@ export default class GridManager {
         }
 
         updateThWidth(settings, true);
+
+        // init时仅需要这一次存储
         setSettings(settings);
 
         // 更新最后一项可视列的标识: 嵌套模式不需要处理

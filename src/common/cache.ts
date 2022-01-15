@@ -691,7 +691,7 @@ export const initSettings = (arg: ArgObj, moveColumnRowFn: any, checkboxColumnFn
 };
 
 /**
- * 获取配置项
+ * 获取配置信息，返回clone对象用于防止操作失误
  * @param _
  * @returns {*}
  */

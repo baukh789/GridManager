@@ -11,17 +11,12 @@ import { rootWindow } from '@jTool/utils';
 import {
     getWrap,
     getDiv,
-    getTable,
-    getThead,
-    getFakeThead,
     updateThWidth,
     updateFakeThead,
     updateScrollStatus,
     getScrollBarWidth
 } from '@common/base';
 import { getSettings, setSettings } from '@common/cache';
-import { TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY } from '@common/constants';
-import { compileFakeThead } from '@common/framework';
 import { updateConfigListHeight } from '@module/config';
 import fixed from '@module/fixed';
 import { removeTooltip } from '@module/remind';
@@ -48,25 +43,10 @@ class Scroll {
      * @param _
      */
 	init(_: string): void {
-        this.render(_);
         this.bindResizeToTable(_);
         this.bindScrollToTableDiv(_);
         this.width = getScrollBarWidth(_);
 	}
-
-    /**
-     * 生成表头置顶DOM
-     * @param _
-     */
-    render(_: string): void {
-        getTable(_).append(getThead(_).clone(true).attr(FAKE_TABLE_HEAD_KEY, _));
-
-        const $setTopHead = getFakeThead(_);
-        $setTopHead.removeAttr(TABLE_HEAD_KEY);
-
-        const settings = getSettings(_);
-        compileFakeThead(settings, $setTopHead.get(0));
-    }
 
     update(_: string): void {
         const $tableWrap = getWrap(_);

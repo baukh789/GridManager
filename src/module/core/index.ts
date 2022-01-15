@@ -26,12 +26,11 @@ import {
 	formatTableData,
 	setCheckedData,
 	getSettings,
-	setSettings,
 	SIV_waitContainerAvailable,
 	getRowData
 } from '@common/cache';
-import { EMPTY_DATA_CLASS_NAME, TABLE_BODY_KEY, TABLE_HEAD_KEY, TABLE_PURE_LIST, TD_FOCUS, TR_CACHE_KEY, WRAP_KEY } from '@common/constants';
-import { sendCompile, clearCompileList } from '@common/framework';
+import { EMPTY_DATA_CLASS_NAME, TABLE_BODY_KEY, TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, TABLE_PURE_LIST, TD_FOCUS, TR_CACHE_KEY, WRAP_KEY } from '@common/constants';
+import { clearCompileList } from '@common/framework';
 import { clearMenuDOM } from '@module/menu/tool';
 import ajaxPage from '@module/ajaxPage';
 import { resetCheckboxDOM } from '@module/checkbox';
@@ -400,34 +399,34 @@ class Core {
 		// append tbody
 		const tbody = rootDocument.createElement('tbody');
 		tbody.setAttribute(TABLE_BODY_KEY, _);
-		// 根据参数增加td断字标识
 		if (useWordBreak) {
+			// 根据参数增加td断字标识
 			tbody.setAttribute('word-break', '');
 		}
 		$table.append(tbody);
 
+		// append fake thead
+		const fakeThead = rootDocument.createElement('thead');
+		fakeThead.setAttribute(FAKE_TABLE_HEAD_KEY, _);
+		$table.append(fakeThead);
+
 		// 绑定事件
 		bindTrAndTdEvent(_);
-
-		// render thead
-		renderThead(settings);
 
 		// 存储行高css变量
 		setLineHeightValue(_, lineHeight);
 
-        setSettings(settings);
-
         // 等待容器可用
         await this.waitContainerAvailable(_);
+
+		// render thead
+		renderThead(settings);
 
 		// 计算布局
 		calcLayout(settings);
 
 		// 初始化滚轴
-        scroll.init(_);
-
-        // 解析框架: thead区域
-        await sendCompile(settings);
+		scroll.init(_);
     }
 
     /**

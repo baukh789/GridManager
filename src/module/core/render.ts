@@ -1,8 +1,27 @@
 import { getRowData, getTableData } from '@common/cache';
-import { getDiv, getEmpty, getTbody, getThead, getVisibleTh, setAreVisible, updateVisibleLast } from '@common/base';
-import { EMPTY_DATA_CLASS_NAME, EMPTY_TPL_KEY, ODD, PX, ROW_CLASS_NAME, TR_CACHE_KEY, TR_CHILDREN_STATE, TR_PARENT_KEY, TR_ROW_KEY, ROW_INDEX_KEY } from '@common/constants';
+import {
+	getDiv,
+	getEmpty, getFakeThead,
+	getTbody,
+	getThead,
+	getVisibleTh,
+	setAreVisible,
+	updateVisibleLast
+} from '@common/base';
+import {
+	EMPTY_DATA_CLASS_NAME,
+	EMPTY_TPL_KEY,
+	ODD,
+	PX,
+	ROW_CLASS_NAME,
+	TR_CACHE_KEY,
+	TR_CHILDREN_STATE,
+	TR_PARENT_KEY,
+	TR_ROW_KEY,
+	ROW_INDEX_KEY
+} from '@common/constants';
 import {each, isElement, isNumber, isUndefined, isValidArray} from '@jTool/utils';
-import { compileEmptyTemplate, compileTd, sendCompile } from '@common/framework';
+import {compileEmptyTemplate, compileFakeThead, compileTd, sendCompile} from '@common/framework';
 import { outError } from '@common/utils';
 import moveRow from '@module/moveRow';
 import checkbox from '@module/checkbox';
@@ -45,6 +64,12 @@ export const renderThead = (settings: SettingObj): void => {
 		thListTpl += '</tr>';
 	});
 	getThead(_).html(thListTpl);
+	getFakeThead(_).html(thListTpl);
+
+	compileFakeThead(settings, getFakeThead(_).get(0));
+
+	// 解析框架: thead区域
+	sendCompile(settings);
 };
 /**
  * 渲染为空DOM
