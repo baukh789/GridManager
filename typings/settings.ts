@@ -15,9 +15,11 @@ export interface Column {
 	key?: string;
 	text?: string | ThTemplate; // 自动创建的列不会转换为函数
 	index?: number;
+	__index?: number;
 	width?: number;
 	__width?: number | undefined;
 	isShow?: boolean;
+	__isShow?: boolean;
 	pk?: string;
 	children?: Array<Column>;
 	template?(cell: object, row: object, rowIndex: number, key: string | boolean): any; // 自动生成列没有key, 只有isTop

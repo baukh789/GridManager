@@ -36,7 +36,7 @@ import {
     setLineHeightValue
 } from '@common/base';
 import { outWarn, outError, equal } from '@common/utils';
-import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, clearCache, SIV_waitTableAvailable, updateCache } from '@common/cache';
+import { getVersion, verifyVersion, initSettings, getSettings, setSettings, getUserMemory, saveUserMemory, delUserMemory, getRowData, getTableData, setTableData, updateTemplate, getCheckedData, setCheckedData, updateCheckedData, clearCache, SIV_waitTableAvailable, updateCache, formatColumnData, resetColumn } from '@common/cache';
 import { clearCacheDOM } from '@common/domCache';
 import adjust from './adjust';
 import ajaxPage from './ajaxPage';
@@ -46,7 +46,7 @@ import checkbox, { resetCheckboxDOM } from './checkbox';
 import tree from './tree';
 import config from './config';
 import core from './core';
-import { renderEmptyTbody } from './core/render';
+import { renderEmptyTbody, renderThead } from './core/render';
 import drag from './drag';
 import moveRow from './moveRow';
 import exportFile from './exportFile';
@@ -596,15 +596,47 @@ export default class GridManager {
      * 渲染表格 使用现有数据，对表格进行渲染
      * @param table
      */
-    static renderGrid(table: string | HTMLTableElement): void {
+    static renderGrid(table: string | HTMLTableElement, columnData?: Array<ArgColumn>): void {
         const _ = getKey(table);
-        const settings = getSettings(_);
+		let settings = getSettings(_);
         if (isRendered(_, settings)) {
+			if (isValidArray(columnData)) {
+				columnData = formatColumnData(columnData);
+				// 设置渲染完成标识
+				// settings.rendered = true;
+				const arg = updateTemplate({ columnData } as ArgObj);
+				extend(true, settings, arg);
+				resetColumn(settings, moveRow.getColumn.bind(moveRow), checkbox.getColumn.bind(checkbox), order.getColumn.bind(order), fullColumn.getColumn.bind(fullColumn));
+
+				// render thead
+				renderThead(settings);
+
+				// 计算布局
+				calcLayout(settings);
+
+				updateThWidth(settings, true);
+
+				// todo 0123 进行的调式，需要确认是否可以移到renderThead内，如果可以在第一次渲染时也要移动
+				if (settings._fixed) {
+					fixed.init(settings);
+				}
+
+				// init时仅需要这一次存储
+				setSettings(settings);
+				scroll.update(_);
+				// setSettings(settings);
+			}
+
+
+			// render tbody
             const { dataKey, totalsKey, pageData } = settings;
-            const response = {
-                [dataKey]: getTableData(_),
-                [totalsKey]: pageData.tSize
-            };
+			const response = {
+				[dataKey]: getTableData(_),
+				[totalsKey]: pageData.tSize
+			};
+			// 清除数据，防止命中tbody的 diff规则。如命中，则tbody区域不再更新
+			setTableData(_, []);
+
             core.driveDomForSuccessAfter(settings, response);
         }
     }

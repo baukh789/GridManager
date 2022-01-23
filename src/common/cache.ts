@@ -474,6 +474,144 @@ export const updateTemplate = (arg: ArgObj): ArgObj => {
 };
 
 /**
+ * 将简易columnData 格式化为 常规columnData, 函数内会直接修改传参
+ * @param columnData
+ */
+export const formatColumnData = (columnData: Array<ArgColumn | string>): Array<ArgColumn> => {
+	// 转换简易列: ['key1'] => [{key, text}]
+	if (isString(columnData[0])) {
+		return (columnData as Array<string>).map((item: string): ArgColumn => {
+			return {
+				key: item,
+				text: item
+			} as ArgColumn;
+		});
+	}
+	return columnData as Array<ArgColumn>;
+};
+
+/**
+ * 重置columnData，并生成columnMap
+ * @param settings
+ * @param moveColumnRowFn
+ * @param checkboxColumnFn
+ * @param orderColumnFn
+ * @param fullColumnFn
+ */
+export const resetColumn = (settings: SettingObj, moveColumnRowFn: any, checkboxColumnFn: any, orderColumnFn: any, fullColumnFn: any): void => {
+	const { __isNested, columnData, supportMoveRow, moveRowConfig, supportAutoOrder, __isFullColumn, fullColumn, supportCheckbox, checkboxConfig } = settings;
+	const columnMap = {};
+
+	let list = [];
+	// 自动增加: 行移动列
+	if (supportMoveRow && moveRowConfig.useSingleMode) {
+		list.push(moveColumnRowFn(moveRowConfig));
+	}
+
+	// 自动增加: 选择列
+	if (supportCheckbox) {
+		list.push(checkboxColumnFn(checkboxConfig));
+	}
+
+	// 自动增加: 序号列
+	if (supportAutoOrder) {
+		list.push(orderColumnFn(settings));
+	}
+
+	// 自动增加: 折叠操作列
+	if (__isFullColumn && fullColumn.useFold) {
+		list.push(fullColumnFn(settings));
+	}
+	list = list.concat(columnData);
+
+	// 为 columnData 提供锚 => columnMap
+	// columnData 在此之后, 将不再被使用到
+	// columnData 被 columnMap 深拷贝, 不会彼此影响
+	const runFn = (data: Array<ArgColumn>, level: number, parentKey?: string) => {
+		// columnData 或 columnData[children]
+		data.forEach((col, index) => {
+			col = extend(true, {}, col) as ArgColumn;
+			const key = col.key;
+			// key字段不允许为空
+			if (!key) {
+				outError(`columnData[${index}].key undefined`);
+				return;
+			}
+
+			// 宽度转换: 100px => 100
+			// 不使用isString的原因: 存在'30'类型的数据
+			if (col.width && !isNumber(col.width)) {
+				col.width = parseInt(col.width as string, 10);
+			}
+
+			// 属性: 表头提醒
+			if (col.remind) {
+				settings._remind = true;
+			}
+
+			// 属性: 排序
+			if (isString(col.sorting)) {
+				settings._sort = true;
+			}
+
+			// 属性: 过滤
+			if (isObject(col.filter)) {
+				settings._filter = true;
+			}
+
+			// 属性: 固定列(嵌套列开启时不可用)
+			if (!__isNested && isString(col.fixed)) {
+				settings._fixed = true;
+
+				// 使用后 disableCustomize 将强制变更为true
+				col[DISABLE_CUSTOMIZE] = true;
+			} else {
+				delete col.fixed;
+			}
+
+			// 存在disableCustomize时，必须设置width
+			if (col[DISABLE_CUSTOMIZE] && !col.width) {
+				outError(`column ${key}: width must be set`);
+				return;
+			}
+			// @ts-ignore
+			columnMap[key] = col;
+
+			// 如果未设定, 设置默认值为true
+			columnMap[key].isShow = col.isShow || isUndefined(col.isShow);
+
+			// 为列Map 增加索引
+			columnMap[key].index = index;
+
+			// 存储由用户配置的列索引, 该值不随着之后的操作变更
+			columnMap[key].__index = index;
+
+			// @ts-ignore columnData中的宽允许为字符串，但columnMap中的宽为数字或不存在
+			// 存储由用户配置的列宽度值, 该值不随着之后的操作变更
+			columnMap[key].__width = col.width;
+
+			// 存储由用户配置的列显示状态, 该值不随着之后的操作变更
+			columnMap[key].__isShow = col.isShow;
+
+			// 存在多层嵌套时，递归增加标识: columnMap中的数据会保持平铺
+			if (__isNested) {
+				if (isValidArray(col.children)) {
+					// delete columnMap[key].width;
+					// delete columnMap[key].__width;
+					runFn(col.children, level + 1, col.key);
+				}
+				columnMap[key].pk = parentKey;
+				columnMap[key].level = level;
+			}
+		});
+	};
+	runFn(list, 0, undefined);
+
+	// settings.columnData = list;
+	settings.columnMap = columnMap;
+};
+
+/**
  * 初始化设置相关: 合并, 存储
  * @param arg
  * @param moveColumnRowFn
@@ -483,14 +621,7 @@ export const updateTemplate = (arg: ArgObj): ArgObj => {
  */
 export const initSettings = (arg: ArgObj, moveColumnRowFn: any, checkboxColumnFn: any, orderColumnFn: any, fullColumnFn: any): SettingObj => {
     // 转换简易列: ['key1'] => [{key, text}]
-    if (isString(arg.columnData[0])) {
-        arg.columnData = arg.columnData.map((item: string): ArgColumn => {
-           return {
-               key: item,
-               text: item
-           };
-        });
-    }
+	arg.columnData = formatColumnData(arg.columnData as Array<ArgColumn>);
 
     // 更新模板，将非函数类型的模板转换为函数类型
     arg = updateTemplate(arg);
@@ -512,126 +643,12 @@ export const initSettings = (arg: ArgObj, moveColumnRowFn: any, checkboxColumnFn
     // 存储初始配置项
     // setSettings(settings);
 
-    const { _, columnData, supportMoveRow, moveRowConfig, supportAutoOrder, __isNested, __isFullColumn, fullColumn, supportCheckbox, checkboxConfig } = settings;
+    const { _ } = settings;
 
-    const list = [];
-    // 自动增加: 行移动列
-    if (supportMoveRow && moveRowConfig.useSingleMode) {
-        list.push(moveColumnRowFn(moveRowConfig));
-    }
-
-    // 自动增加: 选择列
-    if (supportCheckbox) {
-        list.push(checkboxColumnFn(checkboxConfig));
-    }
-
-    // 自动增加: 序号列
-    if (supportAutoOrder) {
-        list.push(orderColumnFn(settings));
-    }
-
-    // 自动增加: 折叠操作列
-    if (__isFullColumn && fullColumn.useFold) {
-        list.push(fullColumnFn(settings));
-    }
-
-    // 为 columnData 提供锚 => columnMap
-    // columnData 在此之后, 将不再被使用到
-    // columnData 与 columnMap 已经过特殊处理, 不会彼此影响
-    const columnMap = {};
-
-    let isError = false;
-
-    // 固定列规则: 当前为嵌套表头 并且 列数大于1
-    const supportFixed = !__isNested && columnData.length > 1;
-
-    const resetData = (data: Array<ArgColumn>, level: number, parentKey?: string): void => {
-        data.forEach((col, index) => {
-            col = extend(true, {}, col) as ArgColumn;
-            const key = col.key;
-            // key字段不允许为空
-            if (!key) {
-                outError(`columnData[${index}].key undefined`);
-                isError = true;
-                return;
-            }
-
-            // 宽度转换: 100px => 100
-            // 不使用isString的原因: 存在'30'类型的数据
-            if (col.width && !isNumber(col.width)) {
-                col.width = parseInt(col.width as string, 10);
-            }
-
-            // 属性: 表头提醒
-            if (col.remind) {
-                settings._remind = true;
-            }
-
-            // 属性: 排序
-            if (isString(col.sorting)) {
-                settings._sort = true;
-            }
-
-            // 属性: 过滤
-            if (isObject(col.filter)) {
-                settings._filter = true;
-            }
-
-            // 属性: 固定列
-            if (supportFixed && isString(col.fixed)) {
-                settings._fixed = true;
-
-                // 使用后 disableCustomize 将强制变更为true
-                col[DISABLE_CUSTOMIZE] = true;
-            } else {
-                delete col.fixed;
-            }
-
-            // 存在disableCustomize时，必须设置width
-            if (col[DISABLE_CUSTOMIZE] && !col.width) {
-                outError(`column ${key}: width must be set`);
-                isError = true;
-                return;
-            }
-            columnMap[key] = col;
-
-            // 如果未设定, 设置默认值为true
-            columnMap[key].isShow = col.isShow || isUndefined(col.isShow);
-
-            // 为列Map 增加索引
-            columnMap[key].index = index;
-
-            // 存储由用户配置的列索引, 该值不随着之后的操作变更
-            columnMap[key].__index = index;
-
-            // 存储由用户配置的列宽度值, 该值不随着之后的操作变更
-            columnMap[key].__width = col.width;
-
-            // 存储由用户配置的列显示状态, 该值不随着之后的操作变更
-            columnMap[key].__isShow = col.isShow;
-
-            // 存在多层嵌套时，递归增加标识: columnMap中的数据会保持平铺
-            if (__isNested) {
-                if (isValidArray(col.children)) {
-                    // delete columnMap[key].width;
-                    // delete columnMap[key].__width;
-                    resetData(col.children, level + 1, col.key);
-                }
-                columnMap[key].pk = parentKey;
-                columnMap[key].level = level;
-            }
-        });
-    };
-    resetData(list.concat(columnData), 0);
-
-    if (isError) {
-    	// @ts-ignore @baukh20211119: 验证下是否需要返回false
-        return false;
-    }
-    settings.columnMap = columnMap;
+	resetColumn(settings, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
 
     // 合并用户记忆至 settings, 每页显示条数记忆不在此处
-    const mergeUserMemory = () => {
+    const mergeUserMemoryToSettings = () => {
         // 当前为禁用状态
         if (settings.disableCache) {
             return;
@@ -682,8 +699,8 @@ export const initSettings = (arg: ArgObj, moveColumnRowFn: any, checkboxColumnFn
         }
     };
 
-    // 合并用户记忆
-    mergeUserMemory();
+    // 合并用户记忆至settings
+	mergeUserMemoryToSettings();
 
     // 更新存储配置项
     setSettings(settings);

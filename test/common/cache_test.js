@@ -1044,15 +1044,14 @@ describe('cache', () => {
             arg.supportAutoOrder = false;
             arg.supportCheckbox = false;
             delete arg.columnData[0].key;
-            settings = initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
-            expect(settings).toBe(false);
+            initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c columnData[0].key undefined ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
         });
 
         it('异常配置: 存在disableCustomize但无width', () => {
             // 第8行数据存在disableCustomize配置
             delete arg.columnData[7].width;
-            expect(initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn)).toBe(false);
+			initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn)
             expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c column action: width must be set ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
         });
 
