@@ -21,7 +21,8 @@ const config = {
 
 	// 入口文件配置
 	entry: {
-        gm: './module/index.js'
+        gm: './module/index.js',
+        'gm-react': './framework/react/js/index.js'
 	},
 
 	// 配置模块如何解析
@@ -37,7 +38,7 @@ const config = {
 	// 文件导出的配置
 	output: {
 		path: buildPath,
-		filename: 'js/gm.js',
+		filename: 'js/[name].js',
 
         // 通过script标签引入时，由index.js中设置的window.GridManager将被覆盖为{default: {..gm object}}。原因是通过library设置所返回的值为{default: {..gm object}}
         // library: 'GridManager', // 引入后可以通过全局变量GridManager来使用
@@ -46,6 +47,8 @@ const config = {
         // 如: `import gridManager from 'gridmanager';` `const gridManager = require('gridmanager').default;`
         libraryTarget: 'umd'
 	},
+
+	externals: ['react', 'react-dom'],
 
     // 优化代码
     optimization: {
@@ -85,7 +88,7 @@ const config = {
         }),
         // 将样式文件 抽取至独立文件内
         new MiniCssExtractPlugin({
-            filename: 'css/gm.css',
+            filename: 'css/[name].css',
             chunkFilename: '[id].css'
         }),
 

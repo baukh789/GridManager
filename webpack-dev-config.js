@@ -4,14 +4,14 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const getRules = require('./webpack-common.loader');
 const { version } = require('./package.json');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const resolve = dir => path.resolve(__dirname, dir);
-
 const devServer = {
     clientLogLevel: 'info',
     disableHostCheck: true,
     port: '2015',
-    // host: '192.168.0.102',
+    // host: '192.168.0.104',
     hot: true,
     contentBase: [
         path.join(__dirname, './src'),
@@ -25,6 +25,7 @@ const devServer = {
 };
 
 console.info('[GridManager] Demo is running at: http://localhost:2015/demo/index.html');
+console.info('[GridManager] Demo is running at: http://localhost:2015/framework/react/demo/index.html');
 console.info('[GridManager] Coverage is running at: http://localhost:2015/chart');
 const config = {
     mode: 'development',
@@ -39,7 +40,8 @@ const config = {
 
 	// 入口文件配置
 	entry: {
-		js: './module/index.js'
+		gm: './module/index.js',
+		'gm-react': './framework/react/demo/index.js'
 	},
 
 	// 配置模块如何解析
@@ -55,7 +57,7 @@ const config = {
 	// 文件导出的配置
 	output: {
 		path: '/',
-		filename: 'js/gm.js',
+		filename: 'js/[name].js',
 		// publicPath 对于热替换（HMR）是必须的，让webpack知道在哪里载入热更新的模块（chunk）
 		publicPath: '/'
 	},
@@ -64,9 +66,10 @@ const config = {
 	plugins: [
         // 将样式文件 抽取至独立文件内
         new MiniCssExtractPlugin({
-            filename: 'css/gm.css',
+            filename: 'css/[id].css',
             chunkFilename: '[id].css'
         }),
+
 
         // 配置环境变量
         new webpack.DefinePlugin({
