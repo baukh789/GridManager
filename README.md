@@ -61,7 +61,7 @@ import GridManager from 'gridmanager';
 
 ## Demo
 - [简单的示例](http://gridmanager.lovejavascript.com/demo/index.html)
-- [复杂的示例](http://develop.lovejavascript.com/node_modules/gridmanager/demo/index.html)
+- [复杂的示例](http://develop.lovejavascript.com/)
 
 ## 相关链接
 - [GridManager by Angular 1.x](https://github.com/baukh789/GridManager-Angular-1.x)
