@@ -1,0 +1,23 @@
+<script crossorigin="anonymous" integrity="sha384-+jvb+jCJ37FkNjPyYLI3KJzQeD8pPFXUra3B/QJFqQ3txYrUPIP1eOfxK4h3cKZP" src="https://lib.baomitu.com/vue/2.6.11/vue.js"></script>
+<script crossorigin="anonymous" integrity="sha384-1ivYn47jXx90q9HuB2WzvSofzC4ESwSwihEep1CvZFSEdk+xuDNwg61uQHavhVW0" src="https://lib.baomitu.com/vue-router/2.8.1/vue-router.js"></script>
+<link rel="stylesheet" type="text/css" href="/webpack-dev-file/css/app.css">
+
+
+<div id="app">
+    <h1>Hello App!</h1>
+    <p>
+        <!-- 使用 router-link 组件来导航. -->
+        <!-- 通过传入 `to` 属性指定链接. -->
+        <!-- <router-link> 默认会被渲染成一个 `<a>` 标签 -->
+        <router-link to="/foo">Go to Foo</router-link>
+        <router-link to="/bar">Go to Bar</router-link>
+    </p>
+    <!-- 路由出口 -->
+    <!-- 路由匹配到的组件将渲染在这里 -->
+    <keep-alive>
+        <router-view></router-view>
+    </keep-alive>
+</div>
+
+
+<script src="/webpack-dev-file/js/app.js"></script>

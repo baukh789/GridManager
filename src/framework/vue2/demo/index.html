@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GM-Vue</title>
+	<link rel="stylesheet" type="text/css" href="/css/gm-vue.css">
+</head>
+<body>
+<div id="app" style="height: 100%">
+    <section class="search-area">
+        <div class="sa-ele">
+            <label class="se-title">名称:</label>
+            <input class="se-con" v-model="formData.title"/>
+        </div>
+        <div class="sa-ele">
+            <label class="se-title">内容:</label>
+            <input class="se-con" v-model="formData.content"/>
+        </div>
+        <div class="sa-ele">
+            <button class="search-action" @click="onSearch()">搜索</button>
+            <button class="reset-action" @click="onReset()">重置</button>
+        </div>
+    </section>
+    <section class="grid-main">
+        <div v-if="!destroyDisabled" style="height: 100%">
+            <grid-manager v-bind:option="option" :callback="callback" ref="grid"></grid-manager>
+        </div>
+    </section>
+
+    <section class="bottom-bar">
+        <button @click="onInit()">init</button>
+        <button @click="onDestroy()">destroy</button>
+        <a href="https://github.com/baukh789/GridManager-Vue" target="_blank">查看源码</a>
+    </section>
+</div>
+<script type="text/javascript" src="/js/gm-vue.js"></script>
+</body>
+</html>
+
+
+
+

@@ -22,7 +22,8 @@ const config = {
 	// 入口文件配置
 	entry: {
         gm: './module/index.js',
-        'gm-react': './framework/react/js/index.js'
+        'gm-react': './framework/react/js/index.js',
+        'gm-vue': './framework/vue2/js/index.js' // 目前将vue2定为默认的版本，后续增加vue3后需要更名为gm-vue2
 	},
 
 	// 配置模块如何解析
@@ -48,7 +49,7 @@ const config = {
         libraryTarget: 'umd'
 	},
 
-	externals: ['react', 'react-dom'],
+	externals: ['react', 'react-dom', 'vue'],
 
     // 优化代码
     optimization: {
