@@ -42,6 +42,7 @@ const config = {
 	// 入口文件配置
 	entry: {
 		gm: './module/index.js',
+		'gm-angular-1.x': './framework/angular-1.x/demo/index.js',
 		'gm-react': './framework/react/demo/index.js',
 		'gm-vue': './framework/vue2/demo/index.js' // 目前将vue2定为默认的版本，后续增加vue3后需要更名为gm-vue2
 	},

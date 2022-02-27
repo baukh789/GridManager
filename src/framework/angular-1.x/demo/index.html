@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GM-Angular</title>
+    <link type="text/css" rel="stylesheet" href="/css/gm-angular-1.x.css"/>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
+
+    <script src="/js/gm-angular-1.x.js"></script>
+</head>
+<body ng-app="myApp" ng-controller="AppController as vm">
+    <div class="search-area">
+        <div class="sa-ele">
+            <label class="se-title">名称:</label>
+            <input class="se-con" ng-model="searchForm.title"/>
+        </div>
+        <div class="sa-ele">
+            <label class="se-title">内容:</label>
+            <input class="se-con" ng-model="searchForm.content"/>
+        </div>
+        <div class="sa-ele">
+            <button class="search-action" ng-click="onSearch()">搜索</button>
+            <button class="reset-action" ng-click="onReset()">重置</button>
+        </div>
+    </div>
+
+    <div class="grid-main">
+        <div ng-if="!destroyDisabled" style="height: 100%;">
+            <grid-manager option="option" callback="callback(query)"></grid-manager>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <button ng-click="onInit()">init</button>
+        <button ng-click="onDestroy()">destroy</button>
+        <a href="https://github.com/baukh789/GridManager-Angular-1.x" target="_blank">查看源码</a>
+    </div>
+</body>
+</html>
