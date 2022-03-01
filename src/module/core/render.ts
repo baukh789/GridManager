@@ -299,12 +299,12 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, is
 				}
 
 				// DOM中存在开始行的tr: 清空小于开始的tr
-				if (firstLineIndex && index < firstLineIndex) {
+				if (isNumber(firstLineIndex) && index < firstLineIndex) {
 					list.push(item);
 				}
 
 				// DOM中存在结束行的tr: 清空大于结束行的tr
-				if (lastLineIndex && index > lastLineIndex) {
+				if (isNumber(lastLineIndex) && index > lastLineIndex) {
 					list.push(item);
 				}
 			});
