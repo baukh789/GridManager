@@ -1,6 +1,6 @@
 {
     "name": "gridmanager",
-    "version": "2.18.1",
+    "version": "2.18.2",
     "description": "表格管理插件",
     "author": "baukh",
     "main": "js/gm.js",
