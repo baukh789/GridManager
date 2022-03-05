@@ -43,7 +43,9 @@ class Filter {
             const $th = $action.closest(`th[${TH_NAME}]`);
             const thName = getThName($th);
             const $filterCon = $filterAction.find(`.${CLASS_FILTER_CONTENT}`);
+			const $filterList = $filterCon.find('.filter-list');
 
+			$filterList.css('max-height', getWrap(_).height() - 70 + PX);
             // 清除事件源的其它过滤体
             each($allFilterCon, (item: HTMLElement) => {
                 $filterCon.get(0) !== item ? item.style.display = 'none' : '';
@@ -144,7 +146,6 @@ class Filter {
     @parseTpl(filterTpl)
     createHtml(params: { settings: SettingObj, columnFilter: FilterObject }): string {
         const { settings, columnFilter } = params;
-        const tableWrapHeight = getWrap(settings._).height();
         let listHtml = '';
         columnFilter.selected = columnFilter.selected || '';
         columnFilter.option.forEach(item => {
@@ -169,7 +170,6 @@ class Filter {
 		// @ts-ignore
         return {
             icon: columnFilter.selected ? ` ${CLASS_FILTER_SELECTED}` : '',
-            style: `style="max-height: ${tableWrapHeight - 100 + PX}"`,
             ok: i18n(settings, 'ok'),
             reset: i18n(settings, 'reset'),
             list: listHtml
