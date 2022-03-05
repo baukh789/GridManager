@@ -619,7 +619,7 @@ const demo1 = {
 						// 筛选选中项，字符串, 未存在选中项时设置为''。 在此设置的选中的过滤条件将会覆盖query
 						selected: '3',
 						// 否为多选, 布尔值, 默认为false。非必设项
-						isMultiple: true
+						isMultiple: false
 					},
 					template: function (type, row) {
 						return TYPE_MAP[type];
