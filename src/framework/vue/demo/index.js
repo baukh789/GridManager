@@ -1,9 +1,8 @@
-import Vue from 'vue2/dist/vue.js'; // 与webpack中的 alias:{'vue$': 'vue2/dist/vue.esm.js'} 作用相同
+import Vue from 'vue/dist/vue.js'; // 与webpack中的 alias:{'vue$': 'vue2/dist/vue.esm.js'} 作用相同
 import './style.css';
 import GridManagerVue, { $gridManager } from '../js/index';
 
 Vue.use(GridManagerVue);
-console.log('vvvv', Vue);
 // 模拟的一个promise请求
 const getBlogList = function(paramse) {
     return new Promise((resolve, reject) => {
