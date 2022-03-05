@@ -1,4 +1,4 @@
-import Vue from 'vue/dist/vue.js'; // todo 这里不应该用这个，需要手动去解决 template 向render替换， 目前该文件内有两处。
+import Vue from 'vue';
 import $gridManager, { jTool } from '../../../module/index';
 export { $gridManager, jTool };
 export default {

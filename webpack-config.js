@@ -21,16 +21,17 @@ const config = {
 
 	// 入口文件配置
 	entry: {
-        gm: './module/index.js',
-        'gm-angular-1.x': './framework/angular-1.x/js/index.js',
-        'gm-react': './framework/react/js/index.js',
-        'gm-vue': './framework/vue2/js/index.js' // 目前将vue2定为默认的版本，后续增加vue3后需要更名为gm-vue2
+        index: './module/index.js',
+        'angular-1.x': './framework/angular-1.x/js/index.js',
+        'react': './framework/react/js/index.js',
+        'vue2': './framework/vue/js/index.js'
 	},
 
 	// 配置模块如何解析
 	resolve: {
         extensions: ['.js', '.ts'], // 当requrie的模块找不到时,添加这些后缀
         alias: {
+			'vue$': 'vue/dist/vue.esm.js',
             '@common': resolve('src/common'),
             '@jTool': resolve('src/jTool'),
             '@module': resolve('src/module')
@@ -40,7 +41,7 @@ const config = {
 	// 文件导出的配置
 	output: {
 		path: buildPath,
-		filename: 'js/[name].js',
+		filename: '[name].js',
 
         // 通过script标签引入时，由index.js中设置的window.GridManager将被覆盖为{default: {..gm object}}。原因是通过library设置所返回的值为{default: {..gm object}}
         // library: 'GridManager', // 引入后可以通过全局变量GridManager来使用
@@ -49,8 +50,19 @@ const config = {
         // 如: `import gridManager from 'gridmanager';` `const gridManager = require('gridmanager').default;`
         libraryTarget: 'umd'
 	},
-
-	externals: ['angular', 'react', 'react-dom', 'vue'],
+	// externals: ['react', 'react-dom'],
+	// externals: ['angular', 'react', 'react-dom', 'vue'],
+	externals: {
+		'angular': 'angular',
+		'react': 'React',
+		'react-dom': 'ReactDOM',
+		'vue': {
+			root: 'Vue',
+			commonjs: 'vue',
+			commonjs2: 'vue',
+			amd: 'vue'
+		}
+	},
 
     // 优化代码
     optimization: {
@@ -90,7 +102,7 @@ const config = {
         }),
         // 将样式文件 抽取至独立文件内
         new MiniCssExtractPlugin({
-            filename: 'css/[name].css',
+            filename: 'style.css',
             chunkFilename: '[id].css'
         }),
 

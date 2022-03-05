@@ -26,7 +26,8 @@ const devServer = {
 
 console.info('[GridManager] Demo is running at: http://localhost:2015/demo/index.html');
 console.info('[GridManager React] Demo is running at: http://localhost:2015/framework/react/demo/index.html');
-console.info('[GridManager Vue2] Demo is running at: http://localhost:2015/framework/vue2/demo/index.html');
+console.info('[GridManager Vue 2] Demo is running at: http://localhost:2015/framework/vue/demo/index.html');
+console.info('[GridManager angular-1.x] Demo is running at: http://localhost:2015/framework/angular-1.x/demo/index.html');
 console.info('[GridManager] Coverage is running at: http://localhost:2015/chart');
 const config = {
     mode: 'development',
@@ -44,14 +45,24 @@ const config = {
 		gm: './module/index.js',
 		'gm-angular-1.x': './framework/angular-1.x/demo/index.js',
 		'gm-react': './framework/react/demo/index.js',
-		'gm-vue': './framework/vue2/demo/index.js' // 目前将vue2定为默认的版本，后续增加vue3后需要更名为gm-vue2
+		'gm-vue': './framework/vue/demo/index.js' // 目前将vue2定为默认的版本，后续增加vue3后需要更名为gm-vue2
 	},
-
+	// externals: {
+	// 	'angular': 'angular',
+	// 	'react': 'React',
+	// 	'react-dom': 'ReactDOM',
+	// 	'vue': {
+	// 		root: 'Vue',
+	// 		commonjs: 'vue',
+	// 		commonjs2: 'vue',
+	// 		amd: 'vue'
+	// 	}
+	// },
 	// 配置模块如何解析
 	resolve: {
 		extensions: ['.js', '.ts'], // 当requrie的模块找不到时,添加这些后缀
         alias: {
-			// 'vue$': 'node_modules/vue2/dist/vue.esm.js',
+			'vue$': 'vue/dist/vue.esm.js',
             '@common': resolve('src/common'),
             '@jTool': resolve('src/jTool'),
             '@module': resolve('src/module')

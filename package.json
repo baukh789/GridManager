@@ -1,9 +1,9 @@
 {
     "name": "gridmanager",
-    "version": "2.18.2",
+    "version": "3.0.0-0",
     "description": "表格管理插件",
     "author": "baukh",
-    "main": "js/gm.js",
+    "main": "index.js",
     "license": "MIT",
     "scripts": {
         "report-coverage": "codecov",
@@ -86,8 +86,7 @@
         "@babel/preset-react": "^7.0.0",
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
-        "vue2": "npm:vue@^2.5.2",
-        "vue3": "npm:vue@^3.0.0",
+        "vue": "^2.6.14",
         "angular": "^1.7.5",
         "webpack": "^5.24.3",
         "webpack-bundle-analyzer": "^4.4.0",
