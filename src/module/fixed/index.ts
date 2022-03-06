@@ -79,15 +79,6 @@ class Fixed {
     init(settings: SettingObj): void {
         const { _, browser, columnMap } = settings;
 
-        const $tableDiv = getDiv(_);
-        const styleId = `fixed-style-${_}`;
-        let styleLink = rootDocument.getElementById(styleId);
-
-        if (!styleLink) {
-            styleLink = rootDocument.createElement('style');
-            styleLink.id = styleId;
-        }
-
         // 绑定固定列td触焦事件
         const tableSelector = getQuerySelector(_);
         eventMap[_] = getEvent(_, tableSelector);
@@ -157,8 +148,17 @@ class Fixed {
         });
         $fakeThead.css('padding-right', pr);
 
-        styleLink.innerHTML = styleStr;
-        $tableDiv.append(styleLink);
+		const $tableDiv = getDiv(_);
+		const styleId = `fixed-style-${_}`;
+		let styleLink = rootDocument.getElementById(styleId);
+
+		if (!styleLink) {
+			styleLink = rootDocument.createElement('style');
+			styleLink.id = styleId;
+			$tableDiv.append(styleLink);
+			styleLink = rootDocument.getElementById(styleId);
+		}
+		styleLink.innerHTML = styleStr;
 
         this.resetFlag(_);
     }

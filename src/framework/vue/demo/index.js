@@ -309,7 +309,18 @@ const index = new Vue({
             });
         },
 
-        // 事件: 重置
+		// 事件：新增一列
+		onAddCol: function() {
+        	this.option.columnData.unshift({
+				key: 'add' + Math.random(),
+				text: () => {
+					return '新增的列';
+				}
+			});
+			GridManagerVue.renderGrid(this.option.gridManagerName, this.option.columnData);
+		},
+
+		// 事件: 重置
         onReset: function () {
             this.formData.title = '';
             this.formData.content = '';

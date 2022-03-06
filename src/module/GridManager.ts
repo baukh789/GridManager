@@ -101,7 +101,7 @@ export default class GridManager {
         });
 
         let $table = jTool(table);
-        arg = <ArgObj>extend({}, GridManager.defaultOption, arg);
+        arg = <ArgObj>extend(true, {}, GridManager.defaultOption, arg);
 
         let gridManagerName = arg.gridManagerName;
         // 参数中未存在配置项 gridManagerName: 使用table DOM 上的 grid-manager属性
@@ -596,7 +596,7 @@ export default class GridManager {
      * 渲染表格 使用现有数据，对表格进行渲染
      * @param table
      */
-    static renderGrid(table: string | HTMLTableElement, columnData?: Array<ArgColumn>): void {
+    static async renderGrid(table: string | HTMLTableElement, columnData?: Array<ArgColumn>): Promise<void> {
         const _ = getKey(table);
 		let settings = getSettings(_);
         if (isRendered(_, settings)) {
@@ -609,7 +609,7 @@ export default class GridManager {
 				resetColumn(settings, moveRow.getColumn.bind(moveRow), checkbox.getColumn.bind(checkbox), order.getColumn.bind(order), fullColumn.getColumn.bind(fullColumn));
 
 				// render thead
-				renderThead(settings);
+				await renderThead(settings);
 
 				// 计算布局
 				calcLayout(settings);

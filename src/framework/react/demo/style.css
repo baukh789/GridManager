@@ -77,3 +77,9 @@ html, body{
     padding: 5px 20px;
     margin-right: 10px;
 }
+
+.add-col{
+	position: absolute;
+	top: 10px;
+	right: 20px;
+}

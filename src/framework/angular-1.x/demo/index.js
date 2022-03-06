@@ -190,6 +190,16 @@ index.controller('AppController', ['$window', '$rootScope', '$scope', '$element'
         };
     };
 
+    $scope.onAddCol = () => {
+		$scope.option.columnData.unshift({
+			key: 'add' + Math.random(),
+			text: () => {
+				return '新增的列';
+			}
+		})
+		$gridManager.renderGrid($scope.option.gridManagerName, $scope.option.columnData);
+	};
+
     // 事件: 初始化
     $scope.onInit = () => {
         $scope.option.columnData = getColumnData();

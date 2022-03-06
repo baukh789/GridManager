@@ -420,7 +420,7 @@ class Core {
         await this.waitContainerAvailable(_);
 
 		// render thead
-		renderThead(settings);
+		await renderThead(settings);
 
 		// 计算布局
 		calcLayout(settings);

@@ -1,4 +1,4 @@
-# GridManager.js
+# GridManager.js [3.0.0-x属于测试版本，请勿使用于正式环境]
 > 快速、灵活的对Table标签进行实例化，让Table标签充满活力。
 
 ![image](https://s2.ax1x.com/2019/04/16/AxA4xK.png)

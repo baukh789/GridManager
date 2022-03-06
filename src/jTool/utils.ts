@@ -295,6 +295,77 @@ export function extend(...[]: any): object { // 因为这里需要动态的传�
     return target;
 }
 
+// 调试中的extend
+// export function extend(...[]: any): object { // 因为这里需要动态的传参，所有在ts改造中使用了...[]: any
+// 	// 参数为空,返回空对象
+// 	if (arguments.length === 0) {
+// 		return {};
+// 	}
+//
+// 	let deep = false; // 是否递归
+// 	let	i = 1;
+// 	let	target = arguments[0];
+// 	let	options;
+//
+// 	// 参数只有一个且为对象类形 -> 对jTool进行扩展
+// 	if (arguments.length === 1 && isObject(arguments[0])) {
+// 		target = this;
+// 		i = 0;
+// 	} else if (arguments.length === 2 && isBoolean(arguments[0])) { // 参数为两个, 且第一个为布尔值 -> 对jTool进行扩展
+// 		deep = arguments[0];
+// 		target = this;
+// 		i = 1;
+// 	} else if(arguments.length > 2 && isBoolean(arguments[0])) { // 参数长度大于2, 且第一个为布尔值 -> 对第二个Object进行扩展
+// 		deep = arguments[0];
+// 		target = arguments[1] || {};
+// 		i = 2;
+// 	}
+//
+// 	// 将合并的来源汇总: 浅合并，相同键覆盖
+// 	let source;
+// 	for (; i < arguments.length; i++) {
+// 		if (!source) {
+// 			source = arguments[i] || {};
+// 			continue;
+// 		}
+// 		Object.assign(source, arguments[i] || {});
+// 	}
+//
+// 	// 浅合并
+// 	if (!deep) {
+// 		Object.assign(target, source);
+// 	}
+//
+// 	// 深合并
+// 	if (deep) {
+// 		for (let key in source) {
+// 			// object:  target = {a, b} source = {b, c} => {a, b, c}
+// 			if(isObject(source[key])) {
+// 				target[key] = Object.assign(target[key] || {}, deepClone(source[key]));
+// 				continue;
+// 			}
+// 			target[key] = deepClone(source[key]);
+// 		}
+// 	}
+//
+// 	function deepClone(obj: any): any {
+// 		// 递归拷贝: Object
+// 		if(isObject(obj)) {
+// 			const copy = {};
+// 			for (let key in obj) {
+// 				if (obj.hasOwnProperty(key)) {
+// 					copy[key] = deepClone(obj[key]);
+// 				}
+// 			}
+// 			return copy;
+// 		}
+//
+// 		// 注: 数组不进行递归, 因为框架内会报错
+//
+// 		return obj;
+// 	}
+// 	return target;
+// }
 /**
  * 获取浏览器名称
  * @returns {string}

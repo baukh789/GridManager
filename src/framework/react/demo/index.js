@@ -255,6 +255,16 @@ class App extends Component {
     resetTable(isShow) {
         this.setState({'isShow': isShow});
     }
+
+	onAddCol() {
+		this.columnData.unshift({
+			key: 'add' + Math.random(),
+			text: () => {
+				return '新增的列';
+			}
+		})
+		GridManagerReact.renderGrid(gridManagerName, this.columnData);
+	}
     render() {
         this.columnData = getColumnData(this.state.num, this.testFN);
         this.fullColumn = getFullColumn(this.state.num);
@@ -263,7 +273,8 @@ class App extends Component {
             <>
                 <div id="search">
                     <SearchComponent/>
-                </div>
+                    <button className="add-col" onClick={() => {this.onAddCol()}}>增加一列</button>
+				</div>
                 <div id="example">
                     {
                         this.state.isShow ?

@@ -39,7 +39,7 @@ import { SettingObj, Column, TrObject, Row } from 'typings/types';
  * 重绘thead
  * @param settings
  */
-export const renderThead = (settings: SettingObj): void => {
+export const renderThead = async (settings: SettingObj): Promise<void> => {
 	const { _, columnMap, __isNested } = settings;
 
 	const columnList: Array<Array<Column>> = [[]];
@@ -69,7 +69,7 @@ export const renderThead = (settings: SettingObj): void => {
 	compileFakeThead(settings, getFakeThead(_).get(0));
 
 	// 解析框架: thead区域
-	sendCompile(settings);
+	await sendCompile(settings);
 };
 /**
  * 渲染为空DOM
