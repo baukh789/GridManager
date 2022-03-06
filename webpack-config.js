@@ -54,8 +54,18 @@ const config = {
 	// externals: ['angular', 'react', 'react-dom', 'vue'],
 	externals: {
 		'angular': 'angular',
-		'react': 'React',
-		'react-dom': 'ReactDOM',
+		'react': {
+			root: 'React',
+			commonjs: 'react',
+			commonjs2: 'react',
+			amd: 'react'
+		},
+		'react-dom': {
+			root: 'ReactDOM',
+			commonjs: 'react-dom',
+			commonjs2: 'react-dom',
+			amd: 'react-dom'
+		},
 		'vue': {
 			root: 'Vue',
 			commonjs: 'vue',
