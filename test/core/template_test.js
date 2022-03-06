@@ -255,7 +255,7 @@ describe('core template', () => {
                         <div class="gm-filter-area">
 							<i class="fa-icon gm-icon gm-icon-filter filter-selected"></i>
 							<div class="fa-con">
-								<ul class="filter-list" style="max-height: 400px">
+								<ul class="filter-list">
 									<li class="filter-checkbox">
 										<label class="gm-checkbox-wrapper">
 											<span class="gm-radio-checkbox gm-checkbox gm-checkbox-checked">
