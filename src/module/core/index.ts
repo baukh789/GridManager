@@ -27,7 +27,7 @@ import {
 	setCheckedData,
 	getSettings,
 	SIV_waitContainerAvailable,
-	getRowData
+	getRowData, setSettings
 } from '@common/cache';
 import { EMPTY_DATA_CLASS_NAME, TABLE_BODY_KEY, TABLE_HEAD_KEY, FAKE_TABLE_HEAD_KEY, TABLE_PURE_LIST, TD_FOCUS, TR_CACHE_KEY, WRAP_KEY } from '@common/constants';
 import { clearCompileList } from '@common/framework';
@@ -281,10 +281,15 @@ class Core {
 			if (start < 0) {
 				start = 0;
 			}
+
+			// 虚拟滚动需要从顶部填充的高度，这个高度会影响移动行的定位功能
+			const virtualScrollTop = start * trHeight;
 			$table.css({
-				marginTop: start * trHeight - theadHeight,
+				marginTop: virtualScrollTop - theadHeight,
 				marginBottom: (tableData.length - end) * trHeight
 			});
+			settings.virtualScroll.top = virtualScrollTop; // 存储虚拟滚动需要从顶部填充的高度
+			setSettings(settings);
 
 			const bodyList = tableData.slice(start, end);
 			const { diffList, diffFirst, diffLast } = diffTableData(settings, oldBodyList, bodyList);
