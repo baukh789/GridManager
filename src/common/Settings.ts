@@ -459,6 +459,8 @@ const gridData = {
 
 		// 实际渲染的Tr数
 		virtualNum: 20
+
+		// top: 0 // 在虚拟滚动触发时，会存储一个top值，该top值用于撑起table的高度
 	},
 
     // @2.6.0 不再建议使用且在外续版本中会被移除

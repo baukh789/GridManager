@@ -216,7 +216,6 @@ class MoveRow {
                 $doing.off(doingEvents);
                 $abort.off(abortEvents);
 
-
 				// 虚拟滚动需要从顶部填充的高度，这个高度会影响移动行的定位功能
 				const virtualScrollTop = getSettings(_).virtualScroll.top || 0;
                 $dreamlandDIV.animate({
