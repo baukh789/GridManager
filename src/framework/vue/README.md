@@ -14,25 +14,25 @@ npm install gridmanager --save
 - es2015引入方式
 ```javascript
 import GridManager from 'gridmanager/vue2';
-import 'gridmanager/style.css';
+import 'gridmanager/index.css';
 ```
 
 - 通过script标签引入
 ```html
-<link rel="stylesheet" href="../node_modules/gridmanager/style.css">
-<script src="../node_modules/gridmanager/vue2.js"></script>
+<link rel="stylesheet" href="gridmanager/index.css">
+<script src="gridmanager/vue2.js"></script>
 ```
 ### Vue全局组件
 ```javascript
 import GridManager from 'gridmanager/vue2';
-import 'gridmanager/style.css';
+import 'gridmanager/index.css';
 Vue.use(GridManager);
 ```
 
 ### Vue局部组件
 ```javascript
 import GridManager from 'gridmanager/vue';
-import 'gridmanager/style.css';
+import 'gridmanager/index.css';
 
 new Vue({
     el: '#app',

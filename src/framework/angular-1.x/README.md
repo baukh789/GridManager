@@ -14,12 +14,12 @@ npm install gridmanager --save
 - es2015引入方式
 ```javascript
 import gridManager from 'gridmanager/angular-1.x';
-import 'gridmanager/style.css';
+import 'gridmanager/index.css';
 ```
 
 - 通过script标签引入
 ```html
-<link rel="stylesheet" href="gridmanager/style.css">
+<link rel="stylesheet" href="gridmanager/index.css">
 <script src="gridmanager/angular-1.x.js"></script>
 ```
 
@@ -27,7 +27,7 @@ import 'gridmanager/style.css';
 ```html
 <html>
     <head>
-      <link rel="stylesheet" href="https://unpkg.com/gridmanager/style.css">
+      <link rel="stylesheet" href="https://unpkg.com/gridmanager/index.css">
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
       <script src="https://unpkg.com/gridmanager/angular-1.x.js"></script>
     </head>

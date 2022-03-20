@@ -14,7 +14,7 @@ npm install gridmanager --save
 - es2015引入方式
 ```javascript
 import GridManager from 'gridmanager/react';
-import 'gridmanager/style.css';
+import 'gridmanager/index.css';
 ```
 
 ## 示例
@@ -26,7 +26,7 @@ import 'gridmanager/style.css';
 import ReactDOM from 'react-dom';
 import React, { useState } from 'react';
 import GridManager from 'gridmanager/react';
-import 'gridmanager/style.css';
+import 'gridmanager/index.css';
 
 // 组件: 操作列
 function ActionInner(props) {

@@ -42,10 +42,10 @@ const config = {
 
 	// 入口文件配置
 	entry: {
-		gm: './module/index.js',
-		'gm-angular-1.x': './framework/angular-1.x/demo/index.js',
-		'gm-react': './framework/react/demo/index.js',
-		'gm-vue': './framework/vue/demo/index.js' // 目前将vue2定为默认的版本，后续增加vue3后需要更名为gm-vue2
+		index: './module/index.js',
+		'angular-1.x': './framework/angular-1.x/demo/index.js',
+		'react': './framework/react/demo/index.js',
+		'vue2': './framework/vue/demo/index.js' // 目前将vue2定为默认的版本，后续增加vue3后需要更名为gm-vue2
 	},
 	// externals: {
 	// 	'angular': 'angular',
@@ -72,7 +72,7 @@ const config = {
 	// 文件导出的配置
 	output: {
 		path: '/',
-		filename: 'js/[name].js',
+		filename: '[name].js',
 		// publicPath 对于热替换（HMR）是必须的，让webpack知道在哪里载入热更新的模块（chunk）
 		publicPath: '/'
 	},
@@ -81,7 +81,7 @@ const config = {
 	plugins: [
         // 将样式文件 抽取至独立文件内
         new MiniCssExtractPlugin({
-            filename: 'css/[id].css',
+            filename: '[name].css',
             chunkFilename: '[id].css'
         }),
 

@@ -1,4 +1,4 @@
-# GridManager.js [3.0.0-x属于测试版本，请勿使用于正式环境]
+# GridManager [一套代码多框架运行]
 > 快速、灵活的对Table标签进行实例化，让Table标签充满活力。
 
 ![image](https://s2.ax1x.com/2019/04/16/AxA4xK.png)
@@ -44,7 +44,7 @@ npm install gridmanager --save
 ```
 
 ### 安装文件目录及说明
-- style.css `样式文件，原生及框架使用同一份样式文件`
+- index.css `样式文件，原生及框架使用同一份样式文件`
 - index.js `原生使用的js文件`
 - vue2 `vue2框架使用的js文件`
 - react `react框架使用的js文件`
@@ -53,13 +53,16 @@ npm install gridmanager --save
 ## 引用
 ### ES6+
 ```
-import 'gridmanager/style.css';
-import GridManager from 'gridmanager';
+import 'gridmanager/index.css'; // 各框架通过样式文件
+import GridManager from 'gridmanager'; // 原生js引用方式
+import GridManager from 'gridmanager/vue2'; // vu2引用方式
+import GridManager from 'gridmanager/react'; // react引用方式
+import GridManager from 'gridmanager/angular-1.x'; // angular-1.x引用方式
 ```
 
 ### ES5
 ```
-<link rel="stylesheet" href="gridmanager/style.css">
+<link rel="stylesheet" href="gridmanager/index.css">
 <script src="gridmanager/index.js"></script>
 ```
 
@@ -82,7 +85,7 @@ import GridManager from 'gridmanager';
 ```
 ```javascript
 document.querySelector('table').GM({
-	gridManagerName: 'demo-baseCode',
+    gridManagerName: 'demo-baseCode',
     ajaxData: 'https://www.lovejavascript.com/learnLinkManager/getLearnLinkList',
     ajaxType: 'POST',
     query: {pluginId: 1},
