@@ -112,7 +112,7 @@ const config = {
         }),
         // 将样式文件 抽取至独立文件内
         new MiniCssExtractPlugin({
-            filename: 'style.css',
+            filename: 'index.css',
             chunkFilename: '[id].css'
         }),
 
