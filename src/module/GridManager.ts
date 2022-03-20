@@ -632,8 +632,9 @@ export default class GridManager {
             const { dataKey, totalsKey, pageData } = settings;
 			const response = {
 				[dataKey]: getTableData(_),
-				[totalsKey]: pageData.tSize
+				[totalsKey]: pageData.tSize || 0 // renderGrid执行于初次数据并未返回的情况时，将总数进行归零
 			};
+
 			// 清除数据，防止命中tbody的 diff规则。如命中，则tbody区域不再更新
 			setTableData(_, []);
 
