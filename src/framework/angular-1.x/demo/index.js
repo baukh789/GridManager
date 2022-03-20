@@ -191,16 +191,41 @@ index.controller('AppController', ['$window', '$rootScope', '$scope', '$element'
     };
 
     $scope.onAddCol = () => {
+		if ($scope.option.columnData[0].key === 'id') {
+			alert('ID列已存在');
+			return;
+		}
 		$scope.option.columnData.unshift({
-			key: 'add' + Math.random(),
-			text: () => {
-				return '新增的列';
-			}
-		})
+			key: 'id',
+			text: 'ID',
+			remind: {  // object形式
+				text: '注意: 这一列是动态新增的',
+				style: {
+					width: '200px',
+					'font-size': '14px',
+					color: 'yellow'
+				}
+			},
+		});
 		$gridManager.renderGrid($scope.option.gridManagerName, $scope.option.columnData);
 	};
 
-    // 事件: 初始化
+
+	// 删除一列
+	$scope.onRemoveCol = () => {
+		// 如果已删除则不再执行
+		if (!$scope.option.columnData.some(item => item.key === 'type')) {
+			alert('博文分类列不存在');
+			return;
+		}
+		$scope.option.columnData = $scope.option.columnData.filter(item => {
+			return item.key !== 'type';
+		});
+
+		$gridManager.renderGrid($scope.option.gridManagerName, $scope.option.columnData);
+	};
+
+	// 事件: 初始化
     $scope.onInit = () => {
         $scope.option.columnData = getColumnData();
         $scope.destroyDisabled = false;

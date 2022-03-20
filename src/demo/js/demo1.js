@@ -1,4 +1,5 @@
 // 表格唯一标识
+
 const gridManagerName = 'test';
 
 // 博文类型
@@ -619,12 +620,36 @@ const demo1 = {
 
 		// 绑定新增一列
 		document.querySelector('.add-action').addEventListener('click', function () {
+			if (arg.columnData[0].key === 'id') {
+				alert('ID列已存在');
+				return;
+			}
 			arg.columnData.unshift({
-				key: 'add' + Math.random(),
-				text: () => {
-					return '新增的列';
-				}
+				key: 'id',
+				text: 'ID',
+				remind: {  // object形式
+					text: '注意: 这一列是动态新增的',
+					style: {
+						width: '200px',
+						'font-size': '14px',
+						color: 'yellow'
+					}
+				},
 			});
+			GridManager.renderGrid('test', arg.columnData);
+		});
+
+		// 绑定删除一列
+		document.querySelector('.delete-action').addEventListener('click', function () {
+			// 如果已删除则不再执行
+			if (!arg.columnData.some(item => item.key === 'type')) {
+				alert('博文分类列不存在');
+				return;
+			}
+			arg.columnData = arg.columnData.filter(item => {
+				return item.key !== 'type';
+			});
+
 			GridManager.renderGrid('test', arg.columnData);
 		});
     },

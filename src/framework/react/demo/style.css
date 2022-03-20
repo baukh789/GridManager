@@ -45,19 +45,18 @@ html, body{
     padding: 0 4px;
     line-height: 24px;
 }
-.search-area .sa-ele .search-action, .search-area .sa-ele .reset-action{
+.search-area .sa-ele button{
     display: inline-block;
-    width:80px;
     height: 26px;
     border: 1px solid #ccc;
     background: #e8e8e8;
-    padding: 0 4px;
+    padding: 0 14px;
     line-height: 26px;
     text-align: center;
     cursor: pointer;
     margin-right: 10px;
 }
-.search-area .sa-ele .search-action:hover, .search-area .sa-ele .reset-action:hover{
+.search-area .sa-ele button:hover {
     opacity: 0.7;
 }
 
@@ -76,10 +75,4 @@ html, body{
 .bottom-bar button{
     padding: 5px 20px;
     margin-right: 10px;
-}
-
-.add-col{
-	position: absolute;
-	top: 10px;
-	right: 20px;
 }

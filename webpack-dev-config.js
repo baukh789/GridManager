@@ -11,8 +11,8 @@ const devServer = {
     clientLogLevel: 'info',
     disableHostCheck: true,
     port: '2015',
-    // host: '192.168.0.104',
-    hot: true,
+    host: '0.0.0.0',
+    hot: false,
     contentBase: [
         path.join(__dirname, './src'),
         path.join(__dirname, './coverage')

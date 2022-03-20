@@ -220,6 +220,7 @@ const getColumnData = (num, testFN) => {
         }
     }];
 };
+
 class App extends Component {
     constructor() {
         super();
@@ -256,13 +257,36 @@ class App extends Component {
         this.setState({'isShow': isShow});
     }
 
-	onAddCol() {
+	onAddCol = () => {
+		if (this.columnData[0].key === 'id') {
+			alert('ID列已存在');
+			return;
+		}
 		this.columnData.unshift({
-			key: 'add' + Math.random(),
-			text: () => {
-				return '新增的列';
-			}
-		})
+			key: 'id',
+			text: 'ID',
+			remind: {  // object形式
+				text: '注意: 这一列是动态新增的',
+				style: {
+					width: '200px',
+					'font-size': '14px',
+					color: 'yellow'
+				}
+			},
+		});
+		GridManagerReact.renderGrid(gridManagerName, this.columnData);
+	}
+
+	onRemoveCol = () => {
+		// 如果已删除则不再执行
+		if (!this.columnData.some(item => item.key === 'type')) {
+			alert('博文分类列不存在');
+			return;
+		}
+		this.columnData = this.columnData.filter(item => {
+			return item.key !== 'type';
+		});
+
 		GridManagerReact.renderGrid(gridManagerName, this.columnData);
 	}
     render() {
@@ -272,8 +296,7 @@ class App extends Component {
         return (
             <>
                 <div id="search">
-                    <SearchComponent/>
-                    <button className="add-col" onClick={() => {this.onAddCol()}}>增加一列</button>
+                    <SearchComponent onAddCol={this.onAddCol} onRemoveCol={this.onRemoveCol}/>
 				</div>
                 <div id="example">
                     {

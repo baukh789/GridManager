@@ -311,12 +311,36 @@ const index = new Vue({
 
 		// 事件：新增一列
 		onAddCol: function() {
+        	if (this.option.columnData[0].key === 'id') {
+				alert('ID列已存在');
+        		return;
+			}
         	this.option.columnData.unshift({
-				key: 'add' + Math.random(),
-				text: () => {
-					return '新增的列';
-				}
+				key: 'id',
+				text: 'ID',
+				remind: {  // object形式
+					text: '注意: 这一列是动态新增的',
+					style: {
+						width: '200px',
+						'font-size': '14px',
+						color: 'yellow'
+					}
+				},
 			});
+			GridManagerVue.renderGrid(this.option.gridManagerName, this.option.columnData);
+		},
+
+		// 删除一列
+		onRemoveCol: function() {
+        	// 如果已删除则不再执行
+			if (!this.option.columnData.some(item => item.key === 'type')) {
+				alert('博文分类列不存在');
+				return;
+			}
+			this.option.columnData = this.option.columnData.filter(item => {
+				return item.key !== 'type';
+			});
+
 			GridManagerVue.renderGrid(this.option.gridManagerName, this.option.columnData);
 		},
 
