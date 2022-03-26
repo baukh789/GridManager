@@ -279,7 +279,8 @@ export default class GridManager {
             // 重新获取dom: 在react框架版本中，参数table会在gm-react componentDidUpdate时出现变更的情况
             $table = getTable(gridManagerName);
             table = $table.get(0);
-            if (getStyle(table, 'width').indexOf(PX) === -1) {
+            const tableWidth = getStyle(table, 'width');
+            if (!tableWidth || tableWidth === '0px' || tableWidth.indexOf(PX) === -1) {
                 return true;
             }
 
