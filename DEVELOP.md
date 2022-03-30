@@ -20,7 +20,6 @@ npm version <version_category: major | minor | patch>
 - 执行提交代码脚本`git push && git push --tags`
 
 ### 发布后需操作
-- 发布框架版本
 - 服务器执行installGM.sh
 - 更新管理端: 版本、压维包、发布记录和API
 - 发布gm-site (demo存在修改时，需要发布)
