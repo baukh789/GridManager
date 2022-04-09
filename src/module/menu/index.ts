@@ -49,10 +49,10 @@ class Menu {
             e.stopPropagation();
 
             const target = e.target as HTMLTableCellElement;
-            // 验证：如果不是tbdoy或者是tbody的子元素，直接跳出
-            if (target.nodeName !== 'TBODY' && jTool(target).closest('tbody').length === 0) {
-                return;
-            }
+            // 验证：如果不是tbody 并且也 不是tbody的子元素，直接跳出
+            // if (target.nodeName !== 'TBODY' && jTool(target).closest('tbody').length === 0) {
+            //     return;
+            // }
             const $menu = createMenuDom(_, target);
 
             $menu.show();
@@ -60,7 +60,7 @@ class Menu {
             // 定位
             $menu.css(getMenuPosition($menu.width(), $menu.height(), e.clientX, e.clientY));
 
-            // 禁用菜单自身的右键
+            // 禁用菜单区域浏览器默认右键行为
             $menu.on(openMenu[EVENTS], function (e1: MouseEvent) {
                 e1.preventDefault();
                 e1.stopPropagation();

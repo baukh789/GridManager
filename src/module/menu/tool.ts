@@ -16,7 +16,7 @@ import config from '@module/config';
 interface MenuItemObject {
 	content: string;
 	onClick(_: string, target?: HTMLTableCellElement): void;
-	run?(_: string, $dom: any): void;
+	run?(_: string, $dom: any, target?: HTMLTableCellElement): void;
 	line?: boolean;
 }
 /**
@@ -171,7 +171,14 @@ const getCopyCell = (settings: any): MenuItemObject => {
             fakeCopy.value = getTbody(_).find(`td[${TD_FOCUS}]`).text();
             fakeCopy.select();
             rootDocument.execCommand('Copy');
-        }
+        },
+		run: (_: string, $dom: any, target?: HTMLTableCellElement) => {
+			if (target.nodeName !== 'td' && jTool(target).closest('td').length === 0) {
+				$dom.addClass(DISABLED_CLASS_NAME);
+			} else {
+				$dom.removeClass(DISABLED_CLASS_NAME);
+			}
+		}
     };
 };
 
@@ -188,7 +195,14 @@ const getHideRow = (settings: any): MenuItemObject => {
             // 存在TR_CACHE_KEY: 当前为普通tr
             // 不存在TR_CACHE_KEY: 当前为通栏行或树的子行
             hideRow(getSettings(_), $tr.attr(TR_CACHE_KEY) || $tr.attr(TR_PARENT_KEY));
-        }
+        },
+		run: (_: string, $dom: any, target: HTMLTableCellElement) => {
+			if (target.nodeName !== 'tr' && jTool(target).closest('tr[gm-cache-key]').length === 0) {
+				$dom.addClass(DISABLED_CLASS_NAME);
+			} else {
+				$dom.removeClass(DISABLED_CLASS_NAME);
+			}
+		}
     };
 };
 
@@ -300,7 +314,7 @@ export const createMenuDom = (_: string, target: HTMLTableCellElement): any => {
 
         // 如果存在运行函数，则执行
         if (run) {
-            run(_, $dom);
+            run(_, $dom, target);
         }
 
         // 绑定点击事件
