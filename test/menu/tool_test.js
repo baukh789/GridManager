@@ -4,6 +4,7 @@ import { eventMap, getEvent } from '../../src/module/menu/event';
 import { MENU_KEY } from '../../src/common/constants';
 import Store from '../../src/common/Store';
 import TextConfig from '../../src/module/i18n/config';
+import tpl from '../table-test.tpl.html';
 
 describe('menu tool', () => {
     describe('getMenuQuerySelector', () => {
@@ -20,7 +21,7 @@ describe('menu tool', () => {
     describe('createMenuDom and clearMenuDOM', () => {
         let $menu = null;
         beforeEach(() => {
-            document.body.innerHTML = '';
+            document.body.innerHTML = tpl;
         });
         afterEach(() => {
             delete eventMap.test;
@@ -41,7 +42,7 @@ describe('menu tool', () => {
                 menuHandler: list => list
             };
             eventMap.test = getEvent('test', '#baukh');
-            $menu = createMenuDom('test');
+            $menu = createMenuDom('test', document.querySelector('td'));
             expect($menu.length).toBe(1);
             expect($menu.attr('grid-master')).toBe('test');
 
@@ -72,7 +73,7 @@ describe('menu tool', () => {
                 }
             };
             eventMap.test = getEvent('test', '#baukh');
-            $menu = createMenuDom('test');
+            $menu = createMenuDom('test', document.querySelector('td'));
             expect($menu.length).toBe(1);
             expect($menu.attr('grid-master')).toBe('test');
 
@@ -106,7 +107,7 @@ describe('menu tool', () => {
                 }
             };
             eventMap.test = getEvent('test', '#baukh');
-            $menu = createMenuDom('test', window.event);
+            $menu = createMenuDom('test', document.querySelector('td'));
             expect($menu.length).toBe(1);
             expect($menu.attr('grid-master')).toBe('test');
 
