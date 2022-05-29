@@ -11,6 +11,7 @@ import { hideRow } from '@module/rowVisible';
 import { getTbody } from '@common/base';
 import print from '@module/print';
 import config from '@module/config';
+import { SettingObj } from 'typings/types';
 
 // 菜单项对象
 interface MenuItemObject {
@@ -38,7 +39,7 @@ const isDisabled = (dom: HTMLElement, events: MouseEvent): boolean => {
  * @param settings
  * @returns {{onClick: onClick, run: run, content: string}}
  */
-const getPreviousPage = (settings: any): MenuItemObject => {
+const getPreviousPage = (settings: SettingObj): MenuItemObject => {
     return {
         content: `${i18n(settings, 'previous-page')}<i class="gm-icon gm-icon-up"></i>`,
         onClick: (_: string) => {
@@ -67,7 +68,7 @@ const getPreviousPage = (settings: any): MenuItemObject => {
  * @param settings
  * @returns {{onClick: onClick, run: run, content: string}}
  */
-const getNextPage = (settings: any): MenuItemObject => {
+const getNextPage = (settings: SettingObj): MenuItemObject => {
     return {
         content: `${i18n(settings, 'next-page')}<i class="gm-icon gm-icon-down"></i>`,
         line: true,
@@ -96,7 +97,7 @@ const getNextPage = (settings: any): MenuItemObject => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getRefreshPage = (settings: any): MenuItemObject => {
+const getRefreshPage = (settings: SettingObj): MenuItemObject => {
     return {
         content: `${i18n(settings, 'refresh')}<i class="gm-icon gm-icon-refresh"></i>`,
         onClick: (_: string) => {
@@ -112,7 +113,7 @@ const getRefreshPage = (settings: any): MenuItemObject => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getExportPage = (settings: any): MenuItemObject => {
+const getExportPage = (settings: SettingObj): MenuItemObject => {
     return {
         content: `${i18n(settings, 'export')}<i class="gm-icon gm-icon-export"></i>`,
         onClick: (_: string) => {
@@ -126,7 +127,7 @@ const getExportPage = (settings: any): MenuItemObject => {
  * @param settings
  * @returns {{onClick: onClick, run: run, content: string}}
  */
-const getExportCheckedPage = (settings: any): MenuItemObject => {
+const getExportCheckedPage = (settings: SettingObj): MenuItemObject => {
     return {
         content: `${i18n(settings, 'export-checked')}<i class="gm-icon gm-icon-export-checked"></i>`,
         onClick: (_: string) => {
@@ -148,7 +149,7 @@ const getExportCheckedPage = (settings: any): MenuItemObject => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getPrint = (settings: any): MenuItemObject => {
+const getPrint = (settings: SettingObj): MenuItemObject => {
     return {
         content: `${i18n(settings, 'print')}<i class="gm-icon gm-icon-print"></i>`,
         onClick: (_: string) => {
@@ -162,7 +163,7 @@ const getPrint = (settings: any): MenuItemObject => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getCopyCell = (settings: any): MenuItemObject => {
+const getCopyCell = (settings: SettingObj): MenuItemObject => {
     const fakeCopyAttr = 'gm-fake-copy';
     return {
         content: `${i18n(settings, 'copy')}<i class="gm-icon gm-icon-copy"></i><input ${fakeCopyAttr}="${settings._}"/>`,
@@ -187,7 +188,7 @@ const getCopyCell = (settings: any): MenuItemObject => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getHideRow = (settings: any): MenuItemObject => {
+const getHideRow = (settings: SettingObj): MenuItemObject => {
     return {
         content: `${i18n(settings, 'hide-row')}<i class="gm-icon gm-icon-hide"></i>`,
         onClick: (_: string, target: HTMLTableCellElement) => {
@@ -211,7 +212,7 @@ const getHideRow = (settings: any): MenuItemObject => {
  * @param settings
  * @returns {{onClick: onClick, content: string}}
  */
-const getConfig = (settings: any): MenuItemObject => {
+const getConfig = (settings: SettingObj): MenuItemObject => {
     return {
         content: `${i18n(settings, 'config')}<i class="gm-icon gm-icon-config"></i>`,
         onClick: (_: string) => {
