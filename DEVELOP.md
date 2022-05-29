@@ -23,5 +23,5 @@ npm version <version_category: major | minor | patch>
 - 服务器执行installGM.sh
 - 更新管理端: 版本、压维包、发布记录和API
 - 发布gm-site (demo存在修改时，需要发布)
-- 发布gm-test (demo存在修改时，需要发布)
+- 发布gm-test (依赖的gm.js, gm.css需要重新构建)
 - github发布releases
