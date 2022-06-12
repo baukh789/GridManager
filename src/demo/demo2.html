@@ -240,10 +240,11 @@
                 supportTreeData: true,
                 supportMoveRow: true,
                 useCellFocus: true,
-                // checkboxConfig: {
-                //     // 是否通过点击行来进行选中
-                //     useRowCheck: true
-                // },
+                checkboxConfig: {
+					key: 'id', // 树型必须配置，不配置的情况下数据会错
+                    // 是否通过点击行来进行选中
+                    // useRowCheck: true,
+                },
                 useHideRow: true,
                 treeConfig: {
                     // insertTo: 'age',
