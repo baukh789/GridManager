@@ -151,14 +151,16 @@ class FullColumn {
      * @returns {}
      */
     getColumn(settings: SettingObj): object {
-        const { openState = false, fixed } = settings.fullColumn;
+        const { openState = false, fixed, text = '', width = '40px', align = '', remind } = settings.fullColumn;
         return {
             key: FOLD_KEY,
-            text: '',
+            text,
             isAutoCreate: true,
             isShow: true,
             disableCustomize: true,
-            width: '40px',
+			align,
+			remind,
+            width,
             fixed,
             template: () => {
                 return `<td gm-create gm-fold><i class="gm-icon ${getIconClass(openState)}" ${FOLD_ACTION}="${openState}"></i></td>`;

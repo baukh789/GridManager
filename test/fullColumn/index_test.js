@@ -173,5 +173,35 @@ describe('fullColumn', () => {
             expect(column.fixed).toBe('left');
             expect(column.template()).toBe('<td gm-create gm-fold><i class="gm-icon gm-icon-add" full-column-fold="false"></i></td>');
         });
+		it('执行验证: 指定文本、宽度、文本方向、文本描述', () => {
+			settings = {
+				gridManagerName: 'test-fullColumn-2',
+				columnMap: getColumnMap(),
+				fullColumn: {
+					fixed: 'right',
+					width: 100,
+					text: '折叠列',
+					align: 'center',
+					remind: {
+						text: '文本介绍',
+						style: {
+							'width': '100px',
+							'font-size': '14px'
+						}
+					}
+				}
+			};
+			column = fullColumn.getColumn(settings);
+			expect(column.text).toBe('折叠列');
+			expect(column.width).toBe(100);
+			expect(column.fixed).toBe('right');
+			expect(column.remind).toEqual({
+				text: '文本介绍',
+				style: {
+					'width': '100px',
+					'font-size': '14px'
+				}
+			});
+		});
     });
 });

@@ -431,21 +431,24 @@ const gridData = {
      }]
     */
 
-    // tr区域顶部通栏
-    /*
-    fullColumn: {
-        topTemplate: () => {}, // 上通栏
-        bottomTemplate: () => {}, // 下通栏
-        useFold: false, // 是否使用折叠
-        interval: 0, // 间距
-
-        // 折叠事件列固定方向: 仅在useFold===true时生效，默认值为undefined，可选值: 'left', 'right'
-        fixed: false,
-
-        // 默认展开状态: 仅在useFold===true时生效
-        openState: false
-    },
-    */
+    // 通栏
+    // fullColumn: {
+    //     topTemplate: () => {}, // 上通栏
+    //     bottomTemplate: () => {}, // 下通栏
+    //     useFold: false, // 是否使用折叠
+    //     text: '', // th区域文本
+    //     width: '40px', // th区域宽度
+	// 	align: 'center',
+    //     interval: 0, // 间距
+	//
+	// 	remind: null,
+	//
+    //     // 折叠事件列固定方向: 仅在useFold===true时生效，默认值为undefined，可选值: 'left', 'right'
+    //     fixed: false,
+	//
+    //     // 默认展开状态: 仅在useFold===true时生效
+    //     openState: false
+    // },
 
     // @2.5.8
     // 初次渲染时是否加载数据

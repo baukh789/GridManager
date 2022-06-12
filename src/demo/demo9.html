@@ -166,7 +166,17 @@
             },
             fullColumn: {
                 useFold: true,
-                fixed: 'left', // 折叠事件列固定方向
+				fixed: 'left', // 折叠事件列固定方向
+				width: 100,
+				text: '折叠列',
+				align: 'center',
+				// remind: {  // object形式
+				// 	text: '文本介绍',
+				// 	style: {
+				// 		'width': '100px',
+				// 		'font-size': '14px'
+				// 	}
+				// },
                 // openState: true,
                 bottomTemplate: function(row, index){
                     return `<div class="table-form">
