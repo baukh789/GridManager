@@ -311,16 +311,12 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, is
 			// 通过dom节点上的属性反查dom
 			let tr = df.querySelector(querySelector);
 
+			// 当前已存在tr
 			if (tr) {
 				tr.innerHTML = tdStr;
 			} else {
+				// 当前不存在tr
 				tr = document.createElement('tr');
-				if (className.length) {
-					tr.className = className.join(' ');
-				}
-				attribute.forEach(attr => {
-					tr.setAttribute(attr[0], attr[1]);
-				});
 				tr.innerHTML = tdStr;
 
 				const firstCacheTr = df.querySelector(`[${TR_CACHE_KEY}]`) as HTMLTableRowElement;
@@ -337,6 +333,13 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, is
 				}
 			}
 
+			// 为新增或修改后的Tr更新[class, attribute]
+			if (className.length) {
+				tr.className = className.join(' ');
+			}
+			attribute.forEach(attr => {
+				tr.setAttribute(attr[0], attr[1]);
+			});
 			// 将数据挂载至DOM
 			tr[TR_ROW_KEY] = row;
 		});
