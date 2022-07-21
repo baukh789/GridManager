@@ -215,6 +215,7 @@ class Core {
 		// 清除: 树型结构在非单条更新时，不使用差异化更新(如后续要开启，需要将子项正确处理)
 		if (supportTreeData && !isUpdateRowData) {
 			$tbody.get(0).innerHTML = '';
+			oldTableData = [];
 		}
 
 		// 非虚拟滚动 或 虚拟滚动每次显示条数>=当前数据量: 不使用虚拟滚动的逻辑
