@@ -127,6 +127,11 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, is
 		$emptyTr.remove();
 	}
 
+	// 清除: 树型结构时不使用差异化更新(如后续要开启，需要将子项正确处理)
+	if (supportTreeData) {
+		tbody.innerHTML = '';
+	}
+
 	// 存储tr对像列表
 	let trObjectList: Array<TrObject> = [];
 

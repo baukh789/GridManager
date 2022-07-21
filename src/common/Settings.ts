@@ -435,10 +435,10 @@ const gridData = {
     // fullColumn: {
     //     topTemplate: () => {}, // 上通栏
     //     bottomTemplate: () => {}, // 下通栏
-    //     useFold: false, // 是否使用折叠
-    //     text: '', // th区域文本
-    //     width: '40px', // th区域宽度
-	// 	align: 'center',
+    //     useFold: false, // 是否使用折叠，通过该配置可达到展开收缩行详情功能,默认为false
+    //     text: '', // th区域文本, 默认为空
+    //     width: '40px', // th区域宽度，默认为40px
+	// 	   align: '', // 列的文本方向，默认为空
     //     interval: 0, // 间距
 	//
 	// 	remind: null,
