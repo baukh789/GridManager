@@ -127,11 +127,6 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, is
 		$emptyTr.remove();
 	}
 
-	// 清除: 树型结构时不使用差异化更新(如后续要开启，需要将子项正确处理)
-	if (supportTreeData) {
-		tbody.innerHTML = '';
-	}
-
 	// 存储tr对像列表
 	let trObjectList: Array<TrObject> = [];
 
@@ -194,7 +189,13 @@ export const renderTbody = async (settings: SettingObj, bodyList: Array<Row>, is
 				// 非顶层
 				if (!isTop) {
 					attribute.push([TR_PARENT_KEY, pIndex]);
-					attribute.push([TR_CHILDREN_STATE, openState]);
+					// 处理展开状态: 当前存在tr使用tr当前的状态，如不存在使用tree config中的配置项
+					const _tr = tbody.querySelector(`[${TR_CACHE_KEY}="${cacheKey}"]`);
+					let _openState = openState;
+					if (_tr) {
+						_openState = _tr.getAttribute(TR_CHILDREN_STATE) === 'true';
+					}
+					attribute.push([TR_CHILDREN_STATE, _openState]);
 				}
 
 				// 顶层 且当前为树形结构

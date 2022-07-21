@@ -189,7 +189,7 @@ class Core {
 	 * @param list
 	 * @param useFormat
 	 */
-	async changeTableData(_: string, list: Array<Row>, useFormat?: boolean) {
+	async changeTableData(_: string, list: Array<Row>, useFormat?: boolean, isUpdateRowData?: boolean) {
 		const settings = getSettings(_);
     	if (list.length === 0) {
 			renderEmptyTbody(settings);
@@ -205,11 +205,18 @@ class Core {
 		// 存储数据
 		setTableData(_, newTableData);
 
-		const { virtualScroll, supportCheckbox, checkboxConfig } = settings;
+		const { virtualScroll, supportCheckbox, checkboxConfig, supportTreeData } = settings;
 		const { useVirtualScroll, virtualNum } = virtualScroll;
 
 		const $table = getTable(_);
+		const $tbody = getTbody(_);
 		const theadHeight = getThead(_).height();
+
+		// 清除: 树型结构在非单条更新时，不使用差异化更新(如后续要开启，需要将子项正确处理)
+		if (supportTreeData && !isUpdateRowData) {
+			$tbody.get(0).innerHTML = '';
+		}
+
 		// 非虚拟滚动 或 虚拟滚动每次显示条数>=当前数据量: 不使用虚拟滚动的逻辑
 		if (!useVirtualScroll || virtualNum >= newTableData.length) {
 			// 当前存在虚拟滚动存储，清空oldTableData以保证显示正常，场景: 切换每页显示条数时，会触发`virtualNum >= newTableData.length`条件
@@ -236,7 +243,6 @@ class Core {
 
 		// 虚拟滚动: 与树结构及通栏不兼容
 		const $tableDiv = getDiv(_);
-		const $tbody = getTbody(_);
 		let tableData = getTableData(_, true);
 		let trHeight: number = parseInt(settings.lineHeight, 10);
 		const tableDivHeight = $tableDiv.height();
