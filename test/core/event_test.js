@@ -28,6 +28,13 @@ describe('core event', () => {
             expect(events.rowClick.selector).toBe('tr[gm-cache-key]');
         });
 
+		it('rowDblClick', () => {
+			events = getEvent('.test');
+			expect(events.rowDblClick.events).toBe('dblclick');
+			expect(events.rowDblClick.target).toBe('.test');
+			expect(events.rowDblClick.selector).toBe('tr[gm-cache-key]');
+		});
+
         it('cellHover', () => {
             events = getEvent('.test');
             expect(events.cellHover.events).toBe('mousemove');
@@ -41,6 +48,13 @@ describe('core event', () => {
             expect(events.cellClick.target).toBe('.test');
             expect(events.cellClick.selector).toBe('tr[gm-cache-key] td');
         });
+
+        it('cellDblClick', () => {
+			events = getEvent('.test');
+			expect(events.cellDblClick.events).toBe('dblclick');
+			expect(events.cellDblClick.target).toBe('.test');
+			expect(events.cellDblClick.selector).toBe('tr[gm-cache-key] td');
+		});
     });
 
     describe('eventMap', () => {

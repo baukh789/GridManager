@@ -3,6 +3,9 @@ import { EventObj } from 'typings/types';
 // 事件: click
 export const MOUSE_CLICK = 'click';
 
+// 事件: dbclick
+export const MOUSE_DBCLICK = 'dblclick';
+
 // 事件: mousedown
 export const MOUSE_DOWN = 'mousedown';
 

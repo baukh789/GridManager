@@ -423,20 +423,32 @@ const arg = {
 	emptyTemplate: settings => {
 		return `<div style="text-align: center;">${settings.query.title ? '搜索为空' : '暂无数据'}</div>`;
 	},
-	// 单个td的click事件
-	// cellClick: (row, rowIndex, colIndex) => {
-	//     console.log(row, rowIndex, colIndex);
-	//     return {
-	//         text: '这里有个提示',
-	//         position: 'left'
-	//     };
-	// },
+	// 单元格click事件
+	cellClick: (row, rowIndex, colIndex) => {
+	    return {
+	        text: '触发单元格单击事件',
+	        position: 'left'
+	    };
+	},
 	// rowHover: (a, b, c) => {
 	//     return {
 	//         text: '这里有个提示',
 	//         position: 'right'
 	//     };
 	// },
+	// rowDblClick: (row, rowIndex, colIndex, dom) => {
+	// 	console.log(row, rowIndex, colIndex, dom);
+	// 	return {
+	// 		text: '行双击事件',
+	// 		position: 'left'
+	// 	};
+	// },
+	cellDblClick: (row, rowIndex, colIndex, dom) => {
+	    return {
+	        text: '触发单元格双击事件',
+	        position: 'left'
+	    };
+	},
 	// useWordBreak: true,
 	columnData: [
 		{

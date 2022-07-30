@@ -45,7 +45,7 @@ import { SettingObj, JTool, Row } from 'typings/types';
 import './style.less';
 
 const bindTrAndTdEvent = (_: string):void => {
-	const { rowHover, rowClick, cellHover, cellClick, useCellFocus } = getSettings(_);
+	const { rowHover, rowClick, rowDblClick, cellHover, cellClick, cellDblClick, useCellFocus } = getSettings(_);
 
 	eventMap[_] = getEvent(getQuerySelector(_));
 	const event = eventMap[_];
@@ -86,6 +86,14 @@ const bindTrAndTdEvent = (_: string):void => {
 		});
 	})();
 
+	// 行双击事件: 触发双击事件时并不会过滤掉单击事件，在每次双击事件触发时，都会同时触发两次单击事件
+	rowDblClick && (() => {
+		const rowDblClickEvent = event.rowDblClick;
+		jTool(rowDblClickEvent[TARGET]).on(rowDblClickEvent[EVENTS], rowDblClickEvent[SELECTOR], function () {
+			tooltip(_, this, rowDblClick(...getRowParams(this), this));
+		});
+	})();
+
 	// 单元格透出参数
 	const getCellParams = (td: HTMLTableCellElement) => {
 		const tr = td.parentNode as HTMLTableRowElement;
@@ -122,6 +130,14 @@ const bindTrAndTdEvent = (_: string):void => {
 		const cellClickEvent = event.cellClick;
 		jTool(cellClickEvent[TARGET]).on(cellClickEvent[EVENTS], cellClickEvent[SELECTOR], function () {
 			tooltip(_, this, cellClick(...getCellParams(this), this));
+		});
+	})();
+
+	// 单元格双击事件: 触发双击事件时并不会过滤掉单击事件，在每次双击事件触发时，都会同时触发两次单击事件
+	cellDblClick && (() => {
+		const cellDbClickEvent = event.cellDblClick;
+		jTool(cellDbClickEvent[TARGET]).on(cellDbClickEvent[EVENTS], cellDbClickEvent[SELECTOR], function () {
+			tooltip(_, this, cellDblClick(...getCellParams(this), this));
 		});
 	})();
 

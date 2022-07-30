@@ -144,22 +144,24 @@ const gridStyle = {
  * 这里初始值为null而非() => {}的原因: 未配置时不进行事件绑定，以降低性能消耗
  * @type {{disableHover: boolean}}
  */
-const events = {
+const events: any = {
     // 单行hover事件
-    // @ts-ignore
     rowHover: null,
 
     // 单行点击事件
-    // @ts-ignore
     rowClick: null,
 
+	// 单行双击事件
+    rowDblClick: null,
+
     // 单元格hover事件
-    // @ts-ignore
     cellHover: null,
 
     // 单元格点击事件
-    // @ts-ignore
-    cellClick: null
+    cellClick: null,
+
+	// 单元格双击击事件
+	cellDblClick: null
 };
 
 /**
