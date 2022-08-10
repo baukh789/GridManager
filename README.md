@@ -178,6 +178,7 @@ GM.setQuery('demo-ajaxPageCode', {name: 'baukh'});
 
 - [element-ui](https://github.com/xtfan21/GridManager-element-skin)
 - [ant-design](https://github.com/BoWang816/GridManager-antDesign-skin)
+- [skin tool](http://skin.degapp.com/)
 
 ## 贡献者
 <table>
