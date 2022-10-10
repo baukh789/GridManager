@@ -1,6 +1,6 @@
 import {isElement, isEmptyObject, isNull, isUndefined, each, isFunction} from '@jTool/utils';
 import { compileTd } from '@common/framework';
-import { getDiv, getThead } from '@common/base';
+import { getDiv } from '@common/base';
 import { DISABLE_MOVE } from '@module/moveRow/constants';
 import { SUMMARY_FLAG, SUMMARY_ROW } from './constants';
 import { SettingObj, Column, TrObject } from 'typings/types';
@@ -9,7 +9,7 @@ import { getTableData } from '@common/cache';
 
 const querySelector = `[${SUMMARY_ROW}]`;
 export const installSummary = (settings: SettingObj, columnList: Array<Column>, trObjectList: Array<TrObject>): void => {
-    const { _, summaryHandler, browser } = settings;
+    const { _, summaryHandler } = settings;
     if (!isFunction(summaryHandler)) {
     	return;
 	}
@@ -28,10 +28,10 @@ export const installSummary = (settings: SettingObj, columnList: Array<Column>, 
     const tdList: Array<string> = [];
 
     let style = '';
-    // 兼容性处理: safari 在处理sticky时，需要减去thead的高度
-    if (browser === 'safari') {
-        style = `style="bottom: ${getThead(_).height()}px"`;
-    }
+    // 兼容性处理: safari 在处理sticky时，需要减去thead的高度 @baukh20221010: 移除该逻辑，原因是后续的safari修复了该问题(具体版本未知)
+    // if (browser === 'safari') {
+    //     style = `style="bottom: ${getThead(_).height()}px"`;
+    // }
     each(columnList, (col: Column) => {
         const { key, align } = col;
         let summary = summaryMap[key];
