@@ -4,7 +4,7 @@
 import './style.less';
 import jTool from '@jTool';
 import {isFunction, isObject} from '@jTool/utils';
-import { getQuerySelector, getDiv, clearTargetEvent, getTable } from '@common/base';
+import { getQuerySelector, getDiv, clearTargetEvent, getTable, getThead } from '@common/base';
 import { FAKE_TABLE_HEAD_KEY, PX } from '@common/constants';
 import { parseTpl } from '@common/parse';
 import remindTpl from './remind.tpl.html';
@@ -28,7 +28,7 @@ export const removeTooltip = (_: string): void => {
     }
 };
 /**
- * 为tr 上的tooltip
+ * 为tbody tr 上的tooltip
  * @param _
  * @param dom: tr 或 td
  * @param conf: 配置信息
@@ -45,7 +45,8 @@ export const tooltip = (_: string, dom: HTMLTableCellElement, conf: ConfigInfo, 
     const $div = getDiv(_);
     const $dom = jTool(dom);
     const $body = getTable(_);
-    const top = $dom.offset().top - $body.offset().top - $div.scrollTop() - height;
+    // const top = $dom.offset().top - $body.offset().top - $div.scrollTop() - height; // @baukh20221110: 这种方式在虚拟滚动中存在定位BUG
+	const top = dom.offsetTop - $div.scrollTop() - height + $body.css('marginTop') + getThead(_).height();
 
     // td上的tooltip: rightModel将被清空（td上右模式没有必要存在）
     let leftStyle = '';

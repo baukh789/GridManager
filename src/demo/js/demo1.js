@@ -430,10 +430,9 @@ const arg = {
 	        position: 'left'
 	    };
 	},
-	// rowHover: (a, b, c) => {
+	// cellHover: (row, rowIndex, colIndex, td) => {
 	//     return {
-	//         text: '这里有个提示',
-	//         position: 'right'
+	//         text: '这里有个提示'
 	//     };
 	// },
 	// rowDblClick: (row, rowIndex, colIndex, dom) => {
