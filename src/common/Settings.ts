@@ -558,12 +558,28 @@ const gridExport = {
         handler: noop
     }
 };
+
 /**
  * 表格打印
  */
 const gridPrint = {
     // 支持打印功能
     supportPrint: true
+};
+
+/**
+ * 自动轮播
+ */
+const autoPlay = {
+	// 支持导出表格数据
+	supportAutoPlay: false,
+	autoPlayConfig: {
+		// 每次轮播结束后停顿的时间
+		interval: 5,
+
+		// 每帧滚动的距离(px)
+		step: 40
+	}
 };
 export function Settings() {
     extend(true, this, {
@@ -586,6 +602,7 @@ export function Settings() {
         ...gridExport,
         ...gridPrint,
         ...treeData,
-        ...events
+        ...events,
+		...autoPlay
     });
 }

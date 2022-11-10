@@ -57,8 +57,7 @@
 </div>
 <div class="bottom-bar">
 	<a href="https://github.com/baukh789/GridManager/blob/master/src/demo/demo10.html" target="_blank">查看源码</a>
-	<button id="start-auto-play">启用轮播</button>
-	<button id="stop-auto-play">停止轮播</button>
+	<button id="change-auto-play"></button>
 </div>
 
 <script>
@@ -84,6 +83,9 @@
 	};
 </script>
 <script type="text/javascript">
+	// 用于demo初始化，以及切换button显示状态
+	window.supportAutoPlay = true;
+
 	// 实例化
 	const now = Date.now();
 	var table = document.querySelector('table[grid-manager]');
@@ -104,14 +106,14 @@
 				};
 			},
 			// 支持导出表格数据
-			// supportAutoPlay: true,
-			// autoPlayConfig: {
-			// 	// 每次轮播结束后停顿的时间
-			// 	interval: 5,
-			//
-			// 	// 每帧滚动的距离(px)
-			// 	step: 500
-			// },
+			supportAutoPlay: window.supportAutoPlay,
+			autoPlayConfig: {
+				// 每次轮播结束后停顿的时间
+				interval: 5,
+
+				// 每帧滚动的距离(px)
+				step: 500
+			},
 			exportConfig: {
 				handler: (fileName, query, pageData, sortData, selectedList, tableData) => {
 					GM.showLoading('test');
@@ -162,11 +164,17 @@
 	init();
 </script>
 <script>
-	document.querySelector('#start-auto-play').addEventListener('click', function (){
-		window.GM.startAutoPlay('test');
-	});
-	document.querySelector('#stop-auto-play').addEventListener('click', function (){
-		window.GM.stopAutoPlay('test');
+	const button = document.querySelector('#change-auto-play');
+	button.innerText = window.supportAutoPlay ? '停止轮播' : '开启轮播';
+	button.addEventListener('click', function (){
+		if (window.supportAutoPlay) {
+			window.GM.stopAutoPlay('test');
+			this.innerText = '开启轮播';
+		} else {
+			window.GM.startAutoPlay('test');
+			this.innerText = '停止轮播';
+		}
+		window.supportAutoPlay = !window.supportAutoPlay;
 	});
 </script>
 </body>

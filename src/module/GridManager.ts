@@ -60,6 +60,7 @@ import sort, { updateSort } from './sort';
 import filter from './filter';
 import fixed from './fixed';
 import print from './print';
+import autoPlay from './autoPlay';
 import { showRow, hideRow } from './rowVisible';
 import { Column, ArgColumn, SettingObj, JTool, ArgObj, SortData, Row } from 'typings/types';
 
@@ -866,7 +867,31 @@ export default class GridManager {
         }
     }
 
-    /**
+	/**
+	 * @静态方法
+	 * 启用自动轮播
+	 * @param table
+	 */
+	static startAutoPlay(table: string | HTMLTableElement) {
+		const _ = getKey(table);
+		if (isRendered(_)) {
+			autoPlay.start(_);
+		}
+	}
+
+	/**
+	 * @静态方法
+	 * 停止自动轮播
+	 * @param table
+	 */
+	static stopAutoPlay(table: string | HTMLTableElement) {
+		const _ = getKey(table);
+		if (isRendered(_)) {
+			autoPlay.stop(_);
+		}
+	}
+
+	/**
 	 * 初始化表格
 	 * @param $table
 	 * @param settings
@@ -939,6 +964,11 @@ export default class GridManager {
         if (settings._fixed) {
             fixed.init(settings);
         }
+
+		// 自动轮播
+		if (settings.supportAutoPlay) {
+			autoPlay.init(_);
+		}
 
         updateThWidth(settings, true);
 

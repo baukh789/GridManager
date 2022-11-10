@@ -24,7 +24,9 @@
     .table-div {
         overflow-x: hidden;
         overflow-y: auto;
-        /*数据为空时，禁用Y轴滚动*/
+		/*控制滚轴滑动的丝滑效果*/
+		scroll-behavior: smooth;
+		/*数据为空时，禁用Y轴滚动*/
         &.empty-data{
             overflow-y: hidden;
         }
