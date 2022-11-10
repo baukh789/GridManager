@@ -571,7 +571,7 @@ const gridPrint = {
  * 自动轮播
  */
 const autoPlay = {
-	// 支持导出表格数据
+	// 支持表格轮播
 	supportAutoPlay: false,
 	autoPlayConfig: {
 		// 每次轮播结束后停顿的时间
