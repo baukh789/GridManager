@@ -1051,7 +1051,7 @@ describe('cache', () => {
         it('异常配置: 存在disableCustomize但无width', () => {
             // 第8行数据存在disableCustomize配置
             delete arg.columnData[7].width;
-			initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn)
+			initSettings(arg, moveColumnRowFn, checkboxColumnFn, orderColumnFn, fullColumnFn);
             expect(console.log).toHaveBeenCalledWith('%c GridManager Error %c column action: width must be set ', ...CONSOLE_STYLE[CONSOLE_ERROR]);
         });
 
