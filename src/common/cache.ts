@@ -499,8 +499,18 @@ export const formatColumnData = (columnData: Array<ArgColumn | string>): Array<A
  * @param fullColumnFn
  */
 export const resetColumn = (settings: SettingObj, moveColumnRowFn: any, checkboxColumnFn: any, orderColumnFn: any, fullColumnFn: any): void => {
-	const { __isNested, columnData, supportMoveRow, moveRowConfig, supportAutoOrder, __isFullColumn, fullColumn, supportCheckbox, checkboxConfig } = settings;
+	const { __isNested, columnData, supportMoveRow, moveRowConfig, supportAutoOrder, autoOrderConfig, __isFullColumn, fullColumn, supportCheckbox, checkboxConfig } = settings;
 	const columnMap = {};
+
+	// 存在fixed='left'的列时，强制为左侧的自动列增加fixed
+	let useLeftFixed = columnData.some(col => {
+		return col.fixed === 'left';
+	});
+	if (useLeftFixed) {
+		moveRowConfig.fixed = 'left';
+		checkboxConfig.fixed = 'left';
+		autoOrderConfig.fixed = 'left';
+	}
 
 	let list = [];
 	// 自动增加: 行移动列

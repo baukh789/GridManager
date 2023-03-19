@@ -214,9 +214,7 @@ const arg = {
 	// supportAutoOrder: false,
 	// 自动序号配置
 	autoOrderConfig: {
-		// width: 40,
-		// 固定列
-		fixed: 'left'
+		// width: 40
 	},
 	// supportCheckbox: false,
 	// 选择框配置
@@ -233,10 +231,7 @@ const arg = {
 		// width: 100,
 		key: 'id',
 		// 复选时最大可选数
-		// max: 2,
-
-		// 固定列
-		fixed: 'left'
+		// max: 2
 	},
 
 	// 是否使用无总条数模式
@@ -295,7 +290,6 @@ const arg = {
 	moveRowConfig: {
 		key: 'priority',
 		useSingleMode: true,
-		fixed: 'left',
 		handler: (list, tableData) => {
 			console.log(list, tableData);
 		}
@@ -461,6 +455,7 @@ const arg = {
 			width: '140',
 			align: 'center',
 			text: '缩略图',
+			fixed: 'left',
 			disableMoveRow: true,
 			// 使用函数返回 dom node
 			template: function (pic, row) {
@@ -486,6 +481,7 @@ const arg = {
 			remind: 'the title',
 			text: '标题',
 			sorting: '',
+			fixed: 'left',
 			disableMoveRow: true,
 			// 使用函数返回 dom node
 			template: function (title, row) {
