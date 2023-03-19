@@ -481,7 +481,6 @@ const arg = {
 			remind: 'the title',
 			text: '标题',
 			sorting: '',
-			fixed: 'left',
 			disableMoveRow: true,
 			// 使用函数返回 dom node
 			template: function (title, row) {
