@@ -71,7 +71,7 @@ import GridManager from 'gridmanager/angular-1.x'; // angular-1.x引用方式
 
 ## Demo
 - [简单的示例](https://gridmanager.lovejavascript.com/demo/index.html)
-- [复杂的示例](http://develop.lovejavascript.com/)
+- [复杂的示例](https://develop.lovejavascript.com/)
 
 ## 框架版本介绍
 - [GridManager by Angular 1.x](https://github.com/baukh789/GridManager/tree/master/src/framework/angular-1.x/README.md)
