@@ -49,14 +49,12 @@ export const outError = (s: string): void => {
  * @returns {boolean}
  */
 export const equal = (o1: any, o2: any, key?: string): boolean => {
-    const k1 = Object.keys(o1);
+	// 当前指定了精准匹配字段
+	if (isString(key)) {
+		return o1[key] === o2[key];
+	}
+	const k1 = Object.keys(o1);
     const k2 = Object.keys(o2);
-
-    // 当前指定了精准匹配字段
-    if (isString(key)) {
-        return o1[key] === o2[key];
-    }
-
     // 全额匹配
     if (k1.length !== k2.length)  {
         return false;
