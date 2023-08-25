@@ -1,6 +1,7 @@
 import { CHECKBOX_KEY, ROW_DISABLED_CHECKBOX, TR_CACHE_KEY } from '@common/constants';
 import { getTableData, setTableData, setCheckedData } from '@common/cache';
 import { Row } from 'typings/types';
+
 /**
  * 重置当前渲染数据中的选择状态
  * @param _

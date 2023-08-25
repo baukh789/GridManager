@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import $gridManager, { jTool } from '../../../module/index';
+
 export { $gridManager, jTool };
 export default {
     name: 'GridManagerVue',
