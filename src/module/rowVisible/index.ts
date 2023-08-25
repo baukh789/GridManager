@@ -2,7 +2,7 @@ import { ROW_HIDE_KEY, TR_CACHE_KEY, TR_PARENT_KEY } from '@common/constants';
 import { mergeRow } from '@module/merge';
 import './style.less';
 import jTool from '@jTool';
-import {isUndefined} from '@jTool/utils';
+import { isUndefined } from '@jTool/utils';
 import { JTool, SettingObj } from 'typings/types';
 
 // 获取TR列表: cacheKey相匹配的普通行及通栏行、树结构行
