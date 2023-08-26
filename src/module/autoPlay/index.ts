@@ -3,6 +3,7 @@
  */
 import { getSettings } from '@common/cache';
 import { getDiv } from '@common/base';
+
 class AutoPlay {
 	siv: any;
 	init(_: string): void {

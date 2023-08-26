@@ -5,7 +5,7 @@
  * 注意: 需要保证这些缓存的DOM获取方法在DOM未存在时不被调用，实例销毁前不被清除。
  */
 import jTool from '@jTool';
-import {DIV_KEY, FAKE_TABLE_HEAD_KEY, TABLE_BODY_KEY, TABLE_HEAD_KEY, TABLE_KEY, WRAP_KEY} from '@common/constants';
+import { DIV_KEY, FAKE_TABLE_HEAD_KEY, TABLE_BODY_KEY, TABLE_HEAD_KEY, TABLE_KEY, WRAP_KEY } from '@common/constants';
 
 // 缓存map: 操作较少的不需要放在这里
 const cacheMap: {
