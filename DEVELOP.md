@@ -8,6 +8,7 @@ npm run test
 
 
 ## 发布脚本
+> 发布时不用提前修改版本号，发布脚本会自动变更
 ```
 npm version <version_category: major | minor | patch>
 ```
