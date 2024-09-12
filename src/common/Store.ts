@@ -3,6 +3,7 @@
  */
 import { GM_VERSION } from '@common/constants';
 import { Row } from 'typings/data';
+
 interface StoreInterface {
     version: string;
 	responseData: {

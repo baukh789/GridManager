@@ -1,4 +1,5 @@
 import { JTOOL_KEY, JTOOL_DOM_ID, DOM_LIST } from './constants';
+
 interface JTool {
     jTool: boolean;
 }
