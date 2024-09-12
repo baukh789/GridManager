@@ -373,6 +373,7 @@ describe('Settings', () => {
         expect(settings.exportConfig.mode).toBe('static');
         expect(settings.exportConfig.fileName).toBeUndefined();
         expect(settings.exportConfig.suffix).toBe('xls');
+		expect(settings.exportConfig.disableLoading).toBeUndefined();
         expect(typeof settings.exportConfig.handler).toBe('function');
     });
 });

@@ -65,19 +65,20 @@ class ExportFile {
         const tableData = getTableData(_);
 
         const handler = exportConfig.handler;
+		const disableLoading = exportConfig.disableLoading;
 
 	    switch (exportConfig.mode) {
             case 'static': {
-                this.downStatic(_, disableAutoLoading, loadingTemplate, fileName, onlyChecked, exportConfig.suffix, handler, query, pageData, sortData, selectedList, tableData);
+                this.downStatic(_, disableAutoLoading || disableLoading, loadingTemplate, fileName, onlyChecked, exportConfig.suffix, handler, query, pageData, sortData, selectedList, tableData);
                 break;
             }
             case 'blob': {
-                await this.downBlob(_, disableAutoLoading, loadingTemplate, fileName, handler, query, pageData, sortData, selectedList, tableData);
+                await this.downBlob(_, disableAutoLoading || disableLoading, loadingTemplate, fileName, handler, query, pageData, sortData, selectedList, tableData);
                 break;
             }
 
             case 'url': {
-                await this.downFilePath(_, disableAutoLoading, loadingTemplate, fileName, handler, pageData, sortData, selectedList);
+                await this.downFilePath(_, disableAutoLoading || disableLoading, loadingTemplate, fileName, handler, pageData, sortData, selectedList);
                 break;
             }
         }

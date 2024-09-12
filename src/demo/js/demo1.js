@@ -314,6 +314,7 @@ const arg = {
 
 	// 导出配置
 	exportConfig: {
+		// disableLoading: true,
 		fileName: query => {
 			const date = new Date();
 			let fileName = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
